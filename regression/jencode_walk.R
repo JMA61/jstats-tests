@@ -2,7 +2,7 @@
 # jencode_walk.R -- visual walkthrough for jencode() (E12 completion)
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # TYPE:     visual walkthrough (Expected comments; written for Jeff's checking)
-# PENDING:  10, 11 (S343, v0.9.217)
+# PENDING:  none
 # LOCKS:    the LOOK of jencode()'s message surface after the S238 completion
 #           pass: the alphabetical listing, the blank / trim / face-value
 #           notes, the word-evidence -99 nudge, M4/M5/M10 naming, the S238
@@ -36,7 +36,11 @@
 #           Expected moved: Sections 1-9 give the same output on 0.9.216
 #           and 0.9.217. Neither new section needs another (harness.R: 11
 #           of 11). The human half of jencode_check.R N45 and N46.
-#           WALK PENDING: Sections 10 and 11.
+#           LAST VERIFIED v0.9.217, 2026-10-06 (S343) -- Sections 10 and
+#           11 WALKED on the WORKSTATION by Jeff through receive_all(),
+#           its block pasted back with the walk line as the tool writes
+#           it ("walked, all okay"), no remark added; GitHub 8a10deb;
+#           after the SANDBOX run.
 # S340 EDIT (v0.9.214, 2026-10-05): SECTION 9 ADDED, two renders, for Fix
 #           Slate 3: automatic mode on a string variable with declared
 #           missing values (the words numbered, the declared strings left

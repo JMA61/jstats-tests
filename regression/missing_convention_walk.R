@@ -2,7 +2,7 @@
 # missing_convention_walk.R -- the missing-convention message surface, walked
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # TYPE:     visual walkthrough (Expected comments; written for Jeff's checking)
-# PENDING:  1 (S343, v0.9.217)
+# PENDING:  none
 # LOCKS:    the runtime MESSAGE surface of the missing-value convention
 #           machinery -- the joptions setting echo and nudge, the jdeclare_missing
 #           mismatch notice, and the full jload load-narrative case set
@@ -59,7 +59,8 @@
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
-# EDITED:   S343 (v0.9.217). SECTION 1, its last block RE-PINNED and one
+# EDITED:   S343 (v0.9.217; WALKED on the workstation the same session).
+#           SECTION 1, its last block RE-PINNED and one
 #           block ADDED, for the (S281) item's value half: a near miss of
 #           a convention value -- joptions(missing.convention = "sass"),
 #           joptions("spps") -- gets, after the choice error, the value it
@@ -71,7 +72,10 @@
 #           Section 1 alone, apart from the temporary folder's name
 #           (Sections 11, 12, 17 and 30, in lines no Expected pins). No
 #           NEEDS line changed (harness.R: 53 of 53). The assertion side
-#           is missing_convention_check.R N83a-k. WALK PENDING: Section 1.
+#           is missing_convention_check.R N83a-k. WALK: Section 1 --
+#           WALKED by Jeff through receive_all(), its block pasted back
+#           with the walk line as the tool writes it ("walked, all
+#           okay"), no remark added; GitHub 8a10deb.
 # EDITED:   S340 (v0.9.214; WALKED on the workstation the same session). Fix
 #           Slate 3. NEW PART M, Sections 51 and 52 (a string variable's
 #           declared missing values through jload() and jconvert()), every

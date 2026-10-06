@@ -63,8 +63,10 @@
 #           the pattern call N46a d f m; a place counted as an expression
 #           in jrecode() N46l, in jencode() N46g; jsum() or javg() reading
 #           its data as a name always N46m.
-#           LAST VERIFIED: v0.9.217 PENDING, 2026-10-06 (S343) -- 92/92 in
-#           the SANDBOX as above; the workstation run is receive_all()'s.
+#           LAST VERIFIED: v0.9.217, 2026-10-06 (S343) -- 92/92 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           1890 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 8a10deb.
 # S340 EDIT (v0.9.214, 2026-10-05): Fix Slate 3, text variables. N44a-j
 #           and N44c2 NEW (11 checks): a string variable's DECLARED MISSING
 #           VALUES. Automatic mode leaves their cells missing instead of

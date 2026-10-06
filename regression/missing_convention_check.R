@@ -41,8 +41,10 @@
 #           it); the not-one-string guard reduced to is.character N83h k;
 #           the is.character test removed N83h (a function value met
 #           tolower()'s own error).
-#           LAST VERIFIED: v0.9.217 PENDING, 2026-10-06 (S343) -- 512/512 in
-#           the SANDBOX as above; the workstation run is receive_all()'s.
+#           LAST VERIFIED: v0.9.217, 2026-10-06 (S343) -- 512/512 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           1890 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 8a10deb.
 # S340 EDIT (v0.9.214, 2026-10-05): Fix Slate 3, text variables. NEW N82
 #           section, 17 checks (N82a-N82q): a STRING variable with value
 #           labels, and with declared missing values, through jload()

@@ -176,8 +176,10 @@
 #           it T06; jrecode() never giving the hint T06; jencode() always
 #           giving it T03 T07; jrelabel() giving it in the bare-default
 #           mode alone T06.
-#           LAST VERIFIED: v0.9.217 PENDING, 2026-10-06 (S343) -- 440/440
-#           in the SANDBOX as above; the workstation run is receive_all()'s.
+#           LAST VERIFIED: v0.9.217, 2026-10-06 (S343) -- 440/440 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           1890 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 8a10deb.
 # S342 EDIT (v0.9.216, 2026-10-06): SECTION S ADDED (S01-S34, 34 checks),
 #           Fix Slate 4; nothing else changed. S01-S12 a named clear or
 #           removal whose name is not a data frame, in the four
