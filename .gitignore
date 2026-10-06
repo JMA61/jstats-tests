@@ -1,0 +1,12 @@
+# jstats-tests: only the three folders below are published.
+# Everything else in this folder is ignored, including anything added later.
+/*
+!/.gitignore
+!/.gitattributes
+!/README.md
+!/regression/
+!/generators/
+!/datasets/
+
+# Console captures kept beside the scripts are local working files.
+/regression/cap_*.txt
