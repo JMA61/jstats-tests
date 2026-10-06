@@ -10,6 +10,94 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S345 EDIT (v0.9.218, 2026-10-06): Fix Slate 5, the second cut. NEW N84
+#           section, 43 checks (N84a-aq), in eight parts. A, N84a-c (the
+#           S287 remainder): the map parser names the invalid old value
+#           or values alone, so the count agrees; the stop is still bare.
+#           B, N84d-o (Jeff's ruling, S345; the S339 item):
+#           jdeclare_missing() refuses a code whose letter the variable
+#           already carries, in a cell or as a labeled value -- pinned
+#           whole for one code and for several; both offered recodes RUN
+#           (kept apart; merged on purpose); nothing changed by the
+#           refused call; a labeled-only marker and a code no case holds;
+#           SAS; no clash, an integer column, and the other case of a
+#           letter; a call on several variables; a place and an
+#           expression; and N84o, ruling R8's ground untouched (the
+#           missing token still joins a column's own .a cells silently).
+#           C, N84p-u (the S247 item): on a column holding both letter
+#           cases a typed letter names the marker the cells carry, in
+#           jdeclare_missing() and in jrecode()'s labels; the helper by
+#           its cases; the mixed-marker note counts cells only. D, N84v-aa
+#           (the S339 item): a range replaced by one that no longer
+#           covers it is reported, a sentence to a line, with the cases
+#           that are data again; widened or unchanged, nothing; a case
+#           still declared by a code is not counted; with a dropped code,
+#           one note; the minimal level. E, N84ab-ac (the S241 item, part
+#           (1)): no labels hint after a token-only map under any
+#           convention. F, N84ad-aj (the S251 item): jrecode()'s three
+#           "declare it" sites carry the choose-first menu with no
+#           convention selected (pinned), are as they were under each
+#           convention and on a variable that carries a declaration; the
+#           helper. G, N84ak-an (the S343 item): .jst_place_lines() by
+#           its cases, jrecode()'s pair on a place run as printed, and
+#           the stop a hand-typed modify = TRUE still meets. H, N84ao-aq:
+#           the riders by their units (.jst_udm_row_label()'s switch,
+#           .jst_first_typed_marker(), the range-conflict heads).
+#           RE-PINNED: N19a (the mixed-marker note lists the cells'
+#           markers), N72v ("Invalid old value '.ab'"). REPLACED: N81m,
+#           whose fixture's call is now refused; it holds the refusal,
+#           and its comment says why presence-from-the-result can no
+#           longer be told apart by any output. Every N84 check that
+#           assigns runs its body in local(). FIVE HUNDRED AND FIFTY-FIVE
+#           checks.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 555/555
+#           plain and under the RStudio-handler stand-in, each also with a
+#           Windows-length temp path, and entered dirty (as
+#           jencode_check.R describes): nothing left but .results, the
+#           session handed back. The N79 and N80 sweeps read the new
+#           messages with the rest (no early break; every runnable line
+#           parses).
+#           On the 0.9.217 master 38 red: N19a, N72v, N81m and 35 of N84.
+#           Controls, on no mutant's list by design: N84o (R8) and N84aa
+#           (the code-only notice as it was).
+#           FOUND BY THE WALK, NOT BY A CHECK: the first build of the
+#           refusal read haven::na_tag() on an INTEGER column and stopped
+#           ("`x` must be a double vector"); no check here converted one.
+#           missing_convention_walk.R Section 3 does. N84l holds it now,
+#           and the mutant that removes the test reds it.
+#           MUTATION MAP (S345; the mutants of jencode_check.R's list that
+#           red here). The invalid values not made unique, or the noun
+#           never plural, N84b; the whole left side quoted again N84a b c.
+#           The collision guard never firing N81m N84d-n; reading cells
+#           only N84j, labels only N81m N84g h l; the free letters not
+#           cleared of the variable's own N84d e g h i k n; the merge line
+#           labeling the clashing marker N84d e g; the cell tags read
+#           without the double test N84l; letters compared without regard
+#           to case N84l; an expression's naming line dropped N84n; a
+#           code's own label not carried N84g. The carried-marker helper
+#           never deferring N84p q s t, deferring when the canonical case
+#           is carried N84r t; jdeclare_missing() back to the canonical
+#           case N84p q; jrecode()'s labels N84s; the note counting
+#           labeled markers N19a N84u. The range arm never firing N84v w y
+#           z; firing on a widened range N84x; a still-declared case
+#           counted N84y; only the upper end compared N84w, only the lower
+#           N84v w y z; the count never singular N84w y; the minimal list
+#           without the range N84z; the old range's ends swapped N84v w y
+#           z. The token's rules counted by the labels hint N84ab; the
+#           hint never firing N46h N84ac. The gate lead always NULL
+#           N84ad-ag aj; ignoring plain N84ai aj; ignoring the convention
+#           N84ah aj; its head never plural N84ag aj; each of jrecode()'s
+#           three sites without it N84ae (and ag), N84af, N84ad; the
+#           recoded variable always read as plain N84ai. The place
+#           rewrite switched off N84am; a name rewritten too N84v al am an
+#           and 42 other checks; a named first argument rewritten N84al;
+#           the scan
+#           ignoring quotes, or brackets, N84ak. The formatter's bare form
+#           returning "(no label)" N81b d g h k l m n n2 o q N84g ao; the
+#           typed spelling ignored in a rule N42g N65z N84ap, in the
+#           labels N42f N84ap; the conflict heads never capitalized N84aq.
+#           LAST VERIFIED: v0.9.218 SANDBOX, 2026-10-06 (S345) -- 555/555;
+#           workstation run pending.
 # S343 EDIT (v0.9.217, 2026-10-06): the lean-free cut of Fix Slate 5. NEW
 #           N83 section, 11 checks (N83a-k): joptions() on a near miss of
 #           a convention VALUE (the S281 item's value half). After the
@@ -1300,8 +1388,10 @@ f19 <- data.frame(x = 1:4)
 f19$v <- haven::labelled(c(1, haven::tagged_na("a"), haven::tagged_na("B"), 2))
 out19 <- printed(jdeclare_missing(f19, v, codes = c(New = ".c"),
                               convention = "stata"))
-check("N19a mixed-marker note names both sides",
-      grepl("carries both Stata-style (.a, .c) and SAS-style (.B)",
+# S345 (the S247 item, part (1)): the note counts CELLS. Until 0.9.218 it
+# read the value labels too and listed .c, which this call had only labeled.
+check("N19a mixed-marker note names both sides, by the markers the cells carry",
+      grepl("carries both Stata-style (.a) and SAS-style (.B)",
             out19, fixed = TRUE))
 check("N19b note remedy follows the resolved convention",
       grepl('jconvert(f19, to = "stata", vars = "v", modify = TRUE)',
@@ -4836,7 +4926,8 @@ check("N72u a marker and a number share one rule (9,.a=-99): both recode; the co
 
 e72v <- grab(jrecode(st72, Q, map = ".ab=1; else=copy"))
 check("N72v a malformed old value: the refusal now names the marker form",
-      grepl(paste0("Invalid old value(s) '.ab' in map rule '.ab=1'. Old values must ",
+      # S345: "value(s)" went with the S287 remainder (N84a-c).
+      grepl(paste0("Invalid old value '.ab' in map rule '.ab=1'. Old values must ",
                    "be numeric, a system-NA alias (NA, System, or SYSMIS), or a ",
                    "Stata-style missing-value token (.a through .z)."), .fl(e72v),
             fixed = TRUE))
@@ -5875,14 +5966,19 @@ check("N81l the same under SAS convention, in uppercase",
                                                  convention = "sas"))),
                 c("  .A (from -99; no label)",
                   "  .B (from -77; no label; not present in the data)")))
-# A column that already carries .a cells: -77 becomes .a too, and after the
-# conversion the column HAS .a cells, so presence read from the result would
-# call -77 present.
+# N81m held presence to the column as it ARRIVED, on a column that already
+# carried .a cells: -77 became .a too, so presence read from the result
+# would have called -77 present. Since v0.9.218 that call is REFUSED (a code
+# landing on a marker the variable carries: Jeff's S345 ruling, N84d-o), so
+# no call reaches the confirmation with a marker's cells already in the
+# column, and a build reading presence from the result can no longer be told
+# from this one by any output. N81m now holds the refusal on its fixture;
+# N81k and N81l still pin "not present in the data" on a clean column.
 t81 <- data.frame(V = haven::labelled(c(1, 2, haven::tagged_na("a"), 3)))
-check("N81m presence is judged on the column as it arrived, not on the markers it ends with",
-      identical(.body81(printed(jdeclare_missing(t81, V, codes = -77,
-                                                 convention = "stata"))),
-                "  .a (from -77; no label; not present in the data)"))
+check("N81m a code that would land on a marker the column carries is refused, whether or not a case holds the code (was: its confirmation read \"not present\")",
+      { m <- .fl(grab(jdeclare_missing(t81, V, codes = -77, convention = "stata")))
+        grepl("jdeclare_missing(): -77 would become .a under Stata convention, but V already carries .a, so the two would share one missing value.",
+              m, fixed = TRUE) })
 
 # --- a call on several variables ---------------------------------------------
 # -98 is in V and X and not in W; -77 is in none.
@@ -6398,6 +6494,451 @@ check("N83k the builder, by its cases: one edit; two edits in a long string; a t
           is.null(h(NA_character_, ch, "f(\"")) && is.null(h("", ch, "f(\"")) })
 options(.jst_options_missing_convention = .entry_conv83)
 rm(list = intersect(c(".entry_conv83", ".m83a", ".m83b"), ls(all.names = TRUE)))
+
+# =============================================================================
+# N84 -- FIX SLATE 5, THE SECOND CUT (S345, v0.9.218): the marker a code or a
+#        typed letter lands on; what a narrowed range dropped; "declare it"
+#        with no convention selected; a place in an offered modify = TRUE
+#        line; the invalid old value named alone
+# =============================================================================
+# Eight things, lettered by part.
+#  A  (the S287 remainder) The map parser's "Invalid old value(s)" quoted a
+#     rule's whole left side: on "1, abc = 9" two values were shown and one
+#     was invalid. It names the invalid values alone, so the count agrees.
+#  B  (Jeff's ruling, S345; the S339 item) jdeclare_missing() converting a
+#     code to a marker took its letters from the start of the alphabet
+#     whatever the variable held: codes = c(Refused = -99) on a variable
+#     whose .a cells were "Skipped" gave two labels on .a and a jfreq() row
+#     reading .a ["Skipped"] 2. It stops, with the two recodes that run.
+#     jrecode()'s missing token joining a column's own .a cells is NOT this
+#     (Decision 14; ruling R8; N69k holds its silence).
+#  C  (the S247 item) On a column holding markers in both letter cases, a
+#     typed letter names the marker the CELLS carry before the other case
+#     is minted: .a under a sas resolution landed on .A, in no cell. And the
+#     mixed-marker note counts cells only (N19a moved with it).
+#  D  (the S339 item) A range replaced by one that no longer covers all of
+#     it is reported as a dropped code is, with the cases that went back to
+#     being data. A range that only widened drops nothing.
+#  E  (the S241 item, part (1)) The labels hint after "8=missing; else=copy"
+#     fired under spss (the token mints a number) and not under stata or
+#     sas: one map, two answers. The token's own rules no longer count.
+#  F  (the S251 item) jrecode()'s three "declare it" sites carry the
+#     choose-first menu when no convention is selected and the variable has
+#     no declaration of its own for jdeclare_missing() to follow.
+#  G  (the S343 item) .jst_place_lines(): an offered modify = TRUE line
+#     whose data is a place takes the assignment form. jencode_check.R
+#     N47r-s run jencode()'s; here the unit, and jrecode()'s pair.
+#  H  the riders, by their units.
+.conv84 <- function(cv, expr) {
+  old <- getOption(".jst_options_missing_convention")
+  options(.jst_options_missing_convention = cv)
+  on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+  force(expr)
+}
+.menu84 <- paste0(
+  "No missing-value convention is selected, so the value cannot be\n",
+  "declared yet.\n",
+  "Choose one for this session:\n",
+  "  joptions(missing.convention = \"stata\")\n",
+  "      Lowercase markers behave as true NAs in base R.\n",
+  "      Recommended if you also run base R or AI-generated code.\n",
+  "  joptions(missing.convention = \"spss\")\n",
+  "      Codes stay visible numbers; jstats treats them as missing.\n",
+  "      Base R does not.\n",
+  "  joptions(missing.convention = \"sas\")\n",
+  "      Like Stata, with uppercase markers (.A-.Z).\n",
+  "To make the choice permanent, put the same line in your .Rprofile.")
+.tags84 <- function(x) haven::na_tag(x)
+.ltag84 <- function(x) {
+  vl <- labelled::val_labels(x)
+  stats::setNames(haven::na_tag(vl), names(vl))
+}
+
+# --- A: the invalid old value, named alone -----------------------------------
+d84 <- data.frame(v = c(1, 2, 8, 2, 1, 3, 8))
+check("N84a one invalid old value among valid ones is named alone, in the singular (pinned whole)",
+      identical(grab(jrecode(d84, v, map = "1, abc = 9; else=copy")), paste0(
+        "jrecode(): Error in map argument: Invalid old value 'abc' in map\n",
+        "rule '1, abc = 9'. Old values must be numeric, a system-NA alias (NA,\n",
+        "System, or SYSMIS), or a Stata-style missing-value token (.a through .z).")))
+check("N84b two invalid values: the plural, joined by and; a repeated one is named once; the rule is still quoted whole",
+      local({ m2 <- .fl(grab(jrecode(d84, v, map = "1, abc, x y = 9; else=copy")))
+        m3 <- .fl(grab(jrecode(d84, v, map = "abc, abc, 2 = 9; else=copy")))
+        grepl("Invalid old values 'abc' and 'x y' in map rule '1, abc, x y = 9'.", m2, fixed = TRUE) &&
+          grepl("Invalid old value 'abc' in map rule 'abc, abc, 2 = 9'.", m3, fixed = TRUE) &&
+          !grepl("value(s)", paste(m2, m3), fixed = TRUE) }))
+check("N84c the parser's stop is still bare, for jrecode() to frame: no function prefix of its own",
+      local({ e <- tryCatch(.jst_parse_map("1, abc = 9"), error = function(e) conditionMessage(e))
+        startsWith(e, "Invalid old value 'abc' in map rule '1, abc = 9'.") }))
+
+# --- B: a code converted onto a marker the variable already carries ----------
+t84 <- data.frame(V = haven::labelled(
+  c(1, 2, haven::tagged_na("a"), -99, 3),
+  labels = c(Skipped = haven::tagged_na("a"))))
+.m84d <- .conv84("stata", grab(jdeclare_missing(t84, V, codes = c(Refused = -99))))
+check("N84d the refusal: what would merge, and the two recodes (pinned whole)",
+      identical(.m84d, paste0(
+        "jdeclare_missing(): -99 would become .a under Stata convention, but\n",
+        "V already carries .a [\"Skipped\"], so the two would share one missing value.\n",
+        "To keep them distinct, recode -99 to a marker V does not use:\n",
+        "  t84$VR <- jrecode(t84, V, map = \"-99=.b; else=copy\", labels = \".b=Refused\")\n",
+        "Or, if they mean the same thing, recode -99 to .a:\n",
+        "  t84$VR <- jrecode(t84, V, map = \"-99=.a; else=copy\")")))
+check("N84e the first line runs and keeps the two kinds apart, each with its label; the second runs and merges them under the label the variable had",
+      local({ r1 <- .conv84("stata", .run_line_k(.m84d, 1L, "t84", t84))
+        r2 <- .conv84("stata", .run_line_k(.m84d, 2L, "t84", t84))
+        !is.null(r1) && !is.null(r2) &&
+          identical(.tags84(r1$VR), c(NA, NA, "a", "b", NA)) &&
+          identical(.ltag84(r1$VR)[c("Skipped", "Refused")], c(Skipped = "a", Refused = "b")) &&
+          identical(.tags84(r2$VR), c(NA, NA, "a", "a", NA)) &&
+          identical(.ltag84(r2$VR), c(Skipped = "a")) }))
+check("N84f nothing was changed by the refused call, with modify = TRUE as without",
+      local({ d <- t84
+        .conv84("stata", grab(jdeclare_missing(d, V, codes = c(Refused = -99), modify = TRUE)))
+        identical(d, t84) }))
+u84 <- data.frame(V = haven::labelled(
+  c(1, 2, haven::tagged_na("b"), haven::tagged_na("a"), -99, -98, 3),
+  labels = c(Skipped = haven::tagged_na("b"), DK = -98)))
+.m84g <- .conv84("stata", grab(jdeclare_missing(u84, V, codes = c(-99, -98), labels = "-99=Refused")))
+check("N84g several codes: every clash named, an unlabeled marker bare, and each code's label -- the call's, else the one the code has -- carried into the first line (pinned whole)",
+      identical(.m84g, paste0(
+        "jdeclare_missing(): -99 and -98 would become .a and .b under Stata\n",
+        "convention, but V already carries .a and .b [\"Skipped\"], so different kinds\n",
+        "of missing data would share a missing value.\n",
+        "To keep them distinct, recode the codes to markers V does not use:\n",
+        "  u84$VR <- jrecode(u84, V, map = \"-99=.c; -98=.d; else=copy\", labels = \".c=Refused; .d=DK\")\n",
+        "Or, if they mean the same thing, recode the codes to the markers they would\n",
+        "have taken:\n",
+        "  u84$VR <- jrecode(u84, V, map = \"-99=.a; -98=.b; else=copy\")")))
+check("N84h ... and both lines run: four markers kept apart; or the two codes on .a and .b",
+      local({ r1 <- .conv84("stata", .run_line_k(.m84g, 1L, "u84", u84))
+        r2 <- .conv84("stata", .run_line_k(.m84g, 2L, "u84", u84))
+        !is.null(r1) && !is.null(r2) &&
+          identical(.tags84(r1$VR), c(NA, NA, "b", "a", "c", "d", NA)) &&
+          identical(.ltag84(r1$VR)[c("Refused", "DK", "Skipped")],
+                    c(Refused = "c", DK = "d", Skipped = "b")) &&
+          identical(.tags84(r2$VR), c(NA, NA, "b", "a", "a", "b", NA)) }))
+check("N84i only the clashing code is named when one of two clashes; the lines still carry both codes",
+      local({ w <- data.frame(V = haven::labelled(c(1, haven::tagged_na("b"), -99, -98),
+                                            labels = c(Skipped = haven::tagged_na("b"))))
+        m <- .conv84("stata", grab(jdeclare_missing(w, V, codes = c(-99, -98))))
+        grepl("jdeclare_missing(): -98 would become .b under Stata convention, but V already carries .b [\"Skipped\"], so the two would share one missing value.",
+              .fl(m), fixed = TRUE) &&
+          grepl("  w$VR <- jrecode(w, V, map = \"-99=.a; -98=.c; else=copy\")\n", m, fixed = TRUE) &&
+          grepl("  w$VR <- jrecode(w, V, map = \"-99=.a; -98=.b; else=copy\")", m, fixed = TRUE) }))
+check("N84j a marker that is only LABELED on the variable clashes too, and so does a code no case holds: the call is read, not the cells",
+      local({ w <- data.frame(V = haven::labelled(c(1, 2, -99, 3), labels = c(Skipped = haven::tagged_na("a"))))
+        m1 <- .conv84("stata", grab(jdeclare_missing(w, V, codes = c(-99))))
+        m2 <- .conv84("stata", grab(jdeclare_missing(t84, V, codes = c(-77))))
+        grepl("V already carries .a [\"Skipped\"]", .fl(m1), fixed = TRUE) &&
+          grepl("-77 would become .a under Stata convention", .fl(m2), fixed = TRUE) }))
+check("N84k SAS convention: uppercase letters throughout, and the lines run",
+      local({ w <- data.frame(V = haven::labelled(c(1, haven::tagged_na("A"), -99, 3),
+                                            labels = c(Skipped = haven::tagged_na("A"))))
+        m <- .conv84("sas", grab(jdeclare_missing(w, V, codes = c(-99))))
+        r <- .conv84("sas", .run_line_k(m, 1L, "w", w))
+        grepl("-99 would become .A under SAS convention, but V already carries .A [\"Skipped\"]", .fl(m), fixed = TRUE) &&
+          grepl("  w$VR <- jrecode(w, V, map = \"-99=.B; else=copy\")\n", m, fixed = TRUE) &&
+          !is.null(r) && identical(.tags84(r$VR), c(NA, "A", "B", NA)) }))
+check("N84l no clash, no refusal: a variable holding .c takes .a for its code, and an INTEGER column converts as it did (the first build stopped on it)",
+      local({ w <- data.frame(V = haven::labelled(c(1, haven::tagged_na("c"), -99, 3),
+                                            labels = c(Skipped = haven::tagged_na("c"))),
+                        I = c(1L, 2L, -99L, 3L))
+        o <- .conv84("stata", suppressMessages(jdeclare_missing(w, V, I, codes = c(-99),
+                                                               missing.notice = FALSE)))
+        # the other CASE of a letter is another marker. Only a column holding
+        # both cases reaches the setting (one case resolves by its own form):
+        # under sas -99 takes .A beside the .a and .B cells, no clash; under
+        # stata it would take .a, which the column carries.
+        y <- data.frame(V = haven::labelled(c(1, haven::tagged_na("a"),
+                                              haven::tagged_na("B"), -99)))
+        o2 <- .conv84("sas", suppressMessages(jdeclare_missing(y, V, codes = c(-99),
+                                                              missing.notice = FALSE)))
+        m3 <- .conv84("stata", grab(jdeclare_missing(y, V, codes = c(-99))))
+        identical(.tags84(o$V), c(NA, "c", "a", NA)) &&
+          identical(.tags84(o$I), c(NA, NA, "a", NA)) &&
+          identical(.tags84(o2$V), c(NA, "a", "B", "A")) &&
+          grepl("-99 would become .a under Stata convention", .fl(m3), fixed = TRUE) }))
+check("N84m a call on several variables: the clash stops the whole call, named under its variable, and no variable is changed",
+      local({ w <- data.frame(V = t84$V, W = c(1, 2, 3, -99, 3))
+        m <- .conv84("stata", grab(jdeclare_missing(w, V, W, codes = c(-99), modify = TRUE)))
+        grepl("cannot declare on 1 of 2 variables; no variable was changed:", .fl(m), fixed = TRUE) &&
+          grepl("\n  V: -99 would become .a under Stata convention", m, fixed = TRUE) &&
+          identical(w$W, c(1, 2, 3, -99, 3)) }))
+check("N84n a place and an expression as the data: the place is named in lines that run; the expression gets mydata, named first under each lead",
+      local({ l84 <- list(d = t84); mk84 <- function() t84
+        mp <- .conv84("stata", grab(jdeclare_missing(l84$d, V, codes = c(-99))))
+        me <- .conv84("stata", grab(jdeclare_missing(mk84(), V, codes = c(-99))))
+        e  <- new.env(parent = globalenv()); assign("l84", l84, envir = e)
+        ln <- trimws(grep("^  l84", strsplit(mp, "\n", fixed = TRUE)[[1]], value = TRUE))
+        ok <- length(ln) == 2L && .conv84("stata", tryCatch({
+          suppressMessages(eval(parse(text = ln[1]), e)); TRUE }, error = function(err) FALSE)) &&
+          identical(.tags84(get("l84", envir = e)$d$VR), c(NA, NA, "a", "b", NA))
+        ok && grepl(paste0("does not use:\n  mydata <- mk84()\n",
+                           "  mydata$VR <- jrecode(mydata, V, map = \"-99=.b; else=copy\")\n",
+                           "Or, if they mean the same thing, recode -99 to .a:\n",
+                           "  mydata <- mk84()\n",
+                           "  mydata$VR <- jrecode(mydata, V, map = \"-99=.a; else=copy\")"),
+                    me, fixed = TRUE) }))
+check("N84o R8 is untouched: jrecode()'s missing token still joins the column's own .a cells, silently (N69k's ground, read here beside the refusal)",
+      local({ g <- .conv84("stata", grab(r <- jrecode(t84, V, map = "-99=missing; else=copy")))
+        identical(.tags84(r), c(NA, NA, "a", "a", NA)) &&
+          !grepl("would", g, fixed = TRUE) && !grepl(".a", g, fixed = TRUE) }))
+
+# --- C: a typed letter on a column holding both letter cases -----------------
+x84 <- data.frame(z = haven::labelled(
+  c(1, haven::tagged_na("a"), haven::tagged_na("B"), 2)))
+check("N84p under a sas resolution a typed .a names the .a cells (it landed on .A, a marker in no cell), and the confirmation no longer says \"not present\"",
+      local({ p <- .conv84("sas", printed(o <- jdeclare_missing(x84, z, codes = c(Refused = ".a"))))
+        identical(.ltag84(o$z), c(Refused = "a")) &&
+          grepl("\n  .a is now \"Refused\"\n", p, fixed = TRUE) &&
+          !grepl("not present in the data", p, fixed = TRUE) }))
+check("N84q the mirror: under a stata resolution a typed .B names the .B cells; a typed .b too (input case carries no meaning)",
+      local({ o1 <- .conv84("stata", suppressMessages(jdeclare_missing(x84, z, codes = c(Refused = ".B"), missing.notice = FALSE)))
+        o2 <- .conv84("stata", suppressMessages(jdeclare_missing(x84, z, codes = c(Refused = ".b"), missing.notice = FALSE)))
+        identical(.ltag84(o1$z), c(Refused = "B")) && identical(.ltag84(o2$z), c(Refused = "B")) }))
+check("N84r a letter no cell carries in either case keeps the convention's case (forward declaration), and a letter carried in BOTH cases does too",
+      local({ o1 <- .conv84("sas", suppressMessages(jdeclare_missing(x84, z, codes = c(New = ".c"), missing.notice = FALSE)))
+        y  <- data.frame(z = haven::labelled(c(1, haven::tagged_na("a"), haven::tagged_na("A"), 2)))
+        o2 <- .conv84("sas", suppressMessages(jdeclare_missing(y, z, codes = c(Both = ".a"), missing.notice = FALSE)))
+        o3 <- .conv84("stata", suppressMessages(jdeclare_missing(y, z, codes = c(Both = ".A"), missing.notice = FALSE)))
+        identical(.ltag84(o1$z), c(New = "C")) && identical(.ltag84(o2$z), c(Both = "A")) &&
+          identical(.ltag84(o3$z), c(Both = "a")) }))
+check("N84s jrecode()'s labels follow the same rule: on a mixed source a label for .a under a sas setting lands on the .a cells the result keeps",
+      local({ r <- .conv84("sas", suppressMessages(jrecode(x84, z, map = "1=5; else=copy", labels = ".a=Refused")))
+        identical(.tags84(r), c(NA, "a", "B", NA)) && identical(.ltag84(r), c(Refused = "a")) }))
+check("N84t the helper by its cases: canonical when carried, the other case when only that is carried, canonical when neither or both; vectorized; NA cells ignored",
+      local({ h <- .jst_carried_tag
+        identical(h("a", "sas", c(NA, "a", "B")), "a") &&
+          identical(h("b", "stata", c(NA, "a", "B")), "B") &&
+          identical(h("c", "sas", c("a", "B")), "C") &&
+          identical(h("a", "sas", c("a", "A")), "A") &&
+          identical(h("A", "stata", c("a", "A")), "a") &&
+          identical(h(c("a", "b", "c"), "sas", c("a", "B", NA)), c("a", "B", "C")) &&
+          identical(h("a", "stata", character(0)), "a") &&
+          identical(h(character(0), "sas", "a"), character(0)) }))
+check("N84u the mixed-marker note counts cells only: a marker this very call only labeled is not listed as carried (N19a is the same note, on N19's fixture)",
+      local({ p <- .conv84("stata", printed(jdeclare_missing(x84, z, codes = c(Refused = ".a", Other = ".c"))))
+        grepl("Note: z carries both Stata-style (.a) and SAS-style (.B)\nmissing-value markers.", p, fixed = TRUE) &&
+          grepl("\n  .c is now \"Other\" (not present in the data)\n", p, fixed = TRUE) }))
+
+# --- D: a range the call replaced with a narrower one ------------------------
+e84 <- data.frame(V = haven::labelled_spss(
+  c(1, 2, 3, -60, -95, -99, 2, -70), na_range = c(-99, -51)))
+.tail84 <- function(nm) paste0(
+  "\n\nThis call changes ", nm, " only if you assign the result:\n",
+  "  ", nm, " <- jdeclare_missing(", nm, ", V, ...)\n\n",
+  "To change ", nm, " directly, rerun with modify = TRUE:\n",
+  "  jdeclare_missing(", nm, ", V, ..., modify = TRUE)")
+check("N84v a narrowed range: the note names the range as it was and counts the cases that are data again, a sentence to a line, between the confirmation and the reminder (pinned whole)",
+      identical(printed(jdeclare_missing(e84, V, range = c(-99, -90))), paste0(
+        "Declared SPSS-style missing values on V:\n",
+        "  range -99 to -90\n\n",
+        "Note: jdeclare_missing replaced the declared missing-value range for V.\n",
+        "Previously declared range: -99 to -51.\n",
+        "2 cases it covered are no longer missing.", .tail84("e84"))))
+check("N84w one case: the singular throughout; a range cut at its upper end, at its lower end, and at both: each end counted",
+      grepl("\nPreviously declared range: -99 to -51.\n1 case it covered is no longer missing.\n\n",
+            printed(jdeclare_missing(e84, V, range = c(-99, -65))), fixed = TRUE) &&
+        # -99 below the new range and -60 above it; -70 and -95 stay inside
+        grepl("\n2 cases it covered are no longer missing.\n",
+              printed(jdeclare_missing(e84, V, range = c(-96, -65))), fixed = TRUE) &&
+        grepl("\n3 cases it covered are no longer missing.\n",
+              printed(jdeclare_missing(e84, V, range = c(-99, -96))), fixed = TRUE) &&
+        # the lower end alone: -99 falls out, the upper end is where it was
+        grepl("\nPreviously declared range: -99 to -51.\n1 case it covered is no longer missing.\n\n",
+              printed(jdeclare_missing(e84, V, range = c(-96, -51))), fixed = TRUE))
+check("N84x a range that only widened, and the same range again, get no note",
+      !grepl("replaced", printed(jdeclare_missing(e84, V, range = c(-999, -51))), fixed = TRUE) &&
+        !grepl("replaced", printed(jdeclare_missing(e84, V, range = c(-99, -51))), fixed = TRUE) &&
+        !grepl("replaced", printed(jdeclare_missing(e84, V, range = c(-99, -1))), fixed = TRUE))
+check("N84y a case the narrower call still declares as a CODE is not counted, and a range no case fell out of says only what the range was",
+      local({ a <- .fl(printed(jdeclare_missing(e84, V, range = c(-99, -90), codes = c(-60))))
+        f <- data.frame(V = haven::labelled_spss(c(1, 2, -95, -99), na_range = c(-99, -51)))
+        b <- printed(jdeclare_missing(f, V, range = c(-99, -90)))
+        grepl("Previously declared range: -99 to -51. 1 case it covered is no longer missing.", a, fixed = TRUE) &&
+          grepl("\n\nNote: jdeclare_missing replaced the declared missing-value range for V.\nPreviously declared range: -99 to -51.\n\n",
+                b, fixed = TRUE) && !grepl("no longer missing", b, fixed = TRUE) }))
+e84b <- data.frame(V = haven::labelled_spss(
+  c(1, 2, 3, -60, -95, -99, 2, -70), labels = c(DK = -9), na_values = -9,
+  na_range = c(-99, -51)))
+check("N84z a dropped code and a narrowed range in one call: one note, the code sentence then the range sentence (pinned); at the minimal level, one Dropped list",
+      local({ p  <- printed(jdeclare_missing(e84b, V, range = c(-99, -90), codes = c(-8)))
+        lv <- getOption(".jst_output_level"); options(.jst_output_level = "minimal")
+        mn <- printed(jdeclare_missing(e84b, V, range = c(-99, -90), codes = c(-8)))
+        options(.jst_output_level = lv)
+        grepl(paste0(
+          "\n\nNote: jdeclare_missing replaced the existing declared missing values for V.\n",
+          "Previously declared codes dropped: -9 [\"DK\"].\n",
+          "Previously declared range: -99 to -51.\n",
+          "2 cases it covered are no longer missing.\n\n"), p, fixed = TRUE) &&
+          endsWith(mn, paste0(
+            "\n\nNote: jdeclare_missing replaced the existing declared missing values on V.\n",
+            "Dropped: -9, range -99 to -51.")) }))
+check("N84aa the code-only notice is as it was (a dropped code on a variable with no range), and a codes-only call leaves a range in place without a word",
+      local({ f <- data.frame(V = haven::labelled_spss(c(1, -9, -8), labels = c(DK = -9), na_values = c(-9, -8)))
+        a <- printed(jdeclare_missing(f, V, codes = c(-8)))
+        b <- printed(jdeclare_missing(e84, V, codes = c(-60)))
+        grepl("\n\nNote: jdeclare_missing replaced the existing declared missing values for V.\nPreviously declared codes dropped: -9 [\"DK\"].\n\n",
+              a, fixed = TRUE) &&
+          !grepl("replaced", b, fixed = TRUE) && grepl("  range -99 to -51 (already declared)\n", b, fixed = TRUE) }))
+
+# --- E: the labels hint and the missing token --------------------------------
+check("N84ab \"8=missing; else=copy\": no labels hint under any convention (under spss it fired, on the token's own -99)",
+      all(vapply(c("spss", "stata", "sas"), function(cv) {
+        !grepl("No value labels assigned", .conv84(cv, grab(jrecode(d84, v, map = "8=missing; else=copy"))), fixed = TRUE)
+      }, logical(1))))
+check("N84ac the hint still fires when the map makes another category of its own, with or without the token, and for a plain recode",
+      grepl("\n\nNote: No value labels assigned. To add labels, use jrelabel().\n",
+            .conv84("spss", grab(jrecode(d84, v, map = "8=missing; 1=0; else=copy"))), fixed = TRUE) &&
+        grepl("No value labels assigned", .conv84("stata", grab(jrecode(d84, v, map = "8=missing; 1=0; else=copy"))), fixed = TRUE) &&
+        grepl("No value labels assigned", grab(jrecode(d84, v, map = "1=0; else=copy")), fixed = TRUE))
+
+# --- F: "declare it" with no convention selected (jrecode) -------------------
+k84 <- data.frame(v = c(1, 2, -99, 2, 1, 2, 1, NA, 2, 1, 1, 2))
+.rem84 <- function(nm) paste0(
+  "\n\nNote: This call changes ", nm, " only if you assign the result:\n",
+  "  ", nm, "$<name> <- jrecode(...)\n",
+  "To check the recode landed correctly, compare jfreq() on the original and\n",
+  "the new column.\n")
+check("N84ad the NA rule's note: the menu, then the remedy (pinned whole)",
+      identical(grab(jrecode(k84, v, map = "NA=-98; else=copy")), paste0(
+        "Note: 1 NA value in 'v' was recoded to -98.\n", .menu84, "\n",
+        "Then declare -98 with jdeclare_missing() so analyses exclude it.", .rem84("k84"))))
+check("N84ae the incomplete-map error: its three lines as they were, then the menu (pinned whole)",
+      identical(grab(jrecode(k84, v, map = "1=0; 2=1")), paste0(
+        "jrecode(): Value -99 in 'v' was not in the map.\n",
+        "-99 looks like a coded missing value; declare it with jdeclare_missing() so\n",
+        "analyses exclude it, or map it (for example -99=NA).\n",
+        "To leave unmapped values unchanged, add else=copy to the map.\n", .menu84)))
+check("N84af the carried-through note (the full level): the menu, then the conditional remedy (pinned to the next note)",
+      local({ lv <- getOption(".jst_output_level"); options(.jst_output_level = "full")
+        g <- grab(jrecode(k84, v, map = "1=0; 2=1; else=copy"))
+        options(.jst_output_level = lv)
+        startsWith(g, paste0(
+          "Note: -99 in 'v' looks like a coded missing value and was carried\n",
+          "through unchanged.\n", .menu84, "\n",
+          "Then, if it represents missing data, declare it with jdeclare_missing() so\n",
+          "analyses exclude it.\n\n")) }))
+check("N84ag two flagged values: the menu's head and the remedies in the plural",
+      local({ k2 <- data.frame(v = c(1, 2, -99, 2, 1, 2, 1, -98, 2, 1, 1, 2))
+        m  <- .fl(grab(jrecode(k2, v, map = "1=0; 2=1")))
+        grepl("so the values cannot be declared yet.", m, fixed = TRUE) &&
+          grepl("declare them with jdeclare_missing() so analyses exclude them, or map them.", m, fixed = TRUE) }))
+check("N84ah under each convention all three are as they were: no menu",
+      all(vapply(c("spss", "stata", "sas"), function(cv) .conv84(cv, {
+        lv <- getOption(".jst_output_level")
+        a <- grab(jrecode(k84, v, map = "NA=-98; else=copy"))
+        b <- grab(jrecode(k84, v, map = "1=0; 2=1"))
+        options(.jst_output_level = "full")
+        c3 <- grab(jrecode(k84, v, map = "1=0; 2=1; else=copy"))
+        options(.jst_output_level = lv)
+        identical(a, paste0("Note: 1 NA value in 'v' was recoded to -98.\n",
+                            "Declare -98 with jdeclare_missing() so analyses exclude it.",
+                            .rem84("k84"))) &&
+          endsWith(b, "To leave unmapped values unchanged, add else=copy to the map.") &&
+          grepl("through unchanged.\nIf it represents missing data, declare it with jdeclare_missing() so\nanalyses exclude it.\n",
+                c3, fixed = TRUE) &&
+          !grepl("Choose one", paste(a, b, c3), fixed = TRUE) }), logical(1))))
+check("N84ai a variable that carries a declaration of its own meets no gate, so gets no menu: an SPSS-style code on the source (the error, the NA rule) and a lettered marker",
+      local({ ks <- data.frame(v = haven::labelled_spss(c(1, 2, -99, 2, 1, -7, 1, NA, 2, 1, 1, 2), na_values = -7))
+        kt <- data.frame(v = haven::labelled(c(1, 2, 2, 1, haven::tagged_na("a"), 1, NA, 2, 1, 1, 2)))
+        g <- c(grab(jrecode(ks, v, map = "1=0; 2=1")), grab(jrecode(ks, v, map = "NA=-98; else=copy")),
+               grab(jrecode(kt, v, map = "NA=-98; else=copy")))
+        !any(grepl("Choose one", g, fixed = TRUE)) &&
+          all(grepl("jdeclare_missing()", g, fixed = TRUE)) &&
+          # and the advice is true there: the declare meets no gate
+          { o <- ks; o$vR <- suppressMessages(jrecode(ks, v, map = "NA=-98; else=copy"))
+            !grepl("no missing-value convention", grab(jdeclare_missing(o, vR, codes = c(-7, -98))), fixed = TRUE) } }))
+check("N84aj the helper: NULL under a convention or for a variable that is not plain; the menu otherwise, its head agreeing in number; a per-call convention is not read",
+      local({ h <- .jst_declare_gate_lead
+        is.null(.conv84("stata", h("jrecode"))) && is.null(h("jrecode", plain = FALSE)) &&
+          identical(.fl(h("jrecode")), .fl(.menu84)) &&
+          startsWith(.fl(h("jrecode", n = 2L)),
+                     "No missing-value convention is selected, so the values cannot be declared yet.") &&
+          identical(names(formals(h)), c("fn", "n", "plain")) }))
+
+# --- G: a place in an offered modify = TRUE line -----------------------------
+check("N84ak .jst_place_lines(): a place first and modify = TRUE last takes the assignment form; brackets, quotes and a comma inside the place are copied as typed; the indent is kept",
+      identical(.jst_place_lines(c(
+        "  jdeclare_missing(lst$d, wR, codes = c(-99), modify = TRUE)",
+        "  jconvert(lst[[\"d, e\"]], to = \"stata\", modify = TRUE)",
+        "  jconvert(obj@d, to = \"stata\", vars = c(...), modify = TRUE)",
+        "  jconvert(lst[[c(1, 2)]], to = \"sas\", modify = TRUE)",
+        "  jconvert(lst$`a, b`, to = \"sas\", modify = TRUE)",
+        "      jconvert(lst$d$e, to = \"stata\", modify = TRUE)")),
+        c("  lst$d <- jdeclare_missing(lst$d, wR, codes = c(-99))",
+          "  lst[[\"d, e\"]] <- jconvert(lst[[\"d, e\"]], to = \"stata\")",
+          "  obj@d <- jconvert(obj@d, to = \"stata\", vars = c(...))",
+          "  lst[[c(1, 2)]] <- jconvert(lst[[c(1, 2)]], to = \"sas\")",
+          "  lst$`a, b` <- jconvert(lst$`a, b`, to = \"sas\")",
+          "      lst$d$e <- jconvert(lst$d$e, to = \"stata\")")))
+check("N84al ... and every other line is returned untouched: a name, the mydata template, prose, an expression, an assignment, a named first argument, a line with no modify, an empty input",
+      local({ keep <- c("  jdeclare_missing(d, wR, codes = c(-99), modify = TRUE)",
+                  "  jdeclare_missing(mydata, ..., modify = TRUE)",
+                  "Name the data first, then rerun with modify = TRUE)",
+                  "  jdeclare_missing(mk()$d, V, codes = 1, modify = TRUE)",
+                  "  x <- jconvert(lst$d, to = \"stata\", modify = TRUE)",
+                  "  jconvert(data = lst$d, to = \"stata\", modify = TRUE)",
+                  "  jconvert(lst$d, to = \"stata\")",
+                  "  jconvert(lst$d, to = \"stata\", modify = TRUE) # then save",
+                  "  jconvert(lst$d, to = \"sta, modify = TRUE)", "")
+        identical(.jst_place_lines(keep), keep) &&
+          identical(.jst_place_lines(character(0)), character(0)) }))
+check("N84am jrecode()'s pair on a place: the declaration is the assignment form and the pair runs as printed; a name keeps modify = TRUE",
+      local({ l84 <- list(d = data.frame(Age = c(1, 2, 3, 1, 2, 3)))
+        g  <- .conv84("spss", grab(jrecode(l84$d, Age, map = "1=-99; else=copy")))
+        ln <- strsplit(g, "\n", fixed = TRUE)[[1]]
+        i  <- grep("^Or declare -99 as missing", ln)
+        e  <- new.env(parent = globalenv()); assign("l84", l84, envir = e)
+        ok <- identical(ln[i + 2L], "  l84$d <- jdeclare_missing(l84$d, AgeR, codes = c(-99))") &&
+          .conv84("spss", tryCatch({
+            suppressMessages(utils::capture.output({
+              eval(parse(text = ln[i + 1L]), e); eval(parse(text = ln[i + 2L]), e) })); TRUE },
+            error = function(err) FALSE)) &&
+          identical(attr(get("l84", envir = e)$d$AgeR, "na_values"), -99)
+        d  <- l84$d
+        ok && grepl("\n  jdeclare_missing(d, AgeR, codes = c(-99), modify = TRUE)\n",
+                    .conv84("spss", grab(jrecode(d, Age, map = "1=-99; else=copy"))), fixed = TRUE) }))
+check("N84an the stop it replaces is still there for a call typed by hand: modify = TRUE on a place is refused with the two mydata lines, which the rewrite leaves alone",
+      local({ l84 <- list(d = data.frame(V = c(1, -99)))
+        m <- .conv84("spss", grab(jdeclare_missing(l84$d, V, codes = c(-99), modify = TRUE)))
+        grepl("modify = TRUE can only change a data frame that has a name.", .fl(m), fixed = TRUE) &&
+          grepl("\n  jdeclare_missing(mydata, ..., modify = TRUE)", m, fixed = TRUE) }))
+
+# --- H: the riders, by their units -------------------------------------------
+check("N84ao .jst_udm_row_label(): the bracketed form; \"(no label)\" by default and the value alone on request; NA, an empty string, NULL and a zero-length label are all none",
+      local({ f <- .jst_udm_row_label
+        identical(f("-99", "Refused"), "-99 [\"Refused\"]") &&
+          identical(f(".a", "Skipped", unlabelled = "bare"), ".a [\"Skipped\"]") &&
+          identical(f("-99", NA), "-99 (no label)") && identical(f("-99", ""), "-99 (no label)") &&
+          identical(f("-99", NA, unlabelled = "bare"), "-99") &&
+          identical(f(".a", NULL, unlabelled = "bare"), ".a") &&
+          identical(f(".a", character(0), unlabelled = "bare"), ".a") &&
+          identical(f(-99, "", unlabelled = "bare"), "-99") }))
+check("N84ap .jst_first_typed_marker(): the first marker in map order, then the else target, the NA rule's, the labels'; as typed; NULL when the call names none",
+      local({ f  <- .jst_first_typed_marker
+        pm <- function(m) .jst_parse_map(m)
+        pl <- .jst_parse_labels("1=Low; .B=Refused")
+        identical(f(pm("1=.A; 2=.b; else=.c")), ".A") &&
+          identical(f(pm("1=2; else=.C")), ".C") &&
+          identical(f(pm("NA=.d; 1=2; else=copy")), ".d") &&
+          identical(f(pm("1=2; else=copy"), pl, attr(pl, "tagged_raw", exact = TRUE)), ".B") &&
+          identical(f(pm("1=2; else=copy"), pl, NULL), ".b") &&
+          is.null(f(pm("1=2; else=copy"))) &&
+          is.null(f(pm("1=2; else=copy"), .jst_parse_labels("1=Low"), NULL)) }))
+check("N84aq the range-conflict heads capitalize for a message() caller, as the menu's does; prefixed they are as they were",
+      local({ f <- function(v, p) .jst_choose_convention_error(
+          variant = v, fn = "jdeclare_missing", conv = "stata", fits = TRUE,
+          data_name = "d", var_names = "V", range = c(-99, -51), prefixed = p)
+        startsWith(f("conflict_setting", FALSE), "A missing-value range can exist only under SPSS convention, and your") &&
+          startsWith(f("conflict_call", FALSE), "A missing-value range can exist only under SPSS convention; it cannot") &&
+          startsWith(f("conflict_setting", TRUE), "a missing-value range") &&
+          startsWith(f("conflict_call", TRUE), "a missing-value range") &&
+          identical(sub("^A", "a", f("conflict_call", FALSE)), f("conflict_call", TRUE)) }))
+rm(list = intersect(c("d84", "t84", "u84", "x84", "e84", "e84b", "k84", ".m84d", ".m84g",
+                      ".conv84", ".menu84", ".tags84", ".ltag84", ".tail84", ".rem84"),
+                    ls(all.names = TRUE)))
 
 # N79 (S337) -- NO PREMATURE BREAK, swept over every condition grab() took.
 # jencode_check.R N42 brought to this file (the S291 item): a width CEILING

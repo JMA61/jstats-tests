@@ -142,6 +142,18 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S345 EDIT (v0.9.218, 2026-10-06): P03 RE-PINNED; no check added (440).
+#           The sweep for a count hedged with "(s)" left one message out
+#           by name, the map parser's "Invalid old value(s)". That stop
+#           names the invalid values alone since v0.9.218 (the S287
+#           remainder; missing_convention_check.R N84a-c), so the
+#           carve-out is gone, and P03 now puts the message in front of
+#           the sweep itself (one invalid value, and two). On the 0.9.217
+#           master P03 is red. Sandbox: 440/440 plain and under the
+#           RStudio-handler stand-in, each also with a Windows-length temp
+#           path, and entered dirty.
+#           LAST VERIFIED: v0.9.218 SANDBOX, 2026-10-06 (S345) -- 440/440;
+#           workstation run pending.
 # S343 EDIT (v0.9.217, 2026-10-06): SECTION T ADDED (T01-T11, 11 checks),
 #           the lean-free cut of Fix Slate 5; nothing else changed. The
 #           S338 not-found sentence at the four sites that built an older
@@ -3771,17 +3783,19 @@ if (length(.ub) > 0L) for (l in .ub) cat("        does not parse: ", l, "\n")
 
 # P03 (S338) -- NO MESSAGE HEDGES A COUNT. Every condition grab() took, at
 # any width, is read for a noun carrying "(s)", "(es)" or "(ies)" -- the
-# shortcut the S287 item removed from eleven runtime strings. One site keeps
-# it on purpose and is left out: the map parser's "Invalid old value(s)",
-# which quotes a rule's whole left-hand side and has no count to agree with.
-# The count is a floor.
-.ps <- Filter(function(s) {
-  grepl("[A-Za-z]\\((s|es|ies)\\)", s$text) &&
-    !grepl("Invalid old value(s)", s$text, fixed = TRUE)
-}, .seen)
-check(paste0("P03 no message hedges a count with (s) or (ies) (", length(.seen),
-             " conditions)"),
-      length(.seen) >= 300L && length(.ps) == 0L)
+# shortcut the S287 item removed from eleven runtime strings. The twelfth,
+# the map parser's "Invalid old value(s)", kept it until v0.9.218 and was
+# left out of this sweep by name; it names the invalid values alone now
+# (S345), so the carve-out is gone and its message is put in front of the
+# sweep here (missing_convention_check.R N84a-c pin its text). The count is
+# a floor.
+.g_p03 <- c(grab(jrecode(d, Age, map = "1, abc = 9; else=copy")),
+            grab(jrecode(d, Age, map = "1, abc, x y = 9; else=copy")))
+.ps <- Filter(function(s) grepl("[A-Za-z]\\((s|es|ies)\\)", s$text), .seen)
+check(paste0("P03 no message hedges a count with (s) or (ies), the map parser's among them (",
+             length(.seen), " conditions)"),
+      length(.seen) >= 300L && length(.ps) == 0L &&
+        all(grepl("Invalid old value", .g_p03, fixed = TRUE)))
 if (length(.ps) > 0L) for (s in .ps) cat("        hedged: ", s$text, "\n")
 
 # --- Verdict -----------------------------------------------------------------

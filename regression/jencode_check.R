@@ -16,7 +16,74 @@
 #           map must quote (N45), and the reminder and offered calls when
 #           an expression is given as the data, in jrecode(), jencode(),
 #           jsum() and javg() (N46).
+#           Since S345 (N47): the absent-word note beside an else sweep,
+#           every call automatic mode offers run on a variable with blank
+#           cells or declared missing strings, the two "declare it" notes
+#           with no convention selected, and the declaration line a place
+#           is offered.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S345 EDIT (v0.9.218, 2026-10-06): Fix Slate 5, the second cut. NEW N47
+#           section, 19 checks (N47a-s), in four parts. (1) N47a-f, the
+#           S304 item: a map word the data do not hold, beside an else
+#           rule that swept a data word, is noted at every level under
+#           the sweep note (pinned whole), once only at the full level,
+#           with the strict error's capitalization line; alone, or with an
+#           else rule that swept only blank cells, it stays advisory.
+#           (2) N47g-m, the S343 item: every map automatic mode offers
+#           names the blank cells and the declared missing strings, each
+#           offered call RUN as printed (the first reproduces the
+#           automatic result); and the packer counts the closing quote and
+#           parenthesis, a fault the longer maps surfaced (a last rule
+#           that only just fit made a line of 77 or 78, which the emitter
+#           broke again at another indent). (3) N47n-q, the S251 item:
+#           the NA rule's note and the face-value note carry the
+#           choose-first menu when no convention is selected (pinned), are
+#           as they were under each of the three, and the advice is true
+#           in both states. (4) N47r-s, the S343 item: a place given as
+#           the data gets the assignment form in the offered declaration
+#           line, which runs; a name keeps modify = TRUE.
+#           RE-PINNED: N27 (the nudge's remedy is "Then declare" here);
+#           N44b (the first offered map now sends each declared string to
+#           NA, and the call is run); N44e (takes the second offered call
+#           through .offered()). SETUP: the missing-value convention is
+#           FORCED UNSET and restored at the foot, since two notes' text
+#           now depends on it. .offered(), .runs() and .same() moved from
+#           N45 up into the harness, above N44, their first caller. The
+#           N47 checks' bodies run in local(), so a check that fails
+#           leaves nothing in the workspace for the next battery to read
+#           (the first mutant round red models_check.R K24 on every
+#           mutant for that reason alone). ONE HUNDRED AND ELEVEN checks.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 111/111
+#           plain and under the RStudio-handler stand-in, each also with a
+#           Windows-length temp path, and entered dirty (joutput("full"),
+#           width 110, a juse() default, a stata convention, jstats.color
+#           = TRUE, with and without workspace objects named like fixture
+#           variables): nothing left but .results, the session handed
+#           back.
+#           On the 0.9.217 master 15 red: N27, N44b, N47a-c, N47g-j,
+#           N47l-o, N47r-s. Controls, on no mutant's list by design: N47f
+#           (the values do not depend on a note's level), N47k (a variable
+#           with neither kind of cell is offered the numbering alone),
+#           N47q (the advice is true in each state).
+#           MUTATION MAP (S345; 59 one-change mutants, every one red;
+#           those that red here). The absent-word note never raised N47a
+#           b c; raised by any else rule, or with none, N47d e; the
+#           capitalization line dropped, or compared case-sensitively,
+#           N47c; the note printed as well as collected N47b; placed
+#           ahead of the sweep note N47a c. Automatic mode's first call
+#           without the blank rule N47g h i j l, without the declared
+#           strings N44b N47i j l; the blank note's call without the
+#           declared strings N47i j l; the declared note's call without
+#           the blank rule N47i j; the first call's blank rule giving a
+#           category N47g h i j. The packer not counting the closing two
+#           characters N47i l m. The gate lead always NULL N27 N47n o;
+#           ignoring the convention N47p; jencode()'s NA-rule note
+#           without it N47n; the face-value note without it N27 N47o.
+#           The place rewrite switched off N47r s; a name rewritten too
+#           N45b N46a e N47b c s (and 46 checks of
+#           missing_convention_check.R).
+#           LAST VERIFIED: v0.9.218 SANDBOX, 2026-10-06 (S345) -- 111/111;
+#           workstation run pending.
 # S343 EDIT (v0.9.217, 2026-10-06): the lean-free cut of Fix Slate 5.
 #           N45a-j NEW (10 checks; the S249 item and what it rested on):
 #           automatic mode's offered map built from RENDERED words, so a
@@ -203,6 +270,14 @@ stopifnot(exists("jload", mode = "function"))
 # removes tdat, which would leave the default naming a frame that is gone.
 .entry_default_data  <- getOption(".jst_default_data")
 
+# And the missing-value convention (S345): FORCED UNSET as well as recorded.
+# Since v0.9.218 a note that says "declare it" carries the choose-first menu
+# when no convention is selected, so its text depends on the setting; N27 and
+# N47 read the unset form. Until then no check here read the setting, and a
+# session entered with one set gave the same 92 greens.
+.entry_convention <- getOption(".jst_options_missing_convention")
+options(.jst_options_missing_convention = NULL)
+
 # Load what THIS file needs from the standing test-data folder -- jload(),
 # never readRDS(); absolute path per JStats_Testing_File_Conventions.txt.
 jload("E:/00 R Projects/00_jstats_test_data/datasets/text_columns_data.rds",
@@ -266,6 +341,35 @@ flat <- function(x) gsub("[[:space:]]+", " ", x)
 quiet <- function(expr) {
   withCallingHandlers(expr,
     message = function(m) invokeRestart("muffleMessage"))
+}
+
+# .offered(): every call a message offers of the form "  <x> <- fn(", each
+# taken whole (a call packed over several lines is joined until it parses);
+# a pattern line holding <name> is left out. .runs(): evaluate one of them
+# in an environment, TRUE when it ran. .same(): two encoded vectors alike in
+# values and value labels. Written for N45 at S343 (offered lines are RUN,
+# never read: the S303 rule); moved up here at S345, when N44 became their
+# first caller.
+.offered <- function(txt, fn = "jencode") {
+  ln <- strsplit(txt, "\n", fixed = TRUE)[[1]]
+  i  <- grep(paste0("^  \\S+ <- ", fn, "\\("), ln)
+  i  <- i[!grepl("<name>", ln[i], fixed = TRUE)]
+  lapply(i, function(s) {
+    j <- s; code <- ln[j]
+    while (inherits(try(parse(text = code), silent = TRUE), "try-error") &&
+           j < length(ln)) {
+      j <- j + 1L; code <- paste(code, ln[j], sep = "\n")
+    }
+    code
+  })
+}
+.runs <- function(code, env) {
+  tryCatch({ suppressMessages(eval(parse(text = code), env)); TRUE },
+           error = function(e) FALSE)
+}
+.same <- function(x, y) {
+  identical(as.numeric(unclass(x)), as.numeric(unclass(y))) &&
+    identical(labelled::val_labels(x), labelled::val_labels(y))
 }
 
 # --- N01-N02: fixture shape --------------------------------------------------
@@ -440,7 +544,9 @@ check("N27 word-evidence -99 nudge fires and CITES its evidence (S238)",
             flat(g_rep), fixed = TRUE) &&
       grepl("the column also contained the word \"Refused\"", flat(g_rep),
             fixed = TRUE) &&
-      grepl("Declare -99 with jdeclare_missing()", g_rep, fixed = TRUE))
+      # S345: with no convention selected the remedy follows the menu
+      # ("Then declare"); N47k-m hold both forms.
+      grepl("\nThen declare -99 with jdeclare_missing()", g_rep, fixed = TRUE))
 
 neg_ctrl <- data.frame(V = c("1", "2", "3", "-5", "Other", "2"),
                        stringsAsFactors = FALSE)
@@ -731,10 +837,16 @@ e44$Pl <- haven::labelled(rep(c("Low", "High"), 5), labels = c(Lo = "Low"))
 check("N44a automatic mode: a declared missing string is not numbered; its cells are NA and the words keep their numbers",
       identical(as.numeric(unclass(.r44)), c(NA, 1, 2, 1, NA, 2, 1, 2, NA, 2)) &&
         identical(names(attr(.r44, "labels")), c("Married", "Single")))
-check("N44b ... the listing and its suggested map leave the declared strings out",
+# S345: the suggested map NAMES the declared strings, each sent to NA. Until
+# 0.9.218 it left them out, and the call it offered stopped ("contains words
+# not in the map"): in map mode a declared string is a word like any other.
+check("N44b ... the listing leaves the declared strings out, and the suggested map sends each to NA, so the call runs",
       grepl("  \"Married\" -> 1\n  \"Single\"  -> 2\nIf these", .g44, fixed = TRUE) &&
-        grepl("  e44$MSR <- jencode(e44, MS, map = \"Married=1; Single=2\")\n\n",
-              .g44, fixed = TRUE))
+        grepl(paste0("  e44$MSR <- jencode(e44, MS,\n",
+                     "                     map = \"Married=1; Single=2; REF=NA; UNKNOWN=NA\")\n\n"),
+              .g44, fixed = TRUE) &&
+        { e <- new.env(parent = globalenv()); assign("e44", e44, envir = e)
+          .runs(.offered(.g44)[[1]], e) && .same(get("e44", envir = e)$MSR, .r44) })
 check("N44c ... and the note says how many cells, which values, that the two strings will share one missing value, and gives the map that keeps them declared (pinned whole)",
       grepl(paste0(
         "\n\nNote: 3 cells in 'MS' holding a declared missing value (\"REF\", \"UNKNOWN\")\n",
@@ -764,10 +876,11 @@ check("N44e the map the note offers runs, and the cells come back declared missi
       { .c44 <- getOption(".jst_options_missing_convention")
         options(.jst_options_missing_convention = "spss")
         e <- new.env(parent = globalenv()); assign("e44", e44, envir = e)
-        ln <- strsplit(.g44, "\n", fixed = TRUE)[[1]]
-        i  <- grep("^  e44\\$MSR <- jencode\\(e44, MS,$", ln)
+        # S345: the note's call is the SECOND the output offers (the first,
+        # under the listing, now spans three lines too); .offered() takes
+        # each whole.
         ok <- tryCatch({
-          suppressMessages(eval(parse(text = paste(ln[i:(i + 2L)], collapse = "\n")), e))
+          suppressMessages(eval(parse(text = .offered(.g44)[[2]]), e))
           x <- get("e44", envir = e)$MSR
           identical(attr(x, "na_values"), -99) &&
             identical(as.numeric(unclass(x)), c(-99, 1, 2, 1, -99, 2, 1, 2, -99, 2))
@@ -817,27 +930,8 @@ rm(e44, .g44, .r44)
 # the S303 rule) and held to the automatic result. Category names begin
 # with different letters so that the listing's order is the same in every
 # locale; where a fixture mixes case (Kw) nothing asserts an order.
-.offered <- function(txt, fn = "jencode") {
-  ln <- strsplit(txt, "\n", fixed = TRUE)[[1]]
-  i  <- grep(paste0("^  \\S+ <- ", fn, "\\("), ln)
-  i  <- i[!grepl("<name>", ln[i], fixed = TRUE)]
-  lapply(i, function(s) {
-    j <- s; code <- ln[j]
-    while (inherits(try(parse(text = code), silent = TRUE), "try-error") &&
-           j < length(ln)) {
-      j <- j + 1L; code <- paste(code, ln[j], sep = "\n")
-    }
-    code
-  })
-}
-.runs <- function(code, env) {
-  tryCatch({ suppressMessages(eval(parse(text = code), env)); TRUE },
-           error = function(e) FALSE)
-}
-.same <- function(x, y) {
-  identical(as.numeric(unclass(x)), as.numeric(unclass(y))) &&
-    identical(labelled::val_labels(x), labelled::val_labels(y))
-}
+# (.offered(), .runs() and .same() are in the harness since S345: N44 uses
+# them, and a helper is defined above every use.)
 q45 <- data.frame(
   Why = rep(c("Don't know", "Moved away, address unknown", "No answer",
               "Other = see notes", "Refused",
@@ -1034,12 +1128,244 @@ check("N46n ... a place and a name keep the one line they had, in both",
           grepl("to keep them:\n  tdat$<name> <- jsum(...)\nFor the full", grab(jsum(id, id)), fixed = TRUE) })
 rm(q45, .g45, .a45, .k45, .b45, .l45, mk46, lst46, .g46, .r46, .s46)
 
+# --- N47a-N47s: Fix Slate 5, the second cut (S345, v0.9.218) -----------------
+# Four things on jencode()'s surface.
+# (1) THE ABSENT-WORD NOTE (the S304 item). A map word the data do not hold
+#     is legitimate alone -- a category no case has yet -- and its note is
+#     advisory (the full level only). Beside an else rule that swept a data
+#     word in the same call it is the signature of a mistyped map word:
+#     "Parol=2; else=NA" sends every Parole to missing. There the note is
+#     now consequential and sits under the sweep note it explains, with the
+#     strict error's own line when the two words differ only in case.
+# (2) AUTOMATIC MODE'S OFFERED CALLS RUN (the S343 item). A map must account
+#     for every cell, so the numbering alone stopped on a variable with
+#     blank cells or declared missing strings. Each offered map now carries
+#     the rule that leaves them missing (NA: no convention needed). Every
+#     offered call is RUN as printed.
+# (3) "DECLARE IT" UNDER NO CONVENTION (the S251 item). jdeclare_missing()
+#     stops at the choose-first gate there, so the two notes that close on
+#     that advice carry the gate's menu first, as the D1 note has since S250.
+# (4) A PLACE IN AN OFFERED modify = TRUE LINE (the S343 item).
+#     jdeclare_missing(lst$d, ..., modify = TRUE) stops; the line a place is
+#     offered is the assignment form, and it runs.
+.rem47 <- function(nm) paste0(
+  "\n\nNote: This call changes ", nm, " only if you assign the result:\n",
+  "  ", nm, "$<name> <- jencode(...)\n",
+  "To check the encoding landed correctly, compare jfreq() on the original and\n",
+  "the new column.\n")
+.menu47 <- paste0(
+  "No missing-value convention is selected, so the value cannot be\n",
+  "declared yet.\n",
+  "Choose one for this session:\n",
+  "  joptions(missing.convention = \"stata\")\n",
+  "      Lowercase markers behave as true NAs in base R.\n",
+  "      Recommended if you also run base R or AI-generated code.\n",
+  "  joptions(missing.convention = \"spss\")\n",
+  "      Codes stay visible numbers; jstats treats them as missing.\n",
+  "      Base R does not.\n",
+  "  joptions(missing.convention = \"sas\")\n",
+  "      Like Stata, with uppercase markers (.A-.Z).\n",
+  "To make the choice permanent, put the same line in your .Rprofile.\n")
+.at47 <- function(level, expr) {
+  lv <- getOption(".jst_output_level"); options(.jst_output_level = level)
+  on.exit(options(.jst_output_level = lv), add = TRUE)
+  grab(expr)
+}
+.conv47 <- function(cv, expr) {
+  old <- getOption(".jst_options_missing_convention")
+  options(.jst_options_missing_convention = cv)
+  on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+  force(expr)
+}
+
+# (1) ---------------------------------------------------------------------------
+s47 <- data.frame(s = c(rep("Bail", 3), rep("Parole", 4), rep("Remand", 3)),
+                  stringsAsFactors = FALSE)
+.g47a <- grab(jencode(s47, s, map = "Bail=1; Parol=2; Remand=3; else=NA"))
+check("N47a a map word the data lack, beside an else rule that swept a data word: the note shows at the standard level, under the sweep note (pinned whole)",
+      identical(.g47a, paste0(
+        "Note: else=NA converted 1 unmapped word (4 cells) in 's' to missing (NA).\n",
+        "The unmapped word was \"Parole\".\n\n",
+        "Note: 's' contained none of these map words -- nothing was encoded for them:\n",
+        "  \"Parol\"", .rem47("s47"))))
+check("N47b ... at the minimal level too, and once only at the full level",
+      local({ mn <- .at47("minimal", jencode(s47, s, map = "Bail=1; Parol=2; Remand=3; else=NA"))
+        fl <- .at47("full", jencode(s47, s, map = "Bail=1; Parol=2; Remand=3; else=NA"))
+        hit <- function(x) lengths(regmatches(x, gregexpr("contained none of these map words", x, fixed = TRUE)))
+        hit(mn) == 1L && hit(fl) == 1L && identical(fl, .g47a) }))
+check("N47c the swept word and the absent word differing only in capitalization: the strict error's line follows the words (pinned)",
+      grepl(paste0(
+        "\n\nNote: 's' contained none of these map words -- nothing was encoded for them:\n",
+        "  \"bail\"\n",
+        "\"Bail\" differs from the map's \"bail\" only in capitalization -- matching\n",
+        "is case-sensitive.\n\n",
+        "Note: This call changes s47 only"),
+        grab(jencode(s47, s, map = "bail=1; Parole=2; Remand=3; else=NA")), fixed = TRUE))
+check("N47d alone the note stays advisory: no else rule, or an else rule that swept no word -- absent at the standard level, present at the full level",
+      local({ m1 <- "Bail=1; Parole=2; Remand=3; Other=4"
+        m2 <- "Bail=1; Parole=2; Remand=3; Other=4; else=NA"
+        !grepl("contained none", grab(jencode(s47, s, map = m1)), fixed = TRUE) &&
+          !grepl("contained none", grab(jencode(s47, s, map = m2)), fixed = TRUE) &&
+          grepl("contained none of these map words", .at47("full", jencode(s47, s, map = m1)), fixed = TRUE) &&
+          grepl("contained none of these map words", .at47("full", jencode(s47, s, map = m2)), fixed = TRUE) }))
+check("N47e an else rule that swept only BLANK cells is not a swept word: still advisory, and at the full level the note leads as it did",
+      local({ b <- data.frame(s = c("Bail", "Parole", "", " "), stringsAsFactors = FALSE)
+        m <- "Bail=1; Parole=2; Other=4; else=NA"
+        st <- grab(jencode(b, s, map = m)); fl <- .at47("full", jencode(b, s, map = m))
+        !grepl("contained none", st, fixed = TRUE) &&
+          grepl("else=NA converted 2 blank cells in 's' to missing (NA).", st, fixed = TRUE) &&
+          startsWith(fl, "Note: 's' contained none of these map words") }))
+check("N47f the encoded values are what they were: the level of a note changes nothing in the result",
+      identical(as.numeric(unclass(quiet(jencode(s47, s, map = "Bail=1; Parol=2; Remand=3; else=NA")))),
+                c(1, 1, 1, NA, NA, NA, NA, 3, 3, 3)))
+
+# (2) ---------------------------------------------------------------------------
+b47 <- data.frame(w = c("yes", "no", "", "yes", " ", "maybe", "no"),
+                  stringsAsFactors = FALSE)
+.g47g <- grab(.r47g <- jencode(b47, w))
+check("N47g blank cells: the first offered map ends in blank=NA, the blank note's in blank=0 (both lines pinned)",
+      grepl("\na map to choose the numbers:\n  b47$wR <- jencode(b47, w, map = \"maybe=1; no=2; yes=3; blank=NA\")\n\n",
+            .g47g, fixed = TRUE) &&
+        grepl("naming them:\n  b47$wR <- jencode(b47, w, map = \"maybe=1; no=2; yes=3; blank=0\")\n\n",
+              .g47g, fixed = TRUE))
+check("N47h ... and both run as printed: the first gives the automatic result, the second the blanks their own category",
+      local({ o  <- .offered(.g47g)
+        e1 <- new.env(parent = globalenv()); assign("b47", b47, envir = e1)
+        e2 <- new.env(parent = globalenv()); assign("b47", b47, envir = e2)
+        length(o) == 2L && .runs(o[[1]], e1) && .runs(o[[2]], e2) &&
+          .same(get("b47", envir = e1)$wR, .r47g) &&
+          identical(as.numeric(unclass(get("b47", envir = e2)$wR)), c(3, 2, 0, 3, 0, 1, 2)) }))
+m47 <- data.frame(id = 1:8)
+m47$MS <- haven::labelled_spss(
+  c("UNKNOWN", "Married", "Single", "", "Married", "REF", "Single", " "),
+  labels = c(Refused = "REF"), na_values = c("UNKNOWN", "REF"))
+.g47i <- grab(.r47i <- jencode(m47, MS))
+check("N47i declared missing strings AND blank cells: three offered calls, each naming both kinds, each packed within the width (pinned whole)",
+      identical(.g47i, paste0(
+        "Note: 'MS' was encoded alphabetically:\n",
+        "  \"Married\" -> 1\n",
+        "  \"Single\"  -> 2\n",
+        "If these categories have a natural order (like Low/Medium/High), rerun with\n",
+        "a map to choose the numbers:\n",
+        "  m47$MSR <- jencode(m47, MS,\n",
+        "                     map = \"Married=1; Single=2; REF=NA; UNKNOWN=NA;\n",
+        "                           blank=NA\")\n\n",
+        "Note: 2 cells in 'MS' holding a declared missing value (\"REF\", \"UNKNOWN\")\n",
+        "were left missing (NA).\n",
+        "To keep them declared, as one missing value, rerun with a map sending those\n",
+        "values to missing:\n",
+        "  m47$MSR <- jencode(m47, MS,\n",
+        "                     map = \"Married=1; Single=2; REF=missing;\n",
+        "                           UNKNOWN=missing; blank=NA\")\n\n",
+        "Note: 2 blank cells in 'MS' were left missing (NA).\n",
+        "To give blank cells their own category, rerun with a map naming them:\n",
+        "  m47$MSR <- jencode(m47, MS,\n",
+        "                     map = \"Married=1; Single=2; REF=NA; UNKNOWN=NA;\n",
+        "                           blank=0\")", .rem47("m47"))))
+check("N47j ... and all three run as printed (the second under a convention, which the missing token needs): automatic result; declared cells declared; blanks a category",
+      local({ o  <- .offered(.g47i)
+        ev <- lapply(1:3, function(i) {
+          e <- new.env(parent = globalenv()); assign("m47", m47, envir = e); e })
+        ok <- length(o) == 3L && .runs(o[[1]], ev[[1]]) &&
+          .conv47("spss", .runs(o[[2]], ev[[2]])) && .runs(o[[3]], ev[[3]])
+        ok && .same(get("m47", envir = ev[[1]])$MSR, .r47i) &&
+          identical(as.numeric(unclass(get("m47", envir = ev[[2]])$MSR)),
+                    c(-99, 1, 2, NA, 1, -99, 2, NA)) &&
+          identical(attr(get("m47", envir = ev[[2]])$MSR, "na_values"), -99) &&
+          identical(as.numeric(unclass(get("m47", envir = ev[[3]])$MSR)),
+                    c(NA, 1, 2, 0, 1, NA, 2, 0)) }))
+check("N47k control: a variable with neither blank cells nor declared strings is offered the numbering alone, as before",
+      grepl("  tdat$StatusR <- jencode(tdat, Status, map = \"Bail=1; Parole=2; Remand=3\")\n", g_auto, fixed = TRUE) &&
+        !grepl("=NA", g_auto, fixed = TRUE))
+check("N47l the packer counts the closing quote and parenthesis: no offered line passes the width, and a map's second line sits six columns right of \"map\", never under it",
+      local({ ln   <- unlist(strsplit(c(.g47g, .g47i), "\n", fixed = TRUE))
+        ind  <- function(x) nchar(x) - nchar(sub("^ +", "", x))
+        i    <- grep("^ +map = \"", ln)
+        open <- i[!grepl("\"\\)$", ln[i])]          # a map that runs on
+        !any(nchar(ln) > .pin_width) && length(open) == 3L &&
+          all(ind(ln[open + 1L]) == ind(ln[open]) + 6L) &&
+          all(grepl("\"\\)$", ln[open + 1L])) }))
+check("N47m the packer by its unit: a last rule that fits only without the closing two characters goes to the next line (it made a line of 77 or 78)",
+      local({ mk <- function(n) .jst_jencode_map_call("d", "v", paste0(strrep("a", n), "=1; bb=2; cc=3"))
+        w  <- vapply(18:44, function(n) max(nchar(strsplit(mk(n), "\n", fixed = TRUE)[[1]])), integer(1))
+        all(w <= 76L) && sum(w == 76L) >= 3L }))
+
+# (3) ---------------------------------------------------------------------------
+n47 <- data.frame(w = c("Yes", "No", NA, "Yes", "No", "Yes"),
+                  n = c("1", "2", "-99", "2", "1", "3"), stringsAsFactors = FALSE)
+check("N47n the NA rule's note with no convention selected: the choose-first menu, then the remedy (pinned whole)",
+      identical(grab(jencode(n47, w, map = "Yes=1; No=0; NA=-98")), paste0(
+        "Note: 1 NA value in 'w' was encoded as -98.\n", .menu47,
+        "Then declare -98 with jdeclare_missing() so analyses exclude it.",
+        .rem47("n47"))))
+check("N47o ... and the face-value note (pinned from the note's head to the reminder)",
+      grepl(paste0(
+        "\n\nNote: -99 in 'n' looks like a coded missing value.\n", .menu47,
+        "Then declare -99 with jdeclare_missing() so analyses exclude it.\n\n",
+        "Note: This call changes n47 only"), grab(jencode(n47, n)), fixed = TRUE))
+check("N47p under each convention both notes are as they were: one remedy sentence, no menu",
+      all(vapply(c("spss", "stata", "sas"), function(cv) .conv47(cv, {
+        a <- grab(jencode(n47, w, map = "Yes=1; No=0; NA=-98"))
+        b <- grab(jencode(n47, n))
+        identical(a, paste0("Note: 1 NA value in 'w' was encoded as -98.\n",
+                            "Declare -98 with jdeclare_missing() so analyses exclude it.",
+                            .rem47("n47"))) &&
+          grepl("looks like a coded missing value.\nDeclare -99 with jdeclare_missing() so analyses exclude it.\n\n",
+                b, fixed = TRUE) &&
+          !grepl("Choose one", paste(a, b), fixed = TRUE) }), logical(1))))
+check("N47q the advice is true in each state: with none selected jdeclare_missing() stops at the gate, and after a menu line is run it declares",
+      local({ d <- n47; d$wR <- quiet(jencode(n47, w, map = "Yes=1; No=0; NA=-98"))
+        gate <- grab(jdeclare_missing(d, wR, codes = c(-98)))
+        ln   <- strsplit(.menu47, "\n", fixed = TRUE)[[1]]
+        ln   <- trimws(ln[grepl("^  joptions\\(", ln)])
+        ok <- grepl("no missing-value convention is selected", gate, fixed = TRUE) &&
+          length(ln) == 3L &&
+          all(vapply(ln, function(l) {
+            old <- getOption(".jst_options_missing_convention")
+            on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+            suppressMessages(utils::capture.output(eval(parse(text = l))))
+            r <- suppressMessages(utils::capture.output(
+              o <- jdeclare_missing(d, wR, codes = c(-98))))
+            sum(is.na(as.numeric(unclass(o$wR))) |
+                  as.numeric(unclass(o$wR)) %in% attr(o$wR, "na_values")) == 1L
+          }, logical(1)))
+        ok && is.null(getOption(".jst_options_missing_convention")) }))
+
+# (4) ---------------------------------------------------------------------------
+l47 <- list(d = data.frame(w = c("Yes", "No", "Refused", "Yes", "No", "Yes", "No", "Yes"),
+                           stringsAsFactors = FALSE))
+.g47r <- .conv47("spss", grab(jencode(l47$d, w, map = "Yes=1; No=0; Refused=-99")))
+check("N47r a place given as the data: the declaration line is the assignment form, with no modify = TRUE (pinned)",
+      grepl(paste0(
+        "Or declare -99 as missing on the encoded variable:\n",
+        "  l47$d$wR <- jencode(l47$d, w, map = \"Yes=1; No=0; Refused=-99\")\n",
+        "  l47$d <- jdeclare_missing(l47$d, wR, codes = c(-99))\n\n"), .g47r, fixed = TRUE) &&
+        !grepl("modify = TRUE", .g47r, fixed = TRUE))
+check("N47s ... and the pair runs as printed and declares -99 on the place; a name keeps its modify = TRUE line, which runs too",
+      local({ ln <- strsplit(.g47r, "\n", fixed = TRUE)[[1]]
+        i  <- grep("^Or declare -99 as missing", ln)
+        e  <- new.env(parent = globalenv()); assign("l47", l47, envir = e)
+        ok1 <- .conv47("spss", .runs(ln[i + 1L], e) && .runs(ln[i + 2L], e)) &&
+          identical(attr(get("l47", envir = e)$d$wR, "na_values"), -99)
+        d47 <- l47$d
+        g   <- .conv47("spss", grab(jencode(d47, w, map = "Yes=1; No=0; Refused=-99")))
+        ln2 <- strsplit(g, "\n", fixed = TRUE)[[1]]
+        j   <- grep("^Or declare -99 as missing", ln2)
+        e2  <- new.env(parent = globalenv()); assign("d47", d47, envir = e2)
+        ok1 && identical(ln2[j + 2L], "  jdeclare_missing(d47, wR, codes = c(-99), modify = TRUE)") &&
+          .conv47("spss", .runs(ln2[j + 1L], e2) && .runs(ln2[j + 2L], e2)) &&
+          identical(attr(get("d47", envir = e2)$wR, "na_values"), -99) }))
+rm(list = intersect(c("s47", "b47", "m47", "n47", "l47", ".g47a", ".g47g", ".r47g",
+                      ".g47i", ".r47i", ".g47r", ".rem47", ".menu47", ".at47", ".conv47"),
+                    ls(all.names = TRUE)))
+
 # --- Restore session state ---------------------------------------------------
 # Placed ABOVE the verdict so a failing run still leaves the session clean.
 
 options(.jst_options_message_width = .entry_message_width)
 options(.jst_output_level = .entry_output_level)
 options(.jst_default_data = .entry_default_data)
+options(.jst_options_missing_convention = .entry_convention)
 
 # --- Verdict -----------------------------------------------------------------
 

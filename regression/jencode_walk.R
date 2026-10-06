@@ -2,7 +2,7 @@
 # jencode_walk.R -- visual walkthrough for jencode() (E12 completion)
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # TYPE:     visual walkthrough (Expected comments; written for Jeff's checking)
-# PENDING:  none
+# PENDING:  2, 5, 9, 12-14 (S345, v0.9.218)
 # LOCKS:    the LOOK of jencode()'s message surface after the S238 completion
 #           pass: the alphabetical listing, the blank / trim / face-value
 #           notes, the word-evidence -99 nudge, M4/M5/M10 naming, the S238
@@ -19,7 +19,38 @@
 #           categories a map must quote (a semicolon, a comma, an equals
 #           sign, a keyword's name), and the reminder and offered calls
 #           when an expression is given as the data.
+#           Since S345 (Sections 12-14): a map word the data do not hold
+#           beside an else sweep, "declare it" with no convention
+#           selected, and the declaration line a place is offered.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S345 EDIT (v0.9.218, 2026-10-06): Fix Slate 5, the second cut. SECTIONS
+#           2, 5 AND 9 RE-PINNED; SECTIONS 12, 13 AND 14 ADDED.
+#           Section 2: the map under the listing ends in "blank=NA" (the
+#           call it offered stopped on the blank cells); its Expected is
+#           widened from the blank note to the statement's whole output.
+#           Section 5: the -99 nudge carries the choose-first menu, since
+#           this file runs with no convention selected; the block is the
+#           statement's whole output, and the S251 note under it, which
+#           had logged the fault, now says it is fixed. Section 9: the
+#           first offered map names the two declared strings, each sent
+#           to NA. Section 12, three renders: a mistyped map word hidden
+#           by an else rule (the note that names it now shows under the
+#           sweep note), the same by capitalization, and a word labeled
+#           ahead of time (silence, on purpose). Section 13, three
+#           renders: the NA rule's note with no convention, the same
+#           after a menu line is run, and the declaration it names.
+#           Section 14, three renders: jencode()'s pair on a place (the
+#           assignment form), the pair run, and jfreq() of the result.
+#           Inline fixtures, removed at the foot of each section; a
+#           convention a section sets is cleared there. All twelve new or
+#           moved Expected blocks FILLED BY RUNNING the file on the
+#           0.9.218 build (fill.R; "#@SKIP", new this session, drops a
+#           statement's output from the next block). A capture of every
+#           section on the 0.9.217 and 0.9.218 builds differs in Sections
+#           2, 5 and 9 alone. No section needs another (harness.R: 14 of
+#           14). The human half of jencode_check.R N47 and N44b.
+#           LAST VERIFIED: v0.9.218 SANDBOX, 2026-10-06 (S345); the
+#           PENDING line names what Jeff walks.
 # S343 EDIT (v0.9.217, 2026-10-06): SECTIONS 10 AND 11 ADDED, for the cut
 #           of Fix Slate 5. Section 10, four renders: automatic mode on
 #           categories holding a comma, an equals sign and a semicolon
@@ -296,11 +327,38 @@ jfreq(tdat, StatusR)
 
 tdat$OutcomeR <- jencode(tdat, Outcome)
 
-# Expected (exact, after the alphabetical listing):
+# Expected:
+#   Note: 'Outcome' was encoded alphabetically:
+#     "No reoffence" -> 1
+#     "Reoffended"   -> 2
+#   If these categories have a natural order (like Low/Medium/High), rerun with
+#   a map to choose the numbers:
+#     tdat$OutcomeR <- jencode(tdat, Outcome,
+#                              map = "No reoffence=1; Reoffended=2; blank=NA")
+#
 #   Note: 6 blank cells in 'Outcome' were left missing (NA).
 #   To give blank cells their own category, rerun with a map naming them:
 #     tdat$OutcomeR <- jencode(tdat, Outcome,
 #                              map = "No reoffence=1; Reoffended=2; blank=0")
+#
+#   Note: This call changes tdat only if you assign the result:
+#     tdat$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+#
+# RE-PINNED S345 (v0.9.218), and widened from the blank note alone to the
+# whole output, because the line that moved is in the listing's note: the
+# map it offers now ends in "blank=NA". Until this build it stopped at
+# "Reoffended=2", and that call, pasted, STOPPED -- "'Outcome' contains 6
+# blank cells that are not in the map" -- since a map must account for
+# every cell. The blank rule it carries leaves the cells missing, as
+# automatic mode itself left them (NA needs no convention). The blank
+# note's own call, the second, is as it was.
+#
+# Things to look at (S345):
+#   - two calls now differ only at their last rule, blank=NA and blank=0.
+#     Does the first read as "what automatic mode did", or does blank=NA
+#     under "choose the numbers" need a word of its own?
 
 tdat$OutcomeM <- jencode(tdat, Outcome,
                          map = "Reoffended=1; No reoffence=0; blank=-99")
@@ -470,17 +528,44 @@ tdat$Age <- jencode(tdat, AgeText)
 
 tdat$AgeRel <- jencode(tdat, AgeAtRelease, map = "else=NA")
 
-# Expected (exact):
+# Expected:
 #   Note: 70 values in 'AgeAtRelease' stored as text were kept at their own
 #   value ("71" -> 71, never renumbered).
 #
 #   Note: -99 in 'AgeAtRelease' looks like a coded missing value; the column
 #   also contained the word "Refused".
-#   Declare -99 with jdeclare_missing() so analyses exclude it.
+#   No missing-value convention is selected, so the value cannot be
+#   declared yet.
+#   Choose one for this session:
+#     joptions(missing.convention = "stata")
+#         Lowercase markers behave as true NAs in base R.
+#         Recommended if you also run base R or AI-generated code.
+#     joptions(missing.convention = "spss")
+#         Codes stay visible numbers; jstats treats them as missing.
+#         Base R does not.
+#     joptions(missing.convention = "sas")
+#         Like Stata, with uppercase markers (.A-.Z).
+#   To make the choice permanent, put the same line in your .Rprofile.
+#   Then declare -99 with jdeclare_missing() so analyses exclude it.
 #
 #   Note: else=NA converted 2 unmapped words (7 cells) and 3 blank cells in
 #   'AgeAtRelease' to missing (NA).
 #   The unmapped words were "Not stated" and "Refused".
+#
+#   Note: This call changes tdat only if you assign the result:
+#     tdat$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+#
+# RE-PINNED S345 (v0.9.218): the second note. It closed on one line,
+# "Declare -99 with jdeclare_missing() so analyses exclude it.", and with
+# no convention selected -- the state this file forces -- that call stops
+# at the choose-first gate, so the note sent the reader to a second
+# message (the S251 item, which this section's own notes carried since
+# then). It now holds the gate's menu and then the remedy, the form the D1
+# note has had since S250 (Section 7). Under a convention the note is the
+# two lines it was. The block is now the statement's WHOLE output, the
+# reminder included.
 #
 # RE-PINNED S337 to what the package emits: a blank line between the three
 # notes, taken from a capture of both streams (the S269 item's rule: judge
@@ -500,15 +585,13 @@ tdat$AgeRel <- jencode(tdat, AgeAtRelease, map = "else=NA")
 #   - the nudge CITES its evidence (the word), not just a conclusion;
 #   - "Not stated" is swept but not cited as evidence -- it is absent from
 #     the missing-label wordlist (the open S237 gap item, on purpose here).
-#   - (S251) the nudge closes on "Declare -99 with jdeclare_missing() so
-#     analyses exclude it." Under an UNSET convention -- which this file
-#     now forces -- that remedy GATES: jdeclare_missing() refuses and prints
-#     the choose-first menu instead, so the note sends the reader to a
-#     second message rather than to a result. It is the shape S250
-#     rejected for the D1 note ("run this to get another message"),
-#     surviving in a sibling that session did not touch. Milder, since
-#     the gate is guided and act-shaped, but it is a round trip. Logged
-#     for the MV mvbatch; five other sites share the phrasing.
+#   - (S345; the S251 item, fixed) the nudge now carries the choose-first
+#     menu and closes on "Then declare -99 with jdeclare_missing() so
+#     analyses exclude it." Thirteen lines where there was one, in this
+#     state only. Is the menu worth its length here, the second place a
+#     new user may meet it? The other sites that say "declare it" took the
+#     same form: jencode()'s NA rule (Section 13) and three in jrecode()
+#     (missing_convention_walk.R Section 55).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -716,7 +799,8 @@ ms9$MaritalR <- jencode(ms9, Marital)
 #     "Single"  -> 2
 #   If these categories have a natural order (like Low/Medium/High), rerun with
 #   a map to choose the numbers:
-#     ms9$MaritalR <- jencode(ms9, Marital, map = "Married=1; Single=2")
+#     ms9$MaritalR <- jencode(ms9, Marital,
+#                             map = "Married=1; Single=2; REF=NA; UNKNOWN=NA")
 #
 #   Note: 3 cells in 'Marital' holding a declared missing value ("REF",
 #   "UNKNOWN") were left missing (NA).
@@ -730,6 +814,12 @@ ms9$MaritalR <- jencode(ms9, Marital)
 #     ms9$<name> <- jencode(...)
 #   To check the encoding landed correctly, compare jfreq() on the original and
 #   the new column.
+#
+# RE-PINNED S345 (v0.9.218): the first call. It read
+#     ms9$MaritalR <- jencode(ms9, Marital, map = "Married=1; Single=2")
+# and stopped when pasted ("contains words not in the map: "REF" and
+# "UNKNOWN""): in map mode a declared string is a word like any other. The
+# map now sends each to NA, which is what automatic mode did with them.
 
 jfreq(ms9, MaritalR)
 
@@ -796,7 +886,11 @@ options(.jst_options_missing_convention = NULL)
 rm(ms9)
 
 # Things to look at:
-#   - RENDER 1: the listing and its suggested map hold the two words only.
+#   - RENDER 1: the listing holds the two words only; its suggested map
+#     (S345) also names the two declared strings, each sent to NA, so the
+#     call runs. Two maps in a row now name REF and UNKNOWN: "=NA" under
+#     the listing, "=missing" under the note. Is the difference between
+#     them clear from the two lead-in sentences?
 #     The second note counts the cells left missing, names the values, and
 #     prints the map that keeps them declared. Does the order read right --
 #     what was encoded, then what was not?
@@ -993,6 +1087,229 @@ rm(mk11, g11, r11, lst11, p11)
 #     it:" -- one sentence for two steps. Clear enough?
 #   - RENDER 3: lst11$d on both lines, as before this build. Nothing here
 #     should have moved.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 12 -- a map word the data do not hold, beside an else sweep (S345) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# A map can name a word no case holds: a category that may turn up later,
+# labeled ahead of time. jencode() says so in a note at the full output
+# level only. Beside an else rule that swept a data word in the SAME call,
+# the same fact is the signature of a mistyped map word: "Parol=2; else=NA"
+# sends every Parole to missing and labels an empty code 2. Until 0.9.218
+# only the sweep note showed at the standard level; the note that names
+# "Parol" now shows with it, directly under it. Inline fixture, ten cases.
+# The assertion side is jencode_check.R N47a-N47f.
+
+bail12 <- data.frame(
+  Status = c(rep("Bail", 3), rep("Parole", 4), rep("Remand", 3)),
+  stringsAsFactors = FALSE)
+
+# Render 1 -- a mistyped map word, and an else rule that hides it.
+b12a <- jencode(bail12, Status, map = "Bail=1; Parol=2; Remand=3; else=NA")
+
+# Expected:
+#   Note: else=NA converted 1 unmapped word (4 cells) in 'Status' to
+#   missing (NA).
+#   The unmapped word was "Parole".
+#
+#   Note: 'Status' contained none of these map words -- nothing was
+#   encoded for them:
+#     "Parol"
+#
+#   Note: This call changes bail12 only if you assign the result:
+#     bail12$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 2 -- the same mistake by capitalization: the map says "bail".
+b12b <- jencode(bail12, Status, map = "bail=1; Parole=2; Remand=3; else=NA")
+
+# Expected:
+#   Note: else=NA converted 1 unmapped word (3 cells) in 'Status' to
+#   missing (NA).
+#   The unmapped word was "Bail".
+#
+#   Note: 'Status' contained none of these map words -- nothing was
+#   encoded for them:
+#     "bail"
+#   "Bail" differs from the map's "bail" only in capitalization -- matching
+#   is case-sensitive.
+#
+#   Note: This call changes bail12 only if you assign the result:
+#     bail12$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 3 -- a map word no case holds, and nothing swept: a category
+# labeled ahead of time. No note at this level; the full level shows it.
+b12c <- jencode(bail12, Status,
+                map = "Bail=1; Parole=2; Remand=3; Released=4; else=NA")
+
+# Expected:
+#   Note: This call changes bail12 only if you assign the result:
+#     bail12$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+rm(bail12, b12a, b12b, b12c)
+
+# Things to look at:
+#   - RENDER 1: two notes, the swept word and then the map word that
+#     matched nothing. "Parole" and "Parol" sit three lines apart. Does
+#     the pair say "check the map" without a sentence that says so?
+#   - RENDER 2: the third line names the mismatch outright. It is the line
+#     the incomplete-map error already prints (Section 4), reused.
+#   - RENDER 3: silence, on purpose. Is that right for a map carrying an
+#     else rule, or should a word that matched nothing always be said?
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 13 -- "declare it" with no convention selected: the NA rule (S345) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# A map can give plain NA cells a code: "NA=-98". The note that reports it
+# closes by telling the reader to declare the code. With no missing-value
+# convention selected jdeclare_missing() stops at the choose-first gate, so
+# that advice led to a second message (the S251 item). The note now carries
+# the gate's menu first, as Section 5's nudge does; under a convention it
+# is the two lines it was. Inline fixture. The assertion side is
+# jencode_check.R N47n-N47q.
+
+na13 <- data.frame(Answer = c("Yes", "No", NA, "Yes", "No", "Yes"),
+                   stringsAsFactors = FALSE)
+
+# Render 1 -- no convention selected (the state this file forces).
+na13$AnswerR <- jencode(na13, Answer, map = "Yes=1; No=0; NA=-98")
+
+# Expected:
+#   Note: 1 NA value in 'Answer' was encoded as -98.
+#   No missing-value convention is selected, so the value cannot be
+#   declared yet.
+#   Choose one for this session:
+#     joptions(missing.convention = "stata")
+#         Lowercase markers behave as true NAs in base R.
+#         Recommended if you also run base R or AI-generated code.
+#     joptions(missing.convention = "spss")
+#         Codes stay visible numbers; jstats treats them as missing.
+#         Base R does not.
+#     joptions(missing.convention = "sas")
+#         Like Stata, with uppercase markers (.A-.Z).
+#   To make the choice permanent, put the same line in your .Rprofile.
+#   Then declare -98 with jdeclare_missing() so analyses exclude it.
+#
+#   Note: This call changes na13 only if you assign the result:
+#     na13$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 2 -- a menu line run, then the same call: the note as it was.
+joptions(missing.convention = "stata", quiet = TRUE)
+na13$AnswerR <- jencode(na13, Answer, map = "Yes=1; No=0; NA=-98")
+
+# Expected:
+#   Note: 1 NA value in 'Answer' was encoded as -98.
+#   Declare -98 with jdeclare_missing() so analyses exclude it.
+#
+#   Note: This call changes na13 only if you assign the result:
+#     na13$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 3 -- and the declaration the note names now runs.
+jdeclare_missing(na13, AnswerR, codes = c(-98), modify = TRUE)
+
+# Expected:
+#   Declared and converted to Stata-style missing values on AnswerR in na13:
+#     .a (from -98; no label)
+#
+#   To keep it across sessions, save the data frame:
+#     jsave(na13, "na13.rds")
+options(.jst_options_missing_convention = NULL)
+rm(na13)
+
+# Things to look at:
+#   - RENDER 1: "the value cannot be declared yet." then the menu, then
+#     "Then declare -98 ...". The D1 note (Section 7) says "cannot be made
+#     missing yet" over the same menu, because it offers two ways. Do the
+#     two heads read as one family?
+#   - RENDER 2: one remedy sentence, no menu. The note does not offer the
+#     call itself (it cannot see the name the result was assigned to).
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 14 -- a place as the data: the declaration line that runs (S345) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Section 11 showed that a place -- a data frame held in a list, lst$d --
+# keeps its one reminder line, because a result can be assigned into it.
+# The lines that offered modify = TRUE on a place were another matter:
+# jdeclare_missing(lst14$d, ..., modify = TRUE) stops, since modify = TRUE
+# changes a data frame through its NAME. A place is now offered the
+# assignment form, which runs. It is done once, where every message is
+# wrapped, so it holds for every function's offered lines. Inline fixture.
+# The assertion side is jencode_check.R N47r-s and
+# missing_convention_check.R N84ak-an.
+
+lst14 <- list(d = data.frame(
+  Reply = c("Yes", "No", "Refused", "Yes", "No", "Yes", "No", "Yes"),
+  stringsAsFactors = FALSE))
+joptions(missing.convention = "spss", quiet = TRUE)
+
+# Render 1 -- the D1 note on a place: read the last code line.
+r14 <- jencode(lst14$d, Reply, map = "Yes=1; No=0; Refused=-99")
+
+# Expected:
+#   Note: "Refused" was encoded as -99, which looks like a coded missing value.
+#   To make the value missing under SPSS convention, map it directly:
+#     lst14$d$ReplyR <- jencode(lst14$d, Reply, map = "Yes=1; No=0; Refused=missing")
+#   Or declare -99 as missing on the encoded variable:
+#     lst14$d$ReplyR <- jencode(lst14$d, Reply, map = "Yes=1; No=0; Refused=-99")
+#     lst14$d <- jdeclare_missing(lst14$d, ReplyR, codes = c(-99))
+#
+#   Note: This call changes lst14$d only if you assign the result:
+#     lst14$d$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 2 -- the pair, pasted from Render 1 and run. The first line
+# prints Render 1's notes again; the second is the one to read.
+lst14$d$ReplyR <- jencode(lst14$d, Reply, map = "Yes=1; No=0; Refused=-99")
+lst14$d <- jdeclare_missing(lst14$d, ReplyR, codes = c(-99))
+
+# Expected:
+#   Declared SPSS-style missing values on ReplyR:
+#     -99 ["Refused"]
+#
+#   This call changes lst14$d only if you assign the result:
+#     lst14$d <- jdeclare_missing(lst14$d, ReplyR, ...)
+
+jfreq(lst14$d, ReplyR)
+
+# Expected:
+#   Frequencies
+#
+#   8 Cases in the 1 Variable Pool
+#
+#   ReplyR
+#
+#                    Freq  Total %  Valid %  Cum. %
+#   ---------------  ----  -------  -------  ------
+#   Valid
+#   0: No              3     37.50   42.86    42.86
+#   1: Yes             4     50.00   57.14   100.00
+#
+#   Missing
+#   -99 ["Refused"]    1     12.50      --       --
+#
+#   Total              8    100.00
+options(.jst_options_missing_convention = NULL)
+rm(lst14, r14)
+
+# Things to look at:
+#   - RENDER 1: "lst14$d <- jdeclare_missing(lst14$d, ReplyR, codes =
+#     c(-99))" where a name gets "jdeclare_missing(d, ReplyR, codes =
+#     c(-99), modify = TRUE)". The house form teaches modify = TRUE; for a
+#     place only the assignment runs. Right call?
+#   - RENDER 2: the declaration's own reminder has given a place the
+#     assignment line since 0.9.213, with no modify = TRUE line under it.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
