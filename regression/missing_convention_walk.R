@@ -2,7 +2,7 @@
 # missing_convention_walk.R -- the missing-convention message surface, walked
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # TYPE:     visual walkthrough (Expected comments; written for Jeff's checking)
-# PENDING:  19, 22, 46, 53-57 (S345, v0.9.218)
+# PENDING:  none
 # LOCKS:    the runtime MESSAGE surface of the missing-value convention
 #           machinery -- the joptions setting echo and nudge, the jdeclare_missing
 #           mismatch notice, and the full jload load-narrative case set
@@ -65,9 +65,9 @@
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
-# EDITED:   S345 (v0.9.218; SANDBOX, walk pending). Fix Slate 5, the
-#           second cut. SECTIONS 19, 22 AND 46 RE-PINNED; NEW PART N,
-#           SECTIONS 53-57.
+# EDITED:   S345 (v0.9.218; WALKED on the workstation the same session). Fix
+#           Slate 5, the second cut. SECTIONS 19, 22 AND 46 RE-PINNED; NEW
+#           PART N, SECTIONS 53-57.
 #           Section 19: the mixed-marker note lists the markers the CELLS
 #           carry -- "(.a)", where it read "(.a, .c)" for a .c the call
 #           had only labeled -- and its "STILL OPEN" paragraph is split:
@@ -99,7 +99,12 @@
 #           build of the refusal: it stopped on an integer column, which
 #           no check converted (missing_convention_check.R N84l now
 #           does). The assertion side is missing_convention_check.R
-#           N84a-aq.
+#           N84a-aq. WALK: Sections 19, 22, 46 and 53-57 -- WALKED by Jeff
+#           through receive_all(), its block pasted back with the walk
+#           line as the tool writes it ("walked, all okay"); GitHub
+#           ec82e6b. His one question, on Section 22's "Things to look
+#           at" (the S280 wording question, "the default" against "your
+#           setting"), was answered in the session; no change asked for.
 # EDITED:   S343 (v0.9.217; WALKED on the workstation the same session).
 #           SECTION 1, its last block RE-PINNED and one
 #           block ADDED, for the (S281) item's value half: a near miss of
@@ -459,7 +464,14 @@
 #           Same messages either way (one frame), confirmed in the walk
 #           below against a sandbox capture of the same file; no Expected
 #           touched.
-# LAST VERIFIED: v0.9.213, 2026-10-05 (S339) -- Sections 18, 19, 28, 40, 45
+# LAST VERIFIED: v0.9.218, 2026-10-07 (S345) -- Sections 19, 22, 46 and
+#           53-57 WALKED on the WORKSTATION through receive_all() ("walked,
+#           all okay"), GitHub ec82e6b, after the SANDBOX run (R 4.3.3,
+#           UTF-8 locale): every new or moved Expected filled by running
+#           the file (fill.R), and all 58 sections through rewalk() by
+#           harness.R; no NEEDS line changed. The S340 and S343 walks are
+#           in their EDITED blocks above.
+#           Prior: v0.9.213, 2026-10-05 (S339) -- Sections 18, 19, 28, 40, 45
 #           and 46-50 WALKED on the WORKSTATION through rewalk() (Jeff:
 #           "both walk files are okay"), GitHub eb54a30, after the SANDBOX
 #           run (R 4.3.3, UTF-8 locale): every Expected block of the new

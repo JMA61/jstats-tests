@@ -152,8 +152,10 @@
 #           master P03 is red. Sandbox: 440/440 plain and under the
 #           RStudio-handler stand-in, each also with a Windows-length temp
 #           path, and entered dirty.
-#           LAST VERIFIED: v0.9.218 SANDBOX, 2026-10-06 (S345) -- 440/440;
-#           workstation run pending.
+#           LAST VERIFIED: v0.9.218, 2026-10-07 (S345) -- 440/440 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           1952 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub ec82e6b.
 # S343 EDIT (v0.9.217, 2026-10-06): SECTION T ADDED (T01-T11, 11 checks),
 #           the lean-free cut of Fix Slate 5; nothing else changed. The
 #           S338 not-found sentence at the four sites that built an older

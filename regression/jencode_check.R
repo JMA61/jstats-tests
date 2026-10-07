@@ -82,8 +82,10 @@
 #           The place rewrite switched off N47r s; a name rewritten too
 #           N45b N46a e N47b c s (and 46 checks of
 #           missing_convention_check.R).
-#           LAST VERIFIED: v0.9.218 SANDBOX, 2026-10-06 (S345) -- 111/111;
-#           workstation run pending.
+#           LAST VERIFIED: v0.9.218, 2026-10-07 (S345) -- 111/111 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           1952 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub ec82e6b.
 # S343 EDIT (v0.9.217, 2026-10-06): the lean-free cut of Fix Slate 5.
 #           N45a-j NEW (10 checks; the S249 item and what it rested on):
 #           automatic mode's offered map built from RENDERED words, so a

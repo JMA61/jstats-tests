@@ -2,7 +2,7 @@
 # jencode_walk.R -- visual walkthrough for jencode() (E12 completion)
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # TYPE:     visual walkthrough (Expected comments; written for Jeff's checking)
-# PENDING:  2, 5, 9, 12-14 (S345, v0.9.218)
+# PENDING:  none
 # LOCKS:    the LOOK of jencode()'s message surface after the S238 completion
 #           pass: the alphabetical listing, the blank / trim / face-value
 #           notes, the word-evidence -99 nudge, M4/M5/M10 naming, the S238
@@ -49,8 +49,11 @@
 #           section on the 0.9.217 and 0.9.218 builds differs in Sections
 #           2, 5 and 9 alone. No section needs another (harness.R: 14 of
 #           14). The human half of jencode_check.R N47 and N44b.
-#           LAST VERIFIED: v0.9.218 SANDBOX, 2026-10-06 (S345); the
-#           PENDING line names what Jeff walks.
+#           LAST VERIFIED v0.9.218, 2026-10-07 (S345) -- Sections 2, 5,
+#           9 and 12-14 WALKED on the WORKSTATION by Jeff through
+#           receive_all(), its block pasted back with the walk line as
+#           the tool writes it ("walked, all okay"), no remark added;
+#           GitHub ec82e6b; after the SANDBOX run.
 # S343 EDIT (v0.9.217, 2026-10-06): SECTIONS 10 AND 11 ADDED, for the cut
 #           of Fix Slate 5. Section 10, four renders: automatic mode on
 #           categories holding a comma, an equals sign and a semicolon

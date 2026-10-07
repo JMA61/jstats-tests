@@ -96,8 +96,10 @@
 #           returning "(no label)" N81b d g h k l m n n2 o q N84g ao; the
 #           typed spelling ignored in a rule N42g N65z N84ap, in the
 #           labels N42f N84ap; the conflict heads never capitalized N84aq.
-#           LAST VERIFIED: v0.9.218 SANDBOX, 2026-10-06 (S345) -- 555/555;
-#           workstation run pending.
+#           LAST VERIFIED: v0.9.218, 2026-10-07 (S345) -- 555/555 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           1952 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub ec82e6b.
 # S343 EDIT (v0.9.217, 2026-10-06): the lean-free cut of Fix Slate 5. NEW
 #           N83 section, 11 checks (N83a-k): joptions() on a near miss of
 #           a convention VALUE (the S281 item's value half). After the
