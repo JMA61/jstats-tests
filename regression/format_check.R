@@ -98,12 +98,88 @@
 #                reference category marked "(default; change with ref =)"
 #                when the default rule chose it -- on registration, when a
 #                registration is shown again, and in the overview
+#             W  jt and jaov on groups a test cannot be computed on; the
+#                Games-Howell rows below 2 df; no post-hoc table for two
+#                groups; a group emptied by missing data (S346)
+#             X  diagnostics in jt and jaov, one argument apart from the
+#                levels; the Levene note in its three forms (S346)
 # ORIGIN:   S326 (v0.9.202): the number-format bundle -- the S220 eta-squared
 #           and ANOVA-table items and the Session 171 trailing-zero item --
 #           widened at Jeff's call to every table that took its decimals
 #           from its values (jlogistic's fit tables, jalpha, jdesc's Mean
 #           and SD, the VIF tables, jscreen's stats columns) and to jt's
 #           Cohen's d line, which had the eta-squared defect.
+# S346 EDIT (v0.9.219, 2026-10-08): Fix Slate 8, first cut, and Jeff's
+#           diagnostics ruling of that day. SECTIONS W AND X ADDED, W01-W27
+#           and X01-X16 (43 checks). W01-W09 jt(): Welch's test with a
+#           one-case group stops in the house voice and Student's runs,
+#           its Cohen's d from the pooled SD the test used (held to
+#           effectsize's number, the one-case group first and second);
+#           two groups of one case; no variation to test against.
+#           W10-W14 jaov(): every group constant; Welch with a constant
+#           group; the standard ANOVA still takes one. W15-W18
+#           Games-Howell below 2 df: no "NaNs produced", the row's
+#           interval and p blank, one line under the table, in number.
+#           W19-W21 two groups: no post-hoc table printed or returned,
+#           one line in its place. W22-W27 a group emptied by a missing
+#           outcome is not a group of the analysis; a paired test still
+#           pairs by position. X01-X09 the Levene note: the two ratios
+#           and three verdicts in jaov() and jt(), each zone's edges read
+#           from the helper, the two-decimal rule, when no note prints,
+#           and not at the minimal level. X10-X16 diagnostics =: no level
+#           prints Levene's test, TRUE and "levene" do, joutput()'s
+#           setting reaches both functions and a level call keeps it,
+#           levene = is refused with the new name, a name that is no
+#           diagnostic stops.
+#           RE-PINNED: U03 and U12, read from .jst_games_howell() itself
+#           (jaov() no longer prints a two-group table, and stops Welch's
+#           ANOVA with a constant group), and U19-U22 (the Levene note,
+#           rewritten for its new form). Eleven calls take diagnostics = TRUE for levene = TRUE,
+#           and ten full = TRUE calls of jt() and jaov() gained
+#           diagnostics = TRUE, so the Levene tables sections B, C, I, J,
+#           K and Q read still print. 283 checks.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 283/283
+#           plain and under the RStudio-handler stand-in, each also with a
+#           Windows-length temp path, and entered dirty, the session
+#           handed back. On the 0.9.218 master 74 red: B01 B04 B05
+#           B07-B13 C04-C08 I01 I02 J01-J03 J05 J06 J08-J10 J20 J21 J23
+#           J25 J26 K07 K08 Q03 Q04 U13 U19-U22 (their calls name an
+#           argument that build does not have), W01 W02 W04 W06-W08
+#           W10-W13 W15-W17 W19 W20 W22-W25 and X01-X16.
+#           MUTATION MAP (S346; 74 one-change mutants through all eight
+#           batteries, 74 red; those that red here): Levene from
+#           full = TRUE in jt or in jaov X10; the stored setting not read
+#           X12 X13; a level call dropping it X13; an unknown name or a
+#           wrong type passing X15; notes at the minimal level X09; the
+#           reassuring zone to sizes 1.5 X05, to SDs 2.5 X04 X05; the
+#           cautionary zone from sizes 1.25 X02 X06, on either ratio U19
+#           X02 X04-X07; the note at p up to .10 X08; never two decimals
+#           X04 X07, only near 1 X07; two groups worded as three, equal
+#           sizes given a ratio X04 X07; a one-case group not set aside
+#           U13 X08; the note under Welch in jt X08 (added after the
+#           first round, which this mutant survived), in jaov X08; jt
+#           named as the ANOVA X04; a zero SD dividing X07 (added after
+#           the first round); the Welch line missing X02 X04; no help
+#           pointer X01-X04; groups counted on the data W22 W23 W25; a
+#           paired test losing rows W27; two one-case groups W06;
+#           Student's stopped for one W03 W04 W08; Welch not stopped W01
+#           W02; no zero-SE stop W07 W08; Cohen's d through NA for the
+#           first group W04 (added after the first round), the second
+#           W04; the missing-outcome line W22; jaov all-constant W10 W11;
+#           one flat group stopping the standard ANOVA U13-U15 W12-W14;
+#           Welch with a constant group W12 W13, the standard ANOVA too
+#           W14; ptukey below 2 df W15 W16; blank below 3 df U12; no note
+#           under blank cells W17; two groups' table after Welch or after
+#           the standard ANOVA W19 W20.
+#           THE SESSION GUARD hands back the stored display settings
+#           (.jst_output_toggles) with the output level: the diagnostics
+#           setting outlives a level call, so a run entered with
+#           joutput(diagnostics = TRUE) left the session without it
+#           (found entering dirty; all seven batteries with the guard).
+#           LAST VERIFIED: v0.9.219, 2026-10-09 (S346) -- 283/283 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2079 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 14528c6.
 # S342 EDIT (v0.9.216, 2026-10-06): Fix Slate 4. SECTION V ADDED, V01-V15
 #           (15 checks); nothing else changed. V01-V06 jdummy() ends on
 #           exactly one blank line, written to stdout after its reminder:
@@ -837,6 +913,10 @@ stopifnot(exists("jload", mode = "function"))
 .entry_message_width <- getOption(".jst_options_message_width")
 .entry_default_data  <- getOption(".jst_default_data")
 .entry_output_level  <- getOption(".jst_output_level")
+# The stored display settings too (S346): the diagnostics setting outlives
+# a level call, so restoring the level alone would hand back a session
+# without it.
+.entry_output_toggles <- getOption(".jst_output_toggles")
 # The color switch (S340): section T asserts what an UNSET option gives, and
 # sets it both ways. Recorded, forced unset, and handed back at the foot.
 .entry_color         <- getOption("jstats.color")
@@ -1497,8 +1577,8 @@ check("A09 renderer: a fixed column prints a negative zero unsigned",
 # =============================================================================
 cat("\n--- B. jaov() ---\n")
 
-.b_full  <- raw_out(jaov(y ~ g, data = f_aov, full = TRUE))
-.b_welch <- raw_out(jaov(y ~ g, data = f_aov, welch = TRUE, full = TRUE))
+.b_full  <- raw_out(jaov(y ~ g, data = f_aov, full = TRUE, diagnostics = TRUE))
+.b_welch <- raw_out(jaov(y ~ g, data = f_aov, welch = TRUE, full = TRUE, diagnostics = TRUE))
 .b_fl    <- sub("[ \t]+$", "", .b_full)
 .b_wl    <- sub("[ \t]+$", "", .b_welch)
 
@@ -1540,7 +1620,7 @@ check("B11 Tukey: Mean Difference -1.000 / -2.000 / -1.000",
       same(col_of(tab(.b_fl, "Tukey HSD Post-Hoc Comparisons"), "Mean Difference"),
            c("-1.000", "-2.000", "-1.000")))
 check("B12 digits = 2: eta 0.25, SS 8.00, Mean 16.00, Tukey -1.00",
-      { o <- out(jaov(y ~ g, data = f_aov, full = TRUE, digits = 2))
+      { o <- out(jaov(y ~ g, data = f_aov, full = TRUE, diagnostics = TRUE, digits = 2))
         any(o == "Eta-squared: 0.25") &&
           same(col_of(tab(o, "ANOVA: y by g"), "Sum of Squares"),
                c("8.00", "24.00", "32.00")) &&
@@ -1549,7 +1629,7 @@ check("B12 digits = 2: eta 0.25, SS 8.00, Mean 16.00, Tukey -1.00",
           same(col_of(tab(o, "Tukey HSD Post-Hoc Comparisons"), "Mean Difference"),
                c("-1.00", "-2.00", "-1.00")) })
 check("B13 digits = 0: whole numbers with no decimal point (SS 8, Mean 16, eta 0)",
-      { o <- out(jaov(y ~ g, data = f_aov, full = TRUE, digits = 0))
+      { o <- out(jaov(y ~ g, data = f_aov, full = TRUE, diagnostics = TRUE, digits = 0))
         any(o == "Eta-squared: 0") &&
           same(col_of(tab(o, "ANOVA: y by g"), "Sum of Squares"), c("8", "24", "32")) &&
           same(col_of(tab(o, "Group Descriptives: y by g"), "Mean"), c("16", "15", "14")) })
@@ -1569,9 +1649,9 @@ check("B15 display only: the returned descriptives stay numeric and eta_squared 
 # =============================================================================
 cat("\n--- C. jt() ---\n")
 
-.c_st <- out(jt(y ~ g, data = f_t2, full = TRUE))
-.c_we <- out(jt(y ~ g, data = f_t2, welch = TRUE, full = TRUE))
-.c_pa <- out(jt(score ~ time, data = f_pair, paired = TRUE, full = TRUE))
+.c_st <- out(jt(y ~ g, data = f_t2, full = TRUE, diagnostics = TRUE))
+.c_we <- out(jt(y ~ g, data = f_t2, welch = TRUE, full = TRUE, diagnostics = TRUE))
+.c_pa <- out(jt(score ~ time, data = f_pair, paired = TRUE, full = TRUE, diagnostics = TRUE))
 
 check("C01 Cohen's d -0.230116 prints -0.230, not -0.23 (community CommuteTime ~ Volunteer)",
       any(raw_out(jt(CommuteTime ~ Volunteer, data = cm_f, effect.size = TRUE)) ==
@@ -1600,7 +1680,7 @@ check("C06 Group Descriptives: Mean 16.000 / 15.000",
 check("C07 Levene's F: 0.000 on the fixture, 0.020 on community Income ~ Volunteer",
       same(col_of(tab(.c_st, "Levene's Test for Homogeneity of Variance"), "F"),
            "0.000") &&
-        same(col_of(tab(out(jt(Income ~ Volunteer, data = cm_f, levene = TRUE)),
+        same(col_of(tab(out(jt(Income ~ Volunteer, data = cm_f, diagnostics = TRUE)),
                         "Levene's Test for Homogeneity of Variance"), "F"), "0.020"))
 check("C08 paired: Mean Difference -2.000, df 2, means 10.000 / 12.000",
       { m <- tab(.c_pa, "Paired Samples T-Test Results")
@@ -1740,7 +1820,7 @@ check("I02 N columns stay whole (4 / 4 / 4)",
 # read columns whose values differ in width.
 cat("\n--- J. alignment ---\n")
 
-.j_tst <- raw_out(jt(y ~ g, data = f_t2, full = TRUE))
+.j_tst <- raw_out(jt(y ~ g, data = f_t2, full = TRUE, diagnostics = TRUE))
 .j_tnc <- raw_out(jt(y ~ g, data = f_t2, ci = FALSE))
 .j_anc <- raw_out(jaov(y ~ g, data = f_aov, ci = FALSE))
 .j_lgs <- raw_out(jlogistic(yb ~ x1 + x2, data = f_log, classification = TRUE,
@@ -1749,7 +1829,7 @@ cat("\n--- J. alignment ---\n")
 .j_al  <- raw_out(jalpha(cm_f, Environment1, Environment5))
 .j_a3  <- raw_out(jalpha(f_a3, i1, i2, i3))
 .j_scr <- raw_out(jscreen(f_aov, stats = TRUE))
-.j_cl  <- raw_out(jaov(Stress ~ Condition, data = cl_f, full = TRUE))
+.j_cl  <- raw_out(jaov(Stress ~ Condition, data = cl_f, full = TRUE, diagnostics = TRUE))
 .j_far <- raw_out(jaov(y ~ g, data = f_far, posthoc = TRUE))
 .j_d0  <- raw_out(jaov(y ~ g, data = f_aov, digits = 0))
 
@@ -2506,11 +2586,11 @@ check("Q02 jcrosstab: with and without the chi-square table, the residual note a
               78L))
 check("Q03 jt",
       ok_runs(one_blank(c("jt(Flourishing ~ SoughtHelp, cl_f%s)",
-                          "jt(Flourishing ~ SoughtHelp, cl_f, levene = TRUE, effect.size = TRUE%s)",
+                          "jt(Flourishing ~ SoughtHelp, cl_f, diagnostics = TRUE, effect.size = TRUE%s)",
                           "jt(Flourishing ~ SoughtHelp, cl_f, welch = TRUE%s)")), 39L))
 check("Q04 jaov",
       ok_runs(one_blank(c("jaov(Stress ~ Condition, cl_f%s)",
-                          "jaov(Stress ~ Condition, cl_f, posthoc = TRUE, effect.size = TRUE, levene = TRUE%s)",
+                          "jaov(Stress ~ Condition, cl_f, posthoc = TRUE, effect.size = TRUE, diagnostics = TRUE%s)",
                           "jaov(Stress ~ Condition, cl_f, welch = TRUE, posthoc = TRUE%s)")),
               39L))
 check("Q05 jscreen",
@@ -3077,9 +3157,11 @@ check("U02 ... and its adjusted p-values, to the three figures rstatix reports (
       is.data.frame(.u_ph) &&
         identical(signif(.u_ph$p, 3), c(0.461, 2.92e-05, 0.0874)) &&
         identical(unique(.u_ph$test), "Games-Howell"))
+# Read from the helper since S346: jaov() prints and returns no post-hoc
+# table for two groups (W18-W20).
 check("U03 with two groups the comparison IS Welch's t-test: stats::t.test()'s p, df and interval",
       { d2 <- f_gh[f_gh$g != "c", ]
-        r  <- quiet(jaov(y ~ g, data = d2, welch = TRUE, posthoc = TRUE))$posthoc
+        r  <- jstats:::.jst_games_howell(d2$y, factor(d2$g))
         tt <- stats::t.test(y ~ g, data = d2)
         nrow(r) == 1L && near(r$p, tt$p.value, 1e-9) &&
           near(r$df, unname(tt$parameter)) &&
@@ -3141,22 +3223,25 @@ check("U11 the standard post-hoc table is Tukey's still, five columns and no df"
 f_gh0 <- data.frame(g = rep(c("a", "b", "c"), each = 3),
                     y = c(10.5, 10.5, 10.5,  11.5, 11.5, 11.5,  12.5, 13.5, 14.5),
                     stringsAsFactors = FALSE)
-check("U12 a pair of constant groups: its difference prints, its interval, df and p are blank -- NA in the returned table, never NaN -- and no warning of R's own",
-      { o <- both_out(jaov(y ~ g, data = f_gh0, welch = TRUE, posthoc = TRUE))
-        m <- tab(o, .u_cap)
-        r <- quiet(jaov(y ~ g, data = f_gh0, welch = TRUE, posthoc = TRUE))$posthoc
-        !any(grepl("NaN", o, fixed = TRUE)) &&
-          !any(grepl("Warning", o, fixed = TRUE)) &&
-          identical(unname(m[1L, ]), c("b-a", "1.000", "", "", "", "")) &&
-          identical(unname(m[2L, "df"]), "2.0") &&
+# Read from the helper since S346: jaov(welch = TRUE) stops for a group in
+# which the outcome does not vary (W12), so no call reaches this pair.
+check("U12 a pair of constant groups, in the helper: its difference is kept, its interval, df and p are NA, never NaN, and R says nothing",
+      { w <- character(0)
+        r <- withCallingHandlers(
+          jstats:::.jst_games_howell(f_gh0$y, factor(f_gh0$g)),
+          warning = function(c) { w <<- c(w, conditionMessage(c))
+                                  invokeRestart("muffleWarning") })
+        length(w) == 0L && identical(r$comparison, c("b-a", "c-a", "c-b")) &&
+          near(r$diff[1L], 1) && near(r$df[2L], 2) &&
           all(is.na(unlist(r[1L, c("lower", "upper", "df", "p")]))) &&
           !any(is.nan(unlist(r[1L, c("lower", "upper", "df", "p")]))) &&
-          near(r$diff[1L], 1) })
+          !anyNA(unlist(r[2:3, c("lower", "upper", "df", "p")])) })
 
 # The Levene note set off from its table (Jeff's S341 walk of format_walk.R
 # Section 23: with no blank line between them "this makes things harder to
-# read"). Both forms of the note -- unequal group sizes, and sizes close
-# enough that the standard test stands -- in jaov() and in jt().
+# read"), in jaov() and in jt(). Since S346 the note has three forms and
+# five or six lines (section X pins the wording); f_gh and f_lv give the
+# cautionary form, f_lvb, with two groups of one size, the middle one.
 f_lv  <- data.frame(g = rep(c("a", "b"), c(6, 12)),
                     y = c(4.5, 5.5, 6.5, 5.5, 4.5, 6.5,
                           1.5, 9.5, 2.5, 12.5, 0.5, 13.5, 1.5, 10.5, 3.5, 11.5, 0.5, 14.5),
@@ -3169,41 +3254,41 @@ f_lvb <- data.frame(g = rep(c("a", "b"), each = 8),
   i <- which(startsWith(o, "Note: Levene's test is significant"))[1]
   cap <- which(o == "Levene's Test for Homogeneity of Variance")[1]
   !is.na(i) && !is.na(cap) && i == cap + 5L && !nzchar(o[i - 1L]) &&
-    nzchar(o[i - 2L]) && any(grepl(second, o[i:(i + 3L)], fixed = TRUE)) &&
+    nzchar(o[i - 2L]) && any(grepl(second, o[i:(i + 5L)], fixed = TRUE)) &&
     dbl_blanks(o) == 0L && tail_blanks(o) == 1L
 }
 check("U19 the Levene note has one blank line between it and its table, in jaov() and jt(), in both of its forms; nowhere two blank lines together",
-      .u_lev(both_out(jaov(y ~ g, data = f_gh, levene = TRUE)), "consider welch = TRUE") &&
-        .u_lev(both_out(jaov(y ~ g, data = f_lvb, levene = TRUE)), "remains appropriate") &&
-        .u_lev(both_out(jt(y ~ g, data = f_lv, levene = TRUE)), "consider welch = TRUE") &&
-        .u_lev(both_out(jt(y ~ g, data = f_lvb, levene = TRUE)), "remains appropriate"))
+      .u_lev(both_out(jaov(y ~ g, data = f_gh, diagnostics = TRUE)), "Both are beyond the usual guidelines") &&
+        .u_lev(both_out(jaov(y ~ g, data = f_lvb, diagnostics = TRUE)), "Guidelines differ") &&
+        .u_lev(both_out(jt(y ~ g, data = f_lv, diagnostics = TRUE)), "Both are beyond the usual guidelines") &&
+        .u_lev(both_out(jt(y ~ g, data = f_lvb, diagnostics = TRUE)), "Guidelines differ"))
 check("U20 control: a Levene's test that is not significant prints no note, and one blank line follows its table",
-      { o <- both_out(jaov(y ~ g, data = f_aov, levene = TRUE))
+      { o <- both_out(jaov(y ~ g, data = f_aov, diagnostics = TRUE))
         cap <- which(o == "Levene's Test for Homogeneity of Variance")[1]
         !any(startsWith(o, "Note: Levene")) && !nzchar(o[cap + 4L]) &&
           nzchar(o[cap + 5L]) })
 
 # The note's p-value (Session 341, the same walk): "p < .001", where the
 # formatter's "<.001" pasted after "p = " read "p = <.001"; a larger p keeps
-# "p = .008". At 76 the first sentence then fits one line (it broke after
-# "suggesting", one character over).
+# "p = .008". Since S346 the first sentence states the test's result and
+# nothing else, on a line of its own.
 f_lv8 <- data.frame(g = rep(c("a", "b"), c(6, 12)),
                     y = c(4.5, 5.5, 6.5, 5.5, 4.5, 6.5,
                           3.5, 7.5, 4.5, 8.5, 2.5, 9.5, 3.5, 8.5, 4.5, 7.5, 5.5, 6.5),
                     stringsAsFactors = FALSE)
 check("U21 the Levene note writes a p below .001 as \"p < .001\", never \"p = <.001\", in jaov() and jt(), and its first sentence is one line",
-      { a <- both_out(jaov(y ~ g, data = f_gh, levene = TRUE))
-        b <- both_out(jt(y ~ g, data = f_lvb, levene = TRUE))
-        any(a == "Note: Levene's test is significant (p < .001), suggesting unequal variances.") &&
-          any(b == "Note: Levene's test is significant (p < .001), but group sizes are") &&
+      { a <- both_out(jaov(y ~ g, data = f_gh, diagnostics = TRUE))
+        b <- both_out(jt(y ~ g, data = f_lvb, diagnostics = TRUE))
+        any(a == "Note: Levene's test is significant (p < .001).") &&
+          any(b == "Note: Levene's test is significant (p < .001).") &&
           !any(grepl("= <", c(a, b), fixed = TRUE)) })
 check("U22 ... and a p of .001 or more as \"p = \" and the value the table shows",
-      { o <- both_out(jt(y ~ g, data = f_lv8, levene = TRUE))
+      { o <- both_out(jt(y ~ g, data = f_lv8, diagnostics = TRUE))
         m <- tab(o, "Levene's Test for Homogeneity of Variance")
         i <- which(startsWith(o, "Note: Levene's test is significant"))[1]
         !is.na(i) && !is.null(m) && !startsWith(m[1L, "p"], "<") &&
-          startsWith(o[i], paste0("Note: Levene's test is significant (p = ",
-                                  m[1L, "p"], "), ")) })
+          identical(o[i], paste0("Note: Levene's test is significant (p = ",
+                                 m[1L, "p"], ").")) })
 
 # --- a group of one case ---
 f_solo <- rbind(f_gh, data.frame(g = "solo", y = 9.5, stringsAsFactors = FALSE))
@@ -3219,7 +3304,7 @@ f_solo <- rbind(f_gh, data.frame(g = "solo", y = 9.5, stringsAsFactors = FALSE))
 }
 check("U13 the standard ANOVA with a one-case group: no warning of R's own (it printed \"NaNs produced\"), at the standard level and at full",
       { a <- both_out(jaov(y ~ g, data = f_solo))
-        b <- both_out(jaov(y ~ g, data = f_solo, full = TRUE))
+        b <- both_out(jaov(y ~ g, data = f_solo, full = TRUE, diagnostics = TRUE))
         !identical(a, "[error]") && !identical(b, "[error]") &&
           !any(grepl("Warning", c(a, b), fixed = TRUE)) &&
           !any(grepl("NaN", c(a, b), fixed = TRUE)) })
@@ -3383,6 +3468,483 @@ rm(list = intersect(c("f_v", "f_v15", "f_un", ".v_one", ".v_two", ".v_leg",
                     ls(all.names = TRUE)))
 
 
+# =============================================================================
+# SECTION W -- GROUPS A TEST CANNOT BE COMPUTED ON; GAMES-HOWELL BELOW 2 DF;
+#              NO POST-HOC TABLE FOR TWO GROUPS; A GROUP EMPTIED BY MISSING
+#              DATA (S346, v0.9.219)
+# =============================================================================
+# Fix Slate 8, first cut. (1) jt() with a group of one case: Welch's test
+# stopped on R's "not enough 'y' observations" after the descriptives, and
+# Student's printed "Cohen's d: NA"; two groups of one case each stopped on
+# R's "not enough observations"; two groups with no variation between them
+# on R's "data are essentially constant". Each is a house stop before any
+# table, and Cohen's d is computed from the pooled SD the test used (the
+# S341 item). (2) jaov() with every group constant printed an F of
+# 27815876027865139260134097158144.000, and Welch's ANOVA with one constant
+# group printed a table with blank F, df2 and p cells: both stop (the S341
+# item). (3) Games-Howell with a pair below 2 degrees of freedom printed R's
+# "NaNs produced" four times; the pair keeps its difference and df, its
+# other cells are blank, and one line under the table says why. With two
+# GROUPS no post-hoc table is printed or returned, after either ANOVA (the
+# S344 item and its rider). (4) A group whose cases are all missing on the
+# outcome was counted as a group: R's "grouping factor must have exactly 2
+# levels" and "contrasts can be applied only to factors with 2 or more
+# levels", a descriptives row with N 0, and a three-group refusal of a test
+# that had two groups to compare. Groups are counted on the cases the test
+# can use; a paired test keeps its rows, which it pairs by position.
+cat("\n--- W. Groups a test cannot use; Games-Howell below 2 df; two groups ---\n")
+
+# A group of one case, b.
+f_w1 <- data.frame(g = c(rep("a", 6), "b"),
+                   y = c(4.5, 5.5, 6.5, 5.5, 4.5, 6.5, 9.5),
+                   stringsAsFactors = FALSE)
+check("W01 jt(welch = TRUE) with a one-case group stops in the house voice, the group named, with the way out (it stopped on R's \"not enough 'y' observations\")",
+      identical(.u_stop(jt(y ~ g, data = f_w1, welch = TRUE)),
+                paste0("jt(): 'g' has 1 category with only 1 case (b).\n",
+                       "Welch's t-test requires at least 2 cases in both categories.\n",
+                       "Student's t-test can include it: run jt() without ",
+                       "welch = TRUE.")))
+check("W02 ... before the descriptives print, and a labelled group is named by its label",
+      { d <- f_w1
+        d$g <- haven::labelled(match(d$g, c("a", "b")), c(Many = 1, Lone = 2))
+        !any(startsWith(raw_out(jt(y ~ g, data = f_w1, welch = TRUE)),
+                        "Group Descriptives")) &&
+          startsWith(.u_stop(jt(y ~ g, data = d, welch = TRUE)),
+                     "jt(): 'g' has 1 category with only 1 case (Lone).\n") })
+check("W03 Student's test runs with it, as stats::t.test() does: t, df and p; its row shows N and the mean and a blank SD",
+      { o  <- raw_out(jt(y ~ g, data = f_w1))
+        r  <- quiet(jt(y ~ g, data = f_w1))
+        tt <- stats::t.test(y ~ g, data = f_w1, var.equal = TRUE)
+        m  <- tab(o, "Group Descriptives: y by g")
+        is.list(r) && near(r$t, unname(tt$statistic)) && near(r$df, 5) &&
+          near(r$p, tt$p.value) && !is.null(m) &&
+          identical(unname(m[2L, ]), c("b", "1", "9.500", "")) })
+# effectsize::cohens_d(y ~ g, data = f_w1) (0.8.6), run once in the sandbox:
+# -4.47213595499958. effectsize is not a dependency; the number is here.
+check("W04 Cohen's d is computed from the pooled SD the test used -- the other group's -- and equals effectsize::cohens_d() (it printed \"Cohen's d: NA\")",
+      { o <- raw_out(jt(y ~ g, data = f_w1))
+        r <- quiet(jt(y ~ g, data = f_w1))
+        a <- f_w1$y[f_w1$g == "a"]
+        # The one-case group FIRST in the group order: the same d, the
+        # other sign (the first group's term is the one that would be NA).
+        z <- f_w1; z$g <- ifelse(z$g == "a", "z", "b")
+        rz <- quiet(jt(y ~ g, data = z))
+        any(o == "Cohen's d: -4.472") && is.list(r) &&
+          near(r$cohens_d, -4.47213595499958, 1e-10) &&
+          near(r$cohens_d, (mean(a) - 9.5) / stats::sd(a), 1e-10) &&
+          is.list(rz) && near(rz$cohens_d, 4.47213595499958, 1e-10) })
+check("W05 control: with two or more cases in each group the pooled d is what it was",
+      { r <- quiet(jt(y ~ g, data = f_gh[f_gh$g != "c", ]))
+        a <- f_gh$y[f_gh$g == "a"]; b <- f_gh$y[f_gh$g == "b"]
+        sp <- sqrt((5 * stats::var(a) + 7 * stats::var(b)) / 12)
+        is.list(r) && near(r$cohens_d, (mean(a) - mean(b)) / sp, 1e-10) })
+check("W06 two groups of one case each: one stop, whichever test was asked for (R's \"not enough observations\")",
+      { d <- data.frame(g = c("a", "b"), y = c(1.5, 2.5), stringsAsFactors = FALSE)
+        want <- paste0("jt(): 'g' has 2 categories with only 1 case in each.\n",
+                       "A t-test requires at least one category with 2 or more cases.")
+        identical(.u_stop(jt(y ~ g, data = d)), want) &&
+          identical(.u_stop(jt(y ~ g, data = d, welch = TRUE)), want) })
+
+# No variation inside either group.
+f_w0 <- data.frame(g = rep(c("a", "b"), each = 4),
+                   y = rep(c(1.5, 2.5), each = 4), stringsAsFactors = FALSE)
+.w_flat_t <- paste0("jt(): 'y' has the same value for every case in each ",
+                    "category of 'g'.\n",
+                    "A t-test requires variation within at least one category.")
+check("W07 two constant groups: a house stop before any table, for Student's test and for Welch's (R's \"data are essentially constant\")",
+      identical(.u_stop(jt(y ~ g, data = f_w0)), .w_flat_t) &&
+        identical(.u_stop(jt(y ~ g, data = f_w0, welch = TRUE)), .w_flat_t) &&
+        !any(startsWith(raw_out(jt(y ~ g, data = f_w0)), "Group Descriptives")))
+check("W08 ... and the same stop for a constant group beside a group of one case, where the pooled variance is zero",
+      identical(.u_stop(jt(y ~ g, data = data.frame(
+        g = c(rep("a", 4), "b"), y = c(1.5, 1.5, 1.5, 1.5, 5.5),
+        stringsAsFactors = FALSE))), .w_flat_t))
+check("W09 control: ONE constant group is a test that can be computed, and both tests equal stats::t.test()",
+      { d  <- data.frame(g = rep(c("a", "b"), each = 4),
+                         y = c(1.5, 1.5, 1.5, 1.5, 2.5, 3.5, 4.5, 5.5),
+                         stringsAsFactors = FALSE)
+        s  <- quiet(jt(y ~ g, data = d)); w <- quiet(jt(y ~ g, data = d, welch = TRUE))
+        is.list(s) && is.list(w) &&
+          near(s$t, unname(stats::t.test(y ~ g, data = d, var.equal = TRUE)$statistic)) &&
+          near(w$t, unname(stats::t.test(y ~ g, data = d)$statistic)) &&
+          near(w$df, unname(stats::t.test(y ~ g, data = d)$parameter)) })
+
+# jaov(): every group constant; one group constant.
+f_w00 <- data.frame(g = rep(c("a", "b", "c"), each = 4),
+                    y = rep(c(1.5, 2.5, 3.5), each = 4), stringsAsFactors = FALSE)
+# At the pinned width the first sentence takes two lines under "jaov(): ".
+.w_flat_a <- paste0("jaov(): 'y' has the same value for every case in each\n",
+                    "category of 'g'.\n",
+                    "An ANOVA requires variation within at least one category.")
+check("W10 jaov() with every group constant stops, for the standard ANOVA and for Welch's, before any table (it printed F = 27815876027865139260134097158144.000)",
+      identical(.u_stop(jaov(y ~ g, data = f_w00)), .w_flat_a) &&
+        identical(.u_stop(jaov(y ~ g, data = f_w00, welch = TRUE)), .w_flat_a) &&
+        !any(startsWith(raw_out(jaov(y ~ g, data = f_w00)), "Group Descriptives")))
+check("W11 ... and so does a mix of constant groups and groups of one case, which leaves no variation either",
+      identical(.u_stop(jaov(y ~ g, data = rbind(f_w00, data.frame(
+        g = "solo", y = 9.5, stringsAsFactors = FALSE)))), .w_flat_a))
+# b is constant; a and c vary.
+f_w01 <- data.frame(g = rep(c("a", "b", "c"), c(6, 5, 6)),
+                    y = c(4.5, 5.5, 6.5, 5.5, 4.5, 6.5,  3.5, 3.5, 3.5, 3.5, 3.5,
+                          7.5, 8.5, 7.5, 9.5, 8.5, 7.5), stringsAsFactors = FALSE)
+check("W12 Welch's ANOVA with one constant group stops in the form of the one-case stop, the group named (its table printed with blank F, df2 and p cells)",
+      identical(.u_stop(jaov(y ~ g, data = f_w01, welch = TRUE)),
+                paste0("jaov(): 'g' has 1 category in which 'y' does not vary (b).\n",
+                       "Welch's ANOVA requires variation within every category.\n",
+                       "The standard ANOVA can include it: run jaov() without ",
+                       "welch = TRUE.")))
+check("W13 ... in number for two such groups, named by their labels, before the descriptives",
+      { d <- f_w01; d$y[d$g == "c"] <- 8.5
+        d <- rbind(d, data.frame(g = "d", y = c(1.5, 2.5, 4.5), stringsAsFactors = FALSE))
+        d$g <- haven::labelled(match(d$g, c("a", "b", "c", "d")),
+                               c(Alpha = 1, Beta = 2, Gamma = 3, Delta = 4))
+        e <- .u_stop(jaov(y ~ g, data = d, welch = TRUE, posthoc = TRUE))
+        startsWith(e, "jaov(): 'g' has 2 categories in which 'y' does not vary (Beta\nand Gamma).\n") &&
+          grepl("The standard ANOVA can include them:", e, fixed = TRUE) &&
+          !any(startsWith(raw_out(jaov(y ~ g, data = d, welch = TRUE)),
+                          "Group Descriptives")) })
+check("W14 control: the standard ANOVA includes a constant group, and its F is stats::aov()'s",
+      { r <- quiet(jaov(y ~ g, data = f_w01))
+        f <- summary(stats::aov(y ~ g, data = f_w01))[[1]]$`F value`[1]
+        is.list(r) && near(r$f, f) })
+
+# Games-Howell with a group of two cases: b-a and d-b fall below 2 df.
+f_w3 <- data.frame(g = c(rep("a", 6), rep("b", 2), rep("c", 8), rep("d", 3)),
+                   y = c(4, 5, 6, 5, 4, 6,   9, 12,   2, 9, 4, 11, 6, 13, 1, 10,
+                         7.5, 8, 9.5), stringsAsFactors = FALSE)
+.w_o3 <- both_out(jaov(y ~ g, data = f_w3, welch = TRUE, posthoc = TRUE))
+.w_r3 <- quiet(jaov(y ~ g, data = f_w3, welch = TRUE, posthoc = TRUE))
+check("W15 a pair below 2 degrees of freedom: no warning of R's own and no NaN (it printed \"NaNs produced\" four times)",
+      !identical(.w_o3, "[error]") && !any(grepl("Warning", .w_o3, fixed = TRUE)) &&
+        !any(grepl("NaN", .w_o3, fixed = TRUE)))
+check("W16 ... the pair keeps its difference and its df; its interval and p cells are blank, NA in the returned table; the other pairs keep theirs",
+      { m <- tab(.w_o3, .u_cap)
+        r <- if (is.list(.w_r3)) .w_r3$posthoc else NULL
+        !is.null(m) && is.data.frame(r) &&
+          identical(unname(m[1L, ]), c("b-a", "5.500", "", "", "1.1", "")) &&
+          identical(unname(m[5L, ]), c("d-b", "-2.167", "", "", "1.3", "")) &&
+          all(nzchar(m[c(2L, 3L, 4L, 6L), ])) &&
+          all(is.na(unlist(r[c(1L, 5L), c("lower", "upper", "p")]))) &&
+          !any(is.nan(unlist(r[c(1L, 5L), c("lower", "upper", "p")]))) &&
+          near(r$df[c(1L, 5L)], c(1.12124269375, 1.32962154842), 1e-9) &&
+          !anyNA(unlist(r[c(2L, 3L, 4L, 6L), c("lower", "upper", "df", "p")])) })
+check("W17 ... and one line under the table says why, in number, one blank line above it, the output ending one blank line after it",
+      { i <- which(.w_o3 == paste0("Note: 2 comparisons have fewer than 2 degrees of freedom, ",
+                                   "so their"))[1]
+        o1 <- both_out(jaov(y ~ g, data = f_w3[f_w3$g != "d", ], welch = TRUE,
+                            posthoc = TRUE))
+        j <- which(o1 == paste0("Note: 1 comparison has fewer than 2 degrees of freedom, ",
+                                "so its confidence"))[1]
+        !is.na(i) && identical(.w_o3[i + 1L], "confidence intervals and p-values cannot be computed.") &&
+          !nzchar(.w_o3[i - 1L]) && startsWith(.w_o3[i - 2L], "d-c") &&
+          tail_blanks(.w_o3) == 1L && dbl_blanks(.w_o3) == 0L &&
+          i + 2L == length(.w_o3) &&
+          !is.na(j) && identical(o1[j + 1L], "interval and p-value cannot be computed.") })
+check("W18 control: with 2 or more degrees of freedom in every pair there is no such line",
+      !any(grepl("degrees of freedom", .u_out, fixed = TRUE)) &&
+        !any(grepl("degrees of freedom",
+                   both_out(jaov(y ~ g, data = f_gh, posthoc = TRUE)), fixed = TRUE)))
+
+# Two groups: the ANOVA is the only comparison.
+f_w2 <- f_gh[f_gh$g != "c", ]
+.w_two <- c("Note: Post-hoc comparisons are not shown for 2 groups: the test above is the",
+            "only comparison.")
+.w_has2 <- function(o) {
+  i <- which(o == .w_two[1L])[1]
+  !is.na(i) && identical(o[i + 1L], .w_two[2L]) && !nzchar(o[i - 1L]) &&
+    nzchar(o[i - 2L]) && tail_blanks(o) == 1L && dbl_blanks(o) == 0L &&
+    i + 2L == length(o) && !any(grepl("Post-Hoc Comparisons", o, fixed = TRUE))
+}
+check("W19 two groups and posthoc = TRUE: no post-hoc table after the standard ANOVA or after Welch's, and one line in its place (each printed a one-row table whose p repeated the test's)",
+      .w_has2(both_out(jaov(y ~ g, data = f_w2, posthoc = TRUE))) &&
+        .w_has2(both_out(jaov(y ~ g, data = f_w2, welch = TRUE, posthoc = TRUE))))
+check("W20 ... nothing is returned as posthoc, and at joutput(\"full\") the line stands in for the table the level would print",
+      { a <- quiet(jaov(y ~ g, data = f_w2, posthoc = TRUE))
+        b <- quiet(jaov(y ~ g, data = f_w2, welch = TRUE, posthoc = TRUE))
+        quiet(joutput("full"))
+        o <- both_out(jaov(y ~ g, data = f_w2))
+        quiet(joutput(NULL))
+        is.list(a) && is.null(a$posthoc) && is.list(b) && is.null(b$posthoc) &&
+          sum(o == .w_two[1L]) == 1L &&
+          !any(grepl("Post-Hoc Comparisons", o, fixed = TRUE)) })
+check("W21 control: three groups keep their table and get no such line; two groups with no post-hoc test asked for get neither",
+      { a <- both_out(jaov(y ~ g, data = f_gh, posthoc = TRUE))
+        b <- both_out(jaov(y ~ g, data = f_w2))
+        any(a == "Tukey HSD Post-Hoc Comparisons") && !any(a == .w_two[1L]) &&
+          !any(b == .w_two[1L]) && !any(grepl("Post-Hoc", b, fixed = TRUE)) })
+
+# A group whose cases are all missing on the outcome is not a group of the
+# analysis. Groups p, q, r; every case of r is missing y.
+f_wm <- data.frame(g = rep(c("p", "q", "r"), each = 5),
+                   y = c(4.5, 5.5, 6.5, 5.5, 4.5,  7.5, 9.5, 8.5, 7.5, 9.5,
+                         rep(NA, 5)), stringsAsFactors = FALSE)
+check("W22 jt(), two groups in the data and one with no case to use: a house stop that says why the count is 1 (R's \"grouping factor must have exactly 2 levels\", under a descriptives row with N 0)",
+      identical(.u_stop(jt(y ~ g, data = f_wm[f_wm$g != "p", ])),
+                paste0("jt(): 'g' has 1 category.\n",
+                       "A t-test requires exactly 2.\n",
+                       "Cases with a missing 'y' are not counted.")))
+check("W23 jt(), three groups in the data and two with cases: the test is those two groups' -- stats::t.test() on the cases with an outcome -- with two descriptives rows (it was refused as an ANOVA's)",
+      { r  <- quiet(jt(y ~ g, data = f_wm))
+        m  <- tab(raw_out(jt(y ~ g, data = f_wm)), "Group Descriptives: y by g")
+        tt <- stats::t.test(y ~ g, data = f_wm[!is.na(f_wm$y), ], var.equal = TRUE)
+        is.list(r) && near(r$t, unname(tt$statistic)) && near(r$df, 8) &&
+          !is.null(m) && identical(unname(m[, "Group"]), c("p", "q")) &&
+          identical(unname(m[, "N"]), c("5", "5")) })
+check("W24 jaov(): the emptied group has no descriptives row and F is stats::aov()'s; with one group left, the stop (R's \"contrasts can be applied only to factors with 2 or more levels\")",
+      { r <- quiet(jaov(y ~ g, data = f_wm))
+        m <- tab(raw_out(jaov(y ~ g, data = f_wm)), "Group Descriptives: y by g")
+        f <- summary(stats::aov(y ~ g, data = f_wm))[[1]]$`F value`[1]
+        is.list(r) && near(r$f, f) && near(r$df1, 1) && !is.null(m) &&
+          identical(unname(m[, "Group"]), c("p", "q")) &&
+          identical(.u_stop(jaov(y ~ g, data = f_wm[f_wm$g != "p", ])),
+                    paste0("jaov(): 'g' has 1 category.\n",
+                           "An ANOVA requires at least 2 groups.\n",
+                           "Cases with a missing 'y' are not counted.")) })
+check("W25 a labelled group keeps each remaining row beside its own label and mean when a MIDDLE group is the one emptied",
+      { d <- f_wm
+        d$g <- haven::labelled(match(d$g, c("p", "r", "q")),
+                               c(First = 1, Emptied = 2, Third = 3))
+        m <- tab(raw_out(jaov(y ~ g, data = d)), "Group Descriptives: y by g")
+        s <- tab(raw_out(jt(y ~ g, data = d)), "Group Descriptives: y by g")
+        !is.null(m) && !is.null(s) &&
+          identical(unname(m[, "Group"]), c("1: First", "3: Third")) &&
+          identical(unname(m[, "Mean"]), c("5.300", "8.500")) &&
+          identical(unname(s[, "Group"]), c("1: First", "3: Third")) &&
+          identical(unname(s[, "Mean"]), c("5.300", "8.500")) })
+check("W26 control: with no group emptied the count stops say nothing of missing data",
+      { d <- f_wm; d$y[11:15] <- c(1.5, 2.5, 3.5, 2.5, 1.5); d$y[3L] <- NA
+        e <- .u_stop(jt(y ~ g, data = d))
+        identical(e, paste0("jt(): 'g' has 3 categories.\nA t-test requires exactly 2.\n",
+                            "Use jaov() for more than 2 categories.")) })
+check("W27 control: a paired test still pairs by position before it drops a pair with a missing value -- the pair, not the one case, is removed",
+      { d <- data.frame(g = rep(c("pre", "post"), each = 5),
+                        y = c(4.5, NA, 6.5, 5.5, 4.5,  5.5, 9.5, 8.5, 6.5, 6.5),
+                        stringsAsFactors = FALSE)
+        d$g <- factor(d$g, levels = c("pre", "post"))
+        r  <- quiet(jt(y ~ g, data = d, paired = TRUE))
+        tt <- stats::t.test(c(4.5, 6.5, 5.5, 4.5), c(5.5, 8.5, 6.5, 6.5), paired = TRUE)
+        is.list(r) && near(r$t, unname(tt$statistic)) && near(r$df, 3) })
+rm(list = intersect(c("f_w1", "f_w0", "f_w00", "f_w01", "f_w3", "f_w2", "f_wm",
+                      ".w_flat_t", ".w_flat_a", ".w_o3", ".w_r3", ".w_two",
+                      ".w_has2"),
+                    ls(all.names = TRUE)))
+
+
+# =============================================================================
+# SECTION X -- DIAGNOSTICS IN jt() AND jaov(): ONE ARGUMENT, APART FROM THE
+#              LEVELS; THE LEVENE NOTE IN THREE FORMS (S346, v0.9.219)
+# =============================================================================
+# Jeff's ruling of 8 October 2026, amending ruling R14. Levene's test is one
+# of the diagnostics: jt() and jaov() take diagnostics = (TRUE, FALSE or
+# "levene") in place of levene =, joutput() stores the same setting for
+# every call, and no output level turns it on -- joutput("full") and
+# full = TRUE printed Levene's table until v0.9.219. Under a significant
+# test the note states the two ratios that decide how much it matters and
+# then one of three verdicts, because the textbooks give different cutoffs:
+# "usually still acceptable" (sizes within 1.25 and SDs within 2), "the
+# p-value ... may not be reliable" (sizes beyond 1.5 and SDs beyond 2),
+# "guidelines differ" between them. It printed "the standard test remains
+# appropriate" whenever the sizes were within 1.5, whatever the SDs. The
+# note is the table's interpretation and prints with it, except at the
+# minimal level.
+cat("\n--- X. Diagnostics in jt() and jaov(); the Levene note ---\n")
+
+# .x_mk(): groups of the given sizes, SDs and means, the SDs exact to three
+# places, so a fixture sits where it is meant to between the note's zones.
+.x_mk <- function(n, s, m) {
+  y <- unlist(Map(function(k, sd, mu) {
+    z <- stats::qnorm(stats::ppoints(k))
+    mu + sd * z / stats::sd(z)
+  }, n, s, m))
+  data.frame(g = rep(letters[seq_along(n)], n), y = round(y, 3),
+             stringsAsFactors = FALSE)
+}
+# .x_note(): the note as printed, from its first line to the line before
+# the descriptives' caption, the blank line after it dropped.
+.x_note <- function(o) {
+  i <- which(startsWith(o, "Note: Levene's test is significant"))[1]
+  j <- which(startsWith(o, "Group Descriptives"))[1]
+  if (is.na(i) || is.na(j)) return(character(0))
+  o[i:(j - 2L)]
+}
+.x_lev <- "Levene's Test for Homogeneity of Variance"
+f_x1 <- .x_mk(c(30, 30, 26), c(1, 1.4, 1.9), c(5, 6, 7))   # 1.2 and 1.9
+f_x2 <- .x_mk(c(30, 24, 20), c(1, 1, 2.1),   c(5, 6, 7))   # 1.5 and 2.1
+f_x3 <- .x_mk(c(40, 20, 20), c(1, 1, 2.6),   c(5, 6, 7))   # 2.0 and 2.6
+f_y1 <- .x_mk(c(40, 40), c(1, 1.9), c(5, 6))               # same size, 1.9
+f_y2 <- .x_mk(c(42, 40), c(1, 2.4), c(5, 6))               # 1.05 and 2.4
+f_y3 <- .x_mk(c(40, 20), c(1, 2.6), c(5, 6))               # 2.0 and 2.6
+
+check("X01 jaov(), sizes within 1.25 and SDs within 2: the two ratios, then \"usually still acceptable\", then the help page -- pinned whole",
+      identical(.x_note(both_out(jaov(y ~ g, data = f_x1, diagnostics = TRUE))),
+                c("Note: Levene's test is significant (p = .011).",
+                  "The largest group is 1.2 times the smallest, and the largest SD is 1.9 times",
+                  "the smallest.",
+                  "Both are within the usual guidelines, so the standard ANOVA is usually",
+                  "still acceptable.",
+                  "See ?jaov.")))
+check("X02 ... between the two: \"Guidelines differ\", and Welch's ANOVA named with its argument (it read \"the standard test remains appropriate\" at any SD ratio)",
+      identical(.x_note(both_out(jaov(y ~ g, data = f_x2, diagnostics = TRUE))),
+                c("Note: Levene's test is significant (p < .001).",
+                  "The largest group is 1.5 times the smallest, and the largest SD is 2.1 times",
+                  "the smallest.",
+                  "Guidelines differ on whether the standard ANOVA is acceptable at",
+                  "these values.",
+                  "Welch's ANOVA does not assume equal variances: welch = TRUE.",
+                  "See ?jaov.")))
+check("X03 ... sizes beyond 1.5 and SDs beyond 2: the p-value \"may not be reliable\", with no word on which way it errs",
+      identical(.x_note(both_out(jaov(y ~ g, data = f_x3, diagnostics = TRUE))),
+                c("Note: Levene's test is significant (p < .001).",
+                  "The largest group is 2.0 times the smallest, and the largest SD is 2.6 times",
+                  "the smallest.",
+                  "Both are beyond the usual guidelines, so the p-value of the standard ANOVA",
+                  "may not be reliable.",
+                  "Welch's ANOVA does not assume equal variances: welch = TRUE.",
+                  "See ?jaov.")))
+check("X04 jt() has the same three forms in its own words: Student's and Welch's t-test, a larger and a smaller group, ?jt",
+      identical(.x_note(both_out(jt(y ~ g, data = f_y1, diagnostics = TRUE))),
+                c("Note: Levene's test is significant (p < .001).",
+                  "The groups are the same size, and the larger SD is 1.9 times the smaller.",
+                  "Both are within the usual guidelines, so Student's t-test is usually",
+                  "still acceptable.",
+                  "See ?jt.")) &&
+        identical(.x_note(both_out(jt(y ~ g, data = f_y2, diagnostics = TRUE))),
+                  c("Note: Levene's test is significant (p < .001).",
+                    "The larger group is 1.05 times the smaller, and the larger SD is 2.4 times",
+                    "the smaller.",
+                    "Guidelines differ on whether Student's t-test is acceptable at these values.",
+                    "Welch's t-test does not assume equal variances: welch = TRUE.",
+                    "See ?jt.")) &&
+        identical(.x_note(both_out(jt(y ~ g, data = f_y3, diagnostics = TRUE))),
+                  c("Note: Levene's test is significant (p < .001).",
+                    "The larger group is 2.0 times the smaller, and the larger SD is 2.6 times",
+                    "the smaller.",
+                    "Both are beyond the usual guidelines, so the p-value of Student's t-test may",
+                    "not be reliable.",
+                    "Welch's t-test does not assume equal variances: welch = TRUE.",
+                    "See ?jt.")))
+# The zones, read from the helper on groups a hair inside and outside each
+# edge. .x_form(): which verdict the note gives for these sizes and SDs.
+.x_form <- function(n, s) {
+  d <- .x_mk(n, s, rep(5, length(n)))
+  o <- paste(utils::capture.output(
+    jstats:::.jst_levene_note(0.01, d$y, factor(d$g), "jaov")), collapse = " ")
+  if (grepl("usually still acceptable", o, fixed = TRUE)) "within"
+  else if (grepl("Guidelines differ", o, fixed = TRUE)) "differ"
+  else if (grepl("may not be reliable", o, fixed = TRUE)) "beyond"
+  else "none"
+}
+check("X05 the reassuring form needs BOTH: sizes at 1.25 with SDs at 1.99 give it; sizes at 1.3, or SDs at 2.05, do not",
+      identical(.x_form(c(25, 20), c(1, 1.99)), "within") &&
+        identical(.x_form(c(26, 20), c(1, 1.99)), "differ") &&
+        identical(.x_form(c(25, 20), c(1, 2.05)), "differ") &&
+        identical(.x_form(c(20, 20, 20), c(1, 1.5, 1.99)), "within"))
+check("X06 the cautionary form needs BOTH beyond: sizes at 1.55 with SDs at 2.05 give it; sizes at 1.5, or SDs at 1.99, do not, however far the other is",
+      identical(.x_form(c(31, 20), c(1, 2.05)), "beyond") &&
+        identical(.x_form(c(30, 20), c(1, 4)), "differ") &&
+        identical(.x_form(c(60, 20), c(1, 1.99)), "differ") &&
+        identical(.x_form(c(20, 20), c(1, 5)), "differ"))
+check("X07 a ratio is shown to one place, and to two where one would mislead: \"1.05 times\" for groups of 21 and 20, \"2.03 times\" over a verdict that 2.0 would contradict; a constant group is \"the smallest SD is 0\"",
+      { a <- utils::capture.output(jstats:::.jst_levene_note(
+               0.01, c(.x_mk(c(21, 20), c(1, 1.5), c(5, 5))$y),
+               factor(rep(c("a", "b"), c(21, 20))), "jt"))
+        e <- .x_mk(c(31, 20), c(1, 2.03), c(5, 5))
+        e <- paste(utils::capture.output(jstats:::.jst_levene_note(
+               0.01, e$y, factor(e$g), "jt")), collapse = " ")
+        b <- utils::capture.output(jstats:::.jst_levene_note(
+               0.01, c(rep(3.5, 5), 1.5, 2.5, 3.5, 4.5, 5.5, 4.5, 2.5, 6.5, 0.5, 3.5),
+               factor(rep(c("a", "b", "c"), each = 5)), "jaov"))
+        # Every group constant never reaches the note from jt() or jaov(),
+        # which stop first; the helper still answers, with no 0 / 0.
+        z <- tryCatch(utils::capture.output(jstats:::.jst_levene_note(
+               0.01, rep(c(3, 5, 8), each = 4),
+               factor(rep(c("a", "b", "c"), each = 4)), "jaov")),
+             error = function(e) "error")
+        any(grepl("The groups are the same size, and the smallest SD is 0.", z, fixed = TRUE)) &&
+          any(grepl("The larger group is 1.05 times the smaller", a, fixed = TRUE)) &&
+          grepl("The larger group is 1.6 times the smaller, and the larger SD is 2.03 times the smaller.",
+                e, fixed = TRUE) &&
+          grepl("Both are beyond the usual guidelines", e, fixed = TRUE) &&
+          any(grepl("The groups are the same size, and the smallest SD is 0.", b, fixed = TRUE)) &&
+          any(grepl("Guidelines differ", b, fixed = TRUE)) })
+check("X08 no note: a test that is not significant, Welch's test run, or a group of one case (no SD to compare)",
+      { ns <- utils::capture.output(jstats:::.jst_levene_note(0.05, f_x3$y, factor(f_x3$g), "jaov"))
+        w  <- both_out(jaov(y ~ g, data = f_x3, welch = TRUE, diagnostics = TRUE))
+        s1 <- utils::capture.output(jstats:::.jst_levene_note(
+                0.01, c(f_y3$y, 9.5), factor(c(f_y3$g, "c")), "jaov"))
+        wt <- both_out(jt(y ~ g, data = f_y3, welch = TRUE, diagnostics = TRUE))
+        length(ns) == 0L && length(s1) == 0L &&
+          any(w == .x_lev) && !any(startsWith(w, "Note: Levene")) &&
+          any(wt == .x_lev) && !any(startsWith(wt, "Note: Levene")) })
+check("X09 the note is the table's interpretation: with it at the standard and full levels, without it at minimal, where the table still prints",
+      { got <- lapply(c("minimal", "standard", "full"), function(lv) {
+          quiet(joutput(lv))
+          o <- both_out(jaov(y ~ g, data = f_x3, diagnostics = TRUE))
+          c(table = any(o == .x_lev), note = any(startsWith(o, "Note: Levene")))
+        })
+        quiet(joutput(NULL))
+        identical(got, list(c(table = TRUE, note = FALSE), c(table = TRUE, note = TRUE),
+                            c(table = TRUE, note = TRUE))) })
+.x_has <- function(expr) any(both_out(expr) == .x_lev)
+check("X10 no level prints Levene's test: not joutput(\"full\"), not full = TRUE, in jt() or jaov() (both printed it until v0.9.219)",
+      { quiet(joutput("full"))
+        a <- .x_has(jaov(y ~ g, data = f_x3)); b <- .x_has(jt(y ~ g, data = f_y3))
+        quiet(joutput(NULL))
+        !a && !b && !.x_has(jaov(y ~ g, data = f_x3, full = TRUE)) &&
+          !.x_has(jt(y ~ g, data = f_y3, full = TRUE)) &&
+          # ... and full = TRUE is otherwise what it was: post-hoc tests, the interval.
+          any(both_out(jaov(y ~ g, data = f_x3, full = TRUE)) == "Tukey HSD Post-Hoc Comparisons") })
+check("X11 diagnostics = TRUE and diagnostics = \"levene\" print it at any level; FALSE and no argument do not",
+      .x_has(jaov(y ~ g, data = f_x3, diagnostics = TRUE)) &&
+        .x_has(jaov(y ~ g, data = f_x3, diagnostics = "levene")) &&
+        .x_has(jt(y ~ g, data = f_y3, diagnostics = TRUE)) &&
+        .x_has(jt(y ~ g, data = f_y3, diagnostics = "levene")) &&
+        !.x_has(jaov(y ~ g, data = f_x3, diagnostics = FALSE)) &&
+        !.x_has(jaov(y ~ g, data = f_x3)) && !.x_has(jt(y ~ g, data = f_y3)))
+check("X12 joutput(diagnostics = ) sets it for every call: TRUE, or a set naming \"levene\"; a set naming only the models' diagnostics leaves these two alone; the call's own FALSE wins",
+      { quiet(joutput(diagnostics = TRUE))
+        a <- .x_has(jaov(y ~ g, data = f_x3)) && .x_has(jt(y ~ g, data = f_y3)) &&
+             !.x_has(jaov(y ~ g, data = f_x3, diagnostics = FALSE))
+        quiet(joutput(diagnostics = c("vif", "levene")))
+        b <- .x_has(jaov(y ~ g, data = f_x3))
+        quiet(joutput(diagnostics = c("vif", "qq")))
+        c <- !.x_has(jaov(y ~ g, data = f_x3)) && .x_has(jaov(y ~ g, data = f_x3, diagnostics = TRUE))
+        quiet(joutput(NULL))
+        a && b && c && !.x_has(jaov(y ~ g, data = f_x3)) })
+check("X13 a level call leaves the setting as it was, in both directions",
+      { quiet(joutput(diagnostics = TRUE)); quiet(joutput("minimal")); quiet(joutput("full"))
+        a <- .x_has(jt(y ~ g, data = f_y3))
+        quiet(joutput(diagnostics = FALSE)); quiet(joutput("full"))
+        b <- .x_has(jt(y ~ g, data = f_y3))
+        quiet(joutput(NULL))
+        a && !b })
+check("X14 levene = is refused with the name that replaced it, before any output (R's own \"unused argument\" otherwise)",
+      identical(.u_stop(jaov(y ~ g, data = f_x3, levene = TRUE)),
+                "jaov(): 'levene' is not valid. Did you mean `diagnostics`?") &&
+        identical(.u_stop(jt(y ~ g, data = f_y3, levene = TRUE)),
+                  "jt(): 'levene' is not valid. Did you mean `diagnostics`?") &&
+        identical(raw_out(jaov(y ~ g, data = f_x3, levene = TRUE))[1L],
+                  "[error] jaov(): 'levene' is not valid. Did you mean `diagnostics`?"))
+check("X15 a name that is not one of the function's diagnostics stops, pinned whole: another function's, a misspelling, a number",
+      identical(.u_stop(jaov(y ~ g, data = f_x3, diagnostics = "vif")),
+                paste0("jaov(): \"vif\" is not a diagnostic of jaov().\n",
+                       "`diagnostics` must be TRUE, FALSE, or \"levene\".")) &&
+        identical(.u_stop(jt(y ~ g, data = f_y3, diagnostics = "leven")),
+                  paste0("jt(): \"leven\" is not a diagnostic of jt().\n",
+                         "`diagnostics` must be TRUE, FALSE, or \"levene\".")) &&
+        identical(.u_stop(jt(y ~ g, data = f_y3, diagnostics = 1)),
+                  "jt(): `diagnostics` must be TRUE, FALSE, or \"levene\"."))
+check("X16 control: a paired test has no Levene's test and says so when diagnostics are asked for, as it did",
+      { d <- data.frame(g = factor(rep(c("pre", "post"), each = 5), levels = c("pre", "post")),
+                        y = c(4.5, 5.5, 6.5, 5.5, 4.5,  5.5, 9.5, 8.5, 6.5, 6.5))
+        o <- both_out(jt(y ~ g, data = d, paired = TRUE, diagnostics = TRUE))
+        any(o == "Note: Levene's test is not applicable for paired samples.") &&
+          !any(o == .x_lev) })
+rm(list = intersect(c(".x_mk", ".x_note", ".x_lev", ".x_form", ".x_has",
+                      "f_x1", "f_x2", "f_x3", "f_y1", "f_y2", "f_y3"),
+                    ls(all.names = TRUE)))
+
+
 
 # --- Verdict -----------------------------------------------------------------
 
@@ -3422,6 +3984,7 @@ rm(list = intersect(c("f_aov", "f_t2", "f_pair", "f_log", "f_a2", "f_a3",
 options(.jst_options_message_width = .entry_message_width)
 options(.jst_default_data          = .entry_default_data)
 options(.jst_output_level          = .entry_output_level)
+options(.jst_output_toggles = .entry_output_toggles)
 
 .n_ok <- sum(vapply(.results, `[[`, logical(1), "ok"))
 .n    <- length(.results)

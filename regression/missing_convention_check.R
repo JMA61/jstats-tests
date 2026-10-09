@@ -10,6 +10,15 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S346 EDIT (v0.9.219, 2026-10-08): the session guard hands back the stored
+#           display settings (.jst_output_toggles) with the output level.
+#           The diagnostics setting outlives a level call since v0.9.219,
+#           so a run entered with joutput(diagnostics = TRUE) left the
+#           session without it (found entering dirty). No check added.
+#           LAST VERIFIED: v0.9.219, 2026-10-09 (S346) -- 555/555 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2079 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 14528c6.
 # S345 EDIT (v0.9.218, 2026-10-06): Fix Slate 5, the second cut. NEW N84
 #           section, 43 checks (N84a-aq), in eight parts. A, N84a-c (the
 #           S287 remainder): the map parser names the invalid old value
@@ -933,6 +942,10 @@ options(.jst_options_missing_convention = NULL)
 # it and clear it to the default, so a session entered at joutput("full")
 # came back at "standard".
 .entry_output_level <- getOption(".jst_output_level")
+# The stored display settings too (S346): the diagnostics setting outlives
+# a level call, so restoring the level alone would hand back a session
+# without it.
+.entry_output_toggles <- getOption(".jst_output_toggles")
 
 # Message-width state (S253). The emitter now wraps every message to the
 # message.width setting, so message output has become environment-dependent:
@@ -7047,6 +7060,7 @@ options(.jst_options_missing_convention = NULL)
 options(.jst_options_missing_convention = .entry_convention)
 options(.jst_options_message_width = .entry_message_width)
 options(.jst_output_level = .entry_output_level)
+options(.jst_output_toggles = .entry_output_toggles)
 
 # --- Verdict -----------------------------------------------------------------
 

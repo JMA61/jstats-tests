@@ -15,6 +15,11 @@
 #           registration verbs unified, so the preamble did not clear what
 #           it claimed; it does now. No Expected touched; confirmed in the
 #           walk below.
+# S346 EDIT (v0.9.219, 2026-10-08): Section 10 CHANGED MECHANICALLY under
+#           Jeff's ruling of that day (the full tier does not bring
+#           diagnostics): a second call asks for the VIF block by name,
+#           diagnostics = "vif", and the bullets say which call shows
+#           what. No Expected blocks in this file; PENDING stays none.
 # S321 EDIT (v0.9.199, 2026-10-01): Section 6's first and third bullets
 #           rewritten for the v0.9.198 display -- the row reads
 #           "Stress * SocialSupport", and the note under the table now
@@ -610,15 +615,19 @@ jcorr(Stress, SocialSupport, SleepHours, Flourishing, ScreenTime)
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # joutput controls how much the analysis functions print. The "full" tier
 # surfaces advisory notes and case-processing detail that the standard tier
-# keeps quiet.
+# keeps quiet. Diagnostics are apart from the tiers since v0.9.219: the
+# second call asks for the VIF table by name.
 
 joutput("full")
 jlm(Flourishing ~ Stress * SocialSupport)
+jlm(Flourishing ~ Stress * SocialSupport, diagnostics = "vif")
 joutput(NULL)       # restore the standard tier
 
 # Things to look at:
-#   - The per-code missing breakdown (-99 / -98 split out), variable labels,
-#     CIs, and the VIF block, compared with Section 6's standard-tier run.
+#   - First call: the per-code missing breakdown (-99 / -98 split out),
+#     variable labels and CIs, compared with Section 6's standard-tier run.
+#     No VIF block and no plots: the full tier does not bring diagnostics.
+#   - Second call: the same output with the VIF block under it.
 #   - The interaction's high VIF is expected in an uncentered interaction model
 #     (same centering point as Section 6).
 

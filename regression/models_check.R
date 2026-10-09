@@ -79,6 +79,106 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S346 EDIT (v0.9.219, 2026-10-08): Fix Slate 8, first cut, and Jeff's
+#           diagnostics ruling of that day. SECTIONS N AND O ADDED, N01-N27
+#           and O01-O12 (39 checks). N01-N10 a sample with no case left:
+#           one stop in jt(), jaov(), jcrosstab(), jlm(), jlogistic() and
+#           jalpha(), under the Case Processing block and ahead of every
+#           group count, saying whether a filter, missing data or both
+#           took the cases; jdesc() and jcorr() untouched. N11-N15 a
+#           predictor with one value: the predictor the subject, the
+#           filter line only when a filter excluded cases. N16-N17 a
+#           computed outcome in jlogistic(). N18-N27 the "seems
+#           categorical" rerun lines, every printed line run: the frame
+#           as the call named it, a formula past 60 characters whole,
+#           backticks, a juse() default, an expression and a place as
+#           the data, the call's own categorical =; jlogistic()'s; and
+#           jplot()'s fit line. O01-O12 diagnostics in jlm() and
+#           jlogistic(): the resolver, TRUE as the VIF table and five
+#           plots, no level bringing them, names, the stops, the lines
+#           under a VIF above 10 not printed at minimal.
+#           RE-PINNED: E04 E06 H26 K11 K12 (the empty-sample and
+#           one-value stops in their new wording; the warning's new
+#           lines). 331 checks.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 331/331
+#           plain and under the RStudio-handler stand-in, each also with a
+#           Windows-length temp path, and entered dirty, the session
+#           handed back. On the 0.9.218 master 39 red: E04 E06 H26 K11
+#           K12, N01-N09 N11-N16 N18-N27, O01 O02 O04-O08 O10 O11.
+#           MUTATION MAP (S346; the mutants of format_check.R's list that
+#           red here): every call showing its diagnostics G10 G19 H08 H11
+#           H16 M30 N25 O01 O02 O04 O10; names not held to the function's
+#           set O01 O02 O05; the stored setting not read O02 O10; an
+#           unknown name passing O06 O07 O08; no c() stop O07; a wrong
+#           type passing O08; full = TRUE bringing them in jlm or in
+#           jlogistic O04; notes at minimal O11, in jlm alone or in
+#           jlogistic alone O11; jlm's set without its plots O01-O03
+#           O05-O08 O10; no empty-sample stop in jt or jaov N01 N02 N05
+#           N06, in jcrosstab N01 N02 N05, in jlm E04 K12 N01-N04, in
+#           jlogistic E04 K12 N01 N02 N08, in jalpha N01 N02 N07; the
+#           cause reversed E04 K12 N01 N02 N04 N06 N08; one case not
+#           singular N04; both causes never named N03; the frame never
+#           named in the rerun line N18-N21 N23-N26, always named N22; no
+#           backticks N20 N21; an expression pasted into jdummy(), no
+#           mydata line, or the per-call line naming mydata N23; the
+#           call's own categorical dropped N25; the filter line whenever
+#           a filter is set N15, never N13 N14; singular always K11 N12;
+#           a computed outcome not refused N16; jplot's fit line without
+#           the frame N27.
+#           THE SESSION GUARD hands back the stored display settings
+#           (.jst_output_toggles) with the output level: the diagnostics
+#           setting outlives a level call, so a run entered with
+#           joutput(diagnostics = TRUE) left the session without it
+#           (found entering dirty; all seven batteries with the guard).
+#           SECOND DELIVERY, THE NEXT DAY: SECTION P ADDED, P01-P31 with
+#           P13b, P13c and P25b (34 checks), on Jeff's walk of
+#           models_walk.R Section 18 ("the error message doesn't address
+#           the real problem"): a
+#           filter whose condition names a variable the analysis needs to
+#           vary is named as the cause of its one value, with the way out
+#           (and, for a predictor, the second way out: remove it from the
+#           formula) -- the one-value predictor in jlm() and jlogistic(),
+#           the dummy-coded predictor registered or built in the call, the
+#           grouping variable of jt(), jaov() and jcrosstab(), and the
+#           outcome of jlm() (R's "0 (non-NA) cases") and jlogistic()
+#           ("Use jrecode()" of a 0/1 variable); the hedged and plain forms
+#           where no filter names it, or listwise deletion took the rest;
+#           one case left, in all six listwise functions. RE-PINNED: F16
+#           F17 F30 (subset = gf == "b" names gf: the filter form, the
+#           S306 sentence's requirement kept); K01 K05 K07 K09 (.k_on()
+#           now filters on gn, so they keep the context form of a stored
+#           filter that does not name g); N09 (one case now stops).
+#           P13c and P25b were added after the mutant round, which two
+#           guards survived. 365 checks.
+#           Sandbox: 365/365 plain and under the RStudio-handler
+#           stand-in, each also with a Windows-length temp path, and
+#           entered dirty. On the first delivery's build 30 red: F16 F17
+#           F30, P01 P03 P05-P07 P10-P13 P13b P13c P14-P17 P20-P25 P25b
+#           P26-P28 P30 P31.
+#           MUTATION MAP (S346, second round; 25 one-change mutants
+#           through all eight batteries, 25 red): subset = never counted
+#           as naming F16 F17 F30 P01 P05-P07 P10 P11 P13b P14 P16 P17 P20
+#           P24 P31; a stored filter never counted P03 P05 P15; a computed
+#           term read as one name P07 P30; listwise deletion blamed on the
+#           filter, for a predictor P09, a registered predictor P13c (added
+#           after the round, which this mutant survived), the outcome P25b
+#           (the same); the predictor's filter form never P01 P03 P05-P07
+#           P10, and its second way out not naming it, the same; a stored
+#           filter told to be removed like subset = P03 P15; two filters
+#           still "keeps" P05; the registered form never F16 F17 F30, the
+#           in-call form never P11 P13b; jt's, jaov's and jcrosstab's
+#           filter form never P14 P15, P16, P17; a missing outcome blamed
+#           on the filter P18; jlogistic reading a one-value outcome as
+#           before P20-P22 P26, no check after listwise deletion P23; jlm
+#           with no outcome stop P24 P25; one case not stopped P26-P28,
+#           one other case in the plural P28, a one-row frame told a case
+#           is left P28; the registered form's hedged line dropped P12; a
+#           labelled value shown without its label P22; a filter set aside
+#           counted F16 F17 F30 P31.
+#           LAST VERIFIED: v0.9.219, 2026-10-09 (S346) -- 365/365 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2079 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 14528c6.
 # S342 EDIT (v0.9.216, 2026-10-06): Fix Slate 4. SECTION M ADDED, M01-M37
 #           (37 checks); nothing else changed. M01-M04 jdummy()'s ref is
 #           one value (the S329 item): two codes, two words, an empty one,
@@ -534,6 +634,10 @@ stopifnot(exists("jload", mode = "function"))
 .entry_message_width <- getOption(".jst_options_message_width")
 .entry_default_data  <- getOption(".jst_default_data")
 .entry_output_level  <- getOption(".jst_output_level")
+# The stored display settings too (S346): the diagnostics setting outlives
+# a level call, so restoring the level alone would hand back a session
+# without it.
+.entry_output_toggles <- getOption(".jst_output_toggles")
 
 # Message-width pin (mandatory since S253). The wording checks below flatten
 # whitespace before matching, so the pin is belt-and-braces here.
@@ -924,14 +1028,19 @@ check("E03 haven IV: unchanged (equals glm() on the factor of the codes)", {
   near(b_of(m, "hv_Mid"), t[["factor(unclass(hv))2"]], 1e-6)
 })
 .dna <- d; .dna$x1[] <- NA_real_
+# The wording is the shared stop's since S346 (section N pins it whole).
 check("E04 every case excluded: jlogistic stops with jlm's wording (R's 'Argument mu' leaked before)",
-      grepl("All cases were excluded by the pipeline and/or listwise deletion; no model can be fit.",
-            flat(grab(jlogistic(yb ~ x1, data = .dna))), fixed = TRUE))
+      grepl("No cases are left to analyze. All 120 cases were excluded because of missing data.",
+            flat(grab(jlogistic(yb ~ x1, data = .dna))), fixed = TRUE) &&
+        identical(sub("^jlogistic", "jlm", grab(jlogistic(yb ~ x1, data = .dna))),
+                  grab(jlm(y ~ x1, data = .dna))))
 check("E05 ... and the stop names the function",
       grepl("jlogistic():", grab(jlogistic(yb ~ x1, data = .dna)), fixed = TRUE))
 check("E06 a constant predictor: jlogistic stops with jlm's zero-variance wording",
-      grepl("This predictor has no variation in the analysis sample (only one unique value); cannot fit slope: k.",
-            flat(grab(jlogistic(yb ~ x1 + k, data = d))), fixed = TRUE))
+      grepl("k has only one value in the analysis sample, so its coefficient cannot be estimated.",
+            flat(grab(jlogistic(yb ~ x1 + k, data = d))), fixed = TRUE) &&
+        identical(flat(sub("^jlogistic\\(\\): ", "", grab(jlogistic(yb ~ x1 + k, data = d)))),
+                  flat(sub("^jlm\\(\\): ", "", grab(jlm(y ~ x1 + k, data = d))))))
 check("E07 an aliased predictor: the collinearity warning fires (x3 = x1 + x2)",
       grepl("One or more variables have been removed from the model due to collinearity.",
             flat(grab(jlogistic(yb ~ x1 + x2 + x3, data = d))), fixed = TRUE))
@@ -975,9 +1084,12 @@ cat("\n--- F. absent categories ---\n")
 .f_note_nonref <- paste0(
   "Note: gf's registered category 4: d has no cases in the analysis sample and is left out of this model.\n",
   "The registration is unchanged.")
+# Since S346 a filter that names the variable is named as the cause, with
+# both ways out (section P); the S306 sentence's requirement is kept.
 .f_stop_one <- paste0(
-  "gf has only one category in the analysis sample (2: b); a dummy-coded predictor requires at least two.\n",
-  "This often happens when jsubset() restricts the sample to a single category of a variable that is then used as a predictor.")
+  "subset = gf == \"b\" keeps only one category of gf (2: b), and a dummy-coded predictor requires at least two.\n",
+  "To estimate its coefficients, remove the filter.\n",
+  "To analyze only those cases, remove gf from the formula.")
 
 # with_state(): run expr between a setup and a teardown that runs whatever
 # happens, so a failing check cannot leak registrations or filters into
@@ -1068,11 +1180,11 @@ check("F15 ... one dummy remains, c-vs-b, and the fit equals lm() on the two cat
 
 # -- Fewer than two categories present: the guided stop -------------------
 .f4_msg <- with_reg(grab(jlm(y ~ gf, data = d, subset = gf == "b")))
-check("F16 one category left: the stop names the VARIABLE with the approved wording (it named gf_b, gf_c, gf_d)",
+check("F16 one category left: the stop names the VARIABLE (it named gf_b, gf_c, gf_d) and, since S346, the filter that kept it",
       grepl(flat(.f_stop_one), flat(.f4_msg), fixed = TRUE) &&
       !grepl("gf_b", .f4_msg, fixed = TRUE))
 check("F17 ... and the stop names the function",
-      grepl("jlm(): gf has only one category", flat(.f4_msg), fixed = TRUE))
+      grepl("jlm(): subset = gf == \"b\" keeps only one category of gf", flat(.f4_msg), fixed = TRUE))
 
 # -- The listwise route: no filter, the reference lost to deletion --------
 .f5_out <- with_reg(shown(jlm(y ~ gf + xa, data = d)))
@@ -1154,7 +1266,7 @@ check("F29 jlogistic, a non-reference category filtered out: fits, with the note
     grepl(flat(.f_note_nonref), flat(msg), fixed = TRUE)
 })
 check("F30 jlogistic, one category left: the stop names the variable and the function",
-      grepl("jlogistic(): gf has only one category in the analysis sample (2: b)",
+      grepl("jlogistic(): subset = gf == \"b\" keeps only one category of gf (2: b)",
             flat(with_reg(grab(jlogistic(yb ~ gf, data = d, subset = gf == "b")))), fixed = TRUE))
 
 # -- The formula walker on its own ----------------------------------------
@@ -1561,7 +1673,8 @@ check("H25 jlogistic warns the same way and fits x1 alone",
           grepl(.h_warn("x1^2", "x1", "squared", 2L), flat(grab(jlogistic(yb ~ x1 + x1^2, data = d))), fixed = TRUE) })
 check("H26 the warning is given only once a model is fitted: a call that stops first does not give it",
       { g <- grab(jlm(y ~ k^2, data = d))
-        grepl("no variation", g, fixed = TRUE) && !grepl("entered the model as", g, fixed = TRUE) })
+        grepl("has only one value in the analysis sample", flat(g), fixed = TRUE) &&
+          !grepl("entered the model as", g, fixed = TRUE) })
 d$x12 <- NULL; d$x1sq <- NULL; d$x12r <- NULL; d$x12p <- NULL
 
 # =============================================================================
@@ -1967,14 +2080,18 @@ rm(list = intersect(c("v3_j", "v7_j", "v120_j", "s_j", "set_j", "w_j", "p2_j",
   p <- quiet(eval(parse(text = line), envir = env))
   if (inherits(p, "ggplot")) class(p$layers[[1L]]$geom)[1L] else NA_character_
 }
-.k_on  <- function() quiet(jsubset(d, g == "a"))
+# Since S346 the filter names gn, not g: a filter that names the grouping
+# variable is the cause and gets a stop of its own (section P), and K01-K10
+# hold the context form, a stored filter that leaves one category of g
+# through another variable (gn is "5" exactly where g is "a").
+.k_on  <- function() quiet(jsubset(d, gn == "5"))
 .k_off <- function() quiet(jsubset(d, NULL))
 
 # ---- K01-K10: the group-count stops -----------------------------------------
 .k01 <- with_state(.k_on(), grab(jt(y ~ g, data = d)), .k_off())
 check("K01 jt(), a stored filter on a NAMED frame: 1 category, in number, the filter named as a setting, a sentence a line (it said 'has 1 categories ... Use jaov() for more than 2 categories')",
       identical(flat(.k01), paste0(
-        "jt(): 'g' has 1 category after applying the jsubset filter (g == \"a\"). ",
+        "jt(): 'g' has 1 category after applying the jsubset filter (gn == \"5\"). ",
         "A t-test requires exactly 2. ",
         "Check whether your jsubset or jcomplete settings are excluding one of the groups.")) &&
         .k_has(.k01, ".\nA t-test requires exactly 2.\nCheck whether your") &&
@@ -1996,7 +2113,7 @@ check("K04 one category and no stored setting: two lines, and no jaov()",
 check("K05 jaov(), a stored jcomplete() and a stored jsubset(): both named as settings, and-joined",
       identical(flat(.k05), paste0(
         "jaov(): 'g' has 1 category after applying the jcomplete setting and ",
-        "the jsubset filter (g == \"a\"). An ANOVA requires at least 2. ",
+        "the jsubset filter (gn == \"5\"). An ANOVA requires at least 2. ",
         "Check whether your jsubset or jcomplete settings are excluding one or more groups.")) &&
         .k_has(.k05, ".\nAn ANOVA requires at least 2.\nCheck whether your"))
 check("K06 jaov(), no stored setting: two lines",
@@ -2005,7 +2122,7 @@ check("K06 jaov(), no stored setting: two lines",
 .k07 <- with_state(.k_on(), grab(jcrosstab(g ~ lg, data = d)), .k_off())
 check("K07 jcrosstab(), with a stored filter and without",
       identical(flat(.k07), paste0(
-        "jcrosstab(): 'g' has 1 category after applying the jsubset filter (g == \"a\"). ",
+        "jcrosstab(): 'g' has 1 category after applying the jsubset filter (gn == \"5\"). ",
         "A cross-tabulation requires at least 2 categories for each variable.")) &&
         identical(grab(jcrosstab(k ~ g, data = d)), paste0(
           "jcrosstab(): 'k' has 1 category.\n",
@@ -2019,7 +2136,7 @@ check("K09 .jst_settings_context(): no name, a name of two parts and a frame wit
         identical(jstats:::.jst_settings_context(c("d", "e")), "") &&
         identical(jstats:::.jst_settings_context("no_such_frame_k"), "") &&
         identical(with_state(.k_on(), jstats:::.jst_settings_context("d"), .k_off()),
-                  " after applying the jsubset filter (g == \"a\")"))
+                  " after applying the jsubset filter (gn == \"5\")"))
 check("K10 none of them carries the shortcut, 'categories' for one, or the spaced 'jsubset ('",
       { all_k <- c(.k01, .k05, .k07, grab(jt(y ~ k, data = d)), grab(jaov(y ~ k, data = d)))
         !any(grepl("(ies)", all_k, fixed = TRUE)) &&
@@ -2028,18 +2145,20 @@ check("K10 none of them carries the shortcut, 'categories' for one, or the space
 
 # ---- K11-K12: the two model stops --------------------------------------------
 .dk <- d; .dk$k2 <- 2
-check("K11 one constant predictor: 'This predictor has'; two: 'These predictors have' -- in jlm() and in jlogistic()",
+# Reworded at S346 with the predictor as the subject (section N pins the
+# stop whole); the agreement in number is what K11 holds.
+check("K11 one constant predictor: 'has ... its coefficient'; two: 'have ... each ... their coefficients' -- in jlm() and in jlogistic()",
       .k_has(flat(grab(jlm(y ~ x1 + k, data = .dk))),
-             "jlm(): This predictor has no variation in the analysis sample (only one unique value); cannot fit slope: k.") &&
+             "jlm(): k has only one value in the analysis sample, so its coefficient cannot be estimated.") &&
         .k_has(flat(grab(jlm(y ~ x1 + k + k2, data = .dk))),
-               "jlm(): These predictors have no variation in the analysis sample (only one unique value); cannot fit slope: k, k2.") &&
+               "jlm(): k and k2 have only one value each in the analysis sample, so their coefficients cannot be estimated.") &&
         .k_has(flat(grab(jlogistic(yb ~ x1 + k + k2, data = .dk))),
-               "jlogistic(): These predictors have no variation in the analysis sample (only one unique value); cannot fit slope: k, k2."))
+               "jlogistic(): k and k2 have only one value each in the analysis sample, so their coefficients cannot be estimated."))
 .dna_k <- d; .dna_k$x1[] <- NA_real_
 check("K12 every case excluded: the closing sentence carries no 'stage(s)', in jlm() and in jlogistic()",
       { a <- flat(grab(jlm(y ~ x1, data = .dna_k)))
         b <- flat(grab(jlogistic(yb ~ x1, data = .dna_k)))
-        want <- "no model can be fit. See the Case Processing Summary above for where the cases were excluded."
+        want <- "All 120 cases were excluded because of missing data."
         .k_has(a, want) && .k_has(b, want) && !.k_has(a, "(s)") && !.k_has(b, "(s)") })
 rm(.dk, .dna_k)
 
@@ -2753,12 +2872,711 @@ rm(list = intersect(c(".m_out", ".m_dreg", ".m_ireg", ".m_ref", ".m_only",
                       ".m_same", ".m_cat", ".l_rows_m"),
                     ls(all.names = TRUE)))
 
+# =============================================================================
+# SECTION N -- NO CASE LEFT TO ANALYZE; A PREDICTOR WITH ONE VALUE; A COMPUTED
+#              OUTCOME; THE "seems categorical" RERUN LINES (S346, v0.9.219)
+# =============================================================================
+# Fix Slate 8, first cut. (1) An analysis sample emptied by a filter or by
+# missing data got five answers: jlm()'s and jlogistic()'s house stop, "'g3'
+# has 0 categories", R's "grouping factor must have exactly 2 levels" and
+# "contrasts can be applied only to factors with 2 or more levels" under
+# empty tables, "'yb' has values: ." ahead of the Case Processing block, and
+# in jalpha() blank tables under a warning naming items "NA, NA, NA". One
+# stop now, under the block, ahead of every group count (the S338 item).
+# (2) The zero-variance stop names its predictor as the subject and points
+# at the filters only when a filter excluded cases (the S338 wording item).
+# (3) jlogistic() with a computed outcome stopped "'I(yb > 0)' has values:
+# ." (the S342 item). (4) The "seems categorical" warning's rerun lines were
+# built from the rewritten formula through deparse(), 60 characters at a
+# time: a longer formula printed cut off, a name that needs backticks lost
+# them, and a call that named its frame was offered a line without it (the
+# S345 item). Every printed line is run here.
+cat("\n--- N. No case left; a constant predictor; a computed outcome; the rerun lines ---\n")
+
+.n_fns <- list(jt        = quote(jt(y ~ nb, data = dn)),
+               jaov      = quote(jaov(y ~ g, data = dn)),
+               jcrosstab = quote(jcrosstab(g ~ nb, data = dn)),
+               jlm       = quote(jlm(y ~ x1, data = dn)),
+               jlogistic = quote(jlogistic(yb ~ x1, data = dn)),
+               jalpha    = quote(jalpha(dn, x1, x2, y)))
+dn <- d[, c("g", "y", "yb", "x1", "x2", "k", "hv")]
+dn$nb <- rep(c("u", "u", "v", "u", "v"), length.out = nrow(dn))
+.n_with <- function(cl, extra) { cl[names(extra)] <- extra; cl }
+# What a call prints before it stops, and the warnings it raises: section
+# K's two helpers, which that section removes at its end.
+.n_pre <- function(expr) {
+  out <- utils::capture.output(suppressMessages(suppressWarnings(
+    tryCatch(expr, error = function(e) invisible(NULL)))))
+  out <- gsub("\033\\[[0-9;]*[A-Za-z]", "", out)
+  out[nzchar(out)]
+}
+.n_warns <- function(expr) {
+  w <- character(0)
+  zz <- textConnection(".junk", "w", local = TRUE)
+  sink(zz, type = "output")
+  on.exit({ sink(type = "output"); close(zz) }, add = TRUE)
+  withCallingHandlers(
+    tryCatch(expr, error = function(e) NULL),
+    warning = function(x) {
+      w <<- c(w, conditionMessage(x)); invokeRestart("muffleWarning")
+    })
+  w
+}
+.n_empty <- function(how) paste0("(): No cases are left to analyze.\n",
+                                 "All 120 cases were excluded ", how, ".")
+check("N01 emptied by a filter: jt(), jaov(), jcrosstab(), jlm(), jlogistic() and jalpha() give one stop, pinned whole",
+      all(vapply(names(.n_fns), function(f) {
+        identical(grab(eval(.n_with(.n_fns[[f]], list(subset = quote(x1 > 99))))),
+                  paste0(f, .n_empty("by a filter")))
+      }, logical(1))))
+check("N02 emptied by missing data: the same stop, saying so",
+      { dn_na <- dn; dn_na$x1[] <- NA_real_; dn_na$y[] <- NA_real_; dn_na$g[] <- NA
+        # Each call is run where dn is the emptied frame.
+        all(vapply(names(.n_fns), function(f) {
+          identical(grab(eval(.n_fns[[f]], list(dn = dn_na), globalenv())),
+                    paste0(f, .n_empty("because of missing data")))
+        }, logical(1))) })
+check("N03 some cases gone to a filter and the rest to missing data: both are named",
+      { d2 <- dn; d2$y[d2$x1 > 0] <- NA
+        identical(grab(jlm(y ~ x2, data = d2, subset = x1 > 0)),
+                  paste0("jlm", .n_empty("by a filter or because of missing data"))) })
+check("N04 the count agrees in number and is grouped at a thousand: 'The 1 case was', 'All 1,200 cases were'",
+      { one <- grab(jlm(y ~ x1, data = data.frame(y = NA_real_, x1 = 1.5)))
+        big <- tryCatch(jstats:::.jst_stop_empty_sample(list(
+          n_analysis = 0L, n_original = 1200L, n_after_pipeline = 1200L)),
+          error = function(e) conditionMessage(e))
+        identical(one, paste0("jlm(): No cases are left to analyze.\n",
+                              "The 1 case was excluded because of missing data.")) &&
+          identical(big, paste0("No cases are left to analyze.\n",
+                                "All 1,200 cases were excluded because of missing data.")) })
+check("N05 the stop comes under the Case Processing block and ahead of the group count: no '0 categories', no empty descriptives, in jt(), jaov() and jcrosstab()",
+      all(vapply(c("jt", "jaov", "jcrosstab"), function(f) {
+        cl <- .n_with(.n_fns[[f]], list(subset = quote(x1 > 99)))
+        p  <- .n_pre(eval(cl))
+        g  <- grab(eval(cl))
+        any(grepl("Analysis N", p, fixed = TRUE)) &&
+          !any(grepl("Group Descriptives", p, fixed = TRUE)) &&
+          !grepl("categor", g, fixed = TRUE)
+      }, logical(1))))
+check("N06 ... at the minimal level, where the block is one line, and under a stored jsubset(), which the group-count stop used to name",
+      { quiet(joutput("minimal"))
+        a <- grab(jt(y ~ nb, data = dn, subset = x1 > 99))
+        p <- .n_pre(jt(y ~ nb, data = dn, subset = x1 > 99))
+        quiet(joutput(NULL))
+        b <- with_state(quiet(jsubset(dn, x1 > 99)), grab(jaov(y ~ g, data = dn)),
+                        quiet(jsubset(dn, NULL)))
+        identical(a, paste0("jt", .n_empty("by a filter"))) &&
+          any(p == "Analysis N: 0 (120 Excluded)") &&
+          identical(b, paste0("jaov", .n_empty("by a filter"))) })
+check("N07 jalpha(): no warning that items 'NA, NA, NA' are negatively correlated, and no table printed",
+      { w <- .n_warns(jalpha(dn, x1, x2, y, subset = x1 > 99))
+        p <- .n_pre(jalpha(dn, x1, x2, y, subset = x1 > 99))
+        length(w) == 0L && !any(grepl("Reliability Statistics", p, fixed = TRUE)) })
+check("N08 jlogistic(): the Case Processing block prints before the stop, for a filter and for an outcome missing in every case (it answered \"'yb' has values: .\" ahead of the block)",
+      { p1 <- .n_pre(jlogistic(yb ~ x1, data = dn, subset = x1 > 99))
+        d2 <- dn; d2$yb[] <- NA
+        p2 <- .n_pre(jlogistic(yb ~ x1, data = d2))
+        g2 <- grab(jlogistic(yb ~ x1, data = d2))
+        any(grepl("Analysis N", p1, fixed = TRUE)) && any(grepl("Analysis N", p2, fixed = TRUE)) &&
+          identical(g2, paste0("jlogistic", .n_empty("because of missing data"))) &&
+          !grepl("has values", g2, fixed = TRUE) })
+check("N09 control: the helper returns for two cases or more (since S346 one case stops: section P)",
+      is.null(jstats:::.jst_stop_empty_sample(list(n_analysis = 2L, n_original = 120L,
+                                                   n_after_pipeline = 2L))) &&
+        is.null(jstats:::.jst_stop_empty_sample(list(n_analysis = 120L, n_original = 120L,
+                                                     n_after_pipeline = 120L))) &&
+        !grepl("No cases are left", grab(jaov(y ~ g, data = dn, subset = x1 > 0)),
+               fixed = TRUE))
+check("N10 control: jdesc() and jcorr() are not listwise and keep their own output on an empty sample -- no stop",
+      { a <- tryCatch({ quiet(jdesc(dn, x1, subset = x1 > 99)); "ran" },
+                      error = function(e) "stopped")
+        b <- tryCatch({ quiet(jcorr(dn, x1, x2, subset = x1 > 99)); "ran" },
+                      error = function(e) "stopped")
+        identical(a, "ran") && identical(b, "ran") })
+
+# ---- N11-N15: a predictor with one value ------------------------------------
+.n_one <- paste0("k has only one value in the analysis sample, so its\n",
+                 "coefficient cannot be estimated.")
+check("N11 no filter of any kind: the fact, one sentence, the predictor its subject -- and no guess at jsubset() (it ended 'This often happens when jsubset() restricts the sample ...')",
+      identical(grab(jlm(y ~ x1 + k, data = dn)), paste0("jlm(): ", .n_one)) &&
+        identical(flat(grab(jlogistic(yb ~ x1 + k, data = dn))),
+                  flat(paste0("jlogistic(): ", .n_one))) &&
+        !grepl("jsubset", grab(jlm(y ~ x1 + k, data = dn)), fixed = TRUE))
+check("N12 two predictors: 'have only one value each ... their coefficients', the names joined with 'and'",
+      { d2 <- dn; d2$k2 <- 2
+        identical(flat(grab(jlm(y ~ x1 + k + k2, data = d2))),
+                  paste0("jlm(): k and k2 have only one value each in the analysis ",
+                         "sample, so their coefficients cannot be estimated.")) })
+check("N13 a subset = that excluded cases: a second line, naming it",
+      identical(grab(jlm(y ~ x1 + k, data = dn, subset = x1 > 0)),
+                paste0("jlm(): ", .n_one, "\n",
+                       "Check whether subset = is excluding the other values.")))
+check("N14 a stored setting that excluded cases: the settings named as settings; with subset = as well, both",
+      { a <- with_state(quiet(jsubset(dn, x1 > 0)), grab(jlm(y ~ x1 + k, data = dn)),
+                        quiet(jsubset(dn, NULL)))
+        b <- with_state(quiet(jsubset(dn, x1 > 0)),
+                        grab(jlogistic(yb ~ x1 + k, data = dn, subset = x2 > 0)),
+                        quiet(jsubset(dn, NULL)))
+        identical(flat(a), flat(paste0("jlm(): ", .n_one, " Check whether your jsubset or ",
+                                       "jcomplete settings are excluding the other values."))) &&
+          identical(flat(b), flat(paste0("jlogistic(): ", .n_one, " Check whether your jsubset ",
+                                         "or jcomplete settings, or subset =, are excluding ",
+                                         "the other values."))) })
+check("N15 control: a stored setting, or a subset =, that excludes NO case adds no line",
+      { a <- with_state(quiet(jsubset(dn, x1 > -99)), grab(jlm(y ~ x1 + k, data = dn)),
+                        quiet(jsubset(dn, NULL)))
+        b <- grab(jlm(y ~ x1 + k, data = dn, subset = x1 > -99))
+        identical(a, paste0("jlm(): ", .n_one)) && identical(b, paste0("jlm(): ", .n_one)) })
+
+# ---- N16-N17: a computed outcome --------------------------------------------
+check("N16 jlogistic() with a computed outcome: the term named for what it is and the state to reach (it stopped \"'I(yb > 0)' has values: .\" and suggested jrecode())",
+      identical(flat(grab(jlogistic(I(y > 0) ~ x1, data = dn))),
+                paste0("jlogistic(): I(y > 0) is a computed term, and the outcome of a ",
+                       "logistic regression must be a variable in the data. ",
+                       "Create a 0/1 variable first, then use it as the outcome.")) &&
+        grepl("I(g == \"a\") is a computed term", flat(grab(jlogistic(I(g == "a") ~ x1, data = dn))),
+              fixed = TRUE) &&
+        !grepl("has values", grab(jlogistic(I(y > 0) ~ x1, data = dn)), fixed = TRUE))
+check("N17 control: a computed PREDICTOR still fits, as glm() fits it, and jlm() takes a computed outcome as it did",
+      { m <- quiet(jlogistic(yb ~ I(x1 > 0), data = dn))
+        t <- stats::glm(yb ~ I(x1 > 0), data = dn, family = stats::binomial)
+        l <- quiet(jlm(log(abs(y) + 1) ~ x1, data = dn))
+        is.list(m) && near(m$coefficients_raw$b, unname(stats::coef(t)), 1e-6) &&
+          is.list(l) && near(l$coefficients_raw$b,
+                             unname(stats::coef(stats::lm(log(abs(y) + 1) ~ x1, data = dn)))) })
+
+# ---- N18-N26: the "seems categorical" rerun lines ---------------------------
+# .n_code(): a message's indented lines, as lines of R.
+.n_code <- function(msg) {
+  ln <- strsplit(msg, "\n", fixed = TRUE)[[1]]
+  trimws(ln[startsWith(ln, "  ")])
+}
+# .n_terms(): the coefficient terms of the fit a printed line gives, the line
+# run in an environment of its own that can see the workspace.
+.n_run <- function(lines, env = new.env(parent = globalenv())) {
+  r <- NULL
+  for (ln in lines) r <- quiet(eval(parse(text = ln), envir = env))
+  r
+}
+.n_seem <- function(fn, f, dat, cat = "\"hv\"", pre = NULL, reg = dat) paste0(
+  "hv seems categorical.\n",
+  "To treat it that way, register it with jdummy() and rerun:\n\n",
+  pre,
+  "  jdummy(", reg, ", hv)\n",
+  "  ", fn, "(", f, if (nzchar(reg)) paste0(", ", reg), ")\n\n",
+  "Or, for this call only:\n",
+  "  ", fn, "(", f, if (nzchar(dat)) paste0(", ", dat), ", categorical = ", cat, ")")
+.n_w1 <- grab(jlm(y ~ x1 + hv, data = dn))
+check("N18 jlm(), the frame named: the warning pinned whole -- a sentence a line, the rerun with the frame, the second call on a line of its own",
+      identical(.n_w1, .n_seem("jlm", "y ~ x1 + hv", "dn")))
+check("N19 ... each printed line runs: the first route registers hv and refits with it categorical, the second fits the same model in one call",
+      { cd <- .n_code(.n_w1)
+        a  <- with_state(NULL, .n_run(cd[1:2]), quiet(jdummy(dn, hv, remove = TRUE)))
+        b  <- .n_run(cd[3L])
+        length(cd) == 3L && is.list(a) && is.list(b) &&
+          identical(a$coefficients_raw$term, c("(Intercept)", "x1", "hv_Mid", "hv_High")) &&
+          near(a$coefficients_raw$b, b$coefficients_raw$b) })
+# Names that need backticks, and two long enough to carry a formula of
+# plain names past 60 characters (N27).
+dn_w <- local({ z <- dn; z$`Wave 2 score` <- z$y; z$`my grp` <- z$hv
+                z$FinancialLiteracyMeanScore <- z$x1
+                z$RelationshipSatisfactionIndex <- z$x2; z })
+.n_long <- grab(jlm(`Wave 2 score` ~ scale(x1, scale = FALSE) * x2 + I(x1^2) +
+                      log(abs(x2) + 1) + `my grp`, data = dn_w))
+check("N20 a formula longer than 60 characters prints whole, on one line, with the backticks its names need (it was cut at 60 and ended ' + )')",
+      { cd <- .n_code(.n_long)
+        f  <- "`Wave 2 score` ~ scale(x1, scale = FALSE) * x2 + I(x1^2) + log(abs(x2) + 1) + `my grp`"
+        identical(cd, c("jdummy(dn_w, `my grp`)",
+                        paste0("jlm(", f, ", dn_w)"),
+                        paste0("jlm(", f, ", dn_w, categorical = \"my grp\")"))) &&
+          startsWith(.n_long, "my grp seems categorical.\n") })
+check("N21 ... and those lines run, a computed term and a name with a space in it included",
+      { cd <- .n_code(.n_long)
+        a  <- with_state(NULL, .n_run(cd[1:2]), quiet(jdummy(dn_w, `my grp`, remove = TRUE)))
+        b  <- .n_run(cd[3L])
+        is.list(a) && is.list(b) && nrow(a$coefficients_raw) == 8L &&
+          near(a$coefficients_raw$b, b$coefficients_raw$b) })
+check("N22 under a juse() default the lines carry no data frame, and run under it",
+      with_state(quiet(juse(dn)),
+                 { w  <- grab(jlm(y ~ x1 + hv))
+                   cd <- .n_code(w)
+                   b  <- .n_run(cd[3L])
+                   identical(cd, c("jdummy(dn, hv)", "jlm(y ~ x1 + hv)",
+                                   "jlm(y ~ x1 + hv, categorical = \"hv\")")) &&
+                     is.list(b) && nrow(b$coefficients_raw) == 4L },
+                 quiet(juse(NULL))))
+check("N23 an expression given as the data: it is named first, since a registration needs a name; the second route keeps the call as typed; every line runs",
+      { mk_n <- function() dn
+        w  <- grab(jlm(y ~ x1 + hv, mk_n()))
+        cd <- .n_code(w)
+        e  <- new.env(parent = globalenv()); assign("mk_n", mk_n, envir = e)
+        a  <- .n_run(cd[1:3], e)
+        quiet(jdummy(clear.all = TRUE))
+        b  <- .n_run(cd[4L], e)
+        identical(cd, c("mydata <- mk_n()", "jdummy(mydata, hv)",
+                        "jlm(y ~ x1 + hv, mydata)",
+                        "jlm(y ~ x1 + hv, mk_n(), categorical = \"hv\")")) &&
+          is.list(a) && is.list(b) && near(a$coefficients_raw$b, b$coefficients_raw$b) })
+check("N24 a place given as the data keeps it in every line, and they run",
+      { lst_n <- list(dd = dn)
+        w  <- grab(jlm(y ~ x1 + hv, lst_n$dd))
+        cd <- .n_code(w)
+        e  <- new.env(parent = globalenv()); assign("lst_n", lst_n, envir = e)
+        a  <- .n_run(cd[1:2], e)
+        quiet(jdummy(clear.all = TRUE))
+        identical(cd, c("jdummy(lst_n$dd, hv)", "jlm(y ~ x1 + hv, lst_n$dd)",
+                        "jlm(y ~ x1 + hv, lst_n$dd, categorical = \"hv\")")) &&
+          is.list(a) && nrow(a$coefficients_raw) == 4L })
+check("N25 the call's own categorical = is kept in the second route, and a variable registered with jdummy() shows as typed, not as its dummy columns",
+      { w  <- with_state(quiet(jdummy(dn, g)),
+                         grab(jlm(y ~ g + nb + hv, data = dn, categorical = "nb")),
+                         quiet(jdummy(dn, g, remove = TRUE)))
+        cd <- .n_code(w)
+        identical(cd[2:3], c("jlm(y ~ g + nb + hv, dn)",
+                             "jlm(y ~ g + nb + hv, dn, categorical = c(\"nb\", \"hv\"))")) })
+check("N26 jlogistic() prints the same warning under its own name, and its lines run",
+      { w  <- grab(jlogistic(yb ~ x1 + hv, data = dn))
+        cd <- .n_code(w)
+        b  <- .n_run(cd[3L])
+        identical(w, .n_seem("jlogistic", "yb ~ x1 + hv", "dn")) &&
+          is.list(b) && identical(b$coefficients_raw$term,
+                                  c("(Intercept)", "x1", "hv_Mid", "hv_High")) })
+check("N27 jplot()'s refusal of two predictors prints the formula whole and the frame the call named, and the fit line runs (it printed '<data>')",
+      { g  <- grab(jplot(`Wave 2 score` ~ FinancialLiteracyMeanScore +
+                           RelationshipSatisfactionIndex, dn_w))
+        cd <- .n_code(g)
+        m  <- .n_run(sub("^m <- ", "", cd[1L]))
+        u  <- with_state(quiet(juse(dn)), .n_code(grab(jplot(y ~ x1 + x2)))[1L],
+                         quiet(juse(NULL)))
+        !grepl("<data>", g, fixed = TRUE) &&
+          identical(cd, c(paste0("m <- jlm(`Wave 2 score` ~ FinancialLiteracyMeanScore + ",
+                                 "RelationshipSatisfactionIndex, dn_w)"),
+                          "jplot(m)")) &&
+          is.list(m) && nrow(m$coefficients_raw) == 3L &&
+          identical(u, "m <- jlm(y ~ x1 + x2)") })
+rm(dn, dn_w)
+rm(list = intersect(c(".n_fns", ".n_with", ".n_empty", ".n_one", ".n_code",
+                      ".n_run", ".n_seem", ".n_w1", ".n_long", ".n_pre",
+                      ".n_warns"),
+                    ls(all.names = TRUE)))
+
+# =============================================================================
+# SECTION O -- DIAGNOSTICS IN jlm() AND jlogistic(): APART FROM THE LEVELS; A
+#              NAME THAT IS NOT A DIAGNOSTIC STOPS (S346, v0.9.219)
+# =============================================================================
+# Jeff's ruling of 8 October 2026. diagnostics = is TRUE (every diagnostic
+# the function has: jlm()'s VIF table and five plots, jlogistic()'s VIF
+# table), FALSE, or names combined with c(); joutput() stores the same
+# setting, each function taking what applies to it. No level turns it on:
+# joutput("full") and full = TRUE printed the VIF table and drew the plots
+# until v0.9.219. A name that is not one of the function's diagnostics
+# stops, where jlm(diagnostics = c("vif", "qqq")) printed the VIF table and
+# no plot and said nothing. The lines under a VIF above 10 are the table's
+# interpretation and print with it except at the minimal level.
+cat("\n--- O. Diagnostics in jlm() and jlogistic() ---\n")
+do <- d[, c("y", "yb", "x1", "x2")]
+do$x4 <- do$x1 + do$x2 / 12                  # nearly x1: a VIF far above 10
+.o_out <- function(expr) {
+  grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+  res <- tryCatch(suppressMessages(suppressWarnings(utils::capture.output(expr))),
+                  error = function(e) paste0("[error] ", conditionMessage(e)))
+  gsub("\033\\[[0-9;]*[A-Za-z]", "", res)
+}
+.o_vif   <- function(o) any(o == "VIF (Variance Inflation Factors)")
+.o_plots <- function(o) sub("^  [0-9]: ", "", grep("^  [0-9]: ", o, value = TRUE))
+.o_all5  <- c("Residuals vs Fitted", "Normal Q-Q", "Scale-Location",
+              "Cook's Distance", "Residuals vs Leverage")
+.o_err <- function(expr) {
+  grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+  grab(expr)
+}
+
+check("O01 the resolver: TRUE is the function's own set, FALSE and no setting are nothing, names are taken in the set's order, another function's name is not this one's",
+      { r <- jstats:::.jst_resolve_diagnostics
+        identical(r(TRUE, "jlm"), c("vif", "residuals", "qq", "scale", "cooks", "leverage")) &&
+          identical(r(TRUE, "jlogistic"), "vif") && identical(r(TRUE, "jaov"), "levene") &&
+          identical(r(TRUE, "jt"), "levene") &&
+          identical(r(FALSE, "jlm"), character(0)) && identical(r(NULL, "jlm"), character(0)) &&
+          identical(r(c("qq", "vif"), "jlm"), c("vif", "qq")) })
+check("O02 ... and with no argument it reads joutput()'s setting, each function taking what applies to it",
+      with_state(quiet(joutput(diagnostics = c("levene", "qq", "vif"), quiet = TRUE)),
+                 { r <- jstats:::.jst_resolve_diagnostics
+                   identical(r(NULL, "jlm"), c("vif", "qq")) &&
+                     identical(r(NULL, "jlogistic"), "vif") &&
+                     identical(r(NULL, "jaov"), "levene") &&
+                     identical(r(FALSE, "jlm"), character(0)) &&
+                     identical(r("cooks", "jlm"), "cooks") },
+                 quiet(joutput(NULL, quiet = TRUE))))
+check("O03 jlm(diagnostics = TRUE): the VIF table and all five plots, at the standard level",
+      { o <- .o_out(jlm(y ~ x1 + x2, data = do, diagnostics = TRUE))
+        .o_vif(o) && identical(.o_plots(o), .o_all5) })
+check("O04 no level brings them: joutput(\"full\") and full = TRUE print no VIF table and draw no plot (both did until v0.9.219), and full = TRUE still adds the interval",
+      { quiet(joutput("full", quiet = TRUE))
+        a <- .o_out(jlm(y ~ x1 + x2, data = do))
+        b <- .o_out(jlogistic(yb ~ x1 + x2, data = do))
+        quiet(joutput(NULL, quiet = TRUE))
+        f <- .o_out(jlm(y ~ x1 + x2, data = do, full = TRUE))
+        g <- .o_out(jlogistic(yb ~ x1 + x2, data = do, full = TRUE))
+        !.o_vif(a) && length(.o_plots(a)) == 0L && !.o_vif(b) &&
+          !.o_vif(f) && length(.o_plots(f)) == 0L && !.o_vif(g) &&
+          any(grepl("95% CI Lower", f, fixed = TRUE)) &&
+          any(grepl("Classification Table", g, fixed = TRUE)) })
+check("O05 names show the ones named, in the set's own order whatever order they were typed in",
+      { a <- .o_out(jlm(y ~ x1 + x2, data = do, diagnostics = c("vif", "qq")))
+        b <- .o_out(jlm(y ~ x1 + x2, data = do, diagnostics = c("cooks", "residuals")))
+        .o_vif(a) && any(a == "(Diagnostic plot produced: Normal Q-Q)") &&
+          !.o_vif(b) && identical(.o_plots(b), c("Residuals vs Fitted", "Cook's Distance")) })
+check("O06 a name that is not one of jlm()'s stops, pinned whole (it was ignored: the table printed, the plot did not, nothing was said)",
+      identical(.o_err(jlm(y ~ x1 + x2, data = do, diagnostics = c("vif", "qqq"))),
+                paste0("jlm(): \"qqq\" is not a diagnostic of jlm().\n",
+                       "`diagnostics` must be TRUE, FALSE, or one or more of \"vif\", \"residuals\",\n",
+                       "\"qq\", \"scale\", \"cooks\", and \"leverage\".")) &&
+        identical(.o_err(jlm(y ~ x1 + x2, data = do, diagnostics = "levene")),
+                  paste0("jlm(): \"levene\" is not a diagnostic of jlm().\n",
+                         "`diagnostics` must be TRUE, FALSE, or one or more of \"vif\", \"residuals\",\n",
+                         "\"qq\", \"scale\", \"cooks\", and \"leverage\".")) &&
+        identical(.o_err(jlogistic(yb ~ x1 + x2, data = do, diagnostics = "qq")),
+                  paste0("jlogistic(): \"qq\" is not a diagnostic of jlogistic().\n",
+                         "`diagnostics` must be TRUE, FALSE, or \"vif\".")))
+check("O07 several names in one string get the c() form, and the argument it shows runs in the call",
+      { e  <- .o_err(jlm(y ~ x1 + x2, data = do, diagnostics = "vif + qq"))
+        ln <- trimws(strsplit(e, "\n", fixed = TRUE)[[1L]][3L])
+        o  <- .o_out(eval(parse(text = paste0("jlm(y ~ x1 + x2, data = do, ", ln, ")"))))
+        identical(e, paste0("jlm(): \"vif + qq\" is not a diagnostic.\n",
+                            "To ask for more than one, combine them with c():\n",
+                            "  diagnostics = c(\"vif\", \"qq\")")) &&
+          .o_vif(o) && any(o == "(Diagnostic plot produced: Normal Q-Q)") &&
+          grepl("combine them with c()", .o_err(jlm(y ~ x1 + x2, data = do,
+                                                    diagnostics = "residuals,cooks")), fixed = TRUE) })
+check("O08 the stop comes before the title, and a value that is neither TRUE, FALSE nor names is refused",
+      { o <- .o_out(jlm(y ~ x1 + x2, data = do, diagnostics = "qqq"))
+        length(o) == 1L &&
+          startsWith(o, "[error] jlm(): \"qqq\" is not a diagnostic of jlm().\n") } &&
+        startsWith(.o_err(jlm(y ~ x1 + x2, data = do, diagnostics = 2)),
+                   "jlm(): `diagnostics` must be TRUE, FALSE, or one or more of") &&
+        startsWith(.o_err(jlogistic(yb ~ x1 + x2, data = do, diagnostics = NA)),
+                   "jlogistic(): `diagnostics` must be TRUE, FALSE, or \"vif\"."))
+check("O09 jlogistic(diagnostics = TRUE) is its VIF table, the predictors' ordinary VIF: 1 / (1 - R-squared) of each on the other",
+      { o <- .o_out(jlogistic(yb ~ x1 + x2, data = do, diagnostics = TRUE))
+        m <- quiet(jlogistic(yb ~ x1 + x2, data = do, diagnostics = "vif"))
+        v <- 1 / (1 - stats::cor(do$x1, do$x2)^2)
+        .o_vif(o) && is.list(m) && near(m$vif, c(v, v)) })
+check("O10 joutput(diagnostics = ) reaches both functions; a set naming only Levene's test leaves them alone; the call's own FALSE wins",
+      { quiet(joutput(diagnostics = TRUE, quiet = TRUE))
+        a <- .o_out(jlm(y ~ x1 + x2, data = do))
+        b <- .o_out(jlogistic(yb ~ x1 + x2, data = do))
+        f <- .o_out(jlm(y ~ x1 + x2, data = do, diagnostics = FALSE))
+        quiet(joutput(diagnostics = c("levene", "vif"), quiet = TRUE))
+        k <- .o_out(jlm(y ~ x1 + x2, data = do))
+        quiet(joutput(diagnostics = "levene", quiet = TRUE))
+        n <- .o_out(jlm(y ~ x1 + x2, data = do))
+        quiet(joutput(NULL, quiet = TRUE))
+        .o_vif(a) && identical(.o_plots(a), .o_all5) && .o_vif(b) &&
+          !.o_vif(f) && length(.o_plots(f)) == 0L &&
+          .o_vif(k) && length(.o_plots(k)) == 0L &&
+          !any(grepl("Diagnostic plot", k, fixed = TRUE)) &&
+          !.o_vif(n) && length(.o_plots(n)) == 0L })
+check("O11 the lines under a VIF above 10 print with the table at the standard and full levels and not at minimal, where the table still prints -- in jlm() and in jlogistic()",
+      { got <- lapply(c("minimal", "standard", "full"), function(lv) {
+          quiet(joutput(lv, quiet = TRUE))
+          a <- .o_out(jlm(y ~ x1 + x4, data = do, diagnostics = "vif"))
+          b <- .o_out(jlogistic(yb ~ x1 + x4, data = do, diagnostics = "vif"))
+          c(.o_vif(a), any(grepl("standard error inflated by a factor of", a, fixed = TRUE)),
+            .o_vif(b), any(grepl("standard error inflated by a factor of", b, fixed = TRUE)))
+        })
+        quiet(joutput(NULL, quiet = TRUE))
+        identical(got, list(c(TRUE, FALSE, TRUE, FALSE), c(TRUE, TRUE, TRUE, TRUE),
+                            c(TRUE, TRUE, TRUE, TRUE))) })
+check("O12 control: which =, plots = and show = given to jlm() are still pointed at diagnostics",
+      identical(.o_err(jlm(y ~ x1 + x2, data = do, which = "qq")),
+                "jlm(): 'which' is not valid. Did you mean `diagnostics`?"))
+rm(do)
+rm(list = intersect(c(".o_out", ".o_vif", ".o_plots", ".o_all5", ".o_err"),
+                    ls(all.names = TRUE)))
+
+# =============================================================================
+# SECTION P -- A FILTER THAT NAMES THE VARIABLE; ONE CASE LEFT; AN OUTCOME
+#              WITH ONE VALUE (S346, v0.9.219, second delivery)
+# =============================================================================
+# Jeff, walking models_walk.R Section 18 at v0.9.219's first delivery, on
+# jlm(Flourishing ~ SocialSupport + PriorTherapy, subset = PriorTherapy ==
+# 1) and its "Check whether subset = is excluding the other values": "the
+# error message doesn't address the real problem". When a variable an
+# analysis needs to vary has one value and a filter's condition names that
+# variable, the filter is the cause: the stop says what the filter did and
+# gives the way out -- remove subset =, or set the jsubset() filter aside --
+# and, for a predictor, the other way out: remove it from the formula. jt(),
+# jaov() and jcrosstab() said "'g' has 1 category" and nothing of the
+# filter; jlogistic() said "'yb' has values: 1 ... Use jrecode()" of an
+# outcome coded 0/1; jlm() with a constant outcome stopped on R's "0
+# (non-NA) cases"; and one case left was answered with whichever variable
+# was checked first. Where no filter names the variable the stops are as
+# they were, but for the outcome (no stop of its own until now) and the
+# dummy-coded predictor, whose guess "This often happens when jsubset()
+# restricts the sample ..." is gone.
+cat("\n--- P. A filter that names the variable; one case left; an outcome with one value ---\n")
+
+dp <- d[, c("y", "yb", "g", "gn", "gf", "x1", "x2")]
+dp$t01  <- rep(c(0, 1), length.out = nrow(dp))
+dp$t02  <- rep(c(0, 0, 1, 1), length.out = nrow(dp))
+dp$a01  <- as.integer(dp$g == "a")                  # one value when g is "a"
+dp$xm   <- dp$x1; dp$xm[dp$t01 == 0] <- NA          # missing wherever t01 is 0
+dp$yb1  <- ifelse(dp$g == "a", 1, dp$yb)            # all 1 when g is "a"
+dp$xq   <- dp$x1; dp$xq[dp$yb == 0] <- NA           # missing wherever yb is 0
+dp$ybl1 <- haven::labelled(dp$yb1, labels = c(No = 0, Yes = 1))
+dp$y5   <- dp$y; dp$y5[dp$g == "a"] <- 5            # 5 for every "a" case
+dp$id   <- seq_len(nrow(dp))
+.p_on  <- function(cond) eval(bquote(quiet(jsubset(dp, .(cond)))))
+.p_off <- function() quiet(jsubset(dp, NULL))
+.p_kept <- function(f, pred) paste0(
+  f, " keeps only one value of ", pred, ", so its coefficient cannot be ",
+  "estimated. To estimate it, remove the filter. To analyze only those ",
+  "cases, remove ", pred, " from the formula.")
+
+# ---- P01-P10: a predictor --------------------------------------------------
+.p01 <- grab(jlm(y ~ x1 + t01, data = dp, subset = t01 == 1))
+check("P01 jlm(), subset = on a predictor: what the filter did, and both ways out, a sentence a line (it said 'Check whether subset = is excluding the other values')",
+      identical(flat(.p01), paste0("jlm(): ", .p_kept("subset = t01 == 1", "t01"))) &&
+        grepl("\nTo estimate it, remove the filter.\nTo analyze only those cases, remove t01 from the formula.$",
+              .p01) && !grepl("Check whether", .p01, fixed = TRUE))
+check("P02 ... and each way out runs: the call without the filter fits t01, the call without t01 fits the cases the filter keeps",
+      { a <- quiet(jlm(y ~ x1 + t01, data = dp))
+        b <- quiet(jlm(y ~ x1, data = dp, subset = t01 == 1))
+        is.list(a) && "t01" %in% names(stats::coef(a$model)) &&
+          is.list(b) && near(stats::coef(b$model),
+                             stats::coef(stats::lm(y ~ x1, data = dp[dp$t01 == 1, ]))) })
+.p03 <- with_state(.p_on(quote(t01 == 1)), grab(jlm(y ~ x1 + t01, data = dp)), .p_off())
+check("P03 a stored jsubset() filter on the predictor: named as the filter, and set aside with the line jsubset() itself prints",
+      identical(flat(.p03), paste0(
+        "jlm(): Your jsubset() filter (t01 == 1) keeps only one value of t01, so its ",
+        "coefficient cannot be estimated. To estimate it, set the filter aside: ",
+        "jsubset(dp, off) To analyze only those cases, remove t01 from the formula.")) &&
+        grepl("set the filter aside:\n  jsubset(dp, off)\nTo analyze", .p03, fixed = TRUE))
+check("P04 ... and that line runs: with the filter set aside the same call fits",
+      { r <- with_state(.p_on(quote(t01 == 1)),
+                        { quiet(eval(parse(text = "jsubset(dp, off)"))); quiet(jlm(y ~ x1 + t01, data = dp)) },
+                        .p_off())
+        is.list(r) && "t01" %in% names(stats::coef(r$model)) })
+.p05 <- with_state(.p_on(quote(t01 == 1)),
+                   grab(jlm(y ~ x1 + t01, data = dp, subset = t01 > 0)), .p_off())
+check("P05 both filters naming it: both named, 'keep', and both ways to remove them",
+      identical(flat(.p05), paste0(
+        "jlm(): Your jsubset() filter (t01 == 1) and subset = t01 > 0 keep only one value ",
+        "of t01, so its coefficient cannot be estimated. To estimate it, remove subset = ",
+        "and set the filter aside: jsubset(dp, off) To analyze only those cases, remove ",
+        "t01 from the formula.")))
+.p06 <- grab(jlm(y ~ x1 + t01 + t02, data = dp, subset = t01 == 1 & t02 == 1))
+check("P06 two predictors the filter names: in number, 'each of', 'their coefficients', both removed",
+      identical(flat(.p06), paste0(
+        "jlm(): subset = t01 == 1 & t02 == 1 keeps only one value of each of t01 and t02, ",
+        "so their coefficients cannot be estimated. To estimate them, remove the filter. ",
+        "To analyze only those cases, remove t01 and t02 from the formula.")))
+check("P07 a computed term built from the variable the filter names is named as typed",
+      identical(flat(grab(jlm(y ~ x2 + I(x1 > 0), data = dp, subset = x1 > 0.5))),
+                paste0("jlm(): ", .p_kept("subset = x1 > 0.5", "I(x1 > 0)"))))
+check("P08 control: a filter on ANOTHER variable that leaves the predictor one value keeps the hedged line (the form Jeff said fits that case)",
+      identical(flat(grab(jlm(y ~ x1 + a01, data = dp, subset = g == "a"))), flat(paste0(
+        "jlm(): a01 has only one value in the analysis sample, so its coefficient ",
+        "cannot be estimated. ",
+        "Check whether subset = is excluding the other values."))))
+check("P09 control: a filter that names the predictor but keeps both its values, where listwise deletion took the rest, is not blamed",
+      identical(flat(grab(jlm(y ~ t01 + xm, data = dp, subset = t01 >= 0))), flat(paste0(
+        "jlm(): t01 has only one value in the analysis sample, so its coefficient ",
+        "cannot be estimated."))))
+check("P10 jlogistic(): the same stop, under its own name",
+      identical(flat(grab(jlogistic(yb ~ x1 + t01, data = dp, subset = t01 == 1))),
+                paste0("jlogistic(): ", .p_kept("subset = t01 == 1", "t01"))))
+
+# ---- P11-P13: a dummy-coded predictor --------------------------------------
+check("P11 a dummy-coded predictor the filter keeps to one category: what the filter did, the S306 sentence's requirement, both ways out (F16 F17 F30 hold the registered form)",
+      identical(flat(grab(jlm(y ~ x1 + gf, data = dp, subset = gf == "c"))), paste0(
+        "jlm(): subset = gf == \"c\" keeps only one category of gf (c), and a ",
+        "dummy-coded predictor requires at least two. To estimate its coefficients, ",
+        "remove the filter. To analyze only those cases, remove gf from the formula.")))
+# A registered gf reaches the S306 stop; an unregistered factor is
+# dummy-coded in the call, by a builder with a stop of its own.
+.p_reg <- function(expr) with_state(quiet(jdummy(dp, gf)), expr,
+                                    quiet(jdummy(dp, gf, remove = TRUE)))
+.p12 <- .p_reg(grab(jlm(y ~ x1 + gf, data = dp, subset = gn == "5")))
+check("P12 a registered predictor left one category by a filter on another variable: the S306 sentence, then the hedged line -- and no guess at jsubset()",
+      identical(flat(.p12), paste0(
+        "jlm(): gf has only one category in the analysis sample (1: a); a dummy-coded ",
+        "predictor requires at least two. Check whether subset = is excluding the ",
+        "other categories.")) &&
+        grepl("\nCheck whether subset = is excluding the other categories.$", .p12) &&
+        !grepl("This often happens", .p12, fixed = TRUE))
+check("P13 ... with no filter, where listwise deletion left one category, the S306 sentence alone; and an unregistered factor keeps its builder's stop when no filter names it",
+      { z <- dp; z$xb <- z$x1; z$xb[z$g != "b"] <- NA
+        a <- with_state(quiet(jdummy(z, gf)), grab(jlm(y ~ xb + gf, data = z)),
+                        quiet(jdummy(z, gf, remove = TRUE)))
+        b <- grab(jlm(y ~ x1 + gf, data = dp, subset = gn == "5"))
+        identical(flat(a), paste0(
+          "jlm(): gf has only one category in the analysis sample (2: b); a dummy-coded ",
+          "predictor requires at least two.")) &&
+          identical(flat(b), "jlm(): 'gf' has fewer than 2 categories. Cannot create dummy variables.") })
+check("P13b a text predictor the filter names, dummy-coded in the call: the same form, in jlm() and in jlogistic()",
+      identical(flat(grab(jlm(y ~ x1 + g, data = dp, subset = g == "d"))), paste0(
+        "jlm(): subset = g == \"d\" keeps only one category of g (d), and a ",
+        "dummy-coded predictor requires at least two. To estimate its coefficients, ",
+        "remove the filter. To analyze only those cases, remove g from the formula.")) &&
+        grepl("^jlogistic\\(\\): subset = g == \"d\" keeps only one category of g \\(d\\)",
+              grab(jlogistic(yb ~ x1 + g, data = dp, subset = g == "d"))))
+
+check("P13c control: a filter that names a registered predictor but keeps two of its categories, where listwise deletion took one, is not blamed",
+      { z <- dp; z$xa <- d$xa                     # xa is missing for every "a" case
+        a <- with_state(quiet(jdummy(z, gf)),
+                        grab(jlm(y ~ xa + gf, data = z, subset = gf %in% c("a", "b"))),
+                        quiet(jdummy(z, gf, remove = TRUE)))
+        identical(flat(a), paste0(
+          "jlm(): gf has only one category in the analysis sample (2: b); a dummy-coded ",
+          "predictor requires at least two. Check whether subset = is excluding the ",
+          "other categories.")) })
+
+# ---- P14-P19: the group-count stops ----------------------------------------
+check("P14 jt(), subset = on the grouping variable: the filter named as the cause, with the way out (it said 'g' has 1 category and nothing of the filter)",
+      identical(flat(grab(jt(y ~ g, data = dp, subset = g == "a"))), flat(paste0(
+        "jt(): subset = g == \"a\" keeps only 1 category of 'g', and a t-test ",
+        "requires exactly 2. ",
+        "To compare the categories, remove the filter."))))
+check("P15 ... a stored jsubset() filter: set aside with its line, which runs",
+      { a <- with_state(.p_on(quote(g == "a")), grab(jt(y ~ g, data = dp)), .p_off())
+        r <- with_state(.p_on(quote(g %in% c("a", "b"))),
+                        { quiet(eval(parse(text = "jsubset(dp, off)"))); quiet(jt(y ~ g, data = dp, subset = g %in% c("a", "b"))) },
+                        .p_off())
+        identical(flat(a), paste0(
+          "jt(): Your jsubset() filter (g == \"a\") keeps only 1 category of 'g', and a ",
+          "t-test requires exactly 2. To compare the categories, set the filter aside: ",
+          "jsubset(dp, off)")) && is.list(r) })
+check("P16 jaov(): the same, in an ANOVA's words",
+      identical(flat(grab(jaov(y ~ g, data = dp, subset = g == "b"))), flat(paste0(
+        "jaov(): subset = g == \"b\" keeps only 1 category of 'g', and an ANOVA ",
+        "requires at least 2. ",
+        "To compare the categories, remove the filter."))))
+check("P17 jcrosstab(): the row variable and the column variable",
+      identical(flat(grab(jcrosstab(g ~ t01, data = dp, subset = g == "c"))), paste0(
+        "jcrosstab(): subset = g == \"c\" keeps only 1 category of 'g', and a ",
+        "cross-tabulation requires at least 2 for each variable. To cross-tabulate it, ",
+        "remove the filter.")) &&
+        identical(flat(grab(jcrosstab(g ~ t01, data = dp, subset = t01 == 0))), paste0(
+          "jcrosstab(): subset = t01 == 0 keeps only 1 category of 't01', and a ",
+          "cross-tabulation requires at least 2 for each variable. To cross-tabulate it, ",
+          "remove the filter.")))
+check("P18 control: a filter that names the grouping variable but keeps two of its categories, one emptied by a missing outcome, gets the missing-data line, not the filter's",
+      { z <- dp; z$y[z$g == "b"] <- NA
+        identical(flat(grab(jt(y ~ g, data = z, subset = g %in% c("a", "b")))), flat(paste0(
+          "jt(): 'g' has 1 category. ",
+          "A t-test requires exactly 2. ",
+          "Cases with a missing 'y' are not counted."))) })
+check("P19 control: a filter on another variable leaves the count stop as it was (K01 holds the stored form)",
+      identical(grab(jt(y ~ g, data = dp, subset = gn == "5")),
+                "jt(): 'g' has 1 category.\nA t-test requires exactly 2."))
+
+# ---- P20-P25: an outcome with one value ------------------------------------
+.p20o <- utils::capture.output(.p20 <- grab(jlogistic(yb ~ x1, data = dp, subset = yb == 1)))
+check("P20 jlogistic(), subset = on the outcome: the filter named, and the way out (it said \"'yb' has values: 1 ... Use jrecode() to create a 0/1 coded version\")",
+      identical(flat(.p20), paste0(
+        "jlogistic(): subset = yb == 1 keeps only one value of yb, and the outcome of ",
+        "a logistic regression needs two. To model yb, remove the filter.")) &&
+        grepl("\nTo model yb, remove the filter.$", .p20))
+check("P21 ... and it stops under the Case Processing block, which shows the filter",
+      { o <- utils::capture.output(suppressMessages(suppressWarnings(
+          tryCatch(jlogistic(yb ~ x1, data = dp, subset = yb == 1), error = function(e) NULL))))
+        o <- gsub("\033\\[[0-9;]*[A-Za-z]", "", o)
+        any(grepl("^ *subset = +[0-9]+ +[0-9]+ +yb == 1$", o)) })
+check("P22 an outcome left one value by a filter on another variable: the value, and the hedged line -- no jrecode()",
+      identical(flat(grab(jlogistic(yb1 ~ x1, data = dp, subset = g == "a"))), flat(paste0(
+        "jlogistic(): yb1 has only one value (1) in the analysis sample, and the ",
+        "outcome of a logistic regression needs two. ",
+        "Check whether subset = is excluding the other value."))) &&
+        identical(flat(grab(jlogistic(ybl1 ~ x1, data = dp, subset = g == "a"))), paste0(
+          "jlogistic(): ybl1 has only one value (1: Yes) in the analysis sample, and the ",
+          "outcome of a logistic regression needs two. Check whether subset = is ",
+          "excluding the other value.")))
+check("P23 an outcome left one value by listwise deletion on a predictor: the value, no filter line (glm() was fitted on it)",
+      identical(flat(grab(jlogistic(yb ~ xq, data = dp))), flat(paste0(
+        "jlogistic(): yb has only one value (1) in the analysis sample, and the ",
+        "outcome of a logistic regression needs two."))))
+.p_err <- function(expr) tryCatch({ quiet(expr); NA_character_ },
+                                   error = function(e) conditionMessage(e))
+.p_err2 <- function(expr) {
+  zz <- textConnection(".junk", "w", local = TRUE); sink(zz, type = "output")
+  on.exit({ sink(type = "output"); close(zz) }, add = TRUE)
+  tryCatch({ suppressMessages(suppressWarnings(expr)); NA_character_ },
+           error = function(e) conditionMessage(e))
+}
+check("P24 jlm(), subset = on the outcome: the filter named (it stopped on R's \"0 (non-NA) cases\" under summary.lm()'s \"essentially perfect fit\")",
+      identical(flat(.p_err2(jlm(y5 ~ x1, data = dp, subset = y5 == 5))), flat(paste0(
+        "jlm(): subset = y5 == 5 keeps only one value of y5, and a regression needs an ",
+        "outcome that varies. ",
+        "To model y5, remove the filter."))))
+check("P25 ... a filter on another variable: the value, and the hedged line",
+      identical(flat(.p_err2(jlm(y5 ~ x1, data = dp, subset = g == "a"))), flat(paste0(
+        "jlm(): y5 has only one value (5) in the analysis sample, and a regression ",
+        "needs an outcome that varies. ",
+        "Check whether subset = is excluding the other values."))))
+
+check("P25b control: a filter that names the outcome but keeps its values, where listwise deletion left one, is not blamed",
+      { z <- dp; z$xa5 <- z$x1; z$xa5[z$g != "a"] <- NA    # only the y5 == 5 cases
+        identical(flat(.p_err2(jlm(y5 ~ xa5, data = z, subset = y5 > -100))), paste0(
+          "jlm(): y5 has only one value (5) in the analysis sample, and a regression ",
+          "needs an outcome that varies.")) })
+
+# ---- P26-P29: one case left ------------------------------------------------
+.p26 <- list(jt        = grab(jt(y ~ g, data = dp, subset = id == 1)),
+             jaov      = grab(jaov(y ~ g, data = dp, subset = id == 1)),
+             jcrosstab = grab(jcrosstab(g ~ t01, data = dp, subset = id == 1)),
+             jlm       = grab(jlm(y ~ x1, data = dp, subset = id == 1)),
+             jlogistic = grab(jlogistic(yb ~ x1, data = dp, subset = id == 1)),
+             jalpha    = grab(jalpha(dp, x1, x2, y, subset = id == 1)))
+check("P26 one case left: one stop in all six listwise functions, the cause said (each named a variable: 'x1 has only one value', \"'g' has 1 category\")",
+      all(vapply(names(.p26), function(fn) identical(.p26[[fn]], paste0(
+        fn, "(): Only 1 case is left to analyze.\n",
+        "The other ", nrow(dp) - 1L, " cases were excluded by a filter.")), logical(1))))
+check("P27 ... by missing data, and by both",
+      { z <- dp; z$x2[-1] <- NA
+        identical(grab(jlm(y ~ x1 + x2, data = z)), paste0(
+          "jlm(): Only 1 case is left to analyze.\n",
+          "The other ", nrow(z) - 1L, " cases were excluded because of missing data.")) &&
+          identical(grab(jlm(y ~ x1 + x2, data = z, subset = id < 10)), paste0(
+            "jlm(): Only 1 case is left to analyze.\n",
+            "The other ", nrow(z) - 1L,
+            " cases were excluded by a filter or because of missing data.")) })
+check("P28 ... in number for one other case, and a frame of one row says so without 'left'",
+      identical(flat(grab(jlm(y ~ x1, data = dp[1:2, ], subset = id == 1))), flat(paste0(
+        "jlm(): Only 1 case is left to analyze. ",
+        "The other case was excluded by a filter."))) &&
+        identical(grab(jlm(y ~ x1, data = dp[1, ])),
+                  "jlm(): There is only 1 case to analyze."))
+check("P29 control: two cases left is not this stop",
+      !grepl("case is left", grab(jlm(y ~ x1, data = dp, subset = id <= 2)), fixed = TRUE))
+
+# ---- P30-P31: the helpers --------------------------------------------------
+check("P30 .jst_term_vars(): a name, the names in a computed term, a name that does not parse",
+      { tv <- jstats:::.jst_term_vars
+        identical(tv("t01"), "t01") && identical(tv("I(x1 > 0)"), "x1") &&
+          identical(tv("scale(x1, scale = FALSE) * x2"), c("x1", "x2")) &&
+          identical(tv("my grp"), "my grp") && identical(tv("`my grp`"), "my grp") })
+check("P31 .jst_filters_naming(): a filter set aside, a frame with no filter and no name do not count",
+      { fnm <- jstats:::.jst_filters_naming
+        si  <- list(subset_expr = NULL, n_original = 10L, n_after_pipeline = 10L)
+        a <- with_state({ .p_on(quote(t01 == 1)); quiet(jsubset(dp, off)) },
+                        fnm("t01", si, "dp"), .p_off())
+        b <- fnm("t01", si, "no_such_frame_p")
+        c <- fnm("t01", list(subset_expr = "t01 == 1"), NULL)
+        !a$stored && !a$per && !b$stored && c$per && identical(c$vars, "t01") })
+
+rm(dp)
+rm(list = intersect(c(".p_on", ".p_off", ".p_kept", ".p01", ".p03", ".p05", ".p06",
+                      ".p12", ".p20", ".p20o", ".p26", ".p_reg", ".p_err", ".p_err2"),
+                    ls(all.names = TRUE)))
+
 # --- Verdict -----------------------------------------------------------------
 
 quiet(jdummy(clear.all = TRUE))
 options(.jst_options_message_width = .entry_message_width)
 options(.jst_default_data          = .entry_default_data)
 options(.jst_output_level          = .entry_output_level)
+options(.jst_output_toggles = .entry_output_toggles)
 
 .n_ok <- sum(vapply(.results, `[[`, logical(1), "ok"))
 .n    <- length(.results)

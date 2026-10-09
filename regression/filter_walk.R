@@ -47,6 +47,9 @@
 #           capture of the section, which halts on an uncaught error; the 42
 #           others were found in the same run. C9 needs no earlier section
 #           (derived by running; the five NEEDS lines are unchanged).
+# S346 EDIT (no package change): the header's note that the console drops
+#           the message stream's blank lines removed, found false at S345
+#           (format_walk.R's the same, at S346). No section changed.
 # LAST VERIFIED: v0.9.212, 2026-10-05 (S338) -- A2, A5, C9, D2 and E3 WALKED
 #           on the WORKSTATION through rewalk("filter") (Jeff: "both walks are
 #           clean"), GitHub e22427a, after the SANDBOX run (R 4.3.3, UTF-8
@@ -166,7 +169,7 @@
 #           leads replaced by plain verbs) and the 11 new ones captured
 #           mechanically (the builder halts on any error a section lets
 #           escape, per the S289 D5 lesson). Expecteds are sink() captures
-#           at 76; the console drops the message stream's blank lines.
+#           at 76.
 # RUN:      line-by-line first (read each block of output before moving on).
 #           Also source()-safe: every deliberate error is wrapped in
 #           caught(), which prints the message after "Caught: ". Under

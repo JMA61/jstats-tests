@@ -22,6 +22,15 @@
 #           with no convention selected, and the declaration line a place
 #           is offered.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S346 EDIT (v0.9.219, 2026-10-08): the session guard hands back the stored
+#           display settings (.jst_output_toggles) with the output level.
+#           The diagnostics setting outlives a level call since v0.9.219,
+#           so a run entered with joutput(diagnostics = TRUE) left the
+#           session without it (found entering dirty). No check added.
+#           LAST VERIFIED: v0.9.219, 2026-10-09 (S346) -- 111/111 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2079 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 14528c6.
 # S345 EDIT (v0.9.218, 2026-10-06): Fix Slate 5, the second cut. NEW N47
 #           section, 19 checks (N47a-s), in four parts. (1) N47a-f, the
 #           S304 item: a map word the data do not hold, beside an else
@@ -268,6 +277,10 @@ stopifnot(exists("jload", mode = "function"))
 # The output level too (S337; the S249 item's guard (4)): joutput(NULL) below
 # forces the default, and without this line the session came back there.
 .entry_output_level  <- getOption(".jst_output_level")
+# The stored display settings too (S346): the diagnostics setting outlives
+# a level call, so restoring the level alone would hand back a session
+# without it.
+.entry_output_toggles <- getOption(".jst_output_toggles")
 # And the juse() default (S337): juse(tdat) below replaces it, and the foot
 # removes tdat, which would leave the default naming a frame that is gone.
 .entry_default_data  <- getOption(".jst_default_data")
@@ -1366,6 +1379,7 @@ rm(list = intersect(c("s47", "b47", "m47", "n47", "l47", ".g47a", ".g47g", ".r47
 
 options(.jst_options_message_width = .entry_message_width)
 options(.jst_output_level = .entry_output_level)
+options(.jst_output_toggles = .entry_output_toggles)
 options(.jst_default_data = .entry_default_data)
 options(.jst_options_missing_convention = .entry_convention)
 

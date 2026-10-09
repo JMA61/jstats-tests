@@ -142,6 +142,15 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S346 EDIT (v0.9.219, 2026-10-08): the session guard hands back the stored
+#           display settings (.jst_output_toggles) with the output level.
+#           The diagnostics setting outlives a level call since v0.9.219,
+#           so a run entered with joutput(diagnostics = TRUE) left the
+#           session without it (found entering dirty). No check added.
+#           LAST VERIFIED: v0.9.219, 2026-10-09 (S346) -- 440/440 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2079 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 14528c6.
 # S345 EDIT (v0.9.218, 2026-10-06): P03 RE-PINNED; no check added (440).
 #           The sweep for a count hedged with "(s)" left one message out
 #           by name, the map parser's "Invalid old value(s)". That stop
@@ -847,6 +856,10 @@ stopifnot(exists("jload", mode = "function"))
 # The output level too (S337; the S249 item's guard (4)): joutput(NULL) below
 # forces the default, and without this line the session came back there.
 .entry_output_level  <- getOption(".jst_output_level")
+# The stored display settings too (S346): the diagnostics setting outlives
+# a level call, so restoring the level alone would hand back a session
+# without it.
+.entry_output_toggles <- getOption(".jst_output_toggles")
 
 # Message-width pin. MANDATORY: the emitter wraps to this setting and since
 # S256 the shipped default follows the console pane, so an unpinned battery
@@ -3806,6 +3819,7 @@ reset()
 options(.jst_options_message_width = .entry_message_width)
 options(.jst_default_data = .entry_default_data)
 options(.jst_output_level = .entry_output_level)
+options(.jst_output_toggles = .entry_output_toggles)
 
 .n_ok <- sum(vapply(.results, `[[`, logical(1), "ok"))
 .n    <- length(.results)

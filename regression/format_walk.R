@@ -61,6 +61,13 @@
 #           Unsupported row where the call stopped (Section 25). A computed
 #           vector given to jfreq, jdesc or jscreen is named as typed
 #           (Section 26).
+#           Since S346 (v0.9.219) the note under a significant Levene's
+#           test in its three forms, in jaov() and in jt() (Sections 27
+#           and 28); Games-Howell rows below 2 degrees of freedom and the
+#           line that replaces a post-hoc table for two groups (Section
+#           29); the stops for groups a test cannot be computed on and for
+#           a sample with no case left (Section 30); and the diagnostics
+#           setting, apart from the output levels (Section 31).
 #           format_check.R asserts the same surface; this file shows it.
 # ORIGIN:   S326 (v0.9.202): the number-format bundle.
 # S329 EDIT (v0.9.205): THE CROSSTAB BUILD. Sections 15 and 17
@@ -121,8 +128,46 @@
 #           and a raw column as Unsupported rows with jfreq's stop for
 #           one; a computed vector named as typed. Each Expected FILLED BY
 #           RUNNING the file (fill.R, Testing Conventions).
-# LAST VERIFIED: v0.9.216, 2026-10-06 (S342) -- Sections 19, 22, 25 and 26
-#           WALKED on the WORKSTATION by Jeff through rewalk() ("Both
+# S346 EDIT (v0.9.219): FIX SLATE 8, FIRST CUT, AND DIAGNOSTICS. Sections
+#           27-31 NEW (see LOCKS), each Expected FILLED BY RUNNING the file
+#           (fill.R, Testing Conventions); they are the PENDING sections.
+#           RE-PINNED MECHANICALLY under Jeff's ruling of 8 October 2026
+#           (diagnostics are one setting, off at every output level;
+#           levene = is gone), and kept off the PENDING line: Sections 1,
+#           12 and 13, whose calls gained diagnostics = TRUE so that the
+#           Levene table their blocks pin still prints under full = TRUE
+#           (no Expected changed); Section 21, whose pinned full-level
+#           panel lost its levene row and reads "diagnostics: OFF"; and
+#           Section 23, whose call takes diagnostics = TRUE for
+#           levene = TRUE and whose Levene note is in its new form (one
+#           bullet extended). Found by a capture of every section of
+#           every walk on 0.9.218 and on 0.9.219: this file's Sections 1,
+#           12, 13, 21 and 23, clinic_workflows_walk.R's 10, cps_walk.R's
+#           D4, models_walk.R's 8, and two sections that print the
+#           settings panel outside any pinned block
+#           (missing_convention_walk.R 14, modify_form_walk.R 6).
+#           The RUN note no longer says the console drops the message
+#           stream's blank lines (found false at S345).
+#           SECOND DELIVERY, THE NEXT DAY: Jeff walked Sections 27-31 at
+#           the first ("all okay"). Section 30 gains Render 4: a filter
+#           that names the grouping variable is named as the cause of its
+#           one category in jt(), jaov() and jcrosstab(), as subset = and
+#           as a stored jsubset() filter (his walk of models_walk.R Section
+#           18); its block FILLED BY RUNNING, Render 3's code no longer
+#           removes shown(), and Render 4 removes it. A capture of every
+#           section of every walk on the two deliveries differs in this
+#           file's Section 30 and models_walk.R's 18 alone.
+# LAST VERIFIED: v0.9.219, 2026-10-09 (S346) -- Sections 27-31 WALKED on
+#           the WORKSTATION by Jeff through rewalk() at the first delivery
+#           ("all okay"), and Section 30 again at the second ("all okay");
+#           PENDING back to none; GitHub 14528c6. Sections 1, 12, 13, 21
+#           and 23 were re-pinned mechanically under the diagnostics ruling
+#           and not walked (the S345 rule for a ruled layout). Sandbox
+#           (R 4.3.3, UTF-8 locale, pkgload::load_all of the build): 43 of
+#           43 Expected blocks found in a straight run and under rewalk()
+#           in three orders (harness.R verify; no section needs another).
+#           Prior: v0.9.216, 2026-10-06 (S342) -- Sections 19, 22, 25 and
+#           26 WALKED on the WORKSTATION by Jeff through rewalk() ("Both
 #           walks look good"); PENDING back to none; GitHub 8737548.
 #           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all of the
 #           build): 27 of 27 Expected blocks found in a straight run and
@@ -170,8 +215,7 @@
 # RUN:      line-by-line first (read each block of output before moving on).
 #           Also source()-safe: nothing here errors or prompts. Under
 #           source(), run WITH echo = TRUE, per the conventions file.
-#           Expecteds are sink() captures at 76; the console drops the
-#           message stream's blank lines.
+#           Expecteds are sink() captures at 76.
 #           By section: source walk_tools.R, then rewalk("format") shows the
 #           sections the PENDING line names and rewalk("format", "1") shows
 #           one, each from a fresh Setup and its NEEDS. Add prepare = TRUE to
@@ -274,7 +318,7 @@ f_x4998 <- data.frame(r = rep(c(1, 1, 2, 2), c(10, 41, 88, 861)),
 # F as 0, F as 1.5, eta-squared as 0.25 and the Tukey differences
 # as -1 / -2 / -1.
 
-jaov(y ~ g, data = f_aov, full = TRUE)
+jaov(y ~ g, data = f_aov, full = TRUE, diagnostics = TRUE)
 
 # Expected:
 #   One-Way ANOVA
@@ -860,9 +904,9 @@ jaov(y ~ g, data = f_aov, effect.size = TRUE, digits = 0)
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Sections 1-11 use small frames built to land on trailing zeros. This
 # is an ordinary call: two-digit group sizes, a two-digit df, means in
-# the tens. full = TRUE adds Levene's table, which jt prints too.
+# the tens. diagnostics = TRUE adds Levene's table, which jt prints too.
 
-jt(Flourishing ~ Medication, data = cl, full = TRUE)
+jt(Flourishing ~ Medication, data = cl, full = TRUE, diagnostics = TRUE)
 
 # Expected:
 #   Independent Samples T-Test
@@ -911,7 +955,7 @@ jt(Flourishing ~ Medication, data = cl, full = TRUE)
 # are four characters wide and one is 1.000. Left-justified, as text
 # was, .976 sat over 1.000 with the decimal points out of line.
 
-jaov(Stress ~ Condition, data = cl, full = TRUE)
+jaov(Stress ~ Condition, data = cl, full = TRUE, diagnostics = TRUE)
 
 # Expected:
 #   One-Way ANOVA
@@ -1557,9 +1601,8 @@ joutput(NULL)
 #     effect.size: ON
 #     regression.ci: ON
 #     means.ci: ON
-#     levene: ON
 #     posthoc: ON
-#     diagnostics: ON
+#     diagnostics: OFF
 #     case.processing: ON
 #     case.processing.detail: PER_CODE
 #     case.processing.filter: LIST
@@ -1713,7 +1756,7 @@ f_gh <- data.frame(g = c(rep("a", 6), rep("b", 8), rep("c", 4)),
                          10, 11, 12, 11),
                    stringsAsFactors = FALSE)
 
-jaov(y ~ g, data = f_gh, posthoc = TRUE, levene = TRUE)
+jaov(y ~ g, data = f_gh, posthoc = TRUE, diagnostics = TRUE)
 jaov(y ~ g, data = f_gh, welch = TRUE, posthoc = TRUE)
 
 # Expected:
@@ -1726,8 +1769,13 @@ jaov(y ~ g, data = f_gh, welch = TRUE, posthoc = TRUE)
 #   ------  ---  ---  -----
 #   12.823   2    15  <.001
 #
-#   Note: Levene's test is significant (p < .001), suggesting unequal variances.
-#   With unequal group sizes this may affect results -- consider welch = TRUE.
+#   Note: Levene's test is significant (p < .001).
+#   The largest group is 2.0 times the smallest, and the largest SD is 5.4 times
+#   the smallest.
+#   Both are beyond the usual guidelines, so the p-value of the standard ANOVA
+#   may not be reliable.
+#   Welch's ANOVA does not assume equal variances: welch = TRUE.
+#   See ?jaov.
 #
 #   Group Descriptives: y by g
 #   Group  N   Mean     SD   95% CI Lower  95% CI Upper
@@ -1787,7 +1835,9 @@ jaov(y ~ g, data = f_gh, welch = TRUE, posthoc = TRUE)
 #     welch = TRUE. One blank line separates the note from the table
 #     (Jeff's S341 walk: with none it was "harder to read"), the note
 #     reads "p < .001", not "p = <.001", and its first sentence is on
-#     one line.
+#     one line. Since v0.9.219 the note states the two ratios and gives
+#     one of three verdicts (Section 27); this is the third, "beyond the
+#     usual guidelines".
 #   - The two post-hoc tables list the same three pairs in the same
 #     order, with the same mean differences 2.000, 6.000 and 4.000.
 #   - Tukey's table has no df column (every pair is judged on the
@@ -2028,10 +2078,944 @@ tryCatch(jfreq(f_aov$g[f_aov$y > 14], y),
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 27 -- the note under a significant Levene's test, in jaov() ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 346 (v0.9.219), on Jeff's ruling of 8 October 2026. Until then
+# the note said "the standard test remains appropriate" whenever the
+# largest group was within 1.5 times the smallest, whatever the SDs, and
+# "consider welch = TRUE" otherwise. It now states the two ratios that
+# decide how much a significant test matters and gives one of three
+# verdicts, because the textbooks draw the line in different places.
+# groups() builds groups of the sizes, SDs and means it is given, so each
+# frame sits where it is meant to.
+
+groups <- function(n, sd, mean) {
+  y <- unlist(Map(function(k, s, m) {
+    z <- stats::qnorm(stats::ppoints(k))
+    m + s * z / stats::sd(z)
+  }, n, sd, mean))
+  data.frame(g = rep(letters[seq_along(n)], n), y = round(y, 3))
+}
+
+# Render 1 -- sizes within 1.25 of each other and SDs within 2.
+f_in <- groups(n = c(30, 30, 26), sd = c(1, 1.4, 1.9), mean = c(5, 6, 7))
+jaov(y ~ g, data = f_in, diagnostics = TRUE)
+
+# Expected:
+#   One-Way ANOVA
+#
+#   Analysis N: 86
+#
+#   Levene's Test for Homogeneity of Variance
+#     F    df1  df2    p
+#   -----  ---  ---  ----
+#   4.803   2    83  .011
+#
+#   Note: Levene's test is significant (p = .011).
+#   The largest group is 1.2 times the smallest, and the largest SD is 1.9 times
+#   the smallest.
+#   Both are within the usual guidelines, so the standard ANOVA is usually
+#   still acceptable.
+#   See ?jaov.
+#
+#   Group Descriptives: y by g
+#   Group   N   Mean    SD   95% CI Lower  95% CI Upper
+#   -----  --  -----  -----  ------------  ------------
+#   a      30  5.000  1.000      4.627         5.373
+#   b      30  6.000  1.400      5.477         6.523
+#   c      26  7.000  1.900      6.233         7.767
+#
+#   ANOVA: y by g
+#   Source    df  Sum of Squares  Mean Square     F      p
+#   --------  --  --------------  -----------  ------  -----
+#   g          2       55.814        27.907    13.153  <.001
+#   Residual  83      176.099         2.122
+#   Total     85      231.913
+#
+#   Eta-squared: 0.241
+
+# Render 2 -- between the guidelines: sizes 1.5 apart, SDs 2.1 apart.
+f_mid <- groups(n = c(30, 24, 20), sd = c(1, 1, 2.1), mean = c(5, 6, 7))
+jaov(y ~ g, data = f_mid, diagnostics = TRUE)
+
+# Expected:
+#   One-Way ANOVA
+#
+#   Analysis N: 74
+#
+#   Levene's Test for Homogeneity of Variance
+#     F    df1  df2    p
+#   -----  ---  ---  -----
+#   8.367   2    71  <.001
+#
+#   Note: Levene's test is significant (p < .001).
+#   The largest group is 1.5 times the smallest, and the largest SD is 2.1 times
+#   the smallest.
+#   Guidelines differ on whether the standard ANOVA is acceptable at
+#   these values.
+#   Welch's ANOVA does not assume equal variances: welch = TRUE.
+#   See ?jaov.
+#
+#   Group Descriptives: y by g
+#   Group   N   Mean    SD   95% CI Lower  95% CI Upper
+#   -----  --  -----  -----  ------------  ------------
+#   a      30  5.000  1.000      4.627         5.373
+#   b      24  6.000  1.000      5.578         6.422
+#   c      20  7.000  2.100      6.017         7.983
+#
+#   ANOVA: y by g
+#   Source    df  Sum of Squares  Mean Square     F      p
+#   --------  --  --------------  -----------  ------  -----
+#   g          2       48.649        24.324    12.718  <.001
+#   Residual  71      135.791         1.913
+#   Total     73      184.440
+#
+#   Eta-squared: 0.264
+
+# Render 3 -- beyond every guideline: sizes 2 apart, SDs 2.6 apart.
+f_out <- groups(n = c(40, 20, 20), sd = c(1, 1, 2.6), mean = c(5, 6, 7))
+jaov(y ~ g, data = f_out, diagnostics = TRUE)
+rm(groups, f_in, f_mid, f_out)
+
+# Expected:
+#   One-Way ANOVA
+#
+#   Analysis N: 80
+#
+#   Levene's Test for Homogeneity of Variance
+#      F    df1  df2    p
+#   ------  ---  ---  -----
+#   14.378   2    77  <.001
+#
+#   Note: Levene's test is significant (p < .001).
+#   The largest group is 2.0 times the smallest, and the largest SD is 2.6 times
+#   the smallest.
+#   Both are beyond the usual guidelines, so the p-value of the standard ANOVA
+#   may not be reliable.
+#   Welch's ANOVA does not assume equal variances: welch = TRUE.
+#   See ?jaov.
+#
+#   Group Descriptives: y by g
+#   Group   N   Mean    SD   95% CI Lower  95% CI Upper
+#   -----  --  -----  -----  ------------  ------------
+#   a      40  5.000  1.000      4.680         5.320
+#   b      20  6.000  1.000      5.532         6.468
+#   c      20  7.000  2.600      5.783         8.217
+#
+#   ANOVA: y by g
+#   Source    df  Sum of Squares  Mean Square     F      p
+#   --------  --  --------------  -----------  ------  -----
+#   g          2       55.000        27.500    11.357  <.001
+#   Residual  77      186.453         2.421
+#   Total     79      241.453
+#
+#   Eta-squared: 0.228
+#
+# Things to look at:
+#   - All three notes open the same way: the test is significant, then
+#     the two ratios, read from the Group Descriptives table below (30
+#     over 26 is 1.2; 1.900 over 1.000 is 1.9).
+#   - RENDER 1: "Both are within the usual guidelines, so the standard
+#     ANOVA is usually still acceptable." No welch = TRUE line: nothing
+#     here calls for it.
+#   - RENDER 2: "Guidelines differ on whether the standard ANOVA is
+#     acceptable at these values.", then the line naming Welch's ANOVA
+#     and the argument that runs it.
+#   - RENDER 3: "Both are beyond the usual guidelines, so the p-value of
+#     the standard ANOVA may not be reliable.", then the same Welch line.
+#   - Each note ends "See ?jaov.": the help page's "Unequal variances"
+#     section names the textbooks and gives the figures behind the three
+#     verdicts.
+#   - One blank line above the note and one below it, as in Section 23.
+#   - Each call asks for the test with diagnostics = TRUE. levene = TRUE,
+#     the argument until this build, is gone (Section 31).
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 28 -- the same note in jt(), and when it does not print ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# jt() gives the same three verdicts with its own test names. With two
+# groups the note says "larger" and "smaller", and when the groups are the
+# same size it says so in place of a ratio.
+
+groups <- function(n, sd, mean) {
+  y <- unlist(Map(function(k, s, m) {
+    z <- stats::qnorm(stats::ppoints(k))
+    m + s * z / stats::sd(z)
+  }, n, sd, mean))
+  data.frame(g = rep(letters[seq_along(n)], n), y = round(y, 3))
+}
+
+# Render 1 -- the same size, SDs 1.9 apart.
+t_in <- groups(n = c(40, 40), sd = c(1, 1.9), mean = c(5, 6))
+jt(y ~ g, data = t_in, diagnostics = TRUE)
+
+# Expected:
+#   Independent Samples T-Test
+#
+#   Analysis N: 80
+#
+#   Levene's Test for Homogeneity of Variance
+#      F    df1  df2    p
+#   ------  ---  ---  -----
+#   12.619   1    78  <.001
+#
+#   Note: Levene's test is significant (p < .001).
+#   The groups are the same size, and the larger SD is 1.9 times the smaller.
+#   Both are within the usual guidelines, so Student's t-test is usually
+#   still acceptable.
+#   See ?jt.
+#
+#   Group Descriptives: y by g
+#   Group   N   Mean    SD
+#   -----  --  -----  -----
+#   a      40  5.000  1.000
+#   b      40  6.000  1.900
+#
+#   Independent Samples T-Test Results (equal variances assumed)
+#      t    df    p   Mean Difference  95% CI Lower  95% CI Upper
+#   ------  --  ----  ---------------  ------------  ------------
+#   -2.946  78  .004       -1.000         -1.676        -0.324
+#
+#   Cohen's d: -0.659
+
+# Render 2 -- nearly the same size, SDs 2.4 apart.
+t_mid <- groups(n = c(42, 40), sd = c(1, 2.4), mean = c(5, 6))
+jt(y ~ g, data = t_mid, diagnostics = TRUE)
+
+# Expected:
+#   Independent Samples T-Test
+#
+#   Analysis N: 82
+#
+#   Levene's Test for Homogeneity of Variance
+#      F    df1  df2    p
+#   ------  ---  ---  -----
+#   21.697   1    80  <.001
+#
+#   Note: Levene's test is significant (p < .001).
+#   The larger group is 1.05 times the smaller, and the larger SD is 2.4 times
+#   the smaller.
+#   Guidelines differ on whether Student's t-test is acceptable at these values.
+#   Welch's t-test does not assume equal variances: welch = TRUE.
+#   See ?jt.
+#
+#   Group Descriptives: y by g
+#   Group   N   Mean    SD
+#   -----  --  -----  -----
+#   a      42  5.000  1.000
+#   b      40  6.000  2.400
+#
+#   Independent Samples T-Test Results (equal variances assumed)
+#      t    df    p   Mean Difference  95% CI Lower  95% CI Upper
+#   ------  --  ----  ---------------  ------------  ------------
+#   -2.484  80  .015       -1.000         -1.801        -0.199
+#
+#   Cohen's d: -0.549
+
+# Render 3 -- sizes 2 apart, SDs 2.6 apart; then the same call with
+# welch = TRUE; then the first call again at the minimal level.
+t_out <- groups(n = c(40, 20), sd = c(1, 2.6), mean = c(5, 6))
+jt(y ~ g, data = t_out, diagnostics = TRUE)
+jt(y ~ g, data = t_out, diagnostics = TRUE, welch = TRUE)
+joutput("minimal", quiet = TRUE)
+jt(y ~ g, data = t_out, diagnostics = TRUE)
+joutput(NULL, quiet = TRUE)
+rm(groups, t_in, t_mid, t_out)
+
+# Expected:
+#   Independent Samples T-Test
+#
+#   Analysis N: 60
+#
+#   Levene's Test for Homogeneity of Variance
+#      F    df1  df2    p
+#   ------  ---  ---  -----
+#   21.377   1    58  <.001
+#
+#   Note: Levene's test is significant (p < .001).
+#   The larger group is 2.0 times the smaller, and the larger SD is 2.6 times
+#   the smaller.
+#   Both are beyond the usual guidelines, so the p-value of Student's t-test may
+#   not be reliable.
+#   Welch's t-test does not assume equal variances: welch = TRUE.
+#   See ?jt.
+#
+#   Group Descriptives: y by g
+#   Group   N   Mean    SD
+#   -----  --  -----  -----
+#   a      40  5.000  1.000
+#   b      20  6.000  2.600
+#
+#   Independent Samples T-Test Results (equal variances assumed)
+#      t    df    p   Mean Difference  95% CI Lower  95% CI Upper
+#   ------  --  ----  ---------------  ------------  ------------
+#   -2.149  58  .036       -1.000         -1.931        -0.069
+#
+#   Cohen's d: -0.589
+#
+#   Welch's Independent Samples T-Test
+#
+#   Analysis N: 60
+#
+#   Levene's Test for Homogeneity of Variance
+#      F    df1  df2    p
+#   ------  ---  ---  -----
+#   21.377   1    58  <.001
+#
+#   Group Descriptives: y by g
+#   Group   N   Mean    SD
+#   -----  --  -----  -----
+#   a      40  5.000  1.000
+#   b      20  6.000  2.600
+#
+#   Welch's T-Test Results (equal variances not assumed)
+#      t     df     p   Mean Difference  95% CI Lower  95% CI Upper
+#   ------  ----  ----  ---------------  ------------  ------------
+#   -1.660  21.9  .111       -1.000         -2.250         0.250
+#
+#   Cohen's d: -0.589
+#
+#   Independent Samples T-Test
+#
+#   Analysis N: 60
+#
+#   Levene's Test for Homogeneity of Variance
+#      F    df1  df2    p
+#   ------  ---  ---  -----
+#   21.377   1    58  <.001
+#
+#   Group Descriptives: y by g
+#   Group   N   Mean    SD
+#   -----  --  -----  -----
+#   a      40  5.000  1.000
+#   b      20  6.000  2.600
+#
+#   Independent Samples T-Test Results (equal variances assumed)
+#      t    df    p   Mean Difference
+#   ------  --  ----  ---------------
+#   -2.149  58  .036       -1.000
+#
+# Things to look at:
+#   - RENDER 1: "The groups are the same size, and the larger SD is 1.9
+#     times the smaller.", and the verdict names Student's t-test.
+#   - RENDER 2: the size ratio reads 1.05, with two decimals: at one it
+#     would read 1.0 beside a sentence saying one group is larger. The
+#     verdict is "Guidelines differ", on the SDs alone.
+#   - RENDER 3, first output: "Both are beyond the usual guidelines, so
+#     the p-value of Student's t-test may not be reliable.", then
+#     "Welch's t-test does not assume equal variances: welch = TRUE."
+#   - Second output, Welch's test: Levene's table and NO note under it.
+#     The note is about whether Student's test can be relied on, and it
+#     was not the test run. Its p is .111 where Student's was .036.
+#   - Third output, at the minimal level: the table and no note. A
+#     diagnostic's brief interpretation prints at the standard and full
+#     levels only.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 29 -- Games-Howell below 2 df; no post-hoc table for two groups ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 346 (v0.9.219). A Games-Howell pair with fewer than 2 degrees
+# of freedom has no studentized-range value: R printed "NaNs produced"
+# four times above the table. And with two groups the post-hoc table held
+# one row repeating the test above it.
+
+# Render 1 -- group b has two cases: b-a and d-b fall below 2 df.
+f_few <- data.frame(g = c(rep("a", 6), rep("b", 2), rep("c", 8), rep("d", 3)),
+                    y = c(4, 5, 6, 5, 4, 6,  7, 9,
+                          2, 9, 4, 11, 6, 13, 1, 10,  10, 11, 12),
+                    stringsAsFactors = FALSE)
+jaov(y ~ g, data = f_few, welch = TRUE, posthoc = TRUE)
+
+# Expected:
+#   Welch's One-Way ANOVA
+#
+#   Analysis N: 19
+#
+#   Group Descriptives: y by g
+#   Group  N   Mean     SD   95% CI Lower  95% CI Upper
+#   -----  -  ------  -----  ------------  ------------
+#   a      6   5.000  0.894      4.061         5.939
+#   b      2   8.000  1.414     -4.706        20.706
+#   c      8   7.000  4.408      3.315        10.685
+#   d      3  11.000  1.000      8.516        13.484
+#
+#   Welch's ANOVA: y by g
+#      F    df1  df2    p
+#   ------  ---  ---  ----
+#   19.550   3   3.9  .008
+#
+#   Note: Sum of Squares and Mean Square are not applicable to Welch's ANOVA.
+#   For the standard ANOVA table, run jaov() without welch = TRUE.
+#
+#   Eta-squared: 0.339
+#   (Note: Eta-squared is calculated from the traditional SS decomposition.)
+#
+#   Games-Howell Post-Hoc Comparisons
+#   Comparison  Mean Difference  95% CI Lower  95% CI Upper   df  p (adjusted)
+#   ----------  ---------------  ------------  ------------  ---  ------------
+#   b-a               3.000                                  1.3
+#   c-a               2.000         -3.163         7.163     7.8      .616
+#   d-a               6.000          3.097         8.903     3.7      .004
+#   c-b              -1.000         -7.291         5.291     6.4      .946
+#   d-b               3.000                                  1.7
+#   d-c               4.000         -1.251         9.251     8.5      .149
+#
+#   Note: 2 comparisons have fewer than 2 degrees of freedom, so their
+#   confidence intervals and p-values cannot be computed.
+
+# Render 2 -- two groups, after the standard ANOVA and after Welch's.
+f_two <- data.frame(g = c(rep("a", 6), rep("b", 8)),
+                    y = c(4, 5, 6, 5, 4, 6,  2, 9, 4, 11, 6, 13, 1, 10),
+                    stringsAsFactors = FALSE)
+jaov(y ~ g, data = f_two, posthoc = TRUE)
+jaov(y ~ g, data = f_two, welch = TRUE, posthoc = TRUE)
+rm(f_few, f_two)
+
+# Expected:
+#   One-Way ANOVA
+#
+#   Analysis N: 14
+#
+#   Group Descriptives: y by g
+#   Group  N   Mean    SD   95% CI Lower  95% CI Upper
+#   -----  -  -----  -----  ------------  ------------
+#   a      6  5.000  0.894      4.061         5.939
+#   b      8  7.000  4.408      3.315        10.685
+#
+#   ANOVA: y by g
+#   Source    df  Sum of Squares  Mean Square    F      p
+#   --------  --  --------------  -----------  -----  ----
+#   g          1       13.714        13.714    1.176  .300
+#   Residual  12      140.000        11.667
+#   Total     13      153.714
+#
+#   Eta-squared: 0.089
+#
+#   Note: Post-hoc comparisons are not shown for 2 groups: the test above is the
+#   only comparison.
+#
+#   Welch's One-Way ANOVA
+#
+#   Analysis N: 14
+#
+#   Group Descriptives: y by g
+#   Group  N   Mean    SD   95% CI Lower  95% CI Upper
+#   -----  -  -----  -----  ------------  ------------
+#   a      6  5.000  0.894      4.061         5.939
+#   b      8  7.000  4.408      3.315        10.685
+#
+#   Welch's ANOVA: y by g
+#     F    df1  df2    p
+#   -----  ---  ---  ----
+#   1.561   1   7.8  .248
+#
+#   Note: Sum of Squares and Mean Square are not applicable to Welch's ANOVA.
+#   For the standard ANOVA table, run jaov() without welch = TRUE.
+#
+#   Eta-squared: 0.089
+#   (Note: Eta-squared is calculated from the traditional SS decomposition.)
+#
+#   Note: Post-hoc comparisons are not shown for 2 groups: the test above is the
+#   only comparison.
+#
+# Things to look at:
+#   - RENDER 1: the rows b-a and d-b keep their mean difference and
+#     their df (1.3 and 1.7); the interval and p cells are blank. One
+#     note under the table says why, and counts the rows: "2 comparisons
+#     have fewer than 2 degrees of freedom". No "NaNs produced" line
+#     anywhere.
+#   - The other four rows are complete, and the note sits one blank line
+#     below the table.
+#   - RENDER 2, both outputs: no post-hoc table. One note, one blank line
+#     below the eta-squared lines: "Post-hoc comparisons are not shown
+#     for 2 groups: the test above is the only comparison."
+#   - Each output ends on one blank line.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 30 -- groups a test cannot be computed on ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 346 (v0.9.219). Each of these calls stopped on an error of R's
+# own after part of the output had printed ("not enough 'y'
+# observations", "data are essentially constant", "grouping factor must
+# have exactly 2 levels"), or printed a table that could not be right (an
+# F of 27815876027865139260134097158144.000; blank F and p cells). Each
+# is a stop of jstats's own now, under the title and the N line. The
+# stops are shown through tryCatch(), so the file still runs end to end.
+
+shown <- function(expr) tryCatch(expr, error = function(e)
+  cat("Error: ", conditionMessage(e), "\n\n", sep = ""))
+
+# Render 1 -- a group of one case: Welch's t-test stops, Student's runs.
+f_one <- data.frame(g = c(rep("a", 6), "b"), y = c(4, 5, 6, 5, 4, 6, 9),
+                    stringsAsFactors = FALSE)
+shown(jt(y ~ g, data = f_one, welch = TRUE))
+jt(y ~ g, data = f_one)
+
+# Expected:
+#   Welch's Independent Samples T-Test
+#
+#   Analysis N: 7
+#
+#   Error: jt(): 'g' has 1 category with only 1 case (b).
+#   Welch's t-test requires at least 2 cases in both categories.
+#   Student's t-test can include it: run jt() without welch = TRUE.
+#
+#   Independent Samples T-Test
+#
+#   Analysis N: 7
+#
+#   Group Descriptives: y by g
+#   Group  N   Mean    SD
+#   -----  -  -----  -----
+#   a      6  5.000  0.894
+#   b      1  9.000
+#
+#   Independent Samples T-Test Results (equal variances assumed)
+#      t    df    p   Mean Difference  95% CI Lower  95% CI Upper
+#   ------  --  ----  ---------------  ------------  ------------
+#   -4.140   5  .009       -4.000         -6.483        -1.517
+#
+#   Cohen's d: -4.472
+
+# Render 2 -- one case in each group; then no variation inside any group,
+# in jt() and in jaov(); then one group with no variation, under Welch.
+f_flat <- data.frame(g = rep(c("a", "b", "c"), each = 4),
+                     y = rep(c(3, 5, 8), each = 4), stringsAsFactors = FALSE)
+f_flat1 <- data.frame(g = rep(c("a", "b", "c"), c(6, 5, 6)),
+                      y = c(4, 5, 6, 5, 4, 6,  7, 7, 7, 7, 7,
+                            9, 11, 10, 12, 9, 10),
+                      stringsAsFactors = FALSE)
+shown(jt(y ~ g, data = f_one[c(1, 7), ]))
+shown(jt(y ~ g, data = f_flat[f_flat$g != "c", ]))
+shown(jaov(y ~ g, data = f_flat))
+shown(jaov(y ~ g, data = f_flat1, welch = TRUE))
+
+# Expected:
+#   Independent Samples T-Test
+#
+#   Analysis N: 2
+#
+#   Error: jt(): 'g' has 2 categories with only 1 case in each.
+#   A t-test requires at least one category with 2 or more cases.
+#
+#   Independent Samples T-Test
+#
+#   Analysis N: 8
+#
+#   Error: jt(): 'y' has the same value for every case in each category of 'g'.
+#   A t-test requires variation within at least one category.
+#
+#   One-Way ANOVA
+#
+#   Analysis N: 12
+#
+#   Error: jaov(): 'y' has the same value for every case in each
+#   category of 'g'.
+#   An ANOVA requires variation within at least one category.
+#
+#   Welch's One-Way ANOVA
+#
+#   Analysis N: 17
+#
+#   Error: jaov(): 'g' has 1 category in which 'y' does not vary (b).
+#   Welch's ANOVA requires variation within every category.
+#   The standard ANOVA can include it: run jaov() without welch = TRUE.
+
+# Render 3 -- a category whose cases are all missing on the outcome is
+# not a group of the analysis; and a filter that leaves no case.
+f_gone <- data.frame(g = rep(c("p", "q", "r"), each = 5),
+                     y = c(4, 6, 5, 7, 5,  8, 9, 7, 10, 9,  NA, NA, NA, NA, NA),
+                     stringsAsFactors = FALSE)
+jt(y ~ g, data = f_gone)
+shown(jaov(y ~ g, data = f_flat1, subset = y > 50))
+rm(f_one, f_flat, f_flat1, f_gone)
+
+# Expected:
+#   Independent Samples T-Test
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         15
+#       Auto-listwise         5         10
+#       Analysis N           --         10
+#
+#   Missing data   From 15    %
+#       y
+#         Missing     5     33.3
+#   --------------------------------------
+#
+#   Group Descriptives: y by g
+#   Group  N   Mean    SD
+#   -----  -  -----  -----
+#   p      5  5.400  1.140
+#   q      5  8.600  1.140
+#
+#   Independent Samples T-Test Results (equal variances assumed)
+#      t    df    p   Mean Difference  95% CI Lower  95% CI Upper
+#   ------  --  ----  ---------------  ------------  ------------
+#   -4.438   8  .002       -3.200         -4.863        -1.537
+#
+#   Cohen's d: -2.807
+#
+#   One-Way ANOVA
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         17
+#       subset =           17          0  y > 50
+#       Analysis N         --          0
+#   --------------------------------------------
+#
+#   Error: jaov(): No cases are left to analyze.
+#   All 17 cases were excluded by a filter.
+#
+# Render 4 -- a filter that names the grouping variable, as subset = and
+# as a stored jsubset() filter, keeps one of its categories (S346, the
+# second delivery).
+f_cat <- data.frame(g = rep(c("a", "b", "c"), each = 4),
+                    y = c(4, 6, 5, 7,  8, 9, 7, 10,  3, 5, 4, 6),
+                    k = rep(c(1, 2), 6), stringsAsFactors = FALSE)
+shown(jt(y ~ g, data = f_cat, subset = g == "a"))
+shown(jaov(y ~ g, data = f_cat, subset = g == "b"))
+shown(jcrosstab(g ~ k, data = f_cat, subset = k == 1))
+jsubset(f_cat, g == "c")
+shown(jt(y ~ g, data = f_cat))
+jsubset(f_cat, NULL)
+rm(shown, f_cat)
+
+# Expected:
+#   Independent Samples T-Test
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         12
+#       subset =            8          4  g == "a"
+#       Analysis N         --          4
+#   ----------------------------------------------
+#
+#   Error: jt(): subset = g == "a" keeps only 1 category of 'g', and a t-test
+#   requires exactly 2.
+#   To compare the categories, remove the filter.
+#
+#   One-Way ANOVA
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         12
+#       subset =            8          4  g == "b"
+#       Analysis N         --          4
+#   ----------------------------------------------
+#
+#   Error: jaov(): subset = g == "b" keeps only 1 category of 'g', and an ANOVA
+#   requires at least 2.
+#   To compare the categories, remove the filter.
+#
+#   Cross-Tabulation
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         12
+#       subset =            6          6  k == 1
+#       Analysis N         --          6
+#   --------------------------------------------
+#
+#   Error: jcrosstab(): subset = k == 1 keeps only 1 category of 'k', and a
+#   cross-tabulation requires at least 2 for each variable.
+#   To cross-tabulate it, remove the filter.
+#
+#   jsubset activated for f_cat: g == "c"
+#   Independent Samples T-Test
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         12
+#       jsubset()           8          4  g == "c"
+#       Analysis N         --          4
+#   ----------------------------------------------
+#
+#   Error: jt(): Your jsubset() filter (g == "c") keeps only 1 category of 'g',
+#   and a t-test requires exactly 2.
+#   To compare the categories, set the filter aside:
+#     jsubset(f_cat, off)
+#
+#   jsubset cleared for f_cat (had: g == "c").
+#
+# Things to look at:
+#   - RENDER 1: Welch's stop names the category with one case, says what
+#     Welch's test requires, and gives the way on: Student's test, which
+#     then runs. Its Cohen's d is a number (-4.472, from the pooled SD
+#     the test itself used); it printed "Cohen's d: NA".
+#   - RENDER 2: four stops, each under its title and N line and before
+#     any table. Each names the variable or the category, then states
+#     what the test requires. The Welch ANOVA stop names the category
+#     that does not vary (b) and offers the standard ANOVA.
+#   - RENDER 3, first output: g has three categories and jt() runs, on p
+#     and q. The five cases of r are in the Case Processing block as
+#     missing. It stopped "'g' has 3 categories".
+#   - Second output: "No cases are left to analyze.", under the Case
+#     Processing block that shows where they went, and a second line
+#     saying how: "All 17 cases were excluded by a filter." The same stop
+#     prints in jt(), jcrosstab(), jlm(), jlogistic() and jalpha()
+#     (models_walk.R Section 18).
+#   - RENDER 4: each filter names the variable it leaves with one
+#     category, so each stop says so -- "subset = g == "a" keeps only 1
+#     category of 'g'" -- with the way out, where it said "'g' has 1
+#     category" and nothing of the filter. The stored filter is named as
+#     the filter, and set aside with the line jsubset() itself prints.
+#     Where a filter does NOT name the variable the stop is as it was
+#     (models_check.R P19).
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 31 -- diagnostics: one setting, apart from the output levels ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 346 (v0.9.219), on Jeff's ruling of 8 October 2026. Levene's
+# test, the VIF table and the regression plots are DIAGNOSTICS, asked for
+# with one argument, diagnostics =, in joutput(), jt(), jaov(), jlm() and
+# jlogistic(): TRUE (everything the function has), FALSE, or names. No
+# output level turns them on. Until this build joutput("full") and
+# full = TRUE printed Levene's table, and jt() and jaov() took
+# levene = TRUE. f_gh is Section 23's frame.
+
+f_gh <- data.frame(g = c(rep("a", 6), rep("b", 8), rep("c", 4)),
+                   y = c(4, 5, 6, 5, 4, 6,  2, 9, 4, 11, 6, 13, 1, 10,
+                         10, 11, 12, 11),
+                   stringsAsFactors = FALSE)
+
+# Render 1 -- the full level: the panel, then an ANOVA.
+joutput("full")
+jaov(y ~ g, data = f_gh)
+
+# Expected:
+#   Output Settings
+#   Level: full
+#     effect.size: ON
+#     regression.ci: ON
+#     means.ci: ON
+#     posthoc: ON
+#     diagnostics: OFF
+#     case.processing: ON
+#     case.processing.detail: PER_CODE
+#     case.processing.filter: LIST
+#     variable.id: LEGEND
+#     value.id: BOTH
+#     ref.categories: ON
+#     missing.notice: ON
+#     digits: 3
+#
+#   One-Way ANOVA
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         18
+#       Analysis N         --         18
+#   ------------------------------------
+#
+#   Group Descriptives: y by g
+#   Group  N   Mean     SD   95% CI Lower  95% CI Upper
+#   -----  -  ------  -----  ------------  ------------
+#   a      6   5.000  0.894      4.061         5.939
+#   b      8   7.000  4.408      3.315        10.685
+#   c      4  11.000  0.816      9.701        12.299
+#
+#   ANOVA: y by g
+#   Source    df  Sum of Squares  Mean Square    F      p
+#   --------  --  --------------  -----------  -----  ----
+#   g          2       87.111        43.556    4.601  .028
+#   Residual  15      142.000         9.467
+#   Total     17      229.111
+#
+#   Eta-squared: 0.380
+#
+#   Tukey HSD Post-Hoc Comparisons
+#   Comparison  Mean Difference  95% CI Lower  95% CI Upper  p (adjusted)
+#   ----------  ---------------  ------------  ------------  ------------
+#   b-a              2.000          -2.316         6.316         .469
+#   c-a              6.000           0.841        11.159         .022
+#   c-b              4.000          -0.894         8.894         .119
+
+# Render 2 -- the setting turned on, an ANOVA, then back to the standard
+# level.
+joutput(diagnostics = TRUE)
+jaov(y ~ g, data = f_gh)
+joutput("standard")
+
+# Expected:
+#   Output Settings
+#     diagnostics: ON
+#   Run joutput() to see all settings.
+#
+#   One-Way ANOVA
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         18
+#       Analysis N         --         18
+#   ------------------------------------
+#
+#   Levene's Test for Homogeneity of Variance
+#      F    df1  df2    p
+#   ------  ---  ---  -----
+#   12.823   2    15  <.001
+#
+#   Note: Levene's test is significant (p < .001).
+#   The largest group is 2.0 times the smallest, and the largest SD is 5.4 times
+#   the smallest.
+#   Both are beyond the usual guidelines, so the p-value of the standard ANOVA
+#   may not be reliable.
+#   Welch's ANOVA does not assume equal variances: welch = TRUE.
+#   See ?jaov.
+#
+#   Group Descriptives: y by g
+#   Group  N   Mean     SD   95% CI Lower  95% CI Upper
+#   -----  -  ------  -----  ------------  ------------
+#   a      6   5.000  0.894      4.061         5.939
+#   b      8   7.000  4.408      3.315        10.685
+#   c      4  11.000  0.816      9.701        12.299
+#
+#   ANOVA: y by g
+#   Source    df  Sum of Squares  Mean Square    F      p
+#   --------  --  --------------  -----------  -----  ----
+#   g          2       87.111        43.556    4.601  .028
+#   Residual  15      142.000         9.467
+#   Total     17      229.111
+#
+#   Eta-squared: 0.380
+#
+#   Tukey HSD Post-Hoc Comparisons
+#   Comparison  Mean Difference  95% CI Lower  95% CI Upper  p (adjusted)
+#   ----------  ---------------  ------------  ------------  ------------
+#   b-a              2.000          -2.316         6.316         .469
+#   c-a              6.000           0.841        11.159         .022
+#   c-b              4.000          -0.894         8.894         .119
+#
+#   Output Settings
+#   Level: standard
+#     effect.size: ON
+#     regression.ci: OFF
+#     means.ci: ON
+#     posthoc: OFF
+#     diagnostics: ON
+#     case.processing: AUTO
+#     case.processing.detail: TOTALS
+#     case.processing.filter: AUTO
+#     variable.id: NAMES
+#     value.id: BOTH
+#     ref.categories: ON
+#     missing.notice: ON
+#     digits: 3
+
+# Render 3 -- one call turning it off; then a setting that names only
+# the VIF table, which is not one of jaov()'s.
+jaov(y ~ g, data = f_gh, diagnostics = FALSE)
+joutput(diagnostics = "vif")
+jaov(y ~ g, data = f_gh)
+joutput(NULL)
+
+# Expected:
+#   One-Way ANOVA
+#
+#   Analysis N: 18
+#
+#   Group Descriptives: y by g
+#   Group  N   Mean     SD   95% CI Lower  95% CI Upper
+#   -----  -  ------  -----  ------------  ------------
+#   a      6   5.000  0.894      4.061         5.939
+#   b      8   7.000  4.408      3.315        10.685
+#   c      4  11.000  0.816      9.701        12.299
+#
+#   ANOVA: y by g
+#   Source    df  Sum of Squares  Mean Square    F      p
+#   --------  --  --------------  -----------  -----  ----
+#   g          2       87.111        43.556    4.601  .028
+#   Residual  15      142.000         9.467
+#   Total     17      229.111
+#
+#   Eta-squared: 0.380
+#
+#   Output Settings
+#     diagnostics: VIF
+#   Run joutput() to see all settings.
+#
+#   One-Way ANOVA
+#
+#   Analysis N: 18
+#
+#   Group Descriptives: y by g
+#   Group  N   Mean     SD   95% CI Lower  95% CI Upper
+#   -----  -  ------  -----  ------------  ------------
+#   a      6   5.000  0.894      4.061         5.939
+#   b      8   7.000  4.408      3.315        10.685
+#   c      4  11.000  0.816      9.701        12.299
+#
+#   ANOVA: y by g
+#   Source    df  Sum of Squares  Mean Square    F      p
+#   --------  --  --------------  -----------  -----  ----
+#   g          2       87.111        43.556    4.601  .028
+#   Residual  15      142.000         9.467
+#   Total     17      229.111
+#
+#   Eta-squared: 0.380
+#
+#   Output Settings
+#   Reset to defaults (standard, no toggle overrides).
+
+# Render 4 -- what is refused, and a setting of two names.
+shown <- function(expr) tryCatch(expr, error = function(e)
+  cat("Error: ", conditionMessage(e), "\n\n", sep = ""))
+shown(jaov(y ~ g, data = f_gh, diagnostics = "qq"))
+shown(jaov(y ~ g, data = f_gh, levene = TRUE))
+shown(joutput(diagnostics = "leven"))
+shown(joutput(diagnostics = "levene + vif"))
+joutput(diagnostics = c("levene", "vif"))
+joutput(NULL, quiet = TRUE)
+rm(shown, f_gh)
+
+# Expected:
+#   Error: jaov(): "qq" is not a diagnostic of jaov().
+#   `diagnostics` must be TRUE, FALSE, or "levene".
+#
+#   Error: jaov(): 'levene' is not valid. Did you mean `diagnostics`?
+#
+#   Error: joutput(): "leven" is not a diagnostic.
+#   `diagnostics` must be TRUE, FALSE, or one or more of "levene", "vif",
+#   "residuals", "qq", "scale", "cooks", and "leverage".
+#
+#   Error: joutput(): "levene + vif" is not a diagnostic.
+#   To ask for more than one, combine them with c():
+#     diagnostics = c("levene", "vif")
+#
+#   Output Settings
+#     diagnostics: LEVENE, VIF
+#   Run joutput() to see all settings.
+#
+# Things to look at:
+#   - RENDER 1: the panel has ONE row for this, "diagnostics: OFF", at
+#     the full level (the levene row is gone). The ANOVA under it has the
+#     full level's Case Processing block and post-hoc table and NO
+#     Levene's table.
+#   - RENDER 2: the echo reads "diagnostics: ON"; the ANOVA now has
+#     Levene's table and its note. The level call after it shows
+#     "diagnostics: ON" still: a level call does not change the setting.
+#   - RENDER 3: diagnostics = FALSE in the call wins over the setting.
+#     The echo for one name reads "diagnostics: VIF", and jaov() under
+#     that setting prints no Levene's table: each function takes the
+#     names that are its own.
+#   - RENDER 4, in order: a name that is another function's diagnostic
+#     is refused in the call, with what jaov() takes; the old argument is
+#     refused with the new one named; a misspelled name is refused with
+#     every name joutput() takes; two names typed in one string get the
+#     c() form to type. The last line shows that form accepted:
+#     "diagnostics: LEVENE, VIF".
+#   - jlm() and jlogistic() under the same setting: models_walk.R
+#     Section 19.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # <Free-form notes from the most recent walk: anything that looked off,
 # wording worth an mv review, follow-ups. Dated entries, newest first.>
+#
+# 2026-10-08/09 (S346), Jeff, walking Sections 27-31 at v0.9.219's first
+# delivery and Section 30 at its second: "all okay". His one remark that
+# session was on models_walk.R Section 18 (a filter that names the
+# predictor) and moved Section 30 too: Render 4, the second delivery.
 #
 # 2026-10-06 (S341), Jeff, walking Sections 4, 23 and 24 at v0.9.215's
 # first delivery ("format walk only shows one minor cosmetic thing"):

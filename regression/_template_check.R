@@ -53,6 +53,10 @@ stopifnot(exists("jload", mode = "function"))
 .entry_message_width <- getOption(".jst_options_message_width")
 .entry_default_data  <- getOption(".jst_default_data")
 .entry_output_level  <- getOption(".jst_output_level")
+# The stored display settings too (S346): the diagnostics setting outlives
+# a level call, so restoring the level alone would hand back a session
+# without it.
+.entry_output_toggles <- getOption(".jst_output_toggles")
 
 # Message-width pin. MANDATORY (S253): the emitter wraps to this setting and
 # the shipped default follows the console pane, so an unpinned battery
@@ -250,6 +254,7 @@ if (length(.ub) > 0L) for (l in .ub) cat("        does not parse: ", l, "\n")
 options(.jst_options_message_width = .entry_message_width)
 options(.jst_default_data          = .entry_default_data)
 options(.jst_output_level          = .entry_output_level)
+options(.jst_output_toggles = .entry_output_toggles)
 
 # --- Verdict -----------------------------------------------------------------
 

@@ -10,6 +10,11 @@
 #           variable's declared missing strings and its blank cells, in
 #           jfreq(), jscreen() and a group function (Part K).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S346 EDIT (v0.9.219): D4 RE-PINNED MECHANICALLY under Jeff's ruling of
+#           8 October 2026 (the full level does not bring diagnostics): the
+#           line its Expected names after the block is the Group
+#           Descriptives caption, where Levene's table stood. Nothing of
+#           the Case Processing block moved; PENDING stays none.
 # S340 EDIT (v0.9.214): PART K ADDED, five sections, for Fix Slate 3's text
 #           variables. K1 and K2: a string variable's declared missing
 #           values are Missing rows in jfreq() and leave a group function,
@@ -927,7 +932,7 @@ joutput(NULL, quiet = TRUE)
 #       Analysis N         --         70
 #   ------------------------------------
 #
-#   Levene's Test for Homogeneity of Variance
+#   Group Descriptives: Flourishing by SoughtHelp
 #   [... results not pinned here ...]
 #
 # Things to look at:

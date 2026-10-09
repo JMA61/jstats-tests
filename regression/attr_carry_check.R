@@ -16,6 +16,15 @@
 #           back its delivered format, not the writer's F8.2.
 # ORIGIN:   S299 (v0.9.171); field finding 2 at S298 (jstats 0.9.170 on
 #           the field corpus, 52 declared columns read back F8.2)
+# S346 EDIT (v0.9.219, 2026-10-08): the session guard hands back the stored
+#           display settings (.jst_output_toggles) with the output level.
+#           The diagnostics setting outlives a level call since v0.9.219,
+#           so a run entered with joutput(diagnostics = TRUE) left the
+#           session without it (found entering dirty). No check added.
+#           LAST VERIFIED: v0.9.219, 2026-10-09 (S346) -- 52/52 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2079 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 14528c6.
 # S337 EDIT (v0.9.211, 2026-10-05; no package change): the two session guards
 #           of _template_check.R. A GREEN run now removes everything the
 #           battery made (the names in the workspace are recorded at Setup;
@@ -60,6 +69,10 @@ stopifnot(exists("jload", mode = "function"))
 # The output level too (S337; the S249 item's guard (4)): joutput(NULL) below
 # forces the default, and without this line the session came back there.
 .entry_output_level  <- getOption(".jst_output_level")
+# The stored display settings too (S346): the diagnostics setting outlives
+# a level call, so restoring the level alone would hand back a session
+# without it.
+.entry_output_toggles <- getOption(".jst_output_toggles")
 
 # Message-width pin (mandatory since S253). Nothing here asserts wording,
 # but the pin keeps the run environment-independent all the same.
@@ -367,6 +380,7 @@ options(.jst_options_message_width       = .entry_message_width)
 options(.jst_default_data                = .entry_default_data)
 options(.jst_options_missing_convention  = .entry_convention)
 options(.jst_output_level                = .entry_output_level)
+options(.jst_output_toggles = .entry_output_toggles)
 
 .n_ok <- sum(vapply(.results, `[[`, logical(1), "ok"))
 .n    <- length(.results)

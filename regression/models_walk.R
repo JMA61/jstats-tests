@@ -25,6 +25,13 @@
 #           Since S342 (v0.9.216, Section 16): a comparison inside a formula
 #           computes on a categorical variable with no registration, and
 #           arithmetic on one is refused with a remedy that runs.
+#           Since S346 (v0.9.219, Sections 17-19): the "seems categorical"
+#           warning's lines to run; the stops for a sample with no case
+#           left, a predictor with one value and a computed outcome; and
+#           diagnostics (the VIF table and the plots) as one setting,
+#           apart from the output levels. And, in Section 18 since the
+#           second delivery, a filter that names a variable the model needs
+#           to vary named as the cause of its one value.
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
 # S342 EDIT (v0.9.216): SECTION 16 ADDED, three renders, for Jeff's S342
@@ -42,6 +49,42 @@
 #           outside both pinned blocks. Section 16 needs no other section
 #           (harness.R derive: NEEDS 4, 5 and 6 on 3, as before). The human
 #           half of models_check.R M25-M37.
+# S346 EDIT (v0.9.219): SECTIONS 17-19 ADDED for Fix Slate 8's first cut
+#           and the diagnostics setting: the "seems categorical" warning
+#           and its lines to run (17); no case left, a predictor with one
+#           value, a computed outcome in jlogistic() (18); diagnostics in
+#           jlm() and jlogistic() (19). Each Expected FILLED BY RUNNING
+#           the file (fill.R, Testing Conventions). Section 17 sets
+#           warn = 1 for itself and hands the setting back, so its
+#           warnings are in its blocks. SECTION 8 CHANGED MECHANICALLY
+#           under Jeff's ruling of 8 October 2026 (the full level does not
+#           bring diagnostics) and kept off the PENDING line: its call
+#           asks for the VIF table its bullet reads, diagnostics = "vif";
+#           its pinned block is unchanged.
+#           SECOND DELIVERY, THE NEXT DAY: Jeff walked Sections 17-19 at
+#           the first ("all okay") but for Section 18's second stop:
+#           subset = PriorTherapy == 1 with PriorTherapy in the formula got
+#           "Check whether subset = is excluding the other values", and
+#           "the error message doesn't address the real problem". Section
+#           18 RE-PINNED: Render 2 now shows the filter named as the cause
+#           (as subset = and as a stored jsubset() filter), beside the
+#           hedged line for a filter on another variable and the plain
+#           stop with no filter; Renders 4-6 new (a predictor dummy-coded
+#           in the call; an outcome the filter keeps to one value, in
+#           jlogistic() and jlm(); one case left). Each block FILLED BY
+#           RUNNING, with #@SKIP before Renders 2 and 4 so a block holds
+#           its own render alone (the S343 lesson).
+# LAST VERIFIED: v0.9.219, 2026-10-09 (S346) -- Sections 17-19 WALKED on the
+#           WORKSTATION by Jeff through rewalk() at the first delivery
+#           ("all okay") but for Section 18's second stop -- subset =
+#           PriorTherapy == 1 with PriorTherapy in the formula got "Check
+#           whether subset = is excluding the other values", and "the
+#           error message doesn't address the real problem" -- fixed in the
+#           second delivery, where Section 18 was walked again ("all
+#           okay"); PENDING back to none; GitHub 14528c6. Section 8
+#           changed mechanically, not walked. Sandbox: 29 of 30 Expected
+#           blocks found under rewalk() in three orders, as before (Section
+#           1's block is not a contiguous run by design).
 # LAST VERIFIED: v0.9.216, 2026-10-06 (S342) -- Section 16 WALKED on the
 #           WORKSTATION by Jeff through rewalk() ("Both walks look good");
 #           PENDING back to none; GitHub 8737548. Sandbox (R 4.3.3, UTF-8
@@ -445,7 +488,8 @@ jlm(Flourishing ~ SocialSupport * SoughtHelp, data = d)
 # It is now listed as its bare text.
 
 joutput("full", quiet = TRUE)
-jlm(Flourishing ~ I(ScreenTime > 4) + SocialSupport, data = d)
+jlm(Flourishing ~ I(ScreenTime > 4) + SocialSupport, data = d,
+    diagnostics = "vif")
 joutput(NULL, quiet = TRUE)
 
 # Expected:
@@ -457,6 +501,8 @@ joutput(NULL, quiet = TRUE)
 #
 # Things to look at:
 #   - Two predictors listed, two rows in the VIF table further down.
+#     (Since v0.9.219 the full level does not bring the VIF table, so
+#     the call asks for it: diagnostics = "vif".)
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # SECTION 9 -- a squared term: the default column and its note (S321) ----
@@ -880,6 +926,654 @@ rm(tx16)
 #   - Third stop: that call itself, which is now refused. It used to
 #     print "Numeric registration set for 'Source' in tx16." and change
 #     nothing jdesc() or jscreen() could use.
+
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 17 -- the "seems categorical" warning and its lines to run (S346) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Fix Slate 8 (v0.9.219). A numeric predictor with a few labelled values
+# is fitted as a number, with a warning that offers two ways to treat it
+# as categories. The lines it offered were rebuilt from the formula 60
+# characters at a time, so a long formula printed cut off; a call that
+# named its data frame was offered a line without it; and the two calls
+# ran together on one line. Condition is the four-category treatment
+# variable, not registered here. The assertion side is models_check.R
+# N18-N27, where every printed line is run.
+# warn = 1 for this section, so each warning prints where it is raised,
+# under the title; at R's default it prints after the output, headed
+# "Warning message:".
+
+.warn17 <- options(warn = 1)
+
+# Render 1 -- the data frame named in the call.
+jlm(Flourishing ~ Stress + Condition, data = d)
+
+# Expected:
+#   Linear Regression
+#   Warning: Condition seems categorical.
+#   To treat it that way, register it with jdummy() and rerun:
+#
+#     jdummy(d, Condition)
+#     jlm(Flourishing ~ Stress + Condition, d)
+#
+#   Or, for this call only:
+#     jlm(Flourishing ~ Stress + Condition, d, categorical = "Condition")
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   Coefficients
+#                   b      SE      t       β      p
+#   -----------  ------  -----  ------  ------  -----
+#   (Intercept)  55.505  5.440  10.202          <.001
+#   Stress       -0.580  0.230  -2.515  -0.301   .014
+#   Condition     1.097  1.432   0.766   0.092   .446
+#
+#   Outcome: Flourishing
+#
+#   R-squared: 0.101    Adjusted R-squared: 0.073
+#   Residual Standard Error: 13.740
+#
+#   F-statistic: 3.542 on 2 and 63 DF, p-value: .035
+#   Sum of Squares:
+#     Regression: 1337.376
+#     Residual:   11893.109
+#     Total:      13230.485
+
+# Render 2 -- jlogistic(), on the default data frame.
+juse(d)
+jlogistic(SoughtHelp ~ Stress + Condition)
+juse(NULL)
+
+# Expected:
+#   Default data frame set to: d
+#   Logistic Regression
+#   Using default data frame: d
+#   Warning: Condition seems categorical.
+#   To treat it that way, register it with jdummy() and rerun:
+#
+#     jdummy(d, Condition)
+#     jlogistic(SoughtHelp ~ Stress + Condition)
+#
+#   Or, for this call only:
+#     jlogistic(SoughtHelp ~ Stress + Condition, categorical = "Condition")
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   Coefficients
+#                   b      SE    Wald  df    p   Exp(B)
+#   -----------  ------  -----  -----  --  ----  ------
+#   (Intercept)  -1.727  0.925  3.489   1  .062   0.178
+#   Stress        0.039  0.038  1.052   1  .305   1.039
+#   Condition     0.084  0.233  0.131   1  .718   1.088
+#
+#   Outcome: SoughtHelp
+#
+#   Omnibus Test of Model Coefficients
+#   Chi-Square  df    p
+#   ----------  --  ----
+#      1.170     2  .557
+#
+#   Model Summary
+#   -2 Log Likelihood  Cox & Snell R²  Nagelkerke R²    AIC
+#   -----------------  --------------  -------------  ------
+#         78.062            0.018          0.025      84.062
+#
+#   Dependent Variable Encoding
+#     Modeled (1):   Yes
+#     Reference (0): No
+#
+#   Default data frame cleared.
+
+# Render 3 -- a long formula, and the data given as an expression.
+jlm(Flourishing ~ scale(Stress, scale = FALSE) * SocialSupport + Condition,
+    data = d[d$SocialSupport > 5, ])
+options(.warn17); rm(.warn17)
+
+# Expected:
+#   Linear Regression
+#   Warning: Condition seems categorical.
+#   To treat it that way, register it with jdummy() and rerun:
+#
+#     mydata <- d[d$SocialSupport > 5, ]
+#     jdummy(mydata, Condition)
+#     jlm(Flourishing ~ scale(Stress, scale = FALSE) * SocialSupport + Condition, mydata)
+#
+#   Or, for this call only:
+#     jlm(Flourishing ~ scale(Stress, scale = FALSE) * SocialSupport + Condition, d[d$SocialSupport > 5, ], categorical = "Condition")
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         65
+#       Auto-listwise         4         61
+#       Analysis N           --         61
+#
+#   Missing data   From 65   %
+#       Stress
+#         Missing     4     6.2
+#   --------------------------------------
+#
+#   Coefficients
+#                                                    b      SE      t       β      p
+#   --------------------------------------------  ------  -----  ------  ------  -----
+#   (Intercept)                                   33.348  7.126   4.680          <.001
+#   scale(Stress, scale = FALSE)                  -2.465  0.637  -3.870  -0.100  <.001
+#   SocialSupport                                  1.018  0.393   2.587   0.287   .012
+#   Condition                                      1.093  1.337   0.817   0.090   .417
+#   scale(Stress, scale = FALSE) * SocialSupport   0.153  0.044   3.469   0.328   .001
+#
+#   In a model with an interaction, β comes from centered predictors: a β can
+#   have the opposite sign from its b, and other software may report
+#   different β values.
+#   See ?jlm.
+#
+#   Outcome: Flourishing
+#
+#   R-squared: 0.361    Adjusted R-squared: 0.315
+#   Residual Standard Error: 11.870
+#
+#   F-statistic: 7.913 on 4 and 56 DF, p-value: <.001
+#   Sum of Squares:
+#     Regression: 4459.095
+#     Residual:   7889.692
+#     Total:      12348.787
+#
+# Things to look at:
+#   - RENDER 1: "Condition seems categorical.", then two blocks. The
+#     first registers the variable and reruns the call, one line each;
+#     the second is the call with categorical = added, under "Or, for
+#     this call only:". Both name d, as the call did.
+#   - RENDER 2: the call named no data frame, so its two rerun lines name
+#     none. The jdummy() line names d, which it must.
+#   - RENDER 3: the formula is whole in both lines, scale(Stress, scale =
+#     FALSE) and all. The data was an expression, so the first block
+#     opens with "mydata <- d[d$SocialSupport > 5, ]" and its two lines name
+#     mydata: a registration is stored under a data frame's name. The
+#     second block repeats the call as typed, which runs as it is.
+#   - The model under each warning is the numeric fit: one Condition row.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 18 -- no case left; a predictor with one value; a computed ----
+#               outcome (S346)
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Fix Slate 8 (v0.9.219). Three stops, shown through tryCatch(), so the
+# file still runs end to end.
+
+shown <- function(expr) tryCatch(expr, error = function(e)
+  cat("Error: ", conditionMessage(e), "\n\n", sep = ""))
+
+# Render 1 -- a filter that leaves no case, in jlm() and in jlogistic().
+shown(jlm(Flourishing ~ SocialSupport + ScreenTime, data = d,
+          subset = Flourishing > 200))
+shown(jlogistic(SoughtHelp ~ SocialSupport + ScreenTime, data = d,
+                subset = ScreenTime > 200))
+
+# Expected:
+#   Linear Regression
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         70
+#       subset =           70          0  Flourishing > 200
+#       Analysis N         --          0
+#   -------------------------------------------------------
+#
+#   Error: jlm(): No cases are left to analyze.
+#   All 70 cases were excluded by a filter.
+#
+#   Logistic Regression
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         70
+#       subset =           70          0  ScreenTime > 200
+#       Analysis N         --          0
+#   ------------------------------------------------------
+#
+#   Error: jlogistic(): No cases are left to analyze.
+#   All 70 cases were excluded by a filter.
+
+# Render 2 -- a predictor with one value among the cases analyzed: a
+# filter that names it, as subset = and as a stored jsubset() filter; a
+# filter on another variable that leaves it one value (Arm is 1 in the
+# Control condition and 0 elsewhere); and the data as they are.
+shown(jlm(Flourishing ~ SocialSupport + PriorTherapy, data = d,
+          subset = PriorTherapy == 1))
+jsubset(d, PriorTherapy == 1)
+shown(jlm(Flourishing ~ SocialSupport + PriorTherapy, data = d))
+jsubset(d, NULL)
+d$Arm <- as.numeric(d$Condition == 1)
+shown(jlm(Flourishing ~ SocialSupport + Arm, data = d,
+          subset = Condition == 1))
+d$Site <- 1
+shown(jlm(Flourishing ~ SocialSupport + Site, data = d))
+d$Arm <- NULL; d$Site <- NULL
+
+# Expected:
+#   Linear Regression
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         70
+#       subset =           31         39  PriorTherapy == 1
+#       Analysis N         --         39
+#   -------------------------------------------------------
+#
+#   Error: jlm(): subset = PriorTherapy == 1 keeps only one value of
+#   PriorTherapy, so its coefficient cannot be estimated.
+#   To estimate it, remove the filter.
+#   To analyze only those cases, remove PriorTherapy from the formula.
+#
+#   jsubset activated for d: PriorTherapy == 1
+#   Linear Regression
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         70
+#       jsubset()          31         39  PriorTherapy == 1
+#       Analysis N         --         39
+#   -------------------------------------------------------
+#
+#   Error: jlm(): Your jsubset() filter (PriorTherapy == 1) keeps only one
+#   value of PriorTherapy, so its coefficient cannot be estimated.
+#   To estimate it, set the filter aside:
+#     jsubset(d, off)
+#   To analyze only those cases, remove PriorTherapy from the formula.
+#
+#   jsubset cleared for d (had: PriorTherapy == 1).
+#   Linear Regression
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         70
+#       subset =           52         18  Condition == 1
+#       Analysis N         --         18
+#   ----------------------------------------------------
+#
+#   Error: jlm(): Arm has only one value in the analysis sample, so its
+#   coefficient cannot be estimated.
+#   Check whether subset = is excluding the other values.
+#
+#   Linear Regression
+#
+#   Analysis N: 70
+#
+#   Error: jlm(): Site has only one value in the analysis sample, so its
+#   coefficient cannot be estimated.
+
+# Render 3 -- a computed outcome in jlogistic().
+shown(jlogistic(I(Flourishing > 50) ~ SocialSupport, data = d))
+
+# Expected:
+#   Logistic Regression
+#   Error: jlogistic(): I(Flourishing > 50) is a computed term, and the outcome
+#   of a logistic regression must be a variable in the data.
+#   Create a 0/1 variable first, then use it as the outcome.
+
+# Render 4 -- a categorical predictor the filter keeps to one category.
+shown(jlm(Flourishing ~ SocialSupport + Condition, data = d,
+          categorical = "Condition", subset = Condition == 2))
+
+# Expected:
+#   Linear Regression
+#   Error: jlm(): subset = Condition == 2 keeps only one category of Condition
+#   (2: CBT), and a dummy-coded predictor requires at least two.
+#   To estimate its coefficients, remove the filter.
+#   To analyze only those cases, remove Condition from the formula.
+
+# Render 5 -- an outcome the filter keeps to one value, in jlogistic()
+# and in jlm() (five clients score 42).
+shown(jlogistic(SoughtHelp ~ SocialSupport, data = d, subset = SoughtHelp == 1))
+shown(jlm(Flourishing ~ SocialSupport, data = d, subset = Flourishing == 42))
+
+# Expected:
+#   Logistic Regression
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         70
+#       subset =           49         21  SoughtHelp == 1
+#       Analysis N         --         21
+#   -----------------------------------------------------
+#
+#   Error: jlogistic(): subset = SoughtHelp == 1 keeps only one value of
+#   SoughtHelp, and the outcome of a logistic regression needs two.
+#   To model SoughtHelp, remove the filter.
+#
+#   Linear Regression
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         70
+#       subset =           65          5  Flourishing == 42
+#       Analysis N         --          5
+#   -------------------------------------------------------
+#
+#   Error: jlm(): subset = Flourishing == 42 keeps only one value of
+#   Flourishing, and a regression needs an outcome that varies.
+#   To model Flourishing, remove the filter.
+
+# Render 6 -- one case left.
+shown(jlm(Flourishing ~ SocialSupport, data = d, subset = ClientID == "C001"))
+rm(shown)
+
+# Expected:
+#   Linear Regression
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         70
+#       subset =           69          1  ClientID == "C001"
+#       Analysis N         --          1
+#   --------------------------------------------------------
+#
+#   Error: jlm(): Only 1 case is left to analyze.
+#   The other 69 cases were excluded by a filter.
+#
+# Things to look at:
+#   - RENDER 1: "No cases are left to analyze." under the Case Processing
+#     block, which shows the filter taking all 70, and a second line
+#     saying how they went. The same two lines in both functions, and in
+#     jt(), jaov(), jcrosstab() and jalpha() (format_walk.R Section 30).
+#   - RENDER 2, first stop (Jeff's S346 walk: the hedged line "doesn't
+#     address the real problem"): the filter names PriorTherapy, so the
+#     stop says what it did -- "subset = PriorTherapy == 1 keeps only one
+#     value of PriorTherapy" -- and gives both ways out, one to a line:
+#     remove the filter to estimate the coefficient, or remove
+#     PriorTherapy to analyze only those cases.
+#   - Second stop: the same filter stored with jsubset(). It is named as
+#     the filter, and the way to set it aside is the line jsubset() itself
+#     prints, jsubset(d, off).
+#   - Third stop: the filter names Condition, not Arm, so the link is for
+#     the user to see, and the hedged line stays: "Check whether subset =
+#     is excluding the other values."
+#   - Fourth stop: no filter, so no line about filters.
+#   - RENDER 3: the stop names the term as typed and says what to do. It
+#     read "'I(Flourishing > 50)' has values: ." The title prints above
+#     it and nothing else.
+#   - RENDER 4: a predictor dummy-coded in the call, the same form: the
+#     category kept, "(2: CBT)", and the two ways out. It said "'Condition'
+#     has fewer than 2 categories. Cannot create dummy variables."
+#   - RENDER 5: the outcome the filter names. jlogistic() said "'SoughtHelp'
+#     has values: 1 ... Use jrecode() to create a 0/1 coded version" of a
+#     variable coded 0/1; jlm() fitted the model and stopped on R's "0
+#     (non-NA) cases". Both stops come under the Case Processing block,
+#     which shows the filter.
+#   - RENDER 6: "Only 1 case is left to analyze." and how the others went.
+#     It said "SocialSupport has only one value in the analysis sample":
+#     true of every variable in one case.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 19 -- diagnostics in jlm() and jlogistic() (S346) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# On Jeff's ruling of 8 October 2026 (v0.9.219). The VIF table and the
+# five regression plots are diagnostics, asked for with diagnostics =
+# and with nothing else: full = TRUE and joutput("full") printed the
+# table and drew the plots until this build. TRUE is everything the
+# function has; names pick among them. The plots open in the Plots pane.
+# format_walk.R Section 31 shows the setting in joutput().
+
+# Render 1 -- full = TRUE: the confidence interval, and no diagnostic.
+jlm(Flourishing ~ Stress + SocialSupport, data = d, full = TRUE)
+
+# Expected:
+#   Linear Regression
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   Coefficients
+#                     b      SE      t       β      p    95% CI Lower  95% CI Upper
+#   -------------  ------  -----  ------  ------  -----  ------------  ------------
+#   (Intercept)    41.495  6.575   6.311          <.001     28.355        54.634
+#   Stress         -0.436  0.221  -1.974  -0.226   .053     -0.878         0.005
+#   SocialSupport   1.039  0.336   3.090   0.354   .003      0.367         1.711
+#
+#   Outcome: Flourishing
+#
+#   R-squared: 0.212    Adjusted R-squared: 0.187
+#   Residual Standard Error: 12.863
+#
+#   F-statistic: 8.480 on 2 and 63 DF, p-value: <.001
+#   Sum of Squares:
+#     Regression: 2806.260
+#     Residual:   10424.225
+#     Total:      13230.485
+
+# Render 2 -- diagnostics = TRUE: the VIF table and five plots.
+jlm(Flourishing ~ Stress + SocialSupport, data = d, diagnostics = TRUE)
+
+# Expected:
+#   Linear Regression
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   Coefficients
+#                     b      SE      t       β      p
+#   -------------  ------  -----  ------  ------  -----
+#   (Intercept)    41.495  6.575   6.311          <.001
+#   Stress         -0.436  0.221  -1.974  -0.226   .053
+#   SocialSupport   1.039  0.336   3.090   0.354   .003
+#
+#   Outcome: Flourishing
+#
+#   R-squared: 0.212    Adjusted R-squared: 0.187
+#   Residual Standard Error: 12.863
+#
+#   F-statistic: 8.480 on 2 and 63 DF, p-value: <.001
+#   Sum of Squares:
+#     Regression: 2806.260
+#     Residual:   10424.225
+#     Total:      13230.485
+#
+#   VIF (Variance Inflation Factors)
+#   Variable        VIF
+#   -------------  -----
+#   Stress         1.051
+#   SocialSupport  1.051
+#
+#   (5 diagnostic plots produced -- use the back arrow in the Plots pane
+#   to view all)
+#     1: Residuals vs Fitted
+#     2: Normal Q-Q
+#     3: Scale-Location
+#     4: Cook's Distance
+#     5: Residuals vs Leverage
+
+# Render 3 -- two names; a VIF above 10 and the lines under it; then the
+# VIF table alone at the minimal level.
+jlm(Flourishing ~ Stress * SocialSupport, data = d,
+    diagnostics = c("vif", "qq"))
+joutput("minimal", quiet = TRUE)
+jlm(Flourishing ~ Stress * SocialSupport, data = d, diagnostics = "vif")
+joutput(NULL, quiet = TRUE)
+
+# Expected:
+#   Linear Regression
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   Coefficients
+#                              b      SE       t       β      p
+#   ----------------------  ------  ------  ------  ------  -----
+#   (Intercept)             78.089  11.164   6.995          <.001
+#   Stress                  -2.576   0.588  -4.385  -0.176  <.001
+#   SocialSupport           -1.573   0.740  -2.126   0.285   .037
+#   Stress * SocialSupport   0.159   0.041   3.873   0.400  <.001
+#
+#   In a model with an interaction, β comes from centered predictors: a β can
+#   have the opposite sign from its b, and other software may report
+#   different β values.
+#   See ?jlm.
+#
+#   Outcome: Flourishing
+#
+#   R-squared: 0.366    Adjusted R-squared: 0.335
+#   Residual Standard Error: 11.635
+#
+#   F-statistic: 11.911 on 3 and 62 DF, p-value: <.001
+#   Sum of Squares:
+#     Regression: 4837.188
+#     Residual:   8393.297
+#     Total:      13230.485
+#
+#   VIF (Variance Inflation Factors)
+#   Variable                  VIF
+#   ----------------------  ------
+#   Stress                   9.084
+#   SocialSupport            6.219
+#   Stress * SocialSupport  11.358
+#
+#   Stress * SocialSupport (VIF = 11.4): standard error inflated by a
+#   factor of 3.4.
+#     If you need to interpret this coefficient specifically, consider whether
+#     the collinearity is a concern for your research question.
+#
+#   (Diagnostic plot produced: Normal Q-Q)
+#
+#   Linear Regression
+#
+#   Analysis N: 66 (4 Excluded)
+#
+#   Coefficients
+#                              b      SE       t       β      p
+#   ----------------------  ------  ------  ------  ------  -----
+#   (Intercept)             78.089  11.164   6.995          <.001
+#   Stress                  -2.576   0.588  -4.385  -0.176  <.001
+#   SocialSupport           -1.573   0.740  -2.126   0.285   .037
+#   Stress * SocialSupport   0.159   0.041   3.873   0.400  <.001
+#
+#   In a model with an interaction, β comes from centered predictors: a β can
+#   have the opposite sign from its b, and other software may report
+#   different β values.
+#   See ?jlm.
+#
+#   Outcome: Flourishing
+#
+#   R-squared: 0.366    Adjusted R-squared: 0.335
+#   Residual Standard Error: 11.635
+#
+#   F-statistic: 11.911 on 3 and 62 DF, p-value: <.001
+#   Sum of Squares:
+#     Regression: 4837.188
+#     Residual:   8393.297
+#     Total:      13230.485
+#
+#   VIF (Variance Inflation Factors)
+#   Variable                  VIF
+#   ----------------------  ------
+#   Stress                   9.084
+#   SocialSupport            6.219
+#   Stress * SocialSupport  11.358
+
+# Render 4 -- jlogistic(), whose one diagnostic is the VIF table; and two
+# names that are refused.
+jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d, diagnostics = TRUE)
+tryCatch(jlm(Flourishing ~ Stress + SocialSupport, data = d,
+             diagnostics = c("vif", "qqplot")),
+         error = function(e) cat("Error: ", conditionMessage(e), "\n\n", sep = ""))
+tryCatch(jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d,
+                   diagnostics = "qq"),
+         error = function(e) cat("Error: ", conditionMessage(e), "\n", sep = ""))
+
+# Expected:
+#   Logistic Regression
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   Coefficients
+#                     b      SE    Wald  df    p   Exp(B)
+#   -------------  ------  -----  -----  --  ----  ------
+#   (Intercept)    -2.256  1.206  3.500   1  .061   0.105
+#   Stress          0.045  0.039  1.332   1  .248   1.046
+#   SocialSupport   0.046  0.060  0.585   1  .444   1.047
+#
+#   Outcome: SoughtHelp
+#
+#   Omnibus Test of Model Coefficients
+#   Chi-Square  df    p
+#   ----------  --  ----
+#      1.641     2  .440
+#
+#   Model Summary
+#   -2 Log Likelihood  Cox & Snell R²  Nagelkerke R²    AIC
+#   -----------------  --------------  -------------  ------
+#         77.591            0.025          0.035      83.591
+#
+#   VIF (Variance Inflation Factors)
+#   Variable        VIF
+#   -------------  -----
+#   Stress         1.051
+#   SocialSupport  1.051
+#
+#   Dependent Variable Encoding
+#     Modeled (1):   Yes
+#     Reference (0): No
+#
+#   Error: jlm(): "qqplot" is not a diagnostic of jlm().
+#   `diagnostics` must be TRUE, FALSE, or one or more of "vif", "residuals",
+#   "qq", "scale", "cooks", and "leverage".
+#
+#   Error: jlogistic(): "qq" is not a diagnostic of jlogistic().
+#   `diagnostics` must be TRUE, FALSE, or "vif".
+#
+# Things to look at:
+#   - RENDER 1: the coefficient table has its two interval columns, and
+#     the output ends at the Sum of Squares block. No VIF table, no line
+#     about plots, and nothing drawn in the Plots pane.
+#   - RENDER 2: no interval columns (the call did not ask for them); the
+#     VIF table, then "(5 diagnostic plots produced ...)" and the five
+#     names. Five plots are in the Plots pane.
+#   - RENDER 3, first output: the VIF table, the two lines under the VIF
+#     of 11.358, and "(Diagnostic plot produced: Normal Q-Q)": one plot.
+#   - Second output, at the minimal level: the VIF table and no lines
+#     under it. A diagnostic's brief interpretation prints at the
+#     standard and full levels only, as the Levene note does.
+#   - RENDER 4: jlogistic()'s VIF table sits where it always has, above
+#     the Dependent Variable Encoding block, and no plot is drawn. Then
+#     the two stops: a name that is no diagnostic of jlm() (it was
+#     ignored: the table printed, no plot, and nothing was said), and a
+#     jlm() name given to jlogistic().
 
 
 # --- Restore session state ---------------------------------------------------

@@ -29,6 +29,36 @@
 #           setting call prints what it touched, a level call the full
 #           panel, a setting name in first position is a query.
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S346 EDIT (v0.9.219, 2026-10-08): joutput()'s DIAGNOSTICS SETTING, on
+#           Jeff's ruling of that day. N59a-k NEW (11 checks): the echo
+#           with no "(override)", names stored and shown in capitals, OFF
+#           in the panel at every level, a level call keeping the
+#           setting, joutput(NULL) clearing it, a named NULL and a query,
+#           no levene line or setting, the stops for a name that is no
+#           diagnostic and for a wrong type, and the c() form for several
+#           names typed in one string. N56b f h i j k l m o w MOVED from
+#           the levene setting, which is gone, to regression.ci, and the
+#           panel they count is 16 lines for 17. 231 checks.
+#           Sandbox: 231/231 plain and under the RStudio-handler
+#           stand-in, each also with a Windows-length temp path, and
+#           entered dirty. On the 0.9.218 master 13 red: N56j N56k N56l,
+#           N59a-e N59g-k. MUTATION MAP (S346; the mutants of
+#           format_check.R's list that red here): the full level turning
+#           diagnostics on N59c; a level call dropping the setting N59d;
+#           the panel's "(override)" N59a N59b N59d N59e N59g; an unknown
+#           name passing N59i N59j N59k; no c() stop N59j; a wrong type
+#           passing N59i; joutput() not checking the value N59i-k; jlm's
+#           set without its plots N59b N59i-k; one flat group stopping
+#           the standard ANOVA N58j.
+#           THE SESSION GUARD hands back the stored display settings
+#           (.jst_output_toggles) with the output level: the diagnostics
+#           setting outlives a level call, so a run entered with
+#           joutput(diagnostics = TRUE) left the session without it
+#           (found entering dirty; all seven batteries with the guard).
+#           LAST VERIFIED: v0.9.219, 2026-10-09 (S346) -- 231/231 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2079 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 14528c6.
 # S340 EDIT (v0.9.214, 2026-10-05): Fix Slate 3, text variables. TWO NEW
 #           SECTIONS, 31 checks. N57a-n (14): a STRING variable's declared
 #           missing values -- .jst_missing_info()'s text arm (the declared
@@ -563,6 +593,10 @@ stopifnot(exists("jload", mode = "function"))
 # The output level too (S337; the S249 item's guard (4)): joutput(NULL) below
 # forces the default, and without this line the session came back there.
 .entry_output_level  <- getOption(".jst_output_level")
+# The stored display settings too (S346): the diagnostics setting outlives
+# a level call, so restoring the level alone would hand back a session
+# without it.
+.entry_output_toggles <- getOption(".jst_output_toggles")
 
 # Message-width pin. MANDATORY: the emitter wraps to this setting and since
 # S256 the shipped default follows the console pane, so an unpinned battery
@@ -1964,8 +1998,8 @@ check("N56a a setting call echoes the title, the one line and the pointer -- no 
       identical(getOption(".jst_output_toggles")$digits, 2L))
 reset()
 check("N56b two settings echo in panel order, whatever the call's order",
-      identical(plines(joutput(posthoc = TRUE, levene = TRUE)),
-                c("Output Settings", "  levene: ON (override)",
+      identical(plines(joutput(posthoc = TRUE, regression.ci = TRUE)),
+                c("Output Settings", "  regression.ci: ON (override)",
                   "  posthoc: ON (override)", .ptr56, "")))
 reset()
 .trio56 <- function(a, b, c) c("Output Settings",
@@ -1986,49 +2020,51 @@ check("N56e ... and setting case.processing.filter",
                 .trio56("AUTO", "TOTALS", "LIST (override)")))
 reset()
 check("N56f a named NULL echoes the setting's current value and writes nothing",
-      identical(plines(joutput(levene = NULL)),
-                c("Output Settings", "  levene: OFF", .ptr56, "")) &&
+      identical(plines(joutput(regression.ci = NULL)),
+                c("Output Settings", "  regression.ci: OFF", .ptr56, "")) &&
       is.null(getOption(".jst_output_toggles")))
 check("N56g ... and pulls no partner: joutput(case.processing = NULL) is one line",
       identical(plines(joutput(case.processing = NULL)),
                 c("Output Settings", "  case.processing: AUTO", .ptr56, "")))
 check("N56h ... beside a setting that IS written, both are echoed",
-      identical(plines(joutput(digits = NULL, levene = TRUE)),
-                c("Output Settings", "  levene: ON (override)", "  digits: 3",
+      identical(plines(joutput(digits = NULL, regression.ci = TRUE)),
+                c("Output Settings", "  regression.ci: ON (override)", "  digits: 3",
                   .ptr56, "")))
 reset()
 check("N56i quiet = TRUE prints nothing for a setting call, a named NULL included, and still applies the setting",
       identical(plines(joutput(digits = 4, quiet = TRUE)), character(0)) &&
       identical(getOption(".jst_output_toggles")$digits, 4L) &&
-      identical(plines(joutput(levene = NULL, quiet = TRUE)), character(0)))
+      identical(plines(joutput(regression.ci = NULL, quiet = TRUE)), character(0)))
 reset()
 .v56j <- plines(joutput("full"))
-check("N56j a LEVEL call keeps the full panel: the Level line, fourteen settings, no pointer",
-      identical(length(.v56j), 17L) && identical(.v56j[1:2], c("Output Settings", "Level: full")) &&
-      !any(.v56j == .ptr56) && identical(.v56j[17], ""))
+# Thirteen settings since S346: levene left the panel when Levene's test
+# became one of the diagnostics.
+check("N56j a LEVEL call keeps the full panel: the Level line, thirteen settings, no pointer",
+      identical(length(.v56j), 16L) && identical(.v56j[1:2], c("Output Settings", "Level: full")) &&
+      !any(.v56j == .ptr56) && identical(.v56j[16], ""))
 .v56k <- plines(joutput("standard", regression.ci = TRUE))
 check("N56k ... with a setting in the same call too",
-      identical(length(.v56k), 17L) && identical(.v56k[2], "Level: standard") &&
+      identical(length(.v56k), 16L) && identical(.v56k[2], "Level: standard") &&
       any(.v56k == "  regression.ci: ON (override)") && !any(.v56k == .ptr56))
 reset()
 .v56l <- plines(joutput(quiet = TRUE))
 check("N56l a bare joutput() is the full panel, with no pointer, whatever quiet says",
-      identical(length(.v56l), 17L) && identical(.v56l[2], "Level: standard") &&
+      identical(length(.v56l), 16L) && identical(.v56l[2], "Level: standard") &&
       !any(.v56l == .ptr56))
-quiet(joutput(levene = TRUE, quiet = TRUE))
+quiet(joutput(regression.ci = TRUE, quiet = TRUE))
 .o56 <- list(getOption(".jst_output_level"), getOption(".jst_output_toggles"))
 # Wrapped: before v0.9.208 this call is the level error, and an uncaught
 # stop here would end the battery instead of failing N56m inside the verdict.
-.v56m <- tryCatch(plines(joutput("levene", quiet = TRUE)),
+.v56m <- tryCatch(plines(joutput("regression.ci", quiet = TRUE)),
                   error = function(e) NA_character_)
-check("N56m joutput(\"levene\") is a query: the one line and the pointer, whatever quiet says, and nothing changed",
-      identical(.v56m, c("Output Settings", "  levene: ON (override)", .ptr56, "")) &&
+check("N56m joutput(\"regression.ci\") is a query: the one line and the pointer, whatever quiet says, and nothing changed",
+      identical(.v56m, c("Output Settings", "  regression.ci: ON (override)", .ptr56, "")) &&
       identical(.o56, list(getOption(".jst_output_level"), getOption(".jst_output_toggles"))))
 check("N56n ... its line is the full panel's own line",
       any(plines(joutput()) == .v56m[2]))
 check("N56o a query takes several names, in panel order, repeats dropped",
-      identical(plines(joutput(c("posthoc", "levene", "posthoc"))),
-                c("Output Settings", "  levene: ON (override)", "  posthoc: OFF",
+      identical(plines(joutput(c("posthoc", "regression.ci", "posthoc"))),
+                c("Output Settings", "  regression.ci: ON (override)", "  posthoc: OFF",
                   .ptr56, "")))
 check("N56p ... and pulls no partner: joutput(\"case.processing.detail\") is one line",
       identical(plines(joutput("case.processing.detail")),
@@ -2057,9 +2093,9 @@ check("N56v joutput(NULL) keeps its own two lines",
       identical(plines(joutput(NULL)),
                 c("Output Settings", "Reset to defaults (standard, no toggle overrides).", "")))
 reset()
-quiet(joutput(levene = TRUE, quiet = TRUE)); quiet(joutput(digits = 2, quiet = TRUE))
+quiet(joutput(regression.ci = TRUE, quiet = TRUE)); quiet(joutput(digits = 2, quiet = TRUE))
 check("N56w a setting call adds to the overrides already set",
-      identical(getOption(".jst_output_toggles"), list(levene = TRUE, digits = 2L)))
+      identical(getOption(".jst_output_toggles"), list(regression.ci = TRUE, digits = 2L)))
 .v56x <- plines(joutput("full"))
 check("N56x ... and a level call clears them: the panel is the level's own",
       is.null(getOption(".jst_output_toggles")) && any(.v56x == "  digits: 3") &&
@@ -2335,12 +2371,113 @@ check(
       { f <- jstats:::.jst_cps_n_line_rules
         identical(f$form[f$family == "analysis"], "analysis") })
 
+# =============================================================================
+# N59 -- joutput(diagnostics = ): ONE SETTING, APART FROM THE LEVELS (S346,
+#        v0.9.219)
+# =============================================================================
+# Jeff's ruling of 8 October 2026. Diagnostic output is one setting,
+# diagnostics: TRUE, FALSE, or the names of the diagnostics wanted, combined
+# with c(). It is no part of a level -- "full" does not turn it on, and a
+# level call, which clears every other override, leaves it as it was -- so
+# its panel line never reads "(override)". The levene setting is gone:
+# Levene's test is one of the diagnostics. Here, beside N56, because this
+# is the panel; format_check.R X and models_check.R O hold what the setting
+# does in the analysis functions.
+.ptr59 <- "Run joutput() to see all settings."
+.e59   <- function(expr) tryCatch({ quiet(expr); NA_character_ },
+                                  error = function(e) conditionMessage(e))
+reset()
+check("N59a joutput(diagnostics = TRUE) echoes its one line, with no \"(override)\", and stores the setting",
+      identical(plines(joutput(diagnostics = TRUE)),
+                c("Output Settings", "  diagnostics: ON", .ptr59, "")) &&
+        identical(getOption(".jst_output_toggles"), list(diagnostics = TRUE)))
+check("N59b names are stored as given and shown in the panel's capitals; FALSE is OFF",
+      identical(plines(joutput(diagnostics = c("levene", "vif"))),
+                c("Output Settings", "  diagnostics: LEVENE, VIF", .ptr59, "")) &&
+        identical(getOption(".jst_output_toggles")$diagnostics, c("levene", "vif")) &&
+        identical(plines(joutput(diagnostics = "qq"))[2L], "  diagnostics: QQ") &&
+        identical(plines(joutput(diagnostics = FALSE))[2L], "  diagnostics: OFF"))
+reset()
+check("N59c no level turns it on: the full panel reads OFF at minimal, standard and full",
+      all(vapply(c("minimal", "standard", "full"), function(lv) {
+        any(plines(joutput(lv)) == "  diagnostics: OFF")
+      }, logical(1))))
+reset()
+quiet(joutput(diagnostics = TRUE, quiet = TRUE)); quiet(joutput(digits = 2, quiet = TRUE))
+.v59d <- plines(joutput("full"))
+check("N59d a level call clears the other overrides and KEEPS diagnostics: the panel reads ON, digits is back at 3",
+      identical(getOption(".jst_output_toggles"), list(diagnostics = TRUE)) &&
+        any(.v59d == "  diagnostics: ON") && any(.v59d == "  digits: 3") &&
+        !any(grepl("(override)", .v59d, fixed = TRUE)))
+check("N59e ... a level call that names it sets it, off as well as on, beside its other settings",
+      { a <- plines(joutput("standard", diagnostics = FALSE, digits = 2))
+        b <- getOption(".jst_output_toggles")
+        d <- plines(joutput("minimal", diagnostics = "vif"))
+        any(a == "  diagnostics: OFF") && identical(b, list(diagnostics = FALSE, digits = 2L)) &&
+          any(d == "  diagnostics: VIF") &&
+          identical(getOption(".jst_output_toggles"), list(diagnostics = "vif")) })
+check("N59f joutput(NULL) turns it off with everything else",
+      { quiet(joutput(NULL, quiet = TRUE))
+        is.null(getOption(".jst_output_toggles")) &&
+          identical(plines(joutput("diagnostics")),
+                    c("Output Settings", "  diagnostics: OFF", .ptr59, "")) })
+reset()
+check("N59g a named NULL leaves it as it is and echoes it; a query shows it and changes nothing",
+      { quiet(joutput(diagnostics = c("levene", "vif"), quiet = TRUE))
+        a <- plines(joutput(diagnostics = NULL))
+        b <- plines(joutput("diagnostics"))
+        identical(a, c("Output Settings", "  diagnostics: LEVENE, VIF", .ptr59, "")) &&
+          identical(a, b) &&
+          identical(getOption(".jst_output_toggles")$diagnostics, c("levene", "vif")) })
+reset()
+check("N59h the panel has no levene line, and \"levene\" is no longer a setting to query (the level error)",
+      !any(grepl("levene", plines(joutput()), fixed = TRUE)) &&
+        identical(.e59(joutput("levene")),
+                  "joutput(): `level` must be \"minimal\", \"standard\", or \"full\"."))
+.all59 <- paste0("`diagnostics` must be TRUE, FALSE, or one or more of \"levene\", \"vif\",\n",
+                 "\"residuals\", \"qq\", \"scale\", \"cooks\", and \"leverage\".")
+check("N59i a name that is no diagnostic stops, pinned whole, and stores nothing; so does a value that is neither TRUE, FALSE nor names",
+      identical(.e59(joutput(diagnostics = "qqq")),
+                paste0("joutput(): \"qqq\" is not a diagnostic.\n", .all59)) &&
+        identical(.e59(joutput(diagnostics = c("vif", "leven"))),
+                  paste0("joutput(): \"leven\" is not a diagnostic.\n", .all59)) &&
+        identical(.e59(joutput(diagnostics = 1)),
+                  paste0("joutput(): `diagnostics` must be TRUE, FALSE, or one or more of\n",
+                         "\"levene\", \"vif\", \"residuals\", \"qq\", \"scale\", \"cooks\", and \"leverage\".")) &&
+        !is.na(.e59(joutput(diagnostics = NA))) &&
+        !is.na(.e59(joutput(diagnostics = character(0)))) &&
+        is.null(getOption(".jst_output_toggles")))
+check("N59j several names typed into one string get the c() form, built from what was typed -- with +, a comma or a space -- and the line it shows is a call that sets them",
+      { want <- function(typed, shown) paste0(
+          "joutput(): \"", typed, "\" is not a diagnostic.\n",
+          "To ask for more than one, combine them with c():\n",
+          "  diagnostics = c(", shown, ")")
+        a <- .e59(joutput(diagnostics = "vif + qq"))
+        ln <- trimws(strsplit(a, "\n", fixed = TRUE)[[1L]][3L])
+        quiet(eval(parse(text = paste0("joutput(", ln, ", quiet = TRUE)"))))
+        got <- getOption(".jst_output_toggles")$diagnostics
+        reset()
+        identical(a, want("vif + qq", "\"vif\", \"qq\"")) &&
+          identical(.e59(joutput(diagnostics = "levene, vif")),
+                    want("levene, vif", "\"levene\", \"vif\"")) &&
+          identical(.e59(joutput(diagnostics = "cooks leverage")),
+                    want("cooks leverage", "\"cooks\", \"leverage\"")) &&
+          identical(.e59(joutput(diagnostics = c("levene", "vif+qq"))),
+                    want("vif+qq", "\"levene\", \"vif\", \"qq\"")) &&
+          identical(got, c("vif", "qq")) })
+check("N59k ... but a string of pieces that are not all diagnostics is the plain stop",
+      identical(.e59(joutput(diagnostics = "vif + plots")),
+                paste0("joutput(): \"vif + plots\" is not a diagnostic.\n", .all59)))
+reset()
+rm(.ptr59, .e59, .v59d, .all59)
+
 # --- Verdict -----------------------------------------------------------------
 
 reset()
 options(.jst_options_message_width = .entry_message_width)
 options(.jst_default_data = .entry_default_data)
 options(.jst_output_level = .entry_output_level)
+options(.jst_output_toggles = .entry_output_toggles)
 
 .n_ok <- sum(vapply(.results, `[[`, logical(1), "ok"))
 .n    <- length(.results)
