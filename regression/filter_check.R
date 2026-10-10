@@ -1,6 +1,6 @@
 # =============================================================================
 # filter_check.R -- assertion battery for filter validation and the front
-#                   doors (S289-S343)
+#                   doors (S289-S349)
 # =============================================================================
 # TYPE:     assertion battery (PASS/FAIL; written for Claude's checking)
 # LOCKS:    the S288-decided / S289-shipped filter-validation surface -- the
@@ -142,6 +142,44 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S349 EDIT (v0.9.222, 2026-10-10): Fix Slate 7, second half. SECTION V
+#           ADDED, V01-V28 (28 checks): a filter on a ONE-ROW frame runs --
+#           one TRUE is one for every row -- in jfreq(), jdesc() and
+#           jsubset(), while a condition that names no variable is refused
+#           there as anywhere (the S346 item); jsubset(d, cond, quiet =
+#           TRUE) is an unused input and stores nothing, a variable typed
+#           with one = keeps the single-= stop, under a juse() default too
+#           (the S346 item); jsubset() and jcomplete() given an expression
+#           as the data refuse it, with two lines that run, store nothing,
+#           give the status call for off and NULL, and accept a place (the
+#           S341 item); the error prefix names the jstats call, never a
+#           user's own j-named wrapper (AUDIT-015); a frame's own
+#           .jst_row_id column is analyzed (AUDIT-018); an sf frame -- a
+#           STAND-IN with sf's `[`, so the battery runs where sf is not
+#           installed -- in jscreen(), jdesc(), jt(), jsubset() and
+#           jcomplete(), its geometry an Unsupported row, the user's frame
+#           left an sf frame (the S213 item). 486 checks. Sandbox (R 4.3.3,
+#           UTF-8 locale, pkgload::load_all): 486/486 plain and under the
+#           RStudio-handler stand-in, each also with a Windows-length temp
+#           path, and entered dirty -- green; with an Age, a Gender, a Keep01 and a
+#           Name in the workspace as well, M39, I07, I08, I22 and S26 red,
+#           as on 0.9.221: the (S342) [META] item's five, none of section V. On the 0.9.221 master
+#           V01-V03, V06, V08, V10-V16, V18-V22 and V24-V26 read red; V04,
+#           V05, V07, V09, V17, V23, V27 and V28 are controls and premises.
+#           MUTATION MAP (S349): a one-row frame refused as before V01 V02
+#           V03; a single value passed on one row whatever it names V04;
+#           jsubset() given no frame for its named-input check V06 V08;
+#           the typed frame alone, not the default V08; the expression
+#           check gone from jsubset() V10-V14, from jcomplete() V15 V16;
+#           jsubset()'s off form treated as setting V13; a place refused
+#           V17; a user's wrapper counted in the prefix V18 V19 V20; the
+#           row id under its fixed name V21 V22; the sf frame passed
+#           through V24 V25 V26; left sf in jcomplete()'s set path V26, in
+#           its status display V26, in .jst_complete_kept() V26.
+#           LAST VERIFIED: v0.9.222, 2026-10-11 (S349) -- 486/486 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2215 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 4243886.
 # S348 EDIT (v0.9.221, 2026-10-10): Fix Slate 7, first half. SECTION U
 #           ADDED, U01-U18 (18 checks): ruling R12 -- under a juse()
 #           default, a name the default frame has is the frame's variable
@@ -3855,6 +3893,214 @@ check("U18 an object only a package supplies is no one's separate object: a fram
 options(.jst_default_data = .u_prior_default)
 rm(zz_u, zz_ua, zz_ub, .u_prior_default, .u_one, .u_two, .u01, .u03, .u04,
    .u05, u_line, .u_pl)
+reset()
+
+# =============================================================================
+# V -- THE FRONT DOOR: ONE ROW, AN INPUT jsubset() DOES NOT HAVE, AN EXPRESSION
+#      AS THE DATA, A USER'S OWN WRAPPER, A .jst_row_id COLUMN, AN sf FRAME
+#      (S349, v0.9.222)
+# =============================================================================
+# Fix Slate 7, second half. (1) A filter on a ONE-ROW frame was refused as "a
+# single value (TRUE), not one TRUE or FALSE for every row" -- one is one for
+# every row (the S346 item); a condition that names no variable is still
+# refused there. (2) jsubset(d, cond, quiet = TRUE) read quiet = TRUE as a
+# condition typed with one = and offered jsubset(d, quiet == TRUE), a line
+# that does not run (the S346 item): with a frame in hand a named input that
+# is not one of its variables is an unused input, as in every variable list
+# since S290. (3) jsubset(mk(), ...) and jcomplete(mk(), ...) stored a
+# setting under the text "mk()", which no later call reached (the S341 item):
+# refused, as the registration verbs refuse one, a place (lst$d) accepted.
+# (4) The error prefix named a user's own j-named wrapper (AUDIT-015). (5) A
+# frame's own .jst_row_id column was overwritten and stripped by the
+# pipeline (AUDIT-018). (6) An sf frame stopped jscreen(), jdesc() and jt()
+# on R's "invalid 'type' (list) of argument" (the S213 item): read as an
+# ordinary data frame, its geometry an Unsupported row.
+# The sf frame is a STAND-IN, so the battery runs where sf is not
+# installed: a data frame of class c("sf", "data.frame") with a list column
+# named in its sf_column attribute, and a `[.sf` that keeps that column
+# whatever columns are asked for, as sf's own does -- the one behavior that
+# broke the analyses. The method is defined in the workspace for the
+# section and removed at its end. On 0.9.221 the stand-in stops all three
+# functions with R's error, as a real sf frame did (sf 1.0-15, S342 and
+# S349, sandbox).
+reset()
+zz_v1 <- data.frame(y = 5, g = 1)
+zz_v2 <- data.frame(x3 = 1:6, g = c(1, 1, 2, 2, 1, 2))
+zz_vmk <- function() zz_v2
+.v_pl <- function(expr) tryCatch(plines(expr),
+                                 error = function(e) paste0("[error] ", conditionMessage(e)))
+
+# -- (1) one row --
+.v01 <- .v_pl(jfreq(zz_v1, g, subset = y > 1))
+check("V01 a filter on a one-row frame: one TRUE is one for every row, and the analysis runs",
+      !any(startsWith(.v01, "[error]")) && row_of(.v01, "subset =") &&
+        any(grepl("^Total +1 +100\\.00$", .v01)))
+check("V02 ... jdesc() the same, and a condition that leaves no row excludes the one case",
+      { a <- .v_pl(jdesc(zz_v1, y, subset = y > 1))
+        b <- grab(jdesc(zz_v1, y, subset = y > 9))
+        any(grepl("^y +1 +1 +5 +5 +5\\.000", a)) &&
+          !has(b, "single value") })
+check("V03 jsubset() on a one-row frame sets the filter, and an analysis applies it",
+      { a <- grab(jsubset(zz_v1, y > 1))
+        b <- .v_pl(jdesc(zz_v1, y)); quiet(jsubset(zz_v1, NULL))
+        identical(a, "jsubset activated for zz_v1: y > 1\n") && row_of(b, "jsubset()") })
+check("V04 a condition that names no variable is refused on one row as anywhere: TRUE, and a workspace comparison",
+      { a <- grab(jfreq(zz_v1, g, subset = TRUE))
+        b <- local({ zz_vk <- 3; grab(jfreq(zz_v1, g, subset = zz_vk > 1)) })
+        has(flat(a), "subset = TRUE is a single value, not one TRUE or FALSE for every row.") &&
+          has(flat(b), "subset = zz_vk > 1 is a single value (TRUE), not one TRUE or FALSE for every row.") })
+check("V05 control: on two rows a single value is still refused",
+      has(flat(grab(jfreq(zz_v2, g, subset = mean(x3) > 1))),
+          "subset = mean(x3) > 1 is a single value (TRUE)"))
+
+# -- (2) an input jsubset() does not have --
+check("V06 jsubset(d, cond, quiet = TRUE): an unused input, and nothing is stored",
+      identical(grab(jsubset(zz_v2, x3 <= 4, quiet = TRUE)),
+                "jsubset(): unused input: quiet") &&
+        is.null(fs_of("zz_v2")))
+check("V07 a variable of the frame typed with one = keeps the single-= stop, and its line runs",
+      { m <- grab(jsubset(zz_v2, g = 1))
+        ln <- sub("^  ", "", tail(strsplit(m, "\n", fixed = TRUE)[[1L]], 1L))
+        quiet(eval(parse(text = ln))); ok <- identical(fs_of("zz_v2")$expr_str, "g == 1")
+        quiet(jsubset(zz_v2, NULL))
+        identical(m, paste0("jsubset(): g = 1 uses a single =, which does not test equality in R.\n",
+                            "Use == (two equals signs):\n  jsubset(zz_v2, g == 1)")) && ok })
+check("V08 under a juse() default the default frame is the frame in hand: quiet = TRUE is unused, g = 1 a condition",
+      { quiet(juse(zz_v2))
+        a <- grab(jsubset(x3 <= 4, quiet = TRUE)); b <- grab(jsubset(g = 1))
+        quiet(juse(NULL))
+        identical(a, "jsubset(): unused input: quiet") &&
+          has(b, "g = 1 uses a single =") && has(b, "  jsubset(g == 1)") })
+check("V09 two named inputs, a variable and not: the variable's single-= stop, as before",
+      has(grab(jsubset(zz_v2, g = 1, quiet = TRUE)), "g = 1 uses a single ="))
+
+# -- (3) an expression as the data --
+.v10 <- grab(jsubset(zz_vmk(), x3 > 3))
+check("V10 jsubset(mk(), cond): refused -- a filter is stored under a name -- with two lines that run",
+      identical(.v10, paste0(
+        "jsubset(): zz_vmk() is not a name, and a jsubset filter is stored\n",
+        "under its data frame's name.\n",
+        "Give the data frame a name first, then set it:\n",
+        "  mydata <- zz_vmk()\n",
+        "  jsubset(mydata, x3 > 3)")))
+check("V11 ... nothing is stored, under the expression or anywhere",
+      length(getOption(".jst_filter", default = list())) == 0L)
+check("V12 ... and the two lines, run, set the filter under the name",
+      local({ ls2 <- sub("^  ", "", tail(strsplit(.v10, "\n", fixed = TRUE)[[1L]], 2L))
+              quiet(eval(parse(text = ls2[1L]))); quiet(eval(parse(text = ls2[2L])))
+              ok <- identical(fs_of("mydata")$expr_str, "x3 > 3")
+              quiet(jsubset(clear.all = TRUE)); ok }))
+check("V13 jsubset(mk(), off), (mk(), NULL): nothing is stored under an expression, and the status call is given",
+      { want <- paste0("jsubset(): zz_vmk() is not a name, and jsubset filters are stored\n",
+                       "under a data frame's name.\n",
+                       "To see the jsubset filters that are stored, run:\n  jsubset()")
+        identical(grab(jsubset(zz_vmk(), off)), want) &&
+          identical(grab(jsubset(zz_vmk(), NULL)), want) })
+check("V14 a subset of a frame is an expression too, named as typed",
+      has(grab(jsubset(zz_v2[zz_v2$x3 > 1, ], x3 > 3)), "  mydata <- zz_v2[zz_v2$x3 > 1, ]"))
+.v15 <- grab(jcomplete(zz_vmk(), x3))
+check("V15 jcomplete(mk(), vars): refused in the same form, nothing stored",
+      identical(.v15, paste0(
+        "jcomplete(): zz_vmk() is not a name, and a jcomplete setting is\n",
+        "stored under its data frame's name.\n",
+        "Give the data frame a name first, then set it:\n",
+        "  mydata <- zz_vmk()\n",
+        "  jcomplete(mydata, x3)")) &&
+        length(getOption(".jst_complete", default = list())) == 0L)
+check("V16 ... its lines run, and its off form gives the status call",
+      local({ ls2 <- sub("^  ", "", tail(strsplit(.v15, "\n", fixed = TRUE)[[1L]], 2L))
+              quiet(eval(parse(text = ls2[1L]))); quiet(eval(parse(text = ls2[2L])))
+              ok <- identical(unname(cs_of("mydata")$vars), "x3")
+              quiet(jcomplete(clear.all = TRUE))
+              ok && has(grab(jcomplete(zz_vmk(), off)),
+                        "To see the jcomplete settings that are stored, run:\n  jcomplete()") }))
+check("V17 a place is accepted: jsubset(lst$d, ...) and jcomplete(lst$d, ...) set, and an analysis of lst$d applies them",
+      local({ zz_vl <- list(d = zz_v2)
+              a <- grab(jsubset(zz_vl$d, x3 > 3)); b <- grab(jcomplete(zz_vl$d, x3))
+              v <- plines(jdesc(zz_vl$d, x3))
+              quiet(jsubset(clear.all = TRUE)); quiet(jcomplete(clear.all = TRUE))
+              identical(a, "jsubset activated for zz_vl$d: x3 > 3\n") &&
+                !has(b, "is not a name") && row_of(v, "jsubset()") && row_of(v, "jcomplete()") }))
+
+# -- (4) a user's own wrapper (AUDIT-015) --
+check("V18 a user's j-named wrapper is not named in the prefix: the jstats call is",
+      local({ justify_data <- function() jt(Y ~ Nope, zz_v2)
+              startsWith(grab(justify_data()), "jt(): ") }))
+check("V19 ... over a data-first function, and through jstats::",
+      local({ join_scores <- function(dd) jdesc(dd, Nope)
+              jot <- function(dd) jstats::jfreq(dd, Nope)
+              identical(grab(join_scores(zz_v2)),
+                        "jdesc(): Nope was not found in the dd data frame.\nCheck the spelling.") &&
+                startsWith(grab(jot(zz_v2)), "jfreq(): ") }))
+check("V20 ... and a message that names the function inside its text names the jstats one",
+      local({ jsummary <- function(dd) jfreq(dd, g, subset = TRUE)
+              has(flat(grab(jsummary(zz_v2))), "In your jfreq() call") }))
+
+# -- (5) a column named .jst_row_id (AUDIT-018) --
+check("V21 a frame's own .jst_row_id column is analyzed, not overwritten and stripped",
+      { zz_vr <- data.frame(.jst_row_id = c(101, 102, 103, 104), z = 1:4,
+                            check.names = FALSE)
+        a <- plines(jdesc(zz_vr, .jst_row_id))
+        b <- plines(jdesc(zz_vr, .jst_row_id, subset = z > 1))
+        rm(zz_vr)
+        any(grepl("^\\.jst_row_id +4 +4 +101 +104 +102\\.500", a)) &&
+          any(grepl("^\\.jst_row_id +3 +3 +102 +104 +103\\.000", b)) })
+check("V22 ... and beside a .jst_row_id_ column, both",
+      { zz_vr <- data.frame(.jst_row_id = c(1, 2, 3), .jst_row_id_ = c(7, 8, 9),
+                            check.names = FALSE)
+        a <- plines(jdesc(zz_vr, .jst_row_id, .jst_row_id_)); rm(zz_vr)
+        any(grepl("^\\.jst_row_id +3 +3 +1 +3 +2\\.000", a)) &&
+          any(grepl("^\\.jst_row_id_ +3 +3 +7 +9 +8\\.000", a)) })
+
+# -- (6) an sf frame (the stand-in) --
+`[.sf` <- function(x, i, j, ..., drop = FALSE) {
+  geom <- attr(x, "sf_column"); cls <- class(x)
+  y <- x; class(y) <- "data.frame"
+  r <- if (nargs() == 2L) {
+    y[union(names(y[i]), geom)]
+  } else if (missing(j)) {
+    if (missing(i)) y else y[i, , drop = FALSE]
+  } else {
+    cols <- union(names(y[j]), geom)
+    if (missing(i)) y[, cols, drop = FALSE] else y[i, cols, drop = FALSE]
+  }
+  attr(r, "sf_column") <- geom; class(r) <- cls; r
+}
+zz_vp <- data.frame(Age   = c(NA, 22, 35, 41, 58, 30, 27, 49, 33, 61, 44, 38),
+                    Score = c(50, 61, 44, 52, 70, 48, 39, 58, 55, 63, 47, 51),
+                    Sex   = rep(1:2, 6))
+zz_vs <- zz_vp
+zz_vs$geometry <- lapply(1:12, function(k) c(x = k, y = k))
+attr(zz_vs, "sf_column") <- "geometry"
+class(zz_vs) <- c("sf", "data.frame")
+check("V23 premise: the stand-in's `[` keeps the geometry column, as sf's does (if red, V24-V28 prove nothing)",
+      identical(names(zz_vs[, c("Age", "Score")]), c("Age", "Score", "geometry")))
+.v24 <- .v_pl(jscreen(zz_vs))
+check("V24 jscreen(): the screen prints, its geometry an Unsupported row",
+      !any(startsWith(.v24, "[error]")) && any(.v24 == "  Cases: 12") &&
+        any(grepl("^geometry +Unsupported +12$", .v24)))
+check("V25 jdesc() and jt() on the sf frame give what they give on the frame without geometry",
+      { a <- .v_pl(jdesc(zz_vs, Age, Score)); a0 <- plines(jdesc(zz_vp, Age, Score))
+        b <- .v_pl(jt(Score ~ Sex, zz_vs));   b0 <- plines(jt(Score ~ Sex, zz_vp))
+        identical(a, a0) && identical(b, b0) })
+check("V26 jcomplete() and then jsubset() set on it, their status displays read it, a filter turned back on is checked on it, and an analysis applies both",
+      { b <- grab(jcomplete(zz_vs, Age)); a <- grab(jsubset(zz_vs, Age > 30))
+        s1 <- grab(jsubset()); s2 <- grab(jcomplete())
+        quiet(jsubset(zz_vs, off)); r <- grab(jsubset(zz_vs, on))
+        v <- .v_pl(jdesc(zz_vs, Score))
+        quiet(jsubset(clear.all = TRUE)); quiet(jcomplete(clear.all = TRUE))
+        identical(a, "jsubset activated for zz_vs: Age > 30\n") &&
+          !has(b, "invalid") && identical(s1, "jsubset active for zz_vs: Age > 30\n") &&
+          identical(r, "jsubset reactivated for zz_vs: Age > 30\n") &&
+          identical(s2, "jcomplete active for zz_vs: Age (11 of 12 complete cases)\n") &&
+          row_of(v, "jsubset()") && row_of(v, "jcomplete()") })
+check("V27 the geometry named in an analysis is refused as any list column is",
+      has(grab(jt(geometry ~ Sex, zz_vs)),
+          "'geometry' is of type list and cannot be used in a t-test."))
+check("V28 the user's frame is not changed: it is still an sf frame afterwards",
+      identical(class(zz_vs), c("sf", "data.frame")) &&
+        identical(attr(zz_vs, "sf_column"), "geometry"))
+rm(`[.sf`, zz_vs, zz_vp, zz_v1, zz_v2, zz_vmk, .v_pl, .v01, .v10, .v15, .v24)
 reset()
 
 # =============================================================================

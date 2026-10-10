@@ -28,6 +28,9 @@
 #           data frame the call named (A2, A5), off, on or NULL typed with
 #           a condition refused with both calls (C9), jfreq()'s title above
 #           a subset = stop (D2), and "unused input" in number (E3);
+#           since S348 the default frame's variable (F1); since S349 a
+#           filter on a one-row frame, an input jsubset() does not have,
+#           and a setting made on an expression (G1-G3);
 #           and Part E, the named-item detector: a
 #           top-level single = in jsubset() and in a variable list, the
 #           misspelled-input case it is told apart from, and the no-subset
@@ -37,6 +40,23 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S349 EDIT (v0.9.222): PART G ADDED, three sections -- 44 sections -> 47.
+#           Fix Slate 7, second half: G1 a filter on a one-row frame runs
+#           (it was refused as "a single value"), and a condition that
+#           names no variable is still refused there; G2 quiet = TRUE beside
+#           a condition is an unused input (it was read as a condition typed
+#           with one =, and offered jsubset(d, quiet == TRUE)), while a
+#           variable typed with one = keeps the single-= stop; G3 jsubset()
+#           and jcomplete() given an expression as the data refuse it, with
+#           two lines that run, and their off form gives the status call.
+#           Each Expected FILLED BY RUNNING the file (fill.R). No existing
+#           Expected moved (a capture of every section of every walk on
+#           0.9.221 and 0.9.222). The human half of filter_check.R section V.
+# LAST VERIFIED: v0.9.222, 2026-10-11 (S349) -- G1-G3 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; GitHub 4243886. Sandbox: every section
+#           through rewalk() as in a straight run, in three orders and by
+#           prepare = TRUE (harness.R verify).
 # S348 EDIT (v0.9.221): PART F ADDED, one section -- 43 sections -> 44.
 #           Ruling R12 (Jeff, S345): under a juse() default, a name the
 #           default frame has is the frame's variable in jdesc(), jfreq()
@@ -1298,6 +1318,134 @@ rm(f1, Age, Gender)
 #     workspace vector is described, as before, and no default note.
 #   - Not shown: a function, a list or a data frame sharing the name gets
 #     no line (filter_check.R U08); the line prints at every output level.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART G -- THE FRONT DOOR: ONE ROW, AN INPUT jsubset() DOES NOT HAVE, AN ----
+#           EXPRESSION AS THE DATA (S349)
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Fix Slate 7, second half (v0.9.222). Three things the filter functions got
+# wrong at the door: a filter on a one-row frame was refused as "a single
+# value"; quiet = TRUE beside a condition was read as a condition typed with
+# one =, and offered a line that does not run; and a setting made on an
+# expression -- jsubset(mk(), ...) -- was stored under the text "mk()",
+# where no later call reached it. The assertion side is filter_check.R
+# section V.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION G1 -- a filter on a one-row frame ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# one has a single row, so y > 1 gives one TRUE: one value for every row.
+
+one <- data.frame(y = 5, g = 1)
+jfreq(one, g, subset = y > 1)
+
+# Expected:
+#   Frequencies
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --          1
+#       subset =            0          1  y > 1
+#       Remaining N        --          1
+#   -------------------------------------------
+#
+#   g
+#
+#          Freq  Total %  Valid %  Cum. %
+#   -----  ----  -------  -------  ------
+#   1        1    100.00   100.00  100.00
+#
+#   Total    1    100.00
+
+caught(jfreq(one, g, subset = TRUE))
+
+# Expected:
+#   Frequencies
+#   Caught: jfreq(): subset = TRUE is a single value, not one TRUE or FALSE for
+#   every row.
+#   In your jfreq() call, compare a variable to a value, for example
+#   subset = Age < 40.
+#
+# Things to look at:
+#   - Render 1: the table, with its subset = row. Through v0.9.221 this call
+#     stopped: "subset = y > 1 is a single value (TRUE), not one TRUE or
+#     FALSE for every row."
+#   - Render 2: a condition that names no variable is still refused on one
+#     row, as anywhere: TRUE selects nothing in particular.
+
+rm(one)
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION G2 -- quiet = TRUE beside a condition ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# quiet = is an argument of joutput() and joptions(), not of jsubset().
+
+caught(jsubset(d, Age > 40, quiet = TRUE))
+
+# Expected:
+#   Caught: jsubset(): unused input: quiet
+
+caught(jsubset(d, Gender = 1))
+
+# Expected:
+#   Caught: jsubset(): Gender = 1 uses a single =, which does not test
+#   equality in R.
+#   Use == (two equals signs):
+#     jsubset(d, Gender == 1)
+#
+# Things to look at:
+#   - Render 1: "unused input", the message every variable list gives a
+#     named input that is not one of the frame's variables (E3). Through
+#     v0.9.221 it read "quiet = TRUE uses a single =" and offered
+#     jsubset(d, quiet == TRUE), a line that does not run.
+#   - Render 2: a variable of the frame typed with one = keeps the single-=
+#     stop and its line (A2's form): Gender is a variable of d, so the named
+#     input is the condition it was meant to be.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION G3 -- a setting made on an expression ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# mk() returns d. A setting is stored under its data frame's name, and mk()
+# is not one.
+
+mk <- function() d
+caught(jsubset(mk(), Age > 40))
+
+# Expected:
+#   Caught: jsubset(): mk() is not a name, and a jsubset filter is stored under
+#   its data frame's name.
+#   Give the data frame a name first, then set it:
+#     mydata <- mk()
+#     jsubset(mydata, Age > 40)
+
+caught(jsubset(mk(), off))
+
+# Expected:
+#   Caught: jsubset(): mk() is not a name, and jsubset filters are stored under
+#   a data frame's name.
+#   To see the jsubset filters that are stored, run:
+#     jsubset()
+
+caught(jcomplete(mk(), Age))
+
+# Expected:
+#   Caught: jcomplete(): mk() is not a name, and a jcomplete setting is stored
+#   under its data frame's name.
+#   Give the data frame a name first, then set it:
+#     mydata <- mk()
+#     jcomplete(mydata, Age)
+#
+# Things to look at:
+#   - Render 1: the two lines run: the first names the data frame, the
+#     second sets the filter on that name. Through v0.9.221 this call
+#     printed "jsubset activated for mk(): Age > 40", for a filter no later
+#     call reached unless it typed mk() again.
+#   - Render 2: off, on and NULL act on a stored setting, and nothing is
+#     stored under an expression, so the line shows what is stored.
+#   - Render 3: jcomplete() the same. Both take the form the registration
+#     verbs have given since v0.9.216 (jdummy(mk(), Grp)).
+#   - Not shown: a place, lst$d, is accepted by both (filter_check.R V17).
+
+rm(mk)
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations

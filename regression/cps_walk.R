@@ -8,8 +8,26 @@
 #           N-line form each layout uses, and the blank lines around the block;
 #           since S320 jscreen's place in it (Part J); since S340 a text
 #           variable's declared missing strings and its blank cells, in
-#           jfreq(), jscreen() and a group function (Part K).
+#           jfreq(), jscreen() and a group function (Part K); since S349 a
+#           plot's one-line N statement (Part M).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S349 EDIT (v0.9.222): FIX SLATE 7, SECOND HALF. PART M ADDED, three
+#           sections, each Expected FILLED BY RUNNING the file (fill.R): M1
+#           jplot()'s N line under a jsubset() -- the S316 case, a grouped
+#           histogram that printed its title alone -- "Analysis N: 51 (19
+#           Excluded)"; M2 the formula path, a plot that leaves nothing out,
+#           and declared missing values alone; M3 the default note above
+#           the line, the minimal level, subset =. The line and its blank
+#           lines are Claude's form of Jeff's S336 lean (the N statement,
+#           not the table), so all three are walked. No existing Expected
+#           moved: every section of every walk was captured on 0.9.221 and
+#           on 0.9.222 and compared (harness.R dump; the only differences
+#           were temp paths). Section count 67 -> 70.
+# LAST VERIFIED: v0.9.222, 2026-10-11 (S349) -- M1-M3 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; GitHub 4243886. Sandbox: every section
+#           through rewalk() as in a straight run, in three orders and by
+#           prepare = TRUE (harness.R verify).
 # S348 EDIT (v0.9.221): FIX SLATE 7, FIRST HALF. PART L ADDED, three
 #           sections, each Expected FILLED BY RUNNING the file (fill.R): L1
 #           a grouped jdesc's listwise note and "Complete on All" (the
@@ -2664,6 +2682,105 @@ tryCatch(jt(Stress ~ Medication, d, subset = SleepHours > 20),
 #   - The source half of the breakdown is unchanged: those cases are
 #     missing in the frame, and the Filtered column says the filter took
 #     them. The stop under the block is the S346 empty-sample stop.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART M -- A PLOT'S N STATEMENT: jplot() (S349) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Fix Slate 7, second half (v0.9.222). A plot draws the cases that have a
+# value on every variable it plots, after the filters, and until v0.9.222
+# it said nothing of the ones it left out: under a jsubset() a grouped
+# histogram printed its title alone (the S316 item). Your lean of S336 was
+# the one-line N statement, not the table. The listwise layout's N line now
+# follows the title and any notes, with the excluded count beside it
+# whenever the plot drew fewer cases than the data frame holds. It is the
+# only Case Processing a plot prints, at every output level. Each section
+# draws its plot in the Plots pane; the console lines are what is pinned.
+#
+# The assertion side is cps_check.R N61. M1 sets jsubset() and clears it in
+# the same section; M3 sets the juse() default and the minimal level and
+# hands both back.
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# M1 -- a grouped histogram under jsubset(): the S316 case ----
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# 17 cases are in Condition 3, and of the rest 2 have no Medication value.
+
+jsubset(d, Condition != 3)
+jplot(d, Flourishing, by = Medication, type = "histogram")
+
+# Expected:
+#   jsubset activated for d: Condition != 3
+#   Histogram: Flourishing by Medication
+#
+#   Analysis N: 51 (19 Excluded)
+#
+# Things to look at:
+#   - "51 (19 Excluded)": the 17 cases the filter took and the 2 more with
+#     no Medication value. jt(Flourishing ~ Medication, d) under the same
+#     filter states the same 51, as the last row of its Case Processing
+#     table.
+#   - The line alone, where an analysis under a filter prints the table:
+#     a plot prints little else to the console.
+#   - One blank line above it and one below, as the N line has in an
+#     analysis.
+
+jsubset(d, NULL)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# M2 -- the formula path, nothing left out, and missing values alone ----
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+jplot(Flourishing ~ Stress, d)
+
+# Expected:
+#   Scatterplot: Flourishing and Stress
+#
+#   Analysis N: 66 (4 Excluded)
+
+jplot(d, Flourishing)
+
+# Expected:
+#   Histogram: Flourishing
+#
+#   Analysis N: 70
+
+jplot(d, Medication)
+
+# Expected:
+#   Bar Chart: Medication
+#
+#   Analysis N: 65 (5 Excluded)
+#
+# Things to look at:
+#   - The scatterplot leaves out the 4 cases with no Stress value: no
+#     filter is set, and the excluded count says so.
+#   - With nothing left out the line is the N alone, as in an analysis.
+#   - The bar chart leaves out the 5 cases whose Medication is the
+#     declared -99: a declared missing code is missing in a plot as in an
+#     analysis.
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# M3 -- under a juse() default, at the minimal level, with subset = ----
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+joutput("minimal", quiet = TRUE)
+juse(d)
+jplot(Flourishing ~ Stress, subset = SleepHours > 6)
+
+# Expected:
+#   Scatterplot: Flourishing and Stress
+#   Using default data frame: d
+#
+#   Analysis N: 48 (22 Excluded)
+#
+# Things to look at:
+#   - The default note sits between the title and the line, as it does in
+#     an analysis.
+#   - The minimal level prints the same line: a plot has no table to
+#     drop.
+
+juse(NULL)
+joutput(NULL, quiet = TRUE)
 
 # --- Restore session state ---------------------------------------------------
 

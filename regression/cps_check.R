@@ -27,8 +27,35 @@
 #           the renderer's defaults with trim on; and since S332 joutput()'s
 #           setting echo -- the first thing here that is not a table: a
 #           setting call prints what it touched, a level call the full
-#           panel, a setting name in first position is a query.
+#           panel, a setting name in first position is a query; and since
+#           S349 jplot()'s one-line N statement (N61).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S349 EDIT (v0.9.222, 2026-10-10): Fix Slate 7, second half. N61a-j NEW
+#           (10 checks): jplot()'s one-line N statement (the S316 item;
+#           Jeff's lean of S336) -- under jsubset() a grouped histogram
+#           prints its title, one blank line, "Analysis N: 51 (19
+#           Excluded)" and one blank line, nothing else; 51 is the complete
+#           cases of what the plot draws after the filter, and what jt()
+#           states; the formula path the same; no rider when nothing is
+#           left out; declared missing values alone counted; subset = and a
+#           by = variable on the formula path; the line and no table at
+#           minimal and at full; the default note between the title and
+#           the line; a stored jcomplete() counted; a model's plot prints
+#           no N line. 254 checks. Sandbox (R 4.3.3, UTF-8 locale,
+#           pkgload::load_all): 254/254 plain and under the RStudio-handler
+#           stand-in, each also with a Windows-length temp path, and
+#           entered dirty. On the 0.9.221 master N61a and N61c-i read red;
+#           N61b (a premise) and N61j (a control) hold.
+#           MUTATION MAP (S349): no line in jplot.default N61a N61d N61e
+#           N61g N61h N61i; none on the formula path N61c N61f; the
+#           excluded count taken after the filters N61a N61c N61f N61g
+#           N61i; the by = variable left out of the count N61a N61g; one
+#           newline after the line, not a blank N61a N61c N61d N61e N61h;
+#           "(0 Excluded)" printed N61d N61h.
+#           LAST VERIFIED: v0.9.222, 2026-10-11 (S349) -- 254/254 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2215 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 4243886.
 # S348 EDIT (v0.9.221, 2026-10-10): Fix Slate 7, first half. N60a-m NEW
 #           (13 checks): a grouped jdesc's listwise note and its count,
 #           taken among the cases with a group (58, where the pool's is
@@ -2595,6 +2622,92 @@ check("N60m control: a filter that leaves rows prints its pool percents as numbe
         any(grepl("^      Missing +1 +16\\.7 +0 +1 +20\\.0$", v)) })
 rm(d60, .m60, .g60, .n60, .v60a, .v60c, .v60d, .v60e, .v60h, .v60i, .v60j,
    .v60k, .p60, .pl60, .e60, .v60l, .v60m)
+
+# =============================================================================
+# N61 -- jplot()'S ONE-LINE N STATEMENT (S349, v0.9.222)
+# =============================================================================
+# Fix Slate 7, second half (the S316 item; Jeff's lean, okayed S336). A plot
+# draws the cases that have a value on every variable it plots, after the
+# filters, and until 0.9.222 it said nothing of the ones it left out: under
+# jsubset(clinic, Condition != 3) a grouped histogram of Flourishing by
+# Medication printed its title alone, where jt() on the same data states
+# Analysis N 51. Now the listwise layout's N line follows the title and the
+# notes -- one blank line before it and one after -- with the excluded
+# count whenever the plot drew fewer cases than the frame holds. It is the
+# only Case Processing a plot prints, at every output level. A model's plot
+# (jplot(m)) is not this path: the model states its own N.
+reset()
+quiet(jload("clinic", name = "d61", package = TRUE, overwrite = TRUE, quiet = TRUE))
+.m61 <- jstats:::.jst_apply_declared_udms_as_na(d61)$data
+# .both61(): stdout and the message stream in the order they were written,
+# ANSI colour stripped -- the default note is a message, the N line stdout.
+.both61 <- function(expr) {
+  tf <- tempfile(); con <- file(tf, open = "wt")
+  sink(con); sink(con, type = "message")
+  tryCatch(suppressWarnings(force(expr)),
+           error = function(e) cat("[error] ", conditionMessage(e), "\n", sep = ""),
+           finally = { sink(type = "message"); sink(); close(con) })
+  out <- readLines(tf, warn = FALSE, encoding = "UTF-8"); unlink(tf)
+  sub("[ \t]+$", "", gsub("\033\\[[0-9;]*[A-Za-z]", "", out))
+}
+quiet(jsubset(d61, Condition != 3))
+.v61a <- plines(jplot(d61, Flourishing, by = Medication, type = "histogram"))
+check("N61a the S316 case: under jsubset(), a grouped histogram states its N and the cases it left out, under the title",
+      identical(.v61a, c("Histogram: Flourishing by Medication", "",
+                         "Analysis N: 51 (19 Excluded)", "")))
+check("N61b premise: 51 is the complete cases of what the plot draws after the filter, and what jt() states (if red, N61a pins a count that is not the plot's)",
+      { keep <- .m61$Condition != 3
+        n <- sum(stats::complete.cases(.m61[keep, c("Flourishing", "Medication")]))
+        v <- plines(jt(Flourishing ~ Medication, d61))
+        n == 51L && row_of(v, "Analysis N") &&
+          grepl(" 51$", v[startsWith(trimws(v), "Analysis N")][1L]) })
+check("N61c the formula path, the same line: a scatterplot under the filter, its count the complete cases of the two",
+      { keep <- .m61$Condition != 3
+        n <- sum(stats::complete.cases(.m61[keep, c("Flourishing", "Stress")]))
+        identical(plines(jplot(Flourishing ~ Stress, d61)),
+                  c("Scatterplot: Flourishing and Stress", "",
+                    paste0("Analysis N: ", n, " (", 70L - n, " Excluded)"), "")) })
+quiet(jsubset(d61, NULL))
+check("N61d nothing left out: the N alone, no rider",
+      identical(plines(jplot(d61, Flourishing)),
+                c("Histogram: Flourishing", "", "Analysis N: 70", "")))
+check("N61e missing values alone are counted: a bar chart of a variable with five declared missing cases",
+      identical(plines(jplot(d61, Medication)),
+                c("Bar Chart: Medication", "", "Analysis N: 65 (5 Excluded)", "")))
+check("N61f subset = on the formula path, and a by = variable counted with the two it plots",
+      { a <- plines(jplot(Flourishing ~ Stress, d61, subset = SleepHours > 6))
+        b <- plines(jplot(Flourishing ~ Stress, d61, by = Medication))
+        keep <- !is.na(.m61$SleepHours) & .m61$SleepHours > 6
+        n_a <- sum(stats::complete.cases(.m61[keep, c("Flourishing", "Stress")]))
+        n_b <- sum(stats::complete.cases(.m61[, c("Flourishing", "Stress", "Medication")]))
+        n_b < sum(stats::complete.cases(.m61[, c("Flourishing", "Stress")])) &&
+          identical(a[3L], paste0("Analysis N: ", n_a, " (", 70L - n_a, " Excluded)")) &&
+          identical(b[3L], paste0("Analysis N: ", n_b, " (", 70L - n_b, " Excluded)")) })
+check("N61g the line, and no table, at every output level",
+      { r <- vapply(c("minimal", "full"), function(lv) {
+          quiet(joutput(lv, quiet = TRUE)); quiet(jsubset(d61, Condition != 3))
+          v <- plines(jplot(d61, Flourishing, by = Medication, type = "histogram"))
+          quiet(jsubset(d61, NULL)); quiet(joutput(NULL, quiet = TRUE))
+          identical(v[3L], "Analysis N: 51 (19 Excluded)") && !has_top(v)
+        }, logical(1))
+        all(r) })
+check("N61h under a juse() default the note sits between the title and the line, as in an analysis",
+      { prior <- getOption(".jst_default_data")
+        quiet(juse(d61)); v <- .both61(jplot(Flourishing))
+        options(.jst_default_data = prior)
+        identical(v, c("Histogram: Flourishing", "Using default data frame: d61", "",
+                       "Analysis N: 70", "")) })
+check("N61i a stored jcomplete() is counted too",
+      { quiet(jcomplete(d61, Stress))
+        v <- plines(jplot(d61, Flourishing)); quiet(jcomplete(d61, NULL))
+        identical(v[3L], "Analysis N: 66 (4 Excluded)") })
+check("N61j control: a model's plot prints no N line of its own",
+      { m <- suppressMessages(suppressWarnings(
+          utils::capture.output(fit <- jlm(Flourishing ~ Stress, d61))))
+        v <- plines(jplot(fit, which = "residuals"))
+        !any(startsWith(v, "Analysis N")) })
+reset()
+rm(d61, .m61, .both61, .v61a)
 
 # --- Verdict -----------------------------------------------------------------
 
