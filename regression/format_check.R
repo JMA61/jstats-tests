@@ -109,6 +109,24 @@
 #           from its values (jlogistic's fit tables, jalpha, jdesc's Mean
 #           and SD, the VIF tables, jscreen's stats columns) and to jt's
 #           Cohen's d line, which had the eta-squared defect.
+# S347 EDIT (v0.9.220, 2026-10-10): Fix Slate 8, second half. SECTION Y
+#           ADDED, Y01-Y04 (4 checks): a paired t-test under
+#           joutput(diagnostics = TRUE) says nothing of Levene's test (it
+#           printed "Levene's test is not applicable for paired samples."
+#           on every call); the call's own TRUE or "levene" still says it,
+#           with the setting or without; the call's FALSE and no setting
+#           print no note; an independent-samples t-test under the setting
+#           still prints Levene's table. 287 checks. Sandbox (R 4.3.3,
+#           UTF-8 locale, pkgload::load_all): 287/287 plain and under the
+#           RStudio-handler stand-in, each also with a Windows-length temp
+#           path, and entered dirty. On the 0.9.219 master 1 red: Y01.
+#           MUTATION MAP (S347; the mutants of models_check.R's list that
+#           red here): the note under the session setting Y01; the note
+#           never X16 Y02.
+#           LAST VERIFIED: v0.9.220, 2026-10-10 (S347) -- 287/287 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2123 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 991eb6b.
 # S346 EDIT (v0.9.219, 2026-10-08): Fix Slate 8, first cut, and Jeff's
 #           diagnostics ruling of that day. SECTIONS W AND X ADDED, W01-W27
 #           and X01-X16 (43 checks). W01-W09 jt(): Welch's test with a
@@ -3944,6 +3962,44 @@ rm(list = intersect(c(".x_mk", ".x_note", ".x_lev", ".x_form", ".x_has",
                       "f_x1", "f_x2", "f_x3", "f_y1", "f_y2", "f_y3"),
                     ls(all.names = TRUE)))
 
+
+
+# =============================================================================
+# SECTION Y -- A PAIRED t-TEST AND THE DIAGNOSTICS SETTING (S347, v0.9.220)
+# =============================================================================
+# A paired t-test has no Levene's test. Under joutput(diagnostics = TRUE)
+# every paired jt() printed "Note: Levene's test is not applicable for paired
+# samples." -- about a test the call had not asked for. The note is said when
+# the call asks for Levene's test, and not when the setting is the session's
+# (the S346 item).
+cat("\n--- Y. A paired t-test and the diagnostics setting ---\n")
+f_y <- data.frame(g = factor(rep(c("pre", "post"), each = 5), levels = c("pre", "post")),
+                  y = c(4.5, 5.5, 6.5, 5.5, 4.5,  5.5, 9.5, 8.5, 6.5, 6.5))
+.y_note <- "Note: Levene's test is not applicable for paired samples."
+check("Y01 joutput(diagnostics = TRUE): a paired t-test says nothing of Levene's test (it printed the note on every call)",
+      local({ quiet(joutput(diagnostics = TRUE, quiet = TRUE))
+        o <- both_out(jt(y ~ g, data = f_y, paired = TRUE))
+        quiet(joutput(NULL))
+        !any(o == .y_note) && !any(o == "Levene's Test for Homogeneity of Variance") &&
+          any(startsWith(o, "Paired Samples T-Test Results")) }))
+check("Y02 ... while the call's own diagnostics = TRUE or \"levene\" still says it, under the setting or without",
+      local({ a <- both_out(jt(y ~ g, data = f_y, paired = TRUE, diagnostics = "levene"))
+        quiet(joutput(diagnostics = TRUE, quiet = TRUE))
+        b <- both_out(jt(y ~ g, data = f_y, paired = TRUE, diagnostics = TRUE))
+        quiet(joutput(NULL))
+        any(a == .y_note) && any(b == .y_note) }))
+check("Y03 control: the setting with the call's own FALSE, and no setting at all, print no note",
+      local({ quiet(joutput(diagnostics = TRUE, quiet = TRUE))
+        a <- both_out(jt(y ~ g, data = f_y, paired = TRUE, diagnostics = FALSE))
+        quiet(joutput(NULL))
+        b <- both_out(jt(y ~ g, data = f_y, paired = TRUE))
+        !any(a == .y_note) && !any(b == .y_note) }))
+check("Y04 control: an independent-samples t-test under the setting still prints Levene's test",
+      local({ quiet(joutput(diagnostics = TRUE, quiet = TRUE))
+        o <- both_out(jt(y ~ g, data = f_y))
+        quiet(joutput(NULL))
+        any(o == "Levene's Test for Homogeneity of Variance") }))
+rm(list = intersect(c("f_y", ".y_note"), ls(all.names = TRUE)))
 
 
 # --- Verdict -----------------------------------------------------------------

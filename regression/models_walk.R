@@ -32,6 +32,14 @@
 #           apart from the output levels. And, in Section 18 since the
 #           second delivery, a filter that names a variable the model needs
 #           to vary named as the cause of its one value.
+#           Since S347 (v0.9.220, Sections 20-22): the stop for a model
+#           with no more cases than coefficients; one "seems categorical"
+#           warning for several predictors; a predictor dummy-coded in the
+#           call with one category; the wrapped dummy-names note, the
+#           dichotomy note's last line, jlogistic()'s text-outcome
+#           refusal, an expression given as the data, "(a dichotomy)";
+#           jlm()'s plot list in jlogistic()'s form, the smoother's note,
+#           and the fit plot of a squared term.
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
 # S342 EDIT (v0.9.216): SECTION 16 ADDED, three renders, for Jeff's S342
@@ -49,6 +57,24 @@
 #           outside both pinned blocks. Section 16 needs no other section
 #           (harness.R derive: NEEDS 4, 5 and 6 on 3, as before). The human
 #           half of models_check.R M25-M37.
+# S347 EDIT (v0.9.220): SECTIONS 20-22 ADDED for Fix Slate 8's second
+#           half: no more cases than coefficients, one warning for two
+#           predictors that seem categorical, and one category of a text
+#           predictor dummy-coded in the call (20); the printed lines --
+#           the dummy-names note wrapped, the 1/2 dichotomy note's last
+#           line (voice Rule X), jlogistic()'s text-outcome refusal and
+#           the same given an expression, the formula guard given an
+#           expression, a 3/7 outcome's "(a dichotomy)" (21); the plots --
+#           the plot list in jlogistic()'s form and the smoother's note
+#           under it on a nine-case model, the fit and effect plots of a
+#           squared term (22). Inline fixtures (m20, m21, mk21, m22, q22),
+#           built and removed inside each section; Sections 20 and 21 set
+#           warn = 1 for themselves, as Section 17 does. SECTION 19 RENDER
+#           2 RE-PINNED: the plot list's line and its numbering (a layout
+#           Claude chose, so walked). Each new Expected FILLED BY RUNNING
+#           the file (fill.R), with #@SKIP before each later render of a
+#           section. Section 19's "Things to look at" bullet for Render 2
+#           follows the new line.
 # S346 EDIT (v0.9.219): SECTIONS 17-19 ADDED for Fix Slate 8's first cut
 #           and the diagnostics setting: the "seems categorical" warning
 #           and its lines to run (17); no case left, a predictor with one
@@ -74,6 +100,12 @@
 #           jlogistic() and jlm(); one case left). Each block FILLED BY
 #           RUNNING, with #@SKIP before Renders 2 and 4 so a block holds
 #           its own render alone (the S343 lesson).
+# LAST VERIFIED: v0.9.220, 2026-10-10 (S347) -- Sections 19-22 WALKED on the
+#           WORKSTATION by Jeff through receive_all(), its closing block's
+#           walk line as the tool's default leaves it; PENDING back to
+#           none; GitHub 991eb6b. Sandbox: 39 of 40 Expected blocks found
+#           under rewalk() in three orders, as before (Section 1's block
+#           is not a contiguous run by design).
 # LAST VERIFIED: v0.9.219, 2026-10-09 (S346) -- Sections 17-19 WALKED on the
 #           WORKSTATION by Jeff through rewalk() at the first delivery
 #           ("all okay") but for Section 18's second stop -- subset =
@@ -1396,13 +1428,13 @@ jlm(Flourishing ~ Stress + SocialSupport, data = d, diagnostics = TRUE)
 #   Stress         1.051
 #   SocialSupport  1.051
 #
-#   (5 diagnostic plots produced -- use the back arrow in the Plots pane
-#   to view all)
-#     1: Residuals vs Fitted
-#     2: Normal Q-Q
-#     3: Scale-Location
-#     4: Cook's Distance
-#     5: Residuals vs Leverage
+#   5 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane
+#   to navigate):
+#     1. Residuals vs Fitted
+#     2. Normal Q-Q
+#     3. Scale-Location
+#     4. Cook's Distance
+#     5. Residuals vs Leverage
 
 # Render 3 -- two names; a VIF above 10 and the lines under it; then the
 # VIF table alone at the minimal level.
@@ -1562,8 +1594,9 @@ tryCatch(jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d,
 #     the output ends at the Sum of Squares block. No VIF table, no line
 #     about plots, and nothing drawn in the Plots pane.
 #   - RENDER 2: no interval columns (the call did not ask for them); the
-#     VIF table, then "(5 diagnostic plots produced ...)" and the five
-#     names. Five plots are in the Plots pane.
+#     VIF table, then "5 diagnostic plots produced (use the arrow buttons
+#     ...)" and the five names (S347: jplot()'s line for jlogistic(), word
+#     for word). Five plots are in the Plots pane.
 #   - RENDER 3, first output: the VIF table, the two lines under the VIF
 #     of 11.358, and "(Diagnostic plot produced: Normal Q-Q)": one plot.
 #   - Second output, at the minimal level: the VIF table and no lines
@@ -1574,6 +1607,452 @@ tryCatch(jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d,
 #     the two stops: a name that is no diagnostic of jlm() (it was
 #     ignored: the table printed, no plot, and nothing was said), and a
 #     jlm() name given to jlogistic().
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 20 -- no more cases than coefficients; one warning for several ----
+#               predictors; one category dummy-coded in the call (S347)
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Fix Slate 8's second half (v0.9.220). Three stops and a warning, beside
+# Section 18's:
+#   - a model with no more cases than coefficients printed NaN standard
+#     errors and a blank p column (jlm), or dozens of "fitted probabilities
+#     numerically 0 or 1" warnings and an Exp(B) of 62 digits (jlogistic):
+#     one stop now, under the Case Processing block;
+#   - two predictors that seem categorical got a warning each, each with
+#     its own jdummy() line and the same refit line: one warning now;
+#   - a predictor dummy-coded in the call (a text variable here) left one
+#     category by a filter on another variable stopped AHEAD of the block,
+#     "'grp' has fewer than 2 categories. Cannot create dummy variables.",
+#     where a registered one gets Section 18's sentence under the block:
+#     that sentence now, in both.
+# The stops are shown through shown20(), so the file runs end to end. The
+# assertion side is models_check.R Q01-Q15.
+# warn = 1 for this section, as in Section 17.
+
+.warn20 <- options(warn = 1)
+shown20 <- function(expr) tryCatch(expr, error = function(e)
+  cat("Error: ", conditionMessage(e), "\n\n", sep = ""))
+m20 <- data.frame(y  = c(2.1, 3.4, 1.9, 4.2, 3.3, 2.8, 3.9, 4.4,
+                         2.6, 3.1, 1.7, 3.8, 4.0, 2.2, 3.6, 2.9),
+                  x1 = c(1.2, 2.3, 0.8, 3.1, 2.2, 1.9, 2.8, 3.5,
+                         1.4, 2.0, 0.6, 2.9, 3.3, 1.1, 2.4, 1.8),
+                  x2 = c(5.2, 3.1, 6.4, 2.3, 4.6, 5.5, 3.3, 1.2,
+                         6.1, 4.4, 7.0, 2.8, 1.5, 6.6, 3.9, 4.2),
+                  b  = rep(0:1, 8),
+                  k  = rep(1:4, 4),
+                  m  = rep(c(1, 2, 3, 5), each = 4),
+                  grp = rep(c("a", "b"), each = 8),
+                  id = 1:16, stringsAsFactors = FALSE)
+
+# Render 1 -- three cases left for three coefficients: jlm(), then
+# jlogistic().
+shown20(jlm(y ~ x1 + x2, data = m20, subset = id > 13))
+shown20(jlogistic(b ~ x1 + x2, data = m20, subset = id > 13))
+
+# Expected:
+#   Linear Regression
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         16
+#       subset =           13          3  id > 13
+#       Analysis N         --          3
+#   ---------------------------------------------
+#
+#   Error: jlm(): Only 3 cases are left to analyze, and the model has
+#   3 coefficients.
+#   A regression needs more cases than coefficients.
+#   The other 13 cases were excluded by a filter.
+#
+#   Logistic Regression
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         16
+#       subset =           13          3  id > 13
+#       Analysis N         --          3
+#   ---------------------------------------------
+#
+#   Error: jlogistic(): Only 3 cases are left to analyze, and the model has
+#   3 coefficients.
+#   A logistic regression needs more cases than coefficients.
+#   The other 13 cases were excluded by a filter.
+
+# Render 2 -- two predictors that seem categorical.
+jlm(y ~ k + m + x1, data = m20)
+
+# Expected:
+#   Linear Regression
+#   Warning: k and m seem categorical.
+#   To treat them that way, register them with jdummy() and rerun:
+#
+#     jdummy(m20, k, m)
+#     jlm(y ~ k + m + x1, m20)
+#
+#   Or, for this call only:
+#     jlm(y ~ k + m + x1, m20, categorical = c("k", "m"))
+#
+#   Analysis N: 16
+#
+#   Coefficients
+#                   b      SE      t       β      p
+#   -----------  ------  -----  ------  ------  -----
+#   (Intercept)   1.116  0.118   9.433          <.001
+#   k             0.032  0.031   1.021   0.043   .328
+#   m            -0.001  0.022  -0.033  -0.001   .974
+#   x1            0.925  0.040  23.180   0.977  <.001
+#
+#   Outcome: y
+#
+#   R-squared: 0.980    Adjusted R-squared: 0.976
+#   Residual Standard Error: 0.133
+#
+#   F-statistic: 200.498 on 3 and 12 DF, p-value: <.001
+#   Sum of Squares:
+#     Regression: 10.593
+#     Residual:   0.211
+#     Total:      10.804
+
+# Render 3 -- a text predictor that a filter on another variable leaves
+# with one category; then the same with no filter at all.
+shown20(jlm(y ~ x1 + grp, data = m20, subset = id <= 8))
+shown20(jlm(y ~ x1 + grp, data = m20[m20$grp == "a", ]))
+
+# Expected:
+#   Linear Regression
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         16
+#       subset =            8          8  id <= 8
+#       Analysis N         --          8
+#   ---------------------------------------------
+#
+#   Error: jlm(): grp has only one category in the analysis sample (a); a
+#   dummy-coded predictor requires at least two.
+#   Check whether subset = is excluding the other categories.
+#
+#   Linear Regression
+#
+#   Analysis N: 8
+#
+#   Error: jlm(): grp has only one category in the analysis sample (a); a
+#   dummy-coded predictor requires at least two.
+
+options(.warn20)
+rm(m20, shown20, .warn20)
+
+# Things to look at:
+#   - RENDER 1: each stop comes under the Case Processing block, which
+#     shows the filter. It names both counts -- 3 cases, 3 coefficients
+#     -- says what is needed, and how the other 13 cases went. No table,
+#     and no warning of glm()'s ahead of jlogistic()'s stop.
+#   - RENDER 2: ONE warning naming k and m ("seem categorical"), one
+#     jdummy() call registering both, one refit line, and both in
+#     categorical = c("k", "m").
+#   - RENDER 3, first: the stop under the block, in Section 18's words
+#     for a registered predictor -- the one category in parentheses,
+#     then the line pointing at subset =. Second, with no filter: the
+#     sentence alone, under the "Analysis N" line.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 21 -- the printed lines: a note, a refusal, an expression ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Fix Slate 8's second half (v0.9.220), the wording:
+#   - the note on dummy names built from numeric codes was one line of
+#     some 300 characters: it is wrapped now, a sentence a line;
+#   - the dichotomy notes ended "Or recode to a permanent 0/1 variable
+#     with jrecode()." -- a method, where voice Rule X asks for the state
+#     to reach;
+#   - jlogistic()'s refusal of a text outcome ran two sentences on one
+#     line, said "Recode" over a jencode() call, and coded the blank 1,
+#     so for a tick-box outcome the map modeled the blank;
+#   - an expression given as the data was pasted into a line that is not
+#     R ("mk()$tickR <- jencode(mk(), ...)") and into a jnumeric() call the
+#     registration verbs refuse;
+#   - a two-valued outcome coded other than 0/1 or 1/2 was "(a other
+#     dichotomy)".
+# The assertion side is models_check.R Q21-Q28.
+
+.warn21 <- options(warn = 1)
+shown21 <- function(expr) tryCatch(expr, error = function(e)
+  cat("Error: ", conditionMessage(e), "\n\n", sep = ""))
+m21 <- data.frame(y    = c(2.1, 3.4, 1.9, 4.2, 3.3, 2.8, 3.9, 4.4,
+                           2.6, 3.1, 1.7, 3.8),
+                  x1   = c(1.2, 2.3, 0.8, 3.1, 2.2, 1.9, 2.8, 3.5,
+                           1.4, 2.0, 0.6, 2.9),
+                  k    = rep(1:3, 4),
+                  s    = rep(1:2, 6),
+                  t    = rep(c(3, 7), 6),
+                  tick = rep(c("Y", ""), 6),
+                  stringsAsFactors = FALSE)
+m21$lev <- haven::labelled(rep(1:3, 4), labels = c(Low = 1, Mid = 2, High = 3))
+mk21 <- function() m21
+
+# Render 1 -- the note on dummy names built from numeric codes.
+jlm(y ~ x1 + k, data = m21, categorical = "k")
+
+# Expected:
+#   Linear Regression
+#   (Note: One or more dummy names for 'k' were built from numeric codes because
+#   descriptive value labels were not available.
+#   If these names aren't ideal, use jrelabel() to set value labels, or
+#   jrecode() to change the underlying values, then re-register with jdummy().)
+#
+#   Analysis N: 12
+#
+#   Coefficients
+#                   b      SE      t      β      p
+#   -----------  ------  -----  ------  -----  -----
+#   (Intercept)   1.140  0.109  10.457         <.001
+#   x1            0.960  0.040  23.916  0.987  <.001
+#   k (ref = 1)
+#     2          -0.005  0.084  -0.059          .955
+#     3          -0.046  0.087  -0.528          .612
+#
+#   Outcome: y
+#
+#   R-squared: 0.987    Adjusted R-squared: 0.982
+#   Residual Standard Error: 0.119
+#
+#   F-statistic: 206.269 on 3 and 8 DF, p-value: <.001
+#   Sum of Squares:
+#     Regression: 8.786
+#     Residual:   0.114
+#     Total:      8.900
+
+# Render 2 -- a 1/2 dichotomy as a predictor.
+jlm(y ~ s + x1, data = m21)
+
+# Expected:
+#   Linear Regression
+#   Note: s is a 1/2 dichotomy. The model runs correctly, but registering s as a
+#   dummy can help interpret the intercept:
+#     jdummy(m21, s)
+#   Or make it a 0/1 variable in the data frame.
+#
+#   Analysis N: 12
+#
+#   Coefficients
+#                   b      SE      t      β      p
+#   -----------  ------  -----  ------  -----  -----
+#   (Intercept)   1.169  0.102  11.513         <.001
+#   s (2)        -0.075  0.082  -0.926          .379
+#   x1            0.993  0.046  21.575  1.021  <.001
+#
+#   Outcome: y
+#
+#   R-squared: 0.988    Adjusted R-squared: 0.985
+#   Residual Standard Error: 0.110
+#
+#   F-statistic: 366.158 on 2 and 9 DF, p-value: <.001
+#   Sum of Squares:
+#     Regression: 8.792
+#     Residual:   0.108
+#     Total:      8.900
+
+# Render 3 -- a word-or-blank outcome; then the same frame given as an
+# expression.
+shown21(jlogistic(tick ~ x1, data = m21))
+shown21(jlogistic(tick ~ x1, data = mk21()))
+
+# Expected:
+#   Logistic Regression
+#   Error: jlogistic(): 'tick' has text categories Y/<blank>.
+#   Encode it as a 0/1 variable, so that the modeled category is explicit:
+#     m21$tickR <- jencode(m21, tick, map = "blank=0; Y=1")
+#   Then use tickR as your dependent variable (the category mapped to 1 is the
+#   one jlogistic models).
+#
+#   Logistic Regression
+#   Error: jlogistic(): 'tick' has text categories Y/<blank>.
+#   Encode it as a 0/1 variable, so that the modeled category is explicit:
+#     mydata <- mk21()
+#     mydata$tickR <- jencode(mydata, tick, map = "blank=0; Y=1")
+#   Then use tickR as your dependent variable (the category mapped to 1 is the
+#   one jlogistic models).
+
+# Render 4 -- arithmetic on a labelled categorical variable, the frame
+# given as an expression.
+shown21(jlm(x1 ~ log(lev), data = mk21()))
+
+# Expected:
+#   Linear Regression
+#   Error: jlm(): lev is a categorical variable, so the formula term log(lev)
+#   cannot be computed.
+#   If lev should be treated as numeric, register it first:
+#     mydata <- mk21()
+#     jnumeric(mydata, lev)
+
+# Render 5 -- an outcome with the two values 3 and 7.
+jlm(t ~ x1, data = m21)
+
+# Expected:
+#   Linear Regression
+#   Warning: 't' is the outcome variable but looks categorical (a dichotomy).
+#   Linear regression expects an interval outcome.
+#
+#   Analysis N: 12
+#
+#   Coefficients
+#                  b      SE     t      β      p
+#   -----------  -----  -----  -----  -----  ----
+#   (Intercept)  2.069  1.242  1.665         .127
+#   x1           1.424  0.554  2.569  0.631  .028
+#
+#   Outcome: t
+#
+#   R-squared: 0.398    Adjusted R-squared: 0.337
+#   Residual Standard Error: 1.700
+#
+#   F-statistic: 6.600 on 1 and 10 DF, p-value: .028
+#   Sum of Squares:
+#     Regression: 19.084
+#     Residual:   28.916
+#     Total:      48.000
+
+options(.warn21)
+rm(m21, mk21, shown21, .warn21)
+
+# Things to look at:
+#   - RENDER 1: the note, under the title, in three or four lines inside
+#     the width, its second sentence starting a line of its own.
+#   - RENDER 2: the note's last line, "Or make it a 0/1 variable in the
+#     data frame." -- what to reach, with no function chosen for it.
+#   - RENDER 3: the category list on a line of its own; "Encode it" over
+#     the jencode() call; the map "blank=0; Y=1", so Y is the modeled
+#     category. Given mk21(), the frame is named first, "mydata <-
+#     mk21()", and the jencode() line is written on mydata.
+#   - RENDER 4: "mydata <- mk21()" over "jnumeric(mydata, lev)" -- two
+#     lines that run, where it printed "jnumeric(mk21(), lev)".
+#   - RENDER 5: "(a dichotomy)".
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 22 -- the plots: the list, the smoother, a squared term ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Fix Slate 8's second half (v0.9.220), the plots. LOOK AT THE PLOTS PANE
+# after each render.
+#   - jlm()'s line over its plot list now reads as jplot()'s for
+#     jlogistic() does, word for word.
+#   - On a few cases R's smoother cannot draw a reliable trend line and
+#     warns, four times a plot -- "pseudoinverse used at -0.47261",
+#     "neighborhood radius 0.43668" -- twelve raw warnings on this
+#     nine-case model, which at R's default printed after everything else
+#     and, past ten, as "There were 13 warnings (use warnings() to see
+#     them)", the thirteenth being the package's own. They are caught
+#     where the plots are drawn, and one note under the list says which
+#     trend lines they concern (Jeff's lean B, S347).
+#   - jplot()'s fit plot held a squared term at 0 while its variable moved
+#     along the axis: for y ~ x + I(x^2) it drew the straight line
+#     b0 + b1 x under "(line shown at I(x^2) = 0)". It draws the curve
+#     now. Its equation printed `I(x^2)` in backticks.
+#   - "(1 effect plots produced, one per predictor)" is in number.
+# The assertion side is models_check.R Q29-Q39.
+
+m22 <- data.frame(y = c(0.1, -0.4, 0.3, 0.9, 0.2, -0.1, 1.3, 0.8, NA),
+                  x = c(1, 1, 1, 2, 2, 2, 3, 3, 3))
+q22 <- data.frame(xc = round(seq(-2, 2, length.out = 25), 3))
+q22$yc <- round(1 + q22$xc + 2 * q22$xc^2 +
+                  c(0.3, -0.2, 0.1, -0.4, 0.2, 0.0, -0.1, 0.3, -0.3, 0.2,
+                    0.1, -0.2, 0.0, 0.2, -0.1, 0.3, -0.2, 0.1, -0.3, 0.2,
+                    0.0, -0.1, 0.2, -0.2, 0.1), 3)
+
+# Render 1 -- nine cases, diagnostics = TRUE: five plots in the pane.
+jlm(y ~ x, data = m22, diagnostics = TRUE, numeric = "x")
+
+# Expected:
+#   Linear Regression
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --          9
+#       Auto-listwise         1          8
+#       Analysis N           --          8
+#
+#   Missing data   From 9    %
+#       y
+#         Missing     1    11.1
+#   --------------------------------------
+#
+#   Coefficients
+#                   b      SE      t      β      p
+#   -----------  ------  -----  ------  -----  ----
+#   (Intercept)  -0.569  0.372  -1.532         .177
+#   x             0.510  0.183   2.788  0.751  .032
+#
+#   Outcome: y
+#
+#   R-squared: 0.564    Adjusted R-squared: 0.492
+#   Residual Standard Error: 0.404
+#
+#   F-statistic: 7.775 on 1 and 6 DF, p-value: .032
+#   Sum of Squares:
+#     Regression: 1.269
+#     Residual:   0.979
+#     Total:      2.249
+#
+#   5 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane
+#   to navigate):
+#     1. Residuals vs Fitted
+#     2. Normal Q-Q
+#     3. Scale-Location
+#     4. Cook's Distance
+#     5. Residuals vs Leverage
+#
+#   Note: The trend lines in Residuals vs Fitted, Scale-Location, and Residuals
+#   vs Leverage may not be reliable.
+#   R's smoother reported 12 numerical problems while drawing them.
+
+# Render 2 -- a squared term: the fit plot, then the effect plots.
+r22 <- jlm(yc ~ xc + I(xc^2), data = q22)
+jplot(r22, which = "fit")
+jplot(r22, which = "effects")
+
+# Expected:
+#   Linear Regression
+#
+#   Analysis N: 25
+#
+#   Coefficients
+#                  b      SE      t      β      p
+#   -----------  -----  -----  ------  -----  -----
+#   (Intercept)  1.005  0.065  15.404         <.001
+#   xc           0.998  0.036  27.612  0.421  <.001
+#   I(xc^2)      2.002  0.034  59.387  1.035  <.001
+#
+#   In a model with a squared term, β comes from centered predictors: a β can
+#   have the opposite sign from its b, and other software may report
+#   different β values.
+#   See ?jlm.
+#
+#   Outcome: yc
+#
+#   R-squared: 0.995    Adjusted R-squared: 0.994
+#   Residual Standard Error: 0.217
+#
+#   F-statistic: 2144.644 on 2 and 22 DF, p-value: <.001
+#   Sum of Squares:
+#     Regression: 202.404
+#     Residual:   1.038
+#     Total:      203.443
+#
+#
+#   (2 effect plots produced, one per predictor)
+
+rm(m22, q22, r22)
+
+# Things to look at:
+#   - RENDER 1: "5 diagnostic plots produced (use the arrow buttons in
+#     RStudio's Plots pane to navigate):" over the five names, "1." to
+#     "5." -- jplot()'s form for jlogistic(). Then a blank line and the
+#     note: the three plots with a trend line named, and the count of
+#     the smoother's problems. No "Warning:" line anywhere. In the pane,
+#     the trend lines of those three plots are the ones to distrust.
+#   - RENDER 2: the fit plot (the first of the three drawn) is a curve
+#     through the points; its subtitle is the equation, "yc = ... +
+#     ...·I(xc^2)", with no backticks and no "(line shown at ...)" line.
+#     The effect plots: Effect: xc is the same curve; Effect: I(xc^2)
+#     holds xc at 0. The console says "(2 effect plots produced, one per
+#     predictor)".
 
 
 # --- Restore session state ---------------------------------------------------

@@ -68,6 +68,11 @@
 #           29); the stops for groups a test cannot be computed on and for
 #           a sample with no case left (Section 30); and the diagnostics
 #           setting, apart from the output levels (Section 31).
+#           Since S347 (v0.9.220) the group-count stops' line about a
+#           subset = that excluded cases, and its absence when a missing
+#           outcome took the group; a paired t-test under the diagnostics
+#           setting; a box plot's groups labeled as the descriptives label
+#           them (Section 32).
 #           format_check.R asserts the same surface; this file shows it.
 # ORIGIN:   S326 (v0.9.202): the number-format bundle.
 # S329 EDIT (v0.9.205): THE CROSSTAB BUILD. Sections 15 and 17
@@ -128,6 +133,13 @@
 #           and a raw column as Unsupported rows with jfreq's stop for
 #           one; a computed vector named as typed. Each Expected FILLED BY
 #           RUNNING the file (fill.R, Testing Conventions).
+# S347 EDIT (v0.9.220): FIX SLATE 8, SECOND HALF. Section 32 NEW (see
+#           LOCKS), three renders, inline fixtures built and removed inside
+#           the section; each Expected FILLED BY RUNNING the file (fill.R),
+#           with #@SKIP before Renders 2 and 3. No existing Expected moved
+#           (a capture of every section on 0.9.219 and 0.9.220). The human
+#           half of format_check.R Y01-Y04 and models_check.R Q16-Q19 and
+#           Q38.
 # S346 EDIT (v0.9.219): FIX SLATE 8, FIRST CUT, AND DIAGNOSTICS. Sections
 #           27-31 NEW (see LOCKS), each Expected FILLED BY RUNNING the file
 #           (fill.R, Testing Conventions); they are the PENDING sections.
@@ -157,6 +169,11 @@
 #           removes shown(), and Render 4 removes it. A capture of every
 #           section of every walk on the two deliveries differs in this
 #           file's Section 30 and models_walk.R's 18 alone.
+# LAST VERIFIED: v0.9.220, 2026-10-10 (S347) -- Section 32 WALKED on the
+#           WORKSTATION by Jeff through receive_all(), its closing block's
+#           walk line as the tool's default leaves it; PENDING back to
+#           none; GitHub 991eb6b. Sandbox: 46 of 46 Expected blocks under
+#           rewalk() in three orders (harness.R verify).
 # LAST VERIFIED: v0.9.219, 2026-10-09 (S346) -- Sections 27-31 WALKED on
 #           the WORKSTATION by Jeff through rewalk() at the first delivery
 #           ("all okay"), and Section 30 again at the second ("all okay");
@@ -3004,6 +3021,186 @@ rm(shown, f_gh)
 #     "diagnostics: LEVENE, VIF".
 #   - jlm() and jlogistic() under the same setting: models_walk.R
 #     Section 19.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 32 -- the group-count stops and subset =; a paired test; the box ----
+#               plot's groups (S347)
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 347 (v0.9.220), Fix Slate 8's second half.
+#   - jt(), jaov() and jcrosstab() stopped on one group with a line about a
+#     stored jsubset() filter, and said nothing of a subset = that had
+#     excluded cases in the same way; jcrosstab() had no line at all. The
+#     line now names either, as the one-value stops in models_walk.R
+#     Section 18 do. It is not printed when a missing outcome took the
+#     group the filters left: the line above it says so.
+#   - A paired t-test has no Levene's test, and under
+#     joutput(diagnostics = TRUE) every paired jt() said so. It says so
+#     only when the call asks.
+#   - jplot() of a jt() or jaov() result labeled its boxes 1, 2, 3, where
+#     the Group Descriptives of the same result read "1: Control". LOOK AT
+#     THE PLOTS PANE after Render 3.
+
+shown32 <- function(expr) tryCatch(expr, error = function(e)
+  cat("Error: ", conditionMessage(e), "\n\n", sep = ""))
+f32 <- data.frame(g  = rep(c("a", "b", "c"), each = 4),
+                  h  = rep(c("u", "v"), 6),
+                  y  = c(4, 5, 6, 5, 7, 8, 6, 9, 3, 4, 2, 5),
+                  id = 1:12, stringsAsFactors = FALSE)
+
+# Render 1 -- subset = on another variable leaves one group: jt(), jaov(),
+# jcrosstab(); then a missing outcome takes the second group the filter
+# left.
+shown32(jt(y ~ g, data = f32, subset = id <= 4))
+shown32(jaov(y ~ g, data = f32, subset = id <= 4))
+shown32(jcrosstab(g ~ h, data = f32, subset = id <= 4))
+f32m <- f32; f32m$y[f32m$g == "b"] <- NA
+shown32(jt(y ~ g, data = f32m, subset = id <= 8))
+
+# Expected:
+#   Independent Samples T-Test
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         12
+#       subset =            8          4  id <= 4
+#       Analysis N         --          4
+#   ---------------------------------------------
+#
+#   Error: jt(): 'g' has 1 category.
+#   A t-test requires exactly 2.
+#   Check whether subset = is excluding one of the groups.
+#
+#   One-Way ANOVA
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         12
+#       subset =            8          4  id <= 4
+#       Analysis N         --          4
+#   ---------------------------------------------
+#
+#   Error: jaov(): 'g' has 1 category.
+#   An ANOVA requires at least 2 groups.
+#   Check whether subset = is excluding one or more groups.
+#
+#   Cross-Tabulation
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         12
+#       subset =            8          4  id <= 4
+#       Analysis N         --          4
+#   ---------------------------------------------
+#
+#   Error: jcrosstab(): 'g' has 1 category.
+#   A cross-tabulation requires at least 2 categories for each variable.
+#   Check whether subset = is excluding the other categories.
+#
+#   Independent Samples T-Test
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         12
+#       subset =              4          8  id <= 8
+#       Auto-listwise         4          4
+#       Analysis N           --          4
+#
+#   Missing data   From 12    %   Filtered  From 8    %
+#       y
+#         Missing     4     33.3      0        4    50.0
+#   ----------------------------------------------------
+#
+#   Error: jt(): 'g' has 1 category.
+#   A t-test requires exactly 2.
+#   Cases with a missing 'y' are not counted.
+
+# Render 2 -- a paired test under joutput(diagnostics = TRUE); then the
+# call asking for Levene's test.
+f32p <- data.frame(t = factor(rep(c("pre", "post"), each = 5),
+                              levels = c("pre", "post")),
+                   y = c(4.5, 5.5, 6.5, 5.5, 4.5,  5.5, 9.5, 8.5, 6.5, 6.5))
+joutput(diagnostics = TRUE, quiet = TRUE)
+jt(y ~ t, data = f32p, paired = TRUE)
+jt(y ~ t, data = f32p, paired = TRUE, diagnostics = TRUE)
+joutput(NULL, quiet = TRUE)
+
+# Expected:
+#   Paired Samples T-Test
+#
+#   Analysis N: 10
+#
+#   Group Descriptives: y by t
+#   Group  N   Mean    SD
+#   -----  -  -----  -----
+#   pre    5  5.300  0.837
+#   post   5  7.300  1.643
+#
+#   Paired Samples T-Test Results
+#      t    df    p   Mean Difference  95% CI Lower  95% CI Upper
+#   ------  --  ----  ---------------  ------------  ------------
+#   -3.651   4  .022       -2.000         -3.521        -0.479
+#
+#   Cohen's dz (paired): -1.633
+#
+#   Paired Samples T-Test
+#
+#   Analysis N: 10
+#
+#   Note: Levene's test is not applicable for paired samples.
+#
+#   Group Descriptives: y by t
+#   Group  N   Mean    SD
+#   -----  -  -----  -----
+#   pre    5  5.300  0.837
+#   post   5  7.300  1.643
+#
+#   Paired Samples T-Test Results
+#      t    df    p   Mean Difference  95% CI Lower  95% CI Upper
+#   ------  --  ----  ---------------  ------------  ------------
+#   -3.651   4  .022       -2.000         -3.521        -0.479
+#
+#   Cohen's dz (paired): -1.633
+
+# Render 3 -- jplot() of a jaov() result, the groups labelled: the box
+# plot in the Plots pane.
+f32b <- data.frame(cond = haven::labelled(rep(1:3, each = 5),
+                                          labels = c(Control = 1, CBT = 2,
+                                                     Mindfulness = 3)),
+                   y = c(4, 5, 6, 5, 4,  7, 8, 6, 9, 8,  5, 6, 7, 6, 5))
+r32 <- jaov(y ~ cond, data = f32b)
+jplot(r32)
+
+# Expected:
+#   One-Way ANOVA
+#
+#   Analysis N: 15
+#
+#   Group Descriptives: y by cond
+#   Group           N   Mean    SD   95% CI Lower  95% CI Upper
+#   --------------  -  -----  -----  ------------  ------------
+#   1: Control      5  4.800  0.837      3.761         5.839
+#   2: CBT          5  7.600  1.140      6.184         9.016
+#   3: Mindfulness  5  5.800  0.837      4.761         6.839
+#
+#   ANOVA: y by cond
+#   Source    df  Sum of Squares  Mean Square     F      p
+#   --------  --  --------------  -----------  ------  ----
+#   cond       2      20.133         10.067    11.185  .002
+#   Residual  12      10.800          0.900
+#   Total     14      30.933
+#
+#   Eta-squared: 0.651
+
+rm(shown32, f32, f32m, f32p, f32b, r32)
+
+# Things to look at:
+#   - RENDER 1: each stop ends "Check whether subset = is excluding ...",
+#     in its function's words -- "one of the groups", "one or more
+#     groups", "the other categories". The fourth: the filter left two
+#     groups and a missing y took one, so the stop says "Cases with a
+#     missing 'y' are not counted." and points at no filter.
+#   - RENDER 2: the first paired test says nothing of Levene's test (the
+#     setting is the session's); the second, which asks in the call, has
+#     the note under its N line.
+#   - RENDER 3: the boxes in the Plots pane read "1: Control", "2: CBT"
+#     and "3: Mindfulness", as the Group Descriptives above them do.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

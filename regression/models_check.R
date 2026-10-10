@@ -7,7 +7,9 @@
 #                   vector a computed term would recycle; the group-count
 #                   stops, jcrosstab's title, jplot's box line; the
 #                   registration verbs at the front door; a comparison
-#                   inside a formula
+#                   inside a formula; no more cases than coefficients; one
+#                   "seems categorical" warning; the plot lines and the
+#                   fit line of a computed term
 # =============================================================================
 # TYPE:     assertion battery (PASS/FAIL; written for Claude's checking)
 # LOCKS:    the S305 AUDIT-037 fix and its riders, the S306 absent-
@@ -79,6 +81,81 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S347 EDIT (v0.9.220, 2026-10-10): Fix Slate 8, second half. SECTION Q
+#           ADDED, Q01-Q39 with Q33b (40 checks). Q01-Q07 a model with no
+#           more cases than coefficients: one stop under the Case
+#           Processing block in jlm() and jlogistic(), both counts named,
+#           how the other cases went (a filter, missing data, both; none
+#           with "There are only"), the dummy columns counted, no glm()
+#           warning ahead of it; one case more fits as lm() fits it.
+#           Q08-Q11 one "seems categorical" warning for several
+#           predictors, pinned whole, its lines run. Q12-Q15 a predictor
+#           dummy-coded in the call with one category: the registered
+#           predictor's sentence under the block, the category shown
+#           (with its label), the filters' line; a missing value not a
+#           category. Q16-Q20 the group-count stops and subset = in jt(),
+#           jaov() and jcrosstab(); no filter line when a missing outcome
+#           took the group or a setting excluded nothing. Q21-Q28 the
+#           printed lines: the dummy-names note wrapped, the 30-character
+#           warning retired, the dichotomy notes' last line (Rule X),
+#           jlogistic()'s text-outcome refusal (the blank coded 0), an
+#           expression named first in jlogistic()'s and the formula
+#           guard's lines and "Saved the data to" (an index into a frame
+#           kept as typed), each line run; "(a dichotomy)". Q29-Q33b the
+#           plot lines: jlm()'s list in jlogistic()'s form, the effect-plot
+#           count, the smoother's warnings caught and one note pinned
+#           whole, R's default warn = 0 leaving the package's own warning,
+#           no note where the smoother raises nothing, another warning
+#           passing. Q34-Q39 a term computed from the focal variable on
+#           the fit line, the effect plots and jlogistic()'s probability
+#           plot (each against a hand computation from the coefficients),
+#           the equation's names, a term held as before (scale()), the box
+#           plots' groups labeled as the descriptives label them, an
+#           aliased term left out of the equation. Fixture dq, inline, 48
+#           cases; d9, nine. RE-PINNED: K07 (jcrosstab's filter line), L33
+#           L34 (the blank coded 0), P13 (the in-call stop), P19 (the
+#           filter line for subset =), and the O section's plot-list
+#           reader .o_plots() (numbered "1." since S347). 405 checks.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 405/405
+#           plain and under the RStudio-handler stand-in, each also with a
+#           Windows-length temp path, and entered dirty, the session
+#           handed back. On the 0.9.219 master 46 red: K07 L33 L34 O03 O05
+#           O10 P13 P19, Q01-Q32 and Q34-Q39 (Q07 only because the helper
+#           it calls is new; Q33 and Q33b are controls and hold there).
+#           MUTATION MAP (S347; 44 one-change mutants of the 0.9.220
+#           master, each run with all eight batteries, every one red; the
+#           checks each reds): the too-few stop never Q01-Q06, only below
+#           the coefficient count Q01 Q02 Q04-Q06, its cause reversed
+#           Q01-Q04, "There are only" never Q04, one other case plural Q04;
+#           jlm counting the typed formula's variables Q06; jlogistic with
+#           no stop Q02. The warning naming its first predictor only, in
+#           jlm Q08 Q09 Q11, in jlogistic Q10; "seem" never plural Q08 Q10
+#           Q11; one variable in the jdummy() line Q08-Q11. The in-call
+#           stop ahead of the block (categorical =) Q14; without the
+#           filters' line P13 Q12 Q14; absent from jlogistic Q12; a
+#           missing value counted as a category Q15. jt's filter line gone
+#           K01 P19 Q16 Q18; printed when a missing outcome took the group
+#           P18 Q19; jcrosstab's gone K07 Q17; jaov's gone K05 Q17. The
+#           paired note under the session setting Y01 (format_check.R),
+#           never X16 Y02. The dummy-names note by cat() in the models Q21,
+#           in jdummy Q22; a long-name warning raised again Q23; jrecode()
+#           named again Q24; the blank coded 1 L33 L34 Q25 Q26; an
+#           expression pasted into jlogistic's line Q26, into jnumeric()
+#           Q27; jsave as typed Q27, an index called "the data" Q27; "(a
+#           other dichotomy)" Q28. The old plot-list line O03 O05 O10 Q29
+#           Q31; effect plots always plural Q30; the smoother's warnings
+#           not muffled Q31 Q32; its note never singular Q32; every
+#           warning muffled while a smoothed plot draws Q33b (added after
+#           the round, which this mutant survived: no fixture raised
+#           another warning in a smoothed plot). Backticks kept Q35; ":"
+#           kept Q35; no term computed on the grid Q34 Q36 Q37; computed
+#           whatever its functions Q36; a computed term left in the note
+#           Q34 Q36; a held variable not read Q36; the box plot from the
+#           codes Q38; an aliased term's NA kept Q39.
+#           LAST VERIFIED: v0.9.220, 2026-10-10 (S347) -- 405/405 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2123 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 991eb6b.
 # S346 EDIT (v0.9.219, 2026-10-08): Fix Slate 8, first cut, and Jeff's
 #           diagnostics ruling of that day. SECTIONS N AND O ADDED, N01-N27
 #           and O01-O12 (39 checks). N01-N10 a sample with no case left:
@@ -2120,10 +2197,13 @@ check("K06 jaov(), no stored setting: two lines",
       identical(grab(jaov(y ~ k, data = d)),
                 "jaov(): 'k' has 1 category.\nAn ANOVA requires at least 2 groups."))
 .k07 <- with_state(.k_on(), grab(jcrosstab(g ~ lg, data = d)), .k_off())
+# RE-PINNED S347 (v0.9.220): jcrosstab() takes the filters' line jt() and
+# jaov() have (the S346 group-count item); it had none.
 check("K07 jcrosstab(), with a stored filter and without",
       identical(flat(.k07), paste0(
         "jcrosstab(): 'g' has 1 category after applying the jsubset filter (gn == \"5\"). ",
-        "A cross-tabulation requires at least 2 categories for each variable.")) &&
+        "A cross-tabulation requires at least 2 categories for each variable. ",
+        "Check whether your jsubset or jcomplete settings are excluding the other categories.")) &&
         identical(grab(jcrosstab(k ~ g, data = d)), paste0(
           "jcrosstab(): 'k' has 1 category.\n",
           "A cross-tabulation requires at least 2 categories for each variable.")))
@@ -2467,9 +2547,11 @@ check("L32 jplot(): the blank cells plot as one category, <blank>, on both paths
 # nothing ("Y/", "(a, b, ,  )"), and the first offered a jrecode() call, which
 # stops on any text variable and sends the user to jencode().
 .l33 <- grab(jlogistic(bl ~ y, data = dl))
-check("L33 a word-or-blank outcome: the blank category is named, and the fix line is a jencode() call with jencode()'s word for a blank",
+# RE-PINNED S347 (v0.9.220): the map codes a blank category 0, so the word
+# is the modeled category (it read "Y=0; blank=1", modeling the blank).
+check("L33 a word-or-blank outcome: the blank category is named, and the fix line is a jencode() call with jencode()'s word for a blank, coded 0",
       .l_has(.l33, "'bl' has text categories Y/<blank>.") &&
-        .l_has(.l33, "\n  dl$blR <- jencode(dl, bl, map = \"Y=0; blank=1\")\n") &&
+        .l_has(.l33, "\n  dl$blR <- jencode(dl, bl, map = \"blank=0; Y=1\")\n") &&
         !.l_has(.l33, "jrecode"))
 # .l_fix(): run the indented line a message printed, in a copy of the frame.
 .l_fix <- function(txt, frame) {
@@ -2478,13 +2560,13 @@ check("L33 a word-or-blank outcome: the blank category is named, and the fix lin
   tryCatch({ suppressMessages(eval(parse(text = ln), e)); get("dl", envir = e) },
            error = function(err) NULL)
 }
-check("L34 ... that line runs, and its 0/1 result is an outcome jlogistic() accepts: glm()'s fit of blank against the word",
+check("L34 ... that line runs, and its 0/1 result is an outcome jlogistic() accepts: glm()'s fit of the word against blank",
       { d2 <- .l_fix(.l33, dl)
         m  <- if (is.null(d2)) NULL else quiet(jlogistic(blR ~ y, data = d2))
-        tr <- coef(stats::glm(as.integer(!nzchar(trimws(dl$bl))) ~ dl$y,
+        tr <- coef(stats::glm(as.integer(nzchar(trimws(dl$bl))) ~ dl$y,
                               family = stats::binomial))
         !is.null(m) && identical(as.numeric(unclass(d2$blR)),
-                                 as.numeric(!nzchar(trimws(dl$bl)))) &&
+                                 as.numeric(nzchar(trimws(dl$bl)))) &&
           near(b_of(m, "y"), tr[[2L]]) })
 check("L35 two words in several spellings: each side of the map lists every spelling folded into the category, and the line runs",
       { f <- dl
@@ -3183,7 +3265,9 @@ do$x4 <- do$x1 + do$x2 / 12                  # nearly x1: a VIF far above 10
   gsub("\033\\[[0-9;]*[A-Za-z]", "", res)
 }
 .o_vif   <- function(o) any(o == "VIF (Variance Inflation Factors)")
-.o_plots <- function(o) sub("^  [0-9]: ", "", grep("^  [0-9]: ", o, value = TRUE))
+# The list under "N diagnostic plots produced" numbers "1." since S347
+# (jlogistic()'s form; it was "1:").
+.o_plots <- function(o) sub("^  [0-9]\\. ", "", grep("^  [0-9]\\. ", o, value = TRUE))
 .o_all5  <- c("Residuals vs Fitted", "Normal Q-Q", "Scale-Location",
               "Cook's Distance", "Residuals vs Leverage")
 .o_err <- function(expr) {
@@ -3405,7 +3489,11 @@ check("P12 a registered predictor left one category by a filter on another varia
         "other categories.")) &&
         grepl("\nCheck whether subset = is excluding the other categories.$", .p12) &&
         !grepl("This often happens", .p12, fixed = TRUE))
-check("P13 ... with no filter, where listwise deletion left one category, the S306 sentence alone; and an unregistered factor keeps its builder's stop when no filter names it",
+# RE-PINNED S347 (v0.9.220): a factor dummy-coded in the call takes the
+# registered predictor's sentence and the filters' line, under the block (it
+# stopped "'gf' has fewer than 2 categories. Cannot create dummy variables."
+# ahead of it).
+check("P13 ... with no filter, where listwise deletion left one category, the S306 sentence alone; and an unregistered factor gets the same sentence, with the filters' line, when no filter names it",
       { z <- dp; z$xb <- z$x1; z$xb[z$g != "b"] <- NA
         a <- with_state(quiet(jdummy(z, gf)), grab(jlm(y ~ xb + gf, data = z)),
                         quiet(jdummy(z, gf, remove = TRUE)))
@@ -3413,7 +3501,10 @@ check("P13 ... with no filter, where listwise deletion left one category, the S3
         identical(flat(a), paste0(
           "jlm(): gf has only one category in the analysis sample (2: b); a dummy-coded ",
           "predictor requires at least two.")) &&
-          identical(flat(b), "jlm(): 'gf' has fewer than 2 categories. Cannot create dummy variables.") })
+          identical(flat(b), paste0(
+            "jlm(): gf has only one category in the analysis sample (a); a dummy-coded ",
+            "predictor requires at least two. Check whether subset = is excluding the ",
+            "other categories.")) })
 check("P13b a text predictor the filter names, dummy-coded in the call: the same form, in jlm() and in jlogistic()",
       identical(flat(grab(jlm(y ~ x1 + g, data = dp, subset = g == "d"))), paste0(
         "jlm(): subset = g == \"d\" keeps only one category of g (d), and a ",
@@ -3467,9 +3558,12 @@ check("P18 control: a filter that names the grouping variable but keeps two of i
           "jt(): 'g' has 1 category. ",
           "A t-test requires exactly 2. ",
           "Cases with a missing 'y' are not counted."))) })
-check("P19 control: a filter on another variable leaves the count stop as it was (K01 holds the stored form)",
+# RE-PINNED S347 (v0.9.220): a subset = that excluded cases gets the
+# filters' line, as a stored filter did (the S346 group-count item).
+check("P19 a filter on another variable: the count stop, and the line pointing at subset = (K01 holds the stored form)",
       identical(grab(jt(y ~ g, data = dp, subset = gn == "5")),
-                "jt(): 'g' has 1 category.\nA t-test requires exactly 2."))
+                paste0("jt(): 'g' has 1 category.\nA t-test requires exactly 2.\n",
+                       "Check whether subset = is excluding one of the groups.")))
 
 # ---- P20-P25: an outcome with one value ------------------------------------
 .p20o <- utils::capture.output(.p20 <- grab(jlogistic(yb ~ x1, data = dp, subset = yb == 1)))
@@ -3568,6 +3662,446 @@ check("P31 .jst_filters_naming(): a filter set aside, a frame with no filter and
 rm(dp)
 rm(list = intersect(c(".p_on", ".p_off", ".p_kept", ".p01", ".p03", ".p05", ".p06",
                       ".p12", ".p20", ".p20o", ".p26", ".p_reg", ".p_err", ".p_err2"),
+                    ls(all.names = TRUE)))
+
+# =============================================================================
+# SECTION Q -- FIX SLATE 8, SECOND HALF: NO MORE CASES THAN COEFFICIENTS; ONE
+#              "seems categorical" WARNING; A PREDICTOR DUMMY-CODED IN THE
+#              CALL WITH ONE CATEGORY; THE GROUP-COUNT STOPS AND subset =;
+#              THE PRINTED LINES; THE PLOTS (S347, v0.9.220)
+# =============================================================================
+# (1) A model with no more cases than coefficients printed NaN standard
+# errors and a blank p column (jlm) or dozens of glm.fit warnings and an
+# Exp(B) of 62 digits (jlogistic): one stop now, under the Case Processing
+# block. (2) Several predictors that seem categorical get one warning. (3) A
+# predictor dummy-coded in the call with one category stopped ahead of the
+# block, "'gf' has fewer than 2 categories. Cannot create dummy variables.";
+# it takes the registered predictor's sentence under the block. (4) The
+# group-count stops point at a subset = that excluded cases, as at a stored
+# filter, and jcrosstab() too. (5) The printed lines: the dummy-names note
+# wrapped, the 30-character warning retired, the dichotomy notes' last line
+# (voice Rule X), jlogistic()'s text-outcome refusal, an expression given as
+# the data, "(a dichotomy)". (6) The plots: jlm()'s plot list in
+# jlogistic()'s form, the effect-plot count, the smoother's warnings caught
+# and one note printed, the equation's names, a term computed from the
+# focal variable following it, and a box plot's groups labeled as the
+# descriptives label them. Every printed line to run is run.
+cat("\n--- Q. Fix Slate 8, second half ---\n")
+
+set.seed(347)
+.q_n <- 48L
+dq <- data.frame(y = round(rnorm(.q_n), 3), x1 = round(rnorm(.q_n), 3),
+                 x2 = round(rnorm(.q_n), 3), id = seq_len(.q_n),
+                 b = rep(0:1, length.out = .q_n), stringsAsFactors = FALSE)
+dq$k4  <- rep(1:4, length.out = .q_n)                  # seems categorical
+dq$m4  <- rep(c(1, 2, 3, 5), each = .q_n / 4)          # seems categorical
+dq$gq  <- rep(c("a", "b", "c"), each = .q_n / 3)        # a only where id <= 16
+dq$gn  <- rep(c("u", "v"), length.out = .q_n)
+dq$s12 <- rep(1:2, length.out = .q_n)                  # a 1/2 dichotomy
+dq$t37 <- rep(c(3, 7), length.out = .q_n)              # a 3/7 dichotomy
+dq$bl  <- rep(c("Y", ""), length.out = .q_n)            # a word or blank
+dq$gh  <- haven::labelled(rep(1:3, length.out = .q_n),
+                          labels = c(Low = 1, Mid = 2, High = 3))
+# .q_pre(): what a call prints before it stops, ANSI codes removed.
+.q_pre <- function(expr) {
+  out <- utils::capture.output(suppressMessages(suppressWarnings(
+    tryCatch(expr, error = function(e) invisible(NULL)))))
+  out <- gsub("\033\\[[0-9;]*[A-Za-z]", "", out)
+  out[nzchar(out)]
+}
+# .q_both(): the printed lines with messages and warnings written where they
+# happen, as options(warn = 1) prints them (format_check.R's both_out()).
+# The conditions are taken, never the message stream.
+.q_both <- function(expr) {
+  op  <- options(warn = 1L)
+  tf  <- tempfile(); con <- file(tf, open = "wt"); sink(con)
+  grDevices::pdf(NULL)
+  ok <- tryCatch({
+    withCallingHandlers(force(expr),
+      message = function(m) {
+        cat(conditionMessage(m), file = con, sep = ""); invokeRestart("muffleMessage")
+      },
+      warning = function(w) {
+        cat("Warning: ", conditionMessage(w), "\n", file = con, sep = "")
+        invokeRestart("muffleWarning")
+      })
+    TRUE
+  }, error = function(e) FALSE,
+  finally = { grDevices::dev.off(); sink(); close(con); options(op) })
+  res <- readLines(tf, warn = FALSE); unlink(tf)
+  if (!ok) return("[error]")
+  gsub("\033\\[[0-9;]*[A-Za-z]", "", res)
+}
+# .q_warns(): the warnings a call raises, its printing swallowed.
+.q_warns <- function(expr) {
+  w <- character(0)
+  zz <- textConnection(".junk", "w", local = TRUE); sink(zz, type = "output")
+  grDevices::pdf(NULL)
+  on.exit({ grDevices::dev.off(); sink(type = "output"); close(zz) }, add = TRUE)
+  withCallingHandlers(
+    tryCatch(suppressMessages(expr), error = function(e) NULL),
+    warning = function(x) { w <<- c(w, conditionMessage(x)); invokeRestart("muffleWarning") })
+  w
+}
+# .q_code(): a message's indented lines, as lines of R.
+.q_code <- function(msg) {
+  ln <- strsplit(msg, "\n", fixed = TRUE)[[1]]
+  trimws(ln[startsWith(ln, "  ")])
+}
+
+# ---- Q01-Q07: no more cases than coefficients -------------------------------
+.q01 <- grab(jlm(y ~ x1 + x2, data = dq, subset = id > 45))
+check("Q01 jlm() with as many cases as coefficients: one stop naming both counts and how the others went, a sentence a line (it printed NaN standard errors and a blank p)",
+      identical(flat(.q01), paste0(
+        "jlm(): Only 3 cases are left to analyze, and the model has 3 coefficients. ",
+        "A regression needs more cases than coefficients. ",
+        "The other 45 cases were excluded by a filter.")) &&
+        grepl("\nA regression needs more cases than coefficients.\nThe other 45 cases were excluded by a filter.$",
+              .q01))
+check("Q02 jlogistic(): the same stop in its own words, and no warning of glm()'s ahead of it (it raised 'fitted probabilities numerically 0 or 1' dozens of times)",
+      identical(flat(grab(jlogistic(b ~ x1 + x2, data = dq, subset = id > 45))), paste0(
+        "jlogistic(): Only 3 cases are left to analyze, and the model has 3 coefficients. ",
+        "A logistic regression needs more cases than coefficients. ",
+        "The other 45 cases were excluded by a filter.")) &&
+        length(.q_warns(jlogistic(b ~ x1 + x2, data = dq, subset = id > 45))) == 0L)
+check("Q03 fewer cases than coefficients, the others gone to missing data, and to both",
+      local({ z <- dq; z$x2[3:.q_n] <- NA
+        # Two cases leave x2 two values, so its dichotomy note prints first:
+        # the stop is read from its prefix on.
+        a <- sub("^.*(jlm\\(\\): Only)", "\\1", grab(jlm(y ~ x1 + x2, data = z)))
+        b <- sub("^.*(jlm\\(\\): Only)", "\\1",
+                 grab(jlm(y ~ x1 + x2, data = z, subset = id != 3)))
+        identical(flat(a), paste0(
+          "jlm(): Only 2 cases are left to analyze, and the model has 3 coefficients. ",
+          "A regression needs more cases than coefficients. ",
+          "The other 46 cases were excluded because of missing data.")) &&
+          identical(flat(b), paste0(
+            "jlm(): Only 2 cases are left to analyze, and the model has 3 coefficients. ",
+            "A regression needs more cases than coefficients. ",
+            "The other 46 cases were excluded by a filter or because of missing data.")) }))
+check("Q04 a frame of exactly as many rows: 'There are only', and no line about the others; one other case in the singular",
+      identical(flat(grab(jlm(y ~ x1 + x2, data = dq[1:3, ]))), paste0(
+        "jlm(): There are only 3 cases to analyze, and the model has 3 coefficients. ",
+        "A regression needs more cases than coefficients.")) &&
+        grepl("The other case was excluded by a filter.$",
+              grab(jlm(y ~ x1 + x2, data = dq[1:4, ], subset = id > 1))))
+check("Q05 the stop comes under the Case Processing block, and no table follows it",
+      local({ p <- .q_pre(jlm(y ~ x1 + x2, data = dq, subset = id > 45))
+        any(grepl("Analysis N", p, fixed = TRUE)) &&
+          !any(grepl("Coefficients", p, fixed = TRUE)) }))
+check("Q06 a dummy-coded predictor's columns are counted: four cases, an intercept, a slope and two dummies, four coefficients (three terms would not have stopped)",
+      grepl("^jlm\\(\\): Only 4 cases are left to analyze, and the model has\\s+4 coefficients\\.",
+            grab(jlm(y ~ x1 + gq, data = dq, subset = id %in% c(1, 2, 17, 33)))))
+check("Q07 control: one case more than the coefficients fits, as lm() fits it",
+      local({ m <- quiet(jlm(y ~ x1 + x2, data = dq, subset = id > 44))
+        is.list(m) && near(m$coefficients_raw$b,
+                           unname(stats::coef(stats::lm(y ~ x1 + x2, data = dq[dq$id > 44, ])))) &&
+          is.null(jstats:::.jst_stop_too_few_cases(list(n_analysis = 4L, n_original = 4L,
+                                                        n_after_pipeline = 4L), 3L, "A regression")) }))
+
+# ---- Q08-Q11: one "seems categorical" warning --------------------------------
+.q08 <- grab(jlm(y ~ k4 + m4 + x1, data = dq))
+check("Q08 two predictors that seem categorical: ONE warning, pinned whole -- both named, one jdummy() call, one refit line, both in categorical = (each had a warning of its own)",
+      identical(.q08, paste0(
+        "k4 and m4 seem categorical.\n",
+        "To treat them that way, register them with jdummy() and rerun:\n\n",
+        "  jdummy(dq, k4, m4)\n",
+        "  jlm(y ~ k4 + m4 + x1, dq)\n\n",
+        "Or, for this call only:\n",
+        "  jlm(y ~ k4 + m4 + x1, dq, categorical = c(\"k4\", \"m4\"))")))
+check("Q09 ... each printed line runs: the first route registers both and refits, the second fits the same model in one call",
+      local({ cd <- .q_code(.q08)
+        e  <- new.env(parent = globalenv())
+        a  <- with_state(NULL, { for (ln in cd[1:2]) r <- quiet(eval(parse(text = ln), envir = e)); r },
+                         quiet(jdummy(dq, k4, m4, remove = TRUE)))
+        b  <- quiet(eval(parse(text = cd[3L]), envir = e))
+        length(cd) == 3L && is.list(a) && is.list(b) &&
+          nrow(a$coefficients_raw) == 8L && near(a$coefficients_raw$b, b$coefficients_raw$b) }))
+check("Q10 jlogistic() the same, under its own name",
+      identical(grab(jlogistic(b ~ k4 + m4 + x1, data = dq)), paste0(
+        "k4 and m4 seem categorical.\n",
+        "To treat them that way, register them with jdummy() and rerun:\n\n",
+        "  jdummy(dq, k4, m4)\n",
+        "  jlogistic(b ~ k4 + m4 + x1, dq)\n\n",
+        "Or, for this call only:\n",
+        "  jlogistic(b ~ k4 + m4 + x1, dq, categorical = c(\"k4\", \"m4\"))")))
+check("Q11 three of them: named 'a, b, and c', and one warning raised in all",
+      local({ z <- dq; z$k5 <- rep(1:3, length.out = .q_n)
+        w <- .q_warns(jlm(y ~ k4 + m4 + k5, data = z))
+        length(w) == 1L && startsWith(w, "k4, m4, and k5 seem categorical.\n") &&
+          grepl("  jdummy(z, k4, m4, k5)\n", w, fixed = TRUE) }))
+
+# ---- Q12-Q15: a predictor dummy-coded in the call with one category ----------
+.q_cat1 <- paste0("gq has only one category in the analysis sample (a); a dummy-coded ",
+                  "predictor requires at least two.")
+check("Q12 text dummy-coded in the call, one category left by a filter on another variable: the registered predictor's sentence and the filters' line (it said \"'gq' has fewer than 2 categories. Cannot create dummy variables.\")",
+      identical(flat(grab(jlm(y ~ x1 + gq, data = dq, subset = id <= 16))),
+                paste0("jlm(): ", .q_cat1, " Check whether subset = is excluding the ",
+                       "other categories.")) &&
+        identical(flat(grab(jlogistic(b ~ x1 + gq, data = dq, subset = id <= 16))),
+                  paste0("jlogistic(): ", .q_cat1, " Check whether subset = is excluding ",
+                         "the other categories.")))
+check("Q13 ... under the Case Processing block, where it stopped ahead of it",
+      local({ p <- .q_pre(jlm(y ~ x1 + gq, data = dq, subset = id <= 16))
+        any(grepl("Analysis N", p, fixed = TRUE)) }))
+check("Q14 a labelled variable named in categorical = shows its category with its label; a stored filter gets the stored line",
+      local({ a <- grab(jlm(y ~ x1 + gh, data = dq, subset = id %% 3 == 1, categorical = "gh"))
+        b <- with_state(quiet(jsubset(dq, id %% 3 == 1)),
+                        grab(jlm(y ~ x1 + gh, data = dq, categorical = "gh")),
+                        quiet(jsubset(dq, NULL)))
+        identical(flat(a), paste0(
+          "jlm(): gh has only one category in the analysis sample (1: Low); a ",
+          "dummy-coded predictor requires at least two. Check whether subset = is ",
+          "excluding the other categories.")) &&
+          grepl("Check whether your jsubset or jcomplete settings are excluding the other categories.",
+                flat(b), fixed = TRUE) }))
+check("Q15 no filter: the sentence alone, a missing value not counted as a category; a filter that names the variable keeps its own form (P11, P13b)",
+      identical(flat(grab(jlm(y ~ x1 + gq, data = dq[dq$gq == "a", ]))),
+                paste0("jlm(): ", .q_cat1)) &&
+        { z <- dq[dq$gq == "a", ]; z$gq[1:2] <- NA
+          identical(flat(grab(jlm(y ~ x1 + gq, data = z))), paste0("jlm(): ", .q_cat1)) } &&
+        grepl("keeps only one category of gq",
+              grab(jlm(y ~ x1 + gq, data = dq, subset = gq == "a")), fixed = TRUE))
+
+# ---- Q16-Q20: the group-count stops and subset = -----------------------------
+check("Q16 jt(), a subset = on another variable that left one group: the line pointing at it (it said nothing of subset =)",
+      identical(grab(jt(y ~ gq, data = dq, subset = id <= 16)),
+                paste0("jt(): 'gq' has 1 category.\nA t-test requires exactly 2.\n",
+                       "Check whether subset = is excluding one of the groups.")))
+check("Q17 jaov() and jcrosstab() the same, each in its own words",
+      identical(grab(jaov(y ~ gq, data = dq, subset = id <= 16)),
+                paste0("jaov(): 'gq' has 1 category.\nAn ANOVA requires at least 2 groups.\n",
+                       "Check whether subset = is excluding one or more groups.")) &&
+        identical(grab(jcrosstab(gq ~ gn, data = dq, subset = id <= 16)),
+                  paste0("jcrosstab(): 'gq' has 1 category.\n",
+                         "A cross-tabulation requires at least 2 categories for each variable.\n",
+                         "Check whether subset = is excluding the other categories.")))
+check("Q18 a stored filter and a subset =: both named in the one line",
+      local({ a <- with_state(quiet(jsubset(dq, id <= 16)),
+                        grab(jt(y ~ gq, data = dq, subset = x1 > -99)),
+                        quiet(jsubset(dq, NULL)))
+        identical(flat(a), paste0(
+          "jt(): 'gq' has 1 category after applying the jsubset filter (id <= 16). ",
+          "A t-test requires exactly 2. Check whether your jsubset or jcomplete settings, ",
+          "or subset =, are excluding one of the groups.")) }))
+check("Q19 control: a missing outcome took the group the filters left -- the missing-data line and no filter line, with subset = or a stored filter",
+      local({ z <- dq; z$y[z$gq == "b"] <- NA
+        want <- paste0("jt(): 'gq' has 1 category.\nA t-test requires exactly 2.\n",
+                       "Cases with a missing 'y' are not counted.")
+        a <- grab(jt(y ~ gq, data = z, subset = id <= 32))
+        b <- with_state(quiet(jsubset(z, id <= 32)), grab(jaov(y ~ gq, data = z)),
+                        quiet(jsubset(z, NULL)))
+        identical(a, want) && !grepl("Check whether", b, fixed = TRUE) &&
+          grepl("Cases with a missing 'y' are not counted.$", b) }))
+check("Q20 control: a stored setting that excludes no case adds no line (it was printed whenever a setting was active)",
+      local({ z <- dq[dq$gq == "a", ]
+        a <- with_state(quiet(jsubset(z, x1 > -99)), grab(jt(y ~ gq, data = z)),
+                        quiet(jsubset(z, NULL)))
+        identical(flat(a), paste0("jt(): 'gq' has 1 category after applying the jsubset ",
+                                  "filter (x1 > -99). A t-test requires exactly 2.")) }))
+
+# ---- Q21-Q27: the printed lines ---------------------------------------------
+check("Q21 the dummy-names note prints wrapped at the message width, a sentence a line (it was one line of some 300 characters)",
+      local({ o <- .q_both(jlm(y ~ x1 + k4, data = dq, categorical = "k4"))
+        i <- which(startsWith(o, "(Note: One or more dummy names for 'k4' were built"))
+        length(i) == 1L && all(nchar(o[i:(i + 3L)]) <= .pin_width) &&
+          endsWith(o[i + 1L], "descriptive value labels were not available.") &&
+          startsWith(o[i + 2L], "If these names aren't ideal, use jrelabel()") &&
+          endsWith(o[i + 3L], "then re-register with jdummy().)") &&
+          identical(flat(paste(o[i:(i + 3L)], collapse = " ")), paste0(
+            "(Note: One or more dummy names for 'k4' were built from numeric codes ",
+            "because descriptive value labels were not available. If these names ",
+            "aren't ideal, use jrelabel() to set value labels, or jrecode() to change ",
+            "the underlying values, then re-register with jdummy().)")) }))
+check("Q22 ... and in jdummy()'s registration, the same way",
+      local({ o <- .q_both(with_state(NULL, jdummy(dq, k4), quiet(jdummy(dq, k4, remove = TRUE))))
+        any(endsWith(o, "descriptive value labels were not available.")) &&
+          any(startsWith(o, "If these names aren't ideal")) &&
+          all(nchar(o) <= .pin_width) }))
+check("Q23 the 30-character warning is retired: a long variable name and a long label register and fit with no warning (it said 'coefficient tables may look awkward')",
+      local({ z <- data.frame(y = dq$y, DetailedRelationshipTrajectoryVariable =
+                          haven::labelled(rep(1:3, length.out = .q_n),
+                                          labels = c("Stable never partnered" = 1,
+                                                     "A rather long trajectory label here" = 2,
+                                                     Other = 3)))
+        w1 <- .q_warns(jdummy(z, DetailedRelationshipTrajectoryVariable))
+        w2 <- .q_warns(jlm(y ~ DetailedRelationshipTrajectoryVariable, data = z))
+        quiet(jdummy(z, DetailedRelationshipTrajectoryVariable, remove = TRUE))
+        length(w1) == 0L && length(w2) == 0L &&
+          !("name.length.warn" %in% names(formals(jstats:::.jst_make_dummy_names))) }))
+check("Q24 the dichotomy notes end on the state to reach, not a method (voice Rule X): in jlm() and jlogistic(), 1/2 and other codes",
+      local({ a <- grab(jlm(y ~ s12 + x1, data = dq))
+        b <- grab(jlogistic(b ~ t37 + x1, data = dq))
+        grepl("  jdummy(dq, s12)\nOr make it a 0/1 variable in the data frame.\n", a, fixed = TRUE) &&
+          grepl("  jdummy(dq, t37)\nOr make it a 0/1 variable in the data frame.\n", b, fixed = TRUE) &&
+          !grepl("jrecode", paste(a, b), fixed = TRUE) }))
+.q25 <- grab(jlogistic(bl ~ x1, data = dq))
+check("Q25 jlogistic()'s text-outcome refusal: a sentence a line, 'Encode' over the jencode() call, the blank coded 0 so the word is modeled (it said 'Recode' and offered \"Y=0; blank=1\")",
+      identical(flat(.q25), paste0(
+        "jlogistic(): 'bl' has text categories Y/<blank>. ",
+        "Encode it as a 0/1 variable, so that the modeled category is explicit: ",
+        "dq$blR <- jencode(dq, bl, map = \"blank=0; Y=1\") ",
+        "Then use blR as your dependent variable (the category mapped to 1 is the one ",
+        "jlogistic models).")) &&
+        grepl("^jlogistic\\(\\): 'bl' has text categories Y/<blank>\\.\nEncode it", .q25) &&
+        identical(flat(grab(jlogistic(gn ~ x1, data = dq))), paste0(
+          "jlogistic(): 'gn' has text categories u/v. ",
+          "Encode it as a 0/1 variable, so that the modeled category is explicit: ",
+          "dq$gnR <- jencode(dq, gn, map = \"u=0; v=1\") ",
+          "Then use gnR as your dependent variable (the category mapped to 1 is the one ",
+          "jlogistic models).")))
+check("Q26 an expression given as the data: named first, and the lines run to an outcome jlogistic() fits (the line was \"mk()$blR <- jencode(mk(), ...)\")",
+      local({ mk_q <- function() dq
+        e  <- new.env(parent = globalenv()); assign("mk_q", mk_q, envir = e)
+        cd <- .q_code(grab(jlogistic(bl ~ x1, data = mk_q())))
+        for (ln in cd) suppressMessages(eval(parse(text = ln), envir = e))
+        m  <- quiet(jlogistic(blR ~ x1, data = get("mydata", envir = e)))
+        identical(cd, c("mydata <- mk_q()",
+                        "mydata$blR <- jencode(mydata, bl, map = \"blank=0; Y=1\")")) &&
+          is.list(m) && identical(m$predicts, "Y") }))
+check("Q27 the formula guard and jsave(): an expression is named first in the line to run, and jsave() says 'the data' of a call, keeping a name and an index into a frame as typed (they printed \"jnumeric(mk(), gh)\" and \"Saved mk() to\")",
+      local({ mk_q <- function() dq
+        e  <- new.env(parent = globalenv()); assign("mk_q", mk_q, envir = e)
+        g  <- grab(jlm(x1 ~ log(gh), data = mk_q()))
+        cd <- .q_code(g)
+        for (ln in cd) quiet(eval(parse(text = ln), envir = e))
+        m  <- with_state(NULL, quiet(eval(quote(jlm(x1 ~ log(gh), data = mydata)), envir = e)),
+                         quiet(jnumeric(clear.all = TRUE)))
+        f  <- file.path(tempdir(), "q27_models.rds")
+        s1 <- grab(jsave(mk_q(), f, overwrite = TRUE))
+        s2 <- grab(jsave(dq, f, overwrite = TRUE))
+        s3 <- grab(jsave(dq[, c("y", "x1")], f, overwrite = TRUE))
+        unlink(f)
+        identical(cd, c("mydata <- mk_q()", "jnumeric(mydata, gh)")) && is.list(m) &&
+          startsWith(flat(s1), "Saved the data to ") && startsWith(flat(s2), "Saved dq to ") &&
+          startsWith(flat(s3), "Saved dq[, c(\"y\", \"x1\")] to ") &&
+          identical(.q_code(grab(jlm(x1 ~ log(gh), data = dq))), "jnumeric(dq, gh)") }))
+check("Q28 a two-valued outcome coded neither 0/1 nor 1/2: '(a dichotomy)' (it read '(a other dichotomy)')",
+      local({ w <- .q_warns(jlm(t37 ~ x1, data = dq))
+        any(flat(w) == paste0("'t37' is the outcome variable but looks categorical (a dichotomy). ",
+                              "Linear regression expects an interval outcome.")) &&
+          any(grepl("(a 1/2 dichotomy)", flat(.q_warns(jlm(s12 ~ x1, data = dq))), fixed = TRUE)) }))
+
+# ---- Q29-Q33: the plot lines and the smoother's note -------------------------
+check("Q29 jlm()'s plot list takes jlogistic()'s form, word for word: the count, the arrow buttons, the list numbered '1.' (it read '(5 diagnostic plots produced -- use the back arrow ...)')",
+      local({ o <- .q_both(jlm(y ~ x1 + x2, data = dq, diagnostics = TRUE))
+        i <- which(o == "5 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane")
+        length(i) == 1L &&
+          identical(o[i + 0:6], c(
+            "5 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane",
+            "to navigate):", "  1. Residuals vs Fitted", "  2. Normal Q-Q",
+            "  3. Scale-Location", "  4. Cook's Distance", "  5. Residuals vs Leverage")) &&
+          identical(o[i - 1L], "") }))
+check("Q30 jplot()'s effect plots counted in number: '(1 effect plot produced)' (it read '1 effect plots')",
+      local({ m1 <- quiet(jlm(y ~ x1, data = dq)); m2 <- quiet(jlm(y ~ x1 + x2, data = dq))
+        any(.q_both(jplot(m1, which = "effects")) == "(1 effect plot produced)") &&
+          any(.q_both(jplot(m2, which = "effects")) ==
+                "(2 effect plots produced, one per predictor)") }))
+d9 <- data.frame(y = c(0.1, -0.4, 0.3, 0.9, 0.2, -0.1, 1.3, 0.8, NA),
+                 x = c(1, 1, 1, 2, 2, 2, 3, 3, 3))
+check("Q31 the smoother's warnings are caught where the plots are drawn: no warning of R's own, one note under the plot list, pinned whole (twelve raw loess warnings printed)",
+      local({ o <- .q_both(jlm(y ~ x, data = d9, diagnostics = TRUE, numeric = "x"))
+        i <- which(o == "  5. Residuals vs Leverage")
+        length(.q_warns(jlm(y ~ x, data = d9, diagnostics = TRUE, numeric = "x"))) == 0L &&
+          length(i) == 1L &&
+          identical(o[i + 1:4], c(
+            "",
+            "Note: The trend lines in Residuals vs Fitted, Scale-Location, and Residuals",
+            "vs Leverage may not be reliable.",
+            "R's smoother reported 12 numerical problems while drawing them.")) &&
+          identical(o[i + 5L], "") && length(o) == i + 5L }))
+check("Q32 ... at R's default warn = 0 the package's own warning is the one left (it was the thirteenth of 13, out of sight); one plot by name gets the note in the singular",
+      local({ w <- .q_warns(jlm(y ~ x, data = d9, diagnostics = TRUE))
+        o <- .q_both(jlm(y ~ x, data = d9, diagnostics = "residuals", numeric = "x"))
+        length(w) == 1L && startsWith(w, "x seems categorical.") &&
+          any(o == "Note: The trend line in Residuals vs Fitted may not be reliable.") &&
+          any(o == "R's smoother reported 4 numerical problems while drawing it.") }))
+check("Q33 control: a model whose smoother raises nothing gets no note, by jlm() and by jplot()",
+      local({ o <- .q_both(jlm(y ~ x1 + x2, data = dq, diagnostics = TRUE))
+        m <- quiet(jlm(y ~ x1 + x2, data = dq))
+        p <- .q_both(jplot(m, which = c("residuals", "scale", "leverage")))
+        !any(grepl("trend line", c(o, p), fixed = TRUE)) &&
+          length(.q_warns(jplot(m, which = c("residuals", "scale", "leverage")))) == 0L }))
+
+check("Q33b control: a warning that is not the smoother's still passes -- a one-case category's leverage of 1 leaves a standardized residual missing, and ggplot2's own warnings about the removed row reach the user",
+      local({ set.seed(3472)
+        z <- data.frame(y = stats::rnorm(30), x = stats::rnorm(30),
+                        g = c(rep("a", 15), rep("b", 14), "c"), stringsAsFactors = FALSE)
+        w <- .q_warns(jlm(y ~ x + g, data = z,
+                          diagnostics = c("residuals", "scale", "leverage")))
+        length(w) > 0L && !any(grepl("pseudoinverse|neighborhood|singularit", w)) }))
+
+# ---- Q34-Q38: the fit plot, the equation, the box plots ----------------------
+dq$xc <- round(seq(-2, 2, length.out = .q_n), 3)
+dq$yc <- round(1 + dq$xc + 2 * dq$xc^2 + rnorm(.q_n, sd = 0.3), 3)
+dq$`my var` <- dq$x2
+.q_fit <- function(m, ...) {
+  grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+  p <- suppressMessages(suppressWarnings(jplot(m, which = "fit", ...)))
+  b <- ggplot2::ggplot_build(p)
+  list(sub = p$labels$subtitle, line = b$data[[3L]][, c("x", "y")])
+}
+check("Q34 a squared term follows its variable along the axis: the line is the curve b0 + b1 x + b2 x^2, and no longer 'shown at I(x^2) = 0' (it was the straight line b0 + b1 x)",
+      local({ m  <- quiet(jlm(yc ~ xc + I(xc^2), data = dq))
+        f  <- .q_fit(m)
+        cf <- unname(stats::coef(stats::lm(yc ~ xc + I(xc^2), data = dq)))
+        near(f$line$y, cf[1] + cf[2] * f$line$x + cf[3] * f$line$x^2, 1e-6) &&
+          !grepl("line shown at", f$sub, fixed = TRUE) }))
+check("Q35 the equation names the terms as the table does: no backticks, ' * ' for an interaction (it printed `I(xc^2)` and x1:x2)",
+      local({ a <- .q_fit(quiet(jlm(yc ~ xc + I(xc^2), data = dq)))$sub
+        b <- .q_fit(quiet(jlm(y ~ `my var` + x1, data = dq)))$sub
+        c <- .q_fit(quiet(jlm(y ~ x1 * x2, data = dq)))$sub
+        grepl("·I(xc^2)", a, fixed = TRUE) && !grepl("`", paste(a, b, c), fixed = TRUE) &&
+          grepl("·my var", b, fixed = TRUE) && grepl("·x1 * x2", c, fixed = TRUE) }))
+check("Q36 a term built from the focal variable and a held one is computed at the held value, and the held one stays in the note; a term built on the whole sample (scale()) is held as before",
+      local({ m  <- quiet(jlm(y ~ x1 + x2 + I(x1 * x2), data = dq))
+        f  <- .q_fit(m, at = list(x2 = 1))
+        cf <- unname(stats::coef(stats::lm(y ~ x1 + x2 + I(x1 * x2), data = dq)))
+        s  <- .q_fit(quiet(jlm(y ~ x1 + I(scale(x1)^2), data = dq)))$sub
+        near(f$line$y, cf[1] + cf[2] * f$line$x + cf[3] * 1 + cf[4] * f$line$x * 1, 1e-6) &&
+          grepl("(line shown at x2 = 1)", f$sub, fixed = TRUE) &&
+          grepl("line shown at I(scale(x1)^2) = 0", s, fixed = TRUE) }))
+check("Q37 the effect plots and jlogistic()'s probability plot follow a squared term the same way",
+      local({ m  <- quiet(jlm(yc ~ xc + I(xc^2), data = dq))
+        grDevices::pdf(NULL)
+        pl <- suppressMessages(suppressWarnings(jplot(m, which = "effects")))
+        grDevices::dev.off()
+        ln <- ggplot2::ggplot_build(pl$effect_xc)$data[[2L]]
+        set.seed(3471)
+        dq$bc <- stats::rbinom(.q_n, 1, stats::plogis(-1 + 1.5 * dq$xc^2))
+        g  <- quiet(jlogistic(bc ~ xc + I(xc^2), data = dq))
+        grDevices::pdf(NULL)
+        pg <- suppressMessages(suppressWarnings(jplot(g, which = "probability")))
+        grDevices::dev.off()
+        pp <- if (inherits(pg, "ggplot")) pg else pg[[1L]]
+        lg <- ggplot2::ggplot_build(pp)$data
+        lg <- lg[[which(vapply(lg, nrow, integer(1)) == 120L)[1L]]]
+        dq$bc <- NULL
+        ok_e <- abs(stats::sd(diff(diff(ln$y)))) < 1e-8 && abs(mean(diff(diff(ln$y)))) > 1e-6
+        ok_g <- any(diff(lg$y) < -1e-8) && any(diff(lg$y) > 1e-8)
+        ok_e && ok_g }))
+check("Q38 a box plot's groups are labeled as the Group Descriptives label them, following value.id: jaov() and jt() (the axis read 1, 2, 3, 4)",
+      local({ lab <- function(r) {
+          grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+          p <- suppressMessages(jplot(r))
+          ggplot2::ggplot_build(p)$layout$panel_params[[1L]]$x$get_labels()
+        }
+        a  <- quiet(jaov(Flourishing ~ Condition, data = clinic))
+        a2 <- quiet(jaov(Flourishing ~ Condition, data = clinic, value.id = "labels"))
+        t1 <- quiet(jt(Flourishing ~ PriorTherapy, data = clinic))
+        tb <- quiet(jt(y ~ bl, data = dq))
+        identical(lab(a), c("1: Control", "2: CBT", "3: Mindfulness", "4: Support group")) &&
+          identical(lab(a2), c("Control", "CBT", "Mindfulness", "Support group")) &&
+          identical(lab(t1), c("1: Yes", "2: No")) &&
+          identical(lab(tb), c("<blank>", "Y")) && identical(lab(tb), tb$descriptives$Group) &&
+          identical(lab(quiet(jaov(y ~ k4, data = dq))), c("1", "2", "3", "4")) }))
+check("Q39 a term the fit drops as aliased is left out of the equation, and the fit plot draws (it stopped on \"missing value where TRUE/FALSE needed\")",
+      local({ m <- quiet(jlm(y ~ x1 + scale(x1), data = dq))
+        f <- tryCatch(.q_fit(m)$sub, error = function(e) "[error]")
+        startsWith(f, "y = ") && !grepl("scale", sub("\n.*$", "", f), fixed = TRUE) }))
+rm(dq, d9)
+rm(list = intersect(c(".q_n", ".q_pre", ".q_both", ".q_warns", ".q_code", ".q01",
+                      ".q08", ".q_cat1", ".q25", ".q_fit"),
                     ls(all.names = TRUE)))
 
 # --- Verdict -----------------------------------------------------------------
