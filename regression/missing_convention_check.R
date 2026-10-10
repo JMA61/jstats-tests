@@ -10,6 +10,15 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S348 EDIT (v0.9.221, 2026-10-10): N65b RE-PINNED under ruling R4: the
+#           labelled -70 inside the declared range, which no case holds, is
+#           a zero row between the two in-band cells (Freq 1, 0, 1). No
+#           check added (555). MUTATION MAP (S348): no zero row for a
+#           labelled code inside a range N65b.
+#           LAST VERIFIED: v0.9.221, 2026-10-10 (S348) -- 555/555 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2177 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 2a49208.
 # S346 EDIT (v0.9.219, 2026-10-08): the session guard hands back the stored
 #           display settings (.jst_output_toggles) with the output level.
 #           The diagnostics setting outlives a level call since v0.9.219,
@@ -3444,9 +3453,9 @@ check("N65a else=copy: the band rides as na_range; in-band cells kept; no na_val
         identical(vals65(r65a)[4:5], c(-99, -60)))
 f65b <- f65; f65b$BR <- r65a
 fr65 <- run64(jfreq(f65b, BR))$val$frequencies$BR
-check("N65b jfreq on the result counts the two in-band cells as Missing (reconciles at 8)",
+check("N65b jfreq on the result counts the two in-band cells as Missing (reconciles at 8); the labelled -70 no case holds is a zero row between them (S348, ruling R4)",
       reconciles(fr65) && fr65$total == 8L && fr65$missing == 2L &&
-        identical(fr65$udm$Freq, c(1L, 1L)))
+        identical(fr65$udm$Freq, c(1L, 0L, 1L)))
 r65c <- tryCatch(suppressMessages(jrecode(f65, B, map = "1=3; 3=1; 2=2; 8=8")),
                  error = function(e) NULL)
 check("N65c no else: in-band cells are not unmapped values (no error; kept)",

@@ -10,6 +10,30 @@
 #           variable's declared missing strings and its blank cells, in
 #           jfreq(), jscreen() and a group function (Part K).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S348 EDIT (v0.9.221): FIX SLATE 7, FIRST HALF. PART L ADDED, three
+#           sections, each Expected FILLED BY RUNNING the file (fill.R): L1
+#           a grouped jdesc's listwise note and "Complete on All" (the
+#           grouped call passed the printer no data); L2 the note under a
+#           jcomplete() that covers some of the analysis variables (it was
+#           silent), naming those it does not cover; L3 "--" for a percent
+#           of no cases (it printed "NaN"). G5 RE-PINNED, the minimal line
+#           now "65 Grouped Cases in the 2 Variable Pool; 61 Complete on
+#           All (5 Excluded)" -- Claude's wording for the S316 mv item, so
+#           G5 is walked -- and its notes rewritten. K1 and K3 RE-PINNED
+#           MECHANICALLY under rulings R4 and R7 (Jeff, S345: "This is
+#           mechanical"): jfreq()'s "Total valid" and "Total missing" rows,
+#           and the columns they widened; walked once, in format_walk.R
+#           Section 33, so they stay off the PENDING line. The other
+#           sections whose output moved (A1, A6, B2, B5, C3, D3, F1: the
+#           jfreq() tables under a "[... results not pinned here ...]") pin
+#           nothing that changed. Section count 64 -> 67. No section needs
+#           another (harness.R survey: 67 of 67 isolated runs equal the
+#           straight run).
+# LAST VERIFIED: v0.9.221, 2026-10-10 (S348) -- G5 and L1-L3 WALKED on the
+#           WORKSTATION by Jeff through receive_all(), its closing block's
+#           walk line as the tool's default leaves it; PENDING back to none;
+#           GitHub 2a49208. Sandbox: every Expected block under rewalk() as
+#           in a straight run (harness.R verify).
 # S346 EDIT (v0.9.219): D4 RE-PINNED MECHANICALLY under Jeff's ruling of
 #           8 October 2026 (the full level does not bring diagnostics): the
 #           line its Expected names after the block is the Group
@@ -1432,7 +1456,7 @@ joutput(NULL, quiet = TRUE)
 # Expected:
 #   Descriptive Statistics by Medication (2 levels)
 #
-#   65 Cases in the 2 Variable Pool (5 Excluded)
+#   65 Grouped Cases in the 2 Variable Pool; 61 Complete on All (5 Excluded)
 #
 #   Flourishing
 #
@@ -1450,14 +1474,18 @@ joutput(NULL, quiet = TRUE)
 #
 # Things to look at:
 #   - Never-mode: no table, so the N line carries the by = row's fact in
-#     its rider -- "65 Cases ... (5 Excluded)", the same way jlm at minimal
-#     reads "Analysis N: 63 (7 Excluded)" (Part D). Until v0.9.191 this line
-#     read "70 Cases in the 3 Variable Pool" here.
+#     its rider -- "65 Grouped Cases ... (5 Excluded)", the same way jlm at
+#     minimal reads "Analysis N: 63 (7 Excluded)" (Part D). Until v0.9.191
+#     this line read "70 Cases in the 3 Variable Pool" here.
+#   - "Grouped Cases" (S348, the S316 mv item): the 65 are the cases that
+#     HAVE a Medication group, which "Cases in the Variable Pool" did not
+#     quite name. Only once the by = row has excluded cases: a grouping
+#     variable with no missing case keeps the plain "Cases" (Part L, L1).
+#   - "61 Complete on All" (S348): of the 65, those with a value on both
+#     Flourishing and Stress -- 39 + 26 on Flourishing, 35 + 26 on Stress.
+#     Until v0.9.221 a grouped call never stated it.
 #   - "2 Variable Pool": Flourishing and Stress, the described variables.
 #     The grouping variable no longer counts itself in.
-#   - Whether "Cases in the Variable Pool" still reads right once the by =
-#     exclusion has been applied is an mv question, logged S316; the
-#     numbers are the design.
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # G6 -- under a jsubset(): the by = row follows the pipeline row ----
@@ -2280,13 +2308,15 @@ jfreq(tx, Marital)
 #                       Freq  Total %  Valid %  Cum. %
 #   ------------------  ----  -------  -------  ------
 #   Valid
-#   Married               4     33.33   50.00    50.00
-#   Single                4     33.33   50.00   100.00
+#   Married               4     33.33    50.00   50.00
+#   Single                4     33.33    50.00  100.00
+#   Total valid           8     66.67   100.00
 #
 #   Missing
-#   REF ["Refused"]       1      8.33      --       --
-#   UNKNOWN (no label)    2     16.67      --       --
-#   System/NA             1      8.33      --       --
+#   REF ["Refused"]       1      8.33       --      --
+#   UNKNOWN (no label)    2     16.67       --      --
+#   System/NA             1      8.33       --      --
+#   Total missing         4     33.33
 #
 #   Total                12    100.00
 #
@@ -2356,17 +2386,18 @@ jfreq(tx, Source)
 #
 #   Source
 #
-#              Freq  Total %  Valid %  Cum. %
-#   ---------  ----  -------  -------  ------
+#                Freq  Total %  Valid %  Cum. %
+#   -----------  ----  -------  -------  ------
 #   Valid
-#   <blank>      4     33.33   36.36    36.36
-#   Adult        5     41.67   45.45    81.82
-#   Juvenile     2     16.67   18.18   100.00
+#   <blank>        4     33.33    36.36   36.36
+#   Adult          5     41.67    45.45   81.82
+#   Juvenile       2     16.67    18.18  100.00
+#   Total valid   11     91.67   100.00
 #
 #   Missing
-#   System/NA    1      8.33      --       --
+#   System/NA      1      8.33       --      --
 #
-#   Total       12    100.00
+#   Total         12    100.00
 #   <blank>: 4 cells with no text (2 empty, 2 holding only spaces or tabs).
 #   They are counted as valid values, not as missing.
 #   To give them a code or make them missing, use jencode().
@@ -2464,6 +2495,175 @@ jt(Score ~ Flag, tx)
 #     jlm() and jlogistic() the blank cells are a category of the predictor
 #     (models_walk.R Section 15).
 
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART L -- THE LISTWISE NOTE, "COMPLETE ON ALL" AND A PERCENT OF NOTHING (S348) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Fix Slate 7, first half (v0.9.221). Three things the block said badly or
+# not at all:
+#
+#   a GROUPED jdesc never stated how many cases were complete on all its
+#     variables, and the listwise-deletion note never fired there: the
+#     grouped call gave the printer no data to count. It now counts the
+#     cases that HAVE a group, so the numbers agree with the by = row (G5
+#     shows the minimal form, "Grouped Cases").
+#
+#   a jcomplete() that covers SOME of the analysis variables silenced the
+#     note, as if it covered them all -- set on a survey's completion
+#     variable, say, while jdesc() reads others whose missing cases still
+#     differ. The note now fires there and names what jcomplete() does not
+#     cover.
+#
+#   a filter that leaves NO ROW printed "NaN" in every pool percent of the
+#     breakdown; the percent of nothing is "--", as the block's other empty
+#     cells are.
+#
+# The assertion side is cps_check.R N60. L2 sets jcomplete() and clears it
+# in the same section.
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# L1 -- a grouped jdesc: the listwise note, and "Complete on All" ----
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+jdesc(d, Stress, SocialSupport, by = Medication)
+
+# Expected:
+#   Descriptive Statistics by Medication (2 levels)
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         70
+#       by =                5         65  Medication
+#       Remaining N        --         65
+#   ------------------------------------------------
+#
+#   Note: Listwise deletion using jcomplete() first would leave 58 cases.
+#
+#   Stress
+#
+#   Medication  Total  Non_missing  Min  Max   Mean     SD
+#   ----------  -----  -----------  ---  ---  ------  -----
+#   0: No         39        35       0    29  14.229  6.730
+#   1: Yes        26        26       0    40  16.385  8.462
+#
+#   SocialSupport
+#
+#   Medication  Total  Non_missing  Min  Max   Mean     SD
+#   ----------  -----  -----------  ---  ---  ------  -----
+#   0: No         39        36       5    23  14.806  4.413
+#   1: Yes        26        26       2    20  12.923  5.222
+#
+# Things to look at:
+#   - The note's 58: of the 65 cases with a Medication group, those with a
+#     value on both Stress (35 + 26 = 61) and SocialSupport (36 + 26 = 62).
+#     Fewer than either, so the note fires, as it does for the ungrouped
+#     call (where the count is 63, of all 70 cases).
+#   - The note sits where the ungrouped call puts it: under the block,
+#     above the first variable.
+
+joutput("minimal", quiet = TRUE)
+jdesc(d, Stress, Flourishing, by = Condition)
+joutput(NULL, quiet = TRUE)
+
+# Expected:
+#   Descriptive Statistics by Condition (4 levels)
+#
+#   70 Cases in the 2 Variable Pool; 66 Complete on All
+#
+#   Stress
+#
+#   Condition      Total  Non_missing  Min  Max   Mean     SD
+#   -------------  -----  -----------  ---  ---  ------  -----
+#   Control          18        18       0    40  15.667  8.931
+#   CBT              14        13       6    29  14.538  6.591
+#   Mindfulness      17        15       5    32  16.133  6.812
+#   Support group    21        20       0    23  14.450  7.258
+#
+#   Flourishing
+#
+#   Condition      Total  Non_missing  Min  Max   Mean     SD
+#   -------------  -----  -----------  ---  ---  ------  ------
+#   Control          18        18        0   59  42.111  16.193
+#   CBT              14        14       42   72  56.143  11.114
+#   Mindfulness      17        17       32   75  55.353  12.232
+#   Support group    21        21       25   69  47.000  11.167
+#
+# Things to look at:
+#   - Condition has no missing case, so no case is excluded by the
+#     grouping, and the line keeps the plain "Cases" (G5 has "Grouped
+#     Cases", where five were excluded).
+#   - "66 Complete on All": Stress is missing for 4 cases, Flourishing for
+#     none. A grouped call states it now, as an ungrouped one always did.
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# L2 -- a jcomplete() on another variable: the note names what it does not cover ----
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# jcomplete() is set on Anxiety1, which no case is missing; the two variables
+# described are not in its list and are missing for different cases.
+
+jcomplete(d, Anxiety1)
+jdesc(d, Stress, SocialSupport)
+
+# Expected:
+#   Descriptive Statistics
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         70
+#       jcomplete()         0         70  Anxiety1
+#       Remaining N        --         70
+#   ----------------------------------------------
+#
+#   Note: jcomplete() is not set on Stress and SocialSupport. Listwise deletion
+#   across all of these variables would leave 63 cases.
+#
+#   Variable       Total  Non_missing  Min  Max   Mean     SD
+#   -------------  -----  -----------  ---  ---  ------  -----
+#   Stress           70        66       0    40  15.182  7.403
+#   SocialSupport    70        67       2    24  14.224  4.905
+#
+# Things to look at:
+#   - Until v0.9.221 the note was silent whenever jcomplete() was active,
+#     whatever it covered. Here it covers neither variable.
+#   - The names are the variables jcomplete() does not cover; the count is
+#     what listwise deletion across all of them would leave (66 on Stress,
+#     67 on SocialSupport, 63 on both).
+#   - jfreq() prints the same note under the same block, before its first
+#     table (cps_check.R N60i).
+
+jcomplete(d, NULL)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# L3 -- a filter that leaves no row: the percent of nothing is "--" ----
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# No case sleeps more than 20 hours, so the condition excludes all 70. The
+# block prints before the analysis stops.
+
+tryCatch(jt(Stress ~ Medication, d, subset = SleepHours > 20),
+         error = function(e) cat("Error: ", conditionMessage(e), "\n", sep = ""))
+
+# Expected:
+#   Independent Samples T-Test
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --         70
+#       subset =           70          0  SleepHours > 20 (4 missing)
+#       Analysis N         --          0
+#
+#   Missing data   From 70   %   Filtered  From 0   %
+#       Stress
+#         Missing     4     5.7      4        0     --
+#       Medication
+#         Missing     5     7.1      5        0     --
+#   -----------------------------------------------------------------
+#
+#   Error: jt(): No cases are left to analyze.
+#   All 70 cases were excluded by a filter.
+#
+# Things to look at:
+#   - Under "From 0", each variable's count is 0 and its percent "--":
+#     until v0.9.221 it printed "NaN", a percent of no cases.
+#   - The source half of the breakdown is unchanged: those cases are
+#     missing in the frame, and the Filtered column says the filter took
+#     them. The stop under the block is the S346 empty-sample stop.
 
 # --- Restore session state ---------------------------------------------------
 

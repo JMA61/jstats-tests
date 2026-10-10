@@ -23,6 +23,13 @@
 #           beside an else sweep, "declare it" with no convention
 #           selected, and the declaration line a place is offered.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S348 EDIT (v0.9.221, 2026-10-10): Sections 9 and 14 RE-PINNED
+#           MECHANICALLY under rulings R4 and R7 (jfreq()'s "Total valid"
+#           and "Total missing" rows, and the columns they widened; walked
+#           once, in format_walk.R Section 33), so PENDING stays none.
+#           Section 8's note rewritten: the empty Medium level is now a
+#           zero row in jfreq() (ruling R4), where the note said it was not
+#           shown.
 # S345 EDIT (v0.9.218, 2026-10-06): Fix Slate 5, the second cut. SECTIONS
 #           2, 5 AND 9 RE-PINNED; SECTIONS 12, 13 AND 14 ADDED.
 #           Section 2: the map under the listing ends in "blank=NA" (the
@@ -743,9 +750,11 @@ tdat$SevR <- jencode(tdat, Sev)
 
 jfreq(tdat, SevR)
 
-# Things to look at: Low and High label 1 and 3. The empty Medium=2 is NOT
-# shown -- jfreq() lists a labelled column's observed values -- which is
-# why the listing above tagged it.
+# Things to look at: Low and High label 1 and 3, and the empty Medium=2 is
+# a zero row between them (S348, ruling R4: a labelled value no case holds
+# gets one, as the factor's empty level did). Until v0.9.221 jfreq() listed
+# a labelled column's observed values only, which is why the listing above
+# tags the level "(no cases)".
 
 tdat$SevO <- factor(rep(c("Low", "High"), length.out = nrow(tdat)),
                     levels = c("Low", "High"), ordered = TRUE)
@@ -833,16 +842,17 @@ jfreq(ms9, MaritalR)
 #
 #   MaritalR
 #
-#               Freq  Total %  Valid %  Cum. %
-#   ----------  ----  -------  -------  ------
+#                Freq  Total %  Valid %  Cum. %
+#   -----------  ----  -------  -------  ------
 #   Valid
-#   1: Married    3     30.00   42.86    42.86
-#   2: Single     4     40.00   57.14   100.00
+#   1: Married     3     30.00    42.86   42.86
+#   2: Single      4     40.00    57.14  100.00
+#   Total valid    7     70.00   100.00
 #
 #   Missing
-#   System/NA     3     30.00      --       --
+#   System/NA      3     30.00       --      --
 #
-#   Total        10    100.00
+#   Total         10    100.00
 
 # Render 2 -- the map the note printed, run. The word "missing" makes the
 # convention's own missing value (set here, so the map has one to use).
@@ -878,11 +888,12 @@ jfreq(ms9, MaritalD)
 #                   Freq  Total %  Valid %  Cum. %
 #   --------------  ----  -------  -------  ------
 #   Valid
-#   1: Married        3     30.00   42.86    42.86
-#   2: Single         4     40.00   57.14   100.00
+#   1: Married        3     30.00    42.86   42.86
+#   2: Single         4     40.00    57.14  100.00
+#   Total valid       7     70.00   100.00
 #
 #   Missing
-#   -99 (no label)    3     30.00      --       --
+#   -99 (no label)    3     30.00       --      --
 #
 #   Total            10    100.00
 options(.jst_options_missing_convention = NULL)
@@ -1296,11 +1307,12 @@ jfreq(lst14$d, ReplyR)
 #                    Freq  Total %  Valid %  Cum. %
 #   ---------------  ----  -------  -------  ------
 #   Valid
-#   0: No              3     37.50   42.86    42.86
-#   1: Yes             4     50.00   57.14   100.00
+#   0: No              3     37.50    42.86   42.86
+#   1: Yes             4     50.00    57.14  100.00
+#   Total valid        7     87.50   100.00
 #
 #   Missing
-#   -99 ["Refused"]    1     12.50      --       --
+#   -99 ["Refused"]    1     12.50       --      --
 #
 #   Total              8    100.00
 options(.jst_options_missing_convention = NULL)

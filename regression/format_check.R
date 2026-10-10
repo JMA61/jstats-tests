@@ -109,6 +109,45 @@
 #           from its values (jlogistic's fit tables, jalpha, jdesc's Mean
 #           and SD, the VIF tables, jscreen's stats columns) and to jt's
 #           Cohen's d line, which had the eta-squared defect.
+# S348 EDIT (v0.9.221, 2026-10-10): Fix Slate 7, first half. SECTION Z
+#           ADDED, Z01-Z23 (23 checks): rulings R7 and R4 of S345 in
+#           jfreq(). "Total valid" under the Valid block whenever there is
+#           a Missing block, "Total missing" under a Missing block of more
+#           than one row, neither with no missing data; the subtotals
+#           reconciling with the rows and the Total. A labelled value no
+#           case holds as a zero row: a valid value, not a declared one,
+#           in the analysis pool rather than the file, under each value.id;
+#           a text variable's labelled string; beside Stata-style markers;
+#           a labelled code inside a declared range spelled out, none when
+#           the range holds no case or is collapsed; the limit of ten (ten
+#           print, eleven do not), in the factor's word too, counted over
+#           the whole table; the returned frequencies; the line before the
+#           <blank> footnote; a label on the blank value adding no row.
+#           SECTION M RE-PINNED (M01 M02 M03 M04) and fq_cells() now reads
+#           to the Total row itself, not to the first "Total " -- which is
+#           the Valid block's subtotal (instructions, A READER THAT STOPS
+#           AT AN EMPTY LINE). 310 checks. Sandbox: 310/310 plain and under
+#           the RStudio-handler stand-in, each also with a Windows-length
+#           temp path, and entered dirty.
+#           MUTATION MAP (S348): "Total valid" never M01 M02 M04 Z01-Z04
+#           Z06-Z13 Z17 Z18 Z22; always M05 Z05 Z15 Z16; "Total missing" at
+#           one row M01 M02 M04 Z04 Z13 Z17 Z22; never Z02 Z03 Z08 Z10
+#           Z12; no valid zero row Z01 Z03 Z06 Z08 Z09 Z11 Z15 Z16 Z18 Z19
+#           Z20; a declared code kept as valid M04 Z07 Z20; a code in the
+#           range kept as valid Z18 Z19; no zero row in a range Z12 Z18;
+#           the limit at eleven Z16 Z18 Z21 Z22; the range's rows not
+#           counted Z18; a factor's levels not counted Z17 Z22; no text
+#           zero row Z10; the hidden rows kept Z16 Z17 Z18 Z21; the two
+#           nouns swapped Z16 Z17 Z18 Z22; "Total valid" with no Valid %
+#           M02 M04 Z01 Z02 Z04 Z06-Z13 Z17 Z18; its Total % off the valid
+#           base M04 Z01 Z03 Z04 Z17; "Total missing" as the declared count
+#           Z02 Z03 Z10 Z12; a blank-valued label kept Z23. Equivalent,
+#           kept: a marker's NA label not removed (A18) -- factor() drops an
+#           NA level, so no row can follow.
+#           LAST VERIFIED: v0.9.221, 2026-10-10 (S348) -- 310/310 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2177 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 2a49208.
 # S347 EDIT (v0.9.220, 2026-10-10): Fix Slate 8, second half. SECTION Y
 #           ADDED, Y01-Y04 (4 checks): a paired t-test under
 #           joutput(diagnostics = TRUE) says nothing of Levene's test (it
@@ -1152,7 +1191,10 @@ dots_at <- function(m, col) {
 # label column's header is blank and is named "(label)" here.
 fq_cells <- function(ln) {
   i <- grep("Freq +Total % +Valid % +Cum[.] %$", ln)[1]
-  j <- which(startsWith(ln, "Total "))
+  # The Total row itself, not the "Total valid" and "Total missing" rows
+  # above it (S348, ruling R7): reading to the first "Total " would stop at
+  # the Valid block's subtotal and pass on a third of the table.
+  j <- which(grepl("^Total +[0-9]", ln))
   j <- j[j > i][1]
   if (is.na(i) || is.na(j)) return(NULL)
   printed <- ln[i:j]
@@ -2203,33 +2245,34 @@ cat("\n--- M. jfreq() ---\n")
 
 check("M01 with missing rows: Freq, Total %, Valid % and Cum. % block-centered, the labels flush left",
       { m <- fq_cells(.m_fq)
-        !is.null(m) && nrow(m) == 8L &&
+        !is.null(m) && nrow(m) == 9L &&
           all(vapply(.m_num, function(k) bc_ok(m, k), logical(1))) &&
           lft_ok(m, "(label)") })
 check("M02 ... values of different widths keep one right edge: 104 over 9; 86.67 over 100.00; \"--\" at the right of its block",
-      any(.m_fq == "1           104    83.20   86.67    86.67") &&
-        any(.m_fq == "2             9     7.20    7.50    94.17") &&
-        any(.m_fq == "3             7     5.60    5.83   100.00") &&
-        any(.m_fq == "System/NA     5     4.00      --       --") &&
-        any(.m_fq == "Total       125   100.00"))
+      any(.m_fq == "1             104    83.20    86.67   86.67") &&
+        any(.m_fq == "2               9     7.20     7.50   94.17") &&
+        any(.m_fq == "3               7     5.60     5.83  100.00") &&
+        any(.m_fq == "System/NA       5     4.00       --      --") &&
+        any(.m_fq == "Total         125   100.00"))
 check("M03 ... no line is padded: \"Valid\" and \"Missing\" end at their last letter and the two spacer rows are empty lines",
       { i <- which(.m_fq == "Missing")
-        k <- which(startsWith(.m_fq, "Total "))
+        k <- which(grepl("^Total +[0-9]", .m_fq))
         m <- fq_cells(.m_fq)
         !is.null(m) && trimmed(m) && any(.m_fq == "Valid") &&
           length(i) == 1L && length(k) == 1L &&
           identical(.m_fq[i - 1L], "") && identical(.m_fq[k - 1L], "") })
 check("M04 clinic's Medication, pinned whole",
       identical(run_at(.m_med,
-                       "                 Freq  Total %  Valid %  Cum. %", 10L),
+                       "                 Freq  Total %  Valid %  Cum. %", 11L),
                 c("                 Freq  Total %  Valid %  Cum. %",
                   "---------------  ----  -------  -------  ------",
                   "Valid",
-                  "0: No             39     55.71   60.00    60.00",
-                  "1: Yes            26     37.14   40.00   100.00",
+                  "0: No             39     55.71    60.00   60.00",
+                  "1: Yes            26     37.14    40.00  100.00",
+                  "Total valid       65     92.86   100.00",
                   "",
                   "Missing",
-                  "-99 [\"Refused\"]    5      7.14      --       --",
+                  "-99 [\"Refused\"]    5      7.14       --      --",
                   "",
                   "Total             70    100.00")))
 check("M05 without missing rows the table is flat -- no Valid or Missing row -- and aligned the same way",
@@ -4000,6 +4043,188 @@ check("Y04 control: an independent-samples t-test under the setting still prints
         quiet(joutput(NULL))
         any(o == "Levene's Test for Homogeneity of Variance") }))
 rm(list = intersect(c("f_y", ".y_note"), ls(all.names = TRUE)))
+
+# =============================================================================
+# SECTION Z -- jfreq(): ZERO ROWS AND THE SUBTOTAL ROWS (S348, v0.9.221)
+# =============================================================================
+# Two rulings of S345, built in one build. R4: a labelled value no case holds
+# takes a zero row, as a factor's empty level always had -- on the Valid side
+# (a value the variable does not declare missing) and, where a declared range
+# is spelled out, for a labelled code inside it; past ten empty labelled
+# values in one table none prints and one line under the table says how many
+# (a factor's empty levels count toward the limit too: Jeff's okay of the S348
+# lean). R7: "Total valid" under the Valid block whenever the table has a
+# Missing block, and "Total missing" under the Missing block when it has more
+# than one row -- SPSS FREQUENCIES' two subtotals.
+cat("\n--- Z. jfreq(): zero rows and the subtotal rows ---\n")
+z_a <- data.frame(
+  q = haven::labelled_spss(c(1, 2, 3, 2, 1, -99, 3, 2, 1, 2, NA),
+        labels = c(Low = 1, Mid = 2, High = 3, Top = 4, Refused = -99,
+                   "Don't know" = -98, Skipped = -97),
+        na_values = c(-99, -98, -97)),
+  g = c(1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2))
+z_b <- data.frame(
+  q = haven::labelled_spss(c(1, 2, 3, 2, 1, -60, 3, 2, 1, NA),
+        labels = c(Low = 1, Mid = 2, High = 3, Refused = -99,
+                   "Don't know" = -98),
+        na_range = c(-99, -51)))
+z_b0 <- data.frame(
+  q = haven::labelled_spss(c(1, 2, 3, 2, 1, 3, 3, 2, 1, 2),
+        labels = c(Low = 1, Mid = 2, High = 3, Refused = -99),
+        na_range = c(-99, -51)))
+z_c <- data.frame(
+  s = haven::labelled_spss(c("a", "b", "a", "REF", NA),
+        labels = c(A = "a", B = "b", C = "c", Refused = "REF"),
+        na_values = "REF"))
+z_s <- data.frame(
+  q = haven::labelled(c(1, 2, haven::tagged_na("a"), 2, 1),
+        labels = c(Low = 1, Mid = 2, High = 3,
+                   Refused = haven::tagged_na("a"),
+                   Skipped = haven::tagged_na("b"))))
+z_lab <- function(nempty) data.frame(
+  x = haven::labelled(c(1, 2, 1), labels = stats::setNames(
+        seq_len(2 + nempty), paste0("C", seq_len(2 + nempty)))))
+z_fac <- function(nempty) data.frame(
+  g = factor(c("a", "b", "a", NA), levels = c("a", "b", paste0("e", seq_len(nempty)))))
+# Six empty labelled valid values and five empty labelled codes inside a
+# range that holds one case: eleven in one table.
+z_h <- data.frame(
+  x = haven::labelled_spss(c(1, 2, 1, -60, NA),
+        labels = c(stats::setNames(1:8, paste0("V", 1:8)),
+                   stats::setNames(-(95:91), paste0("M", 1:5))),
+        na_range = c(-99, -51)))
+.z_a  <- out(jfreq(z_a, q))
+.z_fq <- out(jfreq(f_fq, q))
+.z_cn <- out(jfreq(cl_f, Condition))
+# z_row(): the cells of one row of a jfreq table, split on runs of spaces.
+z_row <- function(ln, lab) {
+  r <- ln[startsWith(ln, lab) &
+            grepl("^ +[0-9]", substring(ln, nchar(lab) + 1L))]
+  if (length(r) != 1L) return(NULL)
+  strsplit(trimws(substring(r, nchar(lab) + 1L)), " +")[[1]]
+}
+
+check("Z01 R7: \"Total valid\" directly under the last valid row -- the valid N, its Total %, and 100.00 under Valid %, nothing under Cum. %",
+      { i <- which(.z_a == "Total valid           9     81.82   100.00")
+        length(i) == 1L &&
+          identical(.z_a[i - 1L], "4: Top                0      0.00     0.00  100.00") &&
+          identical(.z_a[i + 1L], "") && identical(.z_a[i + 2L], "Missing") })
+check("Z02 ... \"Total missing\" directly under the last Missing row when the block has more than one: 2 of 11, 18.18, then the spacer and the Total",
+      { i <- which(.z_a == "Total missing         2     18.18")
+        length(i) == 1L && identical(.z_a[i - 1L], "System/NA             1      9.09       --      --") &&
+          identical(.z_a[i + 1L], "") &&
+          identical(.z_a[i + 2L], "Total                11    100.00") })
+check("Z03 the subtotals reconcile: Total valid is the sum of the valid rows, Total missing of the Missing rows, and the two make the Total -- counts and Total %",
+      { tv <- z_row(.z_a, "Total valid"); tm <- z_row(.z_a, "Total missing")
+        tt <- z_row(.z_a, "Total")
+        fr <- function(labs) sum(vapply(labs, function(l) as.numeric(z_row(.z_a, l)[1]), 0))
+        !is.null(tv) && !is.null(tm) && !is.null(tt) &&
+          as.numeric(tv[1]) == fr(c("1: Low", "2: Mid", "3: High", "4: Top")) &&
+          as.numeric(tm[1]) == fr(c("-99 [\"Refused\"]", "-98 [\"Don't know\"]",
+                                    "-97 [\"Skipped\"]", "System/NA")) &&
+          as.numeric(tv[1]) + as.numeric(tm[1]) == as.numeric(tt[1]) &&
+          abs(as.numeric(tv[2]) + as.numeric(tm[2]) - 100) < 0.011 })
+check("Z04 one Missing row: Total valid prints, Total missing does not (one row is its own total)",
+      any(.z_fq == "Total valid   120    96.00   100.00") &&
+        !any(startsWith(.z_fq, "Total missing")))
+check("Z05 no Missing block: neither subtotal (it would repeat the Total row) -- the table as it was",
+      !any(startsWith(.z_cn, "Total valid")) &&
+        !any(startsWith(.z_cn, "Total missing")) &&
+        any(.z_cn == "Total              70    100.00"))
+check("Z06 R4: a labelled valid value no case holds is a zero row in its place, its Cum. % the row above's",
+      any(.z_a == "3: High               2     18.18    22.22  100.00") &&
+        any(.z_a == "4: Top                0      0.00     0.00  100.00"))
+check("Z07 ... a labelled code the variable declares missing is not a valid zero row (-98 and -97 stay in the Missing block)",
+      { i <- which(.z_a == "Missing"); v <- .z_a[seq_len(i - 1L)]
+        !any(grepl("Don't know|Skipped", v)) &&
+          any(.z_a == "-98 [\"Don't know\"]    0      0.00       --      --") })
+check("Z08 the pool, not the file: a labelled value the filter left with no case is a zero row (1, 2 and 3 are in the file; Top in neither)",
+      { v <- out(jfreq(z_a, q, subset = g == 1))
+        any(v == "4: Top                0      0.00     0.00  100.00") &&
+          any(v == "Total valid           5    100.00   100.00") &&
+          any(v == "Total missing         0      0.00") })
+check("Z09 the zero row follows value.id: \"Top\" under labels, \"4\" under values",
+      any(out(jfreq(z_a, q, value.id = "labels")) ==
+            "Top                   0      0.00     0.00  100.00") &&
+        any(out(jfreq(z_a, q, value.id = "values")) ==
+              "4                     0      0.00     0.00  100.00"))
+check("Z10 a text variable with value labels: the labelled string no case holds is a zero row, the declared one a Missing row",
+      { v <- out(jfreq(z_c, s))
+        any(v == "c: C               0      0.00     0.00  100.00") &&
+          any(v == "REF [\"Refused\"]    1     20.00       --      --") &&
+          any(v == "Total missing      2     40.00") })
+check("Z11 Stata-style markers: a labelled valid value gets its zero row; the markers' labels never reach the Valid block",
+      { v <- out(jfreq(z_s, q))
+        any(v == "3: High           0      0.00     0.00  100.00") &&
+          any(v == ".b [\"Skipped\"]    0      0.00       --      --") &&
+          !any(grepl("^(NA|Refused|Skipped)", v)) })
+check("Z12 a declared range spelled out: each labelled code inside it that no case holds is a zero row, in value order with the value present; an unlabelled number gets none",
+      { v <- out(jfreq(z_b, q)); i <- which(v == "Missing")
+        identical(v[i + 1:5],
+                  c("-99 [\"Refused\"]       0      0.00       --      --",
+                    "-98 [\"Don't know\"]    0      0.00       --      --",
+                    "-60 (no label)        1     10.00       --      --",
+                    "System/NA             1     10.00       --      --",
+                    "Total missing         2     20.00")) })
+check("Z13 ... a range with no case in it keeps its one row, which says 0 for every code inside; no zero row beside it",
+      { v <- out(jfreq(z_b0, q))
+        any(v == "range -99 to -51    0      0.00       --      --") &&
+          !any(startsWith(v, "-99 ")) && !any(startsWith(v, "Total missing")) })
+check("Z14 ... and at missing.detail = \"totals\" the band is one row, with no zero row under it",
+      { v <- out(jfreq(z_b, q, missing.detail = "totals"))
+        any(startsWith(v, "range -99 to -51 ")) && !any(startsWith(v, "-99 ")) })
+check("Z15 the limit: ten empty labelled values all print, the table and its Total unchanged",
+      { v <- out(jfreq(z_lab(10), x))
+        sum(grepl("^[0-9]+: C[0-9]+ +0 ", v)) == 10L &&
+          any(v == "Total      3    100.00") &&
+          !any(grepl("no cases", v)) })
+check("Z16 ... eleven: none prints, and one line under the table says how many",
+      { v <- out(jfreq(z_lab(11), x)); k <- which(v == "Total    3    100.00")
+        !any(grepl("^[0-9]+: C[0-9]+ +0 ", v)) && length(k) == 1L &&
+          identical(v[k + 1L], "11 labelled values have no cases and are not listed.") &&
+          identical(v[k + 2L], "") && length(v) == k + 2L })
+check("Z17 a factor: one empty level prints as it always has; twelve do not, with the line in the factor's word",
+      { a <- out(jfreq(z_fac(1), g)); b <- out(jfreq(z_fac(12), g))
+        any(a == "e1             0      0.00     0.00  100.00") &&
+          !any(grepl("^e[0-9]+ ", b)) &&
+          any(b == "12 categories have no cases and are not listed.") &&
+          any(b == "Total valid    3     75.00   100.00") })
+check("Z18 the limit counts the whole table: six empty valid values and five empty codes in the range make eleven, and neither side prints one",
+      { v <- out(jfreq(z_h, x))
+        !any(grepl("^[3-8]: V", v)) && !any(grepl("\\[\"M[1-5]\"\\]", v)) &&
+          any(v == "-60 (no label)    1     20.00       --      --") &&
+          any(v == "11 labelled values have no cases and are not listed.") })
+check("Z19 ... at \"totals\" the range's codes are not listed, so the six valid ones are under the limit and print",
+      { v <- out(jfreq(z_h, x, missing.detail = "totals"))
+        sum(grepl("^[3-8]: V[3-8] +0 ", v)) == 6L && !any(grepl("no cases", v)) })
+check("Z20 the returned frequencies carry the zero rows; the valid count and the reconciliation are unchanged",
+      { r <- NULL; invisible(quiet(r <- jfreq(z_a, q)))
+        f <- r$frequencies$q
+        identical(f$valid$Value, c("1: Low", "2: Mid", "3: High", "4: Top")) &&
+          identical(f$valid$Freq, c(3L, 4L, 2L, 0L)) &&
+          identical(f$valid_count, 9L) && identical(f$total, 11L) &&
+          identical(f$udm$Freq, c(1L, 0L, 0L)) })
+check("Z21 a hidden zero row is gone from the returned frequencies too, and from the Cum. % arithmetic",
+      { r <- NULL; invisible(quiet(r <- jfreq(z_lab(11), x)))
+        f <- r$frequencies$x
+        identical(f$valid$Value, c("1: C1", "2: C2")) &&
+          isTRUE(all.equal(f$valid$CumPct[2], 100)) })
+check("Z22 the line and the <blank> footnote together: the count first, then the footnote, then the one closing blank",
+      { d <- data.frame(s = factor(c("a", "", "a", NA), levels = c("", "a", paste0("e", 1:11))))
+        v <- out(jfreq(d, s)); k <- which(v == "Total          4    100.00")
+        length(k) == 1L && identical(v[k + 1L], "11 categories have no cases and are not listed.") &&
+          startsWith(v[k + 2L], "<blank>: 1 cell") && identical(v[length(v)], "") })
+check("Z23 a text variable labelled on its blank value: the blank cells are the one <blank> row; the label adds no second, empty one",
+      { d <- data.frame(s = haven::labelled(c("a", "", "a", "b"),
+                          labels = c(A = "a", B = "b", None = "", C = "c")))
+        v <- out(jfreq(d, s)); i <- grep("^-+  ", v)[1]; k <- which(v == "Total      4    100.00")
+        identical(v[(i + 1L):(k - 2L)],
+                  c("<blank>    1     25.00   25.00    25.00",
+                    "a: A       2     50.00   50.00    75.00",
+                    "b: B       1     25.00   25.00   100.00",
+                    "c: C       0      0.00    0.00   100.00")) })
+rm(list = intersect(c("z_a", "z_b", "z_b0", "z_c", "z_s", "z_lab", "z_fac", "z_h",
+                      ".z_a", ".z_fq", ".z_cn", "z_row"), ls(all.names = TRUE)))
 
 
 # --- Verdict -----------------------------------------------------------------

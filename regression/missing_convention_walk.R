@@ -65,6 +65,12 @@
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S348 (v0.9.221). Sections 17, 44, 45, 53 and 54 RE-PINNED
+#           MECHANICALLY under rulings R4 and R7 (jfreq()'s "Total valid"
+#           and "Total missing" rows, and the columns they widened; walked
+#           once, in format_walk.R Section 33), the two elided renders of
+#           Section 44 by hand; PENDING stays none. Section 19's last note,
+#           the zero row put to Jeff as a question, retired: ruling R4.
 # EDITED:   S345 (v0.9.218; WALKED on the workstation the same session). Fix
 #           Slate 5, the second cut. SECTIONS 19, 22 AND 46 RE-PINNED; NEW
 #           PART N, SECTIONS 53-57.
@@ -2190,9 +2196,10 @@ jfreq(Income)
 
 # Expected: the Missing block in the SAME order as the narrative above --
 #   Missing
-#   -99 ["Refused"]           1     16.67      --       --
-#   -98 ["Don't know"]        1     16.67      --       --
-#   -97 ["Not applicable"]    1     16.67      --       --
+#   -99 ["Refused"]           1     16.67       --      --
+#   -98 ["Don't know"]        1     16.67       --      --
+#   -97 ["Not applicable"]    1     16.67       --      --
+#   Total missing             3     50.00
 #
 # Things to look at:
 #   - the narrative and the frequency table agree. They are rendered by
@@ -2491,9 +2498,10 @@ wm <- jdeclare_missing(wm, Fear, codes = c(New = ".c"), convention = "stata")
 #   FIXED S345. The mixed-marker note counted .c as a Stata-side data
 #   marker when no cell carries it; it counts cells now (the re-pin
 #   above; missing_convention_check.R N19a and N84u).
-#   STILL OPEN. jfreq renders a '.c ["New"]' row at frequency 0. That
-#   turns on what SPSS FREQUENCIES does with a labelled-but-absent value
-#   -- Jeff's question to answer (to-do ruling R4).
+#   SETTLED S345, BUILT S348 (ruling R4). jfreq renders a '.c ["New"]'
+#   row at frequency 0, and keeps it: a labelled value no case holds gets
+#   its zero row -- a marker, a declared code, a labelled code inside a
+#   spelled-out range, and a valid value alike (format_walk.R Section 33).
 
 jconvert(wm, to = "stata", vars = "Fear", modify = TRUE)
 wm <- jdeclare_missing(wm, Fear, codes = c(Late = ".d"), convention = "stata")
@@ -4674,8 +4682,9 @@ jfreq(j44_spss, Environment1)
 
 # Expected, Render 1 (the Missing block and the Total):
 #   Missing
-#   -99 ["Refused"]          6     5.83      --       --
-#   -98 ["Don't know"]       6     5.83      --       --
+#   -99 ["Refused"]          6     5.83       --      --
+#   -98 ["Don't know"]       6     5.83       --      --
+#   Total missing           12    11.65
 #
 #   Total                  103   100.00
 #
@@ -4695,8 +4704,9 @@ jsubset(j44_spss, NULL)
 #       Remaining N        --         25
 #   ...
 #   Missing
-#   -99 ["Refused"]         2      8.00      --       --
-#   -98 ["Don't know"]      2      8.00      --       --
+#   -99 ["Refused"]         2      8.00       --      --
+#   -98 ["Don't know"]      2      8.00       --      --
+#   Total missing           4     16.00
 #
 #   Total                  25    100.00
 #
@@ -4717,8 +4727,9 @@ jsubset(j44_stata, NULL)
 
 # Expected, Render 3 (the Missing block and the Total):
 #   Missing
-#   .a ["Refused"]          2      8.00      --       --
-#   .b ["Don't know"]       2      8.00      --       --
+#   .a ["Refused"]          2      8.00       --      --
+#   .b ["Don't know"]       2      8.00       --      --
+#   Total missing           4     16.00
 #
 #   Total                  25    100.00
 #
@@ -4735,8 +4746,9 @@ jsubset(j44_sas, NULL)
 
 # Expected, Render 4 (CPS Remaining N 31; the Missing block and the Total):
 #   Missing
-#   .A ["Refused"]          1      3.23      --       --
-#   .B ["Don't know"]       0      0.00      --       --
+#   .A ["Refused"]          1      3.23       --      --
+#   .B ["Don't know"]       0      0.00       --      --
+#   Total missing           1      3.23
 #
 #   Total                  31    100.00
 #
@@ -4765,8 +4777,9 @@ jcomplete(j44_spss, NULL)
 #       Remaining N        --         21
 #   ...
 #   Missing
-#   -99 ["Refused"]         0      0.00      --       --
-#   -98 ["Don't know"]      1      4.76      --       --
+#   -99 ["Refused"]         0      0.00       --      --
+#   -98 ["Don't know"]      1      4.76       --      --
+#   Total missing           1      4.76
 #
 #   Total                  21    100.00
 #
@@ -4882,14 +4895,16 @@ rm(jr45)
 #                       Freq  Total %  Valid %  Cum. %
 #   ------------------  ----  -------  -------  ------
 #   Valid
-#   1: Yes                3     30.00   50.00    50.00
-#   2: No                 2     20.00   33.33    83.33
-#   9: Not asked          1     10.00   16.67   100.00
+#   1: Yes                3     30.00    50.00   50.00
+#   2: No                 2     20.00    33.33   83.33
+#   9: Not asked          1     10.00    16.67  100.00
+#   Total valid           6     60.00   100.00
 #
 #   Missing
-#   -99 ["Refused"]       2     20.00      --       --
-#   -98 ["Don't know"]    1     10.00      --       --
-#   System/NA             1     10.00      --       --
+#   -99 ["Refused"]       2     20.00       --      --
+#   -98 ["Don't know"]    1     10.00       --      --
+#   System/NA             1     10.00       --      --
+#   Total missing         4     40.00
 #
 #   Total                10    100.00
 #
@@ -4919,15 +4934,17 @@ rm(jr45)
 #                            Freq  Total %  Valid %  Cum. %
 #   -----------------------  ----  -------  -------  ------
 #   Valid
-#   1: Some high school        23    22.33   23.71    23.71
-#   2: High school graduate    18    17.48   18.56    42.27
-#   3: Some college            25    24.27   25.77    68.04
-#   4: Bachelor's degree       13    12.62   13.40    81.44
-#   5: Graduate degree         18    17.48   18.56   100.00
+#   1: Some high school        23    22.33    23.71   23.71
+#   2: High school graduate    18    17.48    18.56   42.27
+#   3: Some college            25    24.27    25.77   68.04
+#   4: Bachelor's degree       13    12.62    13.40   81.44
+#   5: Graduate degree         18    17.48    18.56  100.00
+#   Total valid                97    94.17   100.00
 #
 #   Missing
-#   -98 ["Don't know"]          3     2.91      --       --
-#   -88 ["Refused"]             3     2.91      --       --
+#   -98 ["Don't know"]          3     2.91       --      --
+#   -88 ["Refused"]             3     2.91       --      --
+#   Total missing               6     5.83
 #
 #   Total                     103   100.00
 #
@@ -5733,13 +5750,15 @@ jfreq(sk53, ReasonR)
 #                   Freq  Total %  Valid %  Cum. %
 #   --------------  ----  -------  -------  ------
 #   Valid
-#   1                 2     20.00   40.00    40.00
-#   2                 2     20.00   40.00    80.00
-#   3                 1     10.00   20.00   100.00
+#   1                 2     20.00    40.00   40.00
+#   2                 2     20.00    40.00   80.00
+#   3                 1     10.00    20.00  100.00
+#   Total valid       5     50.00   100.00
 #
 #   Missing
-#   .a ["Skipped"]    3     30.00      --       --
-#   .b ["Refused"]    2     20.00      --       --
+#   .a ["Skipped"]    3     30.00       --      --
+#   .b ["Refused"]    2     20.00       --      --
+#   Total missing     5     50.00
 #
 #   Total            10    100.00
 
@@ -5757,12 +5776,13 @@ jfreq(sk53, ReasonM)
 #                   Freq  Total %  Valid %  Cum. %
 #   --------------  ----  -------  -------  ------
 #   Valid
-#   1                 2     20.00   40.00    40.00
-#   2                 2     20.00   40.00    80.00
-#   3                 1     10.00   20.00   100.00
+#   1                 2     20.00    40.00   40.00
+#   2                 2     20.00    40.00   80.00
+#   3                 1     10.00    20.00  100.00
+#   Total valid       5     50.00   100.00
 #
 #   Missing
-#   .a ["Skipped"]    5     50.00      --       --
+#   .a ["Skipped"]    5     50.00       --      --
 #
 #   Total            10    100.00
 
@@ -5846,12 +5866,14 @@ jfreq(mx54, Fear)
 #                   Freq  Total %  Valid %  Cum. %
 #   --------------  ----  -------  -------  ------
 #   Valid
-#   1                 1     20.00   50.00    50.00
-#   2                 1     20.00   50.00   100.00
+#   1                 1     20.00    50.00   50.00
+#   2                 1     20.00    50.00  100.00
+#   Total valid       2     40.00   100.00
 #
 #   Missing
-#   .a ["Refused"]    2     40.00      --       --
-#   .B (no label)     1     20.00      --       --
+#   .a ["Refused"]    2     40.00       --      --
+#   .B (no label)     1     20.00       --      --
+#   Total missing     3     60.00
 #
 #   Total             5    100.00
 options(.jst_options_missing_convention = NULL)

@@ -140,6 +140,22 @@
 #           (a capture of every section on 0.9.219 and 0.9.220). The human
 #           half of format_check.R Y01-Y04 and models_check.R Q16-Q19 and
 #           Q38.
+# S348 EDIT (v0.9.221): FIX SLATE 7, FIRST HALF. Section 33 NEW, three
+#           renders: jfreq()'s "Total valid" and "Total missing" rows and
+#           its zero rows -- rulings R7 and R4 of S345, built together, the
+#           ONE section Jeff walks for them ("Can we do one walk section
+#           only"). Each Expected FILLED BY RUNNING the file (fill.R).
+#           Section 16 RE-PINNED MECHANICALLY under the rulings (a "Total
+#           valid" row, the columns it widened), and its first note
+#           corrected to the new widths; it stays off the PENDING line. The
+#           human half of format_check.R section Z.
+# LAST VERIFIED: v0.9.221, 2026-10-10 (S348) -- Section 33 WALKED on the
+#           WORKSTATION by Jeff through receive_all(), its closing block's
+#           walk line as the tool's default leaves it; PENDING back to none;
+#           GitHub 2a49208. Section 16 re-pinned
+#           mechanically under rulings R4 and R7 and not walked. Sandbox:
+#           every Expected block under rewalk() as in a straight run
+#           (harness.R verify).
 # S346 EDIT (v0.9.219): FIX SLATE 8, FIRST CUT, AND DIAGNOSTICS. Sections
 #           27-31 NEW (see LOCKS), each Expected FILLED BY RUNNING the file
 #           (fill.R, Testing Conventions); they are the PENDING sections.
@@ -1210,11 +1226,12 @@ jfreq(cl, Condition)
 #                    Freq  Total %  Valid %  Cum. %
 #   ---------------  ----  -------  -------  ------
 #   Valid
-#   0: No             39     55.71   60.00    60.00
-#   1: Yes            26     37.14   40.00   100.00
+#   0: No             39     55.71    60.00   60.00
+#   1: Yes            26     37.14    40.00  100.00
+#   Total valid       65     92.86   100.00
 #
 #   Missing
-#   -99 ["Refused"]    5      7.14      --       --
+#   -99 ["Refused"]    5      7.14       --      --
 #
 #   Total             70    100.00
 #
@@ -1235,9 +1252,10 @@ jfreq(cl, Condition)
 #
 # Things to look at:
 #   - Each header sits over the middle of its column. The counts sit
-#     one place in from each edge of "Freq", and so do the values
-#     under "Valid %"; "Total %" has one spare space, which goes on
-#     the LEFT (the S328 lean); 100.00 fills "Cum. %".
+#     one place in from each edge of "Freq"; "Total %" and "Valid %"
+#     each have one spare space, which goes on the LEFT (the S328 lean);
+#     100.00 fills "Cum. %". (Re-pinned S348: the "Total valid" row of
+#     ruling R7 puts 100.00 under "Valid %", which widened its block.)
 #   - Counts on their ones digit (39, 26, 5, 70), percentages on the
 #     decimal point, "--" at the right of its block.
 #   - One blank line, not two, between the first call's Total row and
@@ -3202,6 +3220,146 @@ rm(shown32, f32, f32m, f32p, f32b, r32)
 #   - RENDER 3: the boxes in the Plots pane read "1: Control", "2: CBT"
 #     and "3: Mindfulness", as the Group Descriptives above them do.
 
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 33 -- jfreq(): the subtotal rows and the zero rows (S348) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 348 (v0.9.221), Jeff's rulings R7 and R4 of S345, built together.
+#   - R7: "Total valid" under the Valid block whenever the table has a
+#     Missing block -- the valid N, the denominator of every Valid %, stated
+#     rather than left to addition -- and "Total missing" under the Missing
+#     block when it has more than one row, as SPSS FREQUENCIES prints them.
+#   - R4: a labelled value no case holds gets a zero row, as a factor's
+#     empty level always had: a valid value, and a labelled code inside a
+#     declared range when the range is spelled out. Past ten in one table
+#     none prints, and one line under the table says how many.
+# Every other jfreq() table in the walks was re-pinned by running, under
+# the ruling; this is the one section to read.
+
+f33 <- data.frame(
+  q = haven::labelled_spss(c(1, 2, 3, 2, 1, -99, 3, 2, 1, 2, NA),
+        labels = c(Low = 1, Mid = 2, High = 3, Top = 4, Refused = -99,
+                   "Don't know" = -98, Skipped = -97),
+        na_values = c(-99, -98, -97)),
+  r = haven::labelled_spss(c(1, 2, 3, 2, 1, -60, 3, 2, 1, NA, 2),
+        labels = c(Low = 1, Mid = 2, High = 3, Refused = -99,
+                   "Don't know" = -98),
+        na_range = c(-99, -51)),
+  s = c(1, 2, 1, 2, 2, 1, 1, 2, 1, NA, 2))
+f33w <- data.frame(
+  x = haven::labelled(c(1, 2, 1, 2, 1),
+        labels = stats::setNames(1:13, paste0("Offence ", 1:13))))
+
+# Render 1 -- both subtotals, and a zero row on each side: Top is a valid
+# value no case holds; -98 and -97 are declared codes no case holds.
+jfreq(f33, q)
+
+# Expected:
+#   Frequencies
+#
+#   11 Cases in the 1 Variable Pool
+#
+#   q
+#
+#                       Freq  Total %  Valid %  Cum. %
+#   ------------------  ----  -------  -------  ------
+#   Valid
+#   1: Low                3     27.27    33.33   33.33
+#   2: Mid                4     36.36    44.44   77.78
+#   3: High               2     18.18    22.22  100.00
+#   4: Top                0      0.00     0.00  100.00
+#   Total valid           9     81.82   100.00
+#
+#   Missing
+#   -99 ["Refused"]       1      9.09       --      --
+#   -98 ["Don't know"]    0      0.00       --      --
+#   -97 ["Skipped"]       0      0.00       --      --
+#   System/NA             1      9.09       --      --
+#   Total missing         2     18.18
+#
+#   Total                11    100.00
+
+# Render 2 -- one Missing row: "Total valid" alone. A declared range
+# spelled out: -60 is the one value in it, and -99 and -98, labelled codes
+# inside it that no case holds, print at 0 beside it.
+jfreq(f33, s, r)
+
+# Expected:
+#   Frequencies
+#
+#   11 Cases in the 2 Variable Pool; 9 Complete on All
+#
+#   s
+#
+#                Freq  Total %  Valid %  Cum. %
+#   -----------  ----  -------  -------  ------
+#   Valid
+#   1              5     45.45    50.00   50.00
+#   2              5     45.45    50.00  100.00
+#   Total valid   10     90.91   100.00
+#
+#   Missing
+#   System/NA      1      9.09       --      --
+#
+#   Total         11    100.00
+#
+#   r
+#
+#                       Freq  Total %  Valid %  Cum. %
+#   ------------------  ----  -------  -------  ------
+#   Valid
+#   1: Low                3     27.27    33.33   33.33
+#   2: Mid                4     36.36    44.44   77.78
+#   3: High               2     18.18    22.22  100.00
+#   Total valid           9     81.82   100.00
+#
+#   Missing
+#   -99 ["Refused"]       0      0.00       --      --
+#   -98 ["Don't know"]    0      0.00       --      --
+#   -60 (no label)        1      9.09       --      --
+#   System/NA             1      9.09       --      --
+#   Total missing         2     18.18
+#
+#   Total                11    100.00
+
+# Render 3 -- thirteen labels, two of them used: eleven empty, past the
+# limit, so none prints and the line under the table says how many.
+jfreq(f33w, x)
+
+# Expected:
+#   Frequencies
+#
+#   5 Cases in the 1 Variable Pool
+#
+#   x
+#
+#                 Freq  Total %  Valid %  Cum. %
+#   ------------  ----  -------  -------  ------
+#   1: Offence 1    3     60.00   60.00    60.00
+#   2: Offence 2    2     40.00   40.00   100.00
+#
+#   Total           5    100.00
+#   11 labelled values have no cases and are not listed.
+
+rm(f33, f33w)
+
+# Things to look at:
+#   - RENDER 1: "Total valid  9" is 3 + 4 + 2 + 0, and its 81.82 the Total %
+#     of the valid rows; 100.00 under Valid %, nothing under Cum. %.
+#     "Total missing  2" is the -99 case and the system-missing one; 9 + 2
+#     = 11, the Total. Each subtotal sits directly under its block, before
+#     the blank line.
+#   - RENDER 1: "4: Top" at 0, in its place among the valid values, its
+#     Cum. % the row above's 100.00; -98 and -97 at 0 in the Missing block
+#     as declared codes always were.
+#   - RENDER 2: s has one Missing row, so no "Total missing" -- one row is
+#     its own total. r spells out its range: -99 and -98 at 0, sorted with
+#     -60; an unlabelled number in the range never gets a row.
+#   - RENDER 3: the line under the Total, "11 labelled values have no cases
+#     and are not listed." A factor's empty levels count the same way, in
+#     "categories" (format_check.R Z17).
+#   - Every column of each table is in the S328 form; "Valid %" now holds
+#     100.00, so its block is as wide as "Cum. %".
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations

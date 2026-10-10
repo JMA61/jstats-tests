@@ -37,6 +37,20 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S348 EDIT (v0.9.221): PART F ADDED, one section -- 43 sections -> 44.
+#           Ruling R12 (Jeff, S345): under a juse() default, a name the
+#           default frame has is the frame's variable in jdesc(), jfreq()
+#           and jscreen(), and a second line under "Using default data
+#           frame" says so when a separate vector of that name exists. F1's
+#           three Expected blocks FILLED BY RUNNING the file (fill.R), with
+#           #@SKIP after the two juse() calls. No existing Expected moved (a
+#           capture of every section on 0.9.220 and 0.9.221). The human
+#           half of filter_check.R section U.
+# LAST VERIFIED: v0.9.221, 2026-10-10 (S348) -- F1 WALKED on the WORKSTATION
+#           by Jeff through receive_all(), its closing block's walk line as
+#           the tool's default leaves it; PENDING back to none; GitHub
+#           2a49208. Sandbox: every Expected block under rewalk() as in a
+#           straight run (harness.R verify).
 # S338 EDIT (v0.9.212): C9 ADDED; A2, A5, D2 AND E3 RE-PINNED -- 42 sections
 #           -> 43. Fix Slate 1. A2 and A5: the corrected call keeps the data
 #           frame the call named (one line each). C9, new: off, on or NULL
@@ -1204,6 +1218,86 @@ caught(jsum(d, Gender = 1))
 #   List the variable on its own:
 #     Gender
 
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART F -- UNDER A juse() DEFAULT, THE FRAME'S VARIABLE (S348) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Ruling R12 (Jeff, S345). With a default set, a bare name the default frame
+# has is the frame's variable in jdesc(), jfreq() and jscreen() -- the three
+# functions that also take a single column -- as it already was in every
+# other function. Through v0.9.220 those three read a separate vector of the
+# same name in the workspace and said nothing: jdesc(Age) described three
+# made-up values, and jdesc(Age, Gender) was refused. The assertion side is
+# filter_check.R section U.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION F1 -- the frame's variable, and the line that says so ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# f1 is a twelve-case frame; Age and Gender, made in the workspace for some
+# other purpose, share its variables' names.
+
+f1 <- data.frame(Age    = c(21, 34, 45, 23, 36, 52, 41, 29, 33, 40, 38, NA),
+                 Gender = c(1, 2, 1, 2, 2, 1, 1, 2, 1, 2, 2, 1))
+juse(f1)
+Age    <- c(1, 2, 3)
+Gender <- factor(c("m", "f", "f"))
+jdesc(Age)
+
+# Expected:
+#   Descriptive Statistics
+#   Using default data frame: f1
+#   Age is the variable in f1, not the separate object with that name.
+#
+#   12 Cases in the 1 Variable Pool
+#
+#   Variable  Total  Non_missing  Min  Max   Mean     SD
+#   --------  -----  -----------  ---  ---  ------  -----
+#   Age         12        11       21   52  35.636  9.146
+
+jdesc(Age, Gender)
+
+# Expected:
+#   Descriptive Statistics
+#   Using default data frame: f1
+#   Age and Gender are variables in f1, not the separate objects with
+#   those names.
+#
+#   12 Cases in the 2 Variable Pool; 11 Complete on All
+#
+#   Warning: Gender seems categorical. Descriptive statistics may not
+#   be meaningful.
+#   Variable  Total  Non_missing  Min  Max   Mean     SD
+#   --------  -----  -----------  ---  ---  ------  -----
+#   Age         12        11       21   52  35.636  9.146
+#   Gender      12        12        1    2   1.500  0.522
+
+juse(NULL)
+jdesc(Age)
+
+# Expected:
+#   Descriptive Statistics
+#
+#   3 Cases in the 1 Variable Pool
+#
+#   Warning: Age seems categorical. Descriptive statistics may not
+#   be meaningful.
+#   Variable  Total  Non_missing  Min  Max   Mean    SD
+#   --------  -----  -----------  ---  ---  -----  -----
+#   Age         3         3        1    3   2.000  1.000
+
+rm(f1, Age, Gender)
+
+# Things to look at:
+#   - Render 1: twelve cases, eleven with an age, from 21 to 52 -- the
+#     frame's Age, not the workspace's 1, 2, 3. Under "Using default data
+#     frame: f1", one line says which object was read.
+#   - Render 2: both names are shared, so the line names both, in the
+#     plural. Through v0.9.220 this call stopped: "Gender needs the data
+#     frame, not the single column Age."
+#   - Render 3: with no default there is no frame to read, so the
+#     workspace vector is described, as before, and no default note.
+#   - Not shown: a function, a list or a data frame sharing the name gets
+#     no line (filter_check.R U08); the line prints at every output level.
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations

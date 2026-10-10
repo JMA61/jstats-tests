@@ -29,6 +29,42 @@
 #           setting call prints what it touched, a level call the full
 #           panel, a setting name in first position is a query.
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S348 EDIT (v0.9.221, 2026-10-10): Fix Slate 7, first half. N60a-m NEW
+#           (13 checks): a grouped jdesc's listwise note and its count,
+#           taken among the cases with a group (58, where the pool's is
+#           63); at minimal "Grouped Cases" and the complete-on-all count,
+#           none for one variable, the plain "Cases" when the grouping
+#           variable excludes no case, the ungrouped call unchanged; the
+#           note under a jcomplete() that covers some of the analysis
+#           variables, naming those it does not cover, in jdesc() and
+#           jfreq(), silent when it covers them all; "--" for a pool
+#           percent of no cases, in jt() and jcorr(), and numbers where
+#           the filter leaves rows. N52i RE-PINNED (the grouped line now
+#           "65 Grouped Cases in the 2 Variable Pool; 61 Complete on All
+#           (5 Excluded)"); N57f, N57h, N58a and N58b RE-PINNED under
+#           rulings R4 and R7 (jfreq()'s "Total valid" and "Total missing"
+#           rows, and the columns they widened); n_line() reads "Grouped
+#           Cases". 244 checks. Captures outside check() go through .pl60(),
+#           which returns a stop's text (guard 3). Sandbox (R 4.3.3, UTF-8
+#           locale, pkgload::load_all): 244/244 plain and under the
+#           RStudio-handler stand-in, each also with a Windows-length temp
+#           path, and entered dirty.
+#           MUTATION MAP (S348): the grouped call given no data N52i N60a
+#           N60c N60f; given every case, not the grouped ones N52i N60a
+#           N60c; the grouping variable counted in the pool N30d N60e;
+#           "Grouped Cases" whenever by = is used N30d N52j N60f; never
+#           N52i N60c N60e; a covered variable named N60j; the note silent
+#           under any jcomplete() N60h N60i N60j; the pool percent "NaN"
+#           again N60l; always "--" N38c N39c N41a N42b N42d N43b N45a N48b
+#           N48e N52m N55c N60m; jfreq()'s "Total valid" never N57f N57h
+#           N58a N58b, always N53h N58h N58i; "Total missing" at one row
+#           N58a N58b. Equivalent, kept: the column-width input left at
+#           "NaN" (C08) -- it only sizes the column, and a source percent
+#           is at least "0.0", as wide.
+#           LAST VERIFIED: v0.9.221, 2026-10-10 (S348) -- 244/244 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2177 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 2a49208.
 # S346 EDIT (v0.9.219, 2026-10-08): joutput()'s DIAGNOSTICS SETTING, on
 #           Jeff's ruling of that day. N59a-k NEW (11 checks): the echo
 #           with no "(override)", names stored and shown in capitals, OFF
@@ -651,7 +687,7 @@ has_top    <- function(ln) any(startsWith(ln, "Case Processing"))
 has_bottom <- function(ln) any(startsWith(ln, "Missing data"))
 has_rule   <- function(ln) any(grepl("^-{4,}$", ln))
 n_line     <- function(ln) {
-  i <- grep("^(Analysis N:|[0-9]+ Cases in the )", ln)
+  i <- grep("^(Analysis N:|[0-9]+ (Grouped )?Cases in the )", ln)
   if (length(i) == 1L) ln[i] else NA_character_
 }
 has_n_line <- function(ln) !is.na(n_line(ln))
@@ -1571,7 +1607,8 @@ quiet(joutput("minimal", quiet = TRUE))
 .v52i <- plines(jdesc(d, Flourishing, Stress, by = Medication))
 reset()
 check("N52i at minimal the N line states the grouped count with the rider",
-      identical(n_line(.v52i), "65 Cases in the 2 Variable Pool (5 Excluded)"))
+      identical(n_line(.v52i),
+                "65 Grouped Cases in the 2 Variable Pool; 61 Complete on All (5 Excluded)"))
 .v52j <- plines(jdesc(d, Flourishing, by = Condition))
 check("N52j a clean grouping variable: no table, and the pool counts the described variable only",
       !has_top(.v52j) &&
@@ -2165,17 +2202,19 @@ check("N57e the masking pass: the declared cells are NA on the analysis copy, th
           identical(r$converted$MS$entries$count, c(1L, 2L)) })
 .v57f <- plines(jfreq(t57, MS))
 check("N57f jfreq(): the declared strings are Missing rows, labeled as a declared code is, and the valid base leaves them out (the table pinned whole)",
-      identical(.v57f[7:18],
+      identical(.v57f[7:20],
         c("                    Freq  Total %  Valid %  Cum. %",
           "------------------  ----  -------  -------  ------",
           "Valid",
-          "Married               3     30.00   50.00    50.00",
-          "Single                3     30.00   50.00   100.00",
+          "Married               3     30.00    50.00   50.00",
+          "Single                3     30.00    50.00  100.00",
+          "Total valid           6     60.00   100.00",
           "",
           "Missing",
-          "REF [\"Refused\"]       1     10.00      --       --",
-          "UNKNOWN (no label)    2     20.00      --       --",
-          "System/NA             1     10.00      --       --",
+          "REF [\"Refused\"]       1     10.00       --      --",
+          "UNKNOWN (no label)    2     20.00       --      --",
+          "System/NA             1     10.00       --      --",
+          "Total missing         4     40.00",
           "",
           "Total                10    100.00")))
 check("N57g ... with no warning, and no \"NA (no label)\" row",
@@ -2183,8 +2222,8 @@ check("N57g ... with no warning, and no \"NA (no label)\" row",
         !any(grepl("NA (no label)", .v57f, fixed = TRUE)))
 check("N57h jfreq() under subset =: the Missing rows are counted off the pool",
       { v <- plines(jfreq(t57, MS, subset = Grp == 1))
-        any(v == "REF [\"Refused\"]       1     20.00      --       --") &&
-          any(v == "UNKNOWN (no label)    2     40.00      --       --") &&
+        any(v == "REF [\"Refused\"]       1     20.00       --      --") &&
+          any(v == "UNKNOWN (no label)    2     40.00       --      --") &&
           !any(startsWith(v, "System/NA")) &&
           any(v == "Total                 5    100.00") })
 .v57i <- plines(jaov(Age ~ MS, data = t57, case.processing.detail = "per_code"))
@@ -2241,25 +2280,26 @@ b58 <- data.frame(
   stringsAsFactors = FALSE)
 .v58a <- plines(jfreq(b58, Source))
 check("N58a jfreq(): one <blank> row for the empty and the whitespace cells, first among the valid rows; the table and its footnote pinned whole",
-      identical(.v58a[3:21],
+      identical(.v58a[3:22],
         c("12 Cases in the 1 Variable Pool", "", "Source", "",
-          "           Freq  Total %  Valid %  Cum. %",
-          "---------  ----  -------  -------  ------",
+          "             Freq  Total %  Valid %  Cum. %",
+          "-----------  ----  -------  -------  ------",
           "Valid",
-          "<blank>      4     33.33   36.36    36.36",
-          "Adult        5     41.67   45.45    81.82",
-          "Juvenile     2     16.67   18.18   100.00",
+          "<blank>        4     33.33    36.36   36.36",
+          "Adult          5     41.67    45.45   81.82",
+          "Juvenile       2     16.67    18.18  100.00",
+          "Total valid   11     91.67   100.00",
           "",
           "Missing",
-          "System/NA    1      8.33      --       --",
+          "System/NA      1      8.33       --      --",
           "",
-          "Total       12    100.00",
+          "Total         12    100.00",
           "<blank>: 4 cells with no text (2 empty, 2 holding only spaces or tabs).",
           "They are counted as valid values, not as missing.",
           "To give them a code or make them missing, use jencode().",
           "")))
 check("N58b ... the footnote sits against the Total row, and the output ends on one blank line",
-      length(.v58a) == 21L && nzchar(.v58a[20]) && !nzchar(.v58a[21]))
+      length(.v58a) == 22L && nzchar(.v58a[21]) && !nzchar(.v58a[22]))
 check("N58c the blank cells are in the valid base, and the return value counts them",
       { r <- NULL; invisible(plines(r <- jfreq(b58, Source)))
         f <- r$frequencies$Source
@@ -2470,6 +2510,91 @@ check("N59k ... but a string of pieces that are not all diagnostics is the plain
                 paste0("joutput(): \"vif + plots\" is not a diagnostic.\n", .all59)))
 reset()
 rm(.ptr59, .e59, .v59d, .all59)
+
+# =============================================================================
+# N60 -- THE LISTWISE NOTE AND "COMPLETE ON ALL" IN A GROUPED jdesc; A PARTIAL
+#        jcomplete(); A PERCENT OF NO CASES (S348, v0.9.221)
+# =============================================================================
+# Fix Slate 7, first half. (1) A grouped jdesc passed the printer no data, so
+# it never stated how many cases were complete on all its variables and the
+# listwise-deletion note never fired (the S316 item). It now passes the cases
+# that HAVE a group, so the count agrees with the by = row; the grouping
+# variable is not counted among the pool's variables. (2) Once the by = row
+# has excluded cases, the N line counts "Grouped Cases" (the S316 mv item).
+# (3) Under a jcomplete() that covers only some of the analysis variables the
+# note was silent (the after-Session-17 item); it fires, naming the variables
+# jcomplete() does not cover. (4) A filter that leaves no row printed "NaN"
+# for every pool percent; the percent of nothing is "--" (the S346 item).
+reset()
+quiet(jload("clinic", name = "d60", package = TRUE, overwrite = TRUE, quiet = TRUE))
+d60$SocialSupport[1:3] <- NA
+.m60 <- jstats:::.jst_apply_declared_udms_as_na(d60)$data
+.g60 <- !is.na(.m60$Medication)
+.n60 <- "Note: Listwise deletion using jcomplete() first would leave 58 cases."
+# .pl60(): plines() for a capture outside check() (guard 3): a call that
+# stops gives its error text instead of halting the battery.
+.pl60 <- function(expr) tryCatch(plines(expr),
+                                 error = function(e) paste0("[error] ", conditionMessage(e)))
+.v60a <- .pl60(jdesc(d60, Stress, SocialSupport, by = Medication))
+check("N60a a grouped jdesc: the listwise note fires, under the Case Processing block and above the first variable",
+      { i <- which(.v60a == .n60)
+        length(i) == 1L && grepl("^-+$", .v60a[i - 2L]) &&
+          identical(.v60a[i - 1L], "") && identical(.v60a[i + 2L], "Stress") })
+check("N60b ... its count is taken among the cases with a group -- 58, where the whole pool's would be 63",
+      sum(stats::complete.cases(.m60[.g60, c("Stress", "SocialSupport")])) == 58L &&
+        sum(stats::complete.cases(.m60[, c("Stress", "SocialSupport")])) == 63L)
+quiet(joutput("minimal", quiet = TRUE))
+.v60c <- .pl60(jdesc(d60, Stress, SocialSupport, by = Medication))
+.v60d <- .pl60(jdesc(d60, Stress, by = Medication))
+.v60e <- .pl60(jdesc(d60, Stress, Flourishing, by = Condition))
+reset()
+check("N60c at minimal: the grouped count, \"Grouped Cases\", and the complete-on-all count among them, with the rider",
+      identical(n_line(.v60c),
+                "65 Grouped Cases in the 2 Variable Pool; 58 Complete on All (5 Excluded)"))
+check("N60d ... and no listwise note at minimal",
+      !any(startsWith(.v60c, "Note: Listwise")))
+check("N60e one described variable: no complete-on-all count (the grouping variable is not one of the pool's)",
+      identical(n_line(.v60d), "65 Grouped Cases in the 1 Variable Pool (5 Excluded)"))
+check("N60f a grouping variable that excludes no case: the plain \"Cases\", with the complete-on-all count",
+      identical(n_line(.v60e), "70 Cases in the 2 Variable Pool; 66 Complete on All"))
+check("N60g the ungrouped call is as it was: the N line and the note",
+      { v <- plines(jdesc(d60, Stress, SocialSupport))
+        identical(n_line(v), "70 Cases in the 2 Variable Pool; 63 Complete on All") &&
+          any(v == "Note: Listwise deletion using jcomplete() first would leave 63 cases.") })
+quiet(jcomplete(d60, Anxiety1))
+.v60h <- .pl60(jdesc(d60, Stress, SocialSupport))
+.v60i <- .pl60(jfreq(d60, Stress, SocialSupport))
+.v60j <- .pl60(jdesc(d60, Stress, SocialSupport, Anxiety1))
+quiet(jcomplete(d60, Stress, SocialSupport))
+.v60k <- .pl60(jdesc(d60, Stress, SocialSupport))
+reset()
+.p60 <- paste("Note: jcomplete() is not set on Stress and SocialSupport.",
+              "Listwise deletion across all of these variables would leave 63 cases.")
+check("N60h a jcomplete() on another variable: the note fires, naming the variables it does not cover, and the count",
+      { i <- which(startsWith(.v60h, "Note: jcomplete()"))
+        length(i) == 1L &&
+          identical(paste(.v60h[i:(i + 1L)], collapse = " "), .p60) &&
+          identical(.v60h[i + 2L], "") })
+check("N60i ... in jfreq() too",
+      { i <- which(startsWith(.v60i, "Note: jcomplete()"))
+        length(i) == 1L && identical(paste(.v60i[i:(i + 1L)], collapse = " "), .p60) })
+check("N60j ... a covered variable among the analysis variables is not named",
+      { i <- which(startsWith(.v60j, "Note: jcomplete()"))
+        length(i) == 1L && grepl("not set on Stress and SocialSupport\\.", .v60j[i]) })
+check("N60k control: a jcomplete() covering every analysis variable leaves nothing to say",
+      !any(grepl("^Note: (jcomplete|Listwise)", .v60k)))
+.e60 <- data.frame(x = c(1:5, 200), y = c(1, NA, 3, 4, 5, 6), g = c(1, 2, 1, 2, NA, 1))
+.v60l <- plines(tryCatch(jt(y ~ g, .e60, subset = x > 1000), error = function(e) NULL))
+.v60m <- .pl60(jcorr(.e60, x, y, subset = x > 1000))
+check("N60l a filter that leaves no row: each pool percent is \"--\", and NaN prints nowhere",
+      any(.v60l == "      Missing     1    16.7      1        0      --") &&
+        !any(grepl("NaN", .v60l)) && !any(grepl("NaN", .v60m)) &&
+        any(.v60m == "      Missing     1    16.7      1        0      --"))
+check("N60m control: a filter that leaves rows prints its pool percents as numbers",
+      { v <- plines(jt(y ~ g, .e60, subset = x < 100))
+        any(grepl("^      Missing +1 +16\\.7 +0 +1 +20\\.0$", v)) })
+rm(d60, .m60, .g60, .n60, .v60a, .v60c, .v60d, .v60e, .v60h, .v60i, .v60j,
+   .v60k, .p60, .pl60, .e60, .v60l, .v60m)
 
 # --- Verdict -----------------------------------------------------------------
 

@@ -142,6 +142,38 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S348 EDIT (v0.9.221, 2026-10-10): Fix Slate 7, first half. SECTION U
+#           ADDED, U01-U18 (18 checks): ruling R12 -- under a juse()
+#           default, a name the default frame has is the frame's variable
+#           in jdesc(), jfreq() and jscreen(), and a second line under
+#           "Using default data frame" says so when a separate vector or
+#           factor of that name exists: singular and plural, wrapped, at
+#           every level, a grouped call's by = named too; nothing said of a
+#           function, a list, a data frame or an object only a package
+#           supplies; the workspace vector still read with no default, or
+#           when the frame has no such variable; a column typed with its
+#           frame and a computed vector read as typed; jcorr() unchanged.
+#           Fixture names no workspace is likely to hold (zz_u*); objects a
+#           check needs are made inside local(). 458 checks. Sandbox: 458/458
+#           plain and under the RStudio-handler stand-in, each also with a
+#           Windows-length temp path. Entered dirty with an Age and a Gender
+#           in the workspace (the fifth condition), J08, K09 and M22 now
+#           hold -- three of the four checks of the (S342) [META] item,
+#           cleared by R12 -- and M39 still goes red (jsubset(Age > 40) with
+#           no default: no frame to prefer, so not R12's); with a Keep01 and
+#           a Name as well, I07, I08, I22 and S26 go red as at S343 (a
+#           condition naming another variable, on the single-column path).
+#           Both are the battery's own exposure, left to Scripts Slate B.
+#           MUTATION MAP (S348): the resolver as it was U01-U08 U12-U14 U16
+#           U18 P03; the second line never U02-U08 U12-U14 U16; a function
+#           or a list counted as a separate object U08; the caller's
+#           environment searched alone U07 U08; the line unwrapped U05 U13;
+#           a grouped call's by = not named U14; base R's objects counted
+#           U18.
+#           LAST VERIFIED: v0.9.221, 2026-10-10 (S348) -- 458/458 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2177 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 2a49208.
 # S346 EDIT (v0.9.219, 2026-10-08): the session guard hands back the stored
 #           display settings (.jst_output_toggles) with the output level.
 #           The diagnostics setting outlives a level call since v0.9.219,
@@ -3697,6 +3729,132 @@ check("T11 the resolver takes default_used, FALSE unless told (a caller that doe
                                                  default_used = TRUE)),
               "d is the juse() default") })
 rm(.t_nf, .t06)
+reset()
+
+# =============================================================================
+# U -- UNDER A juse() DEFAULT, THE FRAME'S VARIABLE IS READ (S348, v0.9.221)
+# =============================================================================
+# Ruling R12 (Jeff, S345): with a default set, a bare name that the default
+# frame has is the frame's variable in jdesc(), jfreq() and jscreen(), as in
+# every other function. Through 0.9.220 those three -- the ones that take a
+# single column -- read a separate vector of that name in the workspace and
+# said nothing ("3 Cases in the 1 Variable Pool"), and jdesc(Age, Gender)
+# was refused as needing a data frame. A workspace object is read only when
+# the default frame has no such variable, or when no default is set. When a
+# separate vector or factor shares a name the call uses, a second line under
+# "Using default data frame" says which was read. Names no workspace is
+# likely to hold (zz_u*), as the fifth dirty-entry condition asks; an object
+# a check needs for itself is made inside local(), where the call that
+# reads it runs too.
+reset()
+.u_prior_default <- getOption(".jst_default_data")
+zz_u <- data.frame(zz_ua = c(20, 30, 40, 50, NA, 60),
+                   zz_ub = c(1, 2, 1, 2, 1, 2))
+quiet(juse(zz_u))
+zz_ua <- c(1, 2, 3)
+zz_ub <- factor(c("m", "f"))
+.u_one <- "zz_ua is the variable in zz_u, not the separate object with that name."
+.u_two <- "zz_ua and zz_ub are variables in zz_u, not the separate objects with those names."
+# u_line(): the text under "Using default data frame", up to a blank line or
+# an indented one, joined -- the emitter wraps it at the pin. NA when the
+# note is absent; "" when it stands alone.
+u_line <- function(v) {
+  i <- which(startsWith(v, "Using default data frame: "))
+  if (length(i) != 1L) return(NA_character_)
+  j <- i + 1L; got <- character(0)
+  while (j <= length(v) && nzchar(v[j]) && !startsWith(v[j], " ")) {
+    got <- c(got, v[j]); j <- j + 1L
+  }
+  paste(got, collapse = " ")
+}
+# .u_pl(): plines() for a capture taken outside check() (guard 3): a call
+# that stops gives its error text, and the checks reading it go red where
+# the battery would have halted (as the old resolver's refusal of
+# jdesc(zz_ua, zz_ub) did, on the first mutant run).
+.u_pl <- function(expr) tryCatch(plines(expr),
+                                 error = function(e) paste0("[error] ", conditionMessage(e)))
+.u01 <- .u_pl(jdesc(zz_ua))
+check("U01 jdesc(): the default frame's variable (6 cases, 5 with a value), not the 3-value workspace vector",
+      any(.u01 == "6 Cases in the 1 Variable Pool") &&
+        any(grepl("^zz_ua +6 +5 +20 +60 ", .u01)))
+check("U02 ... under \"Using default data frame\", the line that says which object was read",
+      identical(u_line(.u01), .u_one) &&
+        identical(.u01[which(.u01 == "Using default data frame: zz_u") + 1L], .u_one))
+.u03 <- .u_pl(jfreq(zz_ub))
+check("U03 jfreq(): the frame's 1/2 variable, six cases, not the two-level factor",
+      any(.u03 == "6 Cases in the 1 Variable Pool") &&
+        any(grepl("^Total +6 +100\\.00$", .u03)) && !any(grepl("^(m|f) ", .u03)) &&
+        identical(u_line(.u03),
+                  "zz_ub is the variable in zz_u, not the separate object with that name."))
+.u04 <- .u_pl(jscreen(zz_ua))
+check("U04 jscreen(): the frame's variable -- \"Cases: 6\" -- and the line",
+      any(.u04 == "  Cases: 6") && identical(u_line(.u04), .u_one))
+.u05 <- .u_pl(jdesc(zz_ua, zz_ub))
+check("U05 two variables, both shared: no false refusal, both described from the frame, the plural line, wrapped",
+      any(.u05 == "6 Cases in the 2 Variable Pool; 5 Complete on All") &&
+        identical(u_line(.u05), .u_two) &&
+        all(nchar(.u05) <= .pin_width))
+check("U06 jscreen() on the two: the plural line",
+      identical(u_line(plines(jscreen(zz_ua, zz_ub))), .u_two))
+check("U07 a variable the workspace does not share: only the one that is shared is named",
+      local({ f <- zz_u; f$zz_uc <- 1:6
+              quiet(juse(f)); v <- plines(jdesc(zz_ub, zz_uc)); quiet(juse(zz_u))
+              identical(u_line(v),
+                        "zz_ub is the variable in f, not the separate object with that name.") }))
+check("U08 the line only when a vector or factor shares the name: a function, a list and a data frame of that name say nothing",
+      local({ zz_ua <- function(x) x; a <- plines(jdesc(zz_ua))
+              zz_ua <- list(1, 2);     b <- plines(jdesc(zz_ua))
+              zz_ua <- data.frame(q = 1); c3 <- plines(jfreq(zz_ub, zz_ua))
+              any(a == "6 Cases in the 1 Variable Pool") && identical(u_line(a), "") &&
+                any(b == "6 Cases in the 1 Variable Pool") && identical(u_line(b), "") &&
+                identical(u_line(c3),
+                          "zz_ub is the variable in zz_u, not the separate object with that name.") }))
+check("U09 no object shares the name: the default note alone, as before",
+      local({ f <- data.frame(zz_ue = 1:4); quiet(juse(f))
+              v <- plines(jdesc(zz_ue)); quiet(juse(zz_u))
+              identical(u_line(v), "") }))
+check("U10 the default frame has no such variable: the workspace vector is read, as before, and no default note",
+      local({ zz_ud <- c(7, 8, 9); v <- plines(jdesc(zz_ud))
+              any(v == "3 Cases in the 1 Variable Pool") && is.na(u_line(v)) }))
+check("U11 a column typed with its frame, and a computed vector, are read as typed: zz_u$zz_ua is the frame's column, a vector of three the workspace's",
+      { a <- plines(jdesc(zz_u$zz_ua)); b <- plines(jdesc(rev(zz_ua)))
+        any(a == "6 Cases in the 1 Variable Pool") &&
+          any(b == "3 Cases in the 1 Variable Pool") &&
+          !any(grepl("separate object", c(a, b))) })
+check("U12 the line prints at every output level, as the default note does",
+      { quiet(joutput("minimal", quiet = TRUE)); v <- plines(jfreq(zz_ua))
+        quiet(joutput(NULL, quiet = TRUE))
+        identical(u_line(v), .u_one) })
+check("U13 the line is wrapped at the message width, and only there",
+      { o <- getOption(".jst_options_message_width")
+        options(.jst_options_message_width = 50L)
+        v <- plines(jdesc(zz_ua, zz_ub))
+        options(.jst_options_message_width = o)
+        i <- which(v == "Using default data frame: zz_u")
+        length(i) == 1L && all(nchar(v[i + 1:2]) <= 50L) &&
+          identical(u_line(v), .u_two) })
+check("U14 a grouped jdesc names its grouping variable too",
+      identical(u_line(plines(jdesc(zz_ua, by = zz_ub))), .u_two))
+check("U15 with no default the workspace vector is read, as before",
+      { quiet(juse(NULL)); v <- plines(jdesc(zz_ua)); quiet(juse(zz_u))
+        any(v == "3 Cases in the 1 Variable Pool") && is.na(u_line(v)) })
+check("U16 a function of the user's own: its local vector is not read in the frame's place, and the line names it",
+      local({ f <- function() { zz_ua <- c(100, 200); jdesc(zz_ua) }
+              v <- plines(f())
+              any(v == "6 Cases in the 1 Variable Pool") && identical(u_line(v), .u_one) }))
+check("U17 the functions that never took a single column are unchanged: jcorr() reads the frame's two variables and prints no second line",
+      { v <- plines(jcorr(zz_ua, zz_ub))
+        any(grepl("N = 5", v)) && identical(u_line(v), "") })
+check("U18 an object only a package supplies is no one's separate object: a frame variable named pi, read from code whose environment encloses base R's, gets no line",
+      local({ f <- data.frame(pi = c(1, 2, 3)); quiet(juse(f))
+              g <- function() jstats::jdesc(pi)
+              environment(g) <- new.env(parent = baseenv())
+              assign("f", f, envir = environment(g))
+              v <- plines(g()); quiet(juse(zz_u))
+              any(v == "3 Cases in the 1 Variable Pool") && identical(u_line(v), "") }))
+options(.jst_default_data = .u_prior_default)
+rm(zz_u, zz_ua, zz_ub, .u_prior_default, .u_one, .u_two, .u01, .u03, .u04,
+   .u05, u_line, .u_pl)
 reset()
 
 # =============================================================================
