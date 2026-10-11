@@ -65,6 +65,16 @@
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S351 (v0.9.224). Sections 4, 6, 8 and 51 RE-PINNED
+#           MECHANICALLY under ruling R6: a blank line between jload()'s
+#           "Loaded ..." line and the narrative under it (five pinned
+#           blocks, one "#" line each). The same blank line shows in
+#           Sections 5, 7, 9, 10, 11 and 17, whose pins do not hold the
+#           Loaded line. Walked once, in modify_form_walk.R Section 17;
+#           PENDING stays none (instructions Section 6 [BUILD-TESTING]).
+#           harness.R survey: 40 of 41 Expected blocks found, as on
+#           0.9.223 (Section 10's elided block, as before); no NEEDS line
+#           changed.
 # EDITED:   S348 (v0.9.221). Sections 17, 44, 45, 53 and 54 RE-PINNED
 #           MECHANICALLY under rulings R4 and R7 (jfreq()'s "Total valid"
 #           and "Total missing" rows, and the columns they widened; walked
@@ -1481,6 +1491,7 @@ jload(fx("uniform_spss.sav"), name = "d1", overwrite = TRUE)
 
 # Expected, in this order:
 #   Loaded d1 (SPSS format; 103 cases, 15 variables)
+#
 #   5 variables have SPSS-style missing values:
 #     Income: -99 ["Refused"], -98 ["Don't know"]
 #     Education: -99 ["Refused"], -98 ["Don't know"]
@@ -1551,6 +1562,7 @@ jload(fx("uniform_stata.rds"), name = "d4", overwrite = TRUE)
 # matching lines plus one deliberately different one is a check the eye
 # can actually perform, and Smoker is the line that proves you read them.
 #   Loaded d4 (R native format; 103 cases, 15 variables)
+#
 #   5 variables have Stata-style missing values:
 #     Income: .a ["Refused"], .b ["Don't know"]
 #     Education: .a ["Refused"], .b ["Don't know"]
@@ -1642,6 +1654,7 @@ jload(fx("mixed.rds"), name = "d7", overwrite = TRUE)
 # Expected: a GROUPED-COUNT header rather than a style-named one, then the
 # note with an align line per style present:
 #   Loaded d7 (R native format; 103 cases, 15 variables)
+#
 #   5 variables have missing values (3 SPSS-style, 2 Stata-style):
 #     ...
 #   Note: d7 mixes SPSS-style and Stata-style missing values.
@@ -5556,6 +5569,7 @@ jload(f51, name = "ld51", overwrite = TRUE, missing.notice = TRUE)
 
 # Expected:
 #   Loaded ld51 (SPSS format; 10 cases, 4 variables)
+#
 #   2 variables have SPSS-style missing values:
 #     Marital: REF ["Refused"], UNKNOWN (no label)
 #     Income: -99 ["Refused"]
@@ -5568,6 +5582,7 @@ jload(f51, name = "nd51", overwrite = TRUE, preserve.declarations = FALSE)
 
 # Expected:
 #   Loaded nd51 (SPSS format; 10 cases, 4 variables)
+#
 #   2 variables had SPSS-style missing values, converted to plain NA per
 #   preserve.declarations = FALSE:
 #     Marital: was REF ["Refused"], UNKNOWN (no label)

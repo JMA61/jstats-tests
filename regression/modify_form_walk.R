@@ -6,7 +6,32 @@
 # LOCKS:    every runtime message that SUGGESTS a data-changing call teaches
 #           modify = TRUE, not the assignment form; the two REPORT sites (the
 #           durability note, the jai orientation body) still show both forms.
+#           Since S351 also the other LOAD AND SAVE messages (instructions
+#           Section 6 [BUILD-TESTING]: this is the walk that owns them):
+#           jload()'s and jsave()'s front doors, a path typed with single
+#           backslashes, the routes offered a frame holding a text variable
+#           with declared missing values, jsave()'s note on a text
+#           variable's missing cells (ruling R13), and the layout of
+#           jload()'s Loaded line among its notes (ruling R6).
 # ORIGIN:   S229
+# EDITED:   S351 (v0.9.224; Fix Slate 6; WALKED on the workstation the same session).
+#           SIX NEW SECTIONS, 13-18, every Expected filled by running the
+#           file (fill.R; the Saved lines, which name a temporary folder,
+#           then taken out of the pins by script): 13 the front doors of
+#           jload() and jsave(); 14 a path typed with single backslashes;
+#           15 a frame holding a text variable with declared missing
+#           values (the load narrative's Cases 4, 7 and 6, jsave()'s .dta
+#           and .sav refusals, the CSV note); 16 a text variable's missing
+#           cells across a save (ruling R13) and a CSV file of one column;
+#           17 the Loaded line and the notes around it, THE ONE SECTION
+#           WALKED FOR RULING R6 (missing_convention_walk.R Sections 4, 6, 8
+#           and 51 re-pinned mechanically under it); 18 Case 7's count past
+#           three names. Sections 1-3 show R6's blank line under their
+#           Loaded lines; none of their pins holds that line, so nothing
+#           there moved. harness.R derive: no new section needs another,
+#           every NEEDS line as it was; 38 of 39 Expected blocks found in
+#           the capture (Section 9's, as before).
+#           WALK: Sections 13-18 -- WALKED, see LAST VERIFIED below.
 # EXPECTED REVISED: S230 (v0.9.126) -- Sections 2/3/6 Expecteds brought to
 #           the S230 message surface (Rule L remedy blocks; Rule E splits
 #           in the minimal refusals). PENDING the next actual walk; the
@@ -126,7 +151,15 @@
 #           f(NULL) would reach the sole-frame-or-STOP path with no default
 #           to resolve against. No Expected touched; confirmed in the walk
 #           below.
-# LAST VERIFIED: v0.9.213, 2026-10-05 (S339) -- Sections 11 and 12 WALKED
+# LAST VERIFIED: v0.9.224, 2026-10-11 (S351) -- Sections 13-18 WALKED on
+#           the WORKSTATION through receive_all() ("walked, all okay", the
+#           tool's default line), GitHub 093763a (package), after the
+#           SANDBOX run (R 4.3.3, UTF-8 locale): every new Expected filled
+#           by running the file (fill.R), 38 of 39 blocks found in the
+#           capture (Section 9's prose block, as on 0.9.223), and all 18
+#           sections through rewalk() in file order, reverse order and
+#           shuffled, and by prepare = TRUE; no new section needs another.
+#           Prior: v0.9.213, 2026-10-05 (S339) -- Sections 11 and 12 WALKED
 #           on the WORKSTATION through rewalk() (Jeff: "both walk files are
 #           okay"), GitHub eb54a30, after the SANDBOX run (R 4.3.3, UTF-8
 #           locale): both sections' Expected blocks found in the capture,
@@ -931,6 +964,626 @@ rm(mk12, mkc12, lst12, d12a, d12b, d12c)
 #   - THE REFUSAL, both runs: "MyData" in the example; "names(plain_df)" in
 #     the first and "names(MyData)" in the second. Two different rules on
 #     neighbouring lines -- does the second run's pair read as consistent?
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 13 -- jload() and jsave() given something that is not a file ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S351 (v0.9.224; Fix Slate 6). What each front door says when the
+# argument it reads first is not a file name. Before 0.9.224:
+#     jload(mydata.sav)         R's own "object 'mydata.sav' not found"
+#     jload(community)          "Provide a filename, e.g. jload("mydata.sav")"
+#     jload(d13)                the same, of a data frame already loaded
+#     jload(system.file(...))   the same, of a call that found no file
+#     jsave("t13.rds")          "... Did you mean to use it as a variable
+#                               name?" (no default set)
+#     jsave(z13, "x13.rds")     "'z13' is a integer, not a data frame."
+#     a file name starting      "R does not allow variable names to start
+#       with a digit            with a digit" (said of the DATA FRAME's name)
+#     jload("x.RData")          ".RData files contain multiple named objects"
+.wd13 <- getwd(); setwd(.walkdir)
+writeLines(c("x", "1", "2"), "zz13.csv")
+writeLines(c("x", "1"), "2024zz13.csv")
+d13 <- data.frame(a = 1:3)
+p13 <- ""
+z13 <- 1:3
+.def13 <- getOption(".jst_default_data"); options(.jst_default_data = NULL)
+
+cat("--- a file name without its quotes ---\n")
+try(jload(zz13.csv))
+# Expected:
+#   Error : jload(): zz13.csv is not in quotes.
+#   A file name goes in quotes:
+#     jload("zz13.csv")
+
+cat("\n--- a shipped dataset's name without its quotes ---\n")
+try(jload(community))
+# Expected:
+#   Error : jload(): the name of the community dataset goes in quotes:
+#     jload("community")
+
+cat("\n--- a data frame already in the workspace ---\n")
+try(jload(d13))
+# Expected:
+#   Error : jload(): the d13 data frame is already loaded.
+#   To save it to a file:
+#     jsave(d13, "d13.rds")
+
+cat("\n--- an empty string from a variable, then from system.file() ---\n")
+try(jload(p13))
+try(jload(system.file("extdata", "zz13.csv", package = "jstats")))
+# Expected:
+#   Error : jload(): p13 is "", an empty file name.
+#   Error : jload(): system.file("extdata", "zz13.csv", package = "jstats") is
+#   "", an empty file name.
+#   system.file() gives "" when the file is not in the package.
+
+cat("\n--- jsave() given a file name alone, no default set ---\n")
+try(jsave("t13.rds"))
+# Expected:
+#   Error : jsave(): "t13.rds" is a file name, and no data frame was
+#   given to save.
+#   Name the data frame first:
+#     jsave(MyData, "t13.rds")
+
+cat("\n--- jsave() given a vector ---\n")
+try(jsave(z13, "x13.rds"))
+# Expected:
+#   Error : jsave(): 'z13' is not a data frame.
+#   Provide a data frame, e.g. jsave(MyData, "mydata.sav")
+
+cat("\n--- a name starting with a digit: the file's, then one given with name = ---\n")
+try(jload("2024zz13.csv"))
+try(jload("zz13.csv", name = "2b"))
+# Expected:
+#   Error : jload(): The filename '2024zz13.csv' starts with a number.
+#   R does not allow a data frame's name to start with a digit.
+#   Provide a name, e.g.:
+#     jload("2024zz13.csv", name = "zz13")
+#   Error : jload(): The name '2b' starts with a number.
+#   R does not allow a data frame's name to start with a digit.
+#   Provide a name, e.g.:
+#     jload("zz13.csv", name = "b")
+
+cat("\n--- an .RData file ---\n")
+try(jload("x13.RData"))
+# Expected:
+#   Error : jload(): .RData files can contain multiple named objects.
+#   Use load("x13.RData") to load these directly.
+
+options(.jst_default_data = .def13)
+setwd(.wd13)
+rm(.wd13, .def13, d13, p13, z13)
+
+# Things to look at:
+#   - EACH LINE THAT IS OFFERED RUNS (missing_convention_check.R N86a-c and
+#     N86j run them): jload("zz13.csv") loads the file, jload("community")
+#     the shipped dataset, jsave(d13, "d13.rds") writes the frame.
+#   - The subject of each first line is what was typed: zz13.csv, p13,
+#     the system.file() call (voice Rules AD and T: a data frame is "the
+#     d13 data frame", never a bare name opening the sentence).
+#   - jsave("t13.rds") with a default set still saves the default, as it
+#     always did (N86h); this message is for no default only.
+#   - "jload(""): Provide a filename" -- an empty string TYPED as such --
+#     is unchanged (N86f); only an expression that came out empty is named.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 14 -- a path typed with single backslashes ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S351 (v0.9.224; the S343 item, Jeff's decision: "Let's do the
+# version 1", the forward-slash form alone). Inside quoted text R reads a
+# backslash and the letter after it as one special character, so
+# "V:\temp\new.csv" reaches jload() holding a tab and a new line, and was
+# reported as a file not found -- under a name the user never typed. Now
+# jload(), jsave() and joptions(data.dir = ) stop first. An ILLEGAL escape
+# (a backslash before 5, U or J) stops R itself before any function runs;
+# that is the guides' Troubleshooting entry.
+.wd14 <- getwd(); setwd(.walkdir)
+dir.create("zz14", showWarnings = FALSE)
+writeLines(c("x", "1"), file.path("zz14", "temp14.csv"))
+
+cat("--- jload(), then jsave(), then joptions(data.dir = ) ---\n")
+try(jload("V:\temp\new.csv"))
+try(jsave(spss_df, "V:\temp\new.csv"))
+try(joptions(data.dir = "Proj\temp"))
+# Expected:
+#   Error : jload(): R read the single backslashes in "V:\temp\new.csv" as
+#   special characters (\t as a tab, \n as a new line).
+#   Write the path with forward slashes:
+#     "V:/temp/new.csv"
+#   Error : jsave(): R read the single backslashes in "V:\temp\new.csv" as
+#   special characters (\t as a tab, \n as a new line).
+#   Write the path with forward slashes:
+#     "V:/temp/new.csv"
+#   Error : joptions(): R read the single backslash in "Proj\temp" as a special
+#   character (\t as a tab).
+#   Write the folder with forward slashes:
+#     "Proj/temp"
+
+cat("\n--- a character no letter maps back to ---\n")
+try(jload("C:\1data.csv"))
+# Expected:
+#   Error : jload(): R read a single backslash in "C:\001data.csv" as a
+#   special character.
+#   Type the path again with forward slashes in place of the backslashes.
+
+cat("\n--- the path it offers is the file meant ---\n")
+try(jload("zz14\temp14.csv"))
+jload("zz14/temp14.csv", name = "t14", overwrite = TRUE)
+# Expected:
+#   Error : jload(): R read the single backslash in "zz14\temp14.csv" as a
+#   special character (\t as a tab).
+#   Write the path with forward slashes:
+#     "zz14/temp14.csv"
+#   Loaded t14 (CSV format; 1 case, 1 variable)
+
+setwd(.wd14)
+rm(.wd14, t14)
+
+# Things to look at:
+#   - The path inside the first sentence is the path as R HOLDS it, written
+#     back with its escapes ("V:\temp\new.csv"), which is what was typed;
+#     the parenthesis says what each made of it.
+#   - The second line offers the path alone, quoted, not a whole call: the
+#     call's other arguments are the user's to keep.
+#   - joptions(): "the single backslash ... a special character" -- one
+#     backslash, the singular. Nothing was set, no folder was made (N86p).
+#   - "C:\1data.csv": a backslash before a digit is an octal escape, and
+#     \1, \01 and \001 make the same character, so no path can be offered;
+#     the instruction alone.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 15 -- a frame holding a text variable with declared missing values ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S351 (v0.9.224; the S340 item). jconvert(to = "stata") refuses a
+# text variable with declared missing values since v0.9.214 -- a marker is
+# a kind of NA in a NUMERIC variable -- so every message that offered the
+# whole-frame conversion printed a line that stopped: the load narrative's
+# Cases 4, 6 and 7, jsave()'s .dta refusal (both tiers) and its .sav
+# over-limit refusal. Each now offers what runs: the text variable's
+# declared values made plain NA, then the rest converted, with one sentence
+# saying so (the Case 1 line has offered to = "baseR" since v0.9.214); the
+# .dta refusal adds jencode(), which keeps them; the over-limit refusal
+# drops its Stata route, whose "also keeping all the codes" would be false.
+# Visits is a labelled INTEGER (the S350 lesson).
+ds15 <- data.frame(
+  Source = haven::labelled_spss(c("web", "phone", "X", "web", "Y", "mail"),
+                                labels = c(Refused = "X", `Don't know` = "Y"),
+                                na_values = c("X", "Y")),
+  Income = haven::labelled_spss(c(42000, 51000, -99, 38000, -98, 61000),
+                                labels = c(Refused = -99, `Don't know` = -98),
+                                na_values = c(-99, -98)),
+  Visits = haven::labelled_spss(c(2L, 4L, -99L, 1L, 3L, 2L),
+                                labels = c(Refused = -99L), na_values = -99L))
+mx15 <- ds15
+mx15$Mood <- haven::labelled(c(3, 4, haven::tagged_na("a"), 2, 1, 3),
+                             labels = c(Refused = haven::tagged_na("a")))
+oc15 <- data.frame(Source = ds15$Source,
+                   Rating = haven::labelled_spss(c(1, 2, -99, -98, -97, -96),
+                                                 labels = c(a = -99, b = -98, c = -97, d = -96),
+                                                 na_values = c(-99, -98, -97, -96)))
+f15  <- file.path(.walkdir, "ds15.rds"); saveRDS(ds15, f15)
+fm15 <- file.path(.walkdir, "mx15.rds"); saveRDS(mx15, fm15)
+
+cat("--- Case 4: the setting says \"stata\" ---\n")
+joptions(missing.convention = "stata", quiet = TRUE)
+jload(f15, name = "ds15", overwrite = TRUE, missing.notice = TRUE)
+# Expected:
+#   Loaded ds15 (R native format; 6 cases, 3 variables)
+#
+#   3 variables have SPSS-style missing values:
+#     Source: X ["Refused"], Y ["Don't know"]
+#     Income: -99 ["Refused"], -98 ["Don't know"]
+#     Visits: -99 ["Refused"]
+#   Note: these variables are SPSS-style, but your missing.convention setting
+#   is "stata".
+#   To use SPSS-style missing values, run:
+#     joptions(missing.convention = "spss")
+#   To use Stata-style missing values, run both:
+#     jconvert(ds15, to = "baseR", vars = "Source", modify = TRUE)
+#     jconvert(ds15, to = "stata", modify = TRUE)
+#   Source is text, so the first line makes its declared values plain NA.
+
+cat("\n--- ... and its two lines, run ---\n")
+jconvert(ds15, to = "baseR", vars = "Source", modify = TRUE)
+jconvert(ds15, to = "stata", modify = TRUE)
+# Expected:
+#   Stripped the missing-value declarations from 1 variable:
+#     Source  X ["Refused"]
+#             Y ["Don't know"]
+#
+#   To keep it across sessions, save the data frame:
+#     jsave(ds15, "ds15.rds")
+#   Converted to Stata-style missing values in 2 variables:
+#     Income  -99 ["Refused"]     -> .a
+#             -98 ["Don't know"]  -> .b
+#     Visits  -99 ["Refused"]     -> .a
+#
+#   To keep it across sessions, save the data frame:
+#     jsave(ds15, "ds15.rds")
+
+cat("\n--- Case 7: the setting says \"spss\", the frame holds a Stata-style variable ---\n")
+joptions(missing.convention = "spss", quiet = TRUE)
+jload(fm15, name = "mx15", overwrite = TRUE, missing.notice = TRUE)
+# Expected:
+#   Loaded mx15 (R native format; 6 cases, 4 variables)
+#
+#   4 variables have missing values (3 SPSS-style, 1 Stata-style):
+#     Source: X ["Refused"], Y ["Don't know"]
+#     Income: -99 ["Refused"], -98 ["Don't know"]
+#     Visits: -99 ["Refused"]
+#     Mood: .a ["Refused"]
+#   Note: Mood is Stata-style, but your missing.convention setting is "spss".
+#   To use SPSS-style missing values throughout, run:
+#     jconvert(mx15, to = "spss", modify = TRUE)
+#   To use Stata-style missing values throughout, run all three:
+#     jconvert(mx15, to = "baseR", vars = "Source", modify = TRUE)
+#     jconvert(mx15, to = "stata", modify = TRUE)
+#     joptions(missing.convention = "stata")
+#   Source is text, so the first line makes its declared values plain NA.
+
+cat("\n--- Case 6: no setting ---\n")
+joptions(missing.convention = "none", quiet = TRUE)
+jload(fm15, name = "mx15", overwrite = TRUE, missing.notice = TRUE)
+# Expected:
+#   Loaded mx15 (R native format; 6 cases, 4 variables)
+#
+#   4 variables have missing values (3 SPSS-style, 1 Stata-style):
+#     Source: X ["Refused"], Y ["Don't know"]
+#     Income: -99 ["Refused"], -98 ["Don't know"]
+#     Visits: -99 ["Refused"]
+#     Mood: .a ["Refused"]
+#   Note: mx15 mixes SPSS-style and Stata-style missing values.
+#   To use SPSS-style throughout, run both:
+#     jconvert(mx15, to = "spss", modify = TRUE)
+#     joptions(missing.convention = "spss")
+#   To use Stata-style throughout, run all three:
+#     jconvert(mx15, to = "baseR", vars = "Source", modify = TRUE)
+#     jconvert(mx15, to = "stata", modify = TRUE)
+#     joptions(missing.convention = "stata")
+#   Source is text, so the first line makes its declared values plain NA.
+
+cat("\n--- jsave() to Stata format, standard then minimal ---\n")
+ds15 <- readRDS(f15)
+try(jsave(ds15, file.path(.walkdir, "ds15.dta")))
+joutput("minimal", quiet = TRUE)
+try(jsave(ds15, file.path(.walkdir, "ds15.dta")))
+joutput(NULL, quiet = TRUE)
+# Expected:
+#   Error : jsave(): 3 variables carry SPSS-style missing values, incompatible
+#   with the .dta format:
+#     Source, Income, Visits
+#
+#   Before saving to Stata format, run both:
+#     jconvert(ds15, to = "baseR", vars = "Source", modify = TRUE)
+#     jconvert(ds15, to = "stata", modify = TRUE)
+#   Source is text, so the first line makes its declared values plain NA.
+#   Or turn it into a numeric variable first with jencode().
+#   Error : jsave(): 3 variables carry SPSS-style missing values, incompatible
+#   with the .dta format.
+#   Convert first, then save again:
+#     jconvert(ds15, to = "baseR", vars = "Source", modify = TRUE)
+#     jconvert(ds15, to = "stata", modify = TRUE)
+#   Source is text, so the first line makes its declared values plain NA.
+
+cat("\n--- jsave() to SPSS format, more codes than it allows, standard then minimal ---\n")
+try(jsave(oc15, file.path(.walkdir, "oc15.sav")))
+joutput("minimal", quiet = TRUE)
+try(jsave(oc15, file.path(.walkdir, "oc15.sav")))
+joutput(NULL, quiet = TRUE)
+# Expected:
+#   Error : jsave(): SPSS format (.sav) allows at most 3 declared missing values
+#   per variable, or a range plus one code.
+#
+#   This variable in oc15 has more:
+#     Rating: 4 codes
+#
+#   To save in R format (.rds) instead, keeping all the codes:
+#     jsave(oc15, "oc15.rds")
+#   Or reduce each variable's declared missing values to fit.
+#   Error : jsave(): 1 variable has more declared missing values than SPSS
+#   format (.sav) allows (at most 3, or a range plus one).
+#   Save as R format (.rds) to keep all the codes, or reduce them first.
+
+cat("\n--- jsave() to CSV format ---\n")
+.wd15 <- getwd(); setwd(.walkdir)
+jsave(ds15, "ds15.csv", overwrite = TRUE)
+setwd(.wd15)
+# Expected:
+#   Note: CSV format (.csv) does not store variable labels, value labels, or
+#   missing-value metadata.
+#   Any SPSS-style missing-value codes are written as ordinary values and will
+#   read back as valid data.
+#   Alternatively, use jsave(..., preserve.declarations = FALSE) to blank them
+#   to empty cells instead.
+
+options(.jst_options_missing_convention = "none")
+rm(ds15, mx15, oc15, f15, fm15, .wd15)
+
+# The Saved line names a temporary folder, which differs on every run, so
+# no Expected above pins it.
+#
+# Things to look at:
+#   - CASE 4: the SPSS remedy is unchanged; the Stata one is the two lines
+#     and the sentence under them. Read them as a pair, as Section 2 asks:
+#     does the sentence read as belonging to the Stata route only?
+#   - THE TWO LINES, RUN: the first strips Source's declarations, the
+#     second converts Income and Visits (the integer converts too). No
+#     "Skipped (value labels suggest missingness ...)" report on Source:
+#     under to = "stata" or "sas" jconvert() leaves a text variable out of
+#     that report now, since declaring it would only lead back to the
+#     refusal (N86ax; under to = "spss" it still reports, N86ay).
+#   - CASE 7 and CASE 6: "run all three:" -- the two lines and the
+#     joptions() rider. Three different calls in sequence, so all three
+#     are listed (voice Rule U's repeated-remedy cap is for ONE call
+#     repeated).
+#   - THE .dta REFUSAL ends on "Or turn it into a numeric variable first
+#     with jencode()." at the standard tier only.
+#   - THE .sav REFUSAL offers .rds and "reduce": no Stata route.
+#   - THE CSV NOTE says "ordinary values ... valid data" -- Source's
+#     declared codes are words, not -99. A frame of numbers keeps "(e.g.
+#     -99) ... literal numbers" (N86aw).
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 16 -- a text variable's missing cells across a save (ruling R13) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S351 (v0.9.224). Ruling R13 (Jeff, S345: "yes to your
+# recommendations for R13"): SPSS, Stata and CSV formats have no missing
+# value for text, so a text variable's NA is saved as blank text and comes
+# back as the <blank> category, counted valid; jsave() says so, jload() does
+# not change. The SAS interchange format (.xpt) and a factor in a CSV file
+# lose the same way (Jeff's lean, S351). And a CSV file of ONE column lost
+# its missing rows altogether (the S345 item): an empty cell there is an
+# empty line, which read.csv() skips -- 8 cases saved, 6 loaded. jload()
+# now keeps the empty lines of a one-column file.
+.wd16 <- getwd(); setwd(.walkdir)
+tx16 <- data.frame(Source = c("web", NA, "mail", NA),
+                   Visits = haven::labelled(c(1L, 2L, NA, 1L), labels = c(Once = 1L)),
+                   Score  = c(1.5, NA, 2, 3),
+                   stringsAsFactors = FALSE)
+fc16 <- data.frame(Group = factor(c("a", NA, "b")), Source = c(NA, "x", NA),
+                   stringsAsFactors = FALSE)
+v16  <- data.frame(Source = c("web", "phone", NA, "web", "mail", NA, "web", "phone"))
+
+cat("--- SPSS, Stata and SAS interchange formats ---\n")
+jsave(tx16, "tx16.sav", overwrite = TRUE)
+# Expected:
+#   Note: SPSS format (.sav) cannot store a missing value in a text variable.
+#   2 missing cells in Source were saved as blank text.
+#   R format (.rds) and Excel format (.xlsx) keep them missing.
+jsave(tx16, "tx16.dta", overwrite = TRUE)
+# Expected:
+#   Note: Stata format (.dta) cannot store a missing value in a text variable.
+#   2 missing cells in Source were saved as blank text.
+#   R format (.rds) and Excel format (.xlsx) keep them missing.
+jsave(tx16, "tx16.xpt", overwrite = TRUE)
+# Expected:
+#   Note: SAS interchange format (.xpt) cannot store a missing value in a
+#   text variable.
+#   2 missing cells in Source were saved as blank text.
+#   R format (.rds) and Excel format (.xlsx) keep them missing.
+
+cat("\n--- CSV format, a factor beside the text variable ---\n")
+jsave(fc16, "fc16.csv", overwrite = TRUE)
+# Expected:
+#   Note: CSV format (.csv) does not store variable labels or value labels.
+#
+#   Note: CSV format (.csv) cannot store a missing value in a text or
+#   categorical variable.
+#   3 missing cells in Group (1) and Source (2) were saved as blank text.
+#   R format (.rds) and Excel format (.xlsx) keep them missing.
+
+cat("\n--- one cell ---\n")
+jsave(data.frame(Source = c("web", NA)), "one16.sav", overwrite = TRUE)
+# Expected:
+#   Note: SPSS format (.sav) cannot store a missing value in a text variable.
+#   1 missing cell in Source was saved as blank text.
+#   R format (.rds) and Excel format (.xlsx) keep it missing.
+
+cat("\n--- the .sav file read back ---\n")
+jload("tx16.sav", name = "b16", overwrite = TRUE)
+jfreq(b16, Source)
+# Expected:
+#   Loaded b16 (SPSS format; 4 cases, 3 variables)
+#   Frequencies
+#
+#   4 Cases in the 1 Variable Pool
+#
+#   Source
+#
+#            Freq  Total %  Valid %  Cum. %
+#   -------  ----  -------  -------  ------
+#   <blank>    2     50.00   50.00    50.00
+#   mail       1     25.00   25.00    75.00
+#   web        1     25.00   25.00   100.00
+#
+#   Total      4    100.00
+#   <blank>: 2 cells with no text.
+#   They are counted as valid values, not as missing.
+#   To give them a code or make them missing, use jencode().
+
+cat("\n--- a CSV file of one column, saved and read back ---\n")
+jsave(v16, "v16.csv", overwrite = TRUE)
+jload("v16.csv", name = "c16", overwrite = TRUE)
+jfreq(c16, Source)
+# Expected:
+#   Loaded c16 (CSV format; 8 cases, 1 variable)
+#   Frequencies
+#
+#   8 Cases in the 1 Variable Pool
+#
+#   Source
+#
+#            Freq  Total %  Valid %  Cum. %
+#   -------  ----  -------  -------  ------
+#   <blank>    2     25.00   25.00    25.00
+#   mail       1     12.50   12.50    37.50
+#   phone      2     25.00   25.00    62.50
+#   web        3     37.50   37.50   100.00
+#
+#   Total      8    100.00
+#   <blank>: 2 cells with no text.
+#   They are counted as valid values, not as missing.
+#   To give them a code or make them missing, use jencode().
+
+setwd(.wd16)
+rm(.wd16, tx16, fc16, v16, b16, c16)
+
+# The Saved lines name a temporary folder and are not pinned.
+#
+# Things to look at:
+#   - THE NOTE, three lines: the format and what it cannot store; the
+#     cells, and in which variable; the two formats that keep them.
+#     Visits and Score lose nothing -- a missing NUMBER survives every
+#     format -- and are not named.
+#   - CSV: the label note, a blank line, then this note; Group (1) and
+#     Source (2) with their counts, and "a text or categorical variable".
+#   - ONE CELL: "1 missing cell ... was saved", "keep it missing".
+#   - READ BACK: jfreq() shows Source's two cells as <blank>, valid, with
+#     its footnote -- jload() unchanged, as the ruling says; the note at
+#     the save is where the user learns why.
+#   - THE ONE-COLUMN FILE: "8 cases" (it read 6 before 0.9.224), the two
+#     empty lines back as <blank>.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 17 -- jload()'s Loaded line and the notes around it (ruling R6) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S351 (v0.9.224). THE ONE SECTION WALKED FOR RULING R6 (Jeff, S345:
+# a LEADING status line gets a blank line before the first note; the
+# Console shows the message stream's blank lines). The Loaded line now sits
+# a blank line from a note on either side; the other sections that show a
+# load (here 1-3 and 15; missing_convention_walk.R 4-11, 17, 51) changed
+# that one way and were re-pinned mechanically. Shown: the narrative under
+# it; a registration note and the default-frame note above it; the line
+# alone; the shipped dataset's form.
+.wd17 <- getwd(); setwd(.walkdir)
+reg17 <- spss_df
+suppressMessages(jnumeric(reg17, Education))
+suppressMessages(jsave(reg17, "reg17.rds", overwrite = TRUE))
+
+cat("--- the narrative under it ---\n")
+jload("clinic.rds", name = "r17", overwrite = TRUE, missing.notice = TRUE)
+# Expected:
+#   Loaded r17 (R native format; 4 cases, 2 variables)
+#
+#   2 variables have SPSS-style missing values:
+#     Income: -99 ["Refused"], -98 ["Don't know"]
+#     Education: -99 ["Refused"]
+#   jstats analyses treat these codes as missing. Base R functions do not.
+#   To make them missing in base R as well, convert:
+#     jconvert(r17, to = "stata", modify = TRUE)
+
+cat("\n--- notes above it: a registration restored, the default set ---\n")
+jload("reg17.rds", name = "s17", overwrite = TRUE, use = TRUE, missing.notice = FALSE)
+# Expected:
+#   Restored the classification registrations saved with this file (saved
+#   under 'reg17').
+#
+#   Default data frame set to: s17
+#
+#   Loaded s17 (R native format; 4 cases, 2 variables)
+
+cat("\n--- the line alone ---\n")
+jload("clinic.rds", name = "r17", overwrite = TRUE, missing.notice = FALSE)
+# Expected:
+#   Loaded r17 (R native format; 4 cases, 2 variables)
+
+cat("\n--- the shipped dataset ---\n")
+jload("community", name = "c17", package = TRUE, overwrite = TRUE,
+      missing.notice = TRUE)
+# Expected:
+#   Loaded the jstats example dataset 'community'.
+#
+#   5 variables have SPSS-style missing values:
+#     Income: -99 ["Refused"], -98 ["Don't know"]
+#     Education: -99 ["Refused"], -98 ["Don't know"]
+#     Smoker: -99 ["Refused"]
+#     Environment1: -99 ["Refused"], -98 ["Don't know"]
+#     Environment3: -99 ["Refused"], -98 ["Don't know"]
+#   jstats analyses treat these codes as missing. Base R functions do not.
+#   To make them missing in base R as well, convert:
+#     jconvert(c17, to = "stata", modify = TRUE)
+
+options(.jst_default_data = NULL)
+suppressMessages(jnumeric(reg17, NULL)); suppressMessages(jnumeric(s17, NULL))
+setwd(.wd17)
+rm(.wd17, reg17, r17, s17, c17)
+
+# Things to look at:
+#   - ONE blank line between the Loaded line and the narrative's first
+#     line, and one between each note above it and the next. Between the
+#     narrative's inventory and its own Note: block there is still none
+#     (S237): that is one message, not two.
+#   - The line alone ends the output: no blank line after it.
+#   - Is the gap above the Loaded line right as well? The ruling spoke of
+#     a LEADING status line; with notes above it, this build treats it the
+#     same way on both sides.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 18 -- Case 7 on a wider frame: a count past three names ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S351 (v0.9.224; the S294 item). Case 7's note named every
+# off-setting variable ahead of its verb, ten and "... and 2 more" on a wide
+# frame. Past three it now gives a count, as Case 4's "these variables"
+# leans on the inventory just above; three or fewer keep their names
+# (three is the durability reminder's limit, S339).
+w18 <- data.frame(Income = spss_df$Income)
+for (v18 in c("Q1", "Q2", "Q3", "Q4")) {
+  w18[[v18]] <- haven::labelled(c(3, 4, haven::tagged_na("a"), 2),
+                                labels = c(Refused = haven::tagged_na("a")))
+}
+fw18  <- file.path(.walkdir, "w18.rds");  saveRDS(w18, fw18)
+fw18b <- file.path(.walkdir, "w18b.rds"); saveRDS(w18[1:4], fw18b)
+joptions(missing.convention = "spss", quiet = TRUE)
+
+cat("--- four Stata-style variables ---\n")
+jload(fw18, name = "w18", overwrite = TRUE, missing.notice = TRUE)
+# Expected:
+#   Loaded w18 (R native format; 4 cases, 5 variables)
+#
+#   5 variables have missing values (1 SPSS-style, 4 Stata-style):
+#     Income: -99 ["Refused"], -98 ["Don't know"]
+#     Q1: .a ["Refused"]
+#     Q2: .a ["Refused"]
+#     Q3: .a ["Refused"]
+#     Q4: .a ["Refused"]
+#   Note: 4 variables are Stata-style, but your missing.convention setting
+#   is "spss".
+#   To use SPSS-style missing values throughout, run:
+#     jconvert(w18, to = "spss", modify = TRUE)
+#   To use Stata-style missing values throughout, run both:
+#     jconvert(w18, to = "stata", modify = TRUE)
+#     joptions(missing.convention = "stata")
+
+cat("\n--- three ---\n")
+jload(fw18b, name = "w18b", overwrite = TRUE, missing.notice = TRUE)
+# Expected:
+#   Loaded w18b (R native format; 4 cases, 4 variables)
+#
+#   4 variables have missing values (1 SPSS-style, 3 Stata-style):
+#     Income: -99 ["Refused"], -98 ["Don't know"]
+#     Q1: .a ["Refused"]
+#     Q2: .a ["Refused"]
+#     Q3: .a ["Refused"]
+#   Note: Q1, Q2, and Q3 are Stata-style, but your missing.convention setting
+#   is "spss".
+#   To use SPSS-style missing values throughout, run:
+#     jconvert(w18b, to = "spss", modify = TRUE)
+#   To use Stata-style missing values throughout, run both:
+#     jconvert(w18b, to = "stata", modify = TRUE)
+#     joptions(missing.convention = "stata")
+
+options(.jst_options_missing_convention = "none")
+rm(w18, w18b, v18, fw18, fw18b)
+
+# Things to look at:
+#   - "4 variables are Stata-style": the inventory above lists them.
+#   - "Q1, Q2, and Q3 are Stata-style": the names, as before.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

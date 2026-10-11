@@ -10,6 +10,77 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S351 EDIT (v0.9.224, 2026-10-11): NEW N86 section, fifty-nine checks
+#           (N86a-N86bg), Fix Slate 6, load and save. A: jload()'s and
+#           jsave()'s front doors -- a file name without quotes, a data
+#           frame (a shipped dataset's name; any other), an empty string
+#           from a variable or system.file(), jsave() given a file name
+#           alone with no default, "'z' is not a data frame", a name
+#           starting with a digit (jload(), name =, jcopy()), ".RData files
+#           can contain" (a-m, bg). B: a path typed with single backslashes
+#           in jload(), jsave() and joptions(data.dir = ), the fixed path
+#           read from the message and loaded, what is NOT caught (n-t, bf).
+#           C: a CSV file of one column keeps its empty lines (u-w). D:
+#           ruling R13's note on a text variable's missing cells in .sav,
+#           .dta, .xpt and .csv, a factor in CSV, the count against the
+#           round trip (x-ag). E: a frame holding a text variable with
+#           declared missing values -- the .dta and .sav refusals, the
+#           narrative's Cases 4, 6 and 7, each offered line RUN, the CSV
+#           note's rider, jconvert()'s label report under stata and sas
+#           (ah-ay). F: Case 7's count past three names; ruling R6's blank
+#           line around jload()'s Loaded line (az-be). Fixtures carry a
+#           labelled INTEGER variable beside the double one (the S350
+#           lesson). SIX HUNDRED AND NINETEEN checks. On the 0.9.223 master
+#           49 of the 59 red; the ten that pass pin what did not change
+#           (f, h, r, aa, ab, an, au, ay, ba, bd).
+#           MUTATION MAP (S351; 49 mutants, every battery on each, then
+#           four again on the final master): the path check gone from
+#           jload() N86n q s, from jsave() N86o (and N79: the file is then
+#           written under a name holding a tab), from joptions() N86p ai ak
+#           al (the folder is then made, and later saves land in it); a
+#           doubled backslash kept N86bf; an unmappable character given
+#           the mapped form N86q bf; always the plural N86p; DEL not
+#           caught N86bf; a shipped dataset's name not told apart N86b; a
+#           data frame not caught N86b c bg; no system.file() line N86e; a
+#           typed "" given the expression form N86f; no unquoted-name
+#           check N86a; jsave()'s file-name branch gone N86g, or ignoring
+#           the default N86h; "'z' is a <class>" N86i; name = not told
+#           apart N86k; jload()'s digit sentence N86j k; jcopy()'s N86l;
+#           ".RData files contain" N86m; a one-column CSV skipping its empty
+#           lines N86u v w; every CSV keeping them N86w; the header read
+#           without quotes N86w; no .xpt note N86y; a factor in CSV not
+#           counted N86ac; a factor counted for .sav N86ad; is.na() on the
+#           declared string itself N86af; always "them" N86ae; the text
+#           note before the label note N86z; no note at all N86x y z ac ad
+#           ae af ag; the .dta refusal's second call always N86ak; no
+#           jencode() line N86ah ak al; no minimal-tier sentence N86aj;
+#           vars as a bare list N86ah-al ao-at; the narrative's old
+#           whole-frame line N86ao-at; the over-limit Stata route always
+#           N86am; three calls said "run both:" N86ar as; the rider not
+#           counted for "the first line" N86at; the second call's test
+#           ignoring the convention N86at; the CSV rider ignored N86av aw;
+#           "numbers" in the both-forms branch N86aw; the label report kept
+#           under stata N86ax, dropped under every target N86ay; a
+#           declared text variable read without the SPSS test N86ah ai aj
+#           al an aw; Case 7 naming however many N86az, or counting from
+#           three N86ba; no blank line before the Loaded line N86bc; the
+#           flag not set by it N86bb be; no blank line before the narrative
+#           N86bb be. ONE SURVIVOR, "the flag set though quiet": quiet =
+#           TRUE mutes every line the flag spaces, so the guard could not
+#           differ; it was REMOVED from the master (the S343 rule), not
+#           mapped as equivalent. On the final master, whose reworded
+#           sentences end their own lines: 'z' N86i, name = N86k, the two
+#           digit sentences N86j k and N86l.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 619/619
+#           plain and under the RStudio-handler stand-in, each again with
+#           a Windows-length temp path, and entered dirty (with a Source,
+#           an Income and a community of the user's as well). The first
+#           dirty run left .jst_missing_notice_shown set: N86's loads print
+#           the narrative, and N86 now hands the flag back at its foot.
+#           LAST VERIFIED: v0.9.224, 2026-10-11 (S351) -- 619/619 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2279 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 093763a.
 # S350 EDIT (v0.9.223, 2026-10-11): NEW N85 section, five checks (N85a-e):
 #           jdeclare_missing(codes = ) on a labelled variable stored as
 #           whole numbers, under stata and sas -- the S345 collision check
@@ -7040,6 +7111,502 @@ check("N85e the shipped clinic's Anxiety2 takes the page's exercise call, and jf
           grepl("\n\\.b \\[\"Don't know\"\\] +3 ", p) &&
           grepl("\nTotal missing +6 ", p) }))
 rm(list = intersect(c("f85", ".conv85"), ls(all.names = TRUE)))
+
+# =============================================================================
+# N86 -- FIX SLATE 6, LOAD AND SAVE (S351, v0.9.224)
+# =============================================================================
+# Twelve items on jload(), jsave() and the load narrative, and two defects
+# found on the same surface. Six parts, each lettered within N86:
+#   A  the front doors: a file name typed without quotes; a data frame (a
+#      shipped dataset's name, any other frame); an expression that came
+#      out empty (a variable, system.file()); jsave() given a file name
+#      alone with no default; 'z' is not a data frame; a name starting with
+#      a digit (jload(), with name =, jcopy()); .RData "can contain".
+#   B  a path typed with single backslashes, in jload(), jsave() and
+#      joptions(data.dir = ): stopped, the path written with forward
+#      slashes where every character R made maps back (S343, Jeff's
+#      decision); what is NOT caught; the offered path loads the file.
+#   C  a CSV file of one column keeps its empty lines (the S345 item):
+#      every case saved is loaded; two columns unchanged.
+#   D  ruling R13: jsave() notes a text variable's missing cells that
+#      .sav, .dta, .xpt and .csv save as blank text (.xpt and a factor in
+#      a CSV file on Jeff's lean, S351); none for .rds, .xlsx or a number.
+#   E  a frame holding a text variable with declared missing values (the
+#      S340 item): the .dta refusal, the .sav over-limit refusal, the load
+#      narrative's Cases 4, 6 and 7 offer what runs, and every offered
+#      line is RUN; the CSV note's rider; jconvert()'s label report leaves
+#      a text variable out under to = "stata" or "sas".
+#   F  the load narrative's layout: Case 7's count past three names (the
+#      S294 item); ruling R6, a blank line between jload()'s "Loaded"
+#      line and a note on either side.
+# Fixtures that read value labels carry a labelled INTEGER variable beside
+# the double one (the S350 lesson). The section works in a scratch folder of
+# its own and puts the working directory, the data folder, the convention,
+# the output level and the default frame back at its foot. Calls that load
+# run inside local(), so what they load stays out of the workspace.
+.wd86 <- getwd()
+.td86 <- file.path(tempdir(), "jstats n86")
+unlink(.td86, recursive = TRUE); dir.create(.td86); setwd(.td86)
+.entry_dd86  <- getOption(".jst_options_data_dir")
+.entry_def86 <- getOption(".jst_default_data")
+# The section's loads print the narrative, which records
+# .jst_missing_notice_shown; it is handed back at the foot (the S340 rule:
+# a flag a section sets is handed back by that section; the S351 dirty run).
+.entry_shown86 <- getOption(".jst_missing_notice_shown")
+options(.jst_options_data_dir = NULL)
+.conv86 <- function(cv, expr) {
+  old <- getOption(".jst_options_missing_convention")
+  options(.jst_options_missing_convention = cv)
+  on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+  force(expr)
+}
+.lvl86 <- function(lv, expr) {
+  old <- getOption(".jst_output_level")
+  options(.jst_output_level = lv)
+  on.exit(options(.jst_output_level = old), add = TRUE)
+  force(expr)
+}
+.def86 <- function(nm, expr) {
+  old <- getOption(".jst_default_data")
+  options(.jst_default_data = nm)
+  on.exit(options(.jst_default_data = old), add = TRUE)
+  force(expr)
+}
+# .last86(): the message's last indented line, trimmed -- the line it offers.
+.last86 <- function(m) {
+  ls <- strsplit(m, "\n", fixed = TRUE)[[1]]
+  trimws(utils::tail(ls[startsWith(ls, "  ")], 1L))
+}
+# .ends86(): does the message end with this text, exactly?
+.ends86 <- function(m, tail) endsWith(m, tail)
+# .after86(): the message after the first occurrence of a marker line.
+.after86 <- function(m, marker) {
+  i <- regexpr(marker, m, fixed = TRUE)
+  if (i < 0L) "" else substring(m, i + nchar(marker))
+}
+# .run86(): run the indented CALLS a message offers (lines of call shape;
+# a variable list such as "  S, A, L" is not one), in order, on a copy of
+# the frame under the name the message uses; the frame afterwards, or NULL
+# if there is no call or one errors. .run_lines67() runs every indented
+# line, which a refusal's variable list would break.
+.run86 <- function(msg, nm, frame) {
+  tryCatch({
+    ls <- strsplit(msg, "\n", fixed = TRUE)[[1]]
+    run <- trimws(ls[grepl("^  [A-Za-z.][A-Za-z0-9._]*\\(", ls)])
+    if (length(run) == 0L) return(NULL)
+    e <- new.env(parent = globalenv())
+    assign(nm, frame, envir = e)
+    suppressMessages(utils::capture.output(
+      for (ln in run) eval(parse(text = ln), envir = e)))
+    get(nm, envir = e)
+  }, error = function(err) NULL)
+}
+
+# --- A: the front doors --------------------------------------------------------
+writeLines(c("x", "1", "2"), "zz86.csv")
+m86a <- grab(jload(zz86.csv))
+check("N86a jload() given a file name without its quotes: the name as the subject, and the call with quotes, which runs",
+      identical(m86a, paste0("jload(): zz86.csv is not in quotes.\n",
+                             "A file name goes in quotes:\n",
+                             "  jload(\"zz86.csv\")")) &&
+        local({ invisible(grab(eval(parse(text = .last86(m86a)))))
+                exists("zz86", inherits = FALSE) && nrow(zz86) == 2L }))
+m86b <- grab(jload(community))
+check("N86b ... a shipped dataset's name without quotes: the call with them, which loads it",
+      identical(m86b, paste0("jload(): the name of the community dataset goes in quotes:\n",
+                             "  jload(\"community\")")) &&
+        local({ invisible(grab(eval(parse(text = .last86(m86b)))))
+                exists("community", inherits = FALSE) &&
+                  nrow(community) == 103L }))
+d86 <- data.frame(a = 1:3)
+m86c <- grab(jload(d86))
+check("N86c ... a data frame of the workspace: already loaded, and the jsave() call, which writes it",
+      identical(m86c, paste0("jload(): the d86 data frame is already loaded.\n",
+                             "To save it to a file:\n",
+                             "  jsave(d86, \"d86.rds\")")) &&
+        local({ invisible(grab(eval(parse(text = .last86(m86c)))))
+                file.exists("d86.rds") }))
+p86 <- ""
+check("N86d ... a variable holding an empty string: the variable as the subject",
+      identical(grab(jload(p86)), "jload(): p86 is \"\", an empty file name."))
+m86e <- grab(jload(system.file("extdata", "zz86.csv", package = "jstats")))
+check("N86e ... system.file() finding no file: the call as the subject, and what system.file() gives",
+      identical(.fl(m86e), .fl(paste0(
+        "jload(): system.file(\"extdata\", \"zz86.csv\", package = \"jstats\") ",
+        "is \"\", an empty file name.\n",
+        "system.file() gives \"\" when the file is not in the package."))) &&
+        .ends86(m86e, "\nsystem.file() gives \"\" when the file is not in the package."))
+check("N86f an empty string typed as such keeps the generic stop",
+      identical(grab(jload("")), "jload(): Provide a filename, e.g. jload(\"mydata.sav\")"))
+m86g <- .def86(NULL, grab(jsave("t86.rds")))
+check("N86g jsave() given a file name alone, with no default set: the file named, the data frame asked for, nothing written",
+      identical(.fl(m86g), .fl(paste0(
+        "jsave(): \"t86.rds\" is a file name, and no data frame was given to save.\n",
+        "Name the data frame first:\n",
+        "  jsave(MyData, \"t86.rds\")"))) &&
+        .ends86(m86g, "\nName the data frame first:\n  jsave(MyData, \"t86.rds\")") &&
+        !grepl("variable name", m86g) && !file.exists("t86.rds"))
+check("N86h ... with a default set, the same call saves the default, as before",
+      local({ invisible(.def86("d86", grab(jsave("t86.rds")))); file.exists("t86.rds") }))
+z86 <- 1:3
+m86i <- grab(jsave(z86, "x86.rds"))
+check("N86i jsave() given a vector: 'z86' is not a data frame, with no article and no class",
+      identical(.fl(m86i), .fl(paste0("jsave(): 'z86' is not a data frame. ",
+                                      "Provide a data frame, e.g. jsave(MyData, \"mydata.sav\")"))) &&
+        !grepl("integer", m86i))
+writeLines(c("x", "1"), "2024zz86.csv")
+m86j <- grab(jload("2024zz86.csv"))
+check("N86j a file name starting with a digit: the rule stated of a data frame's name, and the offered call runs",
+      grepl("R does not allow a data frame's name to start with a digit.",
+            .fl(m86j), fixed = TRUE) &&
+        !grepl("variable", m86j) &&
+        local({ invisible(grab(eval(parse(text = .last86(m86j)))))
+                exists("zz86", inherits = FALSE) }))
+check("N86k ... a name given with name = is the name the message names, not the file",
+      startsWith(.fl(grab(jload("zz86.csv", name = "2b"))),
+                 "jload(): The name '2b' starts with a number. R does not allow a data frame's"))
+check("N86l jcopy() to a name starting with a digit says the same of a data frame's name",
+      grepl("R does not allow a data frame's name to start with a digit.",
+            .fl(grab(jcopy(d86, 2))), fixed = TRUE))
+check("N86m an .RData file name: they \"can contain\" several objects",
+      startsWith(.fl(grab(jload("x86.RData"))),
+                 "jload(): .RData files can contain multiple named objects. Use load("))
+
+# --- B: a path typed with single backslashes ------------------------------------
+m86n <- grab(jload("V:\temp\new.csv"))
+check("N86n jload(): the path as R holds it, what each backslash made, and the path with forward slashes",
+      identical(.fl(m86n), .fl(paste0(
+        "jload(): R read the single backslashes in \"V:\\temp\\new.csv\" as ",
+        "special characters (\\t as a tab, \\n as a new line).\n",
+        "Write the path with forward slashes:\n",
+        "  \"V:/temp/new.csv\""))) &&
+        .ends86(m86n, "\nWrite the path with forward slashes:\n  \"V:/temp/new.csv\""))
+m86o <- grab(jsave(d86, "V:\temp\new.csv"))
+check("N86o jsave(): the same stop, before anything is written",
+      .ends86(m86o, "\nWrite the path with forward slashes:\n  \"V:/temp/new.csv\"") &&
+        startsWith(m86o, "jsave(): R read the single backslashes in ") &&
+        length(list.files(all.files = TRUE, pattern = "emp")) == 0L)
+m86p <- grab(joptions(data.dir = "Proj\temp"))
+check("N86p joptions(data.dir = ): one backslash in the singular, the folder with forward slashes, nothing set or made",
+      identical(.fl(m86p), .fl(paste0(
+        "joptions(): R read the single backslash in \"Proj\\temp\" as a ",
+        "special character (\\t as a tab).\n",
+        "Write the folder with forward slashes:\n",
+        "  \"Proj/temp\""))) &&
+        is.null(getOption(".jst_options_data_dir")) &&
+        length(list.files(pattern = "^Proj")) == 0L)
+m86q <- grab(jload("C:\1data.csv"))
+check("N86q a character no letter maps back to: the path as R holds it, and the instruction alone",
+      identical(.fl(m86q), .fl(paste0(
+        "jload(): R read a single backslash in \"C:\\001data.csv\" as a ",
+        "special character.\n",
+        "Type the path again with forward slashes in place of the backslashes."))) &&
+        !grepl("\n  ", m86q, fixed = TRUE))
+check("N86r spaces, a UNC path and doubled backslashes are not caught: each reaches the file search",
+      all(vapply(c("C:/a b/zz86.csv", "\\\\server\\share\\zz86.csv",
+                   "C:\\temp\\zz86.csv"), function(p) {
+        m <- grab(jload(p))
+        grepl("not found", m, fixed = TRUE) && !grepl("special character", m)
+      }, logical(1))))
+dir.create("zz"); writeLines(c("x", "1"), file.path("zz", "temp86.csv"))
+m86s <- grab(jload("zz\temp86.csv"))
+check("N86s ... the path it offers is the file meant: read from the message, it loads",
+      local({ p <- eval(parse(text = .last86(m86s)))
+              invisible(grab(jload(p, name = "zt86")))
+              identical(p, "zz/temp86.csv") && exists("zt86", inherits = FALSE) }))
+check("N86t .jst_check_path_chars(): a backspace, a form feed and a carriage return map back too; a clean path passes",
+      local({ m <- grab(jstats:::.jst_check_path_chars("a\bc\fd\re"))
+        .ends86(m, "\n  \"a/bc/fd/re\"") &&
+          grepl("(\\b as a backspace, \\f as a form feed, \\r as a carriage return)",
+                .fl(m), fixed = TRUE) &&
+          is.null(jstats:::.jst_check_path_chars("C:/Data/Wave 1/x.sav")) }))
+
+check("N86bf ... a doubled backslash in the same path becomes a slash too; DEL is caught, with the instruction alone",
+      local({ m1 <- grab(jstats:::.jst_check_path_chars("C:\\data\temp.csv"))
+        m2 <- grab(jstats:::.jst_check_path_chars("a\177b"))
+        .ends86(m1, "\n  \"C:/data/temp.csv\"") &&
+          grepl("(\\t as a tab)", m1, fixed = TRUE) &&
+          grepl("Type the path again with forward slashes", .fl(m2), fixed = TRUE) }))
+check("N86bg jload() given a data frame as an expression: the expression named, and the generic line",
+      identical(.fl(grab(jload(d86[1:2, , drop = FALSE]))),
+                .fl(paste0("jload(): d86[1:2, , drop = FALSE] is a data frame, not a file name.\n",
+                           "Provide a filename, e.g. jload(\"mydata.sav\")"))))
+
+# --- C: a CSV file of one column ------------------------------------------------
+v86 <- data.frame(Source = c("web", "phone", NA, "web", "mail", NA, "web", "phone"))
+n86 <- data.frame(x = c(1, NA, 3, NA))
+writeLines(c("a,b", "1,2", "", "3,4"), "two86.csv")
+writeLines(c("x", "a", ""), "last86.csv")
+writeLines(c("\"a,b\"", "1", "", "2"), "q86.csv")
+check("N86u a CSV file of one text column: every case saved is loaded, its missing cells back as blank text",
+      local({ invisible(grab(jsave(v86, "v86.csv")))
+              invisible(grab(jload("v86.csv", name = "b86")))
+              nrow(b86) == 8L &&
+                identical(b86$Source, c("web", "phone", "", "web", "mail", "",
+                                        "web", "phone")) }))
+check("N86v ... one numeric column: every case, the missing ones NA",
+      local({ invisible(grab(jsave(n86, "n86.csv")))
+              invisible(grab(jload("n86.csv", name = "b86")))
+              identical(b86$x, c(1L, NA, 3L, NA)) }))
+check("N86w ... the last case missing is kept; a quoted name holding a comma is one column; two columns still drop an empty line",
+      local({ invisible(grab(jload("last86.csv", name = "l86")))
+              invisible(grab(jload("q86.csv", name = "q86")))
+              invisible(grab(jload("two86.csv", name = "t86")))
+              identical(l86$x, c("a", "")) && identical(q86[[1]], c(1L, NA, 2L)) &&
+                nrow(t86) == 2L }))
+
+# --- D: ruling R13, a text variable's missing cells ---------------------------
+tx86 <- data.frame(
+  S = c("a", NA, "b", NA),
+  L = haven::labelled(c(1L, 2L, NA, 1L), labels = c(Low = 1L, High = 2L)),
+  D = haven::labelled(c(1, NA, 2, 2), labels = c(Low = 1, High = 2)),
+  stringsAsFactors = FALSE)
+.note86 <- function(fmt, kind = "a text variable") {
+  paste0("Note: ", fmt, " cannot store a missing value in ", kind, ".\n",
+         "2 missing cells in S were saved as blank text.\n",
+         "R format (.rds) and Excel format (.xlsx) keep them missing.")
+}
+.save86 <- function(fr, file) grab(jsave(fr, file, overwrite = TRUE))
+m86x <- .save86(tx86, "tx86.sav")
+check("N86x .sav: the note -- the format, the cells, the two formats that keep them -- ahead of the Saved line",
+      startsWith(m86x, paste0(.note86("SPSS format (.sav)"), "\nSaved fr to")))
+check("N86y ... .dta and .xpt say the same of their format",
+      grepl(.fl(.note86("Stata format (.dta)")), .fl(.save86(tx86, "tx86.dta")), fixed = TRUE) &&
+        grepl(.fl(.note86("SAS interchange format (.xpt)")), .fl(.save86(tx86, "tx86.xpt")),
+              fixed = TRUE))
+m86z <- .save86(tx86, "tx86.csv")
+check("N86z ... .csv: after the label note, a blank line between them",
+      grepl(paste0("value labels.\n\n", .note86("CSV format (.csv)"), "\nSaved"),
+            m86z, fixed = TRUE))
+check("N86aa ... none for .rds or .xlsx, which keep them, nor for a missing number",
+      !grepl("blank text", .save86(tx86, "tx86.rds"), fixed = TRUE) &&
+        !grepl("blank text", .save86(tx86, "tx86.xlsx"), fixed = TRUE) &&
+        !grepl("blank text", .save86(tx86[, c("L", "D")], "num86.sav"), fixed = TRUE))
+check("N86ab ... the count is the round trip's: the blanks read back from the .sav file",
+      local({ invisible(grab(jload("tx86.sav", name = "r86")))
+              identical(sum(r86$S == ""), 2L) && !anyNA(r86$S) &&
+                identical(sum(is.na(r86$L)), 1L) }))
+fc86 <- data.frame(G = factor(c("a", NA, "b")), S = c(NA, "x", NA),
+                   stringsAsFactors = FALSE)
+m86ac <- .save86(fc86, "fc86.csv")
+check("N86ac ... a factor in a CSV file: \"text or categorical\", each variable with its count",
+      grepl(paste0("Note: CSV format (.csv) cannot store a missing value in a text or ",
+                   "categorical variable. 3 missing cells in G (1) and S (2) were saved ",
+                   "as blank text. R format (.rds) and Excel format (.xlsx) keep them missing."),
+            .fl(m86ac), fixed = TRUE))
+check("N86ad ... the same frame to .sav: the factor keeps its NA, so only S is named",
+      grepl("2 missing cells in S were saved as blank text.",
+            .save86(fc86, "fc86.sav"), fixed = TRUE))
+check("N86ae ... one cell: the singular, and \"keep it missing\"",
+      grepl(paste0("1 missing cell in S was saved as blank text.\n",
+                   "R format (.rds) and Excel format (.xlsx) keep it missing."),
+            .save86(data.frame(S = c("a", NA)), "one86.sav"), fixed = TRUE))
+dsn86 <- data.frame(S = haven::labelled_spss(c("a", "X", NA, "b"),
+                                             labels = c(Refused = "X"),
+                                             na_values = "X"))
+check("N86af ... a declared string: its NA is counted, its declared code is not (.sav keeps it)",
+      grepl("1 missing cell in S was saved as blank text.",
+            .save86(dsn86, "dsn86.sav"), fixed = TRUE))
+check("N86ag ... and with preserve.declarations = FALSE to CSV, the declared code blanked is counted too",
+      grepl("2 missing cells in S were saved as blank text.",
+            grab(jsave(dsn86, "dsn86.csv", overwrite = TRUE,
+                       preserve.declarations = FALSE)), fixed = TRUE))
+
+# --- E: a frame holding a text variable with declared missing values ----------
+ds86 <- data.frame(
+  S = haven::labelled_spss(c("web", "phone", "X", "web", "Y", "mail"),
+                           labels = c(Refused = "X", DK = "Y"),
+                           na_values = c("X", "Y")),
+  A = haven::labelled_spss(c(1, 2, -99, 3, -98, 1),
+                           labels = c(Refused = -99, DK = -98),
+                           na_values = c(-99, -98)),
+  L = haven::labelled_spss(c(1L, 2L, -99L, 3L, 2L, 1L),
+                           labels = c(Low = 1L, Refused = -99L),
+                           na_values = -99L))
+.route86 <- function(nm, to = "stata") {
+  paste0("  jconvert(", nm, ", to = \"baseR\", vars = \"S\", modify = TRUE)\n",
+         "  jconvert(", nm, ", to = \"", to, "\", modify = TRUE)\n",
+         "S is text, so the first line makes its declared values plain NA.")
+}
+# .runsave86(): run every indented line the message offers on a copy of the
+# frame under the name the message uses (.run_lines67()), then save the
+# result as the format the message was about.
+.runsave86 <- function(msg, nm, frame, file) {
+  r <- .run86(msg, nm, frame)
+  if (is.null(r)) return(FALSE)
+  e <- new.env(); assign(nm, r, envir = e)
+  invisible(grab(eval(parse(text = paste0("jsave(", nm, ", \"", file,
+                                          "\", overwrite = TRUE)")), envir = e)))
+  file.exists(file)
+}
+m86ah <- grab(jsave(ds86, "ds86.dta"))
+check("N86ah the .dta refusal on a frame holding a declared string: the text variable made plain NA, then the rest, and jencode() for the other way",
+      .ends86(m86ah, paste0("\n\nBefore saving to Stata format, run both:\n",
+                            .route86("ds86"), "\n",
+                            "Or turn it into a numeric variable first with jencode().")) &&
+        startsWith(m86ah, "jsave(): 3 variables carry SPSS-style missing values,"))
+check("N86ai ... its two lines run, and the frame then saves as .dta (the integer variable converted too)",
+      local({ r <- .run86(m86ah, "ds86", ds86)
+              !is.null(r) && identical(haven::na_tag(r$A), c(NA, NA, "a", NA, "b", NA)) &&
+                identical(haven::na_tag(r$L), c(NA, NA, "a", NA, NA, NA)) &&
+                is.null(attr(r$S, "na_values")) && sum(is.na(r$S)) == 2L &&
+                .runsave86(m86ah, "ds86", ds86, "ds86.dta") }))
+m86aj <- .lvl86("minimal", grab(jsave(ds86, "ds86min.dta")))
+check("N86aj ... the minimal tier: the same two lines and the sentence, no jencode() line",
+      .ends86(m86aj, paste0("the .dta format.\n",
+                            "Convert first, then save again:\n", .route86("ds86"))) &&
+        !grepl("jencode", m86aj, fixed = TRUE))
+ds1_86 <- ds86["S"]
+m86ak <- grab(jsave(ds1_86, "ds1_86.dta"))
+check("N86ak ... the text variable the only one declared: one line, \"run:\", \"this makes\", and the frame then saves",
+      .ends86(m86ak, paste0("\n\nBefore saving to Stata format, run:\n",
+                            "  jconvert(ds1_86, to = \"baseR\", vars = \"S\", modify = TRUE)\n",
+                            "S is text, so this makes its declared values plain NA.\n",
+                            "Or turn it into a numeric variable first with jencode().")) &&
+        .runsave86(m86ak, "ds1_86", ds1_86, "ds1_86.dta"))
+ds2_86 <- ds86; ds2_86$T <- ds86$S
+m86al <- grab(jsave(ds2_86, "ds2_86.dta"))
+check("N86al ... two text variables: vars = c(), \"S and T are text\", \"their\", \"Or turn each\", and the frame then saves",
+      grepl("vars = c(\"S\", \"T\"), modify = TRUE)\n", m86al, fixed = TRUE) &&
+        grepl("\nS and T are text, so the first line makes their declared values plain NA.\n",
+              m86al, fixed = TRUE) &&
+        .ends86(m86al, "\nOr turn each into a numeric variable first with jencode().") &&
+        .runsave86(m86al, "ds2_86", ds2_86, "ds2_86.dta"))
+oc86 <- data.frame(S = ds86$S,
+                   X = haven::labelled_spss(c(1, 2, -99, -98, -97, -96),
+                                            labels = c(a = -99, b = -98, c = -97, d = -96),
+                                            na_values = c(-99, -98, -97, -96)))
+m86am <- grab(jsave(oc86, "oc86.sav"))
+m86an <- .lvl86("minimal", grab(jsave(oc86, "oc86.sav")))
+check("N86am the .sav over-limit refusal on such a frame: the .rds route and \"reduce\", no Stata route",
+      .ends86(m86am, paste0("To save in R format (.rds) instead, keeping all the codes:\n",
+                            "  jsave(oc86, \"oc86.rds\")\n",
+                            "Or reduce each variable's declared missing values to fit.")) &&
+        !grepl("Stata", m86am, fixed = TRUE) &&
+        .ends86(m86an, "\nSave as R format (.rds) to keep all the codes, or reduce them first."))
+ocx86 <- oc86["X"]
+check("N86an ... without a declared string the Stata route is offered, as before",
+      grepl("To convert to Stata and save as Stata format (.dta), also keeping all the codes:",
+            .fl(grab(jsave(ocx86, "ocx86.sav"))), fixed = TRUE))
+saveRDS(ds86, "ds86.rds")
+m86ao <- .conv86("stata", grab(jload("ds86.rds", overwrite = TRUE, name = "ld86", missing.notice = TRUE)))
+check("N86ao the load narrative, Case 4 under \"stata\": the setting's route made of the two lines, and the sentence",
+      .ends86(m86ao, paste0("To use SPSS-style missing values, run:\n",
+                            "  joptions(missing.convention = \"spss\")\n",
+                            "To use Stata-style missing values, run both:\n",
+                            .route86("ld86"), "\n")))
+check("N86ap ... its lines run",
+      local({ r <- .run86(.after86(m86ao, "To use Stata-style missing values, run both:\n"),
+                          "ld86", ds86)
+              !is.null(r) && is.null(attr(r$S, "na_values")) &&
+                identical(haven::na_tag(r$A), c(NA, NA, "a", NA, "b", NA)) }))
+m86aq <- .conv86("sas", grab(jload("ds86.rds", overwrite = TRUE, name = "ld86", missing.notice = TRUE)))
+check("N86aq ... under \"sas\" the same route to SAS-style",
+      .ends86(m86aq, paste0("To use SAS-style missing values, run both:\n",
+                            .route86("ld86", "sas"), "\n")))
+mx86 <- data.frame(S = ds86$S, A = ds86$A,
+                   M = haven::labelled(c(3, 4, haven::tagged_na("a"), 1, 2, 3),
+                                       labels = c(Refused = haven::tagged_na("a"))))
+saveRDS(mx86, "mx86.rds")
+m86ar <- .conv86("spss", grab(jload("mx86.rds", overwrite = TRUE, name = "lm86", missing.notice = TRUE)))
+check("N86ar Case 7 under \"spss\": the off-setting Stata route runs all three, the sentence after them",
+      .ends86(m86ar, paste0("To use Stata-style missing values throughout, run all three:\n",
+                            "  jconvert(lm86, to = \"baseR\", vars = \"S\", modify = TRUE)\n",
+                            "  jconvert(lm86, to = \"stata\", modify = TRUE)\n",
+                            "  joptions(missing.convention = \"stata\")\n",
+                            "S is text, so the first line makes its declared values plain NA.\n")))
+m86as <- .conv86("none", grab(jload("mx86.rds", overwrite = TRUE, name = "lm86", missing.notice = TRUE)))
+check("N86as Case 6: the SPSS route unchanged, the Stata route of three lines; the three lines run",
+      grepl(paste0("To use SPSS-style throughout, run both:\n",
+                   "  jconvert(lm86, to = \"spss\", modify = TRUE)\n",
+                   "  joptions(missing.convention = \"spss\")\n",
+                   "To use Stata-style throughout, run all three:\n"), m86as, fixed = TRUE) &&
+        .conv86("none", local({
+          r <- .run86(.after86(m86as, "To use Stata-style throughout, run all three:\n"),
+                      "lm86", mx86)
+          !is.null(r) && identical(getOption(".jst_options_missing_convention"), "stata") &&
+            is.null(attr(r$S, "na_values")) &&
+            identical(haven::na_tag(r$A), c(NA, NA, "a", NA, "b", NA)) })))
+m2_86 <- data.frame(S = ds86$S, M = mx86$M)
+saveRDS(m2_86, "m2_86.rds")
+m86at <- .conv86("none", grab(jload("m2_86.rds", overwrite = TRUE, name = "lm2", missing.notice = TRUE)))
+check("N86at ... nothing left for a second conversion: one jconvert() line and the rider, \"the first line\" still",
+      .ends86(m86at, paste0("To use Stata-style throughout, run both:\n",
+                            "  jconvert(lm2, to = \"baseR\", vars = \"S\", modify = TRUE)\n",
+                            "  joptions(missing.convention = \"stata\")\n",
+                            "S is text, so the first line makes its declared values plain NA.\n")))
+m86au <- .conv86(NULL, grab(jload("ds86.rds", overwrite = TRUE, name = "ld86", missing.notice = TRUE)))
+check("N86au Case 1 is as v0.9.214 made it: to = \"baseR\" for the frame, no sentence",
+      .ends86(m86au, paste0("To make them missing in base R as well, convert:\n",
+                            "  jconvert(ld86, to = \"baseR\", modify = TRUE)\n")))
+m86av <- grab(jsave(ds86, "ds86.csv"))
+check("N86av the CSV note's rider: over a declared string, \"ordinary values\", no \"-99 ... literal numbers\"",
+      grepl(paste0("Any SPSS-style missing-value codes are written as ordinary values ",
+                   "and will read back as valid data."), .fl(m86av), fixed = TRUE) &&
+        !grepl("literal numbers", m86av, fixed = TRUE))
+check("N86aw ... with a Stata-style variable beside it, \"ordinary values\" too; a numeric frame keeps \"-99 ... literal numbers\"",
+      grepl("written as ordinary values.", .fl(grab(jsave(mx86, "mx86.csv"))), fixed = TRUE) &&
+        grepl("(e.g. -99) are written as literal numbers",
+              .fl(grab(jsave(ds86["A"], "a86.csv"))), fixed = TRUE))
+check("N86ax jconvert(to = \"stata\") after the first line: no label report on the text variable (it was one before)",
+      local({ ld86 <- ds86
+              invisible(grab(jconvert(ld86, to = "baseR", vars = "S", modify = TRUE)))
+              m <- grab(jconvert(ld86, to = "stata", modify = TRUE))
+              !grepl("Skipped (value labels suggest", m, fixed = TRUE) &&
+                grepl("Converted to Stata-style missing values in 2 variables:", m,
+                      fixed = TRUE) }))
+check("N86ay ... under to = \"spss\" a text variable's label is still reported",
+      local({ ld86 <- ds86
+              invisible(grab(jconvert(ld86, to = "baseR", vars = "S", modify = TRUE)))
+              grepl("S: X = \"Refused\"", grab(jconvert(ld86, to = "spss", vars = "S")),
+                    fixed = TRUE) }))
+
+# --- F: the narrative's layout --------------------------------------------------
+w86 <- data.frame(A = ds86$A)
+for (i in 1:4) w86[[paste0("V", i)]] <- mx86$M
+saveRDS(w86, "w86.rds"); saveRDS(w86[1:4], "w3_86.rds")
+check("N86az Case 7 past three off-setting variables: a count, not the names",
+      grepl(paste0("Note: 4 variables are Stata-style, but your missing.convention ",
+                   "setting is \"spss\"."),
+            .fl(.conv86("spss", grab(jload("w86.rds", overwrite = TRUE, name = "lw86")))), fixed = TRUE))
+check("N86ba ... three or fewer: the names, as before",
+      grepl("Note: V1, V2, and V3 are Stata-style, but your missing.convention",
+            .fl(.conv86("spss", grab(jload("w3_86.rds", overwrite = TRUE, name = "lw86")))), fixed = TRUE))
+check("N86bb ruling R6: a blank line between the Loaded line and the narrative under it",
+      grepl("^Loaded ld86 \\(R native format; 6 cases, 3 variables\\)\n\n3 variables have SPSS-style",
+            m86au))
+check("N86bc ... and between notes above it and the Loaded line; the notes keep their own blank line",
+      local({ m <- grab(jload("ds86.rds", name = "ld86", use = TRUE, missing.notice = FALSE))
+              identical(m, paste0("Default data frame set to: ld86\n", "\n",
+                                  "Loaded ld86 (R native format; 6 cases, 3 variables)\n")) }))
+check("N86bd ... the Loaded line alone has no blank line after it; quiet = TRUE prints nothing",
+      identical(grab(jload("ds86.rds", name = "ld86", overwrite = TRUE,
+                           missing.notice = FALSE)),
+                "Loaded ld86 (R native format; 6 cases, 3 variables)\n") &&
+        identical(grab(jload("ds86.rds", name = "ld86", overwrite = TRUE,
+                           quiet = TRUE)), ""))
+check("N86be ... the shipped dataset's Loaded line takes the same blank line",
+      grepl("^Loaded the jstats example dataset 'community'\\.\n\n5 variables have",
+            .conv86(NULL, grab(jload("community", name = "lc86", package = TRUE,
+                                     overwrite = TRUE, missing.notice = TRUE)))))
+
+setwd(.wd86)
+unlink(.td86, recursive = TRUE)
+options(.jst_options_data_dir = .entry_dd86, .jst_default_data = .entry_def86,
+        .jst_missing_notice_shown = .entry_shown86)
+rm(list = intersect(c("m86a", "m86b", "m86c", "m86e", "m86g", "m86i", "m86j",
+                      "m86n", "m86o", "m86p", "m86q", "m86s", "m86x", "m86z",
+                      "m86ac", "m86ah", "m86aj", "m86ak", "m86al", "m86am",
+                      "m86an", "m86ao", "m86aq", "m86ar", "m86as", "m86at",
+                      "m86au", "m86av", "d86", "p86", "z86", "v86", "n86",
+                      "tx86", "fc86", "dsn86", "ds86", "ds1_86", "ds2_86",
+                      "oc86", "ocx86", "mx86", "m2_86", "w86", "ld86", "lm86", "lm2",
+                      "lw86", "lc86", "zt86", "zz86",
+                      ".wd86", ".td86", ".entry_dd86", ".entry_def86", ".entry_shown86", ".conv86",
+                      ".lvl86", ".def86", ".last86", ".ends86", ".note86", ".save86",
+                      ".route86", ".runsave86", ".after86", ".run86", "i", "r86", "b86",
+                      "l86", "q86", "t86"),
+                    ls(all.names = TRUE)))
 
 # N79 (S337) -- NO PREMATURE BREAK, swept over every condition grab() took.
 # jencode_check.R N42 brought to this file (the S291 item): a width CEILING
