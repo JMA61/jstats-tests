@@ -25,6 +25,21 @@
 #           Since S352 (Section 15): a map that gives a word a marker, and
 #           the D1 note's line to a marker the map does not use.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S353 EDIT (v0.9.226, 2026-10-12): SECTIONS 2, 7, 9, 10, 14 AND 15
+#           RE-PINNED MECHANICALLY under ruling R5 (the layout of a long
+#           printed call; walked once, in missing_convention_walk.R
+#           Section 64), so PENDING stays none. jencode()'s offered maps
+#           are one line from the builder, and the wrapper lays out one
+#           wider than the message: its later lines four spaces in, a map
+#           that runs on set under its first rule -- where the retired
+#           packer hung them under the parenthesis -- and the calls that
+#           ran on whole (148 characters in Section 7) broken the same
+#           way. Re-pinned from a capture of every section on 0.9.225 and
+#           0.9.226. Sections 3, 6, 10, 12 and 15 also show the S352
+#           rider (the reminder, when it is a call's only output, no
+#           longer opens with a blank line) in a line no pin holds.
+#           harness.R verify: 26 of 26 Expected blocks found, 15 of 15
+#           sections in three orders and by prepare = TRUE.
 # S352 EDIT (v0.9.225, 2026-10-11): SECTION 15 ADDED, three renders, for
 #           Fix Slate 9's first half (ruling R8's offered declarations):
 #           jencode()'s D1 note on a map with "Refused=.a" offered the
@@ -361,12 +376,12 @@ tdat$OutcomeR <- jencode(tdat, Outcome)
 #   If these categories have a natural order (like Low/Medium/High), rerun with
 #   a map to choose the numbers:
 #     tdat$OutcomeR <- jencode(tdat, Outcome,
-#                              map = "No reoffence=1; Reoffended=2; blank=NA")
+#         map = "No reoffence=1; Reoffended=2; blank=NA")
 #
 #   Note: 6 blank cells in 'Outcome' were left missing (NA).
 #   To give blank cells their own category, rerun with a map naming them:
 #     tdat$OutcomeR <- jencode(tdat, Outcome,
-#                              map = "No reoffence=1; Reoffended=2; blank=0")
+#         map = "No reoffence=1; Reoffended=2; blank=0")
 #
 #   Note: This call changes tdat only if you assign the result:
 #     tdat$<name> <- jencode(...)
@@ -415,9 +430,11 @@ tdat$OutcomeM <- jencode(tdat, Outcome,
 #         Like Stata, with uppercase markers (.A-.Z).
 #   To make the choice permanent, put the same line in your .Rprofile.
 #   Then map it directly:
-#     tdat$OutcomeR <- jencode(tdat, Outcome, map = "Reoffended=1; No reoffence=0; blank=missing")
+#     tdat$OutcomeR <- jencode(tdat, Outcome,
+#         map = "Reoffended=1; No reoffence=0; blank=missing")
 #   Or declare -99 as missing on the encoded variable:
-#     tdat$OutcomeR <- jencode(tdat, Outcome, map = "Reoffended=1; No reoffence=0; blank=-99")
+#     tdat$OutcomeR <- jencode(tdat, Outcome,
+#         map = "Reoffended=1; No reoffence=0; blank=-99")
 #     jdeclare_missing(tdat, OutcomeR, codes = c(-99), modify = TRUE)
 #
 # RE-PINNED S303: the tail. It was a jdeclare_missing() on Outcome, the
@@ -693,9 +710,13 @@ tdat$ReasonC <- jencode(tdat, ReasonDeclined,
 #         Like Stata, with uppercase markers (.A-.Z).
 #   To make the choice permanent, put the same line in your .Rprofile.
 #   Then map it directly:
-#     tdat$ReasonDeclinedR <- jencode(tdat, ReasonDeclined, map = "Refused=missing; Don't know=missing; No answer=missing; \"Not applicable; other\"=1")
+#     tdat$ReasonDeclinedR <- jencode(tdat, ReasonDeclined,
+#         map = "Refused=missing; Don't know=missing; No answer=missing;
+#                \"Not applicable; other\"=1")
 #   Or declare -99 as missing on the encoded variable:
-#     tdat$ReasonDeclinedR <- jencode(tdat, ReasonDeclined, map = "Refused=-99; Don't know=-99; No answer=-99; \"Not applicable; other\"=1")
+#     tdat$ReasonDeclinedR <- jencode(tdat, ReasonDeclined,
+#         map = "Refused=-99; Don't know=-99; No answer=-99;
+#                \"Not applicable; other\"=1")
 #     jdeclare_missing(tdat, ReasonDeclinedR, codes = c(-99), modify = TRUE)
 #
 # RE-PINNED S303: the tail, as in Section 2 (the old line errored on the
@@ -829,15 +850,14 @@ ms9$MaritalR <- jencode(ms9, Marital)
 #   If these categories have a natural order (like Low/Medium/High), rerun with
 #   a map to choose the numbers:
 #     ms9$MaritalR <- jencode(ms9, Marital,
-#                             map = "Married=1; Single=2; REF=NA; UNKNOWN=NA")
+#         map = "Married=1; Single=2; REF=NA; UNKNOWN=NA")
 #
 #   Note: 3 cells in 'Marital' holding a declared missing value ("REF",
 #   "UNKNOWN") were left missing (NA).
 #   To keep them declared, as one missing value, rerun with a map sending those
 #   values to missing:
 #     ms9$MaritalR <- jencode(ms9, Marital,
-#                             map = "Married=1; Single=2; REF=missing;
-#                                   UNKNOWN=missing")
+#         map = "Married=1; Single=2; REF=missing; UNKNOWN=missing")
 #
 #   Note: This call changes ms9 only if you assign the result:
 #     ms9$<name> <- jencode(...)
@@ -973,10 +993,9 @@ qw10$WhyR <- jencode(qw10, Why)
 #   If these categories have a natural order (like Low/Medium/High), rerun with
 #   a map to choose the numbers:
 #     qw10$WhyR <- jencode(qw10, Why,
-#                          map = "Don't know=1;
-#                                \"Moved away, address unknown\"=2; No answer=3;
-#                                \"Other = see notes\"=4; Refused=5;
-#                                \"Skipped; respondent was not asked this question\"=6")
+#         map = "Don't know=1; \"Moved away, address unknown\"=2; No answer=3;
+#                \"Other = see notes\"=4; Refused=5;
+#                \"Skipped; respondent was not asked this question\"=6")
 #
 #   Note: This call changes qw10 only if you assign the result:
 #     qw10$<name> <- jencode(...)
@@ -1014,7 +1033,7 @@ qw10$KwR <- jencode(qw10, Kw)
 #   If these categories have a natural order (like Low/Medium/High), rerun with
 #   a map to choose the numbers:
 #     qw10$KwR <- jencode(qw10, Kw,
-#                         map = "\"blank\"=1; \"else\"=2; \"system\"=3; yes=4")
+#         map = "\"blank\"=1; \"else\"=2; \"system\"=3; yes=4")
 #
 #   Note: This call changes qw10 only if you assign the result:
 #     qw10$<name> <- jencode(...)
@@ -1290,9 +1309,11 @@ r14 <- jencode(lst14$d, Reply, map = "Yes=1; No=0; Refused=-99")
 # Expected:
 #   Note: "Refused" was encoded as -99, which looks like a coded missing value.
 #   To make the value missing under SPSS convention, map it directly:
-#     lst14$d$ReplyR <- jencode(lst14$d, Reply, map = "Yes=1; No=0; Refused=missing")
+#     lst14$d$ReplyR <- jencode(lst14$d, Reply,
+#         map = "Yes=1; No=0; Refused=missing")
 #   Or declare -99 as missing on the encoded variable:
-#     lst14$d$ReplyR <- jencode(lst14$d, Reply, map = "Yes=1; No=0; Refused=-99")
+#     lst14$d$ReplyR <- jencode(lst14$d, Reply,
+#         map = "Yes=1; No=0; Refused=-99")
 #     lst14$d <- jdeclare_missing(lst14$d, ReplyR, codes = c(-99))
 #
 #   Note: This call changes lst14$d only if you assign the result:
@@ -1384,7 +1405,8 @@ r15 <- jencode(r15d, Reply, map = "Yes=1; No=2; Refused=.a; Unknown=-99; Skip=3"
 #   Note: "Unknown" was encoded as -99, which looks like a coded missing value.
 #   To make the value missing, map it to a Stata-style marker the encoded
 #   variable does not use:
-#     r15d$ReplyR <- jencode(r15d, Reply, map = "Yes=1; No=2; Refused=.a; Unknown=.b; Skip=3")
+#     r15d$ReplyR <- jencode(r15d, Reply,
+#         map = "Yes=1; No=2; Refused=.a; Unknown=.b; Skip=3")
 #
 #   Note: This call changes r15d only if you assign the result:
 #     r15d$<name> <- jencode(...)
@@ -1399,7 +1421,8 @@ r15 <- jencode(r15d, Reply, map = "Yes=1; No=2; Refused=.a; Unknown=-99; Skip=-9
 #   missing values.
 #   To make the values missing, map them to Stata-style markers the encoded
 #   variable does not use:
-#     r15d$ReplyR <- jencode(r15d, Reply, map = "Yes=1; No=2; Refused=.a; Unknown=.b; Skip=.c")
+#     r15d$ReplyR <- jencode(r15d, Reply,
+#         map = "Yes=1; No=2; Refused=.a; Unknown=.b; Skip=.c")
 #   To make them one missing value instead, map both to .b.
 #
 #   Note: This call changes r15d only if you assign the result:

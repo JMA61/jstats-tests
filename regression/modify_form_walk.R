@@ -16,6 +16,16 @@
 #           Since S352 also jsave() given an expression as the data
 #           (Section 19).
 # ORIGIN:   S229
+# EDITED:   S353 (v0.9.226; Fix Slate 9, the second half). SECTION 5
+#           RE-PINNED MECHANICALLY under ruling R5 (the layout of a long
+#           printed call; walked once, in missing_convention_walk.R
+#           Section 64), so PENDING stays none: the load scan's labelled
+#           declaration, 77 characters, breaks before modify = TRUE. The
+#           scan's lines now go through the stdout emitter, where they had
+#           been printed with cat() and ran on whole. Section 9's long
+#           jdeclare_missing() lines break too; its pins describe them, so
+#           they did not move. harness.R verify: 42 of 43 Expected blocks
+#           found (Section 9's, as before), 19 of 19 sections.
 # EDITED:   S352 (v0.9.225; Fix Slate 9, the first half). SECTIONS 4 AND 5
 #           RE-PINNED; SECTION 19 ADDED. Every changed Expected FILLED BY
 #           RUNNING the file (fill.R).
@@ -497,7 +507,8 @@ jload(f_susp, name = "clinic", overwrite = TRUE)
 #   Then, to declare one variable's codes as missing:
 #     jdeclare_missing(clinic, Contact, codes = -99, modify = TRUE)
 #   To declare and label them in one call, replacing the placeholder names:
-#     jdeclare_missing(clinic, Contact, codes = c("label1" = -99), modify = TRUE)
+#     jdeclare_missing(clinic, Contact, codes = c("label1" = -99),
+#         modify = TRUE)
 # Things to look at:
 #   - the second line, with placeholder labels, is uncommented and runs
 #     as printed once a convention is chosen

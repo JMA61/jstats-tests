@@ -42,6 +42,15 @@
 #           and the fit plot of a squared term.
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
+# S353 EDIT (v0.9.226, 2026-10-12): SECTION 17 RE-PINNED MECHANICALLY
+#           under ruling R5 (the layout of a long printed call; walked
+#           once, in missing_convention_walk.R Section 64), so PENDING
+#           stays none: the "seems categorical" warning's two refits with
+#           the long formula break after its comma, the formula whole on
+#           the call's first line (77 characters: a formula is one piece,
+#           never broken). Re-pinned from a capture of every section on
+#           0.9.225 and 0.9.226. harness.R verify: 39 of 40 Expected blocks
+#           found (Section 1's, as before), 22 of 22 sections.
 # S342 EDIT (v0.9.216): SECTION 16 ADDED, three renders, for Jeff's S342
 #           ruling on the formula guard (AUDIT-023 amended): a comparison on
 #           a categorical variable computes as lm() computes it; arithmetic
@@ -1085,10 +1094,12 @@ options(.warn17); rm(.warn17)
 #
 #     mydata <- d[d$SocialSupport > 5, ]
 #     jdummy(mydata, Condition)
-#     jlm(Flourishing ~ scale(Stress, scale = FALSE) * SocialSupport + Condition, mydata)
+#     jlm(Flourishing ~ scale(Stress, scale = FALSE) * SocialSupport + Condition,
+#         mydata)
 #
 #   Or, for this call only:
-#     jlm(Flourishing ~ scale(Stress, scale = FALSE) * SocialSupport + Condition, d[d$SocialSupport > 5, ], categorical = "Condition")
+#     jlm(Flourishing ~ scale(Stress, scale = FALSE) * SocialSupport + Condition,
+#         d[d$SocialSupport > 5, ], categorical = "Condition")
 #
 #   Case Processing    Excluded  Remaining
 #       Original             --         65

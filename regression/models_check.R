@@ -81,6 +81,22 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S353 EDIT (v0.9.226, 2026-10-12): Fix Slate 9, the second half (ruling
+#           R5, the layout of a long printed call). No check added. The
+#           helpers of N18-N27 read each printed line as the call it
+#           prints, a call laid out over lines kept whole (.n_code() on
+#           .r5_calls(); the R5 helpers added to the harness), so .n_run()
+#           runs the laid-out form; the identity checks compare the
+#           one-line forms (.n_flat()). N20's description says where the
+#           long formula now sits. N20, N21 and N27 had stopped reading the
+#           laid-out calls. FOUR HUNDRED AND ELEVEN checks; on the 0.9.225
+#           master 411/411 (the change is in how the checks read).
+#           Sandbox: 411/411 plain and under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, and entered dirty.
+#           LAST VERIFIED: v0.9.226, 2026-10-12 (S353) -- 411/411 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2370 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 5ab1062.
 # S352 EDIT (v0.9.225, 2026-10-11): Fix Slate 9, the first half. SECTION R
 #           ADDED, R01-R06 (6 checks): jlogistic()'s three-value stop on an
 #           outcome with a suspected code. With no convention selected the
@@ -3150,11 +3166,80 @@ check("N17 control: a computed PREDICTOR still fits, as glm() fits it, and jlm()
                              unname(stats::coef(stats::lm(log(abs(y) + 1) ~ x1, data = dn)))) })
 
 # ---- N18-N26: the "seems categorical" rerun lines ---------------------------
-# .n_code(): a message's indented lines, as lines of R.
-.n_code <- function(msg) {
-  ln <- strsplit(msg, "\n", fixed = TRUE)[[1]]
-  trimws(ln[startsWith(ln, "  ")])
+# --- A call laid out over lines (ruling R5, S353) ----------------------------
+# Since v0.9.226 a printed call wider than the message is broken after the
+# commas between its arguments and the semicolons between a map's rules,
+# its later lines indented four spaces past its first (.jst_layout_call()).
+# .r5_open() reads a line as R does -- brackets, strings, escapes, a
+# comment -- and says whether it leaves a call open. .r5_calls() gives a
+# message's indented lines as the calls they print, a call laid out over
+# several lines kept as ONE block of text exactly as printed, so running a
+# block runs the laid-out form (the ruling's test: each re-laid call is run
+# and its result compared with the one-line form's); with shape, only a
+# line of that shape opens a block. .r5_flat() puts a block on one line;
+# .r5_one() does it for every call in a message -- the one-line form the
+# checks written before S353 pin as fragments. A message is still pinned
+# WHOLE as it prints.
+.r5_open <- function(s) {
+  ch <- strsplit(s, "", fixed = TRUE)[[1]]
+  d <- 0L; q <- ""; k <- 1L
+  while (k <= length(ch)) {
+    c1 <- ch[k]
+    if (nzchar(q)) {
+      if (c1 == "\\") k <- k + 1L else if (c1 == q) q <- ""
+    } else if (c1 %in% c("\"", "'", "`")) {
+      q <- c1
+    } else if (c1 == "#") {
+      break
+    } else if (c1 %in% c("(", "[", "{")) {
+      d <- d + 1L
+    } else if (c1 %in% c(")", "]", "}")) {
+      d <- d - 1L
+    }
+    k <- k + 1L
+  }
+  d > 0L || nzchar(q)
 }
+.r5_calls <- function(lines, shape = NULL) {
+  out <- character(0); acc <- NULL
+  for (ln in lines) {
+    if (is.null(acc)) {
+      if (!startsWith(ln, "  ")) next
+      if (!is.null(shape) && !grepl(shape, ln)) next
+      acc <- sub("^ +", "", ln)
+    } else {
+      acc <- paste(acc, ln, sep = "\n")
+    }
+    if (!.r5_open(acc)) { out <- c(out, acc); acc <- NULL }
+  }
+  if (!is.null(acc)) out <- c(out, acc)
+  out
+}
+.r5_flat <- function(b) {
+  paste(sub("^ +", "", strsplit(b, "\n", fixed = TRUE)[[1]]), collapse = " ")
+}
+.r5_one <- function(m) {
+  ls <- strsplit(m, "\n", fixed = TRUE)[[1]]
+  out <- character(0); i <- 1L
+  while (i <= length(ls)) {
+    acc <- ls[i]; j <- i
+    if (startsWith(acc, "  ")) {
+      while (.r5_open(acc) && j < length(ls)) {
+        j <- j + 1L
+        acc <- paste(acc, sub("^ +", "", ls[j]))
+      }
+      if (.r5_open(acc)) { acc <- ls[i]; j <- i }
+    }
+    out <- c(out, acc); i <- j + 1L
+  }
+  paste(out, collapse = "\n")
+}
+# .n_code(): S353 -- each printed line as the call it prints, a call laid out
+# over lines kept as one block exactly as printed (.r5_calls()), so .n_run()
+# runs the laid-out form; .n_flat() gives the one-line forms the identity
+# checks pin.
+.n_code <- function(msg) .r5_calls(strsplit(msg, "\n", fixed = TRUE)[[1]])
+.n_flat <- function(cd) vapply(cd, .r5_flat, "", USE.NAMES = FALSE)
 # .n_terms(): the coefficient terms of the fit a printed line gives, the line
 # run in an environment of its own that can see the workspace.
 .n_run <- function(lines, env = new.env(parent = globalenv())) {
@@ -3187,10 +3272,10 @@ dn_w <- local({ z <- dn; z$`Wave 2 score` <- z$y; z$`my grp` <- z$hv
                 z$RelationshipSatisfactionIndex <- z$x2; z })
 .n_long <- grab(jlm(`Wave 2 score` ~ scale(x1, scale = FALSE) * x2 + I(x1^2) +
                       log(abs(x2) + 1) + `my grp`, data = dn_w))
-check("N20 a formula longer than 60 characters prints whole, on one line, with the backticks its names need (it was cut at 60 and ended ' + )')",
+check("N20 a formula longer than 60 characters prints whole on the call's first line, with the backticks its names need (it was cut at 60 and ended ' + )'); since S353 the call is laid out around it (ruling R5)",
       { cd <- .n_code(.n_long)
         f  <- "`Wave 2 score` ~ scale(x1, scale = FALSE) * x2 + I(x1^2) + log(abs(x2) + 1) + `my grp`"
-        identical(cd, c("jdummy(dn_w, `my grp`)",
+        identical(.n_flat(cd), c("jdummy(dn_w, `my grp`)",
                         paste0("jlm(", f, ", dn_w)"),
                         paste0("jlm(", f, ", dn_w, categorical = \"my grp\")"))) &&
           startsWith(.n_long, "my grp seems categorical.\n") })
@@ -3205,7 +3290,7 @@ check("N22 under a juse() default the lines carry no data frame, and run under i
                  { w  <- grab(jlm(y ~ x1 + hv))
                    cd <- .n_code(w)
                    b  <- .n_run(cd[3L])
-                   identical(cd, c("jdummy(dn, hv)", "jlm(y ~ x1 + hv)",
+                   identical(.n_flat(cd), c("jdummy(dn, hv)", "jlm(y ~ x1 + hv)",
                                    "jlm(y ~ x1 + hv, categorical = \"hv\")")) &&
                      is.list(b) && nrow(b$coefficients_raw) == 4L },
                  quiet(juse(NULL))))
@@ -3217,7 +3302,7 @@ check("N23 an expression given as the data: it is named first, since a registrat
         a  <- .n_run(cd[1:3], e)
         quiet(jdummy(clear.all = TRUE))
         b  <- .n_run(cd[4L], e)
-        identical(cd, c("mydata <- mk_n()", "jdummy(mydata, hv)",
+        identical(.n_flat(cd), c("mydata <- mk_n()", "jdummy(mydata, hv)",
                         "jlm(y ~ x1 + hv, mydata)",
                         "jlm(y ~ x1 + hv, mk_n(), categorical = \"hv\")")) &&
           is.list(a) && is.list(b) && near(a$coefficients_raw$b, b$coefficients_raw$b) })
@@ -3228,7 +3313,7 @@ check("N24 a place given as the data keeps it in every line, and they run",
         e  <- new.env(parent = globalenv()); assign("lst_n", lst_n, envir = e)
         a  <- .n_run(cd[1:2], e)
         quiet(jdummy(clear.all = TRUE))
-        identical(cd, c("jdummy(lst_n$dd, hv)", "jlm(y ~ x1 + hv, lst_n$dd)",
+        identical(.n_flat(cd), c("jdummy(lst_n$dd, hv)", "jlm(y ~ x1 + hv, lst_n$dd)",
                         "jlm(y ~ x1 + hv, lst_n$dd, categorical = \"hv\")")) &&
           is.list(a) && nrow(a$coefficients_raw) == 4L })
 check("N25 the call's own categorical = is kept in the second route, and a variable registered with jdummy() shows as typed, not as its dummy columns",
@@ -3236,7 +3321,7 @@ check("N25 the call's own categorical = is kept in the second route, and a varia
                          grab(jlm(y ~ g + nb + hv, data = dn, categorical = "nb")),
                          quiet(jdummy(dn, g, remove = TRUE)))
         cd <- .n_code(w)
-        identical(cd[2:3], c("jlm(y ~ g + nb + hv, dn)",
+        identical(.n_flat(cd)[2:3], c("jlm(y ~ g + nb + hv, dn)",
                              "jlm(y ~ g + nb + hv, dn, categorical = c(\"nb\", \"hv\"))")) })
 check("N26 jlogistic() prints the same warning under its own name, and its lines run",
       { w  <- grab(jlogistic(yb ~ x1 + hv, data = dn))
@@ -3253,7 +3338,7 @@ check("N27 jplot()'s refusal of two predictors prints the formula whole and the 
         u  <- with_state(quiet(juse(dn)), .n_code(grab(jplot(y ~ x1 + x2)))[1L],
                          quiet(juse(NULL)))
         !grepl("<data>", g, fixed = TRUE) &&
-          identical(cd, c(paste0("m <- jlm(`Wave 2 score` ~ FinancialLiteracyMeanScore + ",
+          identical(.n_flat(cd), c(paste0("m <- jlm(`Wave 2 score` ~ FinancialLiteracyMeanScore + ",
                                  "RelationshipSatisfactionIndex, dn_w)"),
                           "jplot(m)")) &&
           is.list(m) && nrow(m$coefficients_raw) == 3L &&
@@ -3978,7 +4063,7 @@ check("Q26 an expression given as the data: named first, and the lines run to an
         cd <- .q_code(grab(jlogistic(bl ~ x1, data = mk_q())))
         for (ln in cd) suppressMessages(eval(parse(text = ln), envir = e))
         m  <- quiet(jlogistic(blR ~ x1, data = get("mydata", envir = e)))
-        identical(cd, c("mydata <- mk_q()",
+        identical(.n_flat(cd), c("mydata <- mk_q()",
                         "mydata$blR <- jencode(mydata, bl, map = \"blank=0; Y=1\")")) &&
           is.list(m) && identical(m$predicts, "Y") }))
 check("Q27 the formula guard and jsave(): an expression is named first in the line to run, and jsave() says 'the data' of a call, keeping a name and an index into a frame as typed (they printed \"jnumeric(mk(), gh)\" and \"Saved mk() to\")",
@@ -3994,7 +4079,7 @@ check("Q27 the formula guard and jsave(): an expression is named first in the li
         s2 <- grab(jsave(dq, f, overwrite = TRUE))
         s3 <- grab(jsave(dq[, c("y", "x1")], f, overwrite = TRUE))
         unlink(f)
-        identical(cd, c("mydata <- mk_q()", "jnumeric(mydata, gh)")) && is.list(m) &&
+        identical(.n_flat(cd), c("mydata <- mk_q()", "jnumeric(mydata, gh)")) && is.list(m) &&
           startsWith(flat(s1), "Saved the data to ") && startsWith(flat(s2), "Saved dq to ") &&
           startsWith(flat(s3), "Saved dq[, c(\"y\", \"x1\")] to ") &&
           identical(.q_code(grab(jlm(x1 ~ log(gh), data = dq))), "jnumeric(dq, gh)") }))

@@ -67,11 +67,37 @@
 #           NA rule's pair; jrecode()'s notes one blank line apart (ruling
 #           R6); jdeclare_missing() on several variables and on a place;
 #           and the routes offered a frame holding a declared string.
+#           PART P (S353) adds ruling R5: the one layout of a printed call
+#           wider than the message -- a map, a call with no map, long
+#           names, a part of a frame given as the data, a first argument
+#           broken inside, a formula kept whole.
 # ORIGIN:   S226 (SAS-convention foundation, v0.9.123) + S227 (E17 jload
 #           messaging redesign, v0.9.124). Written S228, superseding the two
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S353 (v0.9.226; Fix Slate 9, the second half: ruling R5).
+#           NEW PART P, SECTION 64, eight renders, every Expected FILLED BY
+#           RUNNING the file (fill.R): THE ONE SECTION WALKED FOR RULING
+#           R5. SECTIONS 3, 23, 27, 34, 35, 42, 53, 58, 59 AND 63
+#           RE-PINNED MECHANICALLY under the ruling (Jeff, S345: "This is
+#           mechanical and I don't think that I need to look at every
+#           instance of the change") and kept off the PENDING line: in
+#           each, a printed call wider than 76 now breaks after an
+#           argument's comma, its later lines four spaces in. Re-pinned
+#           from a capture of every section of every walk on 0.9.225 and
+#           0.9.226 (each moved run of pinned lines replaced by the run
+#           the new build prints), and the prose pins of Sections 23 and
+#           27 by hand from the same capture. Sections 16, 22, 38, 53 and
+#           58 also show the S352 rider -- the assign-or-lose reminder,
+#           when it is a call's only output, no longer opens with a blank
+#           line -- in a line no pin holds. Section 30's resave line
+#           carries a temporary path; on the workstation, where the path
+#           is longer, it breaks before overwrite = TRUE (its pin names
+#           "<normalized path>", so it holds). harness.R derive: 69 of 70
+#           Expected blocks found (Section 10's, as before); Section 64
+#           needs no other, every NEEDS line as it was. harness.R verify:
+#           65 of 65 sections in three orders and by prepare = TRUE.
 # EDITED:   S352 (v0.9.225; Fix Slate 9, the first half). SECTIONS 29 AND
 #           57 RE-PINNED; NEW PART O, SECTIONS 58-63. Every changed
 #           Expected FILLED BY RUNNING the file (fill.R).
@@ -509,6 +535,15 @@
 #           Same messages either way (one frame), confirmed in the walk
 #           below against a sandbox capture of the same file; no Expected
 #           touched.
+# LAST VERIFIED: v0.9.226, 2026-10-12 (S353) -- Section 64 WALKED on the
+#           WORKSTATION through receive_all() ("walked, all okay"), GitHub
+#           5ab1062 (package), after the SANDBOX run (R 4.3.3, UTF-8
+#           locale): every new Expected filled by running the file
+#           (fill.R), 69 of 70 blocks found in the capture (Section 10's, as
+#           before), and all 65 sections through rewalk() in file order,
+#           reverse order and shuffled, and by prepare = TRUE; Section 64
+#           needs no other. The ten sections re-pinned mechanically under
+#           ruling R5 were not walked, by the ruling.
 # LAST VERIFIED: v0.9.225, 2026-10-12 (S352) -- Sections 29 and 57-63
 #           WALKED on the WORKSTATION through receive_all() ("walked, all
 #           okay"), GitHub 5c5304e (package), after the SANDBOX run (R
@@ -1490,7 +1525,8 @@ cw_decl2 <- jdeclare_missing(cw_mixed1, Age, CommuteTime, codes = -97,
 #   Note: Age and CommuteTime use Stata-style missing values, but other
 #   columns in cw_mixed1 are predominantly SPSS-style.
 #   To align them with the rest, run:
-#     jconvert(cw_mixed1, to = "spss", vars = c("Age", "CommuteTime"), modify = TRUE)
+#     jconvert(cw_mixed1, to = "spss", vars = c("Age", "CommuteTime"),
+#         modify = TRUE)
 #   (one console line, 81 columns -- a runnable call is an unbreakable
 #   atom, so it runs past the 76 pin rather than wrapping; re-pinned S266,
 #   the comment used to show it wrapped)
@@ -2980,7 +3016,8 @@ wc$StatusR <- NULL
 #   "Error: jrecode(): 'missing' is ambiguous for Status. The column uses
 #    SPSS-style missing values, but your missing.convention setting is "stata".
 #    To follow the column's form for this call:
-#      wc$StatusR <- jrecode(wc, Status, map = "8=missing; else=copy", convention = "spss")
+#      wc$StatusR <- jrecode(wc, Status, map = "8=missing; else=copy",
+#          convention = "spss")
 #    Or convert the data frame to match your setting first:
 #      jconvert(wc, to = "stata", modify = TRUE)"
 # The head wraps at width; both recipes are bare Rule L lines, the first
@@ -3208,7 +3245,8 @@ options(.jst_options_missing_convention = NULL)
 # token-first remedy with jencode's own call shape and AnswerR naming.
 # The tail moved there too (the builders are twins). Since S303 it reads:
 #    Or declare -99 as missing on the encoded variable:
-#      wt$AnswerR <- jencode(wt, Answer, map = "Yes=1; No=0; Refused=-99; blank=9")
+#      wt$AnswerR <- jencode(wt, Answer,
+#          map = "Yes=1; No=0; Refused=-99; blank=9")
 #      jdeclare_missing(wt, AnswerR, codes = c(-99), modify = TRUE)
 # Before S303 the second line was a jdeclare_missing() on Answer, the
 # TEXT source -- a call that stops with an error, since a text column
@@ -3612,7 +3650,8 @@ try(jdeclare_missing(go, Wave, range = c(-120, -87)))
 #   Error : jdeclare_missing(): a missing-value range can exist only under SPSS
 #   convention, and your missing.convention setting is "stata".
 #   To stay in Stata convention, first declare the range using SPSS convention:
-#     jdeclare_missing(gd, Income, range = c(-99, -91), convention = "spss", modify = TRUE)
+#     jdeclare_missing(gd, Income, range = c(-99, -91), convention = "spss",
+#         modify = TRUE)
 #   Then convert the column to Stata convention:
 #     jconvert(gd, Income, to = "stata", modify = TRUE)
 #
@@ -3622,7 +3661,8 @@ try(jdeclare_missing(go, Wave, range = c(-120, -87)))
 #   In Wave the range covers 34 values; Stata-style missing values support at
 #   most 26 per variable, so this range cannot become Stata-style.
 #   To declare the range using SPSS convention:
-#     jdeclare_missing(go, Wave, range = c(-120, -87), convention = "spss", modify = TRUE)
+#     jdeclare_missing(go, Wave, range = c(-120, -87), convention = "spss",
+#         modify = TRUE)
 #   To use Stata convention with jconvert(), you must first reduce these to
 #   26 or fewer.
 #
@@ -3660,7 +3700,8 @@ try(jdeclare_missing(go, Wave, range = c(-120, -87), convention = "sas"))
 #   Error : jdeclare_missing(): a missing-value range can exist only under SPSS
 #   convention; it cannot be combined with convention = "stata".
 #   To use Stata convention, first declare the range using SPSS convention:
-#     jdeclare_missing(gd, Income, range = c(-99, -91), convention = "spss", modify = TRUE)
+#     jdeclare_missing(gd, Income, range = c(-99, -91), convention = "spss",
+#         modify = TRUE)
 #   Then convert the column to Stata convention:
 #     jconvert(gd, Income, to = "stata", modify = TRUE)
 #
@@ -4247,10 +4288,13 @@ gi$StatusP <- jrecode(gi, Status, map = "8=-99; else=copy",
 # Expected, PER-CALL (verbatim, before the two trailing reminders):
 #   Note: 8 was recoded to -99, which looks like a coded missing value.
 #   To make the value missing under Stata convention, map it directly:
-#     gi$StatusR <- jrecode(gi, Status, map = "8=missing; else=copy", convention = "stata")
+#     gi$StatusR <- jrecode(gi, Status, map = "8=missing; else=copy",
+#         convention = "stata")
 #   Or declare -99 as missing on the recoded variable:
-#     gi$StatusR <- jrecode(gi, Status, map = "8=-99; else=copy", convention = "stata")
-#     jdeclare_missing(gi, StatusR, codes = c(-99), convention = "stata", modify = TRUE)
+#     gi$StatusR <- jrecode(gi, Status, map = "8=-99; else=copy",
+#         convention = "stata")
+#     jdeclare_missing(gi, StatusR, codes = c(-99), convention = "stata",
+#         modify = TRUE)
 #
 # RE-PINNED S303: the tail. convention = now rides on all THREE pasteable
 # lines -- the per-call beat's point, one line longer.
@@ -5806,7 +5850,8 @@ try(jdeclare_missing(sk53, Reason, codes = c(Refused = -99)))
 #   Reason already carries .a ["Skipped"], so the two would share one
 #   missing value.
 #   To keep them distinct, recode -99 to a marker Reason does not use:
-#     sk53$ReasonR <- jrecode(sk53, Reason, map = "-99=.b; else=copy", labels = ".b=Refused")
+#     sk53$ReasonR <- jrecode(sk53, Reason, map = "-99=.b; else=copy",
+#         labels = ".b=Refused")
 #   Or, if they mean the same thing, recode -99 to .a:
 #     sk53$ReasonR <- jrecode(sk53, Reason, map = "-99=.a; else=copy")
 
@@ -5872,7 +5917,8 @@ try(jdeclare_missing(dk53, Q, codes = c(-99, -98)))
 #   Error : jdeclare_missing(): -98 would become .b under Stata convention, but
 #   Q already carries .b ["Skipped"], so the two would share one missing value.
 #   To keep them distinct, recode the codes to markers Q does not use:
-#     dk53$QR <- jrecode(dk53, Q, map = "-99=.a; -98=.c; else=copy", labels = ".c=Don't know")
+#     dk53$QR <- jrecode(dk53, Q, map = "-99=.a; -98=.c; else=copy",
+#         labels = ".c=Don't know")
 #   Or, if they mean the same thing, recode the codes to the markers they would
 #   have taken:
 #     dk53$QR <- jrecode(dk53, Q, map = "-99=.a; -98=.b; else=copy")
@@ -6212,7 +6258,8 @@ try(jrecode(sk58, Reason, map = "9=missing; else=copy",
 #   already carries .a ["Skipped"], so the two would share one missing value.
 #   The label "Refused" would also rename the cases already at .a.
 #   To keep them distinct, give missing a marker Reason does not use:
-#     sk58$ReasonR <- jrecode(sk58, Reason, map = "9=.b; else=copy", labels = ".b=Refused")
+#     sk58$ReasonR <- jrecode(sk58, Reason, map = "9=.b; else=copy",
+#         labels = ".b=Refused")
 #   Or, if they mean the same thing, use .a for both, keeping its label:
 #     sk58$ReasonR <- jrecode(sk58, Reason, map = "9=.a; else=copy")
 
@@ -6260,7 +6307,8 @@ try(jrecode(q58, Q, map = "9=missing; else=copy", labels = "missing=Skipped"))
 #   The label "Skipped" would also rename the cases already at -99.
 #   To keep them distinct, give missing a code Q does not use, and declare it on
 #   the recoded variable:
-#     q58$QR <- jrecode(q58, Q, map = "9=-98; else=copy", labels = "-98=Skipped")
+#     q58$QR <- jrecode(q58, Q, map = "9=-98; else=copy",
+#         labels = "-98=Skipped")
 #     jdeclare_missing(q58, QR, codes = c(-99, -98), modify = TRUE)
 #   Or, if they mean the same thing, use -99 for both, keeping its label:
 #     q58$QR <- jrecode(q58, Q, map = "9=-99; else=copy")
@@ -6369,7 +6417,8 @@ jload(file.path(tempdir(), "sc59.rds"))
 #   To recode one variable's codes to markers it does not use:
 #     sc59$ScoreR <- jrecode(sc59, Score, map = "-99=.b; else=copy")
 #   To recode and label them in one call, replacing the placeholder names:
-#     sc59$ScoreR <- jrecode(sc59, Score, map = "-99=.b; else=copy", labels = ".b=label1")
+#     sc59$ScoreR <- jrecode(sc59, Score, map = "-99=.b; else=copy",
+#         labels = ".b=label1")
 options(.jst_options_missing_convention = NULL)
 rm(w59, r59, o59, u59, sc59)
 
@@ -6616,7 +6665,8 @@ try(jrecode(st63, N, map = "1=missing; else=copy"))
 #   Error : jrecode(): 'missing' is ambiguous for N. The column uses SPSS-style
 #   missing values, but your missing.convention setting is "stata".
 #   To follow the column's form for this call:
-#     st63$NR <- jrecode(st63, N, map = "1=missing; else=copy", convention = "spss")
+#     st63$NR <- jrecode(st63, N, map = "1=missing; else=copy",
+#         convention = "spss")
 #   Or convert the data frame to match your setting first:
 #     jconvert(st63, to = "baseR", vars = "S", modify = TRUE)
 #     jconvert(st63, to = "stata", modify = TRUE)
@@ -6691,6 +6741,205 @@ rm(st63, .hold63)
 #   - RENDER 1: the route, then "Or map -99 as well", unchanged;
 #   - RENDER 5: "run both:" where it read "run:".
 
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART P -- Fix Slate 9, the second half: the layout of a long printed ----
+#           call (ruling R5, S353)
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.226. One section, Section 64, THE ONE WALKED FOR RULING R5 (Jeff,
+# S345: "This is mechanical and I don't think that I need to look at
+# every instance of the change"). Every other section the layout moved
+# was re-pinned mechanically by running and stays off the PENDING line:
+# this file's 3, 23, 27, 34, 35, 42, 53, 58, 59 and 63, jencode_walk.R's
+# 2, 7, 9, 10, 14 and 15, models_walk.R's 17 and modify_form_walk.R's 5.
+# The assertion side is missing_convention_check.R N88a-N88x and the
+# N88s sweep: every laid-out call RUN, and its result compared with the
+# one-line form's.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 64 -- a call wider than the message: one layout (ruling R5) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Every call the package prints for you to paste takes one layout (Jeff's
+# ruling R5, S345). Within the message width, one line. Wider, it breaks
+# after the commas between its arguments, each later line four spaces in
+# from the call's own, as many arguments on a line as fit; an argument too
+# long for a line of its own breaks inside -- a map after the semicolons
+# between its rules, the rules set under the first; a c() after its
+# commas. Nothing is cut short. Until 0.9.226 jencode()'s offered maps hung
+# under the opening parenthesis, and every other long call ran on in one
+# line (148 characters in jencode_walk.R Section 7). The width here is 76.
+joptions(missing.convention = "spss", quiet = TRUE)
+
+hh64 <- data.frame(
+  ReasonForNonResponse = c("Refused", "Don't know", "No answer",
+                           "Not applicable; other", "Yes", "No", "Yes"),
+  NumberOfAdultsInHousehold = c(1, 2, 8, 2, 1, 3, 2),
+  stringsAsFactors = FALSE)
+
+# Render 1 -- a map: automatic mode offers the map that gives its result,
+# too long for one line. The map breaks after its rules' semicolons, the
+# rules under the first -- never inside "Not applicable; other".
+hh64$ReasonR <- jencode(hh64, ReasonForNonResponse)
+# Expected:
+#   Note: 'ReasonForNonResponse' was encoded alphabetically:
+#     "Don't know"            -> 1
+#     "No"                    -> 2
+#     "No answer"             -> 3
+#     "Not applicable; other" -> 4
+#     "Refused"               -> 5
+#     "Yes"                   -> 6
+#   If these categories have a natural order (like Low/Medium/High), rerun with
+#   a map to choose the numbers:
+#     hh64$ReasonForNonResponseR <- jencode(hh64, ReasonForNonResponse,
+#         map = "Don't know=1; No=2; No answer=3; \"Not applicable; other\"=4;
+#                Refused=5; Yes=6")
+#
+#   Note: This call changes hh64 only if you assign the result:
+#     hh64$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 2 -- that call pasted as printed, over three lines, and run (to
+# ReasonR2); the result is the same as Render 1's.
+hh64$ReasonR2 <- jencode(hh64, ReasonForNonResponse,
+    map = "Don't know=1; No=2; No answer=3; \"Not applicable; other\"=4;
+           Refused=5; Yes=6")
+identical(hh64$ReasonR, hh64$ReasonR2)
+# Expected:
+#   Note: This call changes hh64 only if you assign the result:
+#     hh64$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+#   [1] TRUE
+
+# Render 3 -- no map, long names: the D1 note's lines. Each call breaks
+# after an argument's comma; the declaration keeps its codes beside the
+# variable and puts modify = TRUE on a line of its own.
+hh64$AdultsR <- jrecode(hh64, NumberOfAdultsInHousehold,
+                        map = "8=-99; else=copy")
+# Expected:
+#   Note: 8 was recoded to -99, which looks like a coded missing value.
+#   To make the value missing under SPSS convention, map it directly:
+#     hh64$NumberOfAdultsInHouseholdR <- jrecode(hh64,
+#         NumberOfAdultsInHousehold, map = "8=missing; else=copy")
+#   Or declare -99 as missing on the recoded variable:
+#     hh64$NumberOfAdultsInHouseholdR <- jrecode(hh64,
+#         NumberOfAdultsInHousehold, map = "8=-99; else=copy")
+#     jdeclare_missing(hh64, NumberOfAdultsInHouseholdR, codes = c(-99),
+#         modify = TRUE)
+#
+#   Note: No value labels assigned. To add labels, use jrelabel().
+#
+#   Note: This call changes hh64 only if you assign the result:
+#     hh64$<name> <- jrecode(...)
+#   To check the recode landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 4 -- the range recipe under Stata convention: two calls, the
+# first broken after its last-but-one argument.
+options(.jst_options_missing_convention = "stata")
+hh64$Income <- haven::labelled(c(1200, -99, 3400, -95, 2100, 800, -91),
+                               labels = c(Refused = -99))
+try(jdeclare_missing(hh64, Income, range = c(-99, -91)))
+# Expected:
+#   Error : jdeclare_missing(): a missing-value range can exist only under SPSS
+#   convention, and your missing.convention setting is "stata".
+#   To stay in Stata convention, first declare the range using SPSS convention:
+#     jdeclare_missing(hh64, Income, range = c(-99, -91), convention = "spss",
+#         modify = TRUE)
+#   Then convert the column to Stata convention:
+#     jconvert(hh64, Income, to = "stata", modify = TRUE)
+
+# Render 5 -- the same message at a width of 120: each call fits, so each
+# is one line, as before.
+joptions(message.width = 120, quiet = TRUE)
+try(jdeclare_missing(hh64, Income, range = c(-99, -91)))
+# Expected:
+#   Error : jdeclare_missing(): a missing-value range can exist only under SPSS convention, and your missing.convention
+#   setting is "stata".
+#   To stay in Stata convention, first declare the range using SPSS convention:
+#     jdeclare_missing(hh64, Income, range = c(-99, -91), convention = "spss", modify = TRUE)
+#   Then convert the column to Stata convention:
+#     jconvert(hh64, Income, to = "stata", modify = TRUE)
+joptions(message.width = 76, quiet = TRUE)
+
+# Render 6 -- part of a frame given as the data: the reminder names it
+# mydata first, and that line breaks after the comma inside its brackets.
+x64 <- jrecode(hh64[hh64$NumberOfAdultsInHousehold < 8,
+                    c("NumberOfAdultsInHousehold", "Income")],
+               NumberOfAdultsInHousehold, map = "1=10; else=copy")
+# Expected:
+#   Note: No value labels assigned. To add labels, use jrelabel().
+#
+#   Note: The result is kept only if you assign it.
+#   Name the data frame first, then assign the result to a variable in it:
+#     mydata <- hh64[hh64$NumberOfAdultsInHousehold < 8,
+#         c("NumberOfAdultsInHousehold", "Income")]
+#     mydata$<name> <- jrecode(mydata, ...)
+#   To check the recode landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 7 -- a first argument too long for the call's first line: a frame
+# typed into the call. It breaks inside, after its own comma, and its next
+# line takes the call's fixed indent -- not a place under the argument,
+# which would be column 49 here.
+x64 <- jrecode(data.frame(Adults = haven::labelled(c(1, 2, 3, 2),
+                          labels = c(One = 1, Two = 2, Three = 3))),
+               Adults, map = "1=10; else=copy")
+# Expected:
+#   Note: The result is kept only if you assign it.
+#   Name the data frame first, then assign the result to a variable in it:
+#     mydata <- data.frame(Adults = haven::labelled(c(1, 2, 3, 2),
+#         labels = c(One = 1, Two = 2, Three = 3)))
+#     mydata$<name> <- jrecode(mydata, ...)
+#   To check the recode landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 8 -- a formula is one piece. In the "seems categorical" warning
+# (warnings shown as they happen here) the refits break after the
+# formula's comma, and the formula stays whole on the first line, past
+# the width.
+lf64 <- data.frame(
+  SatisfactionWithLifeOverall = c(5.1, 4.2, 6.0, 5.5, 3.9, 4.8, 5.2, 6.1,
+                                  4.4, 5.0, 5.7, 4.6),
+  HoursWorkedPerWeekInMainJob = c(38, 40, 25, 45, 50, 36, 30, 42, 39, 44,
+                                  20, 37),
+  RegionOfResidence = rep(1:3, 4))
+.op64 <- options(warn = 1)
+invisible(utils::capture.output(
+  m64 <- jlm(SatisfactionWithLifeOverall ~ HoursWorkedPerWeekInMainJob +
+               RegionOfResidence, lf64)))
+options(.op64)
+# Expected:
+#   Warning: RegionOfResidence seems categorical.
+#   To treat it that way, register it with jdummy() and rerun:
+#
+#     jdummy(lf64, RegionOfResidence)
+#     jlm(SatisfactionWithLifeOverall ~ HoursWorkedPerWeekInMainJob + RegionOfResidence,
+#         lf64)
+#
+#   Or, for this call only:
+#     jlm(SatisfactionWithLifeOverall ~ HoursWorkedPerWeekInMainJob + RegionOfResidence,
+#         lf64, categorical = "RegionOfResidence")
+options(.jst_options_missing_convention = NULL)
+rm(hh64, x64, lf64, m64, .op64)
+
+# Things to look at:
+#   - the later lines of a call sit four spaces in from its first, wherever
+#     its parenthesis falls -- never under it;
+#   - RENDER 1: a map's rules under its first rule, each line ending on a
+#     semicolon;
+#   - RENDER 2: the call pasted over three lines runs, and gives what the
+#     note's automatic mode gave;
+#   - RENDER 3: as many arguments on a line as fit -- "codes = c(-99),"
+#     beside the variable, "modify = TRUE)" alone;
+#   - RENDER 6: "mydata <- hh64[rows," and its columns on the next line;
+#   - RENDER 7: a first argument broken inside, its next line four in;
+#   - RENDER 8: the formula whole, the line past 76, the frame below it;
+#   - not pinned: the reminder that is a call's only output (Render 2)
+#     no longer opens with a blank line (voice Rule F; the S352 item). An
+#     Expected block drops the lines a render opens with, so run the
+#     section to see it.
 
 
 # --- Restore session state ---------------------------------------------------

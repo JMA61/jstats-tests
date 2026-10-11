@@ -22,6 +22,30 @@
 #           with no convention selected, and the declaration line a place
 #           is offered.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S353 EDIT (v0.9.226, 2026-10-12): Fix Slate 9, the second half (ruling
+#           R5, the layout of a long printed call; its own checks are
+#           missing_convention_check.R N88). jencode()'s offered maps are
+#           one line from .jst_jencode_map_call(), and the wrapper lays out
+#           one wider than the message. CHANGED, MECHANICALLY under the
+#           ruling: N44b, N44c, N45a and N47i re-pinned by running (later
+#           lines four spaces in, a map that runs on under its first rule,
+#           where the packer hung them under the parenthesis); N48a's pin
+#           and N48c's grep (through .r5_one()) likewise; N45h, N45i, N47l
+#           and N47m, which held the packer by its unit, now hold the
+#           wrapper's layout on the same inputs -- a quoted word kept
+#           whole, the builder's one line and its layout, every line within
+#           the width with each later line four in and a map's rules seven
+#           in from "map", one line up to the width and the closing
+#           characters counted. .line48() runs each offered call as printed
+#           (.r5_calls(), with the R5 helpers added to the harness). ONE
+#           HUNDRED AND SIXTEEN checks. On the 0.9.225 master 8 red: N44b,
+#           N44c, N45a, N45i, N47i, N47l, N47m, N48a.
+#           Sandbox: 116/116 plain and under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, and entered dirty.
+#           LAST VERIFIED: v0.9.226, 2026-10-12 (S353) -- 116/116 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2370 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 5ab1062.
 # S352 EDIT (v0.9.225, 2026-10-11): NEW N48 checks, five (N48a-e), Fix
 #           Slate 9, the first half (ruling R8's offered declarations): a
 #           map giving a word a lettered marker makes the encoded variable
@@ -402,6 +426,75 @@ quiet <- function(expr) {
 .same <- function(x, y) {
   identical(as.numeric(unclass(x)), as.numeric(unclass(y))) &&
     identical(labelled::val_labels(x), labelled::val_labels(y))
+}
+
+# --- A call laid out over lines (ruling R5, S353) ----------------------------
+# Since v0.9.226 a printed call wider than the message is broken after the
+# commas between its arguments and the semicolons between a map's rules,
+# its later lines indented four spaces past its first (.jst_layout_call()).
+# .r5_open() reads a line as R does -- brackets, strings, escapes, a
+# comment -- and says whether it leaves a call open. .r5_calls() gives a
+# message's indented lines as the calls they print, a call laid out over
+# several lines kept as ONE block of text exactly as printed, so running a
+# block runs the laid-out form (the ruling's test: each re-laid call is run
+# and its result compared with the one-line form's); with shape, only a
+# line of that shape opens a block. .r5_flat() puts a block on one line;
+# .r5_one() does it for every call in a message -- the one-line form the
+# checks written before S353 pin as fragments. A message is still pinned
+# WHOLE as it prints.
+.r5_open <- function(s) {
+  ch <- strsplit(s, "", fixed = TRUE)[[1]]
+  d <- 0L; q <- ""; k <- 1L
+  while (k <= length(ch)) {
+    c1 <- ch[k]
+    if (nzchar(q)) {
+      if (c1 == "\\") k <- k + 1L else if (c1 == q) q <- ""
+    } else if (c1 %in% c("\"", "'", "`")) {
+      q <- c1
+    } else if (c1 == "#") {
+      break
+    } else if (c1 %in% c("(", "[", "{")) {
+      d <- d + 1L
+    } else if (c1 %in% c(")", "]", "}")) {
+      d <- d - 1L
+    }
+    k <- k + 1L
+  }
+  d > 0L || nzchar(q)
+}
+.r5_calls <- function(lines, shape = NULL) {
+  out <- character(0); acc <- NULL
+  for (ln in lines) {
+    if (is.null(acc)) {
+      if (!startsWith(ln, "  ")) next
+      if (!is.null(shape) && !grepl(shape, ln)) next
+      acc <- sub("^ +", "", ln)
+    } else {
+      acc <- paste(acc, ln, sep = "\n")
+    }
+    if (!.r5_open(acc)) { out <- c(out, acc); acc <- NULL }
+  }
+  if (!is.null(acc)) out <- c(out, acc)
+  out
+}
+.r5_flat <- function(b) {
+  paste(sub("^ +", "", strsplit(b, "\n", fixed = TRUE)[[1]]), collapse = " ")
+}
+.r5_one <- function(m) {
+  ls <- strsplit(m, "\n", fixed = TRUE)[[1]]
+  out <- character(0); i <- 1L
+  while (i <= length(ls)) {
+    acc <- ls[i]; j <- i
+    if (startsWith(acc, "  ")) {
+      while (.r5_open(acc) && j < length(ls)) {
+        j <- j + 1L
+        acc <- paste(acc, sub("^ +", "", ls[j]))
+      }
+      if (.r5_open(acc)) { acc <- ls[i]; j <- i }
+    }
+    out <- c(out, acc); i <- j + 1L
+  }
+  paste(out, collapse = "\n")
 }
 
 # --- N01-N02: fixture shape --------------------------------------------------
@@ -875,7 +968,7 @@ check("N44a automatic mode: a declared missing string is not numbered; its cells
 check("N44b ... the listing leaves the declared strings out, and the suggested map sends each to NA, so the call runs",
       grepl("  \"Married\" -> 1\n  \"Single\"  -> 2\nIf these", .g44, fixed = TRUE) &&
         grepl(paste0("  e44$MSR <- jencode(e44, MS,\n",
-                     "                     map = \"Married=1; Single=2; REF=NA; UNKNOWN=NA\")\n\n"),
+                     "      map = \"Married=1; Single=2; REF=NA; UNKNOWN=NA\")\n\n"),
               .g44, fixed = TRUE) &&
         { e <- new.env(parent = globalenv()); assign("e44", e44, envir = e)
           .runs(.offered(.g44)[[1]], e) && .same(get("e44", envir = e)$MSR, .r44) })
@@ -886,8 +979,7 @@ check("N44c ... and the note says how many cells, which values, that the two str
         "To keep them declared, as one missing value, rerun with a map sending those\n",
         "values to missing:\n",
         "  e44$MSR <- jencode(e44, MS,\n",
-        "                     map = \"Married=1; Single=2; REF=missing;\n",
-        "                           UNKNOWN=missing\")\n\n",
+        "      map = \"Married=1; Single=2; REF=missing; UNKNOWN=missing\")\n\n",
         "Note: This call changes e44 only if you assign the result:"),
         .g44, fixed = TRUE))
 check("N44c2 one declared string in several cells: the cells are plural, the value singular, and no \"as one missing value\" (nothing is merged)",
@@ -972,13 +1064,12 @@ q45 <- data.frame(
   Bl  = rep(c("A; b", "", "C"), 6),
   stringsAsFactors = FALSE)
 .g45 <- grab(.a45 <- jencode(q45, Why))
-check("N45a a category holding a semicolon, a comma or an equals sign: the offered call is quoted and packed whole (pinned)",
+check("N45a a category holding a semicolon, a comma or an equals sign: the offered call is quoted and laid out whole (pinned; ruling R5's layout since S353)",
       grepl(paste0(
         "  q45$WhyR <- jencode(q45, Why,\n",
-        "                      map = \"Don't know=1;\n",
-        "                            \\\"Moved away, address unknown\\\"=2; No answer=3;\n",
-        "                            \\\"Other = see notes\\\"=4; Refused=5;\n",
-        "                            \\\"Skipped; respondent was not asked this question\\\"=6\")\n"),
+        "      map = \"Don't know=1; \\\"Moved away, address unknown\\\"=2; No answer=3;\n",
+        "             \\\"Other = see notes\\\"=4; Refused=5;\n",
+        "             \\\"Skipped; respondent was not asked this question\\\"=6\")\n"),
         .g45, fixed = TRUE))
 check("N45b ... and it runs as printed, giving the automatic result (it stopped: Invalid rule)",
       { e <- new.env(parent = globalenv()); assign("q45", q45, envir = e)
@@ -1018,10 +1109,10 @@ check("N45g map mode: a quoted keyword in the user's map is quoted in the map a 
           "\"'tis\"=6")))
         grepl("\\\"else\\\"=1; \\\"NA\\\"=2; \\\"blank\\\"=3; \\\"System\\\"=4;",
               flat(g), fixed = TRUE) })
-check("N45h the packer keeps a quoted word whole when the break would fall inside it (a unit on the builder)",
-      { r <- .jst_jencode_map_call("d", "v", paste0(
+check("N45h the layout keeps a quoted word whole when the break would fall inside it (a unit on the wrapper, which lays out the builder's one line since S353)",
+      { r <- .jst_wrap_message(.jst_jencode_map_call("d", "v", paste0(
           "Alpha=1; \"Bravo; a long second half that will not fit on the line\"=2; ",
-          "Charlie=3"))
+          "Charlie=3")), width = 76L)
         ln <- strsplit(r, "\n", fixed = TRUE)[[1]]
         any(grepl("\\\"Bravo; a long second half that will not fit on the line\\\"=2;",
                   ln, fixed = TRUE)) &&
@@ -1030,15 +1121,19 @@ check("N45h the packer keeps a quoted word whole when the break would fall insid
             c("Alpha=1;",
               "\"Bravo; a long second half that will not fit on the line\"=2;",
               "Charlie=3")) })
-check("N45i controls: a map of plain words is as it was, on one line and packed",
+check("N45i controls: a map of plain words on one line when it fits; the builder gives one line, and the wrapper lays out a long one (S353)",
       grepl("  tdat$StatusR <- jencode(tdat, Status, map = \"Bail=1; Parole=2; Remand=3\")",
             grab(jencode(tdat, Status)), fixed = TRUE) &&
         identical(.jst_jencode_map_call("d", "v", paste(paste0(
           "Category number ", 1:6, "=", 1:6), collapse = "; ")),
+          paste0("  d$vR <- jencode(d, v, map = \"",
+                 paste(paste0("Category number ", 1:6, "=", 1:6), collapse = "; "),
+                 "\")")) &&
+        identical(.jst_wrap_message(.jst_jencode_map_call("d", "v", paste(paste0(
+          "Category number ", 1:6, "=", 1:6), collapse = "; ")), width = 76L),
           paste0("  d$vR <- jencode(d, v,\n",
-                 "                  map = \"Category number 1=1; Category number 2=2;\n",
-                 "                        Category number 3=3; Category number 4=4;\n",
-                 "                        Category number 5=5; Category number 6=6\")")))
+                 "      map = \"Category number 1=1; Category number 2=2; Category number 3=3;\n",
+                 "             Category number 4=4; Category number 5=5; Category number 6=6\")")))
 check("N45j the new notes hold the pinned width outside their code lines and break nowhere early",
       { s  <- c(.g45, .k45, .l45)
         ln <- unlist(strsplit(s, "\n", fixed = TRUE))
@@ -1272,7 +1367,7 @@ m47$MS <- haven::labelled_spss(
   c("UNKNOWN", "Married", "Single", "", "Married", "REF", "Single", " "),
   labels = c(Refused = "REF"), na_values = c("UNKNOWN", "REF"))
 .g47i <- grab(.r47i <- jencode(m47, MS))
-check("N47i declared missing strings AND blank cells: three offered calls, each naming both kinds, each packed within the width (pinned whole)",
+check("N47i declared missing strings AND blank cells: three offered calls, each naming both kinds, each laid out within the width (pinned whole; ruling R5's layout since S353)",
       identical(.g47i, paste0(
         "Note: 'MS' was encoded alphabetically:\n",
         "  \"Married\" -> 1\n",
@@ -1280,20 +1375,18 @@ check("N47i declared missing strings AND blank cells: three offered calls, each 
         "If these categories have a natural order (like Low/Medium/High), rerun with\n",
         "a map to choose the numbers:\n",
         "  m47$MSR <- jencode(m47, MS,\n",
-        "                     map = \"Married=1; Single=2; REF=NA; UNKNOWN=NA;\n",
-        "                           blank=NA\")\n\n",
+        "      map = \"Married=1; Single=2; REF=NA; UNKNOWN=NA; blank=NA\")\n\n",
         "Note: 2 cells in 'MS' holding a declared missing value (\"REF\", \"UNKNOWN\")\n",
         "were left missing (NA).\n",
         "To keep them declared, as one missing value, rerun with a map sending those\n",
         "values to missing:\n",
         "  m47$MSR <- jencode(m47, MS,\n",
-        "                     map = \"Married=1; Single=2; REF=missing;\n",
-        "                           UNKNOWN=missing; blank=NA\")\n\n",
+        "      map = \"Married=1; Single=2; REF=missing; UNKNOWN=missing; blank=NA\")\n\n",
         "Note: 2 blank cells in 'MS' were left missing (NA).\n",
         "To give blank cells their own category, rerun with a map naming them:\n",
         "  m47$MSR <- jencode(m47, MS,\n",
-        "                     map = \"Married=1; Single=2; REF=NA; UNKNOWN=NA;\n",
-        "                           blank=0\")", .rem47("m47"))))
+        "      map = \"Married=1; Single=2; REF=NA; UNKNOWN=NA; blank=0\")",
+        .rem47("m47"))))
 check("N47j ... and all three run as printed (the second under a convention, which the missing token needs): automatic result; declared cells declared; blanks a category",
       local({ o  <- .offered(.g47i)
         ev <- lapply(1:3, function(i) {
@@ -1309,18 +1402,32 @@ check("N47j ... and all three run as printed (the second under a convention, whi
 check("N47k control: a variable with neither blank cells nor declared strings is offered the numbering alone, as before",
       grepl("  tdat$StatusR <- jencode(tdat, Status, map = \"Bail=1; Parole=2; Remand=3\")\n", g_auto, fixed = TRUE) &&
         !grepl("=NA", g_auto, fixed = TRUE))
-check("N47l the packer counts the closing quote and parenthesis: no offered line passes the width, and a map's second line sits six columns right of \"map\", never under it",
-      local({ ln   <- unlist(strsplit(c(.g47g, .g47i), "\n", fixed = TRUE))
+# S353 (ruling R5): the offered calls are one line from the builder, and the
+# wrapper lays out one wider than the message -- its later lines four columns
+# in from the call's first, a map that runs on set under its first rule.
+# N47l and N47m held the retired packer's form (a map's second line six
+# columns right of "map", hung under the parenthesis); they now hold the
+# house form on the same captures and the same unit.
+check("N47l no offered line passes the width; a call's later lines sit four columns in from its first, and a map that runs on sits under its first rule (seven columns right of \"map\")",
+      local({ q  <- data.frame(Why = c("Don't know", "Moved away, address unknown",
+                                        "No answer", "Other = see notes", "Refused",
+                                        "Skipped; respondent was not asked this question"),
+                                stringsAsFactors = FALSE)
+        ln   <- unlist(strsplit(c(grab(jencode(q, Why)), .g47g, .g47i), "\n", fixed = TRUE))
         ind  <- function(x) nchar(x) - nchar(sub("^ +", "", x))
         i    <- grep("^ +map = \"", ln)
         open <- i[!grepl("\"\\)$", ln[i])]          # a map that runs on
-        !any(nchar(ln) > .pin_width) && length(open) == 3L &&
-          all(ind(ln[open + 1L]) == ind(ln[open]) + 6L) &&
-          all(grepl("\"\\)$", ln[open + 1L])) }))
-check("N47m the packer by its unit: a last rule that fits only without the closing two characters goes to the next line (it made a line of 77 or 78)",
-      local({ mk <- function(n) .jst_jencode_map_call("d", "v", paste0(strrep("a", n), "=1; bb=2; cc=3"))
-        w  <- vapply(18:44, function(n) max(nchar(strsplit(mk(n), "\n", fixed = TRUE)[[1]])), integer(1))
-        all(w <= 76L) && sum(w == 76L) >= 3L }))
+        !any(nchar(ln) > .pin_width) && length(i) == 4L && length(open) == 1L &&
+          all(ind(ln[i]) == ind(ln[i - 1L]) + 4L) &&
+          all(ind(ln[open + 1L]) == ind(ln[open]) + 7L) &&
+          all(grepl("\"\\)$", ln[open + 2L])) }))
+check("N47m the layout by its unit: one line up to the width and broken past it; a last rule that fits only without the closing two characters goes to the next line",
+      local({ mk <- function(n) .jst_wrap_message(.jst_jencode_map_call(
+          "d", "v", paste0(strrep("a", n), "=1; bb=2; cc=3")), width = 76L)
+        nl <- vapply(18:60, function(n) length(strsplit(mk(n), "\n", fixed = TRUE)[[1]]), integer(1))
+        w  <- vapply(18:60, function(n) max(nchar(strsplit(mk(n), "\n", fixed = TRUE)[[1]])), integer(1))
+        all(w <= 76L) && sum(w == 76L) >= 3L &&
+          identical(nl[c(12L, 13L, 30L, 31L)], c(1L, 2L, 2L, 3L)) }))
 
 # (3) ---------------------------------------------------------------------------
 n47 <- data.frame(w = c("Yes", "No", NA, "Yes", "No", "Yes"),
@@ -1408,9 +1515,10 @@ rm(list = intersect(c("s47", "b47", "m47", "n47", "l47", ".g47a", ".g47g", ".r47
   force(expr)
 }
 .line48 <- function(m, k = 1L) {
-  ln <- strsplit(m, "\n", fixed = TRUE)[[1]]
-  ln <- ln[grepl("^  [A-Za-z.][A-Za-z0-9._$]* *(\\(|<- )", ln)]
-  ln[k]
+  # S353: each offered call as printed, a call laid out over lines (ruling
+  # R5) one block, so .runs() runs the laid-out form.
+  .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]],
+            shape = "^  [A-Za-z.][A-Za-z0-9._$]* *(\\(|<- )")[k]
 }
 w48 <- data.frame(w = c("Yes", "No", "Refused", "Unknown", "Yes", "No", "Yes",
                         "No", "Yes", "Skip"), stringsAsFactors = FALSE)
@@ -1420,7 +1528,8 @@ check("N48a a map holding \"Refused=.a\" and a flagged -99: the word sent to a f
         "Note: \"Unknown\" was encoded as -99, which looks like a coded missing value.\n",
         "To make the value missing, map it to a Stata-style marker the encoded\n",
         "variable does not use:\n",
-        "  w48$wR <- jencode(w48, w, map = \"Yes=1; No=2; Refused=.a; Unknown=.b; Skip=3\")\n\n")) &&
+        "  w48$wR <- jencode(w48, w,\n",
+        "      map = \"Yes=1; No=2; Refused=.a; Unknown=.b; Skip=3\")\n\n")) &&
         !grepl("jdeclare_missing(", .g48a, fixed = TRUE) &&
         !grepl("Unknown=missing", .g48a, fixed = TRUE))
 check("N48b ... the line runs: \"Unknown\" on .b, \"Refused\" still on .a",
@@ -1430,7 +1539,7 @@ check("N48b ... the line runs: \"Unknown\" on .b, \"Refused\" still on .a",
 .g48c <- .conv48("stata", grab(jencode(w48, w, map = "Yes=1; No=2; Refused=.a; Unknown=-99; Skip=-98")))
 check("N48c two flagged words: each to a marker of its own (.b, .c), the merge named as .b; the line runs",
       grepl("\n  w48$wR <- jencode(w48, w, map = \"Yes=1; No=2; Refused=.a; Unknown=.b; Skip=.c\")\n",
-            .g48c, fixed = TRUE) &&
+            .r5_one(.g48c), fixed = TRUE) &&
         grepl("To make them one missing value instead, map both to .b.", .g48c, fixed = TRUE) &&
         local({ e <- new.env(parent = globalenv()); assign("w48", w48, envir = e)
           .conv48("stata", .runs(.line48(.g48c), e)) &&

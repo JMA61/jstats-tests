@@ -10,6 +10,67 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S353 EDIT (v0.9.226, 2026-10-12): NEW N88 section, twenty-four checks
+#           (N88a-N88x and the N88s sweep), Fix Slate 9, the second half:
+#           ruling R5, the one layout of a printed call. A: the layout by
+#           its unit at widths 40, 50, 76 and 120 -- one line when it fits,
+#           a break after an argument's comma, the fixed indent four spaces
+#           in, a map under its first rule with a quoted word whole, a c()
+#           at its commas, a first argument broken at the call's indent, a
+#           subscript named mydata, a long name or formula kept whole and
+#           never cut, the words of the one-line form in order,
+#           idempotent. B: what it leaves alone. C: a call a builder broke,
+#           or an earlier pass laid out, joined and laid out again; a
+#           place's broken modify = TRUE line seen whole; the builder's
+#           map call one line. D: real messages, every laid-out call RUN
+#           beside its one-line form, the frames identical (jencode()'s
+#           offered maps, the D1 pairs, the range recipe, the marker
+#           refusal's recodes, the load scan's line, a subscript). E: the
+#           riders -- the assign-or-lose reminder with no blank line when
+#           it is a call's only output, one after a note; jencode()'s
+#           advisory notes one blank line from what follows. N88s sweeps
+#           every condition at the pinned width: no call left as one long
+#           line, no laid-out line over the width (512 calls, 45 laid out).
+#           CHANGED, MECHANICALLY under the ruling: N84d, N84g and N87l,
+#           pinned whole, refilled by running; eleven checks that grep a
+#           call (N45b, N46a, N47c, N65ag, N66c, N67a, N67h, N68c, N69e,
+#           N69h, and N45b's jconvert line) read it through .r5_one(), its
+#           one-line form; the runners (.run_lines67, .run_line_k,
+#           .run_pair66, .run_pair72, .run87) run each call as printed,
+#           laid out over lines (.r5_calls(), with .r5_open(), .r5_flat()
+#           and .r5_one(), added to the harness). SIX HUNDRED AND
+#           NINETY-FIVE checks. On the 0.9.225 master 22 red: N84d, N84g,
+#           N87l and 19 of the 24 new (the five that pass hold what did not
+#           change: g, i, j, n -- the retired packer's maps ran too -- and
+#           u).
+#           MUTATION MAP (S353; 21 one-change mutants through all eight
+#           batteries, 19 red): the layout off N88a-f h k m-s w x and the
+#           re-pinned checks of this battery and jencode_check.R; the
+#           indent two spaces N88b-f h k m p r w x; a first argument hung
+#           under itself N88w; a map split at every semicolon N88f n and
+#           jencode N45a b h; no join N88k l; the packer kept N88m and
+#           jencode N45i; one argument a line N88a-e h k p; the closing
+#           characters not counted N88d f s and jencode N47m; a map's rules
+#           at the fixed indent N88c d f and jencode N45a i N47l; the
+#           reminder always blank N88t, never blank N88u v and 18 more; an
+#           advisory not counted N88v; the load scan back on cat() N88r; no
+#           subscript N88s x; no c() break N88d f s w; a joined call kept
+#           unparsed N88i; the empty-index slice N88x; jencode()'s lead
+#           ignoring its notes N88u and 12 in jencode_check.R; jrecode()'s
+#           lead always N88t. EQUIVALENT, with their reasons: the width test
+#           at the layout's head made strict (the wrapper calls it only on
+#           a line wider than the width, and a line that fits lays out as
+#           itself, every argument on the first line); the comment test
+#           removed (a comment after the call is text after its closing
+#           parenthesis, which the next test refuses, and one before it
+#           leaves the call unclosed, which does not parse).
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 695/695
+#           plain and under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, and entered dirty.
+#           LAST VERIFIED: v0.9.226, 2026-10-12 (S353) -- 695/695 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2370 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 5ab1062.
 # S352 EDIT (v0.9.225, 2026-10-11): NEW N87 section, fifty-two checks
 #           (N87a-N87az), Fix Slate 9, the first half; six checks changed.
 #           A: ruling R8, part 1 -- the word missing on a variable that
@@ -1227,6 +1288,75 @@ rendered <- function(expr) {
 # straddles; those assertions now flatten first.
 .fl <- function(m) gsub("[ ]+", " ", gsub("\n", " ", m, fixed = TRUE))
 
+# --- A call laid out over lines (ruling R5, S353) ----------------------------
+# Since v0.9.226 a printed call wider than the message is broken after the
+# commas between its arguments and the semicolons between a map's rules,
+# its later lines indented four spaces past its first (.jst_layout_call()).
+# .r5_open() reads a line as R does -- brackets, strings, escapes, a
+# comment -- and says whether it leaves a call open. .r5_calls() gives a
+# message's indented lines as the calls they print, a call laid out over
+# several lines kept as ONE block of text exactly as printed, so running a
+# block runs the laid-out form (the ruling's test: each re-laid call is run
+# and its result compared with the one-line form's); with shape, only a
+# line of that shape opens a block. .r5_flat() puts a block on one line;
+# .r5_one() does it for every call in a message -- the one-line form the
+# checks written before S353 pin as fragments. A message is still pinned
+# WHOLE as it prints.
+.r5_open <- function(s) {
+  ch <- strsplit(s, "", fixed = TRUE)[[1]]
+  d <- 0L; q <- ""; k <- 1L
+  while (k <= length(ch)) {
+    c1 <- ch[k]
+    if (nzchar(q)) {
+      if (c1 == "\\") k <- k + 1L else if (c1 == q) q <- ""
+    } else if (c1 %in% c("\"", "'", "`")) {
+      q <- c1
+    } else if (c1 == "#") {
+      break
+    } else if (c1 %in% c("(", "[", "{")) {
+      d <- d + 1L
+    } else if (c1 %in% c(")", "]", "}")) {
+      d <- d - 1L
+    }
+    k <- k + 1L
+  }
+  d > 0L || nzchar(q)
+}
+.r5_calls <- function(lines, shape = NULL) {
+  out <- character(0); acc <- NULL
+  for (ln in lines) {
+    if (is.null(acc)) {
+      if (!startsWith(ln, "  ")) next
+      if (!is.null(shape) && !grepl(shape, ln)) next
+      acc <- sub("^ +", "", ln)
+    } else {
+      acc <- paste(acc, ln, sep = "\n")
+    }
+    if (!.r5_open(acc)) { out <- c(out, acc); acc <- NULL }
+  }
+  if (!is.null(acc)) out <- c(out, acc)
+  out
+}
+.r5_flat <- function(b) {
+  paste(sub("^ +", "", strsplit(b, "\n", fixed = TRUE)[[1]]), collapse = " ")
+}
+.r5_one <- function(m) {
+  ls <- strsplit(m, "\n", fixed = TRUE)[[1]]
+  out <- character(0); i <- 1L
+  while (i <= length(ls)) {
+    acc <- ls[i]; j <- i
+    if (startsWith(acc, "  ")) {
+      while (.r5_open(acc) && j < length(ls)) {
+        j <- j + 1L
+        acc <- paste(acc, sub("^ +", "", ls[j]))
+      }
+      if (.r5_open(acc)) { acc <- ls[i]; j <- i }
+    }
+    out <- c(out, acc); i <- j + 1L
+  }
+  paste(out, collapse = "\n")
+}
+
 # .run_lines67(): every line of the message that opens with two spaces --
 # a guard's remedies are its only indented lines -- evaluated in a scratch
 # environment holding the frame under the name the message uses (REMEDY
@@ -1237,7 +1367,7 @@ rendered <- function(expr) {
 .run_lines67 <- function(msg, frame_name, frame) {
   tryCatch({
     lines <- strsplit(msg, "\n", fixed = TRUE)[[1]]
-    run   <- trimws(lines[startsWith(lines, "  ")])
+    run   <- .r5_calls(lines)
     if (length(run) == 0L) return(NULL)
     e <- new.env(parent = globalenv())
     assign(frame_name, frame, envir = e)
@@ -1253,7 +1383,7 @@ rendered <- function(expr) {
 .run_line_k <- function(msg, k, frame_name, frame) {
   tryCatch({
     lines <- strsplit(msg, "\n", fixed = TRUE)[[1]]
-    run   <- trimws(lines[startsWith(lines, "  ")])
+    run   <- .r5_calls(lines)
     if (length(run) < k) return(NULL)
     e <- new.env(parent = globalenv())
     assign(frame_name, frame, envir = e)
@@ -2273,11 +2403,11 @@ check("N45b D fits: stay-in lead and both recipe lines echo the call",
       grepl(paste0("To stay in Stata convention, first declare the range ",
                    "using SPSS convention:"), .fl(m45), fixed = TRUE) &&
         grepl(paste0('  jdeclare_missing(f45, Income, range = c(-99, -91), ',
-                     'convention = "spss", modify = TRUE)'), m45,
+                     'convention = "spss", modify = TRUE)'), .r5_one(m45),
               fixed = TRUE) &&
         grepl("Then convert the column to Stata convention:", m45,
               fixed = TRUE) &&
-        grepl('  jconvert(f45, Income, to = "stata", modify = TRUE)', m45,
+        grepl('  jconvert(f45, Income, to = "stata", modify = TRUE)', .r5_one(m45),
               fixed = TRUE))
 # paste-and-rerun the two-step recipe: it must end with a Stata-form column
 f45b <- f45
@@ -2298,7 +2428,7 @@ check("N46a over-cap: count line, cannot-become, SPSS remedy, Rule X close",
                    "this range cannot become Stata-style."), .fl(m46),
             fixed = TRUE) &&
         grepl(paste0('  jdeclare_missing(f46, Wave, range = c(-120, -87), ',
-                     'convention = "spss", modify = TRUE)'), m46,
+                     'convention = "spss", modify = TRUE)'), .r5_one(m46),
               fixed = TRUE) &&
         grepl(paste0("To use Stata convention with jconvert(), you must ",
                      "first reduce these to 26 or fewer."), .fl(m46),
@@ -2339,11 +2469,11 @@ f47m <- data.frame(A = c(1, -95, 3, 4, 5), B = mk_spss())
 m47c <- grab(jdeclare_missing(f47m, A, B, range = c(-99, -91)))
 check("N47c one plain target pulls the call to D; recipes echo BOTH vars",
       grepl(paste0('  jdeclare_missing(f47m, A, B, range = c(-99, -91), ',
-                   'convention = "spss", modify = TRUE)'), m47c,
+                   'convention = "spss", modify = TRUE)'), .r5_one(m47c),
             fixed = TRUE) &&
         grepl("Then convert the columns to Stata convention:", .fl(m47c),
               fixed = TRUE) &&
-        grepl('  jconvert(f47m, A, B, to = "stata", modify = TRUE)', m47c,
+        grepl('  jconvert(f47m, A, B, to = "stata", modify = TRUE)', .r5_one(m47c),
               fixed = TRUE))
 options(.jst_options_missing_convention = NULL)
 
@@ -3854,11 +3984,11 @@ e65ag2 <- grab(jrecode(f65, Q, map = "7=-99; 8=missing; else=copy",
 f65ag  <- .run_lines67(e65ag1, "f65", f65)
 check("N65ag a per-call convention rides on both guard remedy lines, and the declare line runs unset",
       grepl(paste0("  jdeclare_missing(f65, P, codes = c(-99), ",
-                   "convention = \"spss\", modify = TRUE)"), e65ag1,
+                   "convention = \"spss\", modify = TRUE)"), .r5_one(e65ag1),
             fixed = TRUE) &&
         grepl(paste0("f65$QR <- jrecode(f65, Q, map = \"7=missing; ",
                      "8=missing; else=copy\", convention = \"spss\")"),
-              e65ag2, fixed = TRUE) &&
+              .r5_one(e65ag2), fixed = TRUE) &&
         !is.null(f65ag) && identical(nav65(f65ag$P), -99))
 options(.jst_options_missing_convention = "spss")
 
@@ -3918,9 +4048,10 @@ f66p <- data.frame(v = c(1, 2, 8, 2, 9, 3, NA))
     pair <- character(0)
     j <- i + 1L
     while (j <= length(lines) && startsWith(lines[j], "  ")) {
-      pair <- c(pair, trimws(lines[j]))
+      pair <- c(pair, lines[j])
       j <- j + 1L
     }
+    pair <- .r5_calls(pair)
     e <- new.env(parent = globalenv())
     assign(frame_name, frame, envir = e)
     suppressMessages(utils::capture.output(
@@ -3956,7 +4087,7 @@ check("N66c a per-call convention rides on both lines of the pair",
       grepl(paste0('  f66$vR <- jrecode(f66, v, map = "8=-99; else=copy", ',
                    'convention = "stata")\n',
                    "  jdeclare_missing(f66, vR, codes = c(-99), ",
-                   'convention = "stata", modify = TRUE)'), m66c,
+                   'convention = "stata", modify = TRUE)'), .r5_one(m66c),
             fixed = TRUE))
 
 # The pair carries no convention = here (neither did the call), so it runs
@@ -4050,7 +4181,7 @@ check("N67a word target equals the mint: stops, names the rule, both remedies",
             .fl(e67a), fixed = TRUE) &&
         grepl(paste0('  f67t$wR <- jencode(f67t, w, map = "Yes=1; No=0; ',
                      'Declined=missing; Refused=missing; blank=3")'),
-              e67a, fixed = TRUE) &&
+              .r5_one(e67a), fixed = TRUE) &&
         grepl("Or give \"Refused\" a different code.", e67a, fixed = TRUE))
 
 e67b <- grab(jencode(f67t, w, map = "Yes=1; No=0; Declined=missing; Refused=2; blank=-99"))
@@ -4106,7 +4237,7 @@ check("N67h a per-call convention rides on both face-pair lines; the NA token is
       grepl(paste0('  f67f$qR <- jencode(f67f, q, map = "else=NA", ',
                    'convention = "spss")\n',
                    "  jdeclare_missing(f67f, qR, codes = c(-99), ",
-                   'convention = "spss", modify = TRUE)'), e67h,
+                   'convention = "spss", modify = TRUE)'), .r5_one(e67h),
             fixed = TRUE) &&
         grepl("Otherwise map NA to a code 'q' does not hold,", .fl(e67h),
               fixed = TRUE))
@@ -4197,7 +4328,7 @@ check("N68c jencode plural: the same shape in its own voice, on wR",
                      "  jdeclare_missing(f68t, wR, codes = c(-99, -98), ",
                      "modify = TRUE)\n",
                      "To make them one missing value instead, map both to ",
-                     "missing."), m68c, fixed = TRUE) &&
+                     "missing."), .r5_one(m68c), fixed = TRUE) &&
         !grepl("=missing", m68c, fixed = TRUE))
 
 options(.jst_options_missing_convention = NULL)
@@ -4319,11 +4450,11 @@ check("N69e per-call sas, three sharers: .A, \"all of them\", convention = on bo
                    "also assigns .A (8=.A), so 8, 9, and NA would share one ",
                    "missing value."), .fl(e69e), fixed = TRUE) &&
         grepl(paste0('map = "8=.A; 9=.B; NA=.B; else=copy", ',
-                     'convention = "sas")'), e69e, fixed = TRUE) &&
+                     'convention = "sas")'), .r5_one(e69e), fixed = TRUE) &&
         grepl("Or, if they mean the same thing, use .A for all of them:",
               e69e, fixed = TRUE) &&
         grepl(paste0('map = "8=.A; 9=.A; NA=.A; else=copy", ',
-                     'convention = "sas")'), e69e, fixed = TRUE))
+                     'convention = "sas")'), .r5_one(e69e), fixed = TRUE))
 
 options(.jst_options_missing_convention = "stata")
 e69f <- grab(jrecode(f69, v, map = "8=.a; 1=.b; 9=missing; else=copy"))
@@ -4344,10 +4475,10 @@ check("N69h jencode twin: words quoted in the head, both lines print and run",
                    "and \"Declined\" would share one missing value."),
             .fl(e69h), fixed = TRUE) &&
         grepl(paste0('  f69t$wR <- jencode(f69t, w, map = "Yes=1; No=0; ',
-                     'Refused=.a; Declined=.b; NA=NA")\n'), e69h,
+                     'Refused=.a; Declined=.b; NA=NA")\n'), .r5_one(e69h),
               fixed = TRUE) &&
         grepl(paste0('  f69t$wR <- jencode(f69t, w, map = "Yes=1; No=0; ',
-                     'Refused=.a; Declined=.a; NA=NA")'), e69h,
+                     'Refused=.a; Declined=.a; NA=NA")'), .r5_one(e69h),
               fixed = TRUE) &&
         !is.null(r69h1) &&
         identical(haven::na_tag(unclass(r69h1$wR))[3:4], c("a", "b")) &&
@@ -4829,8 +4960,11 @@ options(.jst_options_missing_convention = NULL)
     i <- grep("recoded variable:$", lines)
     if (length(i) < 1L) return(NULL)
     i <- max(i)
-    pair <- trimws(lines[i + 1:2])
-    if (!all(startsWith(lines[i + 1:2], "  "))) return(NULL)
+    j <- i + 1L
+    while (j <= length(lines) && startsWith(lines[j], "  ")) j <- j + 1L
+    pair <- .r5_calls(lines[seq_len(j - i - 1L) + i])
+    if (length(pair) < 2L) return(NULL)
+    pair <- pair[1:2]
     e <- new.env(parent = globalenv())
     assign(frame_name, frame, envir = e)
     suppressMessages(utils::capture.output(
@@ -6771,7 +6905,8 @@ check("N84d the refusal: what would merge, and the two recodes (pinned whole)",
         "jdeclare_missing(): -99 would become .a under Stata convention, but\n",
         "V already carries .a [\"Skipped\"], so the two would share one missing value.\n",
         "To keep them distinct, recode -99 to a marker V does not use:\n",
-        "  t84$VR <- jrecode(t84, V, map = \"-99=.b; else=copy\", labels = \".b=Refused\")\n",
+        "  t84$VR <- jrecode(t84, V, map = \"-99=.b; else=copy\",\n",
+        "      labels = \".b=Refused\")\n",
         "Or, if they mean the same thing, recode -99 to .a:\n",
         "  t84$VR <- jrecode(t84, V, map = \"-99=.a; else=copy\")")))
 check("N84e the first line runs and keeps the two kinds apart, each with its label; the second runs and merges them under the label the variable had",
@@ -6796,7 +6931,8 @@ check("N84g several codes: every clash named, an unlabeled marker bare, and each
         "convention, but V already carries .a and .b [\"Skipped\"], so different kinds\n",
         "of missing data would share a missing value.\n",
         "To keep them distinct, recode the codes to markers V does not use:\n",
-        "  u84$VR <- jrecode(u84, V, map = \"-99=.c; -98=.d; else=copy\", labels = \".c=Refused; .d=DK\")\n",
+        "  u84$VR <- jrecode(u84, V, map = \"-99=.c; -98=.d; else=copy\",\n",
+        "      labels = \".c=Refused; .d=DK\")\n",
         "Or, if they mean the same thing, recode the codes to the markers they would\n",
         "have taken:\n",
         "  u84$VR <- jrecode(u84, V, map = \"-99=.a; -98=.b; else=copy\")")))
@@ -7749,17 +7885,20 @@ rm(list = intersect(c("m86a", "m86b", "m86c", "m86e", "m86g", "m86i", "m86j",
 }
 # .lines87(): the indented lines of a message with the shape of a call or an
 # assignment (a subscripted name included) -- the lines it offers to run --
-# trimmed, in order.
-.lines87 <- function(m) {
-  ls <- strsplit(m, "\n", fixed = TRUE)[[1]]
-  trimws(ls[grepl("^ {2,}[A-Za-z.][A-Za-z0-9._$]*(\\[[^]]*\\])* *(\\(|<- )", ls)])
+# trimmed, in order. S353: each a call, in its one-line form; .blocks87()
+# gives the same calls as printed, laid out over lines where they are wider
+# than the message (ruling R5), and .run87() runs those.
+.shape87 <- "^ {2,}[A-Za-z.][A-Za-z0-9._$]*(\\[[^]]*\\])* *(\\(|<- )"
+.blocks87 <- function(m) {
+  .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]], shape = .shape87)
 }
+.lines87 <- function(m) vapply(.blocks87(m), .r5_flat, "", USE.NAMES = FALSE)
 # .run87(): run the offered lines numbered k (all by default), in order, in a
 # scratch environment holding the frame under its name, under convention cv;
 # the environment afterwards, or NULL if a line errors. The convention is
 # the one the user would be in when pasting.
 .run87 <- function(m, nm, frame, k = NULL, cv = NULL) {
-  ln <- .lines87(m)
+  ln <- .blocks87(m)
   if (!is.null(k)) ln <- ln[k]
   if (length(ln) == 0L || anyNA(ln)) return(NULL)
   e <- new.env(parent = globalenv())
@@ -7893,7 +8032,8 @@ check("N87l spss: a label for missing that differs from the declared code's own 
         "The label \"Skipped\" would also rename the cases already at -99.\n",
         "To keep them distinct, give missing a code Q does not use, and declare it on\n",
         "the recoded variable:\n",
-        "  q87$QR <- jrecode(q87, Q, map = \"9=-98; else=copy\", labels = \"-98=Skipped\")\n",
+        "  q87$QR <- jrecode(q87, Q, map = \"9=-98; else=copy\",\n",
+        "      labels = \"-98=Skipped\")\n",
         "  jdeclare_missing(q87, QR, codes = c(-99, -98), modify = TRUE)\n",
         "Or, if they mean the same thing, use -99 for both, keeping its label:\n",
         "  q87$QR <- jrecode(q87, Q, map = \"9=-99; else=copy\")")))
@@ -8246,6 +8386,320 @@ rm(list = intersect(c("f87", "r87a", "m87a", "F87S", "m87c", "m87i", "m87k", "q8
                       ".td87", ".route87", ".ok87", ".nudge87", ".entry_shown87"),
                     ls(all.names = TRUE)))
 
+# =============================================================================
+# N88 -- FIX SLATE 9, SECOND HALF: RULING R5, A PRINTED CALL'S LAYOUT (S353, v0.9.226)
+# =============================================================================
+# Ruling R5 (Jeff, S345: "Yes to your lean of one rule for all calls"):
+# every call the package prints for pasting has ONE layout. Within the
+# message width, one line. Wider, broken where R allows -- after a comma
+# between the call's arguments, as many on a line as fit, each later line
+# four spaces in from the call's own -- and an argument too long for a line
+# of its own broken inside: a map or labels string after the semicolons
+# between its rules, set under its first rule; a c() after its commas, set
+# under its first element. Never one long line, never shortened with
+# "...", never broken by the prose wrapper. One helper does it, in the
+# wrapper layer (.jst_layout_call(), called by .jst_wrap_message()), so it
+# holds for every emitter; .jst_jencode_map_call()'s packer, which hung its
+# maps under the parenthesis at a fixed 76 columns, retired into it.
+# Jeff, S345: "This is mechanical and I don't think that I need to look at
+# every instance of the change" -- so the batteries hold the substance:
+# every re-laid call is RUN and its result compared with the one-line
+# form's, and one walk section shows the form (missing_convention_walk.R
+# Section 64). Parts:
+#   A  the layout by its unit, at widths 40, 76 and 120: one line when it
+#      fits; the break; the fixed indent; a map under its first rule, a
+#      quoted word whole; a c() at its commas; a long name or formula kept
+#      whole, never cut; the words of the one-line form, in order;
+#      idempotent.
+#   B  what it leaves alone: prose that opens with a call, two calls on a
+#      line, a comment, a call with text after it.
+#   C  a call broken by a builder, or by an earlier pass, joined and laid
+#      out again; a broken modify = TRUE line on a place seen whole.
+#   D  real messages: every call laid out over lines is RUN, and its result
+#      is identical to the one-line form's (jencode()'s offered maps, the
+#      D1 pairs of jrecode() and jencode(), jdeclare_missing()'s range
+#      recipe and marker refusal, the load scan's line, now through the
+#      stdout emitter).
+#   E  the riders: the assign-or-lose reminder opens with a blank line only
+#      when a note printed above it; jencode()'s advisory notes one blank
+#      line from what follows them; jsum() and javg() as they were.
+# The sweep at the foot (N88s) holds every condition the battery took.
+.wm88  <- function(x, w = 76L) .jst_wrap_message(x, width = w)
+.conv88 <- function(cv, expr) {
+  old <- getOption(".jst_options_missing_convention")
+  options(.jst_options_missing_convention = cv)
+  on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+  force(expr)
+}
+.lvl88 <- function(lv, expr) {
+  old <- getOption(".jst_output_level")
+  options(.jst_output_level = lv)
+  on.exit(options(.jst_output_level = old), add = TRUE)
+  force(expr)
+}
+.ln88  <- function(x) strsplit(x, "\n", fixed = TRUE)[[1]]
+.ws88  <- function(x) gsub("[[:space:]]+", " ", trimws(x))
+.max88 <- function(x) max(nchar(.ln88(x)))
+# The samples: one line each, as a builder makes them.
+.s88 <- c(
+  map  = paste0("  tdat$ReasonDeclinedR <- jencode(tdat, ReasonDeclined, map = ",
+                "\"Refused=missing; Don't know=missing; No answer=missing; ",
+                "\\\"Not applicable; other\\\"=1\")"),
+  conv = "  wc$StatusR <- jrecode(wc, Status, map = \"8=missing; else=copy\", convention = \"spss\")",
+  lab  = "  u84$VR <- jrecode(u84, V, map = \"-99=.c; -98=.d; else=copy\", labels = \".c=Refused; .d=DK\")",
+  big  = paste0("  big <- jdeclare_missing(big, questionnaire_item_01, ",
+                "questionnaire_item_02, questionnaire_item_03, questionnaire_item_04, ",
+                "codes = c(-99, -98, -97, -96, -95, -94, -93, -92, -91, -90, -89, ",
+                "-88, -87, -86, -85), modify = TRUE)"),
+  frm  = paste0("  jlm(Flourishing ~ scale(Stress, scale = FALSE) * SocialSupport + ",
+                "Condition, d[d$SocialSupport > 5, ], categorical = \"Condition\")"),
+  plc  = "  lst$d <- jdeclare_missing(lst$d, Status, codes = c(-99, -98), convention = \"stata\")")
+
+# --- A: the layout by its unit -------------------------------------------------
+check("N88a one line when it fits: a call of exactly the width is unchanged, and one character more breaks it",
+      local({ x76 <- paste0("  dd$vR <- jrecode(dd, v, map = \"", strrep("1=1; ", 7),
+                            "else=copy\", labels = \"1=A\")")
+        x76 <- paste0(substr(x76, 1, 76 - nchar("\")")), "\")")
+        ok76 <- nchar(x76) == 76L && .jst_parses_once(trimws(x76))
+        x77  <- sub("^  dd", "  ddd", sub("\\(dd,", "(ddd,", x76))
+        ok76 && identical(.wm88(x76), x76) && identical(.jst_layout_call(x76, 76L), x76) &&
+          nchar(x77) == 78L &&
+          length(.ln88(.wm88(x77))) == 2L }))
+check("N88b wider: broken after an argument's comma, the next line four spaces in from the call's own, as many arguments on a line as fit (pinned)",
+      identical(.wm88(.s88[["conv"]]), paste0(
+        "  wc$StatusR <- jrecode(wc, Status, map = \"8=missing; else=copy\",\n",
+        "      convention = \"spss\")")) &&
+        identical(.wm88(.s88[["lab"]]), paste0(
+          "  u84$VR <- jrecode(u84, V, map = \"-99=.c; -98=.d; else=copy\",\n",
+          "      labels = \".c=Refused; .d=DK\")")))
+check("N88c a map too long for a line of its own: broken after its semicolons, its rules set under the first, a quoted word holding a semicolon kept whole (pinned; the ruling's sketch)",
+      identical(.wm88(.s88[["map"]]), paste0(
+        "  tdat$ReasonDeclinedR <- jencode(tdat, ReasonDeclined,\n",
+        "      map = \"Refused=missing; Don't know=missing; No answer=missing;\n",
+        "             \\\"Not applicable; other\\\"=1\")")))
+check("N88d a c() too long for a line of its own: broken after its commas, set under its first element; the arguments around it packed as they fit (pinned at 76 and at 40)",
+      identical(.wm88(.s88[["big"]]), paste0(
+        "  big <- jdeclare_missing(big, questionnaire_item_01, questionnaire_item_02,\n",
+        "      questionnaire_item_03, questionnaire_item_04,\n",
+        "      codes = c(-99, -98, -97, -96, -95, -94, -93, -92, -91, -90, -89, -88,\n",
+        "                -87, -86, -85), modify = TRUE)")) &&
+        identical(.ln88(.wm88(.s88[["big"]], 40L)), c(
+          "  big <- jdeclare_missing(big,",
+          "      questionnaire_item_01,",
+          "      questionnaire_item_02,",
+          "      questionnaire_item_03,",
+          "      questionnaire_item_04,",
+          "      codes = c(-99, -98, -97, -96, -95,",
+          "                -94, -93, -92, -91, -90,",
+          "                -89, -88, -87, -86,",
+          "                -85), modify = TRUE)")))
+check("N88e what cannot break is kept whole, past the width, never cut: a formula as the first argument, a long name, a one-rule map",
+      local({ f <- .wm88(.s88[["frm"]])
+        n <- .wm88(paste0("  ", strrep("v", 60), "$xR <- jrecode(", strrep("v", 60),
+                          ", x, map = \"1=2\")"))
+        o <- .wm88(paste0("  dd$xR <- jrecode(dd, x, map = \"", strrep("9", 70), "=1\")"))
+        identical(.ln88(f), c(
+          "  jlm(Flourishing ~ scale(Stress, scale = FALSE) * SocialSupport + Condition,",
+          "      d[d$SocialSupport > 5, ], categorical = \"Condition\")")) &&
+          grepl(paste0(strrep("v", 60), "$xR <- jrecode(", strrep("v", 60), ","), n, fixed = TRUE) &&
+          grepl(paste0("map = \"", strrep("9", 70), "=1\")"), o, fixed = TRUE) &&
+          !grepl("...", paste(f, n, o), fixed = TRUE) }))
+check("N88f at widths 40, 50, 76 and 120: every laid-out call holds the words of its one-line form in order and parses; the only lines over the width are single pieces -- one map rule, and the line of a formula that is the first argument (pinned)",
+      local({ over <- character(0); ok <- TRUE
+        for (w in c(40L, 50L, 76L, 120L)) for (x in .s88) {
+          y  <- .wm88(x, w); ls <- .ln88(y)
+          ok <- ok && identical(.ws88(gsub("\n *", " ", y)), .ws88(x)) &&
+            .jst_parses_once(trimws(y))
+          if (any(nchar(ls) > w)) over <- c(over, paste0(w, ": ", ls[nchar(ls) > w]))
+        }
+        jl <- "  jlm(Flourishing ~ scale(Stress, scale = FALSE) * SocialSupport + Condition,"
+        ok && identical(over, c(
+          "40:              \\\"Not applicable; other\\\"=1\")",
+          paste0("40: ", jl), paste0("50: ", jl), paste0("76: ", jl))) &&
+          identical(.wm88(.s88[["conv"]], 120L), .s88[["conv"]]) }))
+check("N88g idempotent: laying out a laid-out message changes nothing, at every width",
+      all(vapply(c(40L, 76L, 120L), function(w) all(vapply(.s88, function(x) {
+        identical(.wm88(.wm88(x, w), w), .wm88(x, w)) }, logical(1))), logical(1))))
+check("N88w a first argument too long for the call's first line is broken inside, its later lines at the call's fixed indent, not under the argument (an expression named mydata; pinned)",
+      local({ g <- grab(jrecode(data.frame(x = haven::labelled(c(1, 2, 3, 2),
+                                                             labels = c(A = 1, B = 2, C = 3))),
+                                x, map = "1=10; else=copy"))
+        grepl(paste0("\n  mydata <- data.frame(x = haven::labelled(c(1, 2, 3, 2),\n",
+                     "      labels = c(A = 1, B = 2, C = 3)))\n"), g, fixed = TRUE) }))
+check("N88x a subscript given as the data, named mydata in the reminder: broken after the commas inside its brackets, at the fixed indent, and it runs as its one-line form does; an empty first index kept",
+      local({ hh88 <- data.frame(NumberOfAdultsInHousehold = c(1, 2, 8, 2),
+                                 IncomeBeforeTaxInDollars = c(10, 20, 30, 40))
+        g <- grab(jrecode(hh88[hh88$NumberOfAdultsInHousehold < 8,
+                               c("NumberOfAdultsInHousehold", "IncomeBeforeTaxInDollars")],
+                          NumberOfAdultsInHousehold, map = "1=10; else=copy"))
+        b <- .r5_calls(.ln88(g), shape = "^  mydata <- hh88")
+        e1 <- new.env(parent = globalenv()); assign("hh88", hh88, envir = e1)
+        e2 <- new.env(parent = globalenv()); assign("hh88", hh88, envir = e2)
+        eval(parse(text = b), envir = e1); eval(parse(text = .r5_flat(b)), envir = e2)
+        identical(b, paste0("mydata <- hh88[hh88$NumberOfAdultsInHousehold < 8,\n",
+                            "      c(\"NumberOfAdultsInHousehold\", \"IncomeBeforeTaxInDollars\")]")) &&
+          identical(e1$mydata, e2$mydata) && nrow(e1$mydata) == 3L &&
+          identical(.wm88(paste0("  mydata <- hh88[, c(\"NumberOfAdultsInHousehold\", ",
+                                 "\"IncomeBeforeTaxInDollars\", \"Another\")]")),
+                    paste0("  mydata <- hh88[,\n",
+                           "      c(\"NumberOfAdultsInHousehold\", \"IncomeBeforeTaxInDollars\", \"Another\")]")) }))
+check("N88h the fixed indent follows the call's own: an exhibit at four spaces continues at eight",
+      identical(.ln88(.wm88(paste0("  ", .s88[["conv"]])))[2],
+                "        convention = \"spss\")"))
+
+# --- B: what it leaves alone ---------------------------------------------------
+check("N88i prose that opens with a call and an open bracket is wrapped as prose, line by line, never joined into a call",
+      local({ x <- paste0("  mean() do not and return wrong answers with no warning. (\"sas\" is\n",
+                          "  Stata with uppercase markers.) With no convention chosen, and more words to wrap")
+        identical(.wm88(x), paste(vapply(.ln88(x), .wm88, ""), collapse = "\n")) &&
+          length(.ln88(.wm88(x))) == 3L }))
+check("N88j a line that is not one call is passed whole: two calls, a call with a comment, a call with text after it",
+      all(vapply(c(
+        paste0("  jsubset(survey_responses_long, off); jcomplete(survey_responses_long, off)"),
+        paste0("  jdeclare_missing(survey_responses_long, Income, codes = -99)   # the code"),
+        paste0("  joptions(missing.convention = \"stata\")    (or \"spss\", \"sas\") or ",
+               "another value of the setting")),
+        function(x) identical(.wm88(x), x), logical(1))))
+
+# --- C: a call already broken over lines ---------------------------------------
+check("N88k a call a builder broke (the retired packer's form) is joined and laid out again, as its one-line form is",
+      local({ old <- paste0("  q45$WhyR <- jencode(q45, Why,\n",
+                            "                      map = \"Don't know=1;\n",
+                            "                            \\\"Moved away, address unknown\\\"=2; No answer=3;\n",
+                            "                            \\\"Other = see notes\\\"=4\")")
+        one <- paste0("  q45$WhyR <- jencode(q45, Why, map = \"Don't know=1; ",
+                      "\\\"Moved away, address unknown\\\"=2; No answer=3; ",
+                      "\\\"Other = see notes\\\"=4\")")
+        identical(.wm88(old), .wm88(one)) &&
+          identical(.wm88(old, 120L), .wm88(one, 120L)) &&
+          identical(.ln88(.wm88(old, 120L))[2],
+                    paste0("      map = \"Don't know=1; \\\"Moved away, address unknown\\\"=2; ",
+                           "No answer=3; \\\"Other = see notes\\\"=4\")")) }))
+check("N88l a modify = TRUE line on a place, broken over lines, is seen whole and given the assignment form that runs",
+      identical(.wm88(paste0("To declare it:\n  jdeclare_missing(lst$d, Status,\n",
+                             "      codes = c(-99), modify = TRUE)")),
+                "To declare it:\n  lst$d <- jdeclare_missing(lst$d, Status, codes = c(-99))"))
+check("N88m the builder's map call is one line; the wrapper lays it out (the packer is retired)",
+      local({ r <- .jst_jencode_map_call("survey_responses", "ReasonForDeclining",
+                                         "Refused=1; Don't know=2; No answer=3; \"A; b\"=4")
+        length(.ln88(r)) == 1L && .jst_parses_once(trimws(r)) &&
+          identical(.ln88(.wm88(r)), c(
+            "  survey_responses$ReasonForDecliningR <- jencode(survey_responses,",
+            "      ReasonForDeclining,",
+            "      map = \"Refused=1; Don't know=2; No answer=3; \\\"A; b\\\"=4\")")) }))
+
+# --- D: real messages, each laid-out call run beside its one-line form ---------
+# .cmp88(): run every call a message offers, in order, twice -- as printed
+# (a call laid out over lines kept whole) and in its one-line form -- each
+# in a scratch environment holding the frame; TRUE when both ran, at least
+# one call was laid out over lines, and the frames come out identical.
+.cmp88 <- function(m, nm, frame, cv = NULL, k = NULL) {
+  bl <- .r5_calls(.ln88(m), shape = "^ {2,}[A-Za-z.][A-Za-z0-9._$]*(\\[[^]]*\\])* *(\\(|<- )")
+  bl <- bl[!grepl("<[A-Za-z][A-Za-z ]*>", bl)]   # a pattern, not a call
+  if (!is.null(k)) bl <- bl[k]
+  if (!length(bl) || !any(grepl("\n", bl, fixed = TRUE))) return(FALSE)
+  run <- function(codes) {
+    e <- new.env(parent = globalenv()); assign(nm, frame, envir = e)
+    old <- getOption(".jst_options_missing_convention")
+    options(.jst_options_missing_convention = cv)
+    on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+    ok <- tryCatch({ suppressMessages(utils::capture.output(
+      for (b in codes) eval(parse(text = b), envir = e))); TRUE },
+      error = function(err) FALSE)
+    if (ok) get(nm, envir = e) else NULL
+  }
+  a <- run(bl); b <- run(vapply(bl, .r5_flat, "", USE.NAMES = FALSE))
+  !is.null(a) && !is.null(b) && identical(a, b)
+}
+survey_responses88 <- data.frame(
+  ReasonForDeclining = c("Don't know", "Moved away, address unknown", "No answer",
+                         "Other = see notes", "Refused",
+                         "Skipped; respondent was not asked this question", ""),
+  stringsAsFactors = FALSE)
+check("N88n jencode()'s offered maps, laid out: each runs, and gives what its one-line form gives",
+      local({ m <- grab(jencode(survey_responses88, ReasonForDeclining))
+        n <- length(.r5_calls(.ln88(m), shape = "^  survey_responses88\\$Reason"))
+        n == 2L && .cmp88(m, "survey_responses88", survey_responses88, k = 1L) &&
+          .cmp88(m, "survey_responses88", survey_responses88, k = 2L) }))
+household_income88 <- data.frame(
+  NumberOfAdultsInHousehold = c(1, 2, 8, 2, 1, 3, NA),
+  ReasonForNonResponse      = c("Yes", "No", "Refused", "Yes", "Unknown", "No", "Yes"),
+  stringsAsFactors = FALSE)
+check("N88o the D1 pairs of jrecode() and jencode() under spss, laid out: recode and declare run, as the one-line pair does",
+      local({ m1 <- .conv88("spss", grab(jrecode(household_income88, NumberOfAdultsInHousehold,
+                                                  map = "8=-99; else=copy")))
+        m2 <- .conv88("spss", grab(jencode(household_income88, ReasonForNonResponse,
+                                           map = "Yes=1; No=2; Refused=-99; Unknown=-98")))
+        .cmp88(m1, "household_income88", household_income88, cv = "spss") &&
+          .cmp88(m2, "household_income88", household_income88, cv = "spss") }))
+household_wave88 <- data.frame(MonthlyIncomeBeforeTax = haven::labelled(
+  c(1200, -99, 3400, -95, 2100), labels = c(Refused = -99)))
+check("N88p jdeclare_missing()'s range recipe under stata (variant D), laid out: declare under spss, then convert -- the same frame as the one-line pair",
+      local({ m <- .conv88("stata", grab(jdeclare_missing(household_wave88,
+                                                          MonthlyIncomeBeforeTax,
+                                                          range = c(-99, -91))))
+        grepl("\n      range = c(-99, -91), convention = \"spss\", modify = TRUE)\n",
+              m, fixed = TRUE) &&
+          .cmp88(m, "household_wave88", household_wave88, cv = "stata") }))
+household_marks88 <- data.frame(SatisfactionWithServices = haven::labelled(
+  c(1, 2, haven::tagged_na("a"), -99, 3), labels = c(Skipped = haven::tagged_na("a"))))
+check("N88q the marker refusal's two recodes, laid out: each runs alone, as its one-line form does",
+      local({ m <- .conv88("stata", grab(jdeclare_missing(household_marks88,
+                                                          SatisfactionWithServices,
+                                                          codes = c(Refused = -99))))
+        length(.r5_calls(.ln88(m), shape = "^  household")) == 2L &&
+          .cmp88(m, "household_marks88", household_marks88, cv = "stata", k = 1L) &&
+          .cmp88(m, "household_marks88", household_marks88, cv = "stata", k = 2L) }))
+.td88 <- file.path(tempdir(), "jstats n88")
+unlink(.td88, recursive = TRUE); dir.create(.td88)
+saveRDS(data.frame(PrimaryCaregiverEmploymentHoursPerWeek = c(1, 2, 3, 4, 5, -99, -99,
+                                                              2, 3, 4, 1, 2)),
+        file.path(.td88, "caregiver_survey_wave_two88.rds"))
+check("N88r the load scan's line goes through the stdout emitter: wider than the message it is laid out, and it runs as its one-line form does",
+      local({ m <- .conv88("spss", printed(jload(file.path(.td88, "caregiver_survey_wave_two88.rds"))))
+        b <- .r5_calls(.ln88(m), shape = "^  jdeclare_missing")
+        d <- readRDS(file.path(.td88, "caregiver_survey_wave_two88.rds"))
+        length(b) == 2L && all(grepl("\n      ", b, fixed = TRUE)) &&
+          all(nchar(.ln88(m)) <= .pin_width) &&
+          .cmp88(m, "caregiver_survey_wave_two88", d, cv = "spss", k = 1L) }))
+unlink(.td88, recursive = TRUE)
+
+# --- E: the riders -------------------------------------------------------------
+l88 <- data.frame(x = haven::labelled(c(1, 2, 3, 2), labels = c(A = 1, B = 2, C = 3)),
+                  w = c("Yes", "No", "Yes", "No"), stringsAsFactors = FALSE)
+check("N88t the assign-or-lose reminder alone opens on its own line, no blank line before it (jrecode(), jencode(); Rule F, the S352 item)",
+      startsWith(grab(jrecode(l88, x, map = "1=1; 2=2; 3=3")),
+                 "Note: This call changes l88 only if you assign the result:\n") &&
+        startsWith(grab(jencode(l88, w, map = "Yes=1; No=0")),
+                   "Note: This call changes l88 only if you assign the result:\n"))
+check("N88u after a note the reminder keeps its one blank line (jrecode(), jencode(), jsum(), javg())",
+      local({ p88 <- data.frame(p = c(1, 2, 3), q = c(2, 3, 4))
+        a <- grab(jrecode(p88, p, map = "1=10; else=copy"))
+        b <- grab(jencode(l88, w))
+        s <- grab(jsum(p88, p, q))
+        v <- grab(javg(p88, p, q))
+        grepl("^Note: No value labels assigned\\.", a) &&
+          grepl("\n\nNote: This call changes p88 only", a, fixed = TRUE) &&
+          grepl("\n\nNote: This call changes l88 only", b, fixed = TRUE) &&
+          !startsWith(b, "\n") &&
+          grepl("\n\nNote: jsum() returns the totals", s, fixed = TRUE) &&
+          grepl("\n\nNote: javg() returns", v, fixed = TRUE) }))
+check("N88v jencode() at the full level: an advisory note one blank line from the next advisory, from the notes block and from the reminder (they ran together)",
+      .lvl88("full", local({
+        d <- data.frame(R = c("Yes", "No", "Refused", NA, "Yes"), stringsAsFactors = FALSE)
+        a <- .conv88("spss", grab(jencode(d, R, map = "Yes=1; No=2; Refused=3; Maybe=4; NA=-98")))
+        b <- grab(jencode(l88, w, map = "Yes=1; No=0; Maybe=2"))
+        c2 <- grab(jencode(l88, w, map = "Yes=1; No=0; Maybe=2; NA=9"))
+        grepl("  \"Maybe\"\n\nNote: 1 NA value in 'R' was encoded as -98.", a, fixed = TRUE) &&
+          grepl("  \"Maybe\"\n\nNote: This call changes l88", b, fixed = TRUE) &&
+          grepl("  \"Maybe\"\n\nNote: 'w' contained no NA values", c2, fixed = TRUE) &&
+          !startsWith(a, "\n") && !startsWith(b, "\n") })))
+rm(list = intersect(c(".s88", ".wm88", ".conv88", ".lvl88", ".ln88", ".ws88", ".max88", ".cmp88",
+                      "survey_responses88", "household_income88", "household_wave88",
+                      "household_marks88", ".td88", "l88"),
+                    ls(all.names = TRUE)))
+
+
 # N79 (S337) -- NO PREMATURE BREAK, swept over every condition grab() took.
 # jencode_check.R N42 brought to this file (the S291 item): a width CEILING
 # sees a long line and is blind to a SHORT one, which is how the S287 double
@@ -8344,6 +8798,34 @@ check(paste0("N80 every runnable line in a message parses (", .un,
              " lines)"),
       .un >= 100L && length(.ub) == 0L)
 if (length(.ub) > 0L) for (l in .ub) cat("        does not parse: ", l, "\n")
+
+# N88s (S353) -- RULING R5 OVER EVERY CONDITION THE BATTERY TOOK. Each call a
+# message printed at the pinned width (an indented line with the shape of a
+# call or an assignment, a call laid out over lines kept whole): one whose
+# one-line form is wider than the width is laid out over lines, never left
+# as one long line; and a laid-out call's lines fit the width, the lines
+# over it listed by text below, each a single piece that cannot break. A
+# line holding a <placeholder> is a pattern, not a call, and is left out.
+.r5s <- list(n = 0L, laid = 0L, long = character(0), over = character(0))
+for (.s in .sw) {
+  .b5 <- .r5_calls(strsplit(.s$text, "\n", fixed = TRUE)[[1]],
+                   shape = "^ {2,}[A-Za-z.][A-Za-z0-9._$]*(\\[[^]]*\\])* *(\\(|<- )")
+  for (.b in .b5[!grepl("<[A-Za-z][A-Za-z ]*>", .b5)]) {
+    .r5s$n <- .r5s$n + 1L
+    .l <- strsplit(.b, "\n", fixed = TRUE)[[1]]
+    if (length(.l) > 1L) .r5s$laid <- .r5s$laid + 1L
+    if (length(.l) == 1L && nchar(.l) + 2L > .pin_width)
+      .r5s$long <- c(.r5s$long, .l)
+    if (length(.l) > 1L) .r5s$over <- c(.r5s$over, .l[nchar(.l) > .pin_width])
+  }
+}
+check(paste0("N88s every call in a message, at the pinned width: none left as one long line, and a laid-out call over the width only in a single piece (",
+             .r5s$n, " calls, ", .r5s$laid, " laid out)"),
+      .r5s$n >= 300L && .r5s$laid >= 20L && length(.r5s$long) == 0L &&
+        length(unique(.r5s$over)) == 0L)
+if (length(.r5s$long) > 0L) for (l in unique(.r5s$long)) cat("        one long line: ", l, "\n")
+if (length(.r5s$over) > 0L) for (l in unique(.r5s$over)) cat("        over the width: ", l, "\n")
+rm(.r5s, .s, .b5, .b, .l)
 
 options(.jst_options_missing_convention = NULL)
 # Placed ABOVE the verdict so a failing run still leaves the session clean.
