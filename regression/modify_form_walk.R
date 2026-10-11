@@ -13,7 +13,23 @@
 #           with declared missing values, jsave()'s note on a text
 #           variable's missing cells (ruling R13), and the layout of
 #           jload()'s Loaded line among its notes (ruling R6).
+#           Since S352 also jsave() given an expression as the data
+#           (Section 19).
 # ORIGIN:   S229
+# EDITED:   S352 (v0.9.225; Fix Slate 9, the first half). SECTIONS 4 AND 5
+#           RE-PINNED; SECTION 19 ADDED. Every changed Expected FILLED BY
+#           RUNNING the file (fill.R).
+#           Sections 4 and 5: with no convention selected -- this walk's
+#           state -- the load scan's declare line stopped at the
+#           choose-first gate; the menu now comes first (ruling R15). Each
+#           pin had quoted one line, Section 5's in its pre-S267 commented
+#           form; each is now the call's whole output.
+#           Section 19: jsave()'s refusals given an expression as the data
+#           (the S351 item) -- each block of lines opens on
+#           "mydata <- ...".
+#           harness.R derive: 42 of 43 Expected blocks found (Section 9's,
+#           as before); Section 19 needs no other, every NEEDS line as it
+#           was.
 # EDITED:   S351 (v0.9.224; Fix Slate 6; WALKED on the workstation the same session).
 #           SIX NEW SECTIONS, 13-18, every Expected filled by running the
 #           file (fill.R; the Saved lines, which name a temporary folder,
@@ -151,7 +167,15 @@
 #           f(NULL) would reach the sole-frame-or-STOP path with no default
 #           to resolve against. No Expected touched; confirmed in the walk
 #           below.
-# LAST VERIFIED: v0.9.224, 2026-10-11 (S351) -- Sections 13-18 WALKED on
+# LAST VERIFIED: v0.9.225, 2026-10-12 (S352) -- Sections 4, 5 and 19
+#           WALKED on the WORKSTATION through receive_all() ("walked, all
+#           okay"), GitHub 5c5304e (package), after the SANDBOX run (R
+#           4.3.3, UTF-8 locale): every changed Expected filled by running
+#           the file (fill.R), 42 of 43 blocks found in the capture
+#           (Section 9's, as before), and all 19 sections through rewalk()
+#           in file order, reverse order and shuffled, and by prepare =
+#           TRUE; Section 19 needs no other.
+#           Prior: v0.9.224, 2026-10-11 (S351) -- Sections 13-18 WALKED on
 #           the WORKSTATION through receive_all() ("walked, all okay", the
 #           tool's default line), GitHub 093763a (package), after the
 #           SANDBOX run (R 4.3.3, UTF-8 locale): every new Expected filled
@@ -391,13 +415,49 @@ jload(f_mixed, name = "clinic", overwrite = TRUE)
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Undeclared codes, so the scan runs rather than the narrative.
 
+# RE-PINNED S352 (v0.9.225; ruling R15, Jeff, S347: "that's what I want").
+# With no convention selected -- this walk's state -- the line stopped at
+# the choose-first gate, so the menu now comes first ("this code cannot be
+# declared yet"), then "Then, to declare one variable's codes as missing:"
+# and the line. With a convention selected the block is as it was. The pin
+# had quoted the line alone; it is now the call's whole output, filled by
+# running.
+
 jload(f_plain, name = "clinic", overwrite = TRUE)
 
-# Expected, under "# To declare one variable's codes as missing:":
-#   jdeclare_missing(clinic, Rating, codes = -99, modify = TRUE)
+# Expected:
+#   Loaded clinic (R native format; 3 cases, 2 variables)
+#
+#   Missing-value codes detected:
+#     Rating:   -99 "Refused" (1)  [label-only -- not formally declared]
+#     Contact:  -99 (1)            [suspected -- not formally defined]
+#
+#   [label-only -- not formally declared]:
+#     not automatically treated as NA, but the value labels suggest they mark
+#     missing values.
+#     Declare them as missing if they are; leave as-is if real.
+#   [suspected -- not formally defined]:
+#     not automatically treated as NA.
+#     Declare them as missing if they are; leave as-is if real.
+#
+#   No missing-value convention is selected, so this code cannot be
+#   declared yet.
+#   Choose one for this session:
+#     joptions(missing.convention = "stata")
+#         Lowercase markers behave as true NAs in base R.
+#         Recommended if you also run base R or AI-generated code.
+#     joptions(missing.convention = "spss")
+#         Codes stay visible numbers; jstats treats them as missing.
+#         Base R does not.
+#     joptions(missing.convention = "sas")
+#         Like Stata, with uppercase markers (.A-.Z).
+#   To make the choice permanent, put the same line in your .Rprofile.
+#   Then, to declare one variable's codes as missing:
+#     jdeclare_missing(clinic, Rating, codes = -99, modify = TRUE)
 # Things to look at:
-#   - the line sits under a # comment header but is itself uncommented and
-#     runnable as printed
+#   - the menu, then the line, which runs once a convention is chosen
+#   - "this code" in the menu's head, beside the block's "codes" (the
+#     wording R15 left to the build)
 #   - the label-only variable (Rating) is the example target, not Contact
 
 
@@ -407,13 +467,40 @@ jload(f_plain, name = "clinic", overwrite = TRUE)
 # The second, commented example fires only when the target is a SUSPECTED
 # (unlabelled) variable, so this fixture holds only the bare-code column.
 
+# RE-PINNED S352 (v0.9.225; ruling R15): the menu first, as in Section 4.
+# The pin quoted the second line in its pre-S267 commented form; it is now
+# the call's whole output, filled by running.
+
 jload(f_susp, name = "clinic", overwrite = TRUE)
 
-# Expected, the commented second line:
-#   #   jdeclare_missing(clinic, Contact, codes = c("label1" = -99), modify = TRUE)
+# Expected:
+#   Loaded clinic (R native format; 3 cases, 1 variable)
+#
+#   Suspected missing-value codes detected:
+#     Contact:  -99 (1)
+#
+#   These codes are not formally defined, so they are not treated as missing.
+#   Declare them as missing if they are; leave as-is if real.
+#
+#   No missing-value convention is selected, so this code cannot be
+#   declared yet.
+#   Choose one for this session:
+#     joptions(missing.convention = "stata")
+#         Lowercase markers behave as true NAs in base R.
+#         Recommended if you also run base R or AI-generated code.
+#     joptions(missing.convention = "spss")
+#         Codes stay visible numbers; jstats treats them as missing.
+#         Base R does not.
+#     joptions(missing.convention = "sas")
+#         Like Stata, with uppercase markers (.A-.Z).
+#   To make the choice permanent, put the same line in your .Rprofile.
+#   Then, to declare one variable's codes as missing:
+#     jdeclare_missing(clinic, Contact, codes = -99, modify = TRUE)
+#   To declare and label them in one call, replacing the placeholder names:
+#     jdeclare_missing(clinic, Contact, codes = c("label1" = -99), modify = TRUE)
 # Things to look at:
-#   - modify = TRUE is INSIDE the comment, i.e. it is part of the example
-#     the user uncomments, not stranded after the closing paren
+#   - the second line, with placeholder labels, is uncommented and runs
+#     as printed once a convention is chosen
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -1584,6 +1671,75 @@ rm(w18, w18b, v18, fw18, fw18b)
 # Things to look at:
 #   - "4 variables are Stata-style": the inventory above lists them.
 #   - "Q1, Q2, and Q3 are Stata-style": the names, as before.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 19 -- jsave() given an expression as the data (S352) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S352 (v0.9.225; the S351 item). jsave()'s pre-flight refusals pasted
+# the data as typed into their lines: given oc19["X"], the .sav over-limit
+# refusal printed jsave(oc19["X"], "oc19["X"].rds"), which does not parse,
+# and jconvert(oc19["X"], ..., modify = TRUE), which stops. Each block of
+# lines now names mydata and opens on "mydata <- oc19["X"]" -- the S339
+# form of every other message given an expression -- and its files are
+# named mydata. Section 12 has jdeclare_missing() and jconvert() given an
+# expression. The assertion side is missing_convention_check.R N87av-ay.
+
+oc19 <- data.frame(
+  X = haven::labelled_spss(c(1, -1, -2, -3, -4), na_values = c(-1, -2, -3, -4)),
+  Y = c(1L, 2L, 3L, 4L, 5L))
+cx19 <- oc19; cx19$Z <- I(list(1, 2, 3, 4, 5))
+
+# Render 1 -- the .sav over-limit refusal: two blocks, each opening on
+# mydata.
+try(jsave(oc19["X"], file.path(.walkdir, "oc19.sav")))
+# Expected:
+#   Error : jsave(): SPSS format (.sav) allows at most 3 declared missing values
+#   per variable, or a range plus one code.
+#
+#   This variable in oc19["X"] has more:
+#     X: 4 codes
+#
+#   To save in R format (.rds) instead, keeping all the codes:
+#     mydata <- oc19["X"]
+#     jsave(mydata, "mydata.rds")
+#   To convert to Stata and save as Stata format (.dta), also keeping all
+#   the codes:
+#     mydata <- oc19["X"]
+#     jconvert(mydata, to = "stata", modify = TRUE)
+#     jsave(mydata, "mydata.dta")
+#   Or reduce each variable's declared missing values to fit.
+
+# Render 2 -- two problems at once (a list column and SPSS-style missing
+# values) in a .dta file.
+try(jsave(cx19[c("X", "Z")], file.path(.walkdir, "oc19.dta")))
+# Expected:
+#   Error : jsave(): cx19[c("X", "Z")] cannot be saved to Stata format (.dta)
+#   yet -- 2 things to fix:
+#
+#   [1] 1 column is of a type that Stata format (.dta) cannot store:
+#     Z (list)
+#
+#   complex/list/raw columns have no Stata format (.dta) representation and no
+#   sensible automatic conversion. Drop it before saving with:
+#     mydata <- cx19[c("X", "Z")]
+#     mydata[c("Z")] <- NULL
+#
+#   [2] 1 variable carries SPSS-style missing values, incompatible with the
+#   .dta format:
+#     X
+#
+#   Before saving to Stata format, convert with:
+#     mydata <- cx19[c("X", "Z")]
+#     jconvert(mydata, to = "stata", modify = TRUE)
+#
+#   Fix the above, then run jsave() again.
+rm(oc19, cx19)
+
+# Things to look at:
+#   - each block runs on its own, so each opens on "mydata <- ...";
+#   - the sentences above the lines keep the expression as typed
+#     ("This variable in oc19["X"] has more:"), as the header does.
+
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

@@ -60,11 +60,40 @@
 #           variable holding both letter cases; jrecode()'s "declare it"
 #           messages with no convention selected; the invalid old value
 #           named alone; and the declaration line a place is offered.
+#           PART O (S352) adds the first half of Fix Slate 9: jrecode()'s
+#           word missing on a variable that already carries its marker
+#           (ruling R8), said or refused; the lines that offered a
+#           declaration on such a variable, now a recode that runs; the
+#           NA rule's pair; jrecode()'s notes one blank line apart (ruling
+#           R6); jdeclare_missing() on several variables and on a place;
+#           and the routes offered a frame holding a declared string.
 # ORIGIN:   S226 (SAS-convention foundation, v0.9.123) + S227 (E17 jload
 #           messaging redesign, v0.9.124). Written S228, superseding the two
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S352 (v0.9.225; Fix Slate 9, the first half). SECTIONS 29 AND
+#           57 RE-PINNED; NEW PART O, SECTIONS 58-63. Every changed
+#           Expected FILLED BY RUNNING the file (fill.R).
+#           Section 29: with no convention selected jlogistic()'s declare
+#           line stopped at the choose-first gate; the menu now comes first
+#           (ruling R15). Its pin had been a hand-typed quotation of the
+#           draft. Section 57, Render 2: modify = TRUE on a place offers the
+#           call assigned back to the place; Render 1, unchanged, is now
+#           filled by running too.
+#           PART O: 58 the word missing on a marker the variable carries
+#           (ruling R8); 59 the offered declarations that stopped, now
+#           recodes; 60 the NA rule's pair; 61 jrecode()'s notes one blank
+#           line apart, THE ONE SECTION WALKED FOR jrecode()'s HALF OF
+#           RULING R6; 62 jdeclare_missing() on several variables and on a
+#           place; 63 the routes offered a frame holding a declared string.
+#           Section 38 shows R6 too -- the labels hint, printed first, lost
+#           its blank line above -- in a line its pin does not hold, so it
+#           did not move. A capture of every section of every walk on
+#           0.9.224 and 0.9.225 found no other section moved. harness.R
+#           derive: 61 of 62 Expected blocks found (Section 10's elided
+#           block, as before); no new section needs another, every NEEDS
+#           line as it was.
 # EDITED:   S351 (v0.9.224). Sections 4, 6, 8 and 51 RE-PINNED
 #           MECHANICALLY under ruling R6: a blank line between jload()'s
 #           "Loaded ..." line and the narrative under it (five pinned
@@ -480,7 +509,15 @@
 #           Same messages either way (one frame), confirmed in the walk
 #           below against a sandbox capture of the same file; no Expected
 #           touched.
-# LAST VERIFIED: v0.9.218, 2026-10-07 (S345) -- Sections 19, 22, 46 and
+# LAST VERIFIED: v0.9.225, 2026-10-12 (S352) -- Sections 29 and 57-63
+#           WALKED on the WORKSTATION through receive_all() ("walked, all
+#           okay"), GitHub 5c5304e (package), after the SANDBOX run (R
+#           4.3.3, UTF-8 locale): every changed Expected filled by running
+#           the file (fill.R), 61 of 62 blocks found in the capture
+#           (Section 10's, as before), and all 64 sections through
+#           rewalk() in file order, reverse order and shuffled, and by
+#           prepare = TRUE; no new section needs another.
+#           Prior: v0.9.218, 2026-10-07 (S345) -- Sections 19, 22, 46 and
 #           53-57 WALKED on the WORKSTATION through receive_all() ("walked,
 #           all okay"), GitHub ec82e6b, after the SANDBOX run (R 4.3.3,
 #           UTF-8 locale): every new or moved Expected filled by running
@@ -3257,24 +3294,47 @@ ws <- jdeclare_missing(ws, Income, codes = c(-99, -98))
 # masks declared UDMs on the analysis copy, so the very same jlogistic
 # call runs after it), the destructive jrecode second, its consequence
 # named.
+#
+# RE-PINNED S352 (v0.9.225; ruling R15, Jeff, S347: "that's what I want").
+# With no convention selected -- the state this walk's Setup leaves -- the
+# declare line stopped at the choose-first gate, so the menu now comes
+# first, as at the other six "declare it" sites, and "Declare it" reads
+# "Then declare it". With a convention selected the error is as it was.
+# The pin was a hand-typed quotation of the draft until S352; it is now
+# filled by running.
 
 wl <- data.frame(Reinc = c(rep(0, 20), rep(1, 20), rep(-99, 5)),
                  Age   = rnorm(45, 40, 8))
 try(jlogistic(Reinc ~ Age, data = wl))
 
-# Expected (verbatim to the draft, Rule E splits applied):
-#   "Error: jlogistic(): Reinc has 3 unique values (-99, 0, 1).
-#    The dependent variable must have exactly 2 categories coded 0/1.
-#    -99 looks like a coded missing value.
-#    Declare it so analyses exclude it:
-#      jdeclare_missing(wl, Reinc, codes = -99, modify = TRUE)
-#    Or convert it to NA, dropping the code:
-#      wl$ReincR <- jrecode(wl, Reinc, map = "-99=NA; else=copy")"
+# Expected:
+#   Logistic Regression
+#   Error : jlogistic(): Reinc has 3 unique values (-99, 0, 1).
+#   The dependent variable must have exactly 2 categories coded 0/1.
+#   -99 looks like a coded missing value.
+#   No missing-value convention is selected, so the value cannot be
+#   declared yet.
+#   Choose one for this session:
+#     joptions(missing.convention = "stata")
+#         Lowercase markers behave as true NAs in base R.
+#         Recommended if you also run base R or AI-generated code.
+#     joptions(missing.convention = "spss")
+#         Codes stay visible numbers; jstats treats them as missing.
+#         Base R does not.
+#     joptions(missing.convention = "sas")
+#         Like Stata, with uppercase markers (.A-.Z).
+#   To make the choice permanent, put the same line in your .Rprofile.
+#   Then declare it so analyses exclude it:
+#     jdeclare_missing(wl, Reinc, codes = -99, modify = TRUE)
+#   Or convert it to NA, dropping the code:
+#     wl$ReincR <- jrecode(wl, Reinc, map = "-99=NA; else=copy")
 #
 # Things to look at:
-#   - Paste the FIRST remedy, then rerun the identical jlogistic call.
-#     It should now fit. That round trip is the whole argument for
-#     declare-first.
+#   - Run a menu line, paste the declare line, then rerun the identical
+#     jlogistic call. It should now fit. That round trip is the whole
+#     argument for declare-first.
+#   - (S352) the menu's "the value cannot be declared yet" above "Then
+#     declare it": one choice, then the line runs the first time.
 #   - The old wording hedged ("may be coded missing value(s)"); the new
 #     one commits ("looks like"). Comfortable?
 
@@ -6057,16 +6117,17 @@ a57 <- jrecode(survey$w1, Age, map = "1=-99; else=copy")
 #   To check the recode landed correctly, compare jfreq() on the original and
 #   the new column.
 
-# Render 2 -- the line a hand-typed modify = TRUE still meets, unchanged:
-# its two lines name mydata, which is a name.
+# Render 2 -- a hand-typed modify = TRUE on a place. RE-PINNED S352
+# (v0.9.225; the S345 item, point 2): the stop offers the call assigned
+# back to the place, which changes it. Until v0.9.225 it offered
+# "mydata <- survey$w1" and the modify line, which changed a copy.
 try(jdeclare_missing(survey$w1, Age, codes = c(3), modify = TRUE))
 
 # Expected:
 #   Error : jdeclare_missing(): modify = TRUE can only change a data frame that
 #   has a name.
-#   Name the data first, then rerun with modify = TRUE:
-#     mydata <- survey$w1
-#     jdeclare_missing(mydata, ..., modify = TRUE)
+#   To change survey$w1 itself, assign the result to it:
+#     survey$w1 <- jdeclare_missing(survey$w1, Age, codes = c(3))
 options(.jst_options_missing_convention = NULL)
 rm(survey, a57)
 
@@ -6075,11 +6136,560 @@ rm(survey, a57)
 #     AgeR, codes = c(-99))". A name gets "jdeclare_missing(d, AgeR, codes
 #     = c(-99), modify = TRUE)" (Section 42). Two forms for one advice,
 #     each the one that runs.
-#   - RENDER 2 changes survey$w1 only through mydata, a COPY: the list is
-#     untouched afterwards. That stop's wording is the S229 design's; with
-#     the assignment form now offered elsewhere, should it offer
-#     "survey$w1 <- jdeclare_missing(survey$w1, ...)" too? Not changed
-#     here.
+#   - RENDER 2 offers "survey$w1 <- jdeclare_missing(survey$w1, Age,
+#     codes = c(3))": the call as typed, without modify = TRUE, assigned to
+#     the place. The question this section asked at S345 is answered (the
+#     S345 item); jconvert()'s twin is Section 62's Render 2.
+
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART O -- Fix Slate 9, the first half: the word missing on a carried ----
+#           marker; offered lines that run; jrecode()'s notes (S352)
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.225. Six sections:
+#   58  ruling R8: jrecode()'s word missing on a variable that already
+#       carries its marker -- said under stata and sas, as D4 says it under
+#       spss; a label that differs from the marker's own refused.
+#   59  ruling R8's offered declarations: the lines that offered
+#       jdeclare_missing() on a variable carrying markers, which the
+#       v0.9.218 refusal stops, now offer what runs.
+#   60  the NA rule's "Declare -98": the codes the variable declares named
+#       with the new one.
+#   61  ruling R6, jrecode()'s half: one blank line between notes, none
+#       before the first. THE ONE SECTION WALKED FOR IT. Section 38 and
+#       jencode_walk.R Section 11 show the change too, in a line no pin
+#       holds (the labels hint, printed first, lost the blank line above it).
+#   62  jdeclare_missing(): the refusal on several variables; modify = TRUE
+#       on a place.
+#   63  a frame holding a text variable with declared missing values: the
+#       five messages that offered a whole-frame conversion to "stata".
+# The assertion side is missing_convention_check.R N87a-N87az. Fixtures are
+# local to each section; each sets the convention it needs and clears it.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 58 -- the word missing on a marker the variable carries ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Under Stata or SAS convention the word missing takes the first marker,
+# .a. Reason, read from Stata, already has .a: three cases labeled
+# "Skipped". Two more cases hold 9, which the user calls missing.
+#
+# Until 0.9.225 the 9s joined the Skipped cases with nothing said, and a
+# labels = "missing=Refused" renamed all five "Refused", with nothing said.
+# Jeff's ruling R8 (S345): the merge stands and is said (Render 1); a label
+# that differs from the marker's own is refused (Render 2). Under SPSS
+# convention the word takes a code, and the same refusal (Render 3).
+joptions(missing.convention = "stata", quiet = TRUE)
+
+sk58 <- data.frame(Reason = haven::labelled(
+  c(1, 2, haven::tagged_na("a"), 9, 3, haven::tagged_na("a"), 1, 9, 2,
+    haven::tagged_na("a")),
+  labels = c(Skipped = haven::tagged_na("a"))))
+
+# Render 1 -- no label given: the merge, said, with the line that keeps
+# the two apart.
+r58 <- jrecode(sk58, Reason, map = "9=missing; else=copy")
+
+# Expected:
+#   Note: .a was used for missing, under Stata convention.
+#   Reason already carries .a ["Skipped"], so the recoded cases share that
+#   missing value.
+#   To keep them apart, give missing a marker Reason does not use:
+#     sk58$ReasonR <- jrecode(sk58, Reason, map = "9=.b; else=copy")
+#
+#   Note: This call changes sk58 only if you assign the result:
+#     sk58$<name> <- jrecode(...)
+#   To check the recode landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 2 -- a label that differs from the one .a has: refused, with
+# the two lines (kept apart; the same thing on purpose).
+try(jrecode(sk58, Reason, map = "9=missing; else=copy",
+            labels = "missing=Refused"))
+
+# Expected:
+#   Error : jrecode(): 'missing' would use .a under Stata convention, but Reason
+#   already carries .a ["Skipped"], so the two would share one missing value.
+#   The label "Refused" would also rename the cases already at .a.
+#   To keep them distinct, give missing a marker Reason does not use:
+#     sk58$ReasonR <- jrecode(sk58, Reason, map = "9=.b; else=copy", labels = ".b=Refused")
+#   Or, if they mean the same thing, use .a for both, keeping its label:
+#     sk58$ReasonR <- jrecode(sk58, Reason, map = "9=.a; else=copy")
+
+# Render 3 -- its first line, pasted: two kinds of missing data, two
+# markers.
+sk58$ReasonR <- jrecode(sk58, Reason, map = "9=.b; else=copy",
+                        labels = ".b=Refused")
+jfreq(sk58, ReasonR)
+
+# Expected:
+#   Frequencies
+#
+#   10 Cases in the 1 Variable Pool
+#
+#   ReasonR
+#
+#                   Freq  Total %  Valid %  Cum. %
+#   --------------  ----  -------  -------  ------
+#   Valid
+#   1                 2     20.00    40.00   40.00
+#   2                 2     20.00    40.00   80.00
+#   3                 1     10.00    20.00  100.00
+#   Total valid       5     50.00   100.00
+#
+#   Missing
+#   .a ["Skipped"]    3     30.00       --      --
+#   .b ["Refused"]    2     20.00       --      --
+#   Total missing     5     50.00
+#
+#   Total            10    100.00
+
+# Render 4 -- SPSS convention: Q declares -99 "Refused", the code the word
+# missing takes. The same refusal, its first line a pair, since a code is
+# declared on the recoded variable.
+joptions(missing.convention = "spss", quiet = TRUE)
+q58 <- data.frame(Q = haven::labelled_spss(c(1, 2, 9, 9, -99),
+                                           labels = c(Refused = -99),
+                                           na_values = -99))
+try(jrecode(q58, Q, map = "9=missing; else=copy", labels = "missing=Skipped"))
+
+# Expected:
+#   Error : jrecode(): 'missing' would use -99, from the
+#   missing.convention.codes default, but Q already declares -99 ["Refused"], so
+#   the two would share one missing value.
+#   The label "Skipped" would also rename the cases already at -99.
+#   To keep them distinct, give missing a code Q does not use, and declare it on
+#   the recoded variable:
+#     q58$QR <- jrecode(q58, Q, map = "9=-98; else=copy", labels = "-98=Skipped")
+#     jdeclare_missing(q58, QR, codes = c(-99, -98), modify = TRUE)
+#   Or, if they mean the same thing, use -99 for both, keeping its label:
+#     q58$QR <- jrecode(q58, Q, map = "9=-99; else=copy")
+options(.jst_options_missing_convention = NULL)
+rm(sk58, r58, q58)
+
+# Things to look at:
+#   - RENDER 1 is the twin of D4's note under SPSS ("-99 was used for
+#     missing ... Q already declares -99 as a missing value"), with the
+#     line that keeps the two kinds apart. With no .a of its own, a
+#     variable gets no note: the user wrote missing and got missing (the
+#     S239 texture, which stands for that case).
+#   - RENDER 2's second line keeps .a's own label, "Skipped": the merge on
+#     purpose names the marker in the map, which no note follows.
+#   - RENDER 3: the two kinds as two rows, .a ["Skipped"] and .b
+#     ["Refused"].
+#   - RENDER 4: "give missing a code Q does not use" is -98, the next
+#     convention code; the pair declares it beside -99.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 59 -- offered declarations on a variable carrying markers ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# jdeclare_missing() gives numeric codes markers from .a on, and since
+# v0.9.218 refuses a code whose marker the variable already carries. Four
+# messages kept offering that declaration on such a variable, so the
+# offered line stopped. They now offer the recode that runs: the values
+# sent to markers the variable does not use. jencode()'s is jencode_walk.R
+# Section 15.
+joptions(missing.convention = "stata", quiet = TRUE)
+
+w59 <- data.frame(Rating = haven::labelled(
+  c(1, 2, 3, 4, 5, 5, haven::tagged_na("a"), 2, 3, 1),
+  labels = c(Skipped = haven::tagged_na("a"))))
+
+# Render 1 -- jrecode()'s D1 note: 5 recoded to -88, which looks like a
+# missing-value code. It offered "5=missing" (which joins the Skipped .a)
+# and a declaration of -88 (refused: -88 would become .a).
+r59 <- jrecode(w59, Rating, map = "5=-88; else=copy")
+
+# Expected:
+#   Note: 5 was recoded to -88, which looks like a coded missing value.
+#   To make the value missing, map it to a Stata-style marker the recoded
+#   variable does not use:
+#     w59$RatingR <- jrecode(w59, Rating, map = "5=.b; else=copy")
+#
+#   Note: This call changes w59 only if you assign the result:
+#     w59$<name> <- jrecode(...)
+#   To check the recode landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 2 -- jlogistic()'s three-value stop on an outcome carrying .a.
+set.seed(59)
+o59 <- data.frame(Out = haven::labelled(
+  c(rep(0, 20), rep(1, 20), rep(-99, 4), rep(haven::tagged_na("a"), 4)),
+  labels = c(Skipped = haven::tagged_na("a"))), Age = rnorm(48, 40, 8))
+try(jlogistic(Out ~ Age, data = o59))
+
+# Expected:
+#   Logistic Regression
+#   Error : jlogistic(): Out has 3 unique values (-99, 0, 1).
+#   The dependent variable must have exactly 2 categories coded 0/1.
+#   -99 looks like a coded missing value.
+#   Recode it to a Stata-style marker Out does not use, so analyses exclude it:
+#     o59$OutR <- jrecode(o59, Out, map = "-99=.b; else=copy")
+#   Then use OutR as your dependent variable.
+#   Or convert it to NA, dropping the code:
+#     o59$OutR <- jrecode(o59, Out, map = "-99=NA; else=copy")
+
+# Render 3 -- jdeclare_missing()'s own refusal with NO convention selected.
+# The variable's form decided the call, so its two recodes now carry
+# convention = "stata": without it each stopped at the choose-first gate.
+options(.jst_options_missing_convention = NULL)
+u59 <- data.frame(V = haven::labelled(c(1, 2, -99, haven::tagged_na("a")),
+                                      labels = c(Skipped = haven::tagged_na("a"))))
+try(jdeclare_missing(u59, V, codes = -99))
+
+# Expected:
+#   Error : jdeclare_missing(): -99 would become .a under Stata convention, but
+#   V already carries .a ["Skipped"], so the two would share one missing value.
+#   To keep them distinct, recode -99 to a marker V does not use:
+#     u59$VR <- jrecode(u59, V, map = "-99=.b; else=copy", convention = "stata")
+#   Or, if they mean the same thing, recode -99 to .a:
+#     u59$VR <- jrecode(u59, V, map = "-99=.a; else=copy", convention = "stata")
+
+# Render 4 -- the load scan on a file whose variable carries .a beside two
+# -99s: the recode lines in place of the declaration.
+joptions(missing.convention = "stata", quiet = TRUE)
+saveRDS(data.frame(Score = haven::labelled(
+  c(1, 2, 3, 4, 5, -99, -99, 2, 3, 4, 1, haven::tagged_na("a")),
+  labels = c(Skipped = haven::tagged_na("a")))), file.path(tempdir(), "sc59.rds"))
+jload(file.path(tempdir(), "sc59.rds"))
+
+# Expected:
+#   Loaded sc59 (R native format; 12 cases, 1 variable)
+#
+#   1 variable has Stata-style missing values:
+#     Score: .a ["Skipped"]
+#
+#   Suspected missing-value codes detected:
+#     Score:  -99 (2)
+#
+#   These codes are not formally defined, so they are not treated as missing.
+#   Declare them as missing if they are; leave as-is if real.
+#
+#   To recode one variable's codes to markers it does not use:
+#     sc59$ScoreR <- jrecode(sc59, Score, map = "-99=.b; else=copy")
+#   To recode and label them in one call, replacing the placeholder names:
+#     sc59$ScoreR <- jrecode(sc59, Score, map = "-99=.b; else=copy", labels = ".b=label1")
+options(.jst_options_missing_convention = NULL)
+rm(w59, r59, o59, u59, sc59)
+
+# Things to look at:
+#   - RENDER 1: one line where there were three. Is "a Stata-style marker
+#     the recoded variable does not use" clear about why the line says
+#     .b and not missing?
+#   - RENDER 2: "Recode it to a Stata-style marker Out does not use", then
+#     "Then use OutR as your dependent variable." -- the recode makes a
+#     new variable, where the declaration changed Out itself.
+#   - RENDER 4: "To recode one variable's codes to markers it does not
+#     use:" in place of "To declare one variable's codes as missing:".
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 60 -- the NA rule's note on a variable with declarations ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# jrecode()'s NA rule gives plain NA cells a code, and its note said
+# "Declare -98 with jdeclare_missing() so analyses exclude it." On a
+# variable that declares -7 "Refused" that advice cost the -7: a call
+# replaces the codes it names (Decision 12), so the drop notice followed.
+# The note now offers the pair that declares both. On a variable carrying
+# .a it sends NA to a marker the variable does not use.
+joptions(missing.convention = "spss", quiet = TRUE)
+
+u60 <- data.frame(Q = haven::labelled_spss(c(1, 2, -7, NA, 2),
+                                           labels = c(Refused = -7),
+                                           na_values = -7))
+
+# Render 1 -- SPSS-style codes of its own.
+r60 <- jrecode(u60, Q, map = "NA=-98; else=copy")
+
+# Expected:
+#   Note: -7 ["Refused"] is a declared missing value and was kept on the
+#   recoded variable.
+#   To convert it to a plain NA instead, add -7=NA to the map.
+#
+#   Note: 1 NA value in 'Q' was recoded to -98.
+#   To make that case missing, declare -98 on the recoded variable:
+#     u60$QR <- jrecode(u60, Q, map = "NA=-98; else=copy")
+#     jdeclare_missing(u60, QR, codes = c(-7, -98), modify = TRUE)
+#
+#   Note: This call changes u60 only if you assign the result:
+#     u60$<name> <- jrecode(...)
+#   To check the recode landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 2 -- Stata form, carrying .a.
+joptions(missing.convention = "stata", quiet = TRUE)
+z60 <- data.frame(Q = haven::labelled(c(1, 2, NA, 2, haven::tagged_na("a")),
+                                      labels = c(Skipped = haven::tagged_na("a"))))
+r60 <- jrecode(z60, Q, map = "NA=-98; else=copy")
+
+# Expected:
+#   Note: 1 NA value in 'Q' was recoded to -98.
+#   To make that case missing, map NA to a Stata-style marker the recoded
+#   variable does not use:
+#     z60$QR <- jrecode(z60, Q, map = "NA=.b; else=copy")
+#
+#   Note: This call changes z60 only if you assign the result:
+#     z60$<name> <- jrecode(...)
+#   To check the recode landed correctly, compare jfreq() on the original and
+#   the new column.
+options(.jst_options_missing_convention = NULL)
+rm(u60, z60, r60)
+
+# Things to look at:
+#   - RENDER 1's pair names -7 beside -98, as the S319 notes' pairs do;
+#     nothing in the note says why -7 is there. Enough?
+#   - A plain variable keeps the one sentence (Section 55's Render 2).
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 61 -- jrecode()'s notes, one blank line apart (ruling R6) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Voice Rule F: a blank line between consecutive notes, none before the
+# first. Jeff's ruling R6 (S345): the premise that the RStudio Console
+# drops the line is withdrawn, so jrecode()'s older notes, which ran
+# together, take it. THE ONE SECTION WALKED FOR jrecode()'s HALF OF R6.
+# Section 38 and jencode_walk.R Section 11 show it too, in a line their
+# pins do not hold: the labels hint, printed first, lost its blank line.
+joptions(missing.convention = "spss", quiet = TRUE)
+
+e61 <- data.frame(E = haven::labelled_spss(
+  c(1, 2, 3, 4, 5, -99, -98, 1, 2, 3),
+  labels = c(Refused = -99, `Don't know` = -98), na_values = c(-99, -98)))
+
+# Render 1 -- three notes and the reminder: the kept codes, the D1 note,
+# "Categories were collapsed." The last two ran together.
+r61 <- jrecode(e61, E, map = "4,5=-88; else=copy")
+
+# Expected:
+#   Note: -99 ["Refused"], -98 ["Don't know"] are declared missing values and
+#   were kept on the recoded variable.
+#   To convert them to plain NA instead, map them to NA (for example -99=NA).
+#
+#   Note: 4 and 5 were recoded to -88, which looks like a coded missing value.
+#   To make the value missing under SPSS convention, map it directly:
+#     e61$ER <- jrecode(e61, E, map = "4,5=missing; else=copy")
+#   Or declare -88 as missing on the recoded variable:
+#     e61$ER <- jrecode(e61, E, map = "4,5=-88; else=copy")
+#     jdeclare_missing(e61, ER, codes = c(-99, -98, -88), modify = TRUE)
+#
+#   Note: Categories were collapsed.
+#   Use labels argument or jrelabel() to assign new value labels.
+#
+#   Note: This call changes e61 only if you assign the result:
+#     e61$<name> <- jrecode(...)
+#   To check the recode landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 2 -- the labels hint as the first note: no blank line above it
+# (it had one even here).
+r61 <- jrecode(data.frame(x = c(1, 2, 3, 2)), x, map = "1=0; 2=1; else=copy")
+
+# Expected:
+#   Note: No value labels assigned. To add labels, use jrelabel().
+#
+#   Note: The result is kept only if you assign it.
+#   Name the data frame first, then assign the result to a variable in it:
+#     mydata <- data.frame(x = c(1, 2, 3, 2))
+#     mydata$<name> <- jrecode(mydata, ...)
+#   To check the recode landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 3 -- at the full output level the advisory notes take their blank
+# lines too; at standard they print nothing and leave no gap.
+joutput("full", quiet = TRUE)
+r61 <- jrecode(data.frame(x = c(1, 2, 3, 2)), x,
+               map = "1=0; 7=1; 8=2; 2=1; else=copy")
+
+# Expected:
+#   Note: 'x' contained none of the map values 7 -- nothing was
+#   recoded for them.
+#
+#   Note: 'x' contained none of the map values 8 -- nothing was
+#   recoded for them.
+#
+#   Note: No value labels assigned. To add labels, use jrelabel().
+#
+#   Note: The result is kept only if you assign it.
+#   Name the data frame first, then assign the result to a variable in it:
+#     mydata <- data.frame(x = c(1, 2, 3, 2))
+#     mydata$<name> <- jrecode(mydata, ...)
+#   To check the recode landed correctly, compare jfreq() on the original and
+#   the new column.
+joutput("standard", quiet = TRUE)
+options(.jst_options_missing_convention = NULL)
+rm(e61, r61)
+
+# Things to look at:
+#   - every note set off from the next by one blank line, and the first
+#     not set off from the call;
+#   - the reminder ("This call changes ... only if you assign the
+#     result") keeps the blank line above it even when it prints alone:
+#     it is the closing block jrecode() shares with jencode(), jsum() and
+#     javg(), which this build left as it was.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 62 -- jdeclare_missing(): several variables; a place ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Two messages from the v0.9.218 build. A call on several variables nests
+# each variable's refusal under its name; it broke mid-phrase, wrapped
+# once for the full width and again at its indent. And modify = TRUE on a
+# place stopped with two lines that changed a copy (Section 57's Render 2,
+# re-pinned).
+joptions(missing.convention = "stata", quiet = TRUE)
+
+v62 <- data.frame(V = haven::labelled(c(1, 2, -99, haven::tagged_na("a")),
+                                      labels = c(Skipped = haven::tagged_na("a"))),
+                  W = c(1, 2, 3, -99))
+
+# Render 1 -- two variables, one refused: its name on a line of its own,
+# its refusal under it.
+try(jdeclare_missing(v62, V, W, codes = c(-99), modify = TRUE))
+
+# Expected:
+#   Error : jdeclare_missing(): cannot declare on 1 of 2 variables; no variable
+#   was changed:
+#     V:
+#       -99 would become .a under Stata convention, but V already carries .a
+#       ["Skipped"], so the two would share one missing value.
+#       To keep them distinct, recode -99 to a marker V does not use:
+#         v62$VR <- jrecode(v62, V, map = "-99=.b; else=copy")
+#       Or, if they mean the same thing, recode -99 to .a:
+#         v62$VR <- jrecode(v62, V, map = "-99=.a; else=copy")
+
+# Render 2 -- jconvert()'s modify = TRUE on a place, the twin of Section
+# 57's Render 2: the call assigned back to the place.
+survey62 <- list(w1 = v62)
+try(jconvert(survey62$w1, to = "stata", modify = TRUE))
+
+# Expected:
+#   Error : jconvert(): modify = TRUE can only change a data frame that
+#   has a name.
+#   To change survey62$w1 itself, assign the result to it:
+#     survey62$w1 <- jconvert(survey62$w1, to = "stata")
+options(.jst_options_missing_convention = NULL)
+rm(v62, survey62)
+
+# Things to look at:
+#   - RENDER 1: "V:" on a line of its own and its refusal indented under
+#     it, each line whole;
+#   - RENDER 2: the call as typed, without modify = TRUE, assigned back to
+#     the place.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 63 -- a frame holding a declared string: the routes that run ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# jconvert() refuses a text variable with declared missing values under
+# to = "stata" or "sas" (v0.9.214): a marker is a kind of NA in a NUMERIC
+# variable. v0.9.224 gave the load and save messages the route that runs
+# (the text variable's declared values made plain NA first, then the
+# rest converted). Five more messages offered the whole-frame conversion,
+# and they take the same route now.
+joptions(missing.convention = "stata", quiet = TRUE)
+
+st63 <- data.frame(
+  S = haven::labelled_spss(c("a", "b", "x", "a", ""), labels = c(Refused = "x"),
+                           na_values = "x"),
+  N = haven::labelled_spss(c(1, 2, -99, 2, 1), labels = c(Refused = -99),
+                           na_values = -99),
+  stringsAsFactors = FALSE)
+
+# Render 1 -- jrecode()'s marker refusal: N's -99 stays SPSS-style.
+try(jrecode(st63, N, map = "1=.b; else=copy"))
+
+# Expected:
+#   Error : jrecode(): N carries the SPSS-style missing value -99 that the map
+#   leaves in place, so the marker .b cannot be added to it.
+#   Convert the data frame first, then recode:
+#     jconvert(st63, to = "baseR", vars = "S", modify = TRUE)
+#     jconvert(st63, to = "stata", modify = TRUE)
+#   S is text, so the first line makes its declared values plain NA.
+#   Or map -99 as well, so no SPSS-style missing value remains.
+
+# Render 2 -- jrecode()'s ambiguous missing: N is SPSS-style, the setting
+# Stata.
+try(jrecode(st63, N, map = "1=missing; else=copy"))
+
+# Expected:
+#   Error : jrecode(): 'missing' is ambiguous for N. The column uses SPSS-style
+#   missing values, but your missing.convention setting is "stata".
+#   To follow the column's form for this call:
+#     st63$NR <- jrecode(st63, N, map = "1=missing; else=copy", convention = "spss")
+#   Or convert the data frame to match your setting first:
+#     jconvert(st63, to = "baseR", vars = "S", modify = TRUE)
+#     jconvert(st63, to = "stata", modify = TRUE)
+#   S is text, so the first line makes its declared values plain NA.
+
+# Render 3 -- jdeclare_missing() labelling a marker on N's SPSS-style code.
+try(jdeclare_missing(st63, N, codes = c(Refused = ".a")))
+
+# Expected:
+#   Error : jdeclare_missing(): codes for N contains '.a', a missing-value
+#   marker, but N carries SPSS-style missing values (na_values: -99).
+#   To label the declared numeric codes, name them directly:
+#     jdeclare_missing(st63, N, codes = c(Refused = -99))
+#
+#   The numeric code above is N's declared missing value, matched largest
+#   magnitude first (the ordering jconvert() uses).
+#
+#   To use Stata-style markers instead, convert the column first:
+#     jconvert(st63, to = "baseR", vars = "S", modify = TRUE)
+#     jconvert(st63, to = "stata", modify = TRUE)
+#   S is text, so the first line makes its declared values plain NA.
+
+# Render 4 -- jdeclare_missing()'s note when the column's form decided
+# against the setting.
+st63$M <- haven::labelled_spss(c(1, 2, 3, -98, -99), na_values = -99)
+st63 <- jdeclare_missing(st63, M, codes = c(-99, -98))
+
+# Expected:
+#   Declared SPSS-style missing values on M:
+#     -99 (no label)
+#     -98 (no label)
+#
+#   This call changes st63 only if you assign the result:
+#     st63 <- jdeclare_missing(st63, M, ...)
+#
+#   To change st63 directly, rerun with modify = TRUE:
+#     jdeclare_missing(st63, M, ..., modify = TRUE)
+#
+#   Note: M uses SPSS-style missing values, but your missing.convention setting
+#   is "stata".
+#   To convert the data frame, run both:
+#     jconvert(st63, to = "baseR", vars = "S", modify = TRUE)
+#     jconvert(st63, to = "stata", modify = TRUE)
+#   S is text, so the first line makes its declared values plain NA.
+#   To keep SPSS-style instead, change the setting:
+#     joptions(missing.convention = "spss")
+
+# Render 5 -- joptions()'s check of the workspace, with st63 the only
+# data frame in it.
+.hold63 <- mget(Filter(function(n) is.data.frame(get(n)), setdiff(ls(), "st63")))
+rm(list = names(.hold63))
+options(.jst_options_missing_convention = NULL)
+joptions(missing.convention = "stata")
+
+# Expected:
+#   Options Settings
+#   Missing-value convention: Stata-style
+#   Run joptions() to see all settings.
+#
+#   Note: the st63 data frame uses SPSS-style missing values.
+#   To convert it to match this setting, run both:
+#     jconvert(st63, to = "baseR", vars = "S", modify = TRUE)
+#     jconvert(st63, to = "stata", modify = TRUE)
+#   S is text, so the first line makes its declared values plain NA.
+list2env(.hold63, envir = globalenv())
+options(.jst_options_missing_convention = NULL)
+rm(st63, .hold63)
+
+# Things to look at:
+#   - each route has its sentence under its lines: "S is text, so the
+#     first line makes its declared values plain NA.";
+#   - RENDER 1: the route, then "Or map -99 as well", unchanged;
+#   - RENDER 5: "run both:" where it read "run:".
 
 
 

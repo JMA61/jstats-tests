@@ -142,6 +142,21 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S352 EDIT (v0.9.225, 2026-10-11): Fix Slate 9, the first half. SECTION W
+#           ADDED, W01-W04 (4 checks; the S349 item): with no data frame in
+#           hand -- none named, no juse() default -- quiet = TRUE beside a
+#           condition, typed or given by name, is an unused input (it
+#           offered jsubset(quiet == TRUE)); a named input on its own keeps
+#           the single-= stop; nothing is stored. FOUR HUNDRED AND NINETY
+#           checks. On the 0.9.224 master W01 and W02 red.
+#           MUTATION MAP (S352): the no-frame test gone W01 W02.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 490/490
+#           plain and under the RStudio-handler stand-in, each again with
+#           a Windows-length temp path, and entered dirty.
+#           LAST VERIFIED: v0.9.225, 2026-10-12 (S352) -- 490/490 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2346 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 5c5304e.
 # S349 EDIT (v0.9.222, 2026-10-10): Fix Slate 7, second half. SECTION V
 #           ADDED, V01-V28 (28 checks): a filter on a ONE-ROW frame runs --
 #           one TRUE is one for every row -- in jfreq(), jdesc() and
@@ -4101,6 +4116,33 @@ check("V28 the user's frame is not changed: it is still an sf frame afterwards",
       identical(class(zz_vs), c("sf", "data.frame")) &&
         identical(attr(zz_vs, "sf_column"), "geometry"))
 rm(`[.sf`, zz_vs, zz_vp, zz_v1, zz_v2, zz_vmk, .v_pl, .v01, .v10, .v15, .v24)
+reset()
+
+# =============================================================================
+# W -- jsubset() WITH NO DATA FRAME IN HAND (S352, v0.9.225; the S349 item)
+# =============================================================================
+# Since v0.9.222 a named input that is not a variable of the frame in hand is
+# an unused input. With NO frame in hand -- none named, no juse() default --
+# every named input was still read as a condition typed with one =, so
+# jsubset(x > 1, quiet = TRUE) offered jsubset(quiet == TRUE), a line that
+# does not run. A named input BESIDE a condition is now an unused input there
+# too; a named input on its own (jsubset(Gender = 1)) is still the condition
+# it most likely is. Run with no default set; the default is put back after.
+.w_def <- getOption(".jst_default_data")
+options(.jst_default_data = NULL)
+check("W01 no frame in hand, a condition and quiet = TRUE: an unused input (it offered jsubset(quiet == TRUE))",
+      identical(grab(jsubset(x3 > 1, quiet = TRUE)), "jsubset(): unused input: quiet"))
+check("W02 ... the same beside a condition given by name (expr =)",
+      identical(grab(jsubset(expr = x3 > 1, quiet = TRUE)), "jsubset(): unused input: quiet"))
+check("W03 a named input on its own is still read as a condition typed with one =, its line as before",
+      identical(grab(jsubset(Gender = 1)),
+                paste0("jsubset(): Gender = 1 uses a single =, which does not test\n",
+                       "equality in R.\nUse == (two equals signs):\n  jsubset(Gender == 1)")))
+check("W04 nothing is stored by any of them",
+      length(getOption(".jst_filter", default = list())) == 0L ||
+        all(vapply(getOption(".jst_filter"), is.null, logical(1))))
+options(.jst_default_data = .w_def)
+rm(.w_def)
 reset()
 
 # =============================================================================

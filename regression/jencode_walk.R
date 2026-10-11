@@ -22,7 +22,24 @@
 #           Since S345 (Sections 12-14): a map word the data do not hold
 #           beside an else sweep, "declare it" with no convention
 #           selected, and the declaration line a place is offered.
+#           Since S352 (Section 15): a map that gives a word a marker, and
+#           the D1 note's line to a marker the map does not use.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S352 EDIT (v0.9.225, 2026-10-11): SECTION 15 ADDED, three renders, for
+#           Fix Slate 9's first half (ruling R8's offered declarations):
+#           jencode()'s D1 note on a map with "Refused=.a" offered the
+#           word missing and a declaration, both of which stopped; it now
+#           offers the flagged word sent to a marker the map does not use.
+#           Filled by running the file (fill.R). Section 11 shows ruling
+#           R6 (the labels hint, printed first, lost its blank line above)
+#           in a line its pin does not hold, so it did not move; Section
+#           5's last note rewritten, R6 having answered its question.
+#           harness.R derive: 26 of 26 Expected blocks found; no NEEDS
+#           line.
+#           LAST VERIFIED v0.9.225, 2026-10-12 (S352) -- Section 15 WALKED
+#           on the WORKSTATION by Jeff through receive_all() ("walked, all
+#           okay"); GitHub 5c5304e; after the SANDBOX run (all 15 sections
+#           through rewalk(), harness.R verify).
 # S348 EDIT (v0.9.221, 2026-10-10): Sections 9 and 14 RE-PINNED
 #           MECHANICALLY under rulings R4 and R7 (jfreq()'s "Total valid"
 #           and "Total missing" rows, and the columns they widened; walked
@@ -589,9 +606,9 @@ tdat$AgeRel <- jencode(tdat, AgeAtRelease, map = "else=NA")
 # emitting at all is the to-do's ruling R6.
 #
 # Things to look at:
-#   - in the Console, three notes about one column arrive as a wall. Judge
-#     it as it stands there: does the reader parse three findings, or one
-#     undifferentiated block? (That is ruling R6's question.)
+#   - three notes about one column, a blank line between each. (Ruling R6,
+#     S345, answered the question this line asked: the RStudio Console
+#     shows the blank lines, and Rule F stands.)
 #   - the nudge CITES its evidence (the word), not just a conclusion;
 #   - "Not stated" is swept but not cited as evidence -- it is absent from
 #     the missing-label wordlist (the open S237 gap item, on purpose here).
@@ -1342,6 +1359,87 @@ rm(lst14, r14)
 #   guards do not route through .jst_wrap_prose, so a very long variable
 #   name could push their first line past 76 columns -- log for a future
 #   message pass.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 15 -- a map that gives a word a marker: the D1 note (S352) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S352 (v0.9.225; ruling R8's offered declarations). A map with
+# "Refused=.a" makes the encoded variable Stata-style. Its D1 note offered
+# "Unknown=missing" -- stopped by the collision guard, since the word
+# missing takes .a too -- and a jdeclare_missing() pair, refused since
+# v0.9.218 because -99 would become .a. Both lines stopped. The note now
+# sends the flagged word to a marker the map does not use. jrecode()'s twin
+# is missing_convention_walk.R Section 59. Inline fixture; the assertion
+# side is jencode_check.R N48a-e.
+
+r15d <- data.frame(Reply = c("Yes", "No", "Refused", "Unknown", "Yes", "No",
+                             "Yes", "No", "Yes", "Skip"),
+                   stringsAsFactors = FALSE)
+joptions(missing.convention = "stata", quiet = TRUE)
+
+# Render 1 -- one flagged word: "Unknown" sent to .b.
+r15 <- jencode(r15d, Reply, map = "Yes=1; No=2; Refused=.a; Unknown=-99; Skip=3")
+
+# Expected:
+#   Note: "Unknown" was encoded as -99, which looks like a coded missing value.
+#   To make the value missing, map it to a Stata-style marker the encoded
+#   variable does not use:
+#     r15d$ReplyR <- jencode(r15d, Reply, map = "Yes=1; No=2; Refused=.a; Unknown=.b; Skip=3")
+#
+#   Note: This call changes r15d only if you assign the result:
+#     r15d$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 2 -- two flagged words: each to a marker of its own.
+r15 <- jencode(r15d, Reply, map = "Yes=1; No=2; Refused=.a; Unknown=-99; Skip=-98")
+
+# Expected:
+#   Note: "Unknown" was encoded as -99 and "Skip" as -98, which look like coded
+#   missing values.
+#   To make the values missing, map them to Stata-style markers the encoded
+#   variable does not use:
+#     r15d$ReplyR <- jencode(r15d, Reply, map = "Yes=1; No=2; Refused=.a; Unknown=.b; Skip=.c")
+#   To make them one missing value instead, map both to .b.
+#
+#   Note: This call changes r15d only if you assign the result:
+#     r15d$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 3 -- Render 1's line, pasted: three kinds of answer, three rows.
+r15d$ReplyR <- jencode(r15d, Reply, map = "Yes=1; No=2; Refused=.a; Unknown=.b; Skip=3")
+jfreq(r15d, ReplyR)
+
+# Expected:
+#   Frequencies
+#
+#   10 Cases in the 1 Variable Pool
+#
+#   ReplyR
+#
+#                   Freq  Total %  Valid %  Cum. %
+#   --------------  ----  -------  -------  ------
+#   Valid
+#   1: Yes            4     40.00    50.00   50.00
+#   2: No             3     30.00    37.50   87.50
+#   3: Skip           1     10.00    12.50  100.00
+#   Total valid       8     80.00   100.00
+#
+#   Missing
+#   .a ["Refused"]    1     10.00       --      --
+#   .b ["Unknown"]    1     10.00       --      --
+#   Total missing     2     20.00
+#
+#   Total            10    100.00
+options(.jst_options_missing_convention = NULL)
+rm(r15d, r15)
+
+# Things to look at:
+#   - one line where there were three, each of which stopped;
+#   - "a Stata-style marker the encoded variable does not use": the
+#     marker named in the line, .b, where the line said missing.
+
 
 
 # --- Restore session state ---------------------------------------------------

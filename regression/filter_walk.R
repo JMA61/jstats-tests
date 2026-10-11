@@ -30,7 +30,8 @@
 #           a subset = stop (D2), and "unused input" in number (E3);
 #           since S348 the default frame's variable (F1); since S349 a
 #           filter on a one-row frame, an input jsubset() does not have,
-#           and a setting made on an expression (G1-G3);
+#           and a setting made on an expression (G1-G3); since S352
+#           quiet = TRUE with no data frame in hand (G4);
 #           and Part E, the named-item detector: a
 #           top-level single = in jsubset() and in a variable list, the
 #           misspelled-input case it is told apart from, and the no-subset
@@ -40,6 +41,19 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S352 EDIT (v0.9.225): SECTION G4 ADDED -- 47 sections -> 48. Fix Slate 9,
+#           the first half (the S349 item): with no data frame named and no
+#           juse() default, quiet = TRUE beside a condition was still read
+#           as a condition typed with one =; it is now an unused input, as
+#           in G2. Filled by running the file (fill.R). No existing
+#           Expected moved. harness.R derive: 55 of 55 Expected blocks
+#           found; G4 needs no other section. The human half of
+#           filter_check.R section W.
+# LAST VERIFIED: v0.9.225, 2026-10-12 (S352) -- G4 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; GitHub 5c5304e. Sandbox: every section
+#           through rewalk() as in a straight run, in three orders and by
+#           prepare = TRUE (harness.R verify).
 # S349 EDIT (v0.9.222): PART G ADDED, three sections -- 44 sections -> 47.
 #           Fix Slate 7, second half: G1 a filter on a one-row frame runs
 #           (it was refused as "a single value"), and a condition that
@@ -1446,6 +1460,40 @@ caught(jcomplete(mk(), Age))
 #   - Not shown: a place, lst$d, is accepted by both (filter_check.R V17).
 
 rm(mk)
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION G4 -- quiet = TRUE with no data frame in hand (S352) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S352 (v0.9.225; the S349 item). G2's rule, where no data frame is in
+# hand -- none named and no juse() default. A named input beside a
+# condition was still read as a condition typed with one =, and
+# jsubset(Age > 40, quiet = TRUE) offered jsubset(quiet == TRUE). It is
+# now an unused input there too; a named input on its own is still read
+# as the condition it most likely is. The assertion side is filter_check.R
+# section W.
+.def_g4 <- getOption(".jst_default_data")
+options(.jst_default_data = NULL)
+
+caught(jsubset(Age > 40, quiet = TRUE))
+
+# Expected:
+#   Caught: jsubset(): unused input: quiet
+
+caught(jsubset(Gender = 1))
+
+# Expected:
+#   Caught: jsubset(): Gender = 1 uses a single =, which does not test
+#   equality in R.
+#   Use == (two equals signs):
+#     jsubset(Gender == 1)
+options(.jst_default_data = .def_g4)
+rm(.def_g4)
+
+# Things to look at:
+#   - Render 1: "unused input", as in G2. Without quiet =, the same call
+#     meets the stop for a condition with no data frame (no default is set
+#     here).
+#   - Render 2: unchanged: a named input on its own keeps the single-= stop.
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations

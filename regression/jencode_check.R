@@ -22,6 +22,23 @@
 #           with no convention selected, and the declaration line a place
 #           is offered.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S352 EDIT (v0.9.225, 2026-10-11): NEW N48 checks, five (N48a-e), Fix
+#           Slate 9, the first half (ruling R8's offered declarations): a
+#           map giving a word a lettered marker makes the encoded variable
+#           Stata-style, and the D1 note sends each flagged word to a
+#           marker the map does not use (.b, .c; the merge named as .b),
+#           pinned, each line run, under stata and sas; a map with no
+#           lettered marker keeps the word missing and the pair (e).
+#           ONE HUNDRED AND SIXTEEN checks. On the 0.9.224 master N48a-d
+#           red; e, the control, passes.
+#           MUTATION MAP (S352): jencode()'s D1 marker mode off N48a b c d.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 116/116
+#           plain and under the RStudio-handler stand-in, each again with
+#           a Windows-length temp path, and entered dirty.
+#           LAST VERIFIED: v0.9.225, 2026-10-12 (S352) -- 116/116 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2346 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 5c5304e.
 # S346 EDIT (v0.9.219, 2026-10-08): the session guard hands back the stored
 #           display settings (.jst_output_toggles) with the output level.
 #           The diagnostics setting outlives a level call since v0.9.219,
@@ -1372,6 +1389,68 @@ check("N47s ... and the pair runs as printed and declares -99 on the place; a na
           identical(attr(get("d47", envir = e2)$wR, "na_values"), -99) }))
 rm(list = intersect(c("s47", "b47", "m47", "n47", "l47", ".g47a", ".g47g", ".r47g",
                       ".g47i", ".r47i", ".g47r", ".rem47", ".menu47", ".at47", ".conv47"),
+                    ls(all.names = TRUE)))
+
+# =============================================================================
+# N48 -- RULING R8'S OFFERED DECLARATIONS: jencode()'s D1 NOTE ON A MAP THAT
+#        GIVES A WORD A LETTERED MARKER (S352, v0.9.225)
+# =============================================================================
+# A map with "Refused=.a" makes the encoded variable Stata-style. Its D1
+# note offered "Unknown=missing", which the S308 collision guard stops (the
+# token would take .a too), and a jdeclare_missing() pair, which the v0.9.218
+# refusal stops (-99 would become .a). Both lines stopped. Since v0.9.225 the
+# note sends the flagged words to markers the map does not use, and the line
+# runs; a map with no lettered marker keeps the two lines it had (control).
+.conv48 <- function(cv, expr) {
+  old <- getOption(".jst_options_missing_convention")
+  options(.jst_options_missing_convention = cv)
+  on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+  force(expr)
+}
+.line48 <- function(m, k = 1L) {
+  ln <- strsplit(m, "\n", fixed = TRUE)[[1]]
+  ln <- ln[grepl("^  [A-Za-z.][A-Za-z0-9._$]* *(\\(|<- )", ln)]
+  ln[k]
+}
+w48 <- data.frame(w = c("Yes", "No", "Refused", "Unknown", "Yes", "No", "Yes",
+                        "No", "Yes", "Skip"), stringsAsFactors = FALSE)
+.g48a <- .conv48("stata", grab(jencode(w48, w, map = "Yes=1; No=2; Refused=.a; Unknown=-99; Skip=3")))
+check("N48a a map holding \"Refused=.a\" and a flagged -99: the word sent to a free marker, no token and no declaration (both stopped); pinned",
+      startsWith(.g48a, paste0(
+        "Note: \"Unknown\" was encoded as -99, which looks like a coded missing value.\n",
+        "To make the value missing, map it to a Stata-style marker the encoded\n",
+        "variable does not use:\n",
+        "  w48$wR <- jencode(w48, w, map = \"Yes=1; No=2; Refused=.a; Unknown=.b; Skip=3\")\n\n")) &&
+        !grepl("jdeclare_missing(", .g48a, fixed = TRUE) &&
+        !grepl("Unknown=missing", .g48a, fixed = TRUE))
+check("N48b ... the line runs: \"Unknown\" on .b, \"Refused\" still on .a",
+      local({ e <- new.env(parent = globalenv()); assign("w48", w48, envir = e)
+        .conv48("stata", .runs(.line48(.g48a), e)) &&
+          identical(haven::na_tag(unclass(get("w48", envir = e)$wR))[3:4], c("a", "b")) }))
+.g48c <- .conv48("stata", grab(jencode(w48, w, map = "Yes=1; No=2; Refused=.a; Unknown=-99; Skip=-98")))
+check("N48c two flagged words: each to a marker of its own (.b, .c), the merge named as .b; the line runs",
+      grepl("\n  w48$wR <- jencode(w48, w, map = \"Yes=1; No=2; Refused=.a; Unknown=.b; Skip=.c\")\n",
+            .g48c, fixed = TRUE) &&
+        grepl("To make them one missing value instead, map both to .b.", .g48c, fixed = TRUE) &&
+        local({ e <- new.env(parent = globalenv()); assign("w48", w48, envir = e)
+          .conv48("stata", .runs(.line48(.g48c), e)) &&
+            identical(haven::na_tag(unclass(get("w48", envir = e)$wR))[c(3, 4, 10)], c("a", "b", "c")) }))
+check("N48d sas: the same in the convention's case (.A, .B), and it runs",
+      local({ g <- .conv48("sas", grab(jencode(w48, w, map = "Yes=1; No=2; Refused=.A; Unknown=-99; Skip=3")))
+        e <- new.env(parent = globalenv()); assign("w48", w48, envir = e)
+        grepl("map it to a SAS-style marker the encoded variable does not use:", gsub("\n", " ", g), fixed = TRUE) &&
+          grepl("Unknown=.B; Skip=3\")", g, fixed = TRUE) &&
+          .conv48("sas", .runs(.line48(g), e)) &&
+          identical(haven::na_tag(unclass(get("w48", envir = e)$wR))[4], "B") }))
+check("N48e control: a map with no lettered marker keeps the word missing and the pair, and each runs under stata",
+      local({ g <- .conv48("stata", grab(jencode(w48, w, map = "Yes=1; No=2; Refused=-98; Unknown=-99; Skip=3")))
+        e1 <- new.env(parent = globalenv()); assign("w48", w48, envir = e1)
+        e2 <- new.env(parent = globalenv()); assign("w48", w48, envir = e2)
+        grepl("declare them on the\nencoded variable:", g, fixed = TRUE) &&
+          grepl("  jdeclare_missing(w48, wR, codes = c(-99, -98), modify = TRUE)", g, fixed = TRUE) &&
+          .conv48("stata", .runs(.line48(g, 1L), e1) && .runs(.line48(g, 2L), e1)) &&
+          identical(sort(haven::na_tag(unclass(get("w48", envir = e1)$wR))), c("a", "b")) }))
+rm(list = intersect(c("w48", ".g48a", ".g48c", ".conv48", ".line48"),
                     ls(all.names = TRUE)))
 
 # --- Restore session state ---------------------------------------------------

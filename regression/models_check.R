@@ -81,6 +81,28 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S352 EDIT (v0.9.225, 2026-10-11): Fix Slate 9, the first half. SECTION R
+#           ADDED, R01-R06 (6 checks): jlogistic()'s three-value stop on an
+#           outcome with a suspected code. With no convention selected the
+#           choose-first menu comes before the declare line ("Then declare
+#           it"), pinned, and a menu line run makes the declare line and
+#           the same jlogistic() call run (ruling R15; R01-R02); with a
+#           convention, no menu (R03); an outcome with declared missing
+#           values of its own meets no gate (R04); on an outcome of Stata
+#           form carrying .a, -99 recoded to a marker it does not use, the
+#           line run and jlogistic() run on the new variable, the line
+#           carrying convention = under no setting (ruling R8's offered
+#           declarations; R05-R06). FOUR HUNDRED AND ELEVEN checks. On the
+#           0.9.224 master R01, R02, R05 and R06 red.
+#           MUTATION MAP (S352): the gate lead gone R01 R02; no marker
+#           clash R05 R06; the convention argument always empty R06.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 411/411
+#           plain and under the RStudio-handler stand-in, each again with
+#           a Windows-length temp path, and entered dirty.
+#           LAST VERIFIED: v0.9.225, 2026-10-12 (S352) -- 411/411 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2346 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 5c5304e.
 # S347 EDIT (v0.9.220, 2026-10-10): Fix Slate 8, second half. SECTION Q
 #           ADDED, Q01-Q39 with Q33b (40 checks). Q01-Q07 a model with no
 #           more cases than coefficients: one stop under the Case
@@ -4103,6 +4125,86 @@ rm(dq, d9)
 rm(list = intersect(c(".q_n", ".q_pre", ".q_both", ".q_warns", ".q_code", ".q01",
                       ".q08", ".q_cat1", ".q25", ".q_fit"),
                     ls(all.names = TRUE)))
+
+# =============================================================================
+# R -- jlogistic()'s three-value outcome stop: ruling R15's menu first, and
+#      ruling R8's offered declaration on an outcome carrying markers
+#      (S352, v0.9.225)
+# =============================================================================
+# The stop offered jdeclare_missing(d, y, codes = -99, modify = TRUE). With no
+# convention selected that line stops at the choose-first gate: since
+# v0.9.225 the menu comes first (Jeff, S347, ruling R15: "that's what I
+# want") and "Declare it" becomes "Then declare it". On an outcome of Stata
+# or SAS form carrying .a the declaration would give -99 the letter .a, which
+# jdeclare_missing() refuses (v0.9.218): the stop offers the recode of -99 to
+# a marker the outcome does not use instead. Every offered line is RUN, and
+# the jlogistic() call then runs on what it made.
+.conv_r <- function(cv, expr) {
+  old <- getOption(".jst_options_missing_convention")
+  options(.jst_options_missing_convention = cv)
+  on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+  force(expr)
+}
+.line_r <- function(m, pat) {
+  ln <- strsplit(m, "\n", fixed = TRUE)[[1]]
+  trimws(ln[grepl(pat, ln, fixed = TRUE)][1])
+}
+set.seed(352)
+dr <- data.frame(y = c(rep(0, 25), rep(1, 25), rep(-99, 10)), x = stats::rnorm(60))
+.r01 <- .conv_r(NULL, grab(jlogistic(y ~ x, data = dr)))
+check("R01 no convention selected: the choose-first menu before the declare line, and \"Then declare it\"",
+      grepl(paste0("-99 looks like a coded missing value.\n",
+                   "No missing-value convention is selected, so the value cannot be\ndeclared yet.\n",
+                   "Choose one for this session:\n"), .r01, fixed = TRUE) &&
+        grepl(paste0("To make the choice permanent, put the same line in your .Rprofile.\n",
+                     "Then declare it so analyses exclude it:\n",
+                     "  jdeclare_missing(dr, y, codes = -99, modify = TRUE)\n",
+                     "Or convert it to NA, dropping the code:\n"), .r01, fixed = TRUE))
+check("R02 ... a menu line run, the declare line runs, and the same jlogistic() call then runs",
+      local({ e <- new.env(parent = globalenv()); assign("dr", dr, envir = e)
+        .conv_r(NULL, {
+          ok <- tryCatch({
+            suppressMessages(eval(parse(text = .line_r(.r01, "joptions(missing.convention = \"stata\")")), e))
+            suppressMessages(eval(parse(text = .line_r(.r01, "jdeclare_missing(dr")), e))
+            TRUE }, error = function(err) FALSE)
+          ok && !inherits(try(quiet(eval(quote(jlogistic(y ~ x, data = dr)), e)), silent = TRUE),
+                          "try-error") }) }))
+check("R03 a convention selected: no menu, \"Declare it\", as before",
+      local({ m <- .conv_r("spss", grab(jlogistic(y ~ x, data = dr)))
+        !grepl("Choose one", m, fixed = TRUE) &&
+          grepl("-99 looks like a coded missing value.\nDeclare it so analyses exclude it:\n  jdeclare_missing(dr, y, codes = -99, modify = TRUE)\n",
+                m, fixed = TRUE) }))
+check("R04 an outcome with declared missing values of its own meets no gate: no menu with no convention selected",
+      local({ ds <- dr; ds$y <- haven::labelled_spss(c(dr$y[1:58], -98, -98), na_values = -98)
+        m <- .conv_r(NULL, grab(jlogistic(y ~ x, data = ds)))
+        !grepl("Choose one", m, fixed = TRUE) && grepl("Declare it so analyses exclude it:", m, fixed = TRUE) }))
+dt <- dr
+dt$y <- haven::labelled(c(dr$y[1:55], rep(haven::tagged_na("a"), 5)),
+                        labels = c(Skipped = haven::tagged_na("a")))
+.r05 <- .conv_r("stata", grab(jlogistic(y ~ x, data = dt)))
+check("R05 an outcome of Stata form carrying .a: -99 recoded to a marker it does not use (the declaration would be refused); pinned",
+      grepl(paste0("-99 looks like a coded missing value.\n",
+                   "Recode it to a Stata-style marker y does not use, so analyses exclude it:\n",
+                   "  dt$yR <- jrecode(dt, y, map = \"-99=.b; else=copy\")\n",
+                   "Then use yR as your dependent variable.\n",
+                   "Or convert it to NA, dropping the code:\n"), .r05, fixed = TRUE) &&
+        !grepl("jdeclare_missing(", .r05, fixed = TRUE))
+check("R06 ... the line runs, and jlogistic() runs on yR; under no setting the line carries convention = \"stata\" and runs there",
+      local({ e <- new.env(parent = globalenv()); assign("dt", dt, envir = e)
+        ok1 <- .conv_r("stata", tryCatch({
+          suppressMessages(eval(parse(text = .line_r(.r05, "dt$yR <- jrecode")), e)); TRUE },
+          error = function(err) FALSE)) &&
+          identical(haven::na_tag(unclass(get("dt", envir = e)$yR))[c(51, 56)], c("b", "a")) &&
+          !inherits(try(.conv_r("stata", quiet(eval(quote(jlogistic(yR ~ x, data = dt)), e))),
+                        silent = TRUE), "try-error")
+        m <- .conv_r(NULL, grab(jlogistic(y ~ x, data = dt)))
+        l <- .line_r(m, "dt$yR <- jrecode")
+        e2 <- new.env(parent = globalenv()); assign("dt", dt, envir = e2)
+        ok1 && identical(l, "dt$yR <- jrecode(dt, y, map = \"-99=.b; else=copy\", convention = \"stata\")") &&
+          .conv_r(NULL, tryCatch({ suppressMessages(eval(parse(text = l), e2)); TRUE },
+                                 error = function(err) FALSE)) }))
+rm(dr, dt)
+rm(list = intersect(c(".conv_r", ".line_r", ".r01", ".r05"), ls(all.names = TRUE)))
 
 # --- Verdict -----------------------------------------------------------------
 
