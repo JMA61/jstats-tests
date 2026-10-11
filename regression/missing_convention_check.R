@@ -10,6 +10,26 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S350 EDIT (v0.9.223, 2026-10-11): NEW N85 section, five checks (N85a-e):
+#           jdeclare_missing(codes = ) on a labelled variable stored as
+#           whole numbers, under stata and sas -- the S345 collision check
+#           read haven::na_tag() on its INTEGER labels and stopped with
+#           haven's "`x` must be a double vector" (0.9.218-0.9.222), found
+#           running missing-values.qmd's finished script. Converted with
+#           its own labels kept (a, b), uppercase under sas (b), a code no
+#           case holds declared ahead (c), with a double in one call (d),
+#           and the shipped clinic's Anxiety2 through jfreq() (e). FIVE
+#           HUNDRED AND SIXTY checks. On the 0.9.222 master N85a-e red.
+#           MUTATION MAP (S350): the label probe without the double test
+#           N85a b c d e.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 560/560
+#           plain and under the RStudio-handler stand-in, each again with
+#           a Windows-length temp path, and entered dirty (the workspace
+#           and settings handed back as on 0.9.222).
+#           LAST VERIFIED: v0.9.223, 2026-10-11 (S350) -- 560/560 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2220 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 4a0586a.
 # S348 EDIT (v0.9.221, 2026-10-10): N65b RE-PINNED under ruling R4: the
 #           labelled -70 inside the declared range, which no case holds, is
 #           a zero row between the two in-band cells (Freq 1, 0, 1). No
@@ -6963,6 +6983,63 @@ check("N84aq the range-conflict heads capitalize for a message() caller, as the 
 rm(list = intersect(c("d84", "t84", "u84", "x84", "e84", "e84b", "k84", ".m84d", ".m84g",
                       ".conv84", ".menu84", ".tags84", ".ltag84", ".tail84", ".rem84"),
                     ls(all.names = TRUE)))
+
+# =============================================================================
+# N85 -- A LABELLED VARIABLE STORED AS WHOLE NUMBERS (S350, v0.9.223)
+# =============================================================================
+# The S345 marker-collision check (N84 part B) reads haven::na_tag() on the
+# variable's value labels as well as on its cells, and guarded only the cells
+# with is.double(). A labelled variable stored as whole numbers has integer
+# labels too, and haven refuses an integer: from 0.9.218 to 0.9.222 every
+# jdeclare_missing(codes = ) on one under a stata or sas resolution stopped
+# with haven's own "`x` must be a double vector". Six columns in each shipped
+# dataset are such variables, and missing-values.qmd's closing exercise
+# declares one (clinic's Anxiety2). N84l's integer column carries no labels,
+# so the label probe was never reached. Found running that page's finished
+# script (S350). An integer vector cannot hold a marker, so it carries none.
+.conv85 <- function(cv, expr) {
+  old <- getOption(".jst_options_missing_convention")
+  options(.jst_options_missing_convention = cv)
+  on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+  force(expr)
+}
+f85 <- data.frame(L = haven::labelled(c(1L, 2L, -99L, 3L, -98L, 2L),
+                                      labels = c(Low = 1L, High = 3L)),
+                  D = c(1, 2, -99, 3, 4, 5))
+check("N85a stata: codes on a labelled variable stored as whole numbers convert to markers, its own labels kept",
+      local({ m <- .conv85("stata", printed(o <- jdeclare_missing(f85, L,
+                  codes = c(Refused = -99, "Don't know" = -98))))
+        vl <- labelled::val_labels(o$L)
+        is.integer(f85$L) && is.integer(labelled::val_labels(f85$L)) &&
+          grepl("Declared and converted to Stata-style missing values on L:\n  .a [\"Refused\"] (from -99)\n  .b [\"Don't know\"] (from -98)\n", m, fixed = TRUE) &&
+          identical(haven::na_tag(o$L), c(NA, NA, "a", NA, "b", NA)) &&
+          identical(as.numeric(unclass(o$L))[c(1, 2, 4, 6)], c(1, 2, 3, 2)) &&
+          identical(names(vl), c("Low", "High", "Refused", "Don't know")) &&
+          identical(haven::na_tag(vl), c(NA, NA, "a", "b")) }))
+check("N85b sas: the same variable takes uppercase markers",
+      local({ o <- .conv85("sas", suppressMessages(jdeclare_missing(f85, L,
+                  codes = c(Refused = -99, "Don't know" = -98), missing.notice = FALSE)))
+        identical(haven::na_tag(o$L), c(NA, NA, "A", NA, "B", NA)) &&
+          identical(haven::na_tag(labelled::val_labels(o$L)), c(NA, NA, "A", "B")) }))
+check("N85c a code no case holds: declared ahead as a labeled marker, the cells untouched",
+      local({ m <- .conv85("sas", printed(o <- jdeclare_missing(f85, L, codes = c(Skipped = -97))))
+        grepl(".A [\"Skipped\"] (from -97; not present in the data)", m, fixed = TRUE) &&
+          all(is.na(haven::na_tag(o$L))) &&
+          identical(as.numeric(unclass(o$L)), c(1, 2, -99, 3, -98, 2)) }))
+check("N85d one call on that variable and a double: both converted, nothing refused",
+      local({ m <- .conv85("stata", printed(o <- jdeclare_missing(f85, L, D, codes = c(-99))))
+        grepl("Declared and converted to Stata-style missing values on 2 variables:", m, fixed = TRUE) &&
+          identical(haven::na_tag(o$L), c(NA, NA, "a", NA, NA, NA)) &&
+          identical(haven::na_tag(o$D), c(NA, NA, "a", NA, NA, NA)) }))
+check("N85e the shipped clinic's Anxiety2 takes the page's exercise call, and jfreq() lists the two markers",
+      local({ o <- .conv85("stata", suppressMessages(jdeclare_missing(clinic, Anxiety2,
+                  codes = c(Refused = -99, "Don't know" = -98), missing.notice = FALSE)))
+        p <- .conv85("stata", printed(jfreq(o, Anxiety2)))
+        is.integer(clinic$Anxiety2) &&
+          grepl("\n\\.a \\[\"Refused\"\\] +3 ", p) &&
+          grepl("\n\\.b \\[\"Don't know\"\\] +3 ", p) &&
+          grepl("\nTotal missing +6 ", p) }))
+rm(list = intersect(c("f85", ".conv85"), ls(all.names = TRUE)))
 
 # N79 (S337) -- NO PREMATURE BREAK, swept over every condition grab() took.
 # jencode_check.R N42 brought to this file (the S291 item): a width CEILING
