@@ -71,11 +71,36 @@
 #           wider than the message -- a map, a call with no map, long
 #           names, a part of a frame given as the data, a first argument
 #           broken inside, a formula kept whole.
+#           PART Q (S354) adds jconvert()'s target behind the dots: a
+#           variable as the second argument, and the pointer the old
+#           positional target gets.
 # ORIGIN:   S226 (SAS-convention foundation, v0.9.123) + S227 (E17 jload
 #           messaging redesign, v0.9.124). Written S228, superseding the two
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S354 (v0.9.227; Fix Slate H, the help pages, with the S243
+#           call-form item's ruling A: jconvert(data, ..., to = NULL, ...)).
+#           NEW PART Q, SECTION 65, six renders, every Expected FILLED BY
+#           RUNNING the file (fill.R): the second argument a variable; two
+#           variables with modify = TRUE; the pointer for a quoted format
+#           name, a bare one and a name holding one; the other variables
+#           and modify = TRUE kept in its line; a column named stata; a
+#           misspelling. SECTIONS 3, 19, 20, 43, 52, 54 AND 63 RE-PINNED
+#           from captures of every section on 0.9.226 and 0.9.227
+#           (repin.py): the seven printed jconvert() lines put vars =
+#           before to =, the teaching form (data, variables, then the
+#           options) -- one line each, no break moved. All eight are on
+#           the PENDING line: the order is Claude's call under the S243
+#           item, not a ruling. Section 3's annotation on the cw_mixed1
+#           line rewritten (it still said the line ran past 76 unbroken).
+#           harness.R derive: Section 65 needs no other, every NEEDS line
+#           as it was. harness.R verify: 66 of 66 sections in three orders
+#           and by prepare = TRUE. At the closeout Section 3's S228 note
+#           ("NOT WALKED HERE, DELIBERATELY: convention = "sas" on
+#           jdeclare_missing"), stale since the S240 parity (PART E; check
+#           N11 asserts the opposite), was removed; nothing else in the
+#           section changed.
 # EDITED:   S353 (v0.9.226; Fix Slate 9, the second half: ruling R5).
 #           NEW PART P, SECTION 64, eight renders, every Expected FILLED BY
 #           RUNNING the file (fill.R): THE ONE SECTION WALKED FOR RULING
@@ -535,7 +560,15 @@
 #           Same messages either way (one frame), confirmed in the walk
 #           below against a sandbox capture of the same file; no Expected
 #           touched.
-# LAST VERIFIED: v0.9.226, 2026-10-12 (S353) -- Section 64 WALKED on the
+# LAST VERIFIED: v0.9.227, 2026-10-13 (S354) -- Sections 3, 19, 20, 43,
+#           52, 54, 63 and 65 WALKED on the WORKSTATION through
+#           receive_all() ("walked, all okay"), GitHub 9eacd76 (package),
+#           after the SANDBOX run (R 4.3.3, UTF-8 locale): Section 65's
+#           Expected filled by running the file (fill.R), 75 of 76 blocks
+#           found in the capture (Section 10's, as before), and all 66
+#           sections through rewalk() in file order, reverse order and
+#           shuffled, and by prepare = TRUE; Section 65 needs no other.
+#           Prior: v0.9.226, 2026-10-12 (S353) -- Section 64 WALKED on the
 #           WORKSTATION through receive_all() ("walked, all okay"), GitHub
 #           5ab1062 (package), after the SANDBOX run (R 4.3.3, UTF-8
 #           locale): every new Expected filled by running the file
@@ -1477,7 +1510,7 @@ cw_decl <- jdeclare_missing(cw_spss, Age, codes = -97,
 #   Note: Age uses Stata-style missing values, but other columns in cw_spss
 #   are SPSS-style.
 #   To align Age with the rest, run:
-#     jconvert(cw_spss, to = "spss", vars = "Age", modify = TRUE)
+#     jconvert(cw_spss, vars = "Age", to = "spss", modify = TRUE)
 #
 # The blank matters: until v0.9.161 this note printed on the very next line
 # after the modify = TRUE hint's indented call, so it read as fallout from
@@ -1525,11 +1558,11 @@ cw_decl2 <- jdeclare_missing(cw_mixed1, Age, CommuteTime, codes = -97,
 #   Note: Age and CommuteTime use Stata-style missing values, but other
 #   columns in cw_mixed1 are predominantly SPSS-style.
 #   To align them with the rest, run:
-#     jconvert(cw_mixed1, to = "spss", vars = c("Age", "CommuteTime"),
+#     jconvert(cw_mixed1, vars = c("Age", "CommuteTime"), to = "spss",
 #         modify = TRUE)
-#   (one console line, 81 columns -- a runnable call is an unbreakable
-#   atom, so it runs past the 76 pin rather than wrapping; re-pinned S266,
-#   the comment used to show it wrapped)
+#   (81 columns on one line; since 0.9.226 it breaks after an argument's
+#   comma, ruling R5, and since 0.9.227 the variables come before the
+#   target, the teaching form; re-pinned S266, S353 and S354)
 #
 # Things to look at:
 #   - the verb is judged over the frame MINUS the named columns (S226), so
@@ -1537,14 +1570,6 @@ cw_decl2 <- jdeclare_missing(cw_mixed1, Age, CommuteTime, codes = -97,
 #   - the frame name is the name the object was passed under.
 #   - the DETECTION, by contrast, is judged over the whole frame including
 #     the declared columns -- which is why the fixture note above matters.
-#
-# NOT WALKED HERE, DELIBERATELY: convention = "sas" on jdeclare_missing. The sas
-# rollout is piecewise and the parity worklist has not reached this function,
-# so what a per-call "sas" does at the mint site is exactly the open
-# question -- not something a walkthrough should quietly assert an
-# expectation about. The lag itself is asserted in
-# missing_convention_check.R (check N11); add a section here when the
-# worklist ticks jdeclare_missing.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -2557,7 +2582,7 @@ wm <- jdeclare_missing(wm, Fear, codes = c(New = ".c"), convention = "stata")
 #   Note: Fear carries both Stata-style (.a) and SAS-style (.B)
 #   missing-value markers.
 #   To collapse them to one form:
-#     jconvert(wm, to = "stata", vars = "Fear", modify = TRUE)
+#     jconvert(wm, vars = "Fear", to = "stata", modify = TRUE)
 #
 #   This call changes wm only if you assign the result:
 #     wm <- jdeclare_missing(wm, Fear, ...)
@@ -2663,7 +2688,7 @@ options(.jst_options_missing_convention = NULL)
 #   To follow the column's form, remove the argument:
 #     jdeclare_missing(wg, Up, codes = c(-99))
 #   Or convert the column first:
-#     jconvert(wg, to = "spss", vars = "Up", modify = TRUE)
+#     jconvert(wg, vars = "Up", to = "spss", modify = TRUE)
 #
 # S267 rebuilt the remedy. It was ONE prose sentence -- "Use jconvert()
 # to convert the column first, or omit the convention argument." --
@@ -2685,7 +2710,7 @@ options(.jst_options_missing_convention = NULL)
 #   Error : jdeclare_missing(): 'Up' carries SAS-style missing values; a
 #   missing-value range exists only under SPSS convention.
 #   To declare the range, convert the column to SPSS form first:
-#     jconvert(wg, to = "spss", vars = "Up", modify = TRUE)
+#     jconvert(wg, vars = "Up", to = "spss", modify = TRUE)
 #
 # The head is unchanged. The remedy sentence became an intro plus a
 # runnable line -- the same S267 treatment as refusal 1, and the reason
@@ -4575,7 +4600,7 @@ options(.jst_options_missing_convention_codes = NULL)
 #     joptions(missing.convention.codes = c(...))
 #
 #   Or convert a narrower set, leaving out all the variables above:
-#     jconvert(jcb, to = "spss", vars = c(...), modify = TRUE)
+#     jconvert(jcb, vars = c(...), to = "spss", modify = TRUE)
 #
 # Expected, render 6 -- CODES THAT REACH ZERO. c(-3, -2, -1) runs toward
 # zero from three below it, so a fourth marker would need 0 -- and 0 is a
@@ -5748,7 +5773,7 @@ tryCatch(jconvert(st52, to = "stata"),
 #     Marital
 #
 #   To convert a narrower set, leaving out the variable above:
-#     jconvert(st52, to = "stata", vars = c(...), modify = TRUE)
+#     jconvert(st52, vars = c(...), to = "stata", modify = TRUE)
 #   Or turn it into a numeric variable first with jencode().
 
 # Render 2 -- the first way out, run: the numeric variable converts.
@@ -5967,7 +5992,7 @@ mx54 <- jdeclare_missing(mx54, Fear, codes = c(Refused = ".a"))
 #   Note: Fear carries both Stata-style (.a) and SAS-style (.B)
 #   missing-value markers.
 #   To collapse them to one form:
-#     jconvert(mx54, to = "sas", vars = "Fear", modify = TRUE)
+#     jconvert(mx54, vars = "Fear", to = "sas", modify = TRUE)
 #
 #   This call changes mx54 only if you assign the result:
 #     mx54 <- jdeclare_missing(mx54, Fear, ...)
@@ -6652,7 +6677,7 @@ try(jrecode(st63, N, map = "1=.b; else=copy"))
 #   Error : jrecode(): N carries the SPSS-style missing value -99 that the map
 #   leaves in place, so the marker .b cannot be added to it.
 #   Convert the data frame first, then recode:
-#     jconvert(st63, to = "baseR", vars = "S", modify = TRUE)
+#     jconvert(st63, vars = "S", to = "baseR", modify = TRUE)
 #     jconvert(st63, to = "stata", modify = TRUE)
 #   S is text, so the first line makes its declared values plain NA.
 #   Or map -99 as well, so no SPSS-style missing value remains.
@@ -6668,7 +6693,7 @@ try(jrecode(st63, N, map = "1=missing; else=copy"))
 #     st63$NR <- jrecode(st63, N, map = "1=missing; else=copy",
 #         convention = "spss")
 #   Or convert the data frame to match your setting first:
-#     jconvert(st63, to = "baseR", vars = "S", modify = TRUE)
+#     jconvert(st63, vars = "S", to = "baseR", modify = TRUE)
 #     jconvert(st63, to = "stata", modify = TRUE)
 #   S is text, so the first line makes its declared values plain NA.
 
@@ -6685,7 +6710,7 @@ try(jdeclare_missing(st63, N, codes = c(Refused = ".a")))
 #   magnitude first (the ordering jconvert() uses).
 #
 #   To use Stata-style markers instead, convert the column first:
-#     jconvert(st63, to = "baseR", vars = "S", modify = TRUE)
+#     jconvert(st63, vars = "S", to = "baseR", modify = TRUE)
 #     jconvert(st63, to = "stata", modify = TRUE)
 #   S is text, so the first line makes its declared values plain NA.
 
@@ -6708,7 +6733,7 @@ st63 <- jdeclare_missing(st63, M, codes = c(-99, -98))
 #   Note: M uses SPSS-style missing values, but your missing.convention setting
 #   is "stata".
 #   To convert the data frame, run both:
-#     jconvert(st63, to = "baseR", vars = "S", modify = TRUE)
+#     jconvert(st63, vars = "S", to = "baseR", modify = TRUE)
 #     jconvert(st63, to = "stata", modify = TRUE)
 #   S is text, so the first line makes its declared values plain NA.
 #   To keep SPSS-style instead, change the setting:
@@ -6728,7 +6753,7 @@ joptions(missing.convention = "stata")
 #
 #   Note: the st63 data frame uses SPSS-style missing values.
 #   To convert it to match this setting, run both:
-#     jconvert(st63, to = "baseR", vars = "S", modify = TRUE)
+#     jconvert(st63, vars = "S", to = "baseR", modify = TRUE)
 #     jconvert(st63, to = "stata", modify = TRUE)
 #   S is text, so the first line makes its declared values plain NA.
 list2env(.hold63, envir = globalenv())
@@ -6940,6 +6965,120 @@ rm(hh64, x64, lf64, m64, .op64)
 #     no longer opens with a blank line (voice Rule F; the S352 item). An
 #     Expected block drops the lines a render opens with, so run the
 #     section to see it.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART Q -- Fix Slate H: jconvert()'s target behind the dots (S354) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.227. Until 0.9.226 `to` was jconvert()'s second formal -- the one
+# data-first function with an option between the data and the variables --
+# so jconvert(d, Education) bound Education to `to` (R's "object
+# 'Education' not found"), and a workspace object of that name went in as
+# the target with the whole frame converted in silence. Jeff, S354: "A" --
+# the dots are second now, jconvert(data, ..., to = NULL, vars = NULL, ...),
+# as in every data-first function, and a format name where a variable goes
+# stops with the line to run (ruling R16's pointer). The seven printed
+# jconvert() lines put vars = before to =, the teaching form (Sections 3,
+# 19, 20, 43, 52, 54 and 63 re-pinned, and modify_form_walk.R's 8 and 15).
+# The assertion side is missing_convention_check.R N89a-N89o.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 65 -- jconvert(d, Education): a variable, and the pointer ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# A stata setting, and a frame with two declared SPSS-style variables.
+joptions(missing.convention = "stata", quiet = TRUE)
+cv65 <- data.frame(
+  Education = haven::labelled_spss(c(1, 2, -99, 3, -98),
+                                   labels = c(Refused = -99, `Don't know` = -98),
+                                   na_values = c(-99, -98)),
+  Income    = haven::labelled_spss(c(40, 52, -99, 61, 38),
+                                   labels = c(Refused = -99), na_values = -99),
+  Age       = c(31, 45, 52, 28, 60))
+
+# Render 1 -- the second argument is a variable: Education alone converts,
+# to the session's convention. (0.9.226: "object 'Education' not found".)
+jconvert(cv65, Education)
+# Expected:
+#   Converted to Stata-style missing values in 1 variable:
+#     Education  -99 ["Refused"]     -> .a
+#                -98 ["Don't know"]  -> .b
+#
+#   This call changes cv65 only if you assign the result:
+#     cv65 <- jconvert(cv65, ...)
+#
+#   To change cv65 directly, rerun with modify = TRUE:
+#     jconvert(cv65, ..., modify = TRUE)
+
+# Render 2 -- two variables, the frame changed in place.
+jconvert(cv65, Education, Income, modify = TRUE)
+# Expected:
+#   Converted to Stata-style missing values in 2 variables:
+#     Education  -99 ["Refused"]     -> .a
+#                -98 ["Don't know"]  -> .b
+#     Income     -99 ["Refused"]     -> .a
+#
+#   To keep it across sessions, save the data frame:
+#     jsave(cv65, "cv65.rds")
+
+# Render 3 -- the old positional target, quoted: the pointer, with the line
+# to run. Nothing is converted.
+try(jconvert(cv65, "spss"))
+# Expected:
+#   Error : jconvert(): "spss" is a target format, not a variable.
+#   Name the target with to =:
+#     jconvert(cv65, to = "spss")
+
+# Render 4 -- the word bare, and a name holding a format: the same pointer,
+# the second naming what the object holds.
+try(jconvert(cv65, spss))
+fmt65 <- "sas"
+try(jconvert(cv65, fmt65))
+# Expected:
+#   Error : jconvert(): spss is a target format, not a variable.
+#   Name the target with to =:
+#     jconvert(cv65, to = "spss")
+#   Error : jconvert(): fmt65 holds "sas", which is a target format, not
+#   a variable.
+#   Name the target with to =:
+#     jconvert(cv65, to = "sas")
+
+# Render 5 -- the other variables and modify = TRUE are kept in the line.
+try(jconvert(cv65, Age, "baseR", modify = TRUE))
+# Expected:
+#   Error : jconvert(): "baseR" is a target format, not a variable.
+#   Name the target with to =:
+#     jconvert(cv65, Age, to = "baseR", modify = TRUE)
+
+# Render 6 -- a column named like a format is a variable, whatever it is
+# called; and a misspelling gets the not-found sentence as everywhere.
+cv65$stata <- haven::labelled_spss(c(5, -99, 7, 8, -99),
+                                   labels = c(Refused = -99), na_values = -99)
+jconvert(cv65, stata)
+try(jconvert(cv65, Educaton))
+# Expected:
+#   Converted to Stata-style missing values in 1 variable:
+#     stata  -99 ["Refused"]  -> .a
+#
+#   This call changes cv65 only if you assign the result:
+#     cv65 <- jconvert(cv65, ...)
+#
+#   To change cv65 directly, rerun with modify = TRUE:
+#     jconvert(cv65, ..., modify = TRUE)
+#   Error : jconvert(): Educaton was not found in the cv65 data frame.
+#   Check the spelling.
+
+options(.jst_options_missing_convention = NULL)
+rm(cv65, fmt65)
+
+# Things to look at:
+#   - RENDER 1: one variable converts, named in the notice; the reminder
+#     names cv65;
+#   - RENDER 3: the pointer's line, jconvert(cv65, to = "spss"), and that
+#     it is the only call offered;
+#   - RENDER 4: "spss is a target format" for the bare word; "fmt65 holds
+#     "sas", which is a target format" for the name;
+#   - RENDER 5: Age kept before to =, modify = TRUE after it;
+#   - RENDER 6: stata converts as a variable, no pointer; the not-found
+#     sentence unchanged.
 
 
 # --- Restore session state ---------------------------------------------------

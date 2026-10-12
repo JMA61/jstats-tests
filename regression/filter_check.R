@@ -142,6 +142,23 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S354 EDIT (v0.9.227, 2026-10-13): Fix Slate H, with the S243 call-form
+#           item's ruling A (jconvert's `to` behind the dots). I30
+#           REWRITTEN: jconvert(d$Age, "stata") -- a format name given
+#           positionally -- is rebuilt as jconvert(d, Age, to = "stata"),
+#           the target named, and the line runs; the named form's rebuilt
+#           call is unchanged. Until 0.9.226 the positional form got the
+#           sentence without a call, since the rebuild would have put
+#           "stata" in `to`'s slot. FOUR HUNDRED AND NINETY checks, as
+#           before. On the 0.9.226 master I30 red.
+#           MUTATION MAP (S354): the rebuild's target naming gone I30.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 490/490
+#           plain and under the RStudio-handler stand-in, each again with
+#           a Windows-length temp path, and entered dirty.
+#           LAST VERIFIED: v0.9.227, 2026-10-13 (S354) -- 490/490 on
+#           the WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2385 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 9eacd76.
 # S352 EDIT (v0.9.225, 2026-10-11): Fix Slate 9, the first half. SECTION W
 #           ADDED, W01-W04 (4 checks; the S349 item): with no data frame in
 #           hand -- none named, no juse() default -- quiet = TRUE beside a
@@ -1899,9 +1916,9 @@ check("I29 another frame's column, or a summary of the frame, gives the sentence
                                              "first, and each variable on its own.")) &&
           !has(m, "  jcorr(")
         tail_ok(a) && tail_ok(b) })
-check("I30 a positional argument the rebuild would misplace gives the sentence; named, the call",
+check("I30 a format name given positionally is named to = in the rebuilt call; named, the call stays (S354: to behind the dots)",
       { a <- grab(jconvert(d$Age, "stata")); b <- grab(jconvert(d$Age, to = "stata"))
-        has(a, "first, and each variable on its own.") && !has(a, "  jconvert(") &&
+        has(a, "\n  jconvert(d, Age, to = \"stata\")") && .fix_runs(a) &&
           has(b, "\n  jconvert(d, Age, to = \"stata\")") && .fix_runs(b) })
 check("I31 d[[\"Age\"]] reads as Age from d in the rebuilt call",
       has(grab(jcorr(d[["Age"]], d[["Keep01"]])),

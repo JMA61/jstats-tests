@@ -10,6 +10,48 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S354 EDIT (v0.9.227, 2026-10-13): NEW N89 section, fifteen checks
+#           (N89a-N89o), Fix Slate H with the S243 call-form item's ruling
+#           A (Jeff, S354: "A"): jconvert(data, ..., to = NULL, vars = NULL,
+#           ...) -- `to` behind the dots, the one data-first function that
+#           had an option between the data and the variables. A: the
+#           second argument is a variable -- one, two, under a juse()
+#           default, a workspace twin (the frame's variable wins, ruling
+#           R12), a quoted name, a column named stata, a misspelling (the
+#           not-found sentence), no convention (the four-target menu, the
+#           same as the bare call's), t = "spss" no longer partial-matching
+#           (the unused-input stop). B: the pointer the old positional
+#           target gets (ruling R16's form, Jeff's lean taken) -- a quoted
+#           format name pinned whole, a bare one, a name holding one ("fmt
+#           holds \"spss\", which is a target format"); the other variables
+#           and modify = TRUE kept in its line; the default frame named;
+#           every line RUN (.runs89(), the value returned, since a pointer's
+#           line carries no assignment); a name holding a variable's name
+#           gets the not-found sentence. RE-PINNED, the seven printed
+#           jconvert() lines now putting vars = before to =, the teaching
+#           form: N19b, N37b, N37d, N47b, N82g, N82h, N86ah-N86at (eight)
+#           and N87an-N87as (six) -- the order of the two arguments in each
+#           pinned string swapped, nothing else. SEVEN HUNDRED AND TEN
+#           checks. On the 0.9.226 master 33 red: N89a-d, N89f-n and the
+#           19 re-pinned (the pins of the old order).
+#           MUTATION MAP (S354; ten one-change mutants through all eight
+#           batteries, ten red): `to` second again N89a-n and
+#           filter_check.R I30; the pointer gone N89j-n; the bare word's
+#           branch gone N89k; the held branch gone N89l; the column guard
+#           gone N89d N89f; the other variables dropped from the line
+#           N89m N89n; modify = TRUE dropped N89m; the "To align" line in
+#           the old order N37b N37d; the text route's base line in the old
+#           order N86ah-aq (14).
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 710/710
+#           plain and under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, and entered dirty (the first dirty
+#           entry lost the user's juse() default to N89c's juse(NULL) and
+#           overwrote a user's d89: the fixture is .d89 and the default
+#           is handed back, .under89()).
+#           LAST VERIFIED: v0.9.227, 2026-10-13 (S354) -- 710/710 on the
+#           WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2385 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub 9eacd76.
 # S353 EDIT (v0.9.226, 2026-10-12): NEW N88 section, twenty-four checks
 #           (N88a-N88x and the N88s sweep), Fix Slate 9, the second half:
 #           ruling R5, the one layout of a printed call. A: the layout by
@@ -1710,7 +1752,7 @@ check("N19a mixed-marker note names both sides, by the markers the cells carry",
       grepl("carries both Stata-style (.a) and SAS-style (.B)",
             out19, fixed = TRUE))
 check("N19b note remedy follows the resolved convention",
-      grepl('jconvert(f19, to = "stata", vars = "v", modify = TRUE)',
+      grepl('jconvert(f19, vars = "v", to = "stata", modify = TRUE)',
             out19, fixed = TRUE))
 
 # N20 -- sign-off 2 wording is three-way: an UPPERCASE column refused a
@@ -2157,7 +2199,7 @@ n37a <- paste(utils::capture.output(
 check("N37a singular: full locked term on first mention",
       grepl("Income uses Stata-style missing values", n37a, fixed = TRUE))
 check("N37b singular: bare vars string, no c() wrapper",
-      grepl('vars = "Income", modify = TRUE)', n37a, fixed = TRUE))
+      grepl('vars = "Income", to = "spss", modify = TRUE)', n37a, fixed = TRUE))
 # S283: "Mixing forms is allowed." DELETED (Jeff's read at the S282 walk:
 # unnecessary). The note now runs straight from the mismatch sentence to
 # the remedy intro, so the pin is the adjacency plus the absence of both
@@ -2173,7 +2215,7 @@ n37d <- paste(utils::capture.output(
   jdeclare_missing(d37b, Income, Age, codes = -99, convention = "stata")),
   collapse = "\n")
 check("N37d plural: c() vars vector and the plural verb",
-      grepl('vars = c("Income", "Age"), modify = TRUE)', n37d,
+      grepl('vars = c("Income", "Age"), to = "spss", modify = TRUE)', n37d,
             fixed = TRUE) &&
         grepl("use Stata-style missing values", n37d, fixed = TRUE))
 
@@ -2462,7 +2504,7 @@ check("N47b a tagged column falls to the per-column guard (convert-first)",
       grepl("carries Stata-style missing values", .fl(m47b), fixed = TRUE) &&
         grepl("convert the column to SPSS form first:", .fl(m47b),
               fixed = TRUE) &&
-        grepl('  jconvert(f47t, to = "spss", vars = "Tg", modify = TRUE)',
+        grepl('  jconvert(f47t, vars = "Tg", to = "spss", modify = TRUE)',
               m47b, fixed = TRUE) &&
         !grepl("your missing.convention setting", m47b, fixed = TRUE))
 f47m <- data.frame(A = c(1, -95, 3, 4, 5), B = mk_spss())
@@ -6648,7 +6690,7 @@ check("N82g jconvert(to = \"stata\"): refused before anything is converted, the 
         "  MS\n",
         "\n",
         "To convert a narrower set, leaving out the variable above:\n",
-        "  jconvert(s82, to = \"stata\", vars = c(...), modify = TRUE)\n",
+        "  jconvert(s82, vars = c(...), to = \"stata\", modify = TRUE)\n",
         "Or turn it into a numeric variable first with jencode().")))
 check("N82h to = \"sas\", two text variables: the style word, the count's number and the fix lines follow",
       { e <- s82; e$M2 <- e$MS
@@ -6661,7 +6703,7 @@ check("N82h to = \"sas\", two text variables: the style word, the count's number
           "  M2\n",
           "\n",
           "To convert a narrower set, leaving out the variables above:\n",
-          "  jconvert(e, to = \"sas\", vars = c(...), modify = TRUE)\n",
+          "  jconvert(e, vars = c(...), to = \"sas\", modify = TRUE)\n",
           "Or turn each into a numeric variable first with jencode().")) })
 check("N82i the narrower set the message offers converts: vars = \"Inc\" gives Inc its marker and leaves MS as it was",
       { r <- NULL; invisible(grab(r <- jconvert(s82, to = "stata", vars = "Inc")))
@@ -7204,13 +7246,13 @@ check("N84ak .jst_place_lines(): a place first and modify = TRUE last takes the 
       identical(.jst_place_lines(c(
         "  jdeclare_missing(lst$d, wR, codes = c(-99), modify = TRUE)",
         "  jconvert(lst[[\"d, e\"]], to = \"stata\", modify = TRUE)",
-        "  jconvert(obj@d, to = \"stata\", vars = c(...), modify = TRUE)",
+        "  jconvert(obj@d, vars = c(...), to = \"stata\", modify = TRUE)",
         "  jconvert(lst[[c(1, 2)]], to = \"sas\", modify = TRUE)",
         "  jconvert(lst$`a, b`, to = \"sas\", modify = TRUE)",
         "      jconvert(lst$d$e, to = \"stata\", modify = TRUE)")),
         c("  lst$d <- jdeclare_missing(lst$d, wR, codes = c(-99))",
           "  lst[[\"d, e\"]] <- jconvert(lst[[\"d, e\"]], to = \"stata\")",
-          "  obj@d <- jconvert(obj@d, to = \"stata\", vars = c(...))",
+          "  obj@d <- jconvert(obj@d, vars = c(...), to = \"stata\")",
           "  lst[[c(1, 2)]] <- jconvert(lst[[c(1, 2)]], to = \"sas\")",
           "  lst$`a, b` <- jconvert(lst$`a, b`, to = \"sas\")",
           "      lst$d$e <- jconvert(lst$d$e, to = \"stata\")")))
@@ -7654,7 +7696,7 @@ ds86 <- data.frame(
                            labels = c(Low = 1L, Refused = -99L),
                            na_values = -99L))
 .route86 <- function(nm, to = "stata") {
-  paste0("  jconvert(", nm, ", to = \"baseR\", vars = \"S\", modify = TRUE)\n",
+  paste0("  jconvert(", nm, ", vars = \"S\", to = \"baseR\", modify = TRUE)\n",
          "  jconvert(", nm, ", to = \"", to, "\", modify = TRUE)\n",
          "S is text, so the first line makes its declared values plain NA.")
 }
@@ -7690,14 +7732,14 @@ ds1_86 <- ds86["S"]
 m86ak <- grab(jsave(ds1_86, "ds1_86.dta"))
 check("N86ak ... the text variable the only one declared: one line, \"run:\", \"this makes\", and the frame then saves",
       .ends86(m86ak, paste0("\n\nBefore saving to Stata format, run:\n",
-                            "  jconvert(ds1_86, to = \"baseR\", vars = \"S\", modify = TRUE)\n",
+                            "  jconvert(ds1_86, vars = \"S\", to = \"baseR\", modify = TRUE)\n",
                             "S is text, so this makes its declared values plain NA.\n",
                             "Or turn it into a numeric variable first with jencode().")) &&
         .runsave86(m86ak, "ds1_86", ds1_86, "ds1_86.dta"))
 ds2_86 <- ds86; ds2_86$T <- ds86$S
 m86al <- grab(jsave(ds2_86, "ds2_86.dta"))
 check("N86al ... two text variables: vars = c(), \"S and T are text\", \"their\", \"Or turn each\", and the frame then saves",
-      grepl("vars = c(\"S\", \"T\"), modify = TRUE)\n", m86al, fixed = TRUE) &&
+      grepl("vars = c(\"S\", \"T\"), to = \"baseR\", modify = TRUE)\n", m86al, fixed = TRUE) &&
         grepl("\nS and T are text, so the first line makes their declared values plain NA.\n",
               m86al, fixed = TRUE) &&
         .ends86(m86al, "\nOr turn each into a numeric variable first with jencode().") &&
@@ -7741,7 +7783,7 @@ saveRDS(mx86, "mx86.rds")
 m86ar <- .conv86("spss", grab(jload("mx86.rds", overwrite = TRUE, name = "lm86", missing.notice = TRUE)))
 check("N86ar Case 7 under \"spss\": the off-setting Stata route runs all three, the sentence after them",
       .ends86(m86ar, paste0("To use Stata-style missing values throughout, run all three:\n",
-                            "  jconvert(lm86, to = \"baseR\", vars = \"S\", modify = TRUE)\n",
+                            "  jconvert(lm86, vars = \"S\", to = \"baseR\", modify = TRUE)\n",
                             "  jconvert(lm86, to = \"stata\", modify = TRUE)\n",
                             "  joptions(missing.convention = \"stata\")\n",
                             "S is text, so the first line makes its declared values plain NA.\n")))
@@ -7762,7 +7804,7 @@ saveRDS(m2_86, "m2_86.rds")
 m86at <- .conv86("none", grab(jload("m2_86.rds", overwrite = TRUE, name = "lm2", missing.notice = TRUE)))
 check("N86at ... nothing left for a second conversion: one jconvert() line and the rider, \"the first line\" still",
       .ends86(m86at, paste0("To use Stata-style throughout, run both:\n",
-                            "  jconvert(lm2, to = \"baseR\", vars = \"S\", modify = TRUE)\n",
+                            "  jconvert(lm2, vars = \"S\", to = \"baseR\", modify = TRUE)\n",
                             "  joptions(missing.convention = \"stata\")\n",
                             "S is text, so the first line makes its declared values plain NA.\n")))
 m86au <- .conv86(NULL, grab(jload("ds86.rds", overwrite = TRUE, name = "ld86", missing.notice = TRUE)))
@@ -7780,14 +7822,14 @@ check("N86aw ... with a Stata-style variable beside it, \"ordinary values\" too;
               .fl(grab(jsave(ds86["A"], "a86.csv"))), fixed = TRUE))
 check("N86ax jconvert(to = \"stata\") after the first line: no label report on the text variable (it was one before)",
       local({ ld86 <- ds86
-              invisible(grab(jconvert(ld86, to = "baseR", vars = "S", modify = TRUE)))
+              invisible(grab(jconvert(ld86, vars = "S", to = "baseR", modify = TRUE)))
               m <- grab(jconvert(ld86, to = "stata", modify = TRUE))
               !grepl("Skipped (value labels suggest", m, fixed = TRUE) &&
                 grepl("Converted to Stata-style missing values in 2 variables:", m,
                       fixed = TRUE) }))
 check("N86ay ... under to = \"spss\" a text variable's label is still reported",
       local({ ld86 <- ds86
-              invisible(grab(jconvert(ld86, to = "baseR", vars = "S", modify = TRUE)))
+              invisible(grab(jconvert(ld86, vars = "S", to = "baseR", modify = TRUE)))
               grepl("S: X = \"Refused\"", grab(jconvert(ld86, to = "spss", vars = "S")),
                     fixed = TRUE) }))
 
@@ -8268,7 +8310,7 @@ mk87 <- function() data.frame(
   stringsAsFactors = FALSE)
 s87 <- mk87()
 .route87 <- paste0(
-  "  jconvert(s87, to = \"baseR\", vars = \"S\", modify = TRUE)\n",
+  "  jconvert(s87, vars = \"S\", to = \"baseR\", modify = TRUE)\n",
   "  jconvert(s87, to = \"stata\", modify = TRUE)\n",
   "S is text, so the first line makes its declared values plain NA.")
 .ok87 <- function(m) {
@@ -8322,7 +8364,7 @@ check("N87ar joptions()'s workspace check, one frame holding a declared string: 
 check("N87as ... two frames, one holding it: each frame's lines, the sentence naming its line by place (first, second)",
       local({ p <- .nudge87(list(nz87s = s87, nz87t = data.frame(N = s87$N)))
         grepl(paste0("To convert them to match this setting, run these lines:\n",
-                     "  jconvert(nz87s, to = \"baseR\", vars = \"S\", modify = TRUE)\n",
+                     "  jconvert(nz87s, vars = \"S\", to = \"baseR\", modify = TRUE)\n",
                      "  jconvert(nz87s, to = \"stata\", modify = TRUE)\n",
                      "  jconvert(nz87t, to = \"stata\", modify = TRUE)\n",
                      "S in nz87s is text, so the first line makes its declared values plain NA."),
@@ -8798,6 +8840,113 @@ check(paste0("N80 every runnable line in a message parses (", .un,
              " lines)"),
       .un >= 100L && length(.ub) == 0L)
 if (length(.ub) > 0L) for (l in .ub) cat("        does not parse: ", l, "\n")
+
+# =============================================================================
+# N89 (S354) -- jconvert(): THE TARGET BEHIND THE DOTS. Fix Slate H, ruling A
+# of the (S243) call-form item (Jeff, S354: "A"). Until v0.9.226 `to` was
+# jconvert()'s second formal, the one data-first function with an option
+# between the data and the variables, so jconvert(d, Education) bound
+# Education to `to` -- R's "object 'Education' not found" -- and a workspace
+# object of that name went in as the target, the whole frame converted in
+# silence. Now jconvert(data, ..., to = NULL, vars = NULL, ...): the second
+# argument is a variable, as in every data-first function, and the target is
+# always named, as every printed line names it. A format name where a
+# variable goes -- "stata", bare stata, or a name holding one -- stops with
+# the line to run (ruling R16's pointer, Jeff's lean taken), keeping the other
+# variables and modify = TRUE; a name the frame has is a variable whatever it
+# is called. The frame-column rebuild names a positional target to = (filter_
+# check.R I30). The six printed jconvert() lines put vars = before to =, the
+# teaching form (N19b, N47b, N82g-h, N86ah-at, N87an-as re-pinned). Parts:
+#   A  the variable forms: one, two, the juse() default, a workspace twin,
+#      a quoted name, a column named like a format, a misspelling, no
+#      convention (the four-target menu, as the bare call's), a misnamed to.
+#   B  the pointer: quoted, bare, held in a name; the other variables and
+#      modify = TRUE kept; the default frame named; every line run.
+# =============================================================================
+.d89 <- data.frame(Education = mk_spss(), Income = mk_spss(), Age = c(1, 2, 3, 4, 5))
+# .under89(): the frame as the juse() default for one call, the entry default
+# handed back (never juse(NULL), which would clear the user's own).
+.under89 <- function(expr) {
+  old <- getOption(".jst_default_data")
+  options(.jst_default_data = ".d89")
+  on.exit(options(.jst_default_data = old), add = TRUE)
+  force(expr)
+}
+.conv89 <- function(cv, expr) {
+  old <- getOption(".jst_options_missing_convention")
+  options(.jst_options_missing_convention = cv)
+  on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+  force(expr)
+}
+.c89 <- function(expr) .conv89("stata", grab(expr))
+.ws89 <- function(x) gsub("[[:space:]]+", " ", x)
+# .runs89(): the message's last indented line, run under a stata setting in a
+# scratch environment holding .d89, and its VALUE returned (a pointer's line
+# carries no assignment, so the frame it returns is what the user would
+# keep); NULL if it errors.
+.runs89 <- function(m) tryCatch({
+  ln <- .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]])
+  e  <- new.env(parent = globalenv()); assign(".d89", .d89, envir = e)
+  .conv89("stata", suppressMessages(eval(parse(text = ln[length(ln)]), envir = e)))
+}, error = function(err) NULL)
+.tagged89 <- function(fr, v) !is.null(fr) && any(haven::is_tagged_na(fr[[v]]))
+
+# --- A: the variable forms ---------------------------------------------------
+check("N89a jconvert(.d89, Education): the second argument is a variable; Education alone converts, named in the notice, Income untouched",
+      { m <- .c89(jconvert(.d89, Education))
+        grepl("Converted to Stata-style missing values in 1 variable:\n  Education  -99", m, fixed = TRUE) &&
+          !grepl("Income", m, fixed = TRUE) })
+check("N89b jconvert(.d89, Education, Income): both convert",
+      { m <- .c89(jconvert(.d89, Education, Income))
+        grepl("in 2 variables:\n  Education  -99", m, fixed = TRUE) &&
+          grepl("\n  Income     -99", m, fixed = TRUE) })
+check("N89c under a juse() default, jconvert(Education, Income): both convert in the default frame",
+      { m <- .under89(.c89(jconvert(Education, Income)))
+        grepl("in 2 variables:", m, fixed = TRUE) && grepl(".d89 <- jconvert(.d89, ...)", m, fixed = TRUE) })
+check("N89d a workspace object named Education holding \"spss\": the frame's variable wins (ruling R12), Education converts to the setting",
+      { m <- local({ Education <- "spss"; .c89(jconvert(.d89, Education)) })
+        grepl("in 1 variable:\n  Education  -99", m, fixed = TRUE) && !grepl("spss-form", m, fixed = TRUE) })
+check("N89e jconvert(.d89, \"Education\"): a quoted variable name converts it",
+      grepl("in 1 variable:\n  Education", .c89(jconvert(.d89, "Education")), fixed = TRUE))
+check("N89f a column named stata is a variable, never a target",
+      { .d89s <- .d89; .d89s$stata <- mk_spss()
+        grepl("in 1 variable:\n  stata  -99", .c89(jconvert(.d89s, stata)), fixed = TRUE) })
+check("N89g a misspelled variable gets the not-found sentence, as every data-first function gives it",
+      identical(.c89(jconvert(.d89, Educaton)),
+                "jconvert(): Educaton was not found in the .d89 data frame.\nCheck the spelling."))
+check("N89h with no convention selected, jconvert(.d89, Education) gives the four-target menu, the same as jconvert(.d89)",
+      { a <- .conv89("none", grab(jconvert(.d89, Education))); b <- .conv89("none", grab(jconvert(.d89)))
+        grepl("no target format is selected, so nothing can be converted.", .ws89(a), fixed = TRUE) &&
+          identical(a, b) })
+check("N89i a misnamed to (t = \"spss\") no longer partial-matches: the unused-input stop",
+      identical(.c89(jconvert(.d89, Education, t = "spss")), "jconvert(): unused input: t"))
+
+# --- B: the pointer ----------------------------------------------------------
+check("N89j jconvert(.d89, \"stata\"): the pointer, pinned whole, and its line converts the frame",
+      { m <- .c89(jconvert(.d89, "stata"))
+        identical(m, paste0("jconvert(): \"stata\" is a target format, not a variable.\n",
+                            "Name the target with to =:\n",
+                            "  jconvert(.d89, to = \"stata\")")) &&
+          .tagged89(.runs89(m), "Income") })
+check("N89k jconvert(.d89, stata), the bare word: the same pointer, the word unquoted",
+      { m <- .c89(jconvert(.d89, stata))
+        grepl("jconvert(): stata is a target format, not a variable.\nName the target with to =:\n  jconvert(.d89, to = \"stata\")", m, fixed = TRUE) &&
+          .tagged89(.runs89(m), "Education") })
+check("N89l a name holding a format, fmt <- \"spss\": \"fmt holds \\\"spss\\\", which is a target format\", the line to spss",
+      { m <- local({ fmt <- "spss"; .c89(jconvert(.d89, fmt)) })
+        grepl("jconvert(): fmt holds \"spss\", which is a target format, not\na variable.\nName the target with to =:\n  jconvert(.d89, to = \"spss\")", m, fixed = TRUE) &&
+          is.data.frame(.runs89(m)) })
+check("N89m the other variables and modify = TRUE are kept: jconvert(.d89, Education, \"sas\", modify = TRUE)",
+      { m <- .c89(jconvert(.d89, Education, "sas", modify = TRUE))
+        grepl("\n  jconvert(.d89, Education, to = \"sas\", modify = TRUE)", m, fixed = TRUE) &&
+          .tagged89(.runs89(m), "Education") })
+check("N89n under a juse() default the line names the frame: jconvert(Income, \"spss\") offers jconvert(.d89, Income, to = \"spss\")",
+      { m <- .under89(.c89(jconvert(Income, "spss")))
+        grepl("\n  jconvert(.d89, Income, to = \"spss\")", m, fixed = TRUE) })
+check("N89o a name holding a variable's name is not a pointer: fmt <- \"Education\" gets the not-found sentence",
+      identical(local({ fmt <- "Education"; .c89(jconvert(.d89, fmt)) }),
+                "jconvert(): fmt was not found in the .d89 data frame.\nCheck the spelling."))
+rm(.d89, .conv89, .under89, .c89, .ws89, .runs89, .tagged89)
 
 # N88s (S353) -- RULING R5 OVER EVERY CONDITION THE BATTERY TOOK. Each call a
 # message printed at the pinned width (an indented line with the shape of a

@@ -16,6 +16,14 @@
 #           Since S352 also jsave() given an expression as the data
 #           (Section 19).
 # ORIGIN:   S229
+# EDITED:   S354 (v0.9.227; Fix Slate H, with the S243 call-form item).
+#           SECTIONS 8 AND 15 RE-PINNED: the printed jconvert() lines put
+#           vars = before to =, the teaching form -- Section 15's five
+#           from captures of every section on 0.9.226 and 0.9.227
+#           (repin.py), Section 8's over-cap line, a hand-written pin
+#           under "Expected, second render", by hand from the same
+#           capture. One line each, no break moved. Both on the PENDING
+#           line: the order is Claude's call, not a ruling.
 # EDITED:   S353 (v0.9.226; Fix Slate 9, the second half). SECTION 5
 #           RE-PINNED MECHANICALLY under ruling R5 (the layout of a long
 #           printed call; walked once, in missing_convention_walk.R
@@ -177,7 +185,13 @@
 #           f(NULL) would reach the sole-frame-or-STOP path with no default
 #           to resolve against. No Expected touched; confirmed in the walk
 #           below.
-# LAST VERIFIED: v0.9.225, 2026-10-12 (S352) -- Sections 4, 5 and 19
+# LAST VERIFIED: v0.9.227, 2026-10-13 (S354) -- Sections 8 and 15 WALKED
+#           on the WORKSTATION through receive_all() ("walked, all okay"),
+#           GitHub 9eacd76 (package), after the SANDBOX run (R 4.3.3,
+#           UTF-8 locale): harness.R verify, 19 of 19 sections in file
+#           order, reverse order and shuffled, and by prepare = TRUE; 42
+#           of 43 blocks found (Section 9's, as before).
+#           Prior: v0.9.225, 2026-10-12 (S352) -- Sections 4, 5 and 19
 #           WALKED on the WORKSTATION through receive_all() ("walked, all
 #           okay"), GitHub 5c5304e (package), after the SANDBOX run (R
 #           4.3.3, UTF-8 locale): every changed Expected filled by running
@@ -739,8 +753,9 @@ show("jconvert to Stata, over the 26-marker cap",
 #   To change over_stata_df directly, rerun with modify = TRUE:
 #     jconvert(over_stata_df, ..., modify = TRUE)
 #
-# Expected, second render, resolution option 1:
-#   jconvert(many_df, to = "stata", vars = c(...), modify = TRUE)
+# Expected, second render, resolution option 1 (S354: the variables before
+# the target, the teaching form):
+#   jconvert(many_df, vars = c(...), to = "stata", modify = TRUE)
 # Things to look at:
 #   - c(...) is still plainly a blank to fill -- that is deliberate
 #   - but everything else is correct, so filling it yields a working call
@@ -1280,7 +1295,7 @@ jload(f15, name = "ds15", overwrite = TRUE, missing.notice = TRUE)
 #   To use SPSS-style missing values, run:
 #     joptions(missing.convention = "spss")
 #   To use Stata-style missing values, run both:
-#     jconvert(ds15, to = "baseR", vars = "Source", modify = TRUE)
+#     jconvert(ds15, vars = "Source", to = "baseR", modify = TRUE)
 #     jconvert(ds15, to = "stata", modify = TRUE)
 #   Source is text, so the first line makes its declared values plain NA.
 
@@ -1317,7 +1332,7 @@ jload(fm15, name = "mx15", overwrite = TRUE, missing.notice = TRUE)
 #   To use SPSS-style missing values throughout, run:
 #     jconvert(mx15, to = "spss", modify = TRUE)
 #   To use Stata-style missing values throughout, run all three:
-#     jconvert(mx15, to = "baseR", vars = "Source", modify = TRUE)
+#     jconvert(mx15, vars = "Source", to = "baseR", modify = TRUE)
 #     jconvert(mx15, to = "stata", modify = TRUE)
 #     joptions(missing.convention = "stata")
 #   Source is text, so the first line makes its declared values plain NA.
@@ -1338,7 +1353,7 @@ jload(fm15, name = "mx15", overwrite = TRUE, missing.notice = TRUE)
 #     jconvert(mx15, to = "spss", modify = TRUE)
 #     joptions(missing.convention = "spss")
 #   To use Stata-style throughout, run all three:
-#     jconvert(mx15, to = "baseR", vars = "Source", modify = TRUE)
+#     jconvert(mx15, vars = "Source", to = "baseR", modify = TRUE)
 #     jconvert(mx15, to = "stata", modify = TRUE)
 #     joptions(missing.convention = "stata")
 #   Source is text, so the first line makes its declared values plain NA.
@@ -1355,14 +1370,14 @@ joutput(NULL, quiet = TRUE)
 #     Source, Income, Visits
 #
 #   Before saving to Stata format, run both:
-#     jconvert(ds15, to = "baseR", vars = "Source", modify = TRUE)
+#     jconvert(ds15, vars = "Source", to = "baseR", modify = TRUE)
 #     jconvert(ds15, to = "stata", modify = TRUE)
 #   Source is text, so the first line makes its declared values plain NA.
 #   Or turn it into a numeric variable first with jencode().
 #   Error : jsave(): 3 variables carry SPSS-style missing values, incompatible
 #   with the .dta format.
 #   Convert first, then save again:
-#     jconvert(ds15, to = "baseR", vars = "Source", modify = TRUE)
+#     jconvert(ds15, vars = "Source", to = "baseR", modify = TRUE)
 #     jconvert(ds15, to = "stata", modify = TRUE)
 #   Source is text, so the first line makes its declared values plain NA.
 
