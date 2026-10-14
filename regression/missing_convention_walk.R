@@ -74,11 +74,38 @@
 #           PART Q (S354) adds jconvert()'s target behind the dots: a
 #           variable as the second argument, and the pointer the old
 #           positional target gets.
+#           PART R (S355) adds Fix Slate W1's reworded missing-value
+#           messages that no earlier section shows: names typed bare in
+#           vars =, the parse layer under sas, joptions()' codes-length
+#           refusal, jconvert()'s Pattern A list and its line, a label
+#           holding a quotation mark.
 # ORIGIN:   S226 (SAS-convention foundation, v0.9.123) + S227 (E17 jload
 #           messaging redesign, v0.9.124). Written S228, superseding the two
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S355 (v0.9.228; Fix Slate W1, sixteen wording items on the
+#           missing-value messages, with ruling R18's vars = pointer). NEW
+#           PART R, SECTION 66, six renders, every Expected FILLED BY
+#           RUNNING the file (fill.R): names typed bare in vars = in
+#           jconvert() and jdeclare_missing(); the variables named twice;
+#           the parse layer under a sas setting; joptions() given four
+#           codes; jconvert()'s Pattern A list and the line that declares
+#           it; a label holding a quotation mark. RE-PINNED from captures
+#           of every section on 0.9.227 and 0.9.228 (repin.py), the prose
+#           around each pin brought to the new wording by hand: 19 and 54
+#           (the mixed-marker note ends "missing values."), 20 (the guards
+#           name convention = and the markers the variable carries), 21 and
+#           63 (finding 3: no jconvert() internals), 25 (the no-target
+#           refusal, 'missing' quoted), 36 (the joptions() line alone), 39
+#           (codes named partly: the forms said, no Option letters), 40 and
+#           41 (MyLabel), 56 ("marker", never "token"), 61 (the map values
+#           the data lack: one note, Render 3's note rewritten). All
+#           thirteen are on the PENDING line: the wording is Claude's call
+#           on a slate Jeff approved, not a ruled layout. harness.R derive:
+#           Section 66 needs no other, every NEEDS line as it was. harness.R
+#           verify: 67 of 67 sections in three orders and by prepare =
+#           TRUE; 81 of 82 Expected blocks found (Section 10's, as before).
 # EDITED:   S354 (v0.9.227; Fix Slate H, the help pages, with the S243
 #           call-form item's ruling A: jconvert(data, ..., to = NULL, ...)).
 #           NEW PART Q, SECTION 65, six renders, every Expected FILLED BY
@@ -560,7 +587,16 @@
 #           Same messages either way (one frame), confirmed in the walk
 #           below against a sandbox capture of the same file; no Expected
 #           touched.
-# LAST VERIFIED: v0.9.227, 2026-10-13 (S354) -- Sections 3, 19, 20, 43,
+# LAST VERIFIED: v0.9.228, 2026-10-15 (S355) -- Sections 19, 20, 21, 25,
+#           36, 39, 40, 41, 54, 56, 61, 63 and 66 WALKED on the WORKSTATION
+#           through receive_all() ("walked, all okay"), GitHub f89e83f
+#           (package), after the SANDBOX run (R 4.3.3, UTF-8 locale):
+#           Section 66's Expected filled by running the file (fill.R), 81
+#           of 82 blocks found in the capture (Section 10's, as before),
+#           and all 67 sections through rewalk() in file order, reverse
+#           order and shuffled, and by prepare = TRUE; Section 66 needs no
+#           other. PENDING back to none.
+#           Prior: v0.9.227, 2026-10-13 (S354) -- Sections 3, 19, 20, 43,
 #           52, 54, 63 and 65 WALKED on the WORKSTATION through
 #           receive_all() ("walked, all okay"), GitHub 9eacd76 (package),
 #           after the SANDBOX run (R 4.3.3, UTF-8 locale): Section 65's
@@ -2579,8 +2615,7 @@ wm <- jdeclare_missing(wm, Fear, codes = c(New = ".c"), convention = "stata")
 # then, BEFORE the durability reminder and a blank line off each
 # (RE-PINNED S339, v0.9.213: the note followed the reminder until then;
 # Section 50 has the reason):
-#   Note: Fear carries both Stata-style (.a) and SAS-style (.B)
-#   missing-value markers.
+#   Note: Fear carries both Stata-style (.a) and SAS-style (.B) missing values.
 #   To collapse them to one form:
 #     jconvert(wm, vars = "Fear", to = "stata", modify = TRUE)
 #
@@ -2685,7 +2720,7 @@ options(.jst_options_missing_convention = NULL)
 # Expected, refusal 1 -- the sign-off 2 conflict gate, under try():
 #   Error : jdeclare_missing(): 'Up' already carries SAS-style missing values;
 #   cannot use convention = "spss" here.
-#   To follow the column's form, remove the argument:
+#   To follow the column's form, drop convention = "spss":
 #     jdeclare_missing(wg, Up, codes = c(-99))
 #   Or convert the column first:
 #     jconvert(wg, vars = "Up", to = "spss", modify = TRUE)
@@ -2698,8 +2733,13 @@ options(.jst_options_missing_convention = NULL)
 # it can only do when the call is clean enough to echo (plain numeric
 # codes, no names, no labels, no range). Supply labels or a named codes
 # vector and that first remedy falls back to prose -- "To follow the
-# column's form, remove the convention argument from the call." -- which
-# is a second render this section does not exercise.
+# column's form, drop convention = "spss" from the call." -- which is a
+# second render this section does not exercise. RE-PINNED S355 (v0.9.228;
+# the S282 item, voice Rule B): the four remedies name convention = where
+# they said "remove the argument" (refusals 1, 4, 5) and "remove the
+# convention argument" (6); and the head of refusals 3-6 names the markers
+# the column's cells carry, (.a) and (.B), where it named the two ranges
+# (the S267 item: one vocabulary with the mixed-marker note, Section 19).
 #
 # Note also what LEFT: the old Expected opened "Column 'Up' already
 # carries", and the builder has no "Column". S266 logged that prefix as
@@ -2718,8 +2758,8 @@ options(.jst_options_missing_convention = NULL)
 # one helpful one.
 #
 # Expected, refusal 3 -- the both-representations guard:
-#   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a-.z) and
-#   SAS-style (.A-.Z) missing values, which SPSS convention cannot act on.
+#   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a) and
+#   SAS-style (.B) missing values, which SPSS convention cannot act on.
 #   Set convention = "stata" or convention = "sas" on this call.
 #
 # S267 rewrote the head and left this remedy alone. It used to say the
@@ -2756,27 +2796,27 @@ options(.jst_options_missing_convention = NULL)
 # wrapper the call used before changing anything.
 #
 # Expected, refusal 4 -- per-call spss over a STATA setting:
-#   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a-.z) and
-#   SAS-style (.A-.Z) missing values, which SPSS convention cannot act on.
+#   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a) and
+#   SAS-style (.B) missing values, which SPSS convention cannot act on.
 #   This call sets convention = "spss", but your missing.convention setting is
-#   "stata". To use the setting, remove the argument:
+#   "stata". To use the setting, drop convention = "spss":
 #     jdeclare_missing(wg, Mix, codes = c(-99))
 #
 # Expected, refusal 5 -- the same, over a SAS setting. Byte-identical to
 # refusal 4 except the setting token:
-#   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a-.z) and
-#   SAS-style (.A-.Z) missing values, which SPSS convention cannot act on.
+#   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a) and
+#   SAS-style (.B) missing values, which SPSS convention cannot act on.
 #   This call sets convention = "spss", but your missing.convention setting is
-#   "sas". To use the setting, remove the argument:
+#   "sas". To use the setting, drop convention = "spss":
 #     jdeclare_missing(wg, Mix, codes = c(-99))
 #
 # Expected, refusal 6 -- same setting, but a NAMED codes vector, so the
 # guard cannot rebuild the call and the remedy falls back to prose. Note
 # the last line replaces BOTH the intro and the echoed call:
-#   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a-.z) and
-#   SAS-style (.A-.Z) missing values, which SPSS convention cannot act on.
+#   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a) and
+#   SAS-style (.B) missing values, which SPSS convention cannot act on.
 #   This call sets convention = "spss", but your missing.convention setting is
-#   "sas". To use the setting, remove the convention argument from the call.
+#   "sas". To use the setting, drop convention = "spss" from the call.
 #
 # WHAT THESE THREE ADD. The head is the same in all six refusals; what
 # changes is the remedy, and it changes because the guard now knows WHY the
@@ -2793,7 +2833,7 @@ options(.jst_options_missing_convention = NULL)
 #   - Refusal 4 against refusal 3. Same column, same guard, same head; two
 #     different remedies. Does the pair read as one guard adapting to how
 #     you got there, or as two messages that happen to share an opening?
-#   - "To use the setting, remove the argument" states the CONSEQUENCE
+#   - "To use the setting, drop convention = "spss"" states the CONSEQUENCE
 #     first and the action second. Read it as someone who set convention =
 #     "spss" on purpose: does it land as help, or as the package telling
 #     them their explicit instruction was the mistake?
@@ -2865,8 +2905,8 @@ options(.jst_options_missing_convention = NULL)
 #   SPSS-style missing values (na_values: -99, -98)."
 #   "To label the declared numeric codes, name them directly:"
 #        jdeclare_missing(ws, V, codes = c(Refused = -99, DK = -98))
-#   "The numeric codes above are V's declared missing values, matched
-#   largest / magnitude first (the ordering jconvert() uses)."
+#   "The numeric codes above are V's declared missing values, paired with the
+#   markers in order of magnitude, largest first."
 #   "To use SAS-style markers instead, convert the column first:"
 #        jconvert(ws, to = "sas", modify = TRUE)
 #
@@ -2885,6 +2925,11 @@ options(.jst_options_missing_convention = NULL)
 # is applying it to a message that KEEPS its prescriptive positions --
 # Rule Y retired jrecode's, so this is the only place both appear
 # together.
+#
+# RE-PINNED S355 (v0.9.228; the S219 item, finding 3): "matched largest
+# magnitude first (the ordering jconvert() uses)" read as internals in an
+# error; the pairing is said for what it is, and with one code (Section 63)
+# the sentence names the code alone.
 #
 # Also S249: the "matched largest magnitude first" sentence now WRAPS
 # (Rule U, adopt-on-touch reached it when the builder was edited). It ran
@@ -3160,9 +3205,12 @@ wf$StatusR <- NULL; wf$StatusL <- NULL
 # -- the labels entry landed on the minted code.
 #
 # Expected, third call (the no-target refusal):
-#   "Error: jrecode(): labels names missing, but the map has no target for
-#    it to label.
-#    Add missing to the map (for example 8=missing), or label the value directly."
+#   "Error : jrecode(): labels names 'missing', but the map has no target for it.
+#    Add 'missing' to the map (for example '8=missing'), or label the
+#    value directly."
+# RE-PINNED S355 (v0.9.228; the S256 item): the token quoted in all three
+# places -- "labels names missing" read as "the labels' names are absent" --
+# and "to label" dropped, so the first sentence fits one line.
 # S258: the Expected had carried "no missing target" since before the S24x
 # reword -- the shipped message says "no target", which is what check N38a
 # locks positively. Found by the capture diff, not by any run.
@@ -3170,7 +3218,7 @@ wf$StatusR <- NULL; wf$StatusL <- NULL
 # Things to look at:
 #   - NA=missing vs the old NA=-98-then-declare two-step: is the
 #     one-step form what you would now teach in the guides?
-#   - The refusal's example (8=missing): generic enough, or should it
+#   - The refusal's example ('8=missing'): generic enough, or should it
 #     echo the user's own first rule?
 
 
@@ -3773,8 +3821,9 @@ try(jconvert(gf))
 #     to = "baseR"
 #         All missing-value declarations are removed; declared values
 #         become plain NA.
-#   To set a session default so to = is not needed, choose a convention:
-#     joptions(missing.convention = "stata")    (or "spss", "sas")
+#   To set a session default so to = is not needed, choose a convention
+#   ("stata", "spss" or "sas"):
+#     joptions(missing.convention = "stata")
 #
 # RE-PINNED S268 for S267. The stata and spss target descriptors were
 # pre-broken the same way the A-menu's were, and for the same reason --
@@ -3988,8 +4037,11 @@ jdeclare_missing(hw, W, codes = c(Newer = ".c"))
 
 try(jdeclare_missing(hn, V, codes = c(New = ".b", ".a")))
 
-# Expected: "jdeclare_missing(): `codes` is partially named. Either name every
-# element (Option C) or none (Option A with separate labels=)." Partial
+# Expected: "jdeclare_missing(): `codes` names some of its codes and not others.
+# Name every code, as in codes = c(Refused = -99, Unknown = -98), or name none
+# and give the labels with labels =." (RE-PINNED S355, the S282 item: each
+# form said for what it is, where it named the help page's "Option C" and
+# "Option A", opaque with the page closed.) Partial
 # naming is refused upstream, which is why all-bare (Section 40) is the
 # only bare path, and why the "(no change)" annotation above is reachable
 # only by re-asserting a name.
@@ -4035,8 +4087,8 @@ jdeclare_missing(hn, V, codes = ".a")
 # Expected -- the naming header is GONE, replaced outright:
 #   Note: jdeclare_missing made no change to V. Its markers are already missing
 #   values, so a bare marker has nothing to name.
-#   To name one:
-#     hn <- jdeclare_missing(hn, V, codes = c(Refused = ".a"))
+#   To name one, put its label in place of MyLabel:
+#     hn <- jdeclare_missing(hn, V, codes = c(MyLabel = ".a"))
 #
 # RE-PINNED S268 for S267, and this one is an INDENT change only -- no
 # word moves. "To name one:" goes to column 0 and the scaffold under it
@@ -4053,6 +4105,10 @@ jdeclare_missing(hn, V, codes = ".a")
 # be made in three literals at once, because the plural caller below
 # SPLICES its variable list by matching on the exact string
 # "\nTo name one:\n". Change one and the splice stops finding it.
+# (S355: the intro became "To name one, put its label in place of
+# MyLabel:", and the splice now keys on its first words, "\nTo name one",
+# so the rest of the intro can change without losing it -- missing_
+# convention_check.R N59f caught the first S355 build splicing nothing.)
 #
 # And note what does NOT follow it: no durability note. Nothing changed,
 # so there is nothing to make durable -- and a "save this to keep it"
@@ -4061,7 +4117,7 @@ jdeclare_missing(hn, V, codes = ".a")
 jdeclare_missing(hn, V, codes = ".a", modify = TRUE)
 
 # Expected: the same note, with the scaffold in the modify form --
-#       jdeclare_missing(hn, V, codes = c(Refused = ".a"), modify = TRUE)
+#       jdeclare_missing(hn, V, codes = c(MyLabel = ".a"), modify = TRUE)
 # The remedy follows the user's own call rather than a fixed exemplar:
 # someone working with modify = TRUE gets a line they can paste as-is.
 
@@ -4113,8 +4169,12 @@ options(.jst_options_missing_convention = NULL)
 #   - "Its markers are already missing values" -- is "markers" the right
 #     word here for a reader who typed a token and thinks of it as a
 #     code?
-#   - The remedy hardcodes "Refused" as the example label. Does that read
-#     as a placeholder or as an instruction?
+#   - The remedy's placeholder is MyLabel, and the line above it says so
+#     (RE-PINNED S355, v0.9.228; the S282 item, which asked this very
+#     question: "Refused" was an invented example name, and beside a
+#     variable whose label happened to be "Refused" -- hn's, above -- it
+#     read as a label the user already had). Does MyLabel read as a
+#     placeholder, the way MyData does?
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -4163,8 +4223,8 @@ jdeclare_missing(hb, P, R, codes = ".a")
 #   Note: jdeclare_missing made no change to 2 variables. Their markers are
 #   already missing values, so a bare marker has nothing to name.
 #     P, R
-#   To name one:
-#     hb <- jdeclare_missing(hb, P, codes = c(Refused = ".a"))
+#   To name one, put its label in place of MyLabel:
+#     hb <- jdeclare_missing(hb, P, codes = c(MyLabel = ".a"))
 #
 # "Their" rather than "Its", and the variable list spliced under the
 # first sentence -- "no change to 2 variables" is not actionable without
@@ -4174,7 +4234,8 @@ jdeclare_missing(hb, P, R, codes = ".a")
 # RE-PINNED S268 for S267: the same indent fix as the singular note
 # above -- intro to column 0, scaffold to two spaces. This is the caller
 # that splices the variable list by matching "\nTo name one:\n", which
-# is why the two notes had to move together.
+# is why the two notes had to move together. (Since S355 it matches the
+# intro's first words, "\nTo name one".)
 #
 # INDENT SETTLED by the S268 run: the "P, R" line renders at TWO
 # spaces, unchanged by the S267 move. So the plural note now has its
@@ -5989,8 +6050,7 @@ mx54 <- jdeclare_missing(mx54, Fear, codes = c(Refused = ".a"))
 #   Named SAS-style missing values on Fear:
 #     .a is now "Refused"
 #
-#   Note: Fear carries both Stata-style (.a) and SAS-style (.B)
-#   missing-value markers.
+#   Note: Fear carries both Stata-style (.a) and SAS-style (.B) missing values.
 #   To collapse them to one form:
 #     jconvert(mx54, vars = "Fear", to = "sas", modify = TRUE)
 #
@@ -6135,7 +6195,7 @@ try(jrecode(iv56, v, map = "1, abc = 9; else=copy"))
 # Expected:
 #   Error : jrecode(): Error in map argument: Invalid old value 'abc' in map
 #   rule '1, abc = 9'. Old values must be numeric, a system-NA alias (NA,
-#   System, or SYSMIS), or a Stata-style missing-value token (.a through .z).
+#   System, or SYSMIS), or a Stata-style missing-value marker (.a through .z).
 
 # Render 2 -- two.
 try(jrecode(iv56, v, map = "1, abc, x y = 9; else=copy"))
@@ -6143,16 +6203,18 @@ try(jrecode(iv56, v, map = "1, abc, x y = 9; else=copy"))
 # Expected:
 #   Error : jrecode(): Error in map argument: Invalid old values 'abc' and 'x y'
 #   in map rule '1, abc, x y = 9'. Old values must be numeric, a system-NA alias
-#   (NA, System, or SYSMIS), or a Stata-style missing-value token (.a
+#   (NA, System, or SYSMIS), or a Stata-style missing-value marker (.a
 #   through .z).
 rm(iv56)
 
 # Things to look at:
 #   - The rule is still quoted whole after "in map rule", so the reader
 #     finds the place; only the offender is named before it.
-#   - "a Stata-style missing-value token (.a through .z)" is said under
-#     every setting. Phrasing it by the setting is Fix Slate W1's (S240)
-#     item, not this one.
+#   - "a Stata-style missing-value marker (.a through .z)" (RE-PINNED
+#     S355: "token" retired from runtime text as S354 retired it from the
+#     help pages). The section runs with no setting, so the marker is named
+#     Stata-style; under a sas setting it is SAS-style, .A through .Z
+#     (Fix Slate W1's S240 item, Section 66).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -6570,16 +6632,17 @@ r61 <- jrecode(data.frame(x = c(1, 2, 3, 2)), x, map = "1=0; 2=1; else=copy")
 #   the new column.
 
 # Render 3 -- at the full output level the advisory notes take their blank
-# lines too; at standard they print nothing and leave no gap.
+# lines too; at standard they print nothing and leave no gap. (RE-PINNED
+# S355, v0.9.228; the S352 item: the map values the data lack, 7 and 8,
+# are ONE note now, where each rule gave its own -- "contained none of the
+# map values 7 -- nothing was recoded for them" -- so the blank line shown
+# is the one between that note and the labels note.)
 joutput("full", quiet = TRUE)
 r61 <- jrecode(data.frame(x = c(1, 2, 3, 2)), x,
                map = "1=0; 7=1; 8=2; 2=1; else=copy")
 
 # Expected:
-#   Note: 'x' contained none of the map values 7 -- nothing was
-#   recoded for them.
-#
-#   Note: 'x' contained none of the map values 8 -- nothing was
+#   Note: 'x' contained none of the map values 7 and 8 -- nothing was
 #   recoded for them.
 #
 #   Note: No value labels assigned. To add labels, use jrelabel().
@@ -6706,8 +6769,7 @@ try(jdeclare_missing(st63, N, codes = c(Refused = ".a")))
 #   To label the declared numeric codes, name them directly:
 #     jdeclare_missing(st63, N, codes = c(Refused = -99))
 #
-#   The numeric code above is N's declared missing value, matched largest
-#   magnitude first (the ordering jconvert() uses).
+#   The numeric code above is N's declared missing value.
 #
 #   To use Stata-style markers instead, convert the column first:
 #     jconvert(st63, vars = "S", to = "baseR", modify = TRUE)
@@ -7079,6 +7141,121 @@ rm(cv65, fmt65)
 #   - RENDER 5: Age kept before to =, modify = TRUE after it;
 #   - RENDER 6: stata converts as a variable, no pointer; the not-found
 #     sentence unchanged.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART R -- Fix Slate W1: the missing-value messages, reworded (S355) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.228. Sixteen wording items on a slate Jeff approved: conformance-only
+# rewording, Claude's call, walked where it shows. The re-pinned sections:
+# 19, 20, 21, 25, 36, 39, 40, 41, 54, 56, 61 and 63 (and modify_form_walk.R's
+# 4, 6, 9 and 12). This part shows the messages no other section shows:
+# variable names typed bare in vars = (ruling R18, the names discussion of
+# S355), the parse layer phrased by the setting (the S240 item, lean 2),
+# joptions()' codes-length refusal (S314), jconvert()'s Pattern A list with
+# the line that declares it (S319), and a value label holding a quotation
+# mark (S353). The assertion side is missing_convention_check.R N90.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 66 -- the messages Fix Slate W1 reworded ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# A stata setting, and a frame with two declared SPSS-style variables and a
+# third whose label suggests a missing value it does not declare.
+joptions(missing.convention = "stata", quiet = TRUE)
+w66 <- data.frame(
+  Q = haven::labelled(c(1, 2, 9, 9, 3), labels = c("Not asked" = 9)),
+  A = haven::labelled_spss(c(1, -99, 3, 4, 5), na_values = -99),
+  B = haven::labelled_spss(c(2, 3, -99, 1, 1), na_values = -99))
+
+# Render 1 -- variable names typed without quotes in vars =. Until 0.9.227
+# R's "object 'A' not found". Now the call comes back with the names after
+# the data frame, everything else kept -- in jconvert() and in
+# jdeclare_missing().
+try(jconvert(w66, to = "stata", vars = c(A, B), modify = TRUE))
+try(jdeclare_missing(w66, vars = A, codes = -98))
+# Expected:
+#   Error : jconvert(): vars = takes names in quotes. To name the variables
+#   without quotes, list them after the data frame:
+#     jconvert(w66, A, B, to = "stata", modify = TRUE)
+#   Error : jdeclare_missing(): vars = takes names in quotes.
+#   To name the variables without quotes, list them after the data frame:
+#     jdeclare_missing(w66, A, codes = -98)
+
+# Render 2 -- the variables named both after the data frame and in vars =.
+# (0.9.227: "Use either unquoted variable names (...) or quoted names via
+# vars = c(...), but not both.")
+try(jconvert(w66, A, vars = "B", to = "stata"))
+# Expected:
+#   Error : jconvert(): the variables are named twice: after the data frame and
+#   in vars =. Name them in one place:
+#     jconvert(w66, A, B, to = "stata")
+
+# Render 3 -- the parse layer under a sas setting: a malformed marker in a
+# rule, and an else word that is no action. (0.9.227 said "Stata-style
+# missing-value tokens must be '.a' through '.z' (a single lowercase letter
+# after the period)" under every setting.)
+joptions(missing.convention = "sas", quiet = TRUE)
+try(jrecode(w66, Q, map = "9=.AA; else=copy"))
+try(jrecode(w66, Q, map = "9=.A; else=foo"))
+joptions(missing.convention = "stata", quiet = TRUE)
+# Expected:
+#   Error : jrecode(): Error in map argument: Invalid new value '.AA' in map
+#   rule '9=.AA'. SAS-style missing-value markers are '.A' through '.Z' (one
+#   letter after a period). The NA(a) longhand is not supported in the
+#   map argument.
+#   Error : jrecode(): Error in map argument: Invalid else action 'foo' in map
+#   argument. Use 'else=NA', 'else=copy', or a SAS-style missing-value marker
+#   such as 'else=.A' (Stata or SAS convention only).
+
+# Render 4 -- joptions() given four codes. (0.9.227: "missing.convention.codes
+# must have length 1 to 3.")
+try(joptions(missing.convention.codes = c(-99, -98, -97, -96)))
+# Expected:
+#   Error : joptions(): missing.convention.codes takes at most 3 codes, the most
+#   SPSS allows on a variable, and this call gives 4.
+#   To keep the first three:
+#     joptions(missing.convention.codes = c(-99, -98, -97))
+
+# Render 5 -- jconvert()'s Pattern A list, the value with its label in the
+# bracketed form every declared value takes, and the line that declares it.
+# (0.9.227: "Q: 9 = "Not asked"" and "see jdeclare_missing()".)
+jconvert(w66, Q, to = "stata")
+# Expected:
+#   Skipped (value labels suggest missingness but not formally declared):
+#     Q: 9 ["Not asked"]
+#
+#   To declare it as missing:
+#     jdeclare_missing(w66, Q, codes = 9, modify = TRUE)
+#   To leave it as ordinary data, no action is needed.
+
+# Render 6 -- a value label holding a quotation mark, in the labels string
+# of the line jdeclare_missing()'s refusal offers: escaped, so the line
+# runs. (0.9.227 printed labels = ".b=Said "no"", which does not parse.)
+q66 <- data.frame(V = haven::labelled(c(1, 2, haven::tagged_na("a"), -99, 3),
+  labels = c(Skipped = haven::tagged_na("a"), "Said \"no\"" = -99)))
+try(jdeclare_missing(q66, V, codes = -99))
+# Expected:
+#   Error : jdeclare_missing(): -99 would become .a under Stata convention, but
+#   V already carries .a ["Skipped"], so the two would share one missing value.
+#   To keep them distinct, recode -99 to a marker V does not use:
+#     q66$VR <- jrecode(q66, V, map = "-99=.b; else=copy",
+#         labels = ".b=Said \"no\"")
+#   Or, if they mean the same thing, recode -99 to .a:
+#     q66$VR <- jrecode(q66, V, map = "-99=.a; else=copy")
+
+options(.jst_options_missing_convention = NULL)
+rm(w66, q66)
+
+# Things to look at:
+#   - RENDER 1: "list them after the data frame", and the line in the house
+#     form, the names bare and nothing else moved;
+#   - RENDER 2: the call given once more, each variable named once;
+#   - RENDER 3: SAS-style and .A through .Z under sas; "marker", not
+#     "token"; no "lowercase";
+#   - RENDER 4: the reason (SPSS's three) and the first three offered;
+#   - RENDER 5: Q: 9 ["Not asked"], then the declaration line, with
+#     modify = TRUE, and no "see jdeclare_missing()";
+#   - RENDER 6: labels = ".b=Said \"no\"", backslashes in the line.
 
 
 # --- Restore session state ---------------------------------------------------

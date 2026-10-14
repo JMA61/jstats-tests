@@ -16,6 +16,16 @@
 #           Since S352 also jsave() given an expression as the data
 #           (Section 19).
 # ORIGIN:   S229
+# EDITED:   S355 (v0.9.228; Fix Slate W1, the missing-value messages
+#           reworded). SECTIONS 4, 6, 9 AND 12 RE-PINNED from captures of
+#           every section on 0.9.227 and 0.9.228 (repin.py): the load
+#           scan's label-only row in the bracketed form, -99 ["Refused"]
+#           (4); the jsave() refusals' verb, "carries" (6); finding 3, no
+#           jconvert() internals in the SPSS-column refusal (9); "every
+#           variable" and "use vars = names(...)" (12). All four on the
+#           PENDING line: wording, Claude's call. harness.R verify: 19 of
+#           19 sections in three orders and by prepare = TRUE; 42 of 43
+#           Expected blocks found (Section 9's, as before).
 # EDITED:   S354 (v0.9.227; Fix Slate H, with the S243 call-form item).
 #           SECTIONS 8 AND 15 RE-PINNED: the printed jconvert() lines put
 #           vars = before to =, the teaching form -- Section 15's five
@@ -185,7 +195,14 @@
 #           f(NULL) would reach the sole-frame-or-STOP path with no default
 #           to resolve against. No Expected touched; confirmed in the walk
 #           below.
-# LAST VERIFIED: v0.9.227, 2026-10-13 (S354) -- Sections 8 and 15 WALKED
+# LAST VERIFIED: v0.9.228, 2026-10-15 (S355) -- Sections 4, 6, 9 and 12
+#           WALKED on the WORKSTATION through receive_all() ("walked, all
+#           okay"), GitHub f89e83f (package), after the SANDBOX run (R
+#           4.3.3, UTF-8 locale): harness.R verify, 19 of 19 sections in
+#           file order, reverse order and shuffled, and by prepare = TRUE;
+#           42 of 43 blocks found (Section 9's, as before). PENDING back to
+#           none.
+#           Prior: v0.9.227, 2026-10-13 (S354) -- Sections 8 and 15 WALKED
 #           on the WORKSTATION through receive_all() ("walked, all okay"),
 #           GitHub 9eacd76 (package), after the SANDBOX run (R 4.3.3,
 #           UTF-8 locale): harness.R verify, 19 of 19 sections in file
@@ -453,8 +470,8 @@ jload(f_plain, name = "clinic", overwrite = TRUE)
 #   Loaded clinic (R native format; 3 cases, 2 variables)
 #
 #   Missing-value codes detected:
-#     Rating:   -99 "Refused" (1)  [label-only -- not formally declared]
-#     Contact:  -99 (1)            [suspected -- not formally defined]
+#     Rating:   -99 ["Refused"] (1)  [label-only -- not formally declared]
+#     Contact:  -99 (1)              [suspected -- not formally defined]
 #
 #   [label-only -- not formally declared]:
 #     not automatically treated as NA, but the value labels suggest they mark
@@ -603,7 +620,7 @@ joutput(NULL)
 # IT NOW RENDERS (transcribed from a render through the real emitter at
 # width 76, not predicted):
 #
-#   jsave(): 2 variables contain missing-value codes, incompatible with
+#   jsave(): 2 variables carry missing-value codes, incompatible with
 #   the .xpt format.
 #   To preserve them, save as SPSS format (.sav). To drop them:
 #     jconvert(spss_df, to = "baseR", modify = TRUE)
@@ -1053,13 +1070,11 @@ try(jdeclare_missing(mk12(), codes = -99))
 #   Error : jdeclare_missing(): specify at least one variable to declare on:
 #   unquoted names (for example jdeclare_missing(MyData, Age, Income,
 #   codes = c(-99))) or quoted names via vars = c(...).
-#   To apply one declaration to every column, pass
-#   vars = names(plain_df) explicitly.
+#   To apply one declaration to every variable, use vars = names(plain_df).
 #   Error : jdeclare_missing(): specify at least one variable to declare on:
 #   unquoted names (for example jdeclare_missing(MyData, Age, Income,
 #   codes = c(-99))) or quoted names via vars = c(...).
-#   To apply one declaration to every column, pass
-#   vars = names(MyData) explicitly.
+#   To apply one declaration to every variable, use vars = names(MyData).
 
 options(.jst_options_missing_convention = "none")
 rm(mk12, mkc12, lst12, d12a, d12b, d12c)

@@ -10,6 +10,71 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S355 EDIT (v0.9.228, 2026-10-14): NEW N90 section, fifty-six checks
+#           (N90a-N90bd), Fix Slate W1: sixteen conformance-only wording
+#           items on the missing-value messages, on a slate Jeff approved
+#           (leans 2 and 3 okayed; lean 1 settled as ruling R18, whose (a),
+#           the vars = pointer, rides here). Parts A-N, as the section's
+#           banner lists them: convention = named where "remove the
+#           argument" stood; the codes forms said, no Option letters; the
+#           jsave() verb and MyLabel; one vocabulary for mixed markers; the
+#           no-target refusal quoted; the parse layer phrased by the setting
+#           (SAS-style under sas, "marker", the word missing among the
+#           new-value forms, N90bc at the NA rule and jencode()'s text map);
+#           finding 3; joptions()' codes-length refusal with a line; the
+#           missing-to error's joptions() line alone; "every variable";
+#           names typed bare in vars = and named twice (N90bd: a workspace
+#           object of a variable's name never read); Pattern A and the
+#           load scan in the bracketed form, Pattern A's fix as a line; one
+#           note for the map values the data lack; a label holding a
+#           quotation mark escaped. Each message pinned whole (27 pins
+#           FILLED BY RUNNING, .pins90) or by the sentence that changed,
+#           and every offered line RUN. RE-PINNED by running, the wording
+#           changed under them: N21, N28b, N38b, N49c, N54e, N59d-f, N70q,
+#           N72v, N72w, N81ai, N81aj, N81al, N84a, N84u, N86ay, N87ag
+#           (eighteen). N80's carve-out for the joptions() "(or ...)" line
+#           is gone: the line now parses. SEVEN HUNDRED AND SIXTY-SIX
+#           checks. On the 0.9.227 master 73 red: the eighteen re-pins, N80
+#           and 54 of N90 (N90g and N90ap, controls, pass).
+#           MUTATION MAP (S355; twenty-eight one-change mutants, m01-m03
+#           through all eight batteries and the rest through the three this
+#           build touched, all red): "remove the argument" back N90a f; the
+#           jplot() stop's old words N90e f; "(Option C)" back N54e N90h j;
+#           "contain" back N70q N90k; Refused for MyLabel N81al N90l m; the
+#           guard's ".a-.z" range back N21 N90c d n; "markers" in the note
+#           N84u N90o; the token unquoted N28b N38b N90p; the phrasing pinned
+#           to Stata N90q s u v w y (and jencode_check.R N49b c); the word
+#           missing dropped at the NA rule N90bc (green until N90bc was
+#           written; run again, red); the ordering clause back N90aa; the
+#           codes-length check gone N90ac ae; "(or ...)" back N49c N80 N90af;
+#           "column" back N90ag; the jconvert() pointer gone N90ah ai al am
+#           aq bd; the named-twice stop gone N90an ao; Pattern A's old row
+#           N86ay N90ar; its line gone N90ar as at au; the load scan's old
+#           row N90av; the singular gone N72w N90ax; the escape gone N90ay
+#           az ba bb; the splice keyed on "To name one:" N59f; the
+#           jdeclare_missing() pointer gone N90aj ak; "then run the
+#           conversion again" for every target N90ar at; the word missing
+#           dropped from jencode()'s text-map sentence N90bc (and
+#           jencode_check.R N14 N15 N49b); the frame's names not
+#           preferred over the workspace's N90bd.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 766/766
+#           plain and under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, and entered dirty.
+#           Two bugs of the build's own, found before delivery: the
+#           bare-marker bulk echo spliced on "To name one:", which the
+#           MyLabel sentence no longer ends with (N59f); and the vars =
+#           check read workspace objects named A and B when they gave
+#           names, passing c(A, B) through -- the very case the S351 item
+#           named. Found entering dirty (N90ah ai am aq red); the frame's
+#           names now come first, and N90bd holds it. The same dirty run
+#           found two of N90's checks overwriting a user's x and s (a
+#           check's braces run in the global environment, and the foot
+#           removes only NEW names): N90's braced checks now run inside
+#           local(), as filter_check.R X05's does.
+#           LAST VERIFIED: v0.9.228, 2026-10-15 (S355) -- 766/766 on the
+#           WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2453 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub f89e83f.
 # S354 EDIT (v0.9.227, 2026-10-13): NEW N89 section, fifteen checks
 #           (N89a-N89o), Fix Slate H with the S243 call-form item's ruling
 #           A (Jeff, S354: "A"): jconvert(data, ..., to = NULL, vars = NULL,
@@ -1771,8 +1836,8 @@ options(.jst_options_missing_convention = "spss")
 f21 <- data.frame(x = 1:4)
 f21$v <- haven::labelled(c(1, haven::tagged_na("a"), haven::tagged_na("B"), 2))
 m21 <- grab(jdeclare_missing(f21, v, codes = -99))
-check("N21 spss resolution on a mixed column refuses",
-      grepl("carries both Stata-style (.a-.z) and SAS-style (.A-.Z)",
+check("N21 spss resolution on a mixed column refuses, naming the markers its cells carry (S355: one vocabulary with the mixed-marker note)",
+      grepl("carries both Stata-style (.a) and SAS-style (.B) missing values",
             .fl(m21), fixed = TRUE) &&
         grepl("which SPSS convention cannot act on", .fl(m21),
               fixed = TRUE))
@@ -1918,9 +1983,9 @@ check("N28a labels missing=Refused lands on the minted code",
       identical(as.numeric(l28[names(l28) == "Refused"]), -99))
 m28 <- grab(jrecode(f24, v, map = "8=7; else=copy",
                     labels = "missing=Refused"))
-check("N28b labels missing without a map target is refused",
-      grepl("labels names missing", m28, fixed = TRUE) &&
-        grepl("8=missing),", m28, fixed = TRUE))
+check("N28b labels missing without a map target is refused (S355: the token quoted)",
+      grepl("labels names 'missing'", m28, fixed = TRUE) &&
+        grepl("'8=missing'),", m28, fixed = TRUE))
 
 # =============================================================================
 # N29 -- jencode: the token on a fresh column; blank=missing composes
@@ -2234,11 +2299,10 @@ check("N38a jrecode home: the reworded refusal, no stray 'missing target'",
 # wording drift. What the S24x reword actually secured -- the refusal never
 # renders the "no missing target" misread -- is N38a's half; this half now
 # locks the sentence ARRIVING WHOLE in the render (wrap-proof via .fl).
-# An mv candidate exists to restore the one-line form: dropping "to label"
-# brings the sentence under the new allowance. Not applied here -- wording
-# is an mv decision.
+# S355 (the S256 item, Fix Slate W1): "to label" dropped and the token
+# quoted -- the sentence now fits one line under the reserve.
 check("N38b jrecode home: the refusal sentence arrives whole",
-      grepl("labels names missing, but the map has no target for it to label.",
+      grepl("labels names 'missing', but the map has no target for it.",
             .fl(m38r), fixed = TRUE))
 
 f38e <- data.frame(r = c("yes", "no"))
@@ -2562,9 +2626,9 @@ check("N49b Rule B terms on the consequence lines",
 check("N49c no recommendation; the joptions tail teaches the default",
       !grepl("recommended", m49, fixed = TRUE) &&
         grepl(paste0("To set a session default so to = is not needed, ",
-                     "choose a convention:"), .fl(m49), fixed = TRUE) &&
-        grepl('  joptions(missing.convention = "stata")    (or "spss", "sas")',
-              m49, fixed = TRUE))
+                     "choose a convention (\"stata\", \"spss\" or \"sas\"):"),
+              .fl(m49), fixed = TRUE) &&
+        endsWith(m49, '\n  joptions(missing.convention = "stata")'))
 check("N49d every offered to= runs",
       all(vapply(c("stata", "spss", "sas", "baseR"), function(tv) {
         is.data.frame(tryCatch(suppressMessages(jconvert(f49, to = tv)),
@@ -2825,7 +2889,7 @@ check("N54e bare and named cannot mix, so all-bare is the only bare path",
       {
         m <- tryCatch({ jdeclare_missing(f54a, V, codes = c(New = ".b", ".a")); "" },
                       error = function(e) conditionMessage(e))
-        grepl("partially named", m, fixed = TRUE)
+        grepl("names some of its codes and not others", m, fixed = TRUE)
       })
 check("N54f both facts combine, replacement first",
       {
@@ -3261,7 +3325,7 @@ f59c <- data.frame(
 check("N59d all-bare singular: intro at column 0, runnable at two",
       {
         ln <- .lines59(printed(jdeclare_missing(f59b, V, codes = ".a")))
-        i  <- which(startsWith(ln, "To name one:"))
+        i  <- which(startsWith(ln, "To name one, put its label in place of MyLabel:"))
         length(i) == 1L && .indent59(ln[i]) == 0L &&
           .indent59(ln[i + 1L]) == 2L &&
           grepl("jdeclare_missing(", ln[i + 1L], fixed = TRUE)
@@ -3270,7 +3334,7 @@ check("N59e the same holds under modify = TRUE (scaffold swaps form only)",
       {
         ln <- .lines59(printed(jdeclare_missing(f59b, V, codes = ".a",
                                             modify = TRUE)))
-        i  <- which(startsWith(ln, "To name one:"))
+        i  <- which(startsWith(ln, "To name one, put its label in place of MyLabel:"))
         length(i) == 1L && .indent59(ln[i]) == 0L &&
           .indent59(ln[i + 1L]) == 2L
       })
@@ -3282,7 +3346,7 @@ check("N59f bulk: variable echo sits between the sentence and the intro",
       {
         ln <- .lines59(printed(jdeclare_missing(f59c, P, R, codes = ".a")))
         i_echo  <- which(grepl("^  P, R$", ln))
-        i_intro <- which(startsWith(ln, "To name one:"))
+        i_intro <- which(startsWith(ln, "To name one, put its label in place of MyLabel:"))
         length(i_echo) == 1L && length(i_intro) == 1L &&
           i_echo < i_intro && .indent59(ln[i_intro]) == 0L &&
           .indent59(ln[i_intro + 1L]) == 2L
@@ -4845,7 +4909,7 @@ e70q <- grab(jsave(fR70, tempfile(fileext = ".sav")))
 check("N70q rider: jsave names a label-only .C column SAS-style",
       {
         m <- .fl(e70q)
-        grepl("1 variable contains SAS-style missing values", m,
+        grepl("1 variable carries SAS-style missing values", m,
               fixed = TRUE) &&
           !grepl("Stata-style", m, fixed = TRUE)
       })
@@ -5295,7 +5359,7 @@ check("N72v a malformed old value: the refusal now names the marker form",
       # S345: "value(s)" went with the S287 remainder (N84a-c).
       grepl(paste0("Invalid old value '.ab' in map rule '.ab=1'. Old values must ",
                    "be numeric, a system-NA alias (NA, System, or SYSMIS), or a ",
-                   "Stata-style missing-value token (.a through .z)."), .fl(e72v),
+                   "Stata-style missing-value marker (.a through .z)."), .fl(e72v),
             fixed = TRUE))
 
 .entry_level72 <- getOption(".jst_output_level")
@@ -5303,7 +5367,7 @@ options(.jst_output_level = "full")
 m72w <- .fl(grab(jrecode(st72, Q, map = ".c=-97; else=copy")))
 options(.jst_output_level = .entry_level72)
 check("N72w a marker no cell carries draws the absent-values advisory (full tier)",
-      grepl("Note: 'Q' contained none of the map values .c -- nothing was recoded for them.",
+      grepl("Note: 'Q' did not contain the map value .c -- nothing was recoded for it.",
             m72w, fixed = TRUE))
 
 options(.jst_options_missing_convention = "spss")
@@ -6555,12 +6619,12 @@ m81aj <- .fl(grab(jdeclare_missing(d81, codes = -99)))
 check("N81ai no variables, data an expression: the example and the names() line both read MyData",
       grepl("(for example jdeclare_missing(MyData, Age, Income, codes = c(-99)))",
             m81ai, fixed = TRUE) &&
-        grepl("pass vars = names(MyData) explicitly.", m81ai, fixed = TRUE) &&
+        grepl("use vars = names(MyData).", m81ai, fixed = TRUE) &&
         !grepl("mk81()", m81ai, fixed = TRUE))
 check("N81aj no variables, data a name: the example reads MyData, the names() line keeps the data frame",
       grepl("(for example jdeclare_missing(MyData, Age, Income, codes = c(-99)))",
             m81aj, fixed = TRUE) &&
-        grepl("pass vars = names(d81) explicitly.", m81aj, fixed = TRUE))
+        grepl("use vars = names(d81).", m81aj, fixed = TRUE))
 check("N81ak .jst_data_arg_kind(): a name, no argument, two places, and three expressions",
       identical(vapply(list(quote(d), NULL, quote(l$d), quote(l[["d"]]$e),
                             quote(mk()), quote(d[1:3, ]), quote(mk()$d)),
@@ -6571,7 +6635,7 @@ options(.jst_options_missing_convention = "stata")
 mkt81 <- function() t81
 p81al <- printed(jdeclare_missing(mkt81(), V, codes = ".a"))
 check("N81al the nothing-to-name note's line assigns to a new name as well",
-      "  mydata <- jdeclare_missing(mkt81(), V, codes = c(Refused = \".a\"))" %in%
+      "  mydata <- jdeclare_missing(mkt81(), V, codes = c(MyLabel = \".a\"))" %in%
         .l81(p81al))
 options(.jst_output_level = "full")
 p81am <- printed(jdeclare_missing(mk81(), V, codes = -99))
@@ -6926,7 +6990,7 @@ check("N84a one invalid old value among valid ones is named alone, in the singul
       identical(grab(jrecode(d84, v, map = "1, abc = 9; else=copy")), paste0(
         "jrecode(): Error in map argument: Invalid old value 'abc' in map\n",
         "rule '1, abc = 9'. Old values must be numeric, a system-NA alias (NA,\n",
-        "System, or SYSMIS), or a Stata-style missing-value token (.a through .z).")))
+        "System, or SYSMIS), or a Stata-style missing-value marker (.a through .z).")))
 check("N84b two invalid values: the plural, joined by and; a repeated one is named once; the rule is still quoted whole",
       local({ m2 <- .fl(grab(jrecode(d84, v, map = "1, abc, x y = 9; else=copy")))
         m3 <- .fl(grab(jrecode(d84, v, map = "abc, abc, 2 = 9; else=copy")))
@@ -7093,7 +7157,7 @@ check("N84t the helper by its cases: canonical when carried, the other case when
           identical(h(character(0), "sas", "a"), character(0)) }))
 check("N84u the mixed-marker note counts cells only: a marker this very call only labeled is not listed as carried (N19a is the same note, on N19's fixture)",
       local({ p <- .conv84("stata", printed(jdeclare_missing(x84, z, codes = c(Refused = ".a", Other = ".c"))))
-        grepl("Note: z carries both Stata-style (.a) and SAS-style (.B)\nmissing-value markers.", p, fixed = TRUE) &&
+        grepl("Note: z carries both Stata-style (.a) and SAS-style (.B) missing values.\n", p, fixed = TRUE) &&
           grepl("\n  .c is now \"Other\" (not present in the data)\n", p, fixed = TRUE) }))
 
 # --- D: a range the call replaced with a narrower one ------------------------
@@ -7830,7 +7894,7 @@ check("N86ax jconvert(to = \"stata\") after the first line: no label report on t
 check("N86ay ... under to = \"spss\" a text variable's label is still reported",
       local({ ld86 <- ds86
               invisible(grab(jconvert(ld86, vars = "S", to = "baseR", modify = TRUE)))
-              grepl("S: X = \"Refused\"", grab(jconvert(ld86, to = "spss", vars = "S")),
+              grepl("S: X [\"Refused\"]", grab(jconvert(ld86, to = "spss", vars = "S")),
                     fixed = TRUE) }))
 
 # --- F: the narrative's layout --------------------------------------------------
@@ -8258,8 +8322,10 @@ check("N87ag advisory notes count only where they print: at \"full\" each is set
       local({ x <- data.frame(x = c(1, 2, 3, 2))
         f <- .lvl87("full", grab(jrecode(x, x, map = "1=0; 7=1; 8=2; 2=1; else=copy")))
         s <- .lvl87("standard", grab(jrecode(x, x, map = "1=0; 7=1; 8=2; 2=1; else=copy")))
-        grepl("recoded for them.\n\nNote: 'x' contained none of the map values 8", f, fixed = TRUE) &&
-          startsWith(f, "Note: 'x' contained none of the map values 7") &&
+        # S355: the absent map values are one note now (the S352 item), so
+        # the pair at "full" is that note and the labels note after it.
+        grepl("recoded for them.\n\nNote: No value labels assigned.", f, fixed = TRUE) &&
+          startsWith(f, "Note: 'x' contained none of the map values 7 and 8") &&
           startsWith(s, "Note: No value labels assigned.") }))
 check("N87ah no two notes in this section's jrecode() captures run together",
       !any(grepl("[^\n]\nNote: ", c(m87a, m87c, m87q, m87r, m87z, m87ae))))
@@ -8831,11 +8897,9 @@ unparsed <- function(txt) {
 .up <- lapply(.sw, function(s) unparsed(s$text))
 .un <- sum(vapply(.up, function(u) u$n, integer(1)))
 .ub <- unlist(lapply(.up, function(u) u$bad))
-# One line is known and logged (to-do, S337): jconvert()'s missing-to error
-# ends on a call with a note after it on the same line. Taken out by its
-# exact text, so a second such line still fails.
-.ub <- setdiff(.ub,
-  "  joptions(missing.convention = \"stata\")    (or \"spss\", \"sas\")")
+# S355: the one line taken out here since S337 -- jconvert()'s missing-to
+# error, a call with a note after it on the same line -- is the call alone
+# now (the S337 item, Fix Slate W1), and the carve-out is gone.
 check(paste0("N80 every runnable line in a message parses (", .un,
              " lines)"),
       .un >= 100L && length(.ub) == 0L)
@@ -8947,6 +9011,443 @@ check("N89o a name holding a variable's name is not a pointer: fmt <- \"Educatio
       identical(local({ fmt <- "Education"; .c89(jconvert(.d89, fmt)) }),
                 "jconvert(): fmt was not found in the .d89 data frame.\nCheck the spelling."))
 rm(.d89, .conv89, .under89, .c89, .ws89, .runs89, .tagged89)
+
+# =============================================================================
+# N90 (S355) -- FIX SLATE W1: THE MISSING-VALUE MESSAGES, REWORDED. Sixteen
+# conformance-only items on a slate Jeff approved (leans 2 and 3 okayed at the
+# start; lean 1 settled as ruling R18 in the session's names discussion), each
+# message pinned whole or by the sentence that changed, and every line a
+# message now offers RUN. Parts:
+#   A  "argument" (S282, voice Rule B): convention = named where "remove the
+#      argument" stood, in jdeclare_missing()'s four guards; jplot()'s
+#      extra-inputs stop names the inputs.
+#   B  "(Option C)" / "(Option A ...)" (S282): each form said for what it is.
+#   C  the jsave() refusals' verb, "carries" (S282); the bare-marker note's
+#      placeholder, MyLabel, said as one (S282).
+#   D  one vocabulary for the mixed-marker guard and note (S267).
+#   E  the no-target refusal, its token quoted (S256).
+#   F  the parse layer phrased by the setting (S240, lean 2): SAS-style and .A
+#      through .Z under sas or a per-call sas; "marker", never "token"; no
+#      "lowercase"; the word missing among the new-value forms.
+#   G  finding 3 (S219): no jconvert() internals in the SPSS-column refusal.
+#   H  joptions()' codes-length refusal: the reason and a line (S314).
+#   I  jconvert()'s missing-to error: the joptions() line alone (S337; N80's
+#      carve-out is gone).
+#   J  "every variable" (S339).
+#   K  names typed bare in vars = (S351; ruling R18): the call rebuilt with the
+#      names after the data frame, a workspace object of a variable's name
+#      never read; named twice, once.
+#   L  one form for a value and its label (S319): jconvert()'s Pattern A list
+#      and the load scan's label-only rows; Pattern A's fix as a line.
+#   M  the map values the data lack, one note (S352).
+#   N  a label holding a quotation mark, escaped in every printed labels
+#      string (S353).
+# jencode_check.R N49 holds jencode()'s twins (the no-target refusal, its
+# parse layer, its NA note on a marked variable); filter_check.R section X the
+# resolver's no-frame message.
+# =============================================================================
+.spd90  <- data.frame(V = haven::labelled_spss(c(1, 2, -99, 3), labels = c(Refused = -99), na_values = -99))
+.spd90b <- data.frame(V = haven::labelled_spss(c(1, -98, -99, 3), labels = c(Refused = -99, DK = -98),
+                                               na_values = c(-99, -98)))
+.mix90  <- data.frame(V = c(1, 2, haven::tagged_na("a"), haven::tagged_na("B"), 3, -99))
+.hb90   <- data.frame(P = c(1, haven::tagged_na("a"), 2))
+.x90    <- data.frame(x = c(1, 2, 3, 2))
+.pa90   <- data.frame(Q = haven::labelled(c(1, 2, 9, 9, 3), labels = c("Not asked" = 9)),
+                      A = haven::labelled_spss(c(1, -99, 3, 4, 5), na_values = -99),
+                      B = haven::labelled_spss(c(2, 3, -99, 1, 1), na_values = -99))
+.qd90   <- data.frame(V = haven::labelled(c(1, 2, haven::tagged_na("a"), -99, 3),
+                      labels = c(Skipped = haven::tagged_na("a"), "Said \"no\"" = -99)))
+.fd90   <- data.frame(y = c(1, 3, 2, 5, 4), x = c(2, 1, 4, 3, 5))
+.fe90   <- .fd90
+.conv90 <- function(cv, expr) {
+  old <- getOption(".jst_options_missing_convention")
+  options(.jst_options_missing_convention = cv)
+  on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+  force(expr)
+}
+.lvl90 <- function(lv, expr) {
+  old <- getOption(".jst_output_level")
+  options(.jst_output_level = lv)
+  on.exit(options(.jst_output_level = old), add = TRUE)
+  force(expr)
+}
+# .under90(): a frame as the juse() default for one call, the entry default
+# handed back (never juse(NULL), which would clear the user's own).
+.under90 <- function(nm, expr) {
+  old <- getOption(".jst_default_data")
+  options(.jst_default_data = nm)
+  on.exit(options(.jst_default_data = old), add = TRUE)
+  force(expr)
+}
+.calls90 <- function(m) .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]])
+# .run90(): a printed line run in an environment holding the fixtures, under a
+# convention; its value, or NULL if it errors.
+.run90 <- function(ln, cv = "stata", env = new.env(parent = globalenv())) {
+  for (nm in c(".spd90", ".pa90", ".qd90", ".hb90", ".x90"))
+    if (!exists(nm, envir = env, inherits = FALSE)) assign(nm, get(nm), envir = env)
+  tryCatch(.conv90(cv, suppressMessages(eval(parse(text = ln), envir = env))),
+           error = function(err) NULL)
+}
+# .pin90(): a message pinned whole. The pins were FILLED BY RUNNING the
+# section on v0.9.228 (n90/fill), never typed.
+.pin90 <- function(id, got) identical(got, .pins90[[id]])
+.pins90 <- list(
+  N90a = paste0(
+    "jdeclare_missing(): 'V' already carries SPSS-style missing values;\n",
+    "cannot use convention = \"stata\" here.\n",
+    "To follow the column's form, drop convention = \"stata\":\n",
+    "  jdeclare_missing(.spd90, V, codes = c(-98))\n",
+    "Or convert the column first:\n",
+    "  jconvert(.spd90, vars = \"V\", to = \"stata\", modify = TRUE)"),
+  N90b = paste0(
+    "jdeclare_missing(): 'V' already carries SPSS-style missing values;\n",
+    "cannot use convention = \"stata\" here.\n",
+    "To follow the column's form, drop convention = \"stata\" from the call.\n",
+    "Or convert the column first:\n",
+    "  jconvert(.spd90, vars = \"V\", to = \"stata\", modify = TRUE)"),
+  N90c = paste0(
+    "jdeclare_missing(): 'V' carries both Stata-style (.a) and SAS-style\n",
+    "(.B) missing values, which SPSS convention cannot act on.\n",
+    "This call sets convention = \"spss\", but your missing.convention setting is\n",
+    "\"stata\". To use the setting, drop convention = \"spss\":\n",
+    "  jdeclare_missing(.mix90, V, codes = c(-99))"),
+  N90d = paste0(
+    "jdeclare_missing(): 'V' carries both Stata-style (.a) and SAS-style\n",
+    "(.B) missing values, which SPSS convention cannot act on.\n",
+    "This call sets convention = \"spss\", but your missing.convention setting is\n",
+    "\"stata\". To use the setting, drop convention = \"spss\" from the call."),
+  N90e = paste0(
+    "jplot(): only one data frame goes after the formula, and this call\n",
+    "gives .fd90 and .fe90.\n",
+    "Specify the data frame once, after the formula."),
+  N90h = paste0(
+    "jdeclare_missing(): `codes` names some of its codes and not others.\n",
+    "Name every code, as in codes = c(Refused = -99, Unknown = -98), or name none\n",
+    "and give the labels with labels =."),
+  N90i = paste0(
+    "jdeclare_missing(): the codes are labeled twice: by their names in\n",
+    "`codes` and by `labels`. Use one: the names, as in codes = c(Refused = -99),\n",
+    "or labels = with codes that carry no names."),
+  N90l = paste0(
+    "Note: jdeclare_missing made no change to P. Its markers are already missing\n",
+    "values, so a bare marker has nothing to name.\n",
+    "To name one, put its label in place of MyLabel:\n",
+    "  .hb90 <- jdeclare_missing(.hb90, P, codes = c(MyLabel = \".a\"))"),
+  N90n = paste0(
+    "jdeclare_missing(): 'V' carries both Stata-style (.a) and SAS-style\n",
+    "(.B) missing values, which SPSS convention cannot act on.\n",
+    "Set convention = \"stata\" or convention = \"sas\" on this call."),
+  N90p = paste0(
+    "jrecode(): labels names 'missing', but the map has no target for it.\n",
+    "Add 'missing' to the map (for example '8=missing'), or label the\n",
+    "value directly."),
+  N90q = paste0(
+    "jrecode(): Error in map argument: Invalid new value '.AA' in map\n",
+    "rule '1=.AA'. SAS-style missing-value markers are '.A' through '.Z' (one\n",
+    "letter after a period). The NA(a) longhand is not supported in the\n",
+    "map argument."),
+  N90r = paste0(
+    "jrecode(): Error in map argument: Invalid else action '.zz' in map\n",
+    "argument. Stata-style missing-value markers are '.a' through '.z' (one\n",
+    "letter after a period). The NA(a) longhand is not supported in the\n",
+    "map argument."),
+  N90s = paste0(
+    "jrecode(): Error in map argument: Invalid else action 'foo' in map\n",
+    "argument. Use 'else=NA', 'else=copy', or a SAS-style missing-value marker\n",
+    "such as 'else=.A' (Stata or SAS convention only)."),
+  N90t = paste0(
+    "jrecode(): Error in map argument: Invalid new value 'foo' in map\n",
+    "rule '1=foo'. New values must be numeric, the word missing, a system-NA\n",
+    "alias (NA, System, or SYSMIS), or a Stata-style missing-value marker (.a\n",
+    "through .z)."),
+  N90u = paste0(
+    "jrecode(): Error in map argument: Invalid old value 'foo' in map\n",
+    "rule 'foo=1'. Old values must be numeric, a system-NA alias (NA, System, or\n",
+    "SYSMIS), or a SAS-style missing-value marker (.A through .Z)."),
+  N90v = paste0(
+    "jdeclare_missing(): Invalid code 'abc'. Codes must be numbers (for\n",
+    "example -99) or SAS-style markers (.A through .Z)."),
+  N90w = paste0(
+    "jrelabel(): Error in labels argument: Invalid value '.AB' in label\n",
+    "rule '.AB=Skip'. SAS-style missing-value markers are '.A' through '.Z' (one\n",
+    "letter after a period). The NA(a) longhand is not supported in the\n",
+    "labels argument."),
+  N90x = paste0(
+    "jrelabel(): Error in labels argument: Invalid value 'foo' in label\n",
+    "rule 'foo=Skip'. The left side of each label rule must be numeric or a\n",
+    "Stata-style missing-value marker (.a through .z)."),
+  N90ac = paste0(
+    "joptions(): missing.convention.codes takes at most 3 codes, the most\n",
+    "SPSS allows on a variable, and this call gives 4.\n",
+    "To keep the first three:\n",
+    "  joptions(missing.convention.codes = c(-99, -98, -97))"),
+  N90ad = paste0(
+    "joptions(): missing.convention.codes needs at least one code,\n",
+    "for example:\n",
+    "  joptions(missing.convention.codes = c(-99, -98, -97))"),
+  N90ah = paste0(
+    "jconvert(): vars = takes names in quotes. To name the variables\n",
+    "without quotes, list them after the data frame:\n",
+    "  jconvert(.pa90, A, B, to = \"stata\", modify = TRUE)"),
+  N90aj = paste0(
+    "jdeclare_missing(): vars = takes names in quotes.\n",
+    "To name the variables without quotes, list them after the data frame:\n",
+    "  jdeclare_missing(.pa90, A, codes = -99)"),
+  N90al = paste0(
+    "jconvert(): Zed was not found in the .pa90 data frame.\n",
+    "Check the spelling."),
+  N90am = paste0(
+    "jconvert(): vars = takes names in quotes. To name the variables\n",
+    "without quotes, list them first:\n",
+    "  jconvert(A, B, to = \"stata\")"),
+  N90an = paste0(
+    "jconvert(): the variables are named twice: after the data frame and\n",
+    "in vars =. Name them in one place:\n",
+    "  jconvert(.pa90, A, B, to = \"stata\")"),
+  N90ar = paste0(
+    "Skipped (value labels suggest missingness but not formally declared):\n",
+    "  Q: 9 [\"Not asked\"]\n",
+    "\n",
+    "To declare it as missing:\n",
+    "  jdeclare_missing(.pa90, Q, codes = 9, convention = \"stata\", modify = TRUE)\n",
+    "To leave it as ordinary data, no action is needed.\n",
+    ""),
+  N90aw = paste0(
+    "Note: 'x' contained none of the map values 7 and 8 -- nothing was\n",
+    "recoded for them.\n",
+    "\n",
+    "Note: No value labels assigned. To add labels, use jrelabel().\n",
+    "\n",
+    "Note: This call changes .x90 only if you assign the result:\n",
+    "  .x90$<name> <- jrecode(...)\n",
+    "To check the recode landed correctly, compare jfreq() on the original and\n",
+    "the new column.\n",
+    "")
+)
+
+# --- A: "argument" (S282, voice Rule B) ---------------------------------------
+.m90a <- .conv90("spss", grab(jdeclare_missing(.spd90, V, codes = -98, convention = "stata")))
+.m90b <- .conv90("spss", grab(jdeclare_missing(.spd90, V, codes = -98, labels = "-98=Skip", convention = "stata")))
+.m90c <- .conv90("stata", grab(jdeclare_missing(.mix90, V, codes = -99, convention = "spss")))
+.m90d <- .conv90("stata", grab(jdeclare_missing(.mix90, V, codes = -99, labels = "-99=R", convention = "spss")))
+.m90e <- grab(jplot(y ~ x, .fd90, .fe90))
+check("N90a per-call convention against the column's form, the call echoed: the convention named where \"remove the argument\" stood (pinned whole)",
+      .pin90("N90a", .m90a))
+check("N90b ... the prose fallback, labels given: \"drop convention = ... from the call\" (pinned whole)",
+      .pin90("N90b", .m90b))
+check("N90c the mixed-marker guard, a stata setting and convention = \"spss\", echoed: \"To use the setting, drop convention = \"spss\":\" (pinned whole)",
+      .pin90("N90c", .m90c))
+check("N90d ... and its prose fallback (pinned whole)",
+      .pin90("N90d", .m90d))
+check("N90e jplot() given two data frames after the formula names both, where it said \"Extra positional arguments were supplied\" (pinned whole)",
+      .pin90("N90e", .m90e))
+check("N90f none of the five says \"argument\"",
+      !any(grepl("argument", c(.m90a, .m90b, .m90c, .m90d, .m90e), fixed = TRUE)))
+check("N90g the echoed call runs: the column keeps its own form and declares -98",
+      local({ r <- .run90(.calls90(.m90a)[1], "spss")
+        is.data.frame(r) && -98 %in% attr(r$V, "na_values") }))
+
+# --- B: "(Option C)" / "(Option A ...)" (S282) ----------------------------------------
+.m90h <- .conv90("spss", grab(jdeclare_missing(.spd90, V, codes = c(Refused = -99, -98))))
+.m90i <- .conv90("spss", grab(jdeclare_missing(.spd90, V, codes = c(Refused = -99), labels = "-99=Refused")))
+check("N90h codes partly named: each form said for what it is (pinned whole)",
+      .pin90("N90h", .m90h))
+check("N90i names and labels = both: the two forms said (pinned whole)",
+      .pin90("N90i", .m90i))
+check("N90j no help-page option names in either",
+      !any(grepl("Option", c(.m90h, .m90i), fixed = TRUE)))
+
+# --- C: the jsave() verbs; the invented label (S282) ---------------------------------
+.m90k <- c(.conv90("stata", grab(jsave(.spd90, tempfile(fileext = ".dta")))),
+           grab(jsave(.hb90, tempfile(fileext = ".sav"))),
+           grab(jsave(.hb90, tempfile(fileext = ".xpt"))))
+check("N90k the three jsave() refusals share one verb: .dta, .sav and .xpt each say \"1 variable carries\"",
+      length(.m90k) == 3L && all(grepl("1 variable carries ", .m90k, fixed = TRUE)) &&
+        !any(grepl("contain", .m90k, fixed = TRUE)))
+# The no-change note is printed (stdout), not signalled: printed(), not grab().
+.m90l <- .conv90("stata", printed(jdeclare_missing(.hb90, P, codes = ".a")))
+check("N90l a bare marker: the scaffold's placeholder is MyLabel, said to be one (pinned whole)",
+      .pin90("N90l", .m90l))
+check("N90m ... and the scaffold runs: .a is named MyLabel",
+      local({ e <- new.env(parent = globalenv()); .run90(.calls90(.m90l)[1], "stata", e)
+        lab <- labelled::val_labels(get(".hb90", envir = e)$P)
+        identical(names(lab), "MyLabel") && identical(haven::na_tag(unname(lab)), "a") }))
+
+# --- D: one vocabulary for the mixed-marker guard and note (S267) ---------------------
+check("N90n the mixed-marker guard names the markers the cells carry, as the note does (pinned whole)",
+      .pin90("N90n", .conv90("spss", grab(jdeclare_missing(.mix90, V, codes = -99)))))
+check("N90o the mixed-marker note says \"missing values\", the guard's words, not \"missing-value markers\"",
+      local({ m <- .conv90("stata", printed(jdeclare_missing(.mix90, V, codes = -99, convention = "sas")))
+        grepl("Note: V carries both Stata-style (.a) and SAS-style (.A, .B) missing values.", .fl(m), fixed = TRUE) &&
+          !grepl("missing-value markers", m, fixed = TRUE) }))
+
+# --- E: the no-target refusal (S256) ---------------------------------------------------
+check("N90p jrecode(): labels names 'missing' and the map has no target: the token quoted three times, \"to label\" gone (pinned whole)",
+      .pin90("N90p", grab(jrecode(.x90, x, map = "1=0; else=copy", labels = "missing=Refused"))))
+
+# --- F: the parse layer, phrased by the setting (S240, lean 2) -------------------------
+.parse90 <- function(cv) .conv90(cv, c(
+  grab(jrecode(.x90, x, map = "1=.AA; else=copy")),
+  grab(jrecode(.x90, x, map = "1=.a; else=.zz")),
+  grab(jrecode(.x90, x, map = "1=1; else=foo")),
+  grab(jrecode(.x90, x, map = "1=foo; else=copy")),
+  grab(jrecode(.x90, x, map = "foo=1; else=copy")),
+  grab(jdeclare_missing(.x90, x, codes = ".1")),
+  grab(jdeclare_missing(.x90, x, codes = "abc")),
+  grab(jrelabel(.x90, x, labels = ".AB=Skip")),
+  grab(jrelabel(.x90, x, labels = "foo=Skip"))))
+.p90sas <- .parse90("sas")
+.p90st  <- .parse90("stata")
+check("N90q under sas a malformed marker in a rule is SAS-style, '.A' through '.Z' (pinned whole)",
+      .pin90("N90q", .p90sas[1]))
+check("N90r under stata the same sentence is Stata-style, '.a' through '.z' (pinned whole)",
+      .pin90("N90r", .p90st[2]))
+check("N90s an else word that is no action: the marker example in the setting's case, \"(Stata or SAS convention only)\" (pinned whole)",
+      .pin90("N90s", .p90sas[3]))
+check("N90t a new value that is no value: the forms listed include the word missing (pinned whole)",
+      .pin90("N90t", .p90st[4]))
+check("N90u an old value that is no value, under sas (pinned whole)",
+      .pin90("N90u", .p90sas[5]))
+check("N90v a code that is neither, under sas: numbers or SAS-style markers (pinned whole)",
+      .pin90("N90v", .p90sas[7]))
+check("N90w jrelabel(), a malformed marker on a label's left side, under sas (pinned whole)",
+      .pin90("N90w", .p90sas[8]))
+check("N90x jrelabel(), a left side that is neither, under stata (pinned whole)",
+      .pin90("N90x", .p90st[9]))
+check("N90y a per-call convention = \"sas\" over a stata setting phrases a bad code SAS-style",
+      grepl("SAS-style missing-value markers are '.A' through '.Z' (one letter after a period).",
+            .fl(.conv90("stata", grab(jdeclare_missing(.x90, x, codes = ".1", convention = "sas")))), fixed = TRUE))
+check("N90z no parse-layer error says \"token\" or \"lowercase\", under any setting; with none, Stata-style as before",
+      local({ m <- c(.parse90("none"), .parse90("spss"), .p90st, .p90sas)
+        length(m) == 36L && all(nzchar(m)) && !any(grepl("token|lowercase", m)) &&
+          grepl("Stata-style missing-value markers are '.a' through '.z'", .fl(.parse90("none")[1]), fixed = TRUE) }))
+check("N90bc the same new-value list at the NA rule (jrecode, 'NA=foo') and in jencode()'s text map ('Yes=foo'): the word missing, the setting's marker style",
+      local({ s <- "New values must be numeric, the word missing, a system-NA alias (NA, System, or SYSMIS), or a "
+        a <- .fl(.conv90("stata", grab(jrecode(.x90, x, map = "NA=foo; else=copy"))))
+        b <- .fl(.conv90("sas", grab(jencode(data.frame(s = c("Yes", "No"), stringsAsFactors = FALSE),
+                                                s, map = "Yes=foo; No=0"))))
+        grepl("rule 'NA=foo'.", a, fixed = TRUE) &&
+          grepl(paste0(s, "Stata-style missing-value marker (.a through .z)."), a, fixed = TRUE) &&
+          grepl("rule 'Yes=foo'.", b, fixed = TRUE) &&
+          grepl(paste0(s, "SAS-style missing-value marker (.A through .Z)."), b, fixed = TRUE) }))
+
+# --- G: finding 3 (S219) ------------------------------------------------------------
+check("N90aa one code: \"The numeric code above is V's declared missing value.\", nothing on ordering",
+      local({ m <- .fl(.conv90("stata", grab(jdeclare_missing(.spd90, V, codes = ".a"))))
+        grepl("The numeric code above is V's declared missing value.", m, fixed = TRUE) &&
+          !grepl("jconvert() uses", m, fixed = TRUE) && !grepl("magnitude", m, fixed = TRUE) }))
+check("N90ab two codes: the pairing said for what it is, with no jconvert() internals",
+      local({ m <- .fl(.conv90("stata", grab(jdeclare_missing(.spd90b, V, codes = c(Refused = ".a", DK = ".b")))))
+        grepl("are V's declared missing values, paired with the markers in order of magnitude, largest first.", m, fixed = TRUE) &&
+          !grepl("jconvert() uses", m, fixed = TRUE) }))
+
+# --- H: joptions()' codes-length refusal (S314) -----------------------------------------
+.m90ac <- grab(joptions(missing.convention.codes = c(-99, -98, -97, -96)))
+check("N90ac four codes: SPSS's limit given as the reason, and the first three offered (pinned whole)",
+      .pin90("N90ac", .m90ac))
+check("N90ad no codes: at least one, with an example (pinned whole)",
+      .pin90("N90ad", grab(joptions(missing.convention.codes = numeric(0)))))
+check("N90ae the offered line runs and sets the three codes",
+      local({ old <- getOption(".jst_options_missing_convention_codes")
+        on.exit(options(.jst_options_missing_convention_codes = old), add = TRUE)
+        invisible(.run90(.calls90(.m90ac)[1]))
+        identical(as.numeric(getOption(".jst_options_missing_convention_codes")), c(-99, -98, -97)) }))
+
+# --- I: jconvert()'s missing-to error (S337) ---------------------------------------------
+check("N90af the joptions() line stands alone as the message's last line, and parses; the choices are in the sentence",
+      local({ m <- .conv90("none", grab(jconvert(.spd90)))
+        endsWith(m, '\n  joptions(missing.convention = "stata")') &&
+          endsWith(.fl(m), 'choose a convention ("stata", "spss" or "sas"): joptions(missing.convention = "stata")') &&
+          !inherits(try(parse(text = 'joptions(missing.convention = "stata")'), silent = TRUE), "try-error") }))
+
+# --- J: every variable (S339) -------------------------------------------------------------
+check("N90ag jdeclare_missing() given no variables: \"every variable\" and \"use vars = names(...)\", with no \"column\", \"pass\" or \"explicitly\"",
+      local({ m <- .fl(.conv90("spss", grab(jdeclare_missing(.spd90, codes = -99))))
+        grepl("To apply one declaration to every variable, use vars = names(.spd90).", m, fixed = TRUE) &&
+          !grepl("every column|pass |explicitly", m) }))
+
+# --- K: names typed bare in vars = (S351; ruling R18) -------------------------------------
+.m90ah <- .conv90("stata", grab(jconvert(.pa90, to = "stata", vars = c(A, B), modify = TRUE)))
+check("N90ah jconvert(vars = c(A, B)) bare: the call rebuilt with the names after the data frame, every other argument kept (pinned whole)",
+      .pin90("N90ah", .m90ah))
+check("N90ai ... and the line runs: A and B convert, Q is left as it was",
+      local({ r <- .run90(.calls90(.conv90("stata", grab(jconvert(.pa90, to = "stata", vars = c(A, B)))))[1], "stata")
+        is.data.frame(r) && identical(r$Q, .pa90$Q) &&
+          any(haven::is_tagged_na(r$A)) && any(haven::is_tagged_na(r$B)) }))
+.m90aj <- .conv90("spss", grab(jdeclare_missing(.pa90, vars = A, codes = -99)))
+check("N90aj jdeclare_missing(vars = A): one bare name, the same stop (pinned whole)",
+      .pin90("N90aj", .m90aj))
+check("N90ak ... and its line runs: -99 declared on A",
+      local({ r <- .run90(.calls90(.m90aj)[1], "spss")
+        is.data.frame(r) && -99 %in% attr(r$A, "na_values") }))
+check("N90al a bare name the data frame lacks gets the not-found sentence (pinned whole)",
+      .pin90("N90al", .conv90("stata", grab(jconvert(.pa90, to = "stata", vars = c(A, Zed))))))
+check("N90am under a juse() default the names go first (pinned whole)",
+      .pin90("N90am", .under90(".pa90", .conv90("stata", grab(jconvert(to = "stata", vars = c(A, B)))))))
+.m90an <- .conv90("stata", grab(jconvert(.pa90, A, vars = "B", to = "stata")))
+check("N90an named both ways: said, and the call given with each variable named once after the data frame (pinned whole)",
+      .pin90("N90an", .m90an))
+check("N90ao ... and that line runs",
+      is.data.frame(.run90(.calls90(.m90an)[1], "stata")))
+check("N90ap a stored list of names still works: vars = .vars90 holding \"A\" and \"B\" declares on both",
+      local({ assign(".vars90", c("A", "B"), envir = globalenv())
+        on.exit(rm(".vars90", envir = globalenv()), add = TRUE)
+        r <- .conv90("spss", suppressMessages(jdeclare_missing(.pa90, vars = .vars90, codes = -99)))
+        -99 %in% attr(r$A, "na_values") && -99 %in% attr(r$B, "na_values") }))
+check("N90bd a workspace object named like a variable is never read: with A and B in the caller's environment holding names, vars = c(A, B) and vars = A get the same stops (ruling R18; found entering dirty)",
+      local({ A <- "Q"; B <- c("Q", "A")
+        identical(.conv90("stata", grab(jconvert(.pa90, to = "stata", vars = c(A, B), modify = TRUE))), .m90ah) &&
+          identical(.conv90("spss", grab(jdeclare_missing(.pa90, vars = A, codes = -99))), .m90aj) }))
+check("N90aq data given as an expression: the rebuilt line names mydata, after the line that makes it",
+      local({ .mk90 <- function() .pa90
+        m <- .conv90("stata", grab(jconvert(.mk90(), to = "stata", vars = c(A, B))))
+        grepl('\n  mydata <- .mk90()\n  jconvert(mydata, A, B, to = "stata")', m, fixed = TRUE) }))
+
+# --- L: one form for a value and its label; Pattern A's fix (S319) -----------------------
+.m90ar <- .conv90("none", grab(jconvert(.pa90, Q, to = "stata")))
+check("N90ar jconvert()'s Pattern A list in the bracketed form, and the line that declares it, convention = in it when no setting is chosen (pinned whole)",
+      .pin90("N90ar", .m90ar))
+check("N90as under to = \"baseR\" the lead says to run the conversion again; with no setting the line declares under spss",
+      grepl('To declare it as missing, then run the conversion again:\n  jdeclare_missing(.pa90, Q, codes = 9, convention = "spss", modify = TRUE)',
+            .conv90("none", grab(jconvert(.pa90, Q, to = "baseR"))), fixed = TRUE))
+check("N90at a setting that is the target: the line carries no convention =",
+      grepl("To declare it as missing:\n  jdeclare_missing(.pa90, Q, codes = 9, modify = TRUE)",
+            .conv90("stata", grab(jconvert(.pa90, Q, to = "stata"))), fixed = TRUE))
+check("N90au the line runs: Q's 9 becomes a marker, its label kept",
+      local({ e <- new.env(parent = globalenv())
+        .run90(grep("^jdeclare_missing\\(", .calls90(.m90ar), value = TRUE)[1], "none", e)
+        q <- get(".pa90", envir = e)$Q
+        any(haven::is_tagged_na(q)) && "Not asked" %in% names(labelled::val_labels(q)) }))
+check("N90av the load scan's label-only rows take the same form: -99 [\"Refused\"] (2)",
+      local({ f <- tempfile(fileext = ".sav")
+        haven::write_sav(data.frame(Q = haven::labelled(c(1, 2, -99, -99, 3), labels = c(Refused = -99))), f)
+        m <- .conv90("none", paste(utils::capture.output(invisible(grab(jload(f, name = ".ld90")))), collapse = "\n"))
+        if (exists(".ld90", envir = globalenv())) rm(".ld90", envir = globalenv())
+        grepl('Q:  -99 ["Refused"] (2)', m, fixed = TRUE) && !grepl('-99 "Refused"', m, fixed = TRUE) }))
+
+# --- M: the map values the data lack (S352) -------------------------------------------------
+check("N90aw two map values the data lack: one note naming both, at full (pinned whole)",
+      .pin90("N90aw", .lvl90("full", grab(jrecode(.x90, x, map = "1=0; 7=1; 8=2; 2=1; else=copy")))))
+check("N90ax one: in the singular, \"the map value 7\" and \"for it\"",
+      grepl("Note: 'x' did not contain the map value 7 -- nothing was recoded for it.",
+            .fl(.lvl90("full", grab(jrecode(.x90, x, map = "1=0; 7=1; else=copy")))), fixed = TRUE))
+
+# --- N: a label holding a quotation mark (S353) ----------------------------------------------
+.m90ay <- .conv90("stata", grab(jdeclare_missing(.qd90, V, codes = -99)))
+check("N90ay jdeclare_missing()'s marker refusal offers a labels string with the quotation marks escaped",
+      grepl('labels = ".b=Said \\"no\\""', .m90ay, fixed = TRUE))
+check("N90az ... and the line runs, .b labeled as the label was: Said \"no\"",
+      local({ e <- new.env(parent = globalenv()); .run90(.calls90(.m90ay)[1], "stata", e)
+        lab <- labelled::val_labels(get(".qd90", envir = e)$VR)
+        'Said "no"' %in% names(lab) && identical(haven::na_tag(unname(lab[names(lab) == 'Said "no"'])), "b") }))
+check("N90ba .jst_dq_escape(): a quotation mark and a backslash both survive the parser",
+      local({ x <- c('Said "no"', "a\\b", "plain")
+        identical(eval(parse(text = paste0("c(", paste0('"', .jst_dq_escape(x), '"', collapse = ", "), ")"))), x) }))
+check("N90bb .jst_marker_recode_line() escapes a label it is given",
+      grepl('labels = ".b=Said \\"no\\""', .jst_marker_recode_line(".qd90", "V", -99, "stata", "a", labels = 'Said "no"'), fixed = TRUE))
+rm(.spd90, .spd90b, .mix90, .hb90, .x90, .pa90, .qd90, .fd90, .fe90, .conv90, .lvl90,
+   .under90, .calls90, .run90, .pin90, .pins90, .parse90, .p90sas, .p90st,
+   list = ls(pattern = "^\\.m90", all.names = TRUE))
 
 # N88s (S353) -- RULING R5 OVER EVERY CONDITION THE BATTERY TOOK. Each call a
 # message printed at the pinned width (an indented line with the shape of a

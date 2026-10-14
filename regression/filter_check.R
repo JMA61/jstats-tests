@@ -142,6 +142,29 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S355 EDIT (v0.9.228, 2026-10-14): Fix Slate W1, the S352 item. SECTION X
+#           NEW, five checks (X01-X05): with no data frame named and no
+#           juse() default, a condition -- jsubset(Agee > 40) -- is said to
+#           need a data frame, where the resolver called it "not found" and
+#           asked whether it was meant as a variable name; a bare name keeps
+#           its question; in both, each call is on a line of its own, the
+#           default's two lines in the order they run; another function's
+#           computed input says the same; every call line parses (X05
+#           inside local(), so its working name never reaches the user's
+#           workspace). M39 and
+#           O23 RE-PINNED by running (the same message reached from section
+#           M's condition and section O's workspace vector). FOUR HUNDRED
+#           AND NINETY-FIVE checks. On the 0.9.227 master 7 red: M39, O23,
+#           X01-X05.
+#           MUTATION MAP (S355): the symbol test forced true (a condition
+#           read as a name again) M39 X01 X02 X04.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 495/495
+#           plain and under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, and entered dirty.
+#           LAST VERIFIED: v0.9.228, 2026-10-15 (S355) -- 495/495 on the
+#           WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2453 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub f89e83f.
 # S354 EDIT (v0.9.227, 2026-10-13): Fix Slate H, with the S243 call-form
 #           item's ruling A (jconvert's `to` behind the dots). I30
 #           REWRITTEN: jconvert(d$Age, "stata") -- a format name given
@@ -2452,10 +2475,12 @@ check("M38 another data-first function, the same kind of input its only one: the
       identical(grab(jcorr(mf$Age + 1)),
                 paste0("jcorr(): mf$Age + 1 names the mf data frame.\n",
                        "Name the data frame first, and each variable on its own.")))
-check("M39 control: a condition naming no frame keeps the not-found message and its two forms",
+check("M39 control: a condition naming no frame says it needs one -- not \"not found\", no variable-name question (S355, the S352 item) -- with the two forms, each call on a line of its own",
       { g <- grab(jsubset(Age > 40))
-        has(flat(g), "jsubset(): 'Age > 40' not found. Did you mean to use it as a variable name?") &&
-          has(g, "jsubset(MyData, Age > 40)") })
+        has(flat(g), "jsubset(): Age > 40 needs a data frame, and none was named or set as the default.") &&
+          !has(g, "not found") && !has(g, "variable name?") &&
+          has(g, "Name the data frame first:\n  jsubset(MyData, Age > 40)\n") &&
+          has(g, "Or set a default first, then run the call:\n  juse(MyData)\n  jsubset(Age > 40)") })
 reset()
 rm(mf, .mfns)
 
@@ -3021,9 +3046,9 @@ reset()
 
 # ---- O23-O25: the resolver's first sentence ---------------------------------
 .fo23 <- grab(jcorr(o_n))
-check("O23 jcorr(o_n), o_n a workspace vector, no default: 'is not a data frame', the question and both fix lines as before",
+check("O23 jcorr(o_n), o_n a workspace vector, no default: 'is not a data frame', the question, and both fixes with each call on a line of its own (S355)",
       has(flat(.fo23), "jcorr(): 'o_n' is not a data frame. Did you mean to use it as a variable name?") &&
-        has(.fo23, "name?\nIf so, provide the data frame: jcorr(MyData, o_n)\nOr set a default first with juse(MyData), then: jcorr(o_n)") &&
+        has(.fo23, "name?\nIf so, name the data frame first:\n  jcorr(MyData, o_n)\nOr set a default first, then run the call:\n  juse(MyData)\n  jcorr(o_n)") &&
         !has(.fo23, "not found"))
 .fo24 <- grab(jcorr(o_nowhere))
 check("O24 a name found nowhere is still 'not found'",
@@ -4160,6 +4185,52 @@ check("W04 nothing is stored by any of them",
         all(vapply(getOption(".jst_filter"), is.null, logical(1))))
 options(.jst_default_data = .w_def)
 rm(.w_def)
+reset()
+
+# =============================================================================
+# X -- NO DATA FRAME IN HAND: THE RESOLVER'S MESSAGE (S355, v0.9.228; the
+#      S352 item, Fix Slate W1)
+# =============================================================================
+# With no frame named and no juse() default, the shared resolver read a
+# condition -- jsubset(Agee > 40) -- as a name that was "not found" and asked
+# whether it was meant as a variable name, and both of its fixes sat inline
+# after colons. A condition is now said to need a data frame; a bare name keeps
+# its question; and in both, each call runs on a line of its own (Rule L), the
+# default's two lines in the order they are run. Names the workspace cannot
+# hold (.x90_nowhere) keep the calls clear of a user's objects. Run with no
+# default set; the default is put back after.
+.x_def <- getOption(".jst_default_data")
+options(.jst_default_data = NULL)
+.gx1 <- grab(jsubset(.x90_nowhere > 40))
+.gx2 <- grab(jcorr(.x90_nowhere))
+check("X01 a condition and no frame: it needs a data frame, the two ways given, each call on a line of its own (pinned whole)",
+      identical(.gx1, paste0(
+        "jsubset(): .x90_nowhere > 40 needs a data frame, and none was named\n",
+        "or set as the default.\n",
+        "Name the data frame first:\n",
+        "  jsubset(MyData, .x90_nowhere > 40)\n",
+        "Or set a default first, then run the call:\n",
+        "  juse(MyData)\n",
+        "  jsubset(.x90_nowhere > 40)")))
+check("X02 ... no \"not found\" and no variable-name question for a condition",
+      !has(.gx1, "not found") && !has(.gx1, "variable name"))
+check("X03 a bare name found nowhere keeps its question, and its fixes take lines of their own (pinned whole)",
+      identical(.gx2, paste0(
+        "jcorr(): '.x90_nowhere' not found. Did you mean to use it as a\n",
+        "variable name?\n",
+        "If so, name the data frame first:\n",
+        "  jcorr(MyData, .x90_nowhere)\n",
+        "Or set a default first, then run the call:\n",
+        "  juse(MyData)\n",
+        "  jcorr(.x90_nowhere)")))
+check("X04 another function's computed input says the same: jdesc(.x90_nowhere + 1) needs a data frame",
+      has(flat(grab(jdesc(.x90_nowhere + 1))),
+          "jdesc(): .x90_nowhere + 1 needs a data frame, and none was named or set as the default."))
+check("X05 every call line in both parses",
+      local({ ls <- grep("^  ", c(strsplit(.gx1, "\n", fixed = TRUE)[[1]], strsplit(.gx2, "\n", fixed = TRUE)[[1]]), value = TRUE)
+        length(ls) == 6L && all(vapply(ls, function(l) !inherits(try(parse(text = l), silent = TRUE), "try-error"), logical(1))) }))
+options(.jst_default_data = .x_def)
+rm(.x_def, .gx1, .gx2)
 reset()
 
 # =============================================================================

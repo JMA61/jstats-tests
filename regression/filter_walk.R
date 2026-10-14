@@ -31,7 +31,8 @@
 #           since S348 the default frame's variable (F1); since S349 a
 #           filter on a one-row frame, an input jsubset() does not have,
 #           and a setting made on an expression (G1-G3); since S352
-#           quiet = TRUE with no data frame in hand (G4);
+#           quiet = TRUE with no data frame in hand (G4); since S355 a
+#           condition, and a bare name, with no data frame in hand (G5);
 #           and Part E, the named-item detector: a
 #           top-level single = in jsubset() and in a variable list, the
 #           misspelled-input case it is told apart from, and the no-subset
@@ -41,6 +42,22 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S355 EDIT (v0.9.228): SECTION G5 ADDED -- 48 sections -> 49. Fix Slate
+#           W1 (the S352 item, met writing G4's notes): with no frame named
+#           and no juse() default, the resolver called a condition a name
+#           "not found" and asked whether it was a variable name, both fixes
+#           inline after colons. A condition is now said to need a data
+#           frame; a bare name keeps its question; each call is on a line
+#           of its own, the default's two lines in the order they run.
+#           Filled by running the file (fill.R). No existing Expected
+#           moved. harness.R verify: 56 of 56 Expected blocks found, 49 of
+#           49 sections in three orders and by prepare = TRUE; G5 needs no
+#           other section. The human half of filter_check.R section X.
+# LAST VERIFIED: v0.9.228, 2026-10-15 (S355) -- G5 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; GitHub f89e83f (package). Sandbox: every
+#           section through rewalk() as in a straight run, in three orders
+#           and by prepare = TRUE (harness.R verify).
 # S352 EDIT (v0.9.225): SECTION G4 ADDED -- 47 sections -> 48. Fix Slate 9,
 #           the first half (the S349 item): with no data frame named and no
 #           juse() default, quiet = TRUE beside a condition was still read
@@ -1494,6 +1511,51 @@ rm(.def_g4)
 #     meets the stop for a condition with no data frame (no default is set
 #     here).
 #   - Render 2: unchanged: a named input on its own keeps the single-= stop.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# G5 -- a condition with no data frame in hand (S355) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.228 (Fix Slate W1; the S352 item, met writing G4's notes). With no
+# frame named and no juse() default, the shared resolver called a condition
+# a name that was "not found" and asked whether it was meant as a variable
+# name, its two fixes inline after colons:
+#   jsubset(): 'Age > 40' not found. Did you mean to use it as a variable
+#   name?
+#   If so, provide the data frame: jsubset(MyData, Age > 40)
+#   Or set a default first with juse(MyData), then: jsubset(Age > 40)
+# A condition is now said to need a data frame; a bare name keeps its
+# question; each call is on a line of its own. The assertion side is
+# filter_check.R section X. Names the workspace cannot hold keep the calls
+# clear of the walker's own objects.
+.def_g5 <- getOption(".jst_default_data")
+options(.jst_default_data = NULL)
+
+caught(jsubset(.g5_Age > 40))
+caught(jcorr(.g5_Age))
+# Expected:
+#   Caught: jsubset(): .g5_Age > 40 needs a data frame, and none was named or
+#   set as the default.
+#   Name the data frame first:
+#     jsubset(MyData, .g5_Age > 40)
+#   Or set a default first, then run the call:
+#     juse(MyData)
+#     jsubset(.g5_Age > 40)
+#   Caught: jcorr(): '.g5_Age' not found. Did you mean to use it as a
+#   variable name?
+#   If so, name the data frame first:
+#     jcorr(MyData, .g5_Age)
+#   Or set a default first, then run the call:
+#     juse(MyData)
+#     jcorr(.g5_Age)
+options(.jst_default_data = .def_g5)
+rm(.def_g5)
+
+# Things to look at:
+#   - Render 1: "needs a data frame", no "not found" and no variable-name
+#     question; the two ways out, each call on a line of its own, the
+#     default's two lines in the order they are run;
+#   - Render 2: a bare name keeps "not found" and its question, with the
+#     same lines.
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations

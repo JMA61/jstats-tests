@@ -21,7 +21,34 @@
 #           cells or declared missing strings, the two "declare it" notes
 #           with no convention selected, and the declaration line a place
 #           is offered.
+#           Since S355 (N49): the NA rule's note on a variable a map made
+#           Stata-style or SAS-style, and the parse layer phrased by the
+#           setting.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S355 EDIT (v0.9.228, 2026-10-14): NEW N49 checks, seven (N49a-g), Fix
+#           Slate W1, jencode()'s twins of missing_convention_check.R N90:
+#           the no-target refusal, 'missing' quoted (S256); the parse layer
+#           phrased by the setting, the word missing among the new-value
+#           forms and the marker SAS-style under sas (S240, lean 2); and the
+#           NA rule's note on a variable a map made Stata-style or
+#           SAS-style (the S352 item), which offered a declaration that
+#           would take .a and be refused, now sends NA to a marker the map
+#           does not use -- pinned, the line run, under stata and sas; g,
+#           the control, keeps the declaration. N14 RE-PINNED: the shared
+#           new-value sentence now lists the word missing. ONE HUNDRED AND
+#           TWENTY-THREE checks. On the 0.9.227 master 7 red: N14, N49a-f.
+#           MUTATION MAP (S355; through missing_convention_check.R's map):
+#           the phrasing pinned to Stata N49b c; the NA note's marker line
+#           gone N49d e f; the word missing dropped from jencode()'s
+#           new-value sentence N14 N15 N49b (and missing_convention_check.R
+#           N90bc).
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 123/123
+#           plain and under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, and entered dirty.
+#           LAST VERIFIED: v0.9.228, 2026-10-15 (S355) -- 123/123 on the
+#           WORKSTATION under run_all.R ("ALL BATTERIES GREEN (8 run,
+#           2453 checks)") through receive_all(), after a clean R CMD
+#           check, matching the sandbox; GitHub f89e83f.
 # S353 EDIT (v0.9.226, 2026-10-12): Fix Slate 9, the second half (ruling
 #           R5, the layout of a long printed call; its own checks are
 #           missing_convention_check.R N88). jencode()'s offered maps are
@@ -574,8 +601,8 @@ g_rhs_e <- grab(jencode(tdat, Status, map = "Bail=oops"))
 # between "must" and "be". The assertion is about what the error SAYS, so it
 # must not pin where the line happens to break -- unlike N13 just above,
 # which pins a Rule L line on purpose and is deliberately NOT flattened.
-check("N14 invalid-target error keeps the shared sentence",
-      grepl("New values must be numeric, a system-NA alias", flat(g_rhs_e),
+check("N14 invalid-target error keeps the shared sentence (S355: the word missing among the forms)",
+      grepl("New values must be numeric, the word missing, a system-NA alias", flat(g_rhs_e),
             fixed = TRUE))
 
 .strip_fn <- function(x) sub("^j(en|re)code\\(\\): ", "", x)
@@ -1561,6 +1588,79 @@ check("N48e control: a map with no lettered marker keeps the word missing and th
           identical(sort(haven::na_tag(unclass(get("w48", envir = e1)$wR))), c("a", "b")) }))
 rm(list = intersect(c("w48", ".g48a", ".g48c", ".conv48", ".line48"),
                     ls(all.names = TRUE)))
+
+# =============================================================================
+# N49 (S355) -- FIX SLATE W1, jencode()'s TWINS. The no-target refusal with
+# its token quoted (the S256 item); the parse layer phrased by the setting
+# (the S240 item, lean 2: SAS-style under sas, "marker", the word missing
+# among the new-value forms); and the NA rule's note on a variable a map has
+# made Stata-style or SAS-style (the S352 item): with "Refused=.a" in the map
+# the declaration the note offered takes .a and is refused, so the note now
+# offers the NA rule sent to a marker the variable does not use -- the line
+# the D1 note (N48) and jrecode()'s twin give. Each offered line RUN.
+# missing_convention_check.R N90 holds the rest of the slate.
+# =============================================================================
+.e49 <- data.frame(R = c("Yes", "No", "Refused", NA, "Yes"), stringsAsFactors = FALSE)
+.conv49 <- function(cv, expr) {
+  old <- getOption(".jst_options_missing_convention")
+  options(.jst_options_missing_convention = cv)
+  on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+  force(expr)
+}
+# .line49(): the first offered call as printed, a laid-out call one block
+# (N48's .line48(), which N48 removes at its end).
+.line49 <- function(m) {
+  .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]],
+            shape = "^  [A-Za-z.][A-Za-z0-9._$]* *(\\(|<- )")[1]
+}
+.pin49 <- function(id, got) identical(got, .pins49[[id]])
+.pins49 <- list(
+  N49a = paste0(
+    "jencode(): labels names 'missing', but the map has no target for it.\n",
+    "Add 'missing' to the map (for example 'Refused=missing'), or label the\n",
+    "value directly."),
+  N49b = paste0(
+    "jencode(): Error in map argument: Invalid new value 'foo' in map\n",
+    "rule 'No=foo'. New values must be numeric, the word missing, a system-NA\n",
+    "alias (NA, System, or SYSMIS), or a SAS-style missing-value marker (.A\n",
+    "through .Z)."),
+  N49c = paste0(
+    "jencode(): Error in map argument: Invalid else action '.QQ' in map\n",
+    "argument. SAS-style missing-value markers are '.A' through '.Z' (one letter\n",
+    "after a period). The NA(a) longhand is not supported in the map argument."),
+  N49d = paste0(
+    "Note: 1 NA value in 'R' was encoded as -98.\n",
+    "To make that case missing, map NA to a Stata-style marker the encoded\n",
+    "variable does not use:\n",
+    "  .e49$RR <- jencode(.e49, R, map = \"Yes=1; No=2; Refused=.a; NA=.b\")\n",
+    "\n",
+    "Note: This call changes .e49 only if you assign the result:\n",
+    "  .e49$<name> <- jencode(...)\n",
+    "To check the encoding landed correctly, compare jfreq() on the original and\n",
+    "the new column.\n",
+    "")
+)
+check("N49a the no-target refusal: the token quoted three times, \"to label\" gone (pinned whole)",
+      .pin49("N49a", grab(jencode(.e49, R, map = "Yes=1; No=2; Refused=3", labels = "missing=Refused"))))
+check("N49b a new value that is no value, under sas: the word missing listed, the marker SAS-style (pinned whole)",
+      .pin49("N49b", .conv49("sas", grab(jencode(.e49, R, map = "Yes=1; No=foo")))))
+check("N49c a malformed else marker, under sas: SAS-style, '.A' through '.Z' (pinned whole)",
+      .pin49("N49c", .conv49("sas", grab(jencode(.e49, R, map = "Yes=1; else=.QQ")))))
+.g49d <- .conv49("stata", grab(jencode(.e49, R, map = "Yes=1; No=2; Refused=.a; NA=-98")))
+check("N49d the NA rule on a variable the map made Stata-style: the note offers NA sent to a marker it does not use (pinned whole)",
+      .pin49("N49d", .g49d))
+check("N49e ... and the line runs: the NA case becomes .b, Refused stays .a",
+      local({ e <- new.env(parent = globalenv()); assign(".e49", .e49, envir = e)
+        .conv49("stata", .runs(.line49(.g49d), e)) &&
+          identical(haven::na_tag(unclass(get(".e49", envir = e)$RR))[3:4], c("a", "b")) }))
+check("N49f under sas the marker is .B, SAS-style",
+      grepl("map NA to a SAS-style marker the encoded variable does not use:",
+            flat(.conv49("sas", grab(jencode(.e49, R, map = "Yes=1; No=2; Refused=.A; NA=-98")))), fixed = TRUE) &&
+        grepl("Refused=.A; NA=.B", .conv49("sas", grab(jencode(.e49, R, map = "Yes=1; No=2; Refused=.A; NA=-98"))), fixed = TRUE))
+check("N49g control: with no lettered marker in the map the note still says to declare the code",
+      grepl("Declare -98 with jdeclare_missing() so analyses exclude it.",
+            flat(.conv49("stata", grab(jencode(.e49, R, map = "Yes=1; No=2; Refused=3; NA=-98")))), fixed = TRUE))
+rm(.e49, .conv49, .line49, .pin49, .pins49, .g49d)
 
 # --- Restore session state ---------------------------------------------------
 # Placed ABOVE the verdict so a failing run still leaves the session clean.

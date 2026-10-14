@@ -24,7 +24,23 @@
 #           selected, and the declaration line a place is offered.
 #           Since S352 (Section 15): a map that gives a word a marker, and
 #           the D1 note's line to a marker the map does not use.
+#           Since S355 (Section 16): the NA rule's note on such a variable,
+#           and the parse layer phrased by the setting.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S355 EDIT (v0.9.228, 2026-10-14): SECTION 16 ADDED, two renders, for
+#           Fix Slate W1: the NA rule's note on a variable a map made
+#           Stata-style, which offered a declaration that would take .a
+#           and be refused, now sends NA to a marker the map does not use
+#           (the S352 item), the line run as printed; and under sas a right
+#           side that is no value, the word missing among the forms and
+#           the marker SAS-style (the S240 item, lean 2). Filled by running
+#           the file (fill.R). No existing Expected moved. harness.R
+#           verify: 28 of 28 Expected blocks found, 16 of 16 sections in
+#           three orders and by prepare = TRUE; Section 16 needs no other.
+#           The human half of jencode_check.R N49.
+#           LAST VERIFIED v0.9.228, 2026-10-15 (S355) -- Section 16 WALKED
+#           on the WORKSTATION through receive_all() ("walked, all okay");
+#           PENDING back to none; GitHub f89e83f (package).
 # S353 EDIT (v0.9.226, 2026-10-12): SECTIONS 2, 7, 9, 10, 14 AND 15
 #           RE-PINNED MECHANICALLY under ruling R5 (the layout of a long
 #           printed call; walked once, in missing_convention_walk.R
@@ -1462,6 +1478,55 @@ rm(r15d, r15)
 #   - one line where there were three, each of which stopped;
 #   - "a Stata-style marker the encoded variable does not use": the
 #     marker named in the line, .b, where the line said missing.
+
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 16 -- the NA rule on a marked variable; the parse layer (S355) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S355 (v0.9.228; Fix Slate W1). Section 15's twin for the NA rule: a
+# map with "Refused=.a" makes the encoded variable Stata-style, and the NA
+# rule's note said "Declare -98 with jdeclare_missing()" -- a declaration
+# that takes .a, refused since v0.9.218. The note now sends NA to a marker
+# the map does not use (the S352 item). And the parse layer phrased by the
+# setting (the S240 item): under sas a bad right side is named SAS-style.
+# Inline fixture; the assertion side is jencode_check.R N49a-g.
+
+r16d <- data.frame(Reply = c("Yes", "No", "Refused", NA, "Yes"),
+                   stringsAsFactors = FALSE)
+joptions(missing.convention = "stata", quiet = TRUE)
+
+# Render 1 -- the NA case to .b, Refused staying .a.
+r16 <- jencode(r16d, Reply, map = "Yes=1; No=2; Refused=.a; NA=-98")
+# Expected:
+#   Note: 1 NA value in 'Reply' was encoded as -98.
+#   To make that case missing, map NA to a Stata-style marker the encoded
+#   variable does not use:
+#     r16d$ReplyR <- jencode(r16d, Reply,
+#         map = "Yes=1; No=2; Refused=.a; NA=.b")
+#
+#   Note: This call changes r16d only if you assign the result:
+#     r16d$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 2 -- under sas, a right side that is no value: the word missing
+# among the forms, the marker SAS-style.
+joptions(missing.convention = "sas", quiet = TRUE)
+try(jencode(r16d, Reply, map = "Yes=1; No=maybe"))
+# Expected:
+#   Error : jencode(): Error in map argument: Invalid new value 'maybe' in map
+#   rule 'No=maybe'. New values must be numeric, the word missing, a system-NA
+#   alias (NA, System, or SYSMIS), or a SAS-style missing-value marker (.A
+#   through .Z).
+options(.jst_options_missing_convention = NULL)
+rm(r16d, r16)
+
+# Things to look at:
+#   - RENDER 1: one line that runs, where the note said to declare -98;
+#     "map NA to a Stata-style marker the encoded variable does not use";
+#   - RENDER 2: "SAS-style missing-value marker (.A through .Z)", and the
+#     word missing listed.
 
 
 
