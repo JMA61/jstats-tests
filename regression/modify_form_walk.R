@@ -16,6 +16,27 @@
 #           Since S352 also jsave() given an expression as the data
 #           (Section 19).
 # ORIGIN:   S229
+# EDITED:   S357 (v0.9.230; Fix Slate W2, the load, save and jai()
+#           wording). NEW SECTION 20, filled by running (fill.R): "R
+#           format" for .rds in the Loaded line and the format list, the
+#           shipped dataset's Loaded line without its period, Case 4's note
+#           of one variable ("this variable is"), the .RData redirect in one
+#           voice typed or bare, jsave()'s CSV note in each branch, jai()'s
+#           declined writes run with the question stubbed, and SKILL.md's
+#           AI-assistant paragraph beside AGENTS.md's. Sections re-pinned
+#           from captures of every section on 0.9.229 and 0.9.230
+#           (repin.py): 3 (Case 6 opens on "the clinic data frame", Rule
+#           T), 13 (the .RData redirect), 15 (Case 6; the CSV note's
+#           "missing values"), 17 (the shipped dataset's Loaded line) -- on
+#           the PENDING line, wording Claude chose. RE-PINNED MECHANICALLY,
+#           NOT ON THE PENDING LINE: Sections 1, 2, 4, 5 and 18 move only
+#           "R native format" to "R format" (Jeff, S357: "Rename to R
+#           format"; the re-pin taken as mechanical by default, his
+#           sub-question unanswered, Section 20 Render 1 the block that
+#           shows it), and Section 10 only its version stamp, v3.8, whose
+#           prose pin moved with it. harness.R survey: 0 of 20 sections
+#           differ isolated from the straight run, so no NEEDS line; 55 of
+#           56 Expected blocks found (Section 9's, as before).
 # EDITED:   S355 (v0.9.228; Fix Slate W1, the missing-value messages
 #           reworded). SECTIONS 4, 6, 9 AND 12 RE-PINNED from captures of
 #           every section on 0.9.227 and 0.9.228 (repin.py): the load
@@ -195,6 +216,16 @@
 #           f(NULL) would reach the sole-frame-or-STOP path with no default
 #           to resolve against. No Expected touched; confirmed in the walk
 #           below.
+# LAST VERIFIED: v0.9.231, 2026-10-16 (S357) -- Sections 3, 13, 15, 17
+#           and 20 WALKED on the WORKSTATION through receive_all() on
+#           v0.9.231, under the tool's default walk line: the v0.9.230
+#           walks were held to the end of the session, the plan for two
+#           builds in one, and v0.9.231 changes nothing this walk shows
+#           (every section captured on both builds, identical apart from
+#           temp paths). GitHub 72b0b4e and 2a4fcc3 (package). Sandbox:
+#           harness.R verify, 20 of 20 sections in three orders and by
+#           prepare = TRUE; 55 of 56 Expected blocks (Section 9's, as
+#           before). PENDING back to none.
 # LAST VERIFIED: v0.9.228, 2026-10-15 (S355) -- Sections 4, 6, 9 and 12
 #           WALKED on the WORKSTATION through receive_all() ("walked, all
 #           okay"), GitHub f89e83f (package), after the SANDBOX run (R
@@ -467,7 +498,7 @@ jload(f_mixed, name = "clinic", overwrite = TRUE)
 jload(f_plain, name = "clinic", overwrite = TRUE)
 
 # Expected:
-#   Loaded clinic (R native format; 3 cases, 2 variables)
+#   Loaded clinic (R format; 3 cases, 2 variables)
 #
 #   Missing-value codes detected:
 #     Rating:   -99 ["Refused"] (1)  [label-only -- not formally declared]
@@ -515,7 +546,7 @@ jload(f_plain, name = "clinic", overwrite = TRUE)
 jload(f_susp, name = "clinic", overwrite = TRUE)
 
 # Expected:
-#   Loaded clinic (R native format; 3 cases, 1 variable)
+#   Loaded clinic (R format; 3 cases, 1 variable)
 #
 #   Suspected missing-value codes detected:
 #     Contact:  -99 (1)
@@ -886,7 +917,7 @@ invisible(jdeclare_missing(plain_df2, Rating, codes = c(Refused = -99),
 # Expected: NEITHER form -- just the cross-session jsave tip. The change has
 # already landed on the frame, so saving is the only next rung.
 
-cat("\n--- the jai orientation body (v3.7) ---\n")
+cat("\n--- the jai orientation body (v3.8) ---\n")
 jai()
 
 # Expected, in the bullet beginning "Analysis functions print their results":
@@ -898,8 +929,10 @@ jai()
 #   - modify = TRUE now comes FIRST and is marked as the taught form
 #   - the assignment form is still present (an assistant has to recognize it
 #     in your code) but is now clearly secondary
-#   - the version stamp reads v3.7, not v3.6. If it still says 3.6, the
-#     orientation bump did not land.
+#   - the version stamp reads v3.8 (S357: SKILL.md's AI-assistant paragraph
+#     set to the body's width, Section 20; the console and AGENTS.md text
+#     is unchanged). If it still says 3.7, the orientation bump did not
+#     land.
 #
 # S283 (v3.7): the retired-vocabulary finding this file carried since S268
 # is CLOSED. Read the body for these, all in the S283 rewrite:
@@ -1176,8 +1209,9 @@ try(jload("zz13.csv", name = "2b"))
 cat("\n--- an .RData file ---\n")
 try(jload("x13.RData"))
 # Expected:
-#   Error : jload(): .RData files can contain multiple named objects.
-#   Use load("x13.RData") to load these directly.
+#   Error : jload(): x13.RData is an .RData file, which jstats does not load.
+#   Load it with base R:
+#     load("x13.RData")
 
 options(.jst_default_data = .def13)
 setwd(.wd13)
@@ -1299,7 +1333,7 @@ cat("--- Case 4: the setting says \"stata\" ---\n")
 joptions(missing.convention = "stata", quiet = TRUE)
 jload(f15, name = "ds15", overwrite = TRUE, missing.notice = TRUE)
 # Expected:
-#   Loaded ds15 (R native format; 6 cases, 3 variables)
+#   Loaded ds15 (R format; 6 cases, 3 variables)
 #
 #   3 variables have SPSS-style missing values:
 #     Source: X ["Refused"], Y ["Don't know"]
@@ -1336,7 +1370,7 @@ cat("\n--- Case 7: the setting says \"spss\", the frame holds a Stata-style vari
 joptions(missing.convention = "spss", quiet = TRUE)
 jload(fm15, name = "mx15", overwrite = TRUE, missing.notice = TRUE)
 # Expected:
-#   Loaded mx15 (R native format; 6 cases, 4 variables)
+#   Loaded mx15 (R format; 6 cases, 4 variables)
 #
 #   4 variables have missing values (3 SPSS-style, 1 Stata-style):
 #     Source: X ["Refused"], Y ["Don't know"]
@@ -1356,14 +1390,14 @@ cat("\n--- Case 6: no setting ---\n")
 joptions(missing.convention = "none", quiet = TRUE)
 jload(fm15, name = "mx15", overwrite = TRUE, missing.notice = TRUE)
 # Expected:
-#   Loaded mx15 (R native format; 6 cases, 4 variables)
+#   Loaded mx15 (R format; 6 cases, 4 variables)
 #
 #   4 variables have missing values (3 SPSS-style, 1 Stata-style):
 #     Source: X ["Refused"], Y ["Don't know"]
 #     Income: -99 ["Refused"], -98 ["Don't know"]
 #     Visits: -99 ["Refused"]
 #     Mood: .a ["Refused"]
-#   Note: mx15 mixes SPSS-style and Stata-style missing values.
+#   Note: the mx15 data frame mixes SPSS-style and Stata-style missing values.
 #   To use SPSS-style throughout, run both:
 #     jconvert(mx15, to = "spss", modify = TRUE)
 #     joptions(missing.convention = "spss")
@@ -1422,8 +1456,8 @@ setwd(.wd15)
 # Expected:
 #   Note: CSV format (.csv) does not store variable labels, value labels, or
 #   missing-value metadata.
-#   Any SPSS-style missing-value codes are written as ordinary values and will
-#   read back as valid data.
+#   Any SPSS-style missing values are written as ordinary values and will read
+#   back as valid data.
 #   Alternatively, use jsave(..., preserve.declarations = FALSE) to blank them
 #   to empty cells instead.
 
@@ -1596,7 +1630,7 @@ suppressMessages(jsave(reg17, "reg17.rds", overwrite = TRUE))
 cat("--- the narrative under it ---\n")
 jload("clinic.rds", name = "r17", overwrite = TRUE, missing.notice = TRUE)
 # Expected:
-#   Loaded r17 (R native format; 4 cases, 2 variables)
+#   Loaded r17 (R format; 4 cases, 2 variables)
 #
 #   2 variables have SPSS-style missing values:
 #     Income: -99 ["Refused"], -98 ["Don't know"]
@@ -1613,18 +1647,18 @@ jload("reg17.rds", name = "s17", overwrite = TRUE, use = TRUE, missing.notice = 
 #
 #   Default data frame set to: s17
 #
-#   Loaded s17 (R native format; 4 cases, 2 variables)
+#   Loaded s17 (R format; 4 cases, 2 variables)
 
 cat("\n--- the line alone ---\n")
 jload("clinic.rds", name = "r17", overwrite = TRUE, missing.notice = FALSE)
 # Expected:
-#   Loaded r17 (R native format; 4 cases, 2 variables)
+#   Loaded r17 (R format; 4 cases, 2 variables)
 
 cat("\n--- the shipped dataset ---\n")
 jload("community", name = "c17", package = TRUE, overwrite = TRUE,
       missing.notice = TRUE)
 # Expected:
-#   Loaded the jstats example dataset 'community'.
+#   Loaded the jstats example dataset 'community'
 #
 #   5 variables have SPSS-style missing values:
 #     Income: -99 ["Refused"], -98 ["Don't know"]
@@ -1672,7 +1706,7 @@ joptions(missing.convention = "spss", quiet = TRUE)
 cat("--- four Stata-style variables ---\n")
 jload(fw18, name = "w18", overwrite = TRUE, missing.notice = TRUE)
 # Expected:
-#   Loaded w18 (R native format; 4 cases, 5 variables)
+#   Loaded w18 (R format; 4 cases, 5 variables)
 #
 #   5 variables have missing values (1 SPSS-style, 4 Stata-style):
 #     Income: -99 ["Refused"], -98 ["Don't know"]
@@ -1691,7 +1725,7 @@ jload(fw18, name = "w18", overwrite = TRUE, missing.notice = TRUE)
 cat("\n--- three ---\n")
 jload(fw18b, name = "w18b", overwrite = TRUE, missing.notice = TRUE)
 # Expected:
-#   Loaded w18b (R native format; 4 cases, 4 variables)
+#   Loaded w18b (R format; 4 cases, 4 variables)
 #
 #   4 variables have missing values (1 SPSS-style, 3 Stata-style):
 #     Income: -99 ["Refused"], -98 ["Don't know"]
@@ -1781,6 +1815,184 @@ rm(oc19, cx19)
 #   - the sentences above the lines keep the expression as typed
 #     ("This variable in oc19["X"] has more:"), as the header does.
 
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 20 -- Fix Slate W2: load, save and jai() wording (S357) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S357 (v0.9.230; Fix Slate W2, eight logged wording items). The ones
+# this walk owns, as they now read. Section 3 shows Case 6's note in place,
+# opening on "the clinic data frame" (Rule T).
+#   Render 1 -- "R format" for .rds, the name the save reminders have used
+#   since Session 91 (Jeff, S357: "Rename to R format"). Every other block
+#   of this walk that shows a Loaded line was re-pinned to it mechanically.
+#   Render 2 -- the shipped dataset's Loaded line ends as the file branch's
+#   does, with no period.
+#   Render 2b -- Case 4's note agrees with its count: "this variable is"
+#   after "1 variable has" (Section 2's frame has two).
+#   Render 3 -- the .RData redirect in one voice, typed or bare.
+#   Render 4 -- jsave()'s CSV note: one sentence a line, "missing values"
+#   where it said "missing-value codes", the blanked count in number.
+#   Render 5 -- jai() declined: after a declined REPLACE, only "Nothing was
+#   written."; a declined CREATE keeps the line about another folder.
+#   Render 6 -- SKILL.md's AI-assistant paragraph, set to the body's width.
+# The assertion side is missing_convention_check.R N92a-m.
+.wd20 <- getwd(); setwd(.walkdir)
+s20 <- data.frame(Income = spss_df$Income, Mood = c(stata_df$Mood, NA))
+saveRDS(spss_df["Income"], "s20.rds")
+
+# Render 1 -- an .rds file loaded, and the formats jload() reads.
+jload("s20.rds", name = "l20", overwrite = TRUE, missing.notice = FALSE)
+try(jload("s20.zzz"))
+# Expected:
+#   Loaded l20 (R format; 4 cases, 1 variable)
+#   Error : jload(): Unsupported file extension '.zzz'. Supported formats:
+#     .sav       SPSS
+#     .dta       Stata
+#     .sas7bdat  SAS
+#     .xpt       SAS interchange
+#     .xlsx      Excel
+#     .xls       Excel (legacy)
+#     .csv       Comma-separated values
+#     .rds       R
+
+# Render 2 -- the shipped dataset.
+jload("community", name = "cm20", package = TRUE, overwrite = TRUE,
+      missing.notice = FALSE)
+# Expected:
+#   Loaded the jstats example dataset 'community'
+
+# Render 2b -- one SPSS-style variable loaded under a stata setting.
+joptions(missing.convention = "stata", quiet = TRUE)
+jload("s20.rds", name = "l20", overwrite = TRUE, missing.notice = TRUE)
+joptions(missing.convention = "none", quiet = TRUE)
+# Expected:
+#   Loaded l20 (R format; 4 cases, 1 variable)
+#
+#   1 variable has SPSS-style missing values:
+#     Income: -99 ["Refused"], -98 ["Don't know"]
+#   Note: this variable is SPSS-style, but your missing.convention setting
+#   is "stata".
+#   To use SPSS-style missing values, run:
+#     joptions(missing.convention = "spss")
+#   To use Stata-style missing values, run:
+#     jconvert(l20, to = "stata", modify = TRUE)
+
+# Render 3 -- an .RData file, typed with its extension and without.
+save(s20, file = "r20.RData")
+try(jload("r20.RData"))
+try(jload("r20"))
+# Expected:
+#   Error : jload(): r20.RData is an .RData file, which jstats does not load.
+#   Load it with base R:
+#     load("r20.RData")
+#   Error : jload(): No file found matching 'r20' with any supported extension.
+#   r20.RData is an .RData file, which jstats does not load.
+#   Load it with base R:
+#     load("r20.RData")
+
+# Render 4 -- jsave()'s note for a CSV file: SPSS-style, Stata-style, both,
+# and with preserve.declarations = FALSE. (The Saved lines under each name
+# a temporary folder; only the notes are pinned.)
+invisible(jsave(s20["Income"], "s20a.csv", overwrite = TRUE))
+# Expected:
+#   Note: CSV format (.csv) does not store variable labels, value labels, or
+#   missing-value metadata.
+#   Any SPSS-style missing values (e.g. -99) are written as literal numbers and
+#   will read back as ordinary values.
+#   Alternatively, use jsave(..., preserve.declarations = FALSE) to blank them
+#   to empty cells instead.
+invisible(jsave(s20["Mood"], "s20b.csv", overwrite = TRUE))
+# Expected:
+#   Note: CSV format (.csv) does not store variable labels, value labels, or
+#   missing-value metadata.
+#   Stata-style missing values (.a, .b, ...) are written as blank cells; the
+#   distinction between them is not preserved.
+invisible(jsave(s20, "s20c.csv", overwrite = TRUE))
+# Expected:
+#   Note: CSV format (.csv) does not store variable labels, value labels, or
+#   missing-value metadata.
+#   Declared missing values lose their missing status, which may result in them
+#   being written as ordinary numbers.
+#   Alternatively, use jsave(..., preserve.declarations = FALSE) to blank them
+#   to empty cells instead.
+invisible(jsave(spss_df["Education"], "s20d.csv", overwrite = TRUE,
+                preserve.declarations = FALSE))
+# Expected:
+#   Note: CSV format (.csv) does not store variable labels or value labels.
+#   1 cell holding a declared missing value was blanked
+#   (preserve.declarations = FALSE).
+
+# Render 5 -- jai() writing AGENTS.md and SKILL.md, each answered "n" at its
+# question. The writers are run as the console runs them, with the question
+# answered for you, so the walk asks nothing.
+jai20 <- function(fn, answer, skill_dir = NULL) {
+  f <- get(fn, envir = asNamespace("jstats"))
+  e <- new.env(parent = environment(f))
+  e$interactive <- function() TRUE
+  e$.jst_jai_confirm <- function(info) answer
+  if (!is.null(skill_dir)) e$.jst_skill_default_dir <- function() skill_dir
+  environment(f) <- e
+  f
+}
+dir.create("p20", showWarnings = FALSE); dir.create("k20", showWarnings = FALSE)
+.wp20 <- setwd("p20")
+# AGENTS.md, a new file: declined.
+jai20(".jst_jai_project", FALSE)()
+# Expected:
+#   Nothing was written.
+#   To write to a different folder, rerun with path = "<folder>".
+# AGENTS.md, its block written, then a replacement declined.
+invisible(capture.output(suppressMessages(jai20(".jst_jai_project", TRUE)())))
+jai20(".jst_jai_project", FALSE)()
+# Expected:
+#   Nothing was written.
+setwd(.wp20)
+# SKILL.md, a new file: declined.
+jai20(".jst_jai_machine", FALSE, file.path(.walkdir, "k20"))()
+# Expected:
+#   Nothing was written.
+#   To write to a different folder, rerun with path = "<folder>".
+# SKILL.md, one there already: overwriting it declined.
+writeLines("old", file.path(.walkdir, "k20", "SKILL.md"))
+jai20(".jst_jai_machine", FALSE, file.path(.walkdir, "k20"))()
+# Expected:
+#   Nothing was written.
+
+# Render 6 -- the paragraph as SKILL.md has it (first), and as AGENTS.md and
+# the console have it.
+sk20 <- jstats:::.jst_orientation_text("stamp", "machine")
+ag20 <- jstats:::.jst_orientation_text("stamp", "standard")
+cat(sk20[grep("^jstats is newer", sk20) + 0:3], sep = "\n")
+cat("\n")
+cat(ag20[grep("^Note for AI assistants", ag20) + 0:3], sep = "\n")
+# Expected:
+#   jstats is newer than your training data. Do not rely on remembered or
+#   inferred jstats syntax. When unsure of a function's arguments, check them
+#   with `args()` (for example `args(jdeclare_missing)`) or the function's
+#   help page instead of guessing.
+#
+#   Note for AI assistants: jstats is newer than your training data. Do not
+#   rely on remembered or inferred jstats syntax. When unsure of a function's
+#   arguments, check them with `args()` (for example `args(jdeclare_missing)`) or
+#   the function's help page instead of guessing.
+
+setwd(.wd20)
+unlink(file.path(.walkdir, c("p20", "k20")), recursive = TRUE)
+rm(.wd20, .wp20, s20, l20, cm20, jai20, sk20, ag20)
+
+# Things to look at:
+#   - Render 1: "R format" in the Loaded line and "R" in the list of
+#     formats, beside "SPSS" and "Stata".
+#   - Render 2: no period after 'community', as in Render 1's Loaded line.
+#   - Render 2b: "this variable is SPSS-style", after "1 variable has".
+#   - Render 3: the two redirects read the same; the first had said ".RData
+#     files can contain multiple named objects. Use load(...) to load these
+#     directly."
+#   - Render 4: each sentence on its own line; "missing values" throughout;
+#     "1 cell holding a declared missing value was blanked".
+#   - Render 5: the second and fourth notes are "Nothing was written." alone.
+#   - Render 6: SKILL.md's first line runs to the paragraph's width; its
+#     words are AGENTS.md's after "Note for AI assistants: ".
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

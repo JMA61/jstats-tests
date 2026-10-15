@@ -81,6 +81,60 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S357 EDIT (v0.9.231, 2026-10-16): the FRAMES slate, ruling R19 -- data
+#           frames only. NEW SECTION T, ten checks (T01-T10): a one-per-case
+#           object read by any function of a term (I(a2), log(), factor(),
+#           a function of the user's) stops, with the line that adds it and
+#           the call, the lines run and fit as lm(); a VALUE passes (one
+#           value, a set with %in%, a lookup, a summary, a value through $);
+#           an object fetched through $, [[ ]] and an environment, added
+#           under its last name; jt(), jaov(), jlogistic(); jcrosstab() and
+#           jplot()'s formula path ahead of their computed-term refusal; a
+#           vector written in the formula and rnorm() not objects; one value
+#           per case LEFT after filtering (its count, no line); a juse()
+#           default and a frame given as an expression; .jst_frame_object()
+#           as a unit. FLIPPED: J06 (a one-per-row vector, accepted as
+#           lm() takes it, now stops) and S14 (a numeric object through $,
+#           computed as lm() does, now stops; its printed lines fit lm()'s
+#           coefficient on the added column). RE-PINNED: I11, J01-J04,
+#           J07-J13, M37 (the recycling stop's R19 opening and
+#           requirement), J15 (lm() the oracle: the saved draw is now
+#           refused), S12-S13 (a fetched factor: R19's stop, the column
+#           under the next free name, where the S356 guard said the term
+#           produces a categorical variable). FOUR HUNDRED AND THIRTY-SIX
+#           checks.
+#           MUTATION MAP: eighteen one-change mutants of the 0.9.231
+#           master, each run on this battery and its partner (models_check.R
+#           / filter_check.R): %in%'s right side not a value position T03
+#           T10 Z05; summaries not exempt T03 T10 Z05; the lookup table not
+#           exempt T10; a fetch not judged S12-S14 T04 T06 T10 N41 Z03 Z07;
+#           per case of the frame only T08 N47; a bare name never visited
+#           T10 N38 N39 N45 Z03; the formula check not called J06-J09
+#           S12-S14 T01 T02 T04 T05 T08 T09; jcrosstab()'s and jplot()'s
+#           check removed T06 (each); the filter mask's check off M30 M31
+#           N33-N41 N43-N47 Z01-Z04 Z08; the vector path's check off Z06
+#           Z07; no free name S12-S14; the call line omitted J06 J07
+#           S12-S14 T02 T04 T06 T09 M30 N38-N41 N44 N45 Z01-Z03 Z08; the
+#           recycling stop's old wording I11 J01-J04 J10-J13 M37 M24-M29
+#           N42; the after-filter requirement dropped T08 N47; "The filter
+#           stays off." dropped N36 Z04; a literal judged as an object J12;
+#           the stored recycling reason's old form M32 N07 N30 N49.
+#           Sandbox: R 4.3.3, UTF-8 locale, pkgload::load_all: run_all.R 2559 across
+#           eight plain and under the RStudio-handler stand-in, each again
+#           with a 35-character temp path; R CMD check Status OK on a
+#           roxygenised copy. Entered dirty, plain and under the stand-in,
+#           beside the same entry on 0.9.230: filter_check.R reds I07 I08
+#           I22 S26 (the Scripts Slate B items) as before and models_check.R
+#           nothing; the workspace objects changed are 0.9.230's; the filter
+#           store is left an empty list where it was NULL (jsubset(d, NULL)
+#           on the last filter, which section Z runs; empty either way).
+#           LAST VERIFIED: v0.9.231, 2026-10-16 (S357) -- 436/436 on the
+#           WORKSTATION through receive_all(from = "batteries") ("ALL
+#           BATTERIES GREEN (8 run, 2559 checks)"), matching the sandbox;
+#           GitHub 2a4fcc3. The first call ran the S356 script
+#           (408/426, the eighteen checks ruling R19 flips or
+#           re-pins red):
+#           the scripts were not yet in regression\.
 # S356 EDIT (v0.9.229, 2026-10-15): the NAMES slate (ruling R18) on the
 #           formula functions. SECTION S ADDED, S01-S15 (15 checks). (b) A
 #           term in quotes -- jt(y ~ "g", d), the outcome in jaov(), a term
@@ -1935,7 +1989,7 @@ check("I10 a BARE name stays a variable: a workspace constant on its own is refu
 # keeps reachable through a call the check does not run (rev()).
 check("I11 a workspace vector of the wrong length stops at the front door (S324), naming it",
       .i_has(flat(grab(jlm(y ~ I(x1 * long_i), data = d))),
-          "jlm(): In I(x1 * long_i), long_i has 125 values for the 120 cases in the d data frame."))
+          "jlm(): In I(x1 * long_i), long_i is not in the d data frame; it is a separate object in your workspace. It has 125 values for the 120 cases in the d data frame."))
 
 # -- A named power: I(x1^pw_i) reads as I(x1^2) ----------------------------
 .i12a <- quiet(jlm(y ~ x1 + I(x1^pw_i), data = d))
@@ -2088,10 +2142,15 @@ lv_j   <- c(TRUE, FALSE, TRUE)
 l_j    <- list(w = c(1, 2, 3), s = 2)
 long_j <- seq_len(.nrow + 5L)
 .j_has <- function(txt, needle) isTRUE(grepl(needle, flat(txt), fixed = TRUE))
+# Re-pinned S357 (ruling R19): a workspace object opens as R19's message
+# does, and the requirement says to add the values to the data frame.
 .j_req <- function(fn, term, op, n, where) {
-  paste0(fn, "(): In ", term, ", ", op, " has ", n, " values for the ", where,
-         ". Use a single value, or one value for each case.")
+  paste0(fn, "(): In ", term, ", ", op, " is not in the d data frame; it is a ",
+         "separate object in your workspace. It has ", n, " values for the ",
+         where, ". Use a single value, or add the values to the data frame as ",
+         "a variable.")
 }
+.j_obj <- function(term, op) paste0("In ", term, ", ", op, " is not in the d data frame")
 .j_in_d <- "120 cases in the d data frame"
 
 check("J01 jlm(): a vector of 3 values used value by value stops, naming the term, the vector and its length",
@@ -2104,12 +2163,12 @@ check("J02 a length R would warn about stops the same way, before R's warning",
 check("J03 a comparison stops, in jt, jaov and jlogistic too, each naming itself",
       .j_has(grab(jlm(y ~ I(x1 > v3_j), data = d)),
              .j_req("jlm", "I(x1 > v3_j)", "v3_j", 3, .j_in_d)) &&
-        .j_has(grab(jt(y ~ I(x1 > v3_j), data = d)), "jt(): In I(x1 > v3_j), v3_j has 3 values") &&
-        .j_has(grab(jaov(I(y * v3_j) ~ g, data = d)), "jaov(): In I(y * v3_j), v3_j has 3 values") &&
+        .j_has(grab(jt(y ~ I(x1 > v3_j), data = d)), paste0("jt(): ", .j_obj("I(x1 > v3_j)", "v3_j"))) &&
+        .j_has(grab(jaov(I(y * v3_j) ~ g, data = d)), paste0("jaov(): ", .j_obj("I(y * v3_j)", "v3_j"))) &&
         .j_has(grab(jlogistic(yb ~ I(x1 * v3_j), data = d)),
-               "jlogistic(): In I(x1 * v3_j), v3_j has 3 values"))
+               paste0("jlogistic(): ", .j_obj("I(x1 * v3_j)", "v3_j"))))
 check("J04 the outcome's side is checked too",
-      .j_has(grab(jt(I(y * v3_j) ~ lg, data = d)), "jt(): In I(y * v3_j), v3_j has 3 values"))
+      .j_has(grab(jt(I(y * v3_j) ~ lg, data = d)), paste0("jt(): ", .j_obj("I(y * v3_j)", "v3_j"))))
 check("J05 a single value, a set with %in%, a lookup by a variable and a summary of a vector are accepted, each fitting as lm() does",
       { fmls <- list(quote(y ~ I(x1 > s_j)), quote(y ~ I(nm %in% set_j)),
                      quote(y ~ I(x1 * w_j[nm / 10])), quote(y ~ I(x1 - max(v3_j))))
@@ -2119,20 +2178,23 @@ check("J05 a single value, a set with %in%, a lookup by a variable and a summary
           !is.null(m) && near(m$coefficients_raw$b[2],
                               unname(coef(stats::lm(f, data = d))[2]))
         }, logical(1))) })
-check("J06 a vector with one value per row is accepted, and fits as lm() does",
-      near(b_of(quiet(jlm(y ~ I(x1 * v120_j), data = d)), "I(x1 * v120_j)"),
-           coef(stats::lm(y ~ I(x1 * v120_j), data = d))[[2]]))
+# J06 FLIPPED at S357 (ruling R19): a vector with one value per row was
+# accepted and fitted as lm() fits it; it now stops, with the line that adds
+# it to the frame and the call -- which, run, fit as lm() does (J08).
+.j06 <- grab(jlm(y ~ I(x1 * v120_j), data = d))
+check("J06 a vector with one value per row STOPS (ruling R19; it was accepted, as lm() takes it): not in the data frame, a separate object, the line that adds it and the call",
+      .j_has(.j06, paste0("jlm(): ", .j_obj("I(x1 * v120_j)", "v120_j"),
+                          "; it is a separate object in your workspace. jstats analyzes the variables of a data frame.")) &&
+        endsWith(.j06, "\nAdd it to the data frame first:\n  d$v120_j <- v120_j\n  jlm(y ~ I(x1 * v120_j), data = d)"))
 .j07 <- grab(jlm(y ~ I(x1 * v120_j), data = d, subset = nm > 10))
-check("J07 under subset =, a vector with one value per row of the frame stops with the add-it-to-the-frame form, its fix on its own line",
-      .j_has(.j07, paste0("jlm(): In I(x1 * v120_j), v120_j has 120 values, one for ",
-                          "each case in the d data frame, but filtering leaves 80. ",
-                          "Add v120_j to the d data frame as a variable: ",
-                          "d$v120_j <- v120_j")) &&
-        endsWith(.j07, "80.\nAdd v120_j to the d data frame as a variable:\n  d$v120_j <- v120_j"))
+check("J07 under subset =, a vector with one value per row of the frame: the same stop, the call keeping its subset = (it gave the S324 count, 'filtering leaves 80')",
+      .j_has(.j07, paste0("jlm(): ", .j_obj("I(x1 * v120_j)", "v120_j"))) &&
+        endsWith(.j07, "\nAdd it to the data frame first:\n  d$v120_j <- v120_j\n  jlm(y ~ I(x1 * v120_j), data = d, subset = nm > 10)") &&
+        !.j_has(.j07, "leaves 80"))
 check("J08 ... and that line, run as printed, lets the same call fit, as lm() fits it",
       { ln <- strsplit(.j07, "\n", fixed = TRUE)[[1]]
-        fx <- if (length(ln)) ln[length(ln)] else ""
-        ok <- grepl("^  d\\$v120_j <- ", fx)
+        fx <- ln[grepl("^  d\\$v120_j <- ", ln)][1]
+        ok <- !is.na(fx)
         if (ok) eval(parse(text = trimws(fx)), envir = globalenv())
         m  <- quiet(jlm(y ~ I(x1 * v120_j), data = d, subset = nm > 10))
         r  <- ok && "v120_j" %in% names(d) &&
@@ -2140,44 +2202,45 @@ check("J08 ... and that line, run as printed, lets the same call fit, as lm() fi
                coef(stats::lm(y ~ I(x1 * v120_j), data = d, subset = nm > 10))[[2]])
         d$v120_j <- NULL
         r })
-check("J09 a stored jsubset() and a stored jcomplete() cut the frame down the same way",
+check("J09 a stored jsubset() and a stored jcomplete(): the same stop (it gave each one's count until S357)",
       { a <- with_state(quiet(jsubset(d, nm > 10)),
                         grab(jlm(y ~ I(x1 * v120_j), data = d)),
                         quiet(jsubset(d, NULL)))
         b <- with_state(quiet(jcomplete(d, xa)),
                         grab(jlm(y ~ I(x1 * v120_j), data = d)),
                         quiet(jcomplete(d, NULL)))
-        .j_has(a, "v120_j has 120 values, one for each case in the d data frame, but filtering leaves 80.") &&
-          .j_has(b, "v120_j has 120 values, one for each case in the d data frame, but filtering leaves 90.") })
+        .j_has(a, .j_obj("I(x1 * v120_j)", "v120_j")) && .j_has(a, "d$v120_j <- v120_j") &&
+          .j_has(b, .j_obj("I(x1 * v120_j)", "v120_j")) && .j_has(b, "d$v120_j <- v120_j") })
 check("J10 any other length under a filter takes the requirement, with the count left after filtering",
       identical(flat(grab(jlm(y ~ I(x1 * v3_j), data = d, subset = nm > 10))),
                 .j_req("jlm", "I(x1 * v3_j)", "v3_j", 3, "80 cases left after filtering")))
 check("J11 inside parentheses, under a unary minus, inside log() and as a power, the vector is found and named",
-      .j_has(grab(jlm(y ~ I(x1 * (v3_j + 1)), data = d)), "In I(x1 * (v3_j + 1)), v3_j has 3 values") &&
-        .j_has(grab(jlm(y ~ I(x1 * -v3_j), data = d)), "In I(x1 * -v3_j), v3_j has 3 values") &&
-        .j_has(grab(jlm(y ~ log(abs(x1) + v3_j), data = d)), "In log(abs(x1) + v3_j), v3_j has 3 values") &&
-        .j_has(grab(jlm(y ~ I(x1^p2_j), data = d)), "In I(x1^p2_j), p2_j has 2 values"))
+      .j_has(grab(jlm(y ~ I(x1 * (v3_j + 1)), data = d)), .j_obj("I(x1 * (v3_j + 1))", "v3_j")) &&
+        .j_has(grab(jlm(y ~ I(x1 * -v3_j), data = d)), .j_obj("I(x1 * -v3_j)", "v3_j")) &&
+        .j_has(grab(jlm(y ~ log(abs(x1) + v3_j), data = d)), .j_obj("log(abs(x1) + v3_j)", "v3_j")) &&
+        .j_has(grab(jlm(y ~ I(x1^p2_j), data = d)), .j_obj("I(x1^p2_j)", "p2_j")))
 check("J12 a literal vector, 1:5, a list element by $ and by [[ ]], and a logical vector with & and ! stop too",
       .j_has(grab(jlm(y ~ I(x1 * c(1, 2, 3)), data = d)), "c(1, 2, 3) has 3 values") &&
         .j_has(grab(jlm(y ~ I(x1 * 1:5), data = d)), "In I(x1 * 1:5), 1:5 has 5 values") &&
-        .j_has(grab(jlm(y ~ I(x1 * l_j$w), data = d)), "l_j$w has 3 values") &&
-        .j_has(grab(jlm(y ~ I(x1 * l_j[["w"]]), data = d)), "l_j[[\"w\"]] has 3 values") &&
-        .j_has(grab(jlm(y ~ I(x1 > 0 & lv_j), data = d)), "lv_j has 3 values") &&
-        .j_has(grab(jlm(y ~ I(x1 > 0 & !lv_j), data = d)), "lv_j has 3 values") &&
+        .j_has(grab(jlm(y ~ I(x1 * l_j$w), data = d)), "l_j$w is not in the d data frame") &&
+        .j_has(grab(jlm(y ~ I(x1 * l_j[["w"]]), data = d)), "l_j[[\"w\"]] is not in the d data frame") &&
+        .j_has(grab(jlm(y ~ I(x1 > 0 & lv_j), data = d)), "lv_j is not in the d data frame") &&
+        .j_has(grab(jlm(y ~ I(x1 > 0 & !lv_j), data = d)), "lv_j is not in the d data frame") &&
         !is.null(quiet(jlm(y ~ I(x1 * l_j$s), data = d))))
 check("J13 ifelse(), pmin() and pmax() combine value by value",
-      .j_has(grab(jlm(y ~ I(ifelse(x1 > 0, v3_j, 0)), data = d)), "v3_j has 3 values") &&
-        .j_has(grab(jlm(y ~ I(pmin(x1, v3_j)), data = d)), "In I(pmin(x1, v3_j)), v3_j has 3 values") &&
-        .j_has(grab(jlm(y ~ I(pmax(v3_j, x1)), data = d)), "In I(pmax(v3_j, x1)), v3_j has 3 values"))
+      .j_has(grab(jlm(y ~ I(ifelse(x1 > 0, v3_j, 0)), data = d)), "v3_j is not in the d data frame") &&
+        .j_has(grab(jlm(y ~ I(pmin(x1, v3_j)), data = d)), .j_obj("I(pmin(x1, v3_j))", "v3_j")) &&
+        .j_has(grab(jlm(y ~ I(pmax(v3_j, x1)), data = d)), .j_obj("I(pmax(v3_j, x1))", "v3_j")))
 check("J14 a call on a vector is not run by the check: rev() reaches the resolver, whose count stop still fires",
       { m <- grab(jlm(y ~ I(x1 * rev(long_j)), data = d))
         .j_has(m, "The formula term I(x1 * rev(long_j)) produces 125 values for 120 cases.") &&
           !.j_has(m, "has 125 values") })
-check("J15 the check draws no random number: I(x1 + rnorm(120)) fits as the same draw saved first",
+# J15 re-pinned S357: the same draw saved first is a workspace vector of one
+# value per row, which ruling R19 refuses, so lm() is the oracle.
+check("J15 the check draws no random number: I(x1 + rnorm(120)) fits as lm() fits it from the same seed",
       { set.seed(324); a <- quiet(jlm(y ~ I(x1 + rnorm(120)), data = d))
-        set.seed(324); r_j <- rnorm(120)
-        b <- quiet(jlm(y ~ I(x1 + r_j), data = d))
-        near(a$coefficients_raw$b, b$coefficients_raw$b) })
+        set.seed(324); b <- stats::lm(y ~ I(x1 + rnorm(120)), data = d)
+        near(a$coefficients_raw$b, unname(stats::coef(b))) })
 check("J16 a name that is a variable of the data is read from the data, whatever the workspace holds",
       { assign("nm", c(1, 2, 3), envir = globalenv())
         m <- quiet(jlm(y ~ I(x1 * nm), data = d))
@@ -3024,7 +3087,7 @@ check("M37 the other refusals of a computed term are where they were: a data fra
       { v3_m <- c(1, 2, 1)
         grepl("names the dm data frame inside the formula",
               flat(grab(jlm(y ~ I(dm$Sex == 1), data = dm))), fixed = TRUE) &&
-          grepl("v3_m has 3 values for the 48 cases",
+          grepl("v3_m is not in the dm data frame; it is a separate object in your workspace. It has 3 values for the 48 cases",
                 flat(grab(jlm(y ~ I(Sex == v3_m), data = dm))), fixed = TRUE) &&
           grepl("The formula applies a function to a variable: I(Grp >= 3).",
                 flat(grab(jcrosstab(Sex ~ I(Grp >= 3), data = dm))), fixed = TRUE) })
@@ -4424,34 +4487,168 @@ rm(.s_r)
 .s_d <- d[, c("y", "x1")]
 .s_d$G <- factor(rep(c("x", "y"), length.out = nrow(.s_d)))
 .s_d$W <- seq_len(nrow(.s_d))
-check("S12 jt(y ~ .GlobalEnv$G, .s_d) with the frame holding a G: the term is judged by what it gives, named as written (pinned whole); it was refused for the frame's G with jencode() offered",
+# S12-S14 RE-PINNED S357 (ruling R19): an object fetched inside a formula
+# through $ is a variable kept outside its frame, and stops with R19's one
+# message, wherever it comes from and whatever it holds -- the S356 guard's
+# "produces a categorical variable" for a fetched factor (its false reason,
+# the S356 walk finding) and lm()'s computation for a numeric one (S14,
+# which flips) both give way to it. The column line takes the next free
+# name when the frame has one of its own.
+check("S12 jt(y ~ .GlobalEnv$G, .s_d) with the frame holding a G: R19's stop, the column added under the next free name and the term naming it (it said the term produces a categorical variable)",
       local({ assign("zz_s_G", factor(rep(c("p", "q"), length.out = nrow(.s_d))), envir = globalenv())
               on.exit(rm("zz_s_G", envir = globalenv()), add = TRUE)
               names(.s_d)[names(.s_d) == "G"] <- "zz_s_G"
               m <- grab(jt(y ~ .GlobalEnv$zz_s_G, .s_d))
-              .s_pin(m, paste0("jt(): The formula term .GlobalEnv$zz_s_G produces a categorical\n",
-                               "variable, not a numeric one.\n",
-                               "Create it as a new column first, then use that column in the formula.")) &&
-                !grepl("jencode", m, fixed = TRUE) && !grepl("jnumeric", m, fixed = TRUE) }))
+              grepl("jt(): .GlobalEnv$zz_s_G is not in the .s_d data frame; it is a separate object in your workspace. jstats analyzes the variables of a data frame.",
+                    flat(m), fixed = TRUE) &&
+                endsWith(m, paste0("\nAdd it to the data frame first, then name the column:\n",
+                                   "  .s_d$zz_s_G2 <- .GlobalEnv$zz_s_G\n",
+                                   "  jt(y ~ zz_s_G2, .s_d)")) &&
+                !grepl("categorical", m, fixed = TRUE) && !grepl("jencode", m, fixed = TRUE) }))
 check("S13 a list's component the same way, and a data frame named inside the term keeps the S322 refusal",
       local({ lst <- list(G = factor(rep(c("p", "q"), length.out = nrow(.s_d))))
               a <- grab(jt(y ~ lst$G, .s_d)); b <- grab(jt(y ~ .s_d$G, .s_d))
-              grepl("jt(): The formula term lst$G produces a categorical variable, not a\nnumeric one.", a, fixed = TRUE) &&
+              grepl("jt(): lst$G is not in the .s_d data frame; it is a separate object in your workspace.",
+                    flat(a), fixed = TRUE) &&
+                endsWith(a, "\n  .s_d$G2 <- lst$G\n  jt(y ~ G2, .s_d)") &&
                 grepl("names the .s_d data frame inside the formula.", b, fixed = TRUE) }))
-check("S14 a numeric object read through $ computes as lm() computes it, the frame's same-named column untouched: the coefficient is lm()'s, with the missing cases counted on what the term reads",
+check("S14 a numeric object read through $ STOPS (ruling R19; it computed as lm() computes it), the frame's same-named column untouched; the printed lines, run, fit lm()'s coefficient on the added column",
       local({ zz_s_W <- rev(seq_len(nrow(.s_d))) * 0.5; zz_s_W[c(3, 7)] <- NA
               assign("zz_s_W", zz_s_W, envir = globalenv())
               on.exit(rm("zz_s_W", envir = globalenv()), add = TRUE)
               names(.s_d)[names(.s_d) == "W"] <- "zz_s_W"
-              m <- quiet(jlm(y ~ .GlobalEnv$zz_s_W, .s_d))
+              keep <- .s_d$zz_s_W
+              m <- grab(jlm(y ~ .GlobalEnv$zz_s_W, .s_d))
+              lns <- strsplit(m, "\n", fixed = TRUE)[[1]]
+              fix <- trimws(lns[grepl("^  ", lns)])
+              ok  <- identical(fix, c(".s_d$zz_s_W2 <- .GlobalEnv$zz_s_W", "jlm(y ~ zz_s_W2, .s_d)"))
+              if (ok) eval(parse(text = fix[1]))
+              f <- if (ok) quiet(eval(parse(text = fix[2]))) else NULL
               truth <- stats::lm(y ~ .GlobalEnv$zz_s_W, data = .s_d)
-              !is.null(m) && near(b_of(m, ".GlobalEnv$zz_s_W"), stats::coef(truth)[[2L]]) &&
-                identical(m$sample_info$n_analysis, as.integer(nrow(.s_d) - 2L)) &&
-                !near(b_of(m, ".GlobalEnv$zz_s_W"), stats::coef(stats::lm(y ~ zz_s_W, data = .s_d))[[2L]]) }))
+              grepl("jlm(): .GlobalEnv$zz_s_W is not in the .s_d data frame", flat(m), fixed = TRUE) &&
+                ok && identical(.s_d$zz_s_W, keep) && !is.null(f) &&
+                near(b_of(f, "zz_s_W2"), stats::coef(truth)[[2L]]) &&
+                identical(f$sample_info$n_analysis, as.integer(nrow(.s_d) - 2L)) }))
 check("S15 the frame's own categorical variable in a computed term keeps its refusal, and a comparison on it still computes",
       grepl("g is a categorical variable, so the formula term log(g) cannot", flat(grab(jlm(y ~ log(g), d))), fixed = TRUE) &&
         !is.null(quiet(jlm(y ~ I(g == "a"), d))))
 rm(.s_d, .s_pin)
+
+# =============================================================================
+# T -- RULING R19, DATA FRAMES ONLY: THE FORMULA FUNCTIONS (S357, v0.9.231)
+# =============================================================================
+# jstats analyzes the variables of a data frame (Jeff, S356). A workspace
+# object holding one value per case -- per row of the frame as given, or
+# per case left after filtering -- read by a computed term stops with one
+# message: not in the data frame, a separate object, "jstats analyzes the
+# variables of a data frame.", the line that adds it and the call. It is
+# found wherever the term reads it (I(a2), log(w), a function of the
+# user's), not only combined value by value as the S324 walker looked; an
+# object fetched through $ or [[ ]] is added under its last name, the term
+# naming that column. A VALUE still passes, as lm() reads it (S322): one
+# value, a set to the right of %in%, a lookup table, a summary. A vector
+# written in the formula (1:120) and a call the check does not run
+# (rnorm(120)) are not objects and fit as lm() fits them. jcrosstab() and
+# jplot()'s formula path give the same stop ahead of their refusal of a
+# computed term. Section J holds the recycling stop and the S324 shapes,
+# re-pinned; S12-S14 the fetched objects. filter_check.R section Z holds
+# the conditions and the vector path. Fixtures dotted; working objects in
+# local().
+# =============================================================================
+.t_has <- function(txt, needle) isTRUE(grepl(needle, flat(txt), fixed = TRUE))
+.t_obj <- function(fn, op, term = NULL, frame = "d") {
+  paste0(fn, "(): ", if (!is.null(term)) paste0("In ", term, ", "), op,
+         " is not in the ", frame, " data frame; it is a separate object in ",
+         "your workspace. jstats analyzes the variables of a data frame.")
+}
+.t_fix <- function(txt) {
+  lns <- strsplit(txt, "\n", fixed = TRUE)[[1]]
+  trimws(lns[grepl("^  ", lns)])
+}
+check("T01 a one-per-case object read by any function of a term stops, the term and the object named: I(a2) alone (the ruling's own example), log(), factor() and a function of the user's -- each was computed as lm() computes it",
+      local({ a2 <- d$x1^2; w <- abs(d$x2) + 1; f <- function(x) x * 2
+              .t_has(grab(jlm(y ~ I(a2), data = d)), .t_obj("jlm", "a2", "I(a2)")) &&
+                .t_has(grab(jlm(y ~ log(w), data = d)), .t_obj("jlm", "w", "log(w)")) &&
+                .t_has(grab(jlm(y ~ factor(w), data = d)), .t_obj("jlm", "w", "factor(w)")) &&
+                .t_has(grab(jlm(y ~ x1 + f(w), data = d)), .t_obj("jlm", "w", "f(w)")) }))
+check("T02 ... with the line that adds it and the call as typed; the two lines, run, fit as lm() fits the same values",
+      local({ a2 <- d$x1^2
+              m <- grab(jlm(y ~ x1 + I(a2), data = d))
+              fix <- .t_fix(m)
+              ok <- identical(fix, c("d$a2 <- a2", "jlm(y ~ x1 + I(a2), data = d)")) &&
+                endsWith(m, "\nAdd it to the data frame first:\n  d$a2 <- a2\n  jlm(y ~ x1 + I(a2), data = d)")
+              dd <- d; dd$a2 <- a2
+              r <- quiet(jlm(y ~ x1 + I(a2), data = dd))
+              ok && near(b_of(r, "I(a2)"), stats::coef(stats::lm(y ~ x1 + I(a2), data = dd))[[3]]) }))
+check("T03 a VALUE passes and fits as lm() does: one value, a set of any length to the right of %in%, a lookup table, a summary of a one-per-case vector, a value reached through $",
+      local({ cut_t <- 0; codes_t <- rep(c(10, 30), 60); tbl_t <- c(0.5, 1, 2)
+              w_t <- d$x2; lst_t <- list(k = 2)
+              fs <- list(y ~ I(x1 > cut_t), y ~ I(nm %in% codes_t), y ~ I(x1 * tbl_t[nm / 10]),
+                         y ~ I(x1 - mean(w_t)), y ~ I(x1 * lst_t$k))
+              all(vapply(fs, function(f) {
+                m <- quiet(jlm(f, data = d))
+                !is.null(m) && near(m$coefficients_raw$b[2], unname(stats::coef(stats::lm(f, data = d))[2]))
+              }, logical(1))) }))
+check("T04 an object fetched through $, through [[ ]] by name, and from an environment: each stops, added under its last name, the term naming the column",
+      local({ lst_t <- list(w = d$x2); e_t <- new.env(); assign("w", d$x2, envir = e_t)
+              a <- grab(jlm(y ~ x1 + lst_t$w, data = d))
+              b <- grab(jlm(y ~ x1 + lst_t[["w"]], data = d))
+              cc <- grab(jlm(y ~ x1 + e_t$w, data = d))
+              .t_has(a, .t_obj("jlm", "lst_t$w")) &&
+                identical(.t_fix(a), c("d$w <- lst_t$w", "jlm(y ~ x1 + w, data = d)")) &&
+                .t_has(b, .t_obj("jlm", "lst_t[[\"w\"]]")) &&
+                identical(.t_fix(b), c("d$w <- lst_t[[\"w\"]]", "jlm(y ~ x1 + w, data = d)")) &&
+                identical(.t_fix(cc), c("d$w <- e_t$w", "jlm(y ~ x1 + w, data = d)")) &&
+                .t_has(a, "Add it to the data frame first, then name the column:") }))
+check("T05 jt(), jaov() and jlogistic() the same, each naming itself",
+      local({ w <- d$x2
+              .t_has(grab(jt(I(y * w) ~ lg, data = d)), .t_obj("jt", "w", "I(y * w)")) &&
+                .t_has(grab(jaov(I(y + w) ~ g, data = d)), .t_obj("jaov", "w", "I(y + w)")) &&
+                .t_has(grab(jlogistic(yb ~ I(x1 * w), data = d)), .t_obj("jlogistic", "w", "I(x1 * w)")) }))
+check("T06 jcrosstab() and jplot()'s formula path: the same stop ahead of their refusal of a computed term (which gave a fetched object a false reason)",
+      local({ assign("zz_t_G", factor(rep(c("p", "q"), 60)), envir = globalenv())
+              on.exit(rm("zz_t_G", envir = globalenv()), add = TRUE)
+              w <- d$x2
+              a <- grab(jcrosstab(g ~ .GlobalEnv$zz_t_G, data = d))
+              b <- grab(jplot(y ~ I(x1 > w), d))
+              .t_has(a, "jcrosstab(): .GlobalEnv$zz_t_G is not in the d data frame") &&
+                identical(.t_fix(a), c("d$zz_t_G <- .GlobalEnv$zz_t_G", "jcrosstab(g ~ zz_t_G, data = d)")) &&
+                .t_has(b, .t_obj("jplot", "w", "I(x1 > w)")) &&
+                !.t_has(a, "applies a function") && !.t_has(b, "applies a function") }))
+check("T07 a vector written in the formula and a call the check does not run are not objects: I(x1 * 1:120) and I(x1 + rnorm(120)) fit as lm() fits them",
+      { m <- quiet(jlm(y ~ I(x1 * 1:120), data = d))
+        set.seed(357); r <- quiet(jlm(y ~ I(x1 + rnorm(120)), data = d))
+        set.seed(357); t <- stats::lm(y ~ I(x1 + rnorm(120)), data = d)
+        !is.null(m) && near(m$coefficients_raw$b[2], stats::coef(stats::lm(y ~ I(x1 * 1:120), data = d))[[2]]) &&
+          near(r$coefficients_raw$b, unname(stats::coef(t))) })
+check("T08 one value per case LEFT after filtering: its count and the requirement, no line (it cannot be added as it is)",
+      local({ w80 <- seq_len(80) / 10
+              m <- grab(jlm(y ~ I(x1 * w80), data = d, subset = nm > 10))
+              .t_has(m, .t_obj("jlm", "w80", "I(x1 * w80)")) &&
+                .t_has(m, "It has 80 values, one for each case left after filtering; the d data frame has 120.") &&
+                endsWith(m, "\nUse a single value, or add the values to the data frame as a variable.") &&
+                length(.t_fix(m)) == 0L }))
+check("T09 under a juse() default the line adds it to the default frame and the call is as typed; a frame given as an expression gets the sentence, no line",
+      local({ w <- d$x2
+              old <- getOption(".jst_default_data"); on.exit(options(.jst_default_data = old), add = TRUE)
+              quiet(juse(d))
+              a <- grab(jlm(y ~ I(x1 * w)))
+              options(.jst_default_data = old)
+              b <- grab(jlm(y ~ I(x1 * w), data = d[seq_len(120), ]))
+              identical(.t_fix(a), c("d$w <- w", "jlm(y ~ I(x1 * w))")) &&
+                endsWith(b, "\njstats analyzes the variables of a data frame.\nAdd it to the data frame first.") &&
+                length(.t_fix(b)) == 0L }))
+check("T10 .jst_frame_object() as a unit: no object in the value positions (%in%'s right side, match()'s table, a lookup's table, a summary); found in I(), a function and a fetch; a bare name only when asked (a condition)",
+      local({ fo <- jstats:::.jst_frame_object; dd <- data.frame(a = 1:4); w <- c(1, 2, 3, 4)
+              e <- environment(); l <- list(w = w)
+              none <- function(x) is.null(fo(list(x), dd, e))
+              op <- function(x, ...) { r <- fo(list(x), dd, e, ...); if (is.null(r)) "" else jstats:::.jst_term_text(r$operand) }
+              none(quote(a %in% w)) && none(quote(match(a, w))) && none(quote(w[a])) &&
+                none(quote(a > mean(w))) && none(quote(a > max(w))) && none(quote(w)) &&
+                identical(op(quote(I(w))), "w") && identical(op(quote(log(w + a))), "w") &&
+                identical(op(quote(a %in% w | w > 2)), "w") && identical(op(quote(l$w > 1)), "l$w") &&
+                identical(op(quote(w), bare = TRUE), "w") }))
+rm(.t_has, .t_obj, .t_fix)
 
 # --- Verdict -----------------------------------------------------------------
 

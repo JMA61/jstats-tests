@@ -42,6 +42,17 @@
 #           and the fit plot of a squared term.
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
+# S357 EDIT (v0.9.231; the FRAMES slate, ruling R19): SECTION 24 ADDED,
+#           four renders, filled by running (fill.R): a computed term
+#           reading a workspace vector of one value per case and an object
+#           fetched through $, each stopping with R19's message, the line
+#           that adds it and the call; a condition, per call and set with
+#           jsubset(); a single vector with a condition on another one
+#           ("Put both in a data frame first"); and the value forms still
+#           running. SECTION 23 RENDER 3 RE-PINNED (repin.py): the fetched
+#           G, which the S356 guard called a computed categorical variable,
+#           is R19's stop, added as G2 beside the frame's own G. Both on the
+#           PENDING line.
 # S356 EDIT (v0.9.229, 2026-10-15): SECTION 23 ADDED, three renders -- 22
 #           sections -> 23. The NAMES slate (ruling R18) on the formula
 #           functions: a term in quotes (jt(Flourishing ~ "Condition"),
@@ -57,6 +68,14 @@
 #           no other; verify: 42 of 43 Expected blocks found (Section 1's,
 #           as before), 23 of 23 sections in three orders and by prepare =
 #           TRUE. The human half of models_check.R section S.
+# LAST VERIFIED: v0.9.231, 2026-10-16 (S357) -- Sections 23 and 24
+#           WALKED on the WORKSTATION by Jeff through receive_all(), under
+#           the tool's default walk line; PENDING back to none; GitHub
+#           2a4fcc3 (package). Section 23's Render 3 is ruling R19's stop,
+#           as the S356 stamp below said the build would make it.
+#           Sandbox: harness.R verify, 24 of 24 sections in three orders
+#           and by prepare = TRUE; 46 of 47 Expected blocks under rewalk()
+#           (Section 1's, as before).
 # LAST VERIFIED: v0.9.229, 2026-10-15 (S356) -- Section 23 WALKED on the
 #           WORKSTATION by Jeff through receive_all(). Render 3's stop,
 #           jt(Score ~ .GlobalEnv$G, data = d23), was questioned and
@@ -2154,9 +2173,12 @@ rm(m23, d23, G, shown23)
 
 # Expected:
 #   Independent Samples T-Test
-#   Error: jt(): The formula term .GlobalEnv$G produces a categorical variable,
-#   not a numeric one.
-#   Create it as a new column first, then use that column in the formula.
+#   Error: jt(): .GlobalEnv$G is not in the d23 data frame; it is a separate
+#   object in your workspace.
+#   jstats analyzes the variables of a data frame.
+#   Add it to the data frame first, then name the column:
+#     d23$G2 <- .GlobalEnv$G
+#     jt(Score ~ G2, data = d23)
 #   Independent Samples T-Test
 #   Error: jt(): d23$G names the d23 data frame inside the formula.
 #   Name the variable on its own, and the data frame after the formula:
@@ -2169,12 +2191,110 @@ rm(m23, d23, G, shown23)
 #   - RENDER 2: the word as typed, what the argument takes, and the call
 #     with the word in quotes: diagnostics = "levene", which = "effects",
 #     std = "gelman";
-#   - RENDER 3: the first stop names the term as written, .GlobalEnv$G,
-#     and says what it gives -- a categorical variable -- with "Create it
-#     as a new column first"; nothing about the frame's G, no jnumeric()
-#     or jencode() line. The second, d23$G, keeps the S322 refusal: the
-#     frame named inside the formula, and the call with G on its own.
+#   - RENDER 3 (re-pinned S357, ruling R19): the first stop names the
+#     term as written, .GlobalEnv$G, as an object outside the d23 data
+#     frame, with the line that adds it as G2 -- the frame has a G of its
+#     own -- and the call naming G2; nothing about the frame's G, no
+#     jnumeric() or jencode() line. (At S356 it said the term produces a
+#     categorical variable; Jeff's walk of that render raised R19.) The
+#     second, d23$G, keeps the S322 refusal: the frame named inside the
+#     formula, and the call with G on its own.
 
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 24 -- data frames only: ruling R19 (S357) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.231. Ruling R19 (Jeff, S356): "jstats analyzes the variables of a
+# data frame; a single vector can be described with jdesc(), jfreq() or
+# jscreen(); anything else is added to the data frame first." A workspace
+# object of one value per case read by a computed term or a condition --
+# w24 below, made from d$Stress, raw -99 and -98 included, where the frame
+# declares them missing -- was read as lm() reads it (S324), and behind a
+# filter got the S331 count and the add-it line. It now stops with one
+# message: not in the data frame, a separate object, the line that adds it
+# and the call. An object fetched through $ is added under its last name
+# (Section 23's Render 3, re-pinned, has the frame-has-a-G form). A single
+# vector is still described on its own; a condition there reading another
+# one gets the lines that put both in a data frame. A VALUE still runs: a
+# cutoff, a set of codes, a summary. The assertion side is models_check.R
+# section T and filter_check.R section Z. The stops are shown through
+# shown24(), so the file still runs end to end.
+shown24 <- function(expr) tryCatch(expr, error = function(e)
+  cat("Error: ", conditionMessage(e), "\n", sep = ""))
+w24   <- d$Stress / 10                     # one value for each case of d
+G24   <- factor(rep(c("p", "q"), length.out = nrow(d)))
+cut24 <- 20; codes24 <- c(1, 2)
+
+# Render 1 -- a computed term reading w24, and an object fetched through $.
+shown24(jlm(Flourishing ~ SocialSupport + I(Stress * w24), data = d))
+shown24(jt(Flourishing ~ .GlobalEnv$G24, data = d))
+# Expected:
+#   Linear Regression
+#   Error: jlm(): In I(Stress * w24), w24 is not in the d data frame; it is a
+#   separate object in your workspace.
+#   jstats analyzes the variables of a data frame.
+#   Add it to the data frame first:
+#     d$w24 <- w24
+#     jlm(Flourishing ~ SocialSupport + I(Stress * w24), data = d)
+#   Independent Samples T-Test
+#   Error: jt(): .GlobalEnv$G24 is not in the d data frame; it is a separate
+#   object in your workspace.
+#   jstats analyzes the variables of a data frame.
+#   Add it to the data frame first, then name the column:
+#     d$G24 <- .GlobalEnv$G24
+#     jt(Flourishing ~ G24, data = d)
+
+# Render 2 -- a condition: per call, and set with jsubset().
+shown24(jdesc(d, Flourishing, subset = w24 > 2))
+shown24(jsubset(d, w24 > 2))
+# Expected:
+#   Descriptive Statistics
+#   Error: jdesc(): In subset = w24 > 2, w24 is not in the d data frame; it is
+#   a separate object in your workspace.
+#   jstats analyzes the variables of a data frame.
+#   Add it to the data frame first:
+#     d$w24 <- w24
+#     jdesc(d, Flourishing, subset = w24 > 2)
+#   Error: jsubset(): In w24 > 2, w24 is not in the d data frame; it is a
+#   separate object in your workspace.
+#   jstats analyzes the variables of a data frame.
+#   Add it to the data frame first:
+#     d$w24 <- w24
+#     jsubset(d, w24 > 2)
+
+# Render 3 -- a single vector with a condition on another one.
+fl24 <- d$Flourishing
+shown24(jdesc(fl24, subset = w24 > 2))
+# Expected:
+#   Error: jdesc(): In subset = w24 > 2, w24 is a separate object in
+#   your workspace.
+#   jstats analyzes the variables of a data frame.
+#   Put both in a data frame first:
+#     mydata <- data.frame(fl24, w24)
+#     jdesc(mydata, fl24, subset = w24 > 2)
+
+# Render 4 -- values still run (TRUE: the analysis ran).
+ran24 <- function(expr) !inherits(try(utils::capture.output(suppressMessages(expr)),
+                                      silent = TRUE), "try-error")
+print(c(cutoff  = ran24(jlm(Flourishing ~ I(Stress > cut24), data = d)),
+        codes   = ran24(jdesc(d, Flourishing, subset = Condition %in% codes24)),
+        summary = ran24(jlm(Flourishing ~ I(Stress > mean(w24, na.rm = TRUE)), data = d)),
+        vector  = ran24(jdesc(fl24))))
+# Expected:
+#    cutoff   codes summary  vector 
+#      TRUE    TRUE    TRUE    TRUE 
+rm(shown24, w24, G24, cut24, codes24, fl24, ran24)
+
+# Things to look at:
+#   - RENDER 1: "w24 is not in the d data frame; it is a separate object
+#     in your workspace." on two lines, then "jstats analyzes the variables
+#     of a data frame." and the two lines to run; .GlobalEnv$G24 is added
+#     as G24 and the formula names it ("then name the column");
+#   - RENDER 2: the same message, "In subset = w24 > 2, ..." and "In w24 >
+#     2, ...", each with its own call; nothing is stored;
+#   - RENDER 3: "Put both in a data frame first:" and two lines that put
+#     fl24 and w24 in mydata and describe fl24 there;
+#   - RENDER 4: four TRUEs.
 
 # --- Restore session state ---------------------------------------------------
 

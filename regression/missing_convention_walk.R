@@ -89,6 +89,23 @@
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S357 (v0.9.230; Fix Slate W2). NEW PART T, SECTION 68,
+#           filled by running (fill.R): jdeclare_missing() given a marker
+#           for a variable with none names the family as missing values,
+#           never "tokens" or "tagged missings", and the family is the one
+#           meant -- a governing convention decides (Decision 13), else the
+#           case typed (Jeff, S357). Sections re-pinned from captures of
+#           every section on 0.9.229 and 0.9.230 (repin.py; Section 21's
+#           quoted prose block by hand): 8 (Case 6 opens on "the d7 data
+#           frame", Rule T), 21 (the refusal reworded), 30 (jsave()'s CSV
+#           note: "missing values", one sentence a line) -- on the PENDING
+#           line, wording Claude chose. RE-PINNED MECHANICALLY, NOT ON THE
+#           PENDING LINE: Sections 6, 9, 11, 12, 17 and 59 move only "R
+#           native format" to "R format" (Jeff, S357: "Rename to R
+#           format"; taken as mechanical by default, modify_form_walk.R
+#           Section 20 the block that shows it). harness.R survey: 0 of 69
+#           sections differ isolated, no NEEDS line; 87 of 88 Expected
+#           blocks found (Section 10's, as before).
 # EDITED:   S356 (v0.9.229; the NAMES slate, ruling R18's four remaining
 #           items, and ruling R17). NEW PART S, SECTION 67, four renders,
 #           every Expected FILLED BY RUNNING the file (fill.R): a bare word
@@ -605,6 +622,18 @@
 #           Same messages either way (one frame), confirmed in the walk
 #           below against a sandbox capture of the same file; no Expected
 #           touched.
+# LAST VERIFIED: v0.9.231, 2026-10-16 (S357) -- Sections 8, 21, 30 and
+#           68 WALKED on the WORKSTATION through receive_all() on v0.9.231,
+#           under the tool's default walk line: the v0.9.230 walks held to
+#           the end of the session, and v0.9.231 changes nothing this walk
+#           shows (every section captured on both builds, identical apart
+#           from temp paths). Jeff's question on Section 30 (should
+#           jsave()'s CSV note name the formats that keep declarations?)
+#           answered -- no: Rule D's single-argument pointer -- and an item
+#           logged for Fix Slate 10. GitHub 72b0b4e and 2a4fcc3 (package).
+#           Sandbox: harness.R verify, 69 of 69 sections in three orders
+#           and by prepare = TRUE; 87 of 88 Expected blocks (Section 10's,
+#           as before). PENDING back to none.
 # LAST VERIFIED: v0.9.229, 2026-10-15 (S356) -- Section 67 WALKED on the
 #           WORKSTATION through receive_all() ("I've walked all sections"),
 #           GitHub fea0b51 (package), after the SANDBOX run (R 4.3.3, UTF-8
@@ -1721,7 +1750,7 @@ jload(fx("uniform_stata.rds"), name = "d4", overwrite = TRUE)
 # Read for that asymmetry, not down a column of identical lines: four
 # matching lines plus one deliberately different one is a check the eye
 # can actually perform, and Smoker is the line that proves you read them.
-#   Loaded d4 (R native format; 103 cases, 15 variables)
+#   Loaded d4 (R format; 103 cases, 15 variables)
 #
 #   5 variables have Stata-style missing values:
 #     Income: .a ["Refused"], .b ["Don't know"]
@@ -1813,11 +1842,11 @@ jload(fx("mixed.rds"), name = "d7", overwrite = TRUE)
 
 # Expected: a GROUPED-COUNT header rather than a style-named one, then the
 # note with an align line per style present:
-#   Loaded d7 (R native format; 103 cases, 15 variables)
+#   Loaded d7 (R format; 103 cases, 15 variables)
 #
 #   5 variables have missing values (3 SPSS-style, 2 Stata-style):
 #     ...
-#   Note: d7 mixes SPSS-style and Stata-style missing values.
+#   Note: the d7 data frame mixes SPSS-style and Stata-style missing values.
 #   To use SPSS-style throughout, run both:
 #     jconvert(d7, to = "spss", modify = TRUE)
 #     joptions(missing.convention = "spss")
@@ -2901,11 +2930,14 @@ try(jdeclare_missing(ws, V, codes = c(Refused = ".a", DK = ".b")))
 options(.jst_options_missing_convention = NULL)
 
 # Expected, first refusal (plain column), both sentences Rule-U wrapped:
-#   "Error: jdeclare_missing(): 'Plain' has no lettered markers to label, so
-#    SAS-style tokens (.A-.Z) cannot be applied here.
-#    To turn numeric codes into tagged missings, use jrecode() (for example
-#    map = "-99=.A", convention = "sas"); or declare the numbers directly with
-#    codes = c(-99), convention = "sas"."
+#   "Error: jdeclare_missing(): Plain has no lettered markers to label.
+#    To turn numeric codes into SAS-style missing values, use jrecode() (for
+#    example map = "-99=.A", convention = "sas"); or declare the numbers directly
+#    with codes = c(-99), convention = "sas"."
+# S357 re-pin (Fix Slate W2, the S355 item; Section 68 shows the family
+# rule): the name alone (Rule T), "SAS-style missing values" for "SAS-style
+# tokens (.A-.Z)" and "tagged missings". The sas setting still decides the
+# family here, the typed .a notwithstanding (Decision 13).
 # S280 re-pin, first line only: "no tagged missing values to label" ->
 # "no lettered markers to label" (the shipped string, source line ~23730;
 # seen live at S271 and S278, rendered again at 76 in the S280 sandbox
@@ -6516,7 +6548,7 @@ saveRDS(data.frame(Score = haven::labelled(
 jload(file.path(tempdir(), "sc59.rds"))
 
 # Expected:
-#   Loaded sc59 (R native format; 12 cases, 1 variable)
+#   Loaded sc59 (R format; 12 cases, 1 variable)
 #
 #   1 variable has Stata-style missing values:
 #     Score: .a ["Skipped"]
@@ -7411,6 +7443,58 @@ rm(w67, q67)
 #     the label in quotes, backslashes in the line;
 #   - RENDER 4: the pasted line runs, and the table shows the label whole
 #     on the .b row.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART T -- Fix Slate W2: a marker for a variable with none (S357) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.230. jdeclare_missing() given a lettered marker for a variable that
+# holds none refused with "Stata-style tokens (.a-.z) cannot be applied
+# here" and "tagged missings", whatever the user typed -- under spss, a
+# typed .A got Stata advice (the S355 item). It now names the family as
+# missing values, and the family is the one the user meant: a governing
+# convention decides it -- a per-call stata or sas, else a stata or sas
+# setting -- as it decides the case of what is produced (Decision 13: the
+# case of what is typed is ignored); with none, the case typed decides
+# (Jeff, S357: a typed .A gets SAS-style advice). The assertion side is
+# missing_convention_check.R N92l-m.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 68 -- a marker given for a variable with no markers ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+w68 <- data.frame(Income = c(42000, 51000, -99, 38000))
+
+# Render 1 -- under spss: .A typed, then .a.
+joptions(missing.convention = "spss", quiet = TRUE)
+try(jdeclare_missing(w68, Income, codes = ".A"))
+try(jdeclare_missing(w68, Income, codes = ".a"))
+# Expected:
+#   Error : jdeclare_missing(): Income has no lettered markers to label.
+#   To turn numeric codes into SAS-style missing values, use jrecode() (for
+#   example map = "-99=.A", convention = "sas"); or declare the numbers directly
+#   with codes = c(-99), convention = "sas".
+#   Error : jdeclare_missing(): Income has no lettered markers to label.
+#   To turn numeric codes into Stata-style missing values, use jrecode() (for
+#   example map = "-99=.a", convention = "stata"); or declare the numbers
+#   directly with codes = c(-99), convention = "stata".
+
+# Render 2 -- under stata, .A typed: the setting decides.
+joptions(missing.convention = "stata", quiet = TRUE)
+try(jdeclare_missing(w68, Income, codes = ".A"))
+# Expected:
+#   Error : jdeclare_missing(): Income has no lettered markers to label.
+#   To turn numeric codes into Stata-style missing values, use jrecode() (for
+#   example map = "-99=.a", convention = "stata"); or declare the numbers
+#   directly with codes = c(-99), convention = "stata".
+
+options(.jst_options_missing_convention = NULL)
+rm(w68)
+
+# Things to look at:
+#   - the variable's name opens the message, with nothing around it;
+#   - "SAS-style missing values" with map = "-99=.A" and convention = "sas"
+#     after a typed .A under spss; Stata-style after .a, and after .A under
+#     a stata setting;
+#   - neither "tokens" nor "tagged missings" anywhere.
 
 
 # --- Restore session state ---------------------------------------------------

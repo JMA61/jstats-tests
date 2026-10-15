@@ -42,6 +42,21 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S357 EDIT (v0.9.231; the FRAMES slate, ruling R19): NINE SECTIONS RE-PINNED
+#           OR RE-BUILT, no section added (models_walk.R Section 24 shows
+#           R19's shapes). C5, C6, D4, D5 and D12 set their stored filter
+#           on a workspace vector of one value per case, which R19 now
+#           refuses when it is set: each now sets it on a workspace VALUE
+#           (keepc <- 35, keep12 <- TRUE, keepv <- TRUE), and D4 and D12
+#           turn the value into a vector after it is set, so the stale and
+#           the R19 stored forms are still reached; the Expected blocks
+#           refilled by running (fill.R). B10 and D11 (the recycling stop,
+#           opening as R19's message does, "add the values to the data
+#           frame as a variable"), D13 (set behind jcomplete(): R19's
+#           set-time form) and D14 (per call behind a stored filter: R19's
+#           form with the call) re-pinned from captures of every section on
+#           0.9.230 and 0.9.231 (repin.py). All nine on the PENDING line:
+#           wording and fixtures Claude chose.
 # S356 EDIT (v0.9.229): PART H ADDED, SECTIONS H1-H5 -- 49 sections -> 54;
 #           F1 RE-PINNED. The NAMES slate (ruling R18's four remaining
 #           items and riders A and B) on the data-first functions: H1 a
@@ -62,6 +77,15 @@
 #           of 61 Expected blocks found, 54 of 54 sections in three orders
 #           and by prepare = TRUE. The human half of filter_check.R
 #           section Y.
+# LAST VERIFIED: v0.9.231, 2026-10-16 (S357) -- B10, C5, C6, D4, D5, D11,
+#           D12, D13 and D14 WALKED on the WORKSTATION by Jeff through
+#           receive_all(), under the tool's default walk line; his two
+#           questions on D13 (a vector of another length; a single value)
+#           answered, an item logged for Fix Slate 10 (the shape check's
+#           "rows"); PENDING back to none; GitHub 2a4fcc3 (package).
+#           Sandbox: harness.R verify, 54 of 54 sections in three orders
+#           and by prepare = TRUE, 61 of 61 Expected blocks under
+#           rewalk().
 # LAST VERIFIED: v0.9.229, 2026-10-15 (S356) -- F1 and H1-H5 WALKED on the
 #           WORKSTATION by Jeff through receive_all() ("I've walked all
 #           sections"; "most good", the one question raised in
@@ -584,9 +608,10 @@ v5 <- c(30, 40, 50, 60, 70)
 caught(jsubset(d, Age > v5))
 
 # Expected:
-#   Caught: jsubset(): In Age > v5, v5 has 5 values for the 12 cases in the d
-#   data frame.
-#   Use a single value, or one value for each case.
+#   Caught: jsubset(): In Age > v5, v5 is not in the d data frame; it is a
+#   separate object in your workspace.
+#   It has 5 values for the 12 cases in the d data frame.
+#   Use a single value, or add the values to the data frame as a variable.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -681,8 +706,8 @@ caught(jsubset(d$Age > 40))
 # alone -- "set it aside" would name the state it is in. The status display
 # then says the same thing in a line of its own.
 
-keepc <- d$Age > 35
-jsubset(d, keepc == TRUE)
+keepc <- 35                  # a value: R19 (S357) refuses a vector of one per case
+jsubset(d, Age > keepc)
 jsubset(d, off)
 rm(keepc)
 caught(jsubset(d, on))
@@ -690,16 +715,16 @@ jsubset()
 jsubset(d, NULL)
 
 # Expected:
-#   jsubset activated for d: keepc == TRUE
+#   jsubset activated for d: Age > keepc
 #   jsubset deactivated for d.
-#   Caught: jsubset(): the jsubset filter for the d data frame, keepc == TRUE,
+#   Caught: jsubset(): the jsubset filter for the d data frame, Age > keepc,
 #   cannot be applied: keepc no longer exists.
 #   The filter stays off.
 #   To delete it, run:
 #     jsubset(d, NULL)
-#   jsubset set but inactive for d: keepc == TRUE
+#   jsubset set but inactive for d: Age > keepc
 #   It cannot be applied: keepc no longer exists.
-#   jsubset cleared for d (had: keepc == TRUE).
+#   jsubset cleared for d (had: Age > keepc).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -711,26 +736,26 @@ jsubset(d, NULL)
 # analyses of the frame stop. on, typed here, is the analysis-time stop
 # exactly, with both exits.
 
-keepc <- d$Age > 35
-jsubset(d, keepc == TRUE)
+keepc <- 35                  # a value (R19, S357)
+jsubset(d, Age > keepc)
 rm(keepc)
 jsubset()
 caught(jsubset(d, on))
 jsubset(d, NULL)
 
 # Expected:
-#   jsubset activated for d: keepc == TRUE
-#   jsubset active for d: keepc == TRUE
+#   jsubset activated for d: Age > keepc
+#   jsubset active for d: Age > keepc
 #   It cannot be applied: keepc no longer exists.
 #   Analyses of the d data frame will stop until it is turned off,
 #   deleted or fixed.
-#   Caught: jsubset(): the jsubset filter for the d data frame, keepc == TRUE,
+#   Caught: jsubset(): the jsubset filter for the d data frame, Age > keepc,
 #   cannot be applied: keepc no longer exists.
 #   To set it aside, run:
 #     jsubset(d, off)
 #   To delete it, run:
 #     jsubset(d, NULL)
-#   jsubset cleared for d (had: keepc == TRUE).
+#   jsubset cleared for d (had: Age > keepc).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -922,31 +947,32 @@ caught(jdesc(d, Age, subset = TRUE))
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 s <- d
-keep12 <- s$Age > 35
-jsubset(s, keep12 == TRUE)
+keep12 <- TRUE               # one TRUE when set: R19 (S357) refuses a vector of
+jsubset(s, Age > 35 & keep12)    # one per case; twelve values once s has 11 rows
 jdesc(s, Age)
 s <- s[-1, ]
+keep12 <- rep(TRUE, 12)
 caught(jdesc(s, Age))
 jsubset(s, off)
 jdesc(s, Age)
 jsubset(s, NULL)
 
 # Expected:
-#   jsubset activated for s: keep12 == TRUE
+#   jsubset activated for s: Age > 35 & keep12
 #   Descriptive Statistics
 #
 #   Case Processing  Excluded  Remaining
 #       Original           --         12
-#       jsubset()           5          7  keep12 == TRUE (1 missing)
+#       jsubset()           5          7  Age > 35 & keep12 (1 missing)
 #       Remaining N        --          7
-#   ----------------------------------------------------------------
+#   -------------------------------------------------------------------
 #
 #   Variable  Total  Non_missing  Min  Max   Mean     SD
 #   --------  -----  -----------  ---  ---  ------  -----
 #   Age         7         7        38   62  48.429  8.223
 #
 #   Descriptive Statistics
-#   Caught: jdesc(): the jsubset filter for the s data frame, keep12 == TRUE,
+#   Caught: jdesc(): the jsubset filter for the s data frame, Age > 35 & keep12,
 #   has 12 values for 11 rows.
 #   A filter must give one TRUE or FALSE for every row.
 #   To set it aside, run:
@@ -964,7 +990,7 @@ jsubset(s, NULL)
 #   --------  -----  -----------  ---  ---  ------  ------
 #   Age         11        10       27   62  42.800  11.371
 #
-#   jsubset cleared for s (had: keep12 == TRUE).
+#   jsubset cleared for s (had: Age > 35 & keep12).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -977,22 +1003,22 @@ jsubset(s, NULL)
 # Case Processing row reading "jsubset()  0  11" as if the filter had run.
 # Now it is D4's error: the frame, the filter, what is gone, and both exits.
 
-keep12 <- s$Age > 35                     # rebuilt for the 11-row s (D4 left 12)
-jsubset(s, keep12 == TRUE)
+keep12 <- 35                 # a value (R19, S357); D4 left twelve TRUEs
+jsubset(s, Age > keep12)
 rm(keep12)
 caught(jdesc(s, Age))
 jsubset(s, NULL)
 
 # Expected:
-#   jsubset activated for s: keep12 == TRUE
+#   jsubset activated for s: Age > keep12
 #   Descriptive Statistics
-#   Caught: jdesc(): the jsubset filter for the s data frame, keep12 == TRUE,
+#   Caught: jdesc(): the jsubset filter for the s data frame, Age > keep12,
 #   cannot be applied: keep12 no longer exists.
 #   To set it aside, run:
 #     jsubset(s, off)
 #   To delete it, run:
 #     jsubset(s, NULL)
-#   jsubset cleared for s (had: keep12 == TRUE).
+#   jsubset cleared for s (had: Age > keep12).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -1127,9 +1153,10 @@ caught(jdesc(d, Age, subset = Age > v5))
 
 # Expected:
 #   Descriptive Statistics
-#   Caught: jdesc(): In subset = Age > v5, v5 has 5 values for the 12 cases in
-#   the d data frame.
-#   Use a single value, or one value for each case.
+#   Caught: jdesc(): In subset = Age > v5, v5 is not in the d data frame; it is
+#   a separate object in your workspace.
+#   It has 5 values for the 12 cases in the d data frame.
+#   Use a single value, or add the values to the data frame as a variable.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -1139,13 +1166,17 @@ caught(jdesc(d, Age, subset = Age > v5))
 # keepv has one value for each of d's twelve cases. jcomplete() on Age drops
 # the case whose Age is missing, so the filter is handed eleven. Until S331
 # this said "has 12 values for 11 rows", with two exits, for a frame nothing
-# had been removed from. The message names the cause and gives the line that
-# adds the vector to the frame, where the stored filter finds it: the same
-# analysis then runs.
+# had been removed from; from S331 it named the count jcomplete() left and
+# gave the line that adds the vector to the frame. Since S357 (ruling R19)
+# a vector of one value per case stops wherever a filter reads it, so the
+# filter is set while keepv is one TRUE, and keepv becomes the vector after:
+# R19's stored form, with the line that adds it to the frame, where the
+# stored filter finds it -- the same analysis then runs.
 
-keepv <- d$Age > 35 | is.na(d$Age)
-jsubset(d, keepv == TRUE)
+keepv <- TRUE
+jsubset(d, Age > 0 & keepv)
 jcomplete(d, Age)
+keepv <- d$Age > 35 | is.na(d$Age)
 caught(jdesc(d, Age))
 d$keepv <- keepv
 jdesc(d, Age)
@@ -1153,7 +1184,7 @@ d$keepv <- NULL
 jsubset(d, NULL)
 
 # Expected:
-#   jsubset activated for d: keepv == TRUE
+#   jsubset activated for d: Age > 0 & keepv
 #   Listwise Case Filter
 #   Variable   N  Missing  % Missing
 #   --------  --  -------  ---------
@@ -1163,25 +1194,26 @@ jsubset(d, NULL)
 #     Listwise filter activated -- 1 case will be excluded from
 #     subsequent analyses.
 #   Descriptive Statistics
-#   Caught: jdesc(): the jsubset filter for the d data frame, keepv == TRUE,
-#   cannot be applied: keepv has 12 values, one for each case in the d data
-#   frame, but jcomplete() leaves 11.
-#   Add keepv to the d data frame as a variable:
+#   Caught: jdesc(): the jsubset filter for the d data frame, Age > 0 & keepv,
+#   cannot be applied: keepv is not in the d data frame; it is a separate object
+#   in your workspace.
+#   jstats analyzes the variables of a data frame.
+#   Add it to the data frame first:
 #     d$keepv <- keepv
 #   Descriptive Statistics
 #
 #   Case Processing  Excluded  Remaining
 #       Original           --         12
 #       jcomplete()         1         11  Age
-#       jsubset()           4          7  keepv == TRUE
+#       jsubset()           4          7  Age > 0 & keepv
 #       Remaining N        --          7
-#   ---------------------------------------------------
+#   -----------------------------------------------------
 #
 #   Variable  Total  Non_missing  Min  Max   Mean     SD
 #   --------  -----  -----------  ---  ---  ------  -----
 #   Age         7         7        38   62  48.429  8.223
 #
-#   jsubset cleared for d (had: keepv == TRUE).
+#   jsubset cleared for d (had: Age > 0 & keepv).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -1195,10 +1227,12 @@ caught(jsubset(d, keepv == TRUE))
 jcomplete(d, NULL)
 
 # Expected:
-#   Caught: jsubset(): In keepv == TRUE, keepv has 12 values, one for each case
-#   in the d data frame, but jcomplete() leaves 11.
-#   Add keepv to the d data frame as a variable:
+#   Caught: jsubset(): In keepv == TRUE, keepv is not in the d data frame; it is
+#   a separate object in your workspace.
+#   jstats analyzes the variables of a data frame.
+#   Add it to the data frame first:
 #     d$keepv <- keepv
+#     jsubset(d, keepv == TRUE)
 #   jcomplete cleared for d (had: Age).
 
 
@@ -1208,7 +1242,9 @@ jcomplete(d, NULL)
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # The S330 add-it-to-the-frame message, which until S331 appeared only when
 # the vector was compared with a labelled variable; compared with a plain
-# one, as here, the message was "has 12 values for 6 rows".
+# one, as here, the message was "has 12 values for 6 rows". Since S357
+# (ruling R19) it is R19's message, the same with or without the stored
+# filter, the call after the line that adds the vector.
 
 per <- rep(c(35, 45), 6)
 jsubset(d, Gender == 1)
@@ -1218,10 +1254,12 @@ jsubset(d, NULL)
 # Expected:
 #   jsubset activated for d: Gender == 1
 #   Descriptive Statistics
-#   Caught: jdesc(): In subset = Age >= per, per has 12 values, one for each
-#   case in the d data frame, but filtering leaves 6.
-#   Add per to the d data frame as a variable:
+#   Caught: jdesc(): In subset = Age >= per, per is not in the d data frame; it
+#   is a separate object in your workspace.
+#   jstats analyzes the variables of a data frame.
+#   Add it to the data frame first:
 #     d$per <- per
+#     jdesc(d, Age, subset = Age >= per)
 #   jsubset cleared for d (had: Gender == 1).
 
 

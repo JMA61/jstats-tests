@@ -142,6 +142,65 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S357 EDIT (v0.9.231, 2026-10-16): the FRAMES slate, ruling R19 -- data
+#           frames only. NEW SECTION Z, eight checks (Z01-Z08): jsubset()
+#           set on a one-per-case object refused with the line that adds it
+#           and the call, nothing stored, the lines run; a bare name, a
+#           comparison and an object reached through $ per call; a stored
+#           filter whose value became a vector (R19's stored form, the
+#           status display, on staying off); values in a condition still
+#           passing; the vector path's lines that put both vectors in a data
+#           frame (run), under its last name through $, jfreq() and
+#           jscreen() the same, the single vector alone still described; a
+#           column of a frame in its frame's words. RE-WRITTEN: N33-N49,
+#           behind jcomplete() -- the S331 count and add-it line are R19's
+#           one message now, filtered or not (N33-N37 the stored form,
+#           status, on and the fix run; N38-N46 set and per call, refused
+#           where they were set or ran; N47 the count jcomplete() leaves,
+#           said of an object of one value per case LEFT; N49 the recycling
+#           control). RE-PINNED to the recycling stop's R19 opening ("is not
+#           in the d data frame; it is a separate object in your workspace",
+#           "add the values to the data frame as a variable"): M24-M29,
+#           M32, N07, N30; M30-M31 to R19's form. FIXTURES MOVED to
+#           workspace VALUES where a stored filter read a one-per-case
+#           vector, which R19 refuses when set: D07-D17 (keep12 one TRUE,
+#           then twelve; flag choosing what the condition gives), E03,
+#           M14-M22 (Age > m_keep), N01-N32, O38-O39, R24; the shape stops
+#           they hold are unchanged. M16 counts on the flattened text (a
+#           longer condition moved a break). M33's per-row control removed
+#           (Z holds its stop). FIVE HUNDRED AND FORTY checks.
+#           MUTATION MAP: eighteen one-change mutants of the 0.9.231
+#           master, each run on this battery and its partner (models_check.R
+#           / filter_check.R): %in%'s right side not a value position T03
+#           T10 Z05; summaries not exempt T03 T10 Z05; the lookup table not
+#           exempt T10; a fetch not judged S12-S14 T04 T06 T10 N41 Z03 Z07;
+#           per case of the frame only T08 N47; a bare name never visited
+#           T10 N38 N39 N45 Z03; the formula check not called J06-J09
+#           S12-S14 T01 T02 T04 T05 T08 T09; jcrosstab()'s and jplot()'s
+#           check removed T06 (each); the filter mask's check off M30 M31
+#           N33-N41 N43-N47 Z01-Z04 Z08; the vector path's check off Z06
+#           Z07; no free name S12-S14; the call line omitted J06 J07
+#           S12-S14 T02 T04 T06 T09 M30 N38-N41 N44 N45 Z01-Z03 Z08; the
+#           recycling stop's old wording I11 J01-J04 J10-J13 M37 M24-M29
+#           N42; the after-filter requirement dropped T08 N47; "The filter
+#           stays off." dropped N36 Z04; a literal judged as an object J12;
+#           the stored recycling reason's old form M32 N07 N30 N49.
+#           Sandbox: R 4.3.3, UTF-8 locale, pkgload::load_all: run_all.R 2559 across
+#           eight plain and under the RStudio-handler stand-in, each again
+#           with a 35-character temp path; R CMD check Status OK on a
+#           roxygenised copy. Entered dirty, plain and under the stand-in,
+#           beside the same entry on 0.9.230: filter_check.R reds I07 I08
+#           I22 S26 (the Scripts Slate B items) as before and models_check.R
+#           nothing; the workspace objects changed are 0.9.230's; the filter
+#           store is left an empty list where it was NULL (jsubset(d, NULL)
+#           on the last filter, which section Z runs; empty either way).
+#           LAST VERIFIED: v0.9.231, 2026-10-16 (S357) -- 540/540 on the
+#           WORKSTATION through receive_all(from = "batteries") ("ALL
+#           BATTERIES GREEN (8 run, 2559 checks)"), matching the sandbox;
+#           GitHub 2a4fcc3. The first call ran the S356 script
+#           (78/78, HALTED at a stored filter on a one-per-case
+#           vector, which ruling R19 refuses):
+#           the scripts were not yet in regression\.
 # S356 EDIT (v0.9.229, 2026-10-15): the NAMES slate -- ruling R18's four
 #           remaining items (b)-(e) and riders A and B -- on the data-first
 #           front doors. SECTION Y NEW, thirty-seven checks (Y01-Y37). (b)
@@ -1481,15 +1540,20 @@ check("D06 per-call evaluation failure: unchanged text, now prefixed",
                  "jdesc(): Subset expression could not be evaluated: "))
 
 # A stored filter that goes stale: accepted at 12 rows, applied at 11.
+# Re-built S357 (ruling R19): a workspace vector of one value per case is
+# refused when it is set, so the filter reads a frame variable and a
+# workspace VALUE -- keep12, one TRUE -- which later becomes 12 values for
+# the 11 rows left. The shape stops these checks hold are unchanged.
 s <- d
-keep12 <- s$Age > 35
-quiet(jsubset(s, keep12 == TRUE))
+keep12 <- TRUE
+quiet(jsubset(s, Age > 35 & keep12))
 check("D07 the stale-to-be filter applies cleanly while the counts match",
       row_of(plines(jdesc(s, Age)), "jsubset()"))
 s <- s[-1, ]
+keep12 <- rep(TRUE, 12)
 .d08 <- grab(jdesc(s, Age))
 check("D08 stored, gone stale: names the frame, the filter and the counts",
-      has(flat(.d08), "jdesc(): the jsubset filter for the s data frame, keep12 == TRUE, has 12 values for 11 rows."))
+      has(flat(.d08), "jdesc(): the jsubset filter for the s data frame, Age > 35 & keep12, has 12 values for 11 rows."))
 check("D09 ... states the requirement and BOTH exits, off first",
       has(.d08, "A filter must give one TRUE or FALSE for every row.\nTo set it aside, run:\n  jsubset(s, off)\nTo delete it, run:\n  jsubset(s, NULL)"))
 check("D10 ... and it is an ERROR despite on_error = \"warn\" (always stops)",
@@ -1502,20 +1566,24 @@ check("D12 the named exit works: analysis runs with the inactive note",
 # (Until S331 the filter was turned back on here, stale as it is; on refuses
 # that now -- section N -- and the next line deletes the filter anyway.)
 # A stored filter that stays well-shaped at set time but changes KIND later:
-# (keep12) is a parenthesized name, so it passes the bare-name check and the
-# dry run (11 logicals for 11 rows), then the object behind it is reassigned.
-quiet(jsubset(s, NULL)); keep12 <- s$Age > 35; quiet(jsubset(s, (keep12)))
-keep12 <- TRUE
+# the workspace value flag picks what the condition gives, so the dry run
+# passes (11 logicals for 11 rows) and a later flag does not. (Until S357
+# the parenthesized vector (keep12) did this; R19 refuses it when set.)
+quiet(jsubset(s, NULL)); flag <- TRUE
+quiet(jsubset(s, if (flag) Age > 35 else FALSE))
+flag <- FALSE
 check("D13 stored filter that became a single value: stored wording",
       has(flat(grab(jdesc(s, Age))),
-          "the jsubset filter for the s data frame, (keep12), is a single value (TRUE). A filter must give"))
-keep12 <- 1:11
+          "the jsubset filter for the s data frame, if (flag) Age > 35 else FALSE, is a single value (FALSE). A filter must give"))
+quiet(jsubset(s, NULL)); flag <- TRUE
+quiet(jsubset(s, if (flag) Age > 35 else Age))
+flag <- FALSE
 check("D14 stored filter that became numeric: stored wording",
-      has(flat(grab(jdesc(s, Age))), "(keep12), is numeric. A filter must give"))
-rm(keep12)
+      has(flat(grab(jdesc(s, Age))), "if (flag) Age > 35 else Age, is numeric. A filter must give"))
+rm(flag, keep12)
 .d16 <- grab(jdesc(s, Age))
 check("D16 stored evaluation failure: an ERROR since S330 (it warned and ran every row), naming the frame, the filter and what is gone",
-      has(flat(.d16), "jdesc(): the jsubset filter for the s data frame, (keep12), cannot be applied: keep12 no longer exists.") &&
+      has(flat(.d16), "jdesc(): the jsubset filter for the s data frame, if (flag) Age > 35 else Age, cannot be applied: flag no longer exists.") &&
       !has(.d16, "could not be evaluated") &&
       errs(jdesc(s, Age)))
 check("D17 ... with BOTH exits, off first, as the shape error has them",
@@ -1541,7 +1609,8 @@ check("E02 a good per-call filter: 6 kept, Age runs 30 to 62",
       any(grepl("^ +subset = +6 +6 +Keep01 == 1$", .e02)) &&
       any(grepl("^Age +6 +6 +30 +62 ", .e02)))
 check("E03 the widest new message wraps inside the 76 pin (stored form)",
-      { s2 <- d; k <- s2$Age > 35; quiet(jsubset(s2, k == TRUE)); s2 <- s2[-1, ]
+      { s2 <- d; k <- TRUE; quiet(jsubset(s2, Age > 35 & k)); s2 <- s2[-1, ]
+        k <- rep(TRUE, 12)   # a value when set (R19, S357), 12 values now
         w <- widest(grab(jdesc(s2, Age))); quiet(jsubset(s2, NULL)); w <= 76L })
 check("E04 the widest set-time message wraps inside the pin too",
       widest(grab(jsubset(d, (Gender = 1) & grepl("^A", Name, ignore.case = TRUE)))) <= 76L)
@@ -2353,12 +2422,15 @@ reset()
 rm(m_talk)
 
 # ---- M14-M23: when used -----------------------------------------------------
-m_keep <- mf$Age > 35
-quiet(jsubset(mf, m_keep == TRUE))
+# The object a stored filter reads, then removed. A workspace VALUE since
+# S357 (ruling R19): the vector m_keep <- mf$Age > 35 these checks used is
+# refused when it is set.
+m_keep <- 35
+quiet(jsubset(mf, Age > m_keep))
 rm(m_keep)
 .fm14 <- grab(jdesc(mf, Age))
 check("M14 a stored filter whose object is gone STOPS: the frame, the filter, what no longer exists",
-      has(flat(.fm14), "jdesc(): the jsubset filter for the mf data frame, m_keep == TRUE, cannot be applied: m_keep no longer exists.") &&
+      has(flat(.fm14), "jdesc(): the jsubset filter for the mf data frame, Age > m_keep, cannot be applied: m_keep no longer exists.") &&
         errs(jdesc(mf, Age)))
 check("M15 ... then both exits, off first, each command on its own line (Rules E, L)",
       has(.fm14, "no longer exists.\nTo set it aside, run:\n  jsubset(mf, off)\nTo delete it, run:\n  jsubset(mf, NULL)") &&
@@ -2379,7 +2451,7 @@ check("M15 ... then both exits, off first, each command on its own line (Rules E
   function() jdesc(mf$Age)
 )
 .fm16 <- vapply(.mfns, function(f) {
-  g <- grab(f())
+  g <- flat(grab(f()))   # flattened since S357: the longer condition moved a break
   lengths(regmatches(g, gregexpr("cannot be applied: m_keep no longer exists.",
                                  g, fixed = TRUE)))
 }, integer(1))
@@ -2392,10 +2464,10 @@ check("M16 every pipeline entrant stops, with the message exactly once (12 funct
 check("M17 the printed 'set it aside' line runs: the analysis runs again and the filter is kept, inactive",
       { quiet(eval(parse(text = .mexit(.fm14, "To set it aside"))))
         !errs(jdesc(mf, Age)) && identical(fs_of("mf")$active, FALSE) &&
-          identical(fs_of("mf")$expr_str, "m_keep == TRUE") })
+          identical(fs_of("mf")$expr_str, "Age > m_keep") })
 check("M18 an inactive filter is not evaluated, and a stale one cannot be turned back on (S331; on reactivated it, and the next analysis stopped): it stays off, and the analysis still runs",
       { g <- grab(jsubset(mf, on))
-        has(flat(g), "jsubset(): the jsubset filter for the mf data frame, m_keep == TRUE, cannot be applied: m_keep no longer exists.") &&
+        has(flat(g), "jsubset(): the jsubset filter for the mf data frame, Age > m_keep, cannot be applied: m_keep no longer exists.") &&
           identical(fs_of("mf")$active, FALSE) && !errs(jdesc(mf, Age)) })
 check("M19 the printed 'delete it' line runs and removes the filter",
       { quiet(eval(parse(text = .mexit(.fm14, "To delete it"))))
@@ -2418,12 +2490,12 @@ check("M21 a stored filter that stops for another reason: R's message between th
         has(.fm21, "R reported:\n  the limit file is not loaded\nTo set it aside, run:\n  jsubset(mf, off)\nTo delete it, run:\n  jsubset(mf, NULL)") &&
         !has(.fm21, "no longer") && errs(jt(Age ~ Gender, mf)))
 reset()
-m_keep <- mf$Age > 35
-quiet(juse(mf)); quiet(jsubset(m_keep == TRUE))
+m_keep <- 35
+quiet(juse(mf)); quiet(jsubset(Age > m_keep))
 rm(m_keep)
 .fm22 <- grab(jdesc(Age))
 check("M22 under the juse() default the stop names the default frame, in the lead and in both exits",
-      has(flat(.fm22), "the jsubset filter for the mf data frame, m_keep == TRUE, cannot be applied") &&
+      has(flat(.fm22), "the jsubset filter for the mf data frame, Age > m_keep, cannot be applied") &&
         has(.fm22, "\n  jsubset(mf, off)\n") && has(.fm22, "\n  jsubset(mf, NULL)"))
 reset()
 # A warning the filter itself raises is held while the checks run and given
@@ -2442,48 +2514,51 @@ m_v5 <- c(30, 40, 50, 60, 70)
 m_v3 <- c(1, 2, 3)
 .fm24 <- grab(jsubset(mf, Age > m_v5))
 check("M24 a workspace vector that would be recycled is refused when set: 5 values, 12 cases",
-      has(flat(.fm24), "jsubset(): In Age > m_v5, m_v5 has 5 values for the 12 cases in the mf data frame.") &&
-        has(.fm24, "data frame.\nUse a single value, or one value for each case.") &&
+      has(flat(.fm24), "jsubset(): In Age > m_v5, m_v5 is not in the mf data frame; it is a separate object in your workspace. It has 5 values for the 12 cases in the mf data frame.") &&
+        has(.fm24, "data frame.\nUse a single value, or add the values to the data frame as a variable.") &&
         is.null(fs_of("mf")))
 check("M25 ... the SILENT case too: 3 values divide 12 rows, and R says nothing",
       has(flat(grab(jsubset(mf, Gender > m_v3))),
-          "In Gender > m_v3, m_v3 has 3 values for the 12 cases in the mf data frame.") &&
+          "In Gender > m_v3, m_v3 is not in the mf data frame; it is a separate object in your workspace. It has 3 values for the 12 cases in the mf data frame.") &&
         is.null(fs_of("mf")))
 .fm26 <- grab(jsubset(mf, Condition > m_v3))
 check("M26 ... and against a labelled variable: the same message, not the class's own error relayed",
-      has(flat(.fm26), "In Condition > m_v3, m_v3 has 3 values for the 12 cases in the mf data frame.") &&
+      has(flat(.fm26), "In Condition > m_v3, m_v3 is not in the mf data frame; it is a separate object in your workspace. It has 3 values for the 12 cases in the mf data frame.") &&
         !has(.fm26, "recycle") && !has(.fm26, "R reported"))
 quiet(jsubset(mf, Age < 40))
 .fm27 <- grab(jsubset(mf, Age > m_v5))
 check("M27 ... with an earlier filter in place: reported unchanged, and kept",
-      has(.fm27, "for each case.\nYour earlier filter for the mf data frame is unchanged.") &&
+      has(.fm27, "as a variable.\nYour earlier filter for the mf data frame is unchanged.") &&
         identical(fs_of("mf")$expr_str, "Age < 40"))
 reset()
 .fm28 <- grab(jdesc(mf, Age, subset = Age > m_v5))
 check("M28 subset = : the per-call form, and R's own 'longer object length' warning does not print ahead of it",
-      has(flat(.fm28), "jdesc(): In subset = Age > m_v5, m_v5 has 5 values for the 12 cases in the mf data frame. Use a single value, or one value for each case.") &&
+      has(flat(.fm28), "jdesc(): In subset = Age > m_v5, m_v5 is not in the mf data frame; it is a separate object in your workspace. It has 5 values for the 12 cases in the mf data frame. Use a single value, or add the values to the data frame as a variable.") &&
         !has(.fm28, "longer object length"))
 check("M29 ... on the vector path as well",
       has(flat(grab(jdesc(mf$Age, subset = Age > m_v5))),
-          "jdesc(): In subset = Age > m_v5, m_v5 has 5 values for the 12 cases in the mf data frame."))
+          "jdesc(): In subset = Age > m_v5, m_v5 is not in the mf data frame; it is a separate object in your workspace. It has 5 values for the 12 cases in the mf data frame."))
 quiet(jsubset(mf, Gender == 1))
 m_per <- rep(c(1, 3), 6)
 .fm30 <- grab(jdesc(mf, Age, subset = Condition >= m_per))
-check("M30 one value per case of the frame, behind a stored filter: the add-it-to-the-frame fix",
-      has(flat(.fm30), "In subset = Condition >= m_per, m_per has 12 values, one for each case in the mf data frame, but filtering leaves 6.") &&
-        has(.fm30, "Add m_per to the mf data frame as a variable:\n  mf$m_per <- m_per"))
+# Re-pinned S357 (ruling R19): the S331 add-it form is now the stop for one
+# value per case everywhere, filtered or not -- its count gone, the call
+# given after the line that adds it.
+check("M30 one value per case of the frame, behind a stored filter: ruling R19's stop, the line that adds it to the frame and the call",
+      has(flat(.fm30), "jdesc(): In subset = Condition >= m_per, m_per is not in the mf data frame; it is a separate object in your workspace. jstats analyzes the variables of a data frame.") &&
+        has(.fm30, "Add it to the data frame first:\n  mf$m_per <- m_per\n  jdesc(mf, Age, subset = Condition >= m_per)"))
 check("M31 ... and that fix, run as printed, lets the condition through",
-      { eval(parse(text = sub(".*as a variable:\n  ([^\n]*).*", "\\1", .fm30)))
+      { eval(parse(text = sub(".*data frame first:\n  ([^\n]*).*", "\\1", .fm30)))
         ok <- !errs(jdesc(mf, Age, subset = Condition >= m_per))
         mf$m_per <- NULL
         ok })
 reset()
-m_vv <- rep(40, 12)
+m_vv <- 40   # a value when set: R19 (S357) refuses rep(40, 12), which this used
 quiet(jsubset(mf, Age >= m_vv))
 m_vv <- c(30, 40, 50)
 .fm32 <- grab(jdesc(mf, Age))
 check("M32 a stored filter whose vector has changed since: the stored form and both exits, without R's warning",
-      has(flat(.fm32), "jdesc(): the jsubset filter for the mf data frame, Age >= m_vv, cannot be applied: m_vv has 3 values for 12 cases.") &&
+      has(flat(.fm32), "jdesc(): the jsubset filter for the mf data frame, Age >= m_vv, cannot be applied: m_vv is not in the mf data frame; it is a separate object in your workspace, with 3 values for 12 cases.") &&
         has(.fm32, "12 cases.\nTo set it aside, run:\n  jsubset(mf, off)\nTo delete it, run:\n  jsubset(mf, NULL)") &&
         !has(.fm32, "longer object length") && errs(jdesc(mf, Age)))
 reset()
@@ -2495,12 +2570,13 @@ m_keep <- mf$Age > 35; m_p <- list(lo = 30)
   quiet(jsubset(mf, NULL))
   ok
 }
-check("M33 controls: a cutoff, a set with %in%, an element, a lookup by a variable, one value per row, a list element and a summary are all accepted",
+# S357 (ruling R19): one value per row is no longer among them; the R19
+# checks in section Z hold its stop.
+check("M33 controls: a cutoff, a set with %in%, an element, a lookup by a variable, a list element and a summary are all accepted",
       .mok(jsubset(mf, Age > m_cut)) &&
         .mok(jsubset(mf, Gender %in% m_codes)) &&
         .mok(jsubset(mf, Age > m_lims[1] & Age < m_lims[2])) &&
         .mok(jsubset(mf, Age > m_by[Gender])) &&
-        .mok(jsubset(mf, m_keep == TRUE)) &&
         .mok(jsubset(mf, Age > m_p$lo)) &&
         .mok(jsubset(mf, Age > max(m_lims))))
 reset()
@@ -2586,16 +2662,18 @@ nf <- d
 }
 
 # ---- N01-N13: jsubset(d, on) ------------------------------------------------
-n_keep <- nf$Age > 35
-quiet(jsubset(nf, n_keep == TRUE)); quiet(jsubset(nf, off)); rm(n_keep)
+# (S357, ruling R19: the object a stored filter reads here is a workspace VALUE,
+# 35 or one TRUE -- a vector of one value per case is refused when set.)
+n_keep <- 35
+quiet(jsubset(nf, Age > n_keep)); quiet(jsubset(nf, off)); rm(n_keep)
 .fn01 <- grab(jsubset(nf, on))
 check("N01 jsubset(nf, on) refuses a filter whose object is gone: the stored lead, 'The filter stays off.', the delete exit alone",
-      has(flat(.fn01), "jsubset(): the jsubset filter for the nf data frame, n_keep == TRUE, cannot be applied: n_keep no longer exists.") &&
+      has(flat(.fn01), "jsubset(): the jsubset filter for the nf data frame, Age > n_keep, cannot be applied: n_keep no longer exists.") &&
         has(.fn01, "no longer exists.\nThe filter stays off.\nTo delete it, run:\n  jsubset(nf, NULL)") &&
         !has(.fn01, "To set it aside") && !has(.fn01, "reactivated"))
 check("N02 ... the filter is still stored, still off, and the analysis still runs",
       identical(fs_of("nf")$active, FALSE) &&
-        identical(fs_of("nf")$expr_str, "n_keep == TRUE") && !errs(jdesc(nf, Age)))
+        identical(fs_of("nf")$expr_str, "Age > n_keep") && !errs(jdesc(nf, Age)))
 check("N03 ... and the printed delete line runs and removes it",
       { quiet(eval(parse(text = sub(".*To delete it, run:\n  ([^\n]*).*", "\\1", .fn01))))
         is.null(fs_of("nf")) })
@@ -2618,27 +2696,27 @@ check("N05 a filter that stops with an error of R's own: R's message, then the s
         has(.fn05, "R reported:\n  the limit file is not loaded\nThe filter stays off.\nTo delete it, run:\n  jsubset(nf, NULL)") &&
         !has(.fn05, "no longer") && identical(fs_of("nf")$active, FALSE))
 reset()
-ns <- nf; n_keep <- ns$Age > 35
-quiet(jsubset(ns, n_keep == TRUE)); quiet(jsubset(ns, off)); ns <- ns[-1, ]
+ns <- nf; n_keep <- TRUE
+quiet(jsubset(ns, Age > 35 & n_keep)); quiet(jsubset(ns, off)); ns <- ns[-1, ]; n_keep <- rep(TRUE, 12)
 .fn06 <- grab(jsubset(ns, on))
 check("N06 a filter that no longer matches the frame's rows: the shape error, with the same close",
-      has(flat(.fn06), "jsubset(): the jsubset filter for the ns data frame, n_keep == TRUE, has 12 values for 11 rows.") &&
+      has(flat(.fn06), "jsubset(): the jsubset filter for the ns data frame, Age > 35 & n_keep, has 12 values for 11 rows.") &&
         has(.fn06, "A filter must give one TRUE or FALSE for every row.\nThe filter stays off.\nTo delete it, run:\n  jsubset(ns, NULL)") &&
         !has(.fn06, "To set it aside") && identical(fs_of("ns")$active, FALSE))
 reset()
-n_vv <- rep(40, 12)
+n_vv <- 40   # a value when set (R19, S357)
 quiet(jsubset(nf, Age >= n_vv)); quiet(jsubset(nf, off)); n_vv <- c(30, 40, 50)
 .fn07 <- grab(jsubset(nf, on))
 check("N07 a vector that would now be recycled: the stored form, the same close, and R's own warning does not print",
-      has(flat(.fn07), "the jsubset filter for the nf data frame, Age >= n_vv, cannot be applied: n_vv has 3 values for 12 cases.") &&
+      has(flat(.fn07), "the jsubset filter for the nf data frame, Age >= n_vv, cannot be applied: n_vv is not in the nf data frame; it is a separate object in your workspace, with 3 values for 12 cases.") &&
         has(.fn07, "12 cases.\nThe filter stays off.\nTo delete it, run:\n  jsubset(nf, NULL)") &&
         !has(.fn07, "longer object length"))
 reset()
-n_keep <- nf$Age > 35
-quiet(jsubset(nf, n_keep == TRUE)); rm(n_keep)
+n_keep <- 35
+quiet(jsubset(nf, Age > n_keep)); rm(n_keep)
 .fn08 <- grab(jsubset(nf, on))
 check("N08 on for a filter that was never off: the analysis-time stop exactly -- both exits, nothing 'stays off' -- and it stays active",
-      has(flat(.fn08), "jsubset(): the jsubset filter for the nf data frame, n_keep == TRUE, cannot be applied: n_keep no longer exists.") &&
+      has(flat(.fn08), "jsubset(): the jsubset filter for the nf data frame, Age > n_keep, cannot be applied: n_keep no longer exists.") &&
         has(.fn08, "no longer exists.\nTo set it aside, run:\n  jsubset(nf, off)\nTo delete it, run:\n  jsubset(nf, NULL)") &&
         !has(.fn08, "stays off") && isTRUE(fs_of("nf")$active))
 reset()
@@ -2755,18 +2833,18 @@ check("N25 ... after the default tag",
 reset()
 
 # ---- N26-N32: jsubset()'s status line and overview --------------------------
-n_keep <- nf$Age > 35
-quiet(jsubset(nf, n_keep == TRUE)); rm(n_keep)
+n_keep <- 35
+quiet(jsubset(nf, Age > n_keep)); rm(n_keep)
 .fn26 <- grab(jsubset())
 check("N26 jsubset()'s status of an ACTIVE filter whose object is gone: 'It cannot be applied', the reason in the stop's words, and what follows",
-      has(.fn26, "jsubset active for nf: n_keep == TRUE\nIt cannot be applied: n_keep no longer exists.\n") &&
+      has(.fn26, "jsubset active for nf: Age > n_keep\nIt cannot be applied: n_keep no longer exists.\n") &&
         has(flat(.fn26), "no longer exists. Analyses of the nf data frame will stop until it is turned off, deleted or fixed."))
 check("N27 ... the status display stops nothing and changes nothing: the filter is still active, the analysis still stops",
       isTRUE(fs_of("nf")$active) && errs(jdesc(nf, Age)))
 quiet(jsubset(nf, off))
 check("N28 ... of an INACTIVE one: the same second line, and no third",
       identical(grab(jsubset()),
-                "jsubset set but inactive for nf: n_keep == TRUE\nIt cannot be applied: n_keep no longer exists.\n"))
+                "jsubset set but inactive for nf: Age > n_keep\nIt cannot be applied: n_keep no longer exists.\n"))
 reset()
 n_lim <- function() 40
 quiet(jsubset(nf, Age > n_lim()))
@@ -2774,17 +2852,17 @@ n_lim <- function() stop("the limit file is not loaded")
 check("N29 an error of R's own: 'It cannot be applied.', then R's message",
       has(grab(jsubset()), "jsubset active for nf: Age > n_lim()\nIt cannot be applied.\nR reported:\n  the limit file is not loaded\n"))
 reset()
-ns <- nf; n_keep <- ns$Age > 35
-quiet(jsubset(ns, n_keep == TRUE)); ns <- ns[-1, ]
-n_vv <- rep(40, 12); quiet(jsubset(nf, Age >= n_vv)); n_vv <- c(30, 40, 50)
+ns <- nf; n_keep <- TRUE
+quiet(jsubset(ns, Age > 35 & n_keep)); ns <- ns[-1, ]; n_keep <- rep(TRUE, 12)
+n_vv <- 40; quiet(jsubset(nf, Age >= n_vv)); n_vv <- c(30, 40, 50)   # a value when set (S357)
 check("N30 a wrong shape, and a vector that would be recycled, each in a line of its own; two frames, so the overview tags both",
       { quiet(jsubset(nf, off)); a <- grab(jsubset(ns, off)); quiet(jsubset(nf, NULL))
         s1 <- grab(jsubset())
-        quiet(jsubset(ns, NULL)); n_vv <- rep(40, 12); quiet(jsubset(nf, Age >= n_vv))
+        quiet(jsubset(ns, NULL)); n_vv <- 40; quiet(jsubset(nf, Age >= n_vv))
         n_vv <- c(30, 40, 50)
         s2 <- grab(jsubset())
-        has(s1, "jsubset set but inactive for ns: n_keep == TRUE\nIt cannot be applied: it has 12 values for 11 rows.\n") &&
-          has(s2, "jsubset active for nf: Age >= n_vv\nIt cannot be applied: n_vv has 3 values for 12 cases.\n") })
+        has(s1, "jsubset set but inactive for ns: Age > 35 & n_keep\nIt cannot be applied: it has 12 values for 11 rows.\n") &&
+          has(flat(s2), "jsubset active for nf: Age >= n_vv It cannot be applied: n_vv is not in the nf data frame; it is a separate object in your workspace, with 3 values for 12 cases. ") })
 reset()
 n_noisy <- function(x) { warning("n_noisy warned"); message("n_noisy spoke"); x > 40 }
 quiet(jsubset(nf, Age < 40))
@@ -2796,150 +2874,169 @@ check("N31 controls: a filter that can be applied prints the plain line; one tha
           identical(grab(jsubset()), "jsubset active for nu: Age < 40\n") })
 reset()
 rm(n_noisy)
-n_keep <- nf$Age > 35
-quiet(jsubset(nf, n_keep == TRUE)); quiet(jsubset(ne, Gender == 1)); rm(n_keep)
+n_keep <- 35
+quiet(jsubset(nf, Age > n_keep)); quiet(jsubset(ne, Gender == 1)); rm(n_keep)
 quiet(juse(nf))
 check("N32 two frames: the overview tags the filter that cannot be applied, after the default tag, and no other",
       identical(grab(jsubset()),
                 paste0("jsubset settings (2 data frames):\n",
-                       "  - nf: n_keep == TRUE  [active, default, cannot be applied]\n",
+                       "  - nf: Age > n_keep  [active, default, cannot be applied]\n",
                        "  - ne: Gender == 1  [active]\n")))
 reset()
 rm(ns, n_lim, n_vv)
 
-# ---- N33-N46: one value per case of the frame, behind jcomplete() -----------
-# n_keep is TRUE or FALSE for each of nf's twelve cases; jcomplete() on Age
-# drops case 8, so the filter is handed eleven. Set in that order here (the
-# filter first), since a filter set BEHIND an active jcomplete() is refused
-# (N39).
+# ---- N33-N49: one value per case of the frame, behind jcomplete() -----------
+# RE-WRITTEN S357 (ruling R19). Until then a workspace vector of one value
+# per case passed when nothing cut the frame, and got the S331 add-it line
+# when jcomplete() or a stored filter did ("n_keep has 12 values, one for
+# each case in the nf data frame, but jcomplete() leaves 11"). Now it stops
+# everywhere, filtered or not, with R19's one message: not in the data
+# frame, a separate object, the line that adds it and the call. These
+# checks keep what the section held that still applies: the stored form,
+# the status display, on, the printed fix run, the controls, and the count
+# of cases jcomplete() leaves -- now said only of a vector that holds one
+# value for each of THEM (N47). A stored filter reads such a vector only
+# when the object behind it changed since it was set: n_keep is one TRUE
+# when the filter is set, and twelve values afterwards.
+n_keep <- TRUE
+quiet(jsubset(nf, Age > 0 & n_keep)); quiet(jcomplete(nf, Age))
 n_keep <- nf$Age > 35 | is.na(nf$Age)
 n_per  <- rep(c(35, 45), 6)
-quiet(jsubset(nf, n_keep == TRUE)); quiet(jcomplete(nf, Age))
 .fn33 <- grab(jdesc(nf, Gender))
-check("N33 a stored filter on a one-value-per-case vector, behind an active jcomplete(): the cause, and the line that adds the vector to the frame (it said 'has 12 values for 11 rows', with two exits)",
-      has(flat(.fn33), "jdesc(): the jsubset filter for the nf data frame, n_keep == TRUE, cannot be applied: n_keep has 12 values, one for each case in the nf data frame, but jcomplete() leaves 11.") &&
-        has(.fn33, "leaves 11.\nAdd n_keep to the nf data frame as a variable:\n  nf$n_keep <- n_keep") &&
+check("N33 a stored filter reading a one-value-per-case object, behind an active jcomplete(): R19's stored form -- the cause, and the line that adds it to the frame, no exits",
+      has(flat(.fn33), "jdesc(): the jsubset filter for the nf data frame, Age > 0 & n_keep, cannot be applied: n_keep is not in the nf data frame; it is a separate object in your workspace.") &&
+        has(.fn33, "\njstats analyzes the variables of a data frame.\nAdd it to the data frame first:\n  nf$n_keep <- n_keep") &&
         !has(.fn33, "To set it aside") && !has(.fn33, "has 12 values for 11 rows") &&
         errs(jdesc(nf, Gender)))
 check("N34 ... on other analysis functions too, once each",
       all(vapply(list(grab(jfreq(nf, Gender)), grab(jt(Age ~ Gender, nf)),
                       grab(jdesc(nf$Gender))),
-                 function(g) .n_count(g, "but jcomplete() leaves 11.") == 1L,
+                 function(g) .n_count(flat(g), "n_keep is not in the nf data frame") == 1L,
                  logical(1))))
 .fn35 <- grab(jsubset())
 check("N35 ... and in the status display, in the same words",
-      has(flat(.fn35), "It cannot be applied: n_keep has 12 values, one for each case in the nf data frame, but jcomplete() leaves 11. Analyses of the nf data frame will stop"))
+      has(flat(.fn35), "It cannot be applied: n_keep is not in the nf data frame; it is a separate object in your workspace. Analyses of the nf data frame will stop"))
 quiet(jsubset(nf, off))
 .fn36 <- grab(jsubset(nf, on))
-check("N36 ... and at on: 'The filter stays off.', then the same fix",
-      has(flat(.fn36), "jsubset(): the jsubset filter for the nf data frame, n_keep == TRUE, cannot be applied: n_keep has 12 values") &&
-        has(.fn36, "leaves 11.\nThe filter stays off.\nAdd n_keep to the nf data frame as a variable:\n  nf$n_keep <- n_keep") &&
+check("N36 ... and at on: the cause, 'The filter stays off.', then the same fix",
+      has(flat(.fn36), "jsubset(): the jsubset filter for the nf data frame, Age > 0 & n_keep, cannot be applied: n_keep is not in the nf data frame; it is a separate object in your workspace.") &&
+        has(.fn36, "\nThe filter stays off.\njstats analyzes the variables of a data frame.\nAdd it to the data frame first:\n  nf$n_keep <- n_keep") &&
         identical(fs_of("nf")$active, FALSE))
 check("N37 the printed fix, run, lets the SAME stored filter through: on reactivates it, and the analysis excludes 1 case, then 4, and keeps 7",
-      { eval(parse(text = sub(".*as a variable:\n  ([^\n]*).*", "\\1", .fn33)))
-        ok <- has(grab(jsubset(nf, on)), "jsubset reactivated for nf: n_keep == TRUE")
+      { eval(parse(text = sub(".*data frame first:\n  ([^\n]*).*", "\\1", .fn33)))
+        ok <- has(grab(jsubset(nf, on)), "jsubset reactivated for nf: Age > 0 & n_keep")
         ln <- plines(jdesc(nf, Age))
         nf$n_keep <- NULL
         ok && any(grepl("^ +jcomplete\\(\\) +1 +11 +Age$", ln)) &&
-          any(grepl("^ +jsubset\\(\\) +4 +7 +n_keep == TRUE$", ln)) })
+          any(grepl("^ +jsubset\\(\\) +4 +7 +Age > 0 & n_keep$", ln)) })
 quiet(jsubset(nf, NULL)); quiet(jcomplete(nf, off))
-quiet(jsubset(nf, Age >= n_per)); quiet(jcomplete(nf, on))
-check("N38 compared with a plain variable, and as a bare name, the same message (each said 'has 12 values for 11 rows')",
-      { a <- grab(jdesc(nf, Gender))
-        quiet(jsubset(nf, NULL)); quiet(jcomplete(nf, off))
-        quiet(jsubset(nf, n_keep)); quiet(jcomplete(nf, on))
-        b <- grab(jdesc(nf, Gender))
-        has(flat(a), "the jsubset filter for the nf data frame, Age >= n_per, cannot be applied: n_per has 12 values, one for each case in the nf data frame, but jcomplete() leaves 11.") &&
-          has(a, "\n  nf$n_per <- n_per") &&
-          has(flat(b), "the jsubset filter for the nf data frame, n_keep, cannot be applied: n_keep has 12 values, one for each case") &&
-          has(b, "\n  nf$n_keep <- n_keep") })
-quiet(jsubset(nf, NULL))
+check("N38 a bare name as the whole condition, and one compared with a plain variable, are refused when set, with the call (each was set before S357)",
+      { a <- grab(jsubset(nf, n_keep))
+        b <- grab(jsubset(nf, Age >= n_per))
+        has(flat(a), "jsubset(): n_keep is not in the nf data frame; it is a separate object in your workspace.") &&
+          has(a, "\n  nf$n_keep <- n_keep\n  jsubset(nf, n_keep)") &&
+          has(flat(b), "jsubset(): In Age >= n_per, n_per is not in the nf data frame; it is a separate object in your workspace.") &&
+          has(b, "\n  nf$n_per <- n_per\n  jsubset(nf, Age >= n_per)") &&
+          is.null(fs_of("nf")) })
+quiet(jcomplete(nf, Age))
 .fn39 <- grab(jsubset(nf, n_keep == TRUE))
-check("N39 SET behind an active jcomplete(), the filter is refused in the set-time form, with the same fix, and nothing is stored (it said 'activated')",
-      identical(.fn39, paste0("jsubset(): In n_keep == TRUE, n_keep has 12 values, one for each\n",
-                              "case in the nf data frame, but jcomplete() leaves 11.\n",
-                              "Add n_keep to the nf data frame as a variable:\n",
-                              "  nf$n_keep <- n_keep")) &&
-        is.null(fs_of("nf")))
+check("N39 SET behind an active jcomplete(), the same set-time form and nothing stored (until S357 the S331 form, with jcomplete()'s count)",
+      has(flat(.fn39), "jsubset(): In n_keep == TRUE, n_keep is not in the nf data frame; it is a separate object in your workspace.") &&
+        endsWith(.fn39, "\njstats analyzes the variables of a data frame.\nAdd it to the data frame first:\n  nf$n_keep <- n_keep\n  jsubset(nf, n_keep == TRUE)") &&
+        !has(.fn39, "leaves 11") && is.null(fs_of("nf")))
 quiet(jsubset(nf, Gender == 1))
 .fn40 <- grab(jsubset(nf, Age >= n_per))
 check("N40 ... with an earlier filter in place: reported unchanged, and kept",
-      has(.fn40, "  nf$n_per <- n_per\nYour earlier filter for the nf data frame is unchanged.") &&
+      has(.fn40, "  jsubset(nf, Age >= n_per)\nYour earlier filter for the nf data frame is unchanged.") &&
         identical(fs_of("nf")$expr_str, "Gender == 1"))
 quiet(jsubset(nf, NULL))
 n_l <- list(per = n_per)
-check("N41 a vector that is not a plain name gets the sentence without a line to run",
+check("N41 an object reached through $ is added under its last name, the condition naming that column; the lines run, and the filter is set",
       { g <- grab(jsubset(nf, Age >= n_l$per))
-        has(flat(g), "In Age >= n_l$per, n_l$per has 12 values, one for each case in the nf data frame, but jcomplete() leaves 11. Add n_l$per to the nf data frame as a variable.") &&
-          !has(g, "<-") })
+        lns <- strsplit(g, "\n", fixed = TRUE)[[1]]
+        fix <- trimws(lns[grepl("^  ", lns)])
+        ok <- length(fix) == 2L &&
+          identical(fix, c("nf$per <- n_l$per", "jsubset(nf, Age >= per)"))
+        if (ok) for (f in fix) quiet(eval(parse(text = f), envir = globalenv()))
+        set <- identical(fs_of("nf")$expr_str, "Age >= per")
+        quiet(jsubset(nf, NULL)); nf$per <- NULL
+        has(flat(g), "In Age >= n_l$per, n_l$per is not in the nf data frame; it is a separate object in your workspace.") &&
+          has(g, "Add it to the data frame first, then name the column:") && ok && set })
 n_v5 <- c(30, 40, 50, 60, 70); n_k11 <- rep(c(TRUE, FALSE), 6)[-1]
-check("N42 controls behind an active jcomplete(): a filter on the frame's own variables is set and runs; a vector of any other length keeps its S330 message -- one value per case jcomplete() LEAVES included",
+check("N42 controls behind an active jcomplete(): a filter on the frame's own variables is set and runs; a vector of any other length takes the recycling form, opening as R19's does -- one value per case jcomplete() LEAVES included",
       { ok1 <- has(grab(jsubset(nf, Gender == 1)), "jsubset activated for nf") &&
                !errs(jdesc(nf, Age))
         quiet(jsubset(nf, NULL))
         ok2 <- has(flat(grab(jsubset(nf, Age > n_v5))),
-                   "In Age > n_v5, n_v5 has 5 values for the 12 cases in the nf data frame.")
+                   "In Age > n_v5, n_v5 is not in the nf data frame; it is a separate object in your workspace. It has 5 values for the 12 cases in the nf data frame.")
         ok3 <- has(flat(grab(jsubset(nf, Age > n_k11))),
-                   "In Age > n_k11, n_k11 has 11 values for the 12 cases in the nf data frame.")
+                   "In Age > n_k11, n_k11 is not in the nf data frame; it is a separate object in your workspace. It has 11 values for the 12 cases in the nf data frame.")
         ok1 && ok2 && ok3 && is.null(fs_of("nf")) })
 quiet(jcomplete(nf, off))
-check("N43 controls: jcomplete() off, or dropping no case, the same filter is set and runs",
-      { ok1 <- has(grab(jsubset(nf, n_keep == TRUE)), "jsubset activated for nf") &&
-               !errs(jdesc(nf, Gender))
+check("N43 with jcomplete() off, or dropping no case, the same filter is refused too (it was set and ran before S357)",
+      { ok1 <- has(flat(grab(jsubset(nf, n_keep == TRUE))), "n_keep is not in the nf data frame") &&
+               is.null(fs_of("nf"))
         reset()
         quiet(jcomplete(nf, Gender))
-        ok2 <- has(grab(jsubset(nf, n_keep == TRUE)), "jsubset activated for nf") &&
-               !errs(jdesc(nf, Gender))
+        ok2 <- has(flat(grab(jsubset(nf, n_keep == TRUE))), "n_keep is not in the nf data frame") &&
+               is.null(fs_of("nf"))
         ok1 && ok2 })
 reset()
 quiet(jsubset(nf, Gender == 1))
 .fn44 <- grab(jdesc(nf, Age, subset = Age >= n_per))
-check("N44 per call, behind a stored filter: compared with a plain variable, the S330 add-it-to-the-frame message (it said 'has 12 values for 6 rows')",
-      has(flat(.fn44), "jdesc(): In subset = Age >= n_per, n_per has 12 values, one for each case in the nf data frame, but filtering leaves 6.") &&
-        has(.fn44, "leaves 6.\nAdd n_per to the nf data frame as a variable:\n  nf$n_per <- n_per") &&
-        !has(.fn44, "not one TRUE or FALSE"))
+check("N44 per call, behind a stored filter: compared with a plain variable, R19's form with the call (it said 'has 12 values, one for each case ... but filtering leaves 6')",
+      has(flat(.fn44), "jdesc(): In subset = Age >= n_per, n_per is not in the nf data frame; it is a separate object in your workspace.") &&
+        has(.fn44, "Add it to the data frame first:\n  nf$n_per <- n_per\n  jdesc(nf, Age, subset = Age >= n_per)") &&
+        !has(.fn44, "not one TRUE or FALSE") && !has(.fn44, "leaves 6"))
 check("N45 ... compared with a constant, and as a bare name, likewise; and the printed fix, run, lets the condition through",
       { a <- grab(jdesc(nf, Age, subset = n_keep == TRUE))
         b <- grab(jdesc(nf, Age, subset = n_keep))
-        eval(parse(text = sub(".*as a variable:\n  ([^\n]*).*", "\\1", b)))
+        eval(parse(text = sub(".*data frame first:\n  ([^\n]*).*", "\\1", b)))
         ok <- !errs(jdesc(nf, Age, subset = n_keep)) &&
               !errs(jdesc(nf, Age, subset = n_keep == TRUE))
         nf$n_keep <- NULL
-        has(flat(a), "In subset = n_keep == TRUE, n_keep has 12 values, one for each case in the nf data frame, but filtering leaves 6.") &&
-          has(flat(b), "In subset = n_keep, n_keep has 12 values, one for each case in the nf data frame, but filtering leaves 6.") &&
-          has(b, "\n  nf$n_keep <- n_keep") && ok })
+        has(flat(a), "In subset = n_keep == TRUE, n_keep is not in the nf data frame; it is a separate object in your workspace.") &&
+          has(flat(b), "In subset = n_keep, n_keep is not in the nf data frame; it is a separate object in your workspace.") &&
+          has(b, "\n  nf$n_keep <- n_keep\n  jdesc(nf, Age, subset = n_keep)") && ok })
 reset()
-quiet(jcomplete(nf, Age))
-check("N46 per call behind jcomplete() alone: 'filtering leaves 11'; and with no stored setting the same condition runs",
+check("N46 per call with no stored setting, and behind jcomplete() alone, the same stop (with no setting the condition ran until S357)",
       has(flat(grab(jdesc(nf, Gender, subset = n_keep == TRUE))),
-          "In subset = n_keep == TRUE, n_keep has 12 values, one for each case in the nf data frame, but filtering leaves 11.") &&
-        { reset(); !errs(jdesc(nf, Gender, subset = n_keep == TRUE)) })
+          "In subset = n_keep == TRUE, n_keep is not in the nf data frame") &&
+        { quiet(jcomplete(nf, Age))
+          has(flat(grab(jdesc(nf, Gender, subset = n_keep == TRUE))),
+              "In subset = n_keep == TRUE, n_keep is not in the nf data frame") })
 reset()
 # A vector of any OTHER length behind jcomplete() keeps the S330 stored form
-# and both exits: the add-it-to-the-frame fix is for one value per case of
-# the frame as given, and for nothing else.
-n_vv <- rep(40, 12)
+# and both exits, opening as R19's message does.
+n_vv <- 40
 quiet(jsubset(nf, Age >= n_vv)); quiet(jcomplete(nf, Age)); n_vv <- c(30, 40, 50)
 .fn49 <- grab(jdesc(nf, Gender))
-check("N49 control: behind jcomplete(), a stored filter whose vector has some other length keeps the S330 recycling form and both exits",
-      has(flat(.fn49), "the jsubset filter for the nf data frame, Age >= n_vv, cannot be applied: n_vv has 3 values for 11 cases.") &&
+check("N49 control: behind jcomplete(), a stored filter whose vector has some other length keeps the recycling form and both exits",
+      has(flat(.fn49), "the jsubset filter for the nf data frame, Age >= n_vv, cannot be applied: n_vv is not in the nf data frame; it is a separate object in your workspace, with 3 values for 11 cases.") &&
         has(.fn49, "11 cases.\nTo set it aside, run:\n  jsubset(nf, off)\nTo delete it, run:\n  jsubset(nf, NULL)") &&
-        !has(.fn49, "one for each case"))
+        !has(.fn49, "Add it to the data frame"))
 reset()
 rm(n_vv)
 # The cases jcomplete() keeps are counted as the analysis counts them: a
 # declared missing value is missing. Inc has no NA, and -99 declared on
-# rows 3 and 7.
+# rows 3 and 7. Since S357 the count is said of an object holding one value
+# for each case jcomplete() leaves -- the one length R19 cannot add to the
+# frame as it is.
 nm <- d
 nm$Inc <- haven::labelled_spss(c(30, 50, -99, 40, 60, 35, -99, 44, 70, 20,
                                  41, 52),
                                labels = c(Refused = -99), na_values = -99)
 quiet(jcomplete(nm, Inc))
-check("N47 the cases jcomplete() leaves are counted with declared missing values as missing: 'leaves 10', and the analysis agrees",
-      has(flat(grab(jsubset(nm, n_keep == TRUE))),
-          "n_keep has 12 values, one for each case in the nm data frame, but jcomplete() leaves 10.") &&
-        any(grepl("^ +jcomplete\\(\\) +2 +10 +Inc$", plines(jdesc(nm, Age)))))
+n_k10 <- TRUE
+quiet(jsubset(nm, Age > 0 & n_k10))
+n_k10 <- rep(TRUE, 10)
+check("N47 the cases jcomplete() leaves are counted with declared missing values as missing: an object of 10 values is one per case left ('the nm data frame has 12'), and the analysis agrees",
+      { g <- grab(jdesc(nm, Age))
+        quiet(jsubset(nm, NULL))
+        has(flat(g), "n_k10 is not in the nm data frame; it is a separate object in your workspace. jstats analyzes the variables of a data frame. It has 10 values, one for each case left after filtering; the nm data frame has 12. Use a single value, or add the values to the data frame as a variable.") &&
+          any(grepl("^ +jcomplete\\(\\) +2 +10 +Inc$", plines(jdesc(nm, Age)))) })
 reset()
+rm(n_k10)
 # A stale jcomplete() setting beside a filter: the filter's own checks say
 # nothing about it (the analysis stops on the jcomplete() setting first).
 nk <- d; nk$Tmp <- c(NA, 2:12); quiet(jcomplete(nk, Age, Tmp)); nk$Tmp <- NULL
@@ -3200,15 +3297,18 @@ check("O37 the new messages wrap inside the 76 pin",
 reset()
 
 # ---- O38-O39: "1 row" -------------------------------------------------------
-o_m <- d[1:3, ]; o_v3 <- c(TRUE, FALSE, TRUE)
-quiet(jsubset(o_m, o_v3 == TRUE)); o_m <- o_m[1, , drop = FALSE]
+# o_v3 is one TRUE when the filter is set (ruling R19, S357, refuses a
+# vector of one value per case), and three values once the frame is cut.
+o_m <- d[1:3, ]; o_v3 <- TRUE
+quiet(jsubset(o_m, Age > 0 & o_v3)); o_m <- o_m[1, , drop = FALSE]
+o_v3 <- c(TRUE, FALSE, TRUE)
 .fo38 <- grab(jdesc(o_m, Age))
 check("O38 a stored filter on a frame cut to ONE row: 'has 3 values for 1 row.'",
-      has(flat(.fo38), "the jsubset filter for the o_m data frame, o_v3 == TRUE, has 3 values for 1 row.") &&
+      has(flat(.fo38), "the jsubset filter for the o_m data frame, Age > 0 & o_v3, has 3 values for 1 row.") &&
         !has(.fo38, "1 rows"))
 o_m <- d[1:2, ]
 check("O39 control: two rows are still 'rows'",
-      has(flat(grab(jdesc(o_m, Age))), "o_v3 == TRUE, has 3 values for 2 rows."))
+      has(flat(grab(jdesc(o_m, Age))), "Age > 0 & o_v3, has 3 values for 2 rows."))
 reset()
 rm(list = intersect(c("o_z", "o_y", "o_g", "o_n", "o_on", "o_m", "o_v3", "o_d2"), ls()))
 
@@ -3481,7 +3581,7 @@ rm(r_w)
 
 # ---- R24-R28: jfreq() prints its title before the filters run (S334 item) ---
 reset()
-r_s <- d; r_k <- r_s$Age > 30; quiet(jsubset(r_s, r_k)); rm(r_k)
+r_s <- d; r_k <- 30; quiet(jsubset(r_s, Age > r_k)); rm(r_k)   # a value (R19, S357)
 check("R24 a stored filter that can no longer be applied: jfreq() stops under its title (it stopped bare), as the other four do under theirs",
       identical(pre(jfreq(r_s, Gender)), "Frequencies") &&
         identical(pre(jdesc(r_s, Age)), "Descriptive Statistics") &&
@@ -3490,7 +3590,7 @@ check("R24 a stored filter that can no longer be applied: jfreq() stops under it
         identical(pre(jcorr(r_s, Age, Keep01, Gender)), "Pearson Bivariate Correlations") &&
         identical(pre(jalpha(r_s, Age, Keep01, Gender)), "Reliability Analysis") &&
         has(flat(grab(jfreq(r_s, Gender))),
-            "jfreq(): the jsubset filter for the r_s data frame, r_k, cannot be applied: r_k no longer exists."))
+            "jfreq(): the jsubset filter for the r_s data frame, Age > r_k, cannot be applied: r_k no longer exists."))
 quiet(jsubset(r_s, NULL))
 check("R25 a subset = that is refused, and a data frame with no rows: under the title too",
       identical(pre(jfreq(d, Gender, subset = Keep01)), "Frequencies") &&
@@ -4568,6 +4668,93 @@ check("Y37 every pointer's call line parses, and three of them run",
 rm(.y30, zz_y12, .y01, .y_row, .y_pl)
 options(.jst_default_data = .y_def)
 rm(.y_def)
+reset()
+
+# =============================================================================
+# Z -- RULING R19, DATA FRAMES ONLY: CONDITIONS AND THE VECTOR PATH (S357)
+# =============================================================================
+# A condition -- jsubset() when set, subset = per call, a stored filter --
+# that reads a workspace object of one value per case stops with R19's one
+# message, filtered or not (until S357 it passed unless jcomplete() or a
+# stored filter had cut the frame, and then got the S331 add-it line).
+# A bare name is read too. A stored filter meets one only when the object
+# behind it changed after it was set. The vector path keeps the single
+# vector (jdesc(x), jfreq(x), jscreen(x)); a condition there reading
+# another one gets the lines that put both in a data frame, and a column of
+# a frame (d$Age) is analyzed in its frame, in the frame's words. Values
+# still pass. models_check.R section T holds the formula side. Fixtures
+# dotted; working objects in local().
+# =============================================================================
+reset()
+.z_fix <- function(txt) {
+  lns <- strsplit(txt, "\n", fixed = TRUE)[[1]]
+  trimws(lns[grepl("^  ", lns)])
+}
+.z_obj <- function(fn, op, typed = NULL, frame = "d") {
+  paste0(fn, "(): ", if (!is.null(typed)) paste0("In ", typed, ", "), op,
+         " is not in the ", frame, " data frame; it is a separate object in ",
+         "your workspace. jstats analyzes the variables of a data frame.")
+}
+check("Z01 jsubset() SET on a one-per-case object, nothing cutting the frame: refused with the line that adds it and the call, and nothing stored (it was set)",
+      local({ k12 <- d$Age > 35 | is.na(d$Age)
+              m <- grab(jsubset(d, k12 == TRUE))
+              has(flat(m), .z_obj("jsubset", "k12", "k12 == TRUE")) &&
+                identical(.z_fix(m), c("d$k12 <- k12", "jsubset(d, k12 == TRUE)")) &&
+                is.null(fs_of("d")) }))
+check("Z02 ... the two lines, run, set the filter on the frame's new column",
+      local({ k12 <- d$Age > 35 | is.na(d$Age); dz <- d
+              m <- grab(jsubset(dz, k12 == TRUE))
+              for (f in .z_fix(m)) quiet(eval(parse(text = f)))
+              ok <- identical(fs_of("dz")$expr_str, "k12 == TRUE") && "k12" %in% names(dz)
+              quiet(jsubset(dz, NULL)); ok }))
+check("Z03 a bare name, a comparison and an object reached through $, per call with subset =: each stops, with the call as typed (the fetched one under its last name)",
+      local({ k12 <- d$Age > 35 | is.na(d$Age); l12 <- list(w = d$Keep01 * 2)
+              a <- grab(jdesc(d, Age, subset = k12))
+              b <- grab(jfreq(d, Gender, subset = k12 == TRUE))
+              cc <- grab(jdesc(d, Age, subset = l12$w > 0))
+              has(flat(a), .z_obj("jdesc", "k12", "subset = k12")) &&
+                identical(.z_fix(a), c("d$k12 <- k12", "jdesc(d, Age, subset = k12)")) &&
+                has(flat(b), .z_obj("jfreq", "k12", "subset = k12 == TRUE")) &&
+                has(flat(cc), .z_obj("jdesc", "l12$w", "subset = l12$w > 0")) &&
+                identical(.z_fix(cc), c("d$w <- l12$w", "jdesc(d, Age, subset = w > 0)")) }))
+check("Z04 a stored filter whose value became one value per case: R19's stored form with the line that adds it, no exits; the status display says the same; on refuses and it stays off",
+      local({ z_v <- 35
+              quiet(jsubset(d, Age > z_v)); z_v <- d$Age
+              assign("z_v", z_v, envir = globalenv())
+              on.exit({ rm("z_v", envir = globalenv()); quiet(jsubset(d, NULL)) }, add = TRUE)
+              a <- grab(jdesc(d, Age)); st <- grab(jsubset())
+              quiet(jsubset(d, off)); o <- grab(jsubset(d, on))
+              has(flat(a), "jdesc(): the jsubset filter for the d data frame, Age > z_v, cannot be applied: z_v is not in the d data frame; it is a separate object in your workspace.") &&
+                identical(.z_fix(a), "d$z_v <- z_v") && !has(a, "To set it aside") &&
+                has(flat(st), "It cannot be applied: z_v is not in the d data frame; it is a separate object in your workspace.") &&
+                has(o, "\nThe filter stays off.\njstats analyzes the variables of a data frame.\n") &&
+                identical(fs_of("d")$active, FALSE) }))
+check("Z05 values in a condition still pass: one value, a set of one-per-case length with %in%, a summary of a one-per-case vector, a lookup by a variable",
+      local({ z_cut <- 35; z_set <- rep(c(1, 3), 6); z_w <- d$Age; z_by <- c(35, 45)
+              ok <- function(expr) { g <- grab(expr); r <- has(g, "jsubset activated for d"); quiet(jsubset(d, NULL)); r }
+              ok(jsubset(d, Age > z_cut)) && ok(jsubset(d, Condition %in% z_set)) &&
+                ok(jsubset(d, Age > mean(z_w, na.rm = TRUE))) && ok(jsubset(d, Age > z_by[Gender])) }))
+check("Z06 the vector path: a condition reading another one-per-case object stops with the lines that put both in a data frame; the lines run and describe the vector",
+      local({ zx <- d$Age; zw <- d$Keep01
+              m <- grab(jdesc(zx, subset = zw == 1))
+              fix <- .z_fix(m)
+              ok <- identical(fix, c("mydata <- data.frame(zx, zw)", "jdesc(mydata, zx, subset = zw == 1)"))
+              for (f in fix) if (ok) quiet(eval(parse(text = f)))
+              has(flat(m), "jdesc(): In subset = zw == 1, zw is a separate object in your workspace. jstats analyzes the variables of a data frame.") &&
+                has(m, "Put both in a data frame first:") && ok && exists("mydata", inherits = FALSE) }))
+check("Z07 ... reached through $: under its last name; jfreq() and jscreen() the same; the single vector alone still described by all three",
+      local({ zx <- d$Gender; zl <- list(w = d$Keep01)
+              a <- grab(jfreq(zx, subset = zl$w == 1))
+              b <- grab(jscreen(zx, subset = zl$w == 1))
+              identical(.z_fix(a), c("mydata <- data.frame(zx, w = zl$w)", "jfreq(mydata, zx, subset = w == 1)")) &&
+                has(flat(b), "jscreen(): In subset = zl$w == 1, zl$w is a separate object in your workspace.") &&
+                !errs(jdesc(zx)) && !errs(jfreq(zx)) && !errs(jscreen(zx)) }))
+check("Z08 a column of a frame is analyzed in its frame: the frame's form, its name in the line",
+      local({ zw <- d$Keep01
+              m <- grab(jdesc(d$Age, subset = zw == 1))
+              has(flat(m), .z_obj("jdesc", "zw", "subset = zw == 1")) &&
+                identical(.z_fix(m), c("d$zw <- zw", "jdesc(d$Age, subset = zw == 1)")) }))
+rm(.z_fix, .z_obj)
 reset()
 
 # =============================================================================

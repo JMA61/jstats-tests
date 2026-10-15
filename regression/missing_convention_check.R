@@ -10,6 +10,57 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S357 EDIT (v0.9.230, 2026-10-16): NEW N92 section, thirteen checks
+#           (N92a-N92m), Fix Slate W2's load, save and jai() wording: the
+#           mixed-frame note opening on the data frame (Rule T); Case 4's
+#           note agreeing with its count; "R format" in both menus, the
+#           Loaded and Saved lines and .jst_format_label(); the shipped
+#           dataset's Loaded line without its period; jai()'s declined
+#           writes, run on the real writers with interactive() and the
+#           question stubbed (create keeps the folder line, replace says
+#           only "Nothing was written."); SKILL.md's paragraph, the
+#           standard paragraph's words set to the body's width, version
+#           3.8; the .RData redirect in one voice typed and bare, x.RData
+#           found on a case-sensitive file system; jcorr() and jalpha()'s
+#           minimum one sentence a line; jsave()'s CSV note in each branch
+#           ("missing values", the blanked count in number); and
+#           jdeclare_missing() given a marker for a variable with none
+#           (the family as missing values: a governing convention decides,
+#           Decision 13, else the case typed). RE-PINNED: N23a (the
+#           refusal reworded; its wrap-stable atoms moved), N82l (the
+#           blanked count), N86m (the redirect's voice), N86av (the CSV
+#           rider's "missing values"), N86bb-be (the Loaded line's "R
+#           format" and its period). SEVEN HUNDRED AND NINETY-EIGHT checks.
+#           MUTATION MAP: twenty-three one-change mutants of the 0.9.230
+#           master, each run on this battery: the frame's bare name back
+#           N92a; Case 4 always plural N92b; "R native format" in the label
+#           N86bb N86bc N86bd N92c, in jload()'s menu N92c, in jsave()'s
+#           N92c; the Loaded line's period back N86be N92d; the replace
+#           decline ignored N92e N92f, SKILL.md's not passed N92f; the
+#           prefix stripped alone N92g; version 3.7 N92g; the typed
+#           redirect's old voice N86m N92h; the lowercase extensions only
+#           N92h; jcorr()'s and jalpha()'s Rule E off N92i (each); the old
+#           blanked sentence N82l N92k; "missing-value codes" in the
+#           both-forms and SPSS-only branches N92j (each); the Stata-only
+#           Rule E off N92j; the typed case before the setting N23a N23b
+#           N92m; the typed case ignored N92l; "tokens" back N23a N92l
+#           N92m; the blanked count always plural N92k; a per-call
+#           convention ignored N92m.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 798/798 plain and under
+#           the RStudio-handler stand-in, each again with a 35-character
+#           temp path, and entered dirty plain and under the stand-in (the
+#           workspace's x, s, e, f, m and r overwritten as on 0.9.229, the
+#           Scripts Slate B items; nothing else moved). run_all.R 2541
+#           across eight, all four ways.
+#           LAST VERIFIED: v0.9.231, 2026-10-16 (S357) -- 798/798 on the
+#           WORKSTATION through receive_all(), on v0.9.230 and again on
+#           v0.9.231 ("ALL BATTERIES GREEN (8 run, 2559 checks)"),
+#           matching the sandbox; GitHub 72b0b4e and 2a4fcc3. The first
+#           call on v0.9.230 ran the S356 script (777/785, the eight
+#           re-pins red): the scripts were not yet in regression\, and
+#           receive_all(from = "batteries") once the bridge had written
+#           them was green (Jeff: "all green that time"; its block not
+#           posted).
 # S356 EDIT (v0.9.229, 2026-10-15): NEW N91 section, nineteen checks
 #           (N91a-N91s), the NAMES slate at the recode family and ruling
 #           R17. A: a bare word where a quoted value goes -- jconvert(to =
@@ -1910,9 +1961,14 @@ options(.jst_options_missing_convention = NULL)
 options(.jst_options_missing_convention = "sas")
 f23 <- data.frame(v = c(1, 2, 3, 4))
 m23 <- grab(jdeclare_missing(f23, v, codes = ".a"))
-check("N23a plain-column refusal phrases SAS-style tokens",
-      grepl("SAS-style", m23, fixed = TRUE) &&
-        grepl("(.A-.Z)", m23, fixed = TRUE))
+# Re-pinned S357 (Fix Slate W2, the S355 item): the refusal names the
+# family as missing values, never "tokens" or "tagged missings", and opens
+# on the variable's name alone (Rule T).
+check("N23a plain-column refusal names SAS-style missing values (no \"tokens\", no \"tagged missings\")",
+      startsWith(m23, "jdeclare_missing(): v has no lettered markers to label.\n") &&
+        grepl("SAS-style missing values", .fl(m23), fixed = TRUE) &&
+        !grepl("token", m23, fixed = TRUE) &&
+        !grepl("tagged missings", m23, fixed = TRUE))
 check("N23b remedies carry the convention (gate-ready)",
       grepl('"-99=.A"', m23, fixed = TRUE) &&
         grepl("c(-99),", m23, fixed = TRUE) &&
@@ -6832,7 +6888,8 @@ check("N82k to = \"spss\" has nothing to do for a string variable's declaration"
 .g82 <- file.path(tempdir(), "s82_out.csv")
 m82l <- grab(jsave(s82, .g82, overwrite = TRUE, preserve.declarations = FALSE))
 check("N82l jsave(preserve.declarations = FALSE): the declared strings are blanked with the numeric codes (5 cells; the 3 text cells were written as text)",
-      grepl("5 missing-value codes were blanked to empty cells", .fl(m82l), fixed = TRUE) &&
+      grepl("5 cells holding declared missing values were blanked (preserve.declarations = FALSE).",
+            .fl(m82l), fixed = TRUE) &&
         { x <- utils::read.csv(.g82, stringsAsFactors = FALSE, na.strings = "")
           identical(is.na(x$MS), c(TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE,
                                    FALSE, TRUE, FALSE)) &&
@@ -7653,9 +7710,14 @@ check("N86k ... a name given with name = is the name the message names, not the 
 check("N86l jcopy() to a name starting with a digit says the same of a data frame's name",
       grepl("R does not allow a data frame's name to start with a digit.",
             .fl(grab(jcopy(d86, 2))), fixed = TRUE))
-check("N86m an .RData file name: they \"can contain\" several objects",
-      startsWith(.fl(grab(jload("x86.RData"))),
-                 "jload(): .RData files can contain multiple named objects. Use load("))
+# Re-pinned S357 (the S219 item's finding 6): the typed-extension redirect
+# takes the bare-name redirect's voice -- the fact, then the base R line on
+# its own -- and says nothing of how many objects the file holds.
+check("N86m an .RData file name: the bare-name redirect's voice, the base R line on its own",
+      identical(grab(jload("x86.RData")),
+                paste0("jload(): x86.RData is an .RData file, which jstats does not load.\n",
+                       "Load it with base R:\n",
+                       "  load(\"x86.RData\")")))
 
 # --- B: a path typed with single backslashes ------------------------------------
 m86n <- grab(jload("V:\temp\new.csv"))
@@ -7926,7 +7988,7 @@ check("N86au Case 1 is as v0.9.214 made it: to = \"baseR\" for the frame, no sen
                             "  jconvert(ld86, to = \"baseR\", modify = TRUE)\n")))
 m86av <- grab(jsave(ds86, "ds86.csv"))
 check("N86av the CSV note's rider: over a declared string, \"ordinary values\", no \"-99 ... literal numbers\"",
-      grepl(paste0("Any SPSS-style missing-value codes are written as ordinary values ",
+      grepl(paste0("Any SPSS-style missing values are written as ordinary values ",
                    "and will read back as valid data."), .fl(m86av), fixed = TRUE) &&
         !grepl("literal numbers", m86av, fixed = TRUE))
 check("N86aw ... with a Stata-style variable beside it, \"ordinary values\" too; a numeric frame keeps \"-99 ... literal numbers\"",
@@ -7958,20 +8020,20 @@ check("N86ba ... three or fewer: the names, as before",
       grepl("Note: V1, V2, and V3 are Stata-style, but your missing.convention",
             .fl(.conv86("spss", grab(jload("w3_86.rds", overwrite = TRUE, name = "lw86")))), fixed = TRUE))
 check("N86bb ruling R6: a blank line between the Loaded line and the narrative under it",
-      grepl("^Loaded ld86 \\(R native format; 6 cases, 3 variables\\)\n\n3 variables have SPSS-style",
+      grepl("^Loaded ld86 \\(R format; 6 cases, 3 variables\\)\n\n3 variables have SPSS-style",
             m86au))
 check("N86bc ... and between notes above it and the Loaded line; the notes keep their own blank line",
       local({ m <- grab(jload("ds86.rds", name = "ld86", use = TRUE, missing.notice = FALSE))
               identical(m, paste0("Default data frame set to: ld86\n", "\n",
-                                  "Loaded ld86 (R native format; 6 cases, 3 variables)\n")) }))
+                                  "Loaded ld86 (R format; 6 cases, 3 variables)\n")) }))
 check("N86bd ... the Loaded line alone has no blank line after it; quiet = TRUE prints nothing",
       identical(grab(jload("ds86.rds", name = "ld86", overwrite = TRUE,
                            missing.notice = FALSE)),
-                "Loaded ld86 (R native format; 6 cases, 3 variables)\n") &&
+                "Loaded ld86 (R format; 6 cases, 3 variables)\n") &&
         identical(grab(jload("ds86.rds", name = "ld86", overwrite = TRUE,
                            quiet = TRUE)), ""))
 check("N86be ... the shipped dataset's Loaded line takes the same blank line",
-      grepl("^Loaded the jstats example dataset 'community'\\.\n\n5 variables have",
+      grepl("^Loaded the jstats example dataset 'community'\n\n5 variables have",
             .conv86(NULL, grab(jload("community", name = "lc86", package = TRUE,
                                      overwrite = TRUE, missing.notice = TRUE)))))
 
@@ -9650,6 +9712,188 @@ check("N91s a short quoted label whose first word would fit on the line above (.
                                          "Other; specify", "Don't know"))) }))
 rm(.spd91, .x91, .e91, .qd91, .qe91, .qf91, .qg91, .qh91, .hb91, .conv91, .calls91, .run91, .labs91,
    list = ls(pattern = "^\\.m91", all.names = TRUE))
+
+# =============================================================================
+# N92 (S357) -- FIX SLATE W2: THE LOAD, SAVE AND jai() WORDING. Eight logged
+# conformance items, each the message as it now reads:
+#   A  Rule T: the mixed-frame note (Case 6) opens "the d data frame mixes",
+#      never on a bare frame name (the S230 item).
+#   B  the Case 4 note agrees with its count: "this variable is" after
+#      "1 variable has ..." (the S347 item).
+#   C  "R format" for .rds, the name the save reminders have used since
+#      Session 91: the jload() and jsave() menus, the Loaded and Saved lines
+#      (the Session 91 item; Jeff, S357: "Rename to R format").
+#   D  the shipped dataset's Loaded line ends as the file branch and jsave()'s
+#      Saved line do, with no period (the S206 item, candidate 2).
+#   E  jai(): after a declined REPLACE (an AGENTS.md block, a SKILL.md) the
+#      note says only that nothing was written; a declined CREATE keeps the
+#      line about another folder (the S206 item, candidate 3). Run on the
+#      real writers with interactive() and the question stubbed.
+#   F  SKILL.md's AI-assistant paragraph is set to the body's width without
+#      its prefix -- the same words, a first line no longer 24 characters
+#      short (the S207 item); the orientation version is 3.8.
+#   G  the .RData redirect in one voice, typed or bare, and a bare name
+#      finds x.RData on a case-sensitive file system (the S219 item's
+#      finding 6, and a defect on the same surface found building it).
+#   H  Rule E and the term: jcorr() and jalpha()'s minimum, one sentence a
+#      line; jsave()'s label-loss note, one sentence a line, "missing
+#      values" where it said "missing-value codes", the blanked count in
+#      number (the Session 123 sweep).
+#   I  jdeclare_missing() given a marker for a variable with none: the
+#      family named as missing values, never "tokens" or "tagged missings";
+#      a governing convention decides it (Decision 13), else the case typed
+#      (Jeff, S357: a typed .A gets SAS-style advice).
+# Fixtures dotted, in a folder of their own; working objects in local().
+# =============================================================================
+.wd92 <- getwd()
+.ns92 <- getOption(".jst_missing_notice_shown")   # the loads below set it
+.td92 <- file.path(tempdir(), "jstats n92")
+unlink(.td92, recursive = TRUE); dir.create(.td92); setwd(.td92)
+.S92 <- haven::labelled_spss(c(1, 2, -99, 3), labels = c(Refused = -99),
+                             na_values = -99)
+.T92 <- haven::labelled(c(1, 2, haven::tagged_na("a"), 3),
+                        labels = c(Skipped = haven::tagged_na("a")))
+saveRDS(data.frame(S = .S92, T = .T92), "mx92.rds")
+saveRDS(data.frame(S = .S92), "one92.rds")
+saveRDS(data.frame(S = .S92, S2 = .S92), "two92.rds")
+.conv92 <- function(cv, expr) {
+  old <- getOption(".jst_options_missing_convention")
+  options(.jst_options_missing_convention = cv)
+  on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+  force(expr)
+}
+# One of jai()'s writers, run as it runs at the console: interactive, the
+# question answered `answer`, and SKILL.md's folder pointed at `skill_dir`.
+.jai92 <- function(fn, answer, skill_dir = NULL) {
+  f <- get(fn)
+  e <- new.env(parent = environment(f))
+  e$interactive <- function() TRUE
+  e$.jst_jai_confirm <- function(info) answer
+  if (!is.null(skill_dir)) e$.jst_skill_default_dir <- function() skill_dir
+  environment(f) <- e
+  f
+}
+# --- A, B: the load narrative's notes -------------------------------------------
+check("N92a the mixed-frame note opens on the data frame, not its bare name (Rule T)",
+      local({ m <- .conv92(NULL, grab(jload("mx92.rds", name = ".l92", overwrite = TRUE,
+                                            missing.notice = TRUE)))
+              grepl("Note: the .l92 data frame mixes SPSS-style and Stata-style missing values.",
+                    .fl(m), fixed = TRUE) && !grepl("Note: .l92 mixes", .fl(m), fixed = TRUE) }))
+check("N92b the Case 4 note agrees with its count: \"this variable is\" of one, \"these variables are\" of two",
+      local({ m1 <- .conv92("stata", grab(jload("one92.rds", name = ".l92", overwrite = TRUE,
+                                               missing.notice = TRUE)))
+              m2 <- .conv92("stata", grab(jload("two92.rds", name = ".l92", overwrite = TRUE,
+                                               missing.notice = TRUE)))
+              grepl("Note: this variable is SPSS-style, but your missing.convention setting is \"stata\".",
+                    .fl(m1), fixed = TRUE) && !grepl("these variables", m1, fixed = TRUE) &&
+                grepl("Note: these variables are SPSS-style, but your missing.convention setting is \"stata\".",
+                      .fl(m2), fixed = TRUE) }))
+# --- C, D: the format's name and the Loaded line ---------------------------------
+check("N92c \"R format\": both menus end on \".rds  R\", the Loaded and Saved lines read \"(R format; ...\", and \"native\" is nowhere",
+      local({ ml <- grab(jload("x92.zzz")); ms <- grab(jsave(data.frame(a = 1), "x92.zzz"))
+              mo <- grab(jload("one92.rds", name = ".l92", overwrite = TRUE, missing.notice = FALSE))
+              mv <- grab(jsave(data.frame(a = 1:2), "a92.rds"))
+              endsWith(ml, "\n  .rds       R") && endsWith(ms, "\n  .rds       R") &&
+                identical(mo, "Loaded .l92 (R format; 4 cases, 1 variable)\n") &&
+                endsWith(mv, "\n(R format; 2 cases, 1 variable)\n") &&
+                identical(.jst_format_label("rds"), "R format") &&
+                !any(grepl("native", c(ml, ms, mo, mv), fixed = TRUE)) }))
+check("N92d the shipped dataset's Loaded line has no closing period, like the file branch's",
+      local({ invisible(utils::capture.output(   # the scan's offered lines are stdout
+                m <- .conv92(NULL, grab(jload("clinic", name = ".c92", package = TRUE,
+                                              overwrite = TRUE, missing.notice = FALSE)))))
+              identical(m, "Loaded the jstats example dataset 'clinic'\n") }))
+# --- E: jai()'s declined writes ----------------------------------------------------
+check("N92e jai(\"project\") declined: a new AGENTS.md keeps the line about another folder; a block to replace gets \"Nothing was written.\" alone",
+      local({ pd <- file.path(.td92, "proj"); dir.create(pd); od <- setwd(pd)
+              on.exit(setwd(od), add = TRUE)
+              m1 <- grab(.jai92(".jst_jai_project", FALSE)())
+              made <- file.exists("AGENTS.md")
+              invisible(grab(.jai92(".jst_jai_project", TRUE)()))
+              m2 <- grab(.jai92(".jst_jai_project", FALSE)())
+              !made && file.exists("AGENTS.md") &&
+                identical(m1, paste0("Nothing was written.\n",
+                                     "To write to a different folder, rerun with path = \"<folder>\".\n")) &&
+                identical(m2, "Nothing was written.\n") }))
+check("N92f jai(\"machine\") declined: a new SKILL.md keeps the line about another folder; one to overwrite gets \"Nothing was written.\" alone",
+      local({ sd <- file.path(.td92, "skill"); dir.create(sd)
+              m1 <- grab(.jai92(".jst_jai_machine", FALSE, sd)())
+              made <- file.exists(file.path(sd, "SKILL.md"))
+              writeLines("old", file.path(sd, "SKILL.md"))
+              m2 <- grab(.jai92(".jst_jai_machine", FALSE, sd)())
+              !made && identical(readLines(file.path(sd, "SKILL.md")), "old") &&
+                grepl("To write to a different folder", m1, fixed = TRUE) &&
+                identical(m2, "Nothing was written.\n") }))
+# --- F: SKILL.md's paragraph ---------------------------------------------------------
+check("N92g SKILL.md's AI-assistant paragraph: the standard paragraph's words without the prefix, set to the body's width (first line 60+, none over 76); the standard text keeps the prefix; version 3.8",
+      local({ std <- .jst_orientation_body(); i <- grep("^Note for AI assistants: ", std)
+              j <- min(which(std == "")[which(std == "") > i]) - 1L
+              mac <- .jst_orientation_text("STAMP", "machine")
+              k <- grep("^jstats is newer than your training data", mac)
+              para <- mac[k:(k + length(.jst_orientation_machine_note) - 1L)]
+              identical(para, .jst_orientation_machine_note) &&
+                identical(paste(para, collapse = " "),
+                          sub("^Note for AI assistants: ", "", paste(std[i:j], collapse = " "))) &&
+                nchar(para[1]) >= 60L && all(nchar(para) <= 76L) &&
+                identical(mac[k + length(para)], "") &&
+                !any(grepl("Note for AI assistants", mac, fixed = TRUE)) &&
+                any(grepl("^Note for AI assistants: jstats is newer",
+                          .jst_orientation_text("STAMP", "standard"))) &&
+                identical(.jst_orientation_version, "3.8") }))
+# --- G: the .RData redirect -----------------------------------------------------------
+save(.S92, file = "y92.RData"); save(.S92, file = "z92.rda")
+check("N92h the .RData redirect in one voice: typed (pinned whole) and bare -- the bare name finds y92.RData, as typed on a case-sensitive file system",
+      identical(grab(jload("y92.RData")),
+                paste0("jload(): y92.RData is an .RData file, which jstats does not load.\n",
+                       "Load it with base R:\n", "  load(\"y92.RData\")")) &&
+        endsWith(grab(jload("y92")),
+                 paste0("\ny92.RData is an .RData file, which jstats does not load.\n",
+                        "Load it with base R:\n", "  load(\"y92.RData\")")) &&
+        endsWith(grab(jload("z92")), "\n  load(\"z92.rda\")"))
+# --- H: Rule E and the term -------------------------------------------------------------
+check("N92i jcorr() and jalpha()'s minimum: one sentence a line (pinned whole)",
+      local({ d <- data.frame(a = 1:5, b = c(2, 4, 3, 5, 1))
+              identical(grab(jcorr(d, a)), "jcorr(): At least 2 variables are required.\nOnly 1 was provided.") &&
+                identical(grab(jalpha(d, a)), "jalpha(): At least 2 items are required.\nOnly 1 was provided.") }))
+check("N92j jsave()'s CSV note: one sentence a line, \"missing values\" where it said \"missing-value codes\", in each branch",
+      local({ ms <- grab(jsave(data.frame(S = .S92), "s92.csv"))
+              mt <- grab(jsave(data.frame(T = .T92), "t92.csv"))
+              mb <- grab(jsave(data.frame(S = .S92, T = .T92), "b92.csv"))
+              grepl("Any SPSS-style missing values (e.g. -99) are written as literal numbers", .fl(ms), fixed = TRUE) &&
+                grepl("missing-value metadata.\nStata-style missing values (.a, .b, ...) are", mt, fixed = TRUE) &&
+                grepl("Declared missing values lose their missing status", .fl(mb), fixed = TRUE) &&
+                !any(grepl("missing-value codes", c(ms, mt, mb), fixed = TRUE)) }))
+check("N92k ... the blanked count in number: \"1 cell holding a declared missing value was blanked\", the labels sentence on a line of its own",
+      local({ m <- grab(jsave(data.frame(S = .S92), "p92.csv", preserve.declarations = FALSE))
+              grepl("does not store variable labels or value labels.\n1 cell holding", m, fixed = TRUE) &&
+                grepl("1 cell holding a declared missing value was blanked (preserve.declarations = FALSE).",
+                      .fl(m), fixed = TRUE) }))
+# --- I: jdeclare_missing() given a marker for a variable with none ---------------------
+.r92 <- function(cv, codes, ...) {
+  .conv92(cv, grab(jdeclare_missing(data.frame(Income = c(1, 2, -99, 4)), Income,
+                                    codes = codes, ...)))
+}
+.fam92 <- function(m, fam, tag) {
+  startsWith(m, "jdeclare_missing(): Income has no lettered markers to label.\n") &&
+    grepl(paste0("To turn numeric codes into ", fam, "-style missing values, use jrecode() ",
+                 "(for example map = \"-99=.", tag, "\", convention = \"", tolower(fam),
+                 "\"); or declare the numbers directly with codes = c(-99), convention = \"",
+                 tolower(fam), "\"."), .fl(m), fixed = TRUE) &&
+    !grepl("token", m, fixed = TRUE) && !grepl("tagged missings", m, fixed = TRUE)
+}
+check("N92l a typed .A with no tagged convention governing (spss, or none selected) gets SAS-style advice; a typed .a, Stata-style",
+      .fam92(.r92("spss", ".A"), "SAS", "A") && .fam92(.r92(NULL, ".A"), "SAS", "A") &&
+        .fam92(.r92("spss", ".a"), "Stata", "a") && .fam92(.r92(NULL, ".a"), "Stata", "a"))
+check("N92m ... a governing convention decides, as it decides the case of what is produced (Decision 13): .A under stata, and with convention = \"stata\", is Stata-style; .a under sas, SAS-style",
+      .fam92(.r92("stata", ".A"), "Stata", "a") &&
+        .fam92(.r92("spss", ".A", convention = "stata"), "Stata", "a") &&
+        .fam92(.r92("sas", ".a"), "SAS", "A"))
+setwd(.wd92)
+unlink(.td92, recursive = TRUE)
+options(.jst_missing_notice_shown = .ns92)
+rm(.wd92, .ns92, .td92, .S92, .T92, .conv92, .jai92, .r92, .fam92)
+suppressWarnings(rm(list = intersect(c(".l92", ".c92"), ls(globalenv(), all.names = TRUE)),
+                    envir = globalenv()))
 
 # N88s (S353) -- RULING R5 OVER EVERY CONDITION THE BATTERY TOOK. Each call a
 # message printed at the pinned width (an indented line with the shape of a
