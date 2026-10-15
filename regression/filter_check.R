@@ -142,6 +142,67 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S356 EDIT (v0.9.229, 2026-10-15): the NAMES slate -- ruling R18's four
+#           remaining items (b)-(e) and riders A and B -- on the data-first
+#           front doors. SECTION Y NEW, thirty-seven checks (Y01-Y37). (b)
+#           A c() of names, bare or quoted, in every variable list (the
+#           thirteen enquos() sites, jconvert(), jdeclare_missing(),
+#           jplot(); Y04 runs each) and at the single-variable slots of
+#           jrecode(), jrelabel(), jencode() and by =, where a c() of
+#           several stops naming them; a misspelled name inside the c()
+#           named alone; a range and a helper still not found, as decided;
+#           under a juse() default a c() of names the frame has is the
+#           frame's variables, R12's line saying so, where the workspace
+#           holds one of the names and where it holds both (R's c() would
+#           have joined the two vectors); with no frame in hand a c() keeps
+#           R's meaning. (Rider A) A data frame's name in quotes gets the
+#           call without them, at jdesc(), the formula front door, juse(),
+#           jsave(), jsubset(), jcomplete() and jplot(); a string naming no
+#           frame stays a one-case text variable. (d) On the vector path,
+#           the two lines under the title when a data frame in the
+#           workspace holds a variable of the name read: (x) and
+#           .GlobalEnv$x read as the same object, jfreq() and jscreen()
+#           naming their own calls, no line when no frame has it, both
+#           frames named and MyData in the line when two do, a juse()
+#           default that lacks the variable, a column typed with its frame
+#           exempt, the line run, every output level, the message width.
+#           (Lean 4) The not-a-data-frame stops name the one frame that has
+#           the variable, MyData when none or two do, and the named lines
+#           run. (c) A bare word where a quoted value goes: jdesc()'s
+#           variable.id, jfreq(missing.detail =), jscreen(stats =),
+#           jcorr(method =, layout =), jalpha(case.processing.detail =),
+#           joutput() (a level or setting name positional in the sentence
+#           form, a diagnostic, a row form, a display mode), joptions()
+#           (the convention named or positional, the line always naming
+#           missing.convention; a layout; a detail level) and, rider B, the
+#           free-text slots data.dir =, jdata_dir(), jload(name =, sheet =)
+#           and jdummy(ref =), whose category is matched without regard to
+#           case; the word matched without regard to case and the line
+#           spelling the value as the function takes it; a name holding a
+#           value left alone, a word that is not a value left to R; every
+#           call line parsing, three run. .y_pl() takes the two captures
+#           outside check() (guard 3). FIVE HUNDRED AND THIRTY-TWO checks.
+#           On the 0.9.228 master 29 red: Y01-Y05, Y07, Y09-Y13, Y15-Y17,
+#           Y19, Y20, Y22-Y26, Y29-Y35, Y37.
+#           MUTATION MAP (S356; twenty one-change mutants of the 0.9.229
+#           master, each run on the four batteries of the build): the word
+#           check off Y29 Y30 Y31 Y32 Y35 Y37; the word matched with regard
+#           to case Y35; a c() of names not expanded Y01 Y02 Y03 Y04 Y05 Y07;
+#           the single slot taking a c() of several Y09 Y10 Y11; the vector
+#           path's collision lines off Y15 Y16 Y17 Y19 Y20 Y22 Y23; the frame
+#           that has the variable never named Y24 Y25 Y26; the quoted-frame
+#           stop off Y12 Y13; ref matched with regard to case Y34; the
+#           free-text check off Y32 Y33 Y34 Y37; a c() under a default not
+#           read as names Y07; the frames unsorted Y19. The other 9 mutants
+#           red elsewhere, green here.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 532/532
+#           plain and under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, and entered dirty.
+#           LAST VERIFIED: v0.9.229, 2026-10-15 (S356) -- 532/532 on the
+#           WORKSTATION through receive_all(), which ran every battery
+#           green after a clean R CMD check and went on to the walks (the
+#           paste-back block was not posted; the walks it showed were
+#           walked), matching the sandbox; GitHub fea0b51.
 # S355 EDIT (v0.9.228, 2026-10-14): Fix Slate W1, the S352 item. SECTION X
 #           NEW, five checks (X01-X05): with no data frame named and no
 #           juse() default, a condition -- jsubset(Agee > 40) -- is said to
@@ -4231,6 +4292,282 @@ check("X05 every call line in both parses",
         length(ls) == 6L && all(vapply(ls, function(l) !inherits(try(parse(text = l), silent = TRUE), "try-error"), logical(1))) }))
 options(.jst_default_data = .x_def)
 rm(.x_def, .gx1, .gx2)
+reset()
+
+# =============================================================================
+# Y -- HOW A NAME IS READ: RULING R18'S NAMES SLATE (S356, v0.9.229)
+# =============================================================================
+# Ruling R18 (Jeff, S355): "Name a variable without quotes, after its data
+# frame. jstats always reads the data frame's variable, never a separate
+# object with the same name. Anything that is not a variable -- a format, a
+# convention, a map, a file name -- goes in quotes." The slate's four items
+# and two riders, on the data-first front doors (models_check.R and
+# missing_convention_check.R take the formula functions' and the recode
+# family's). (b) A quoted name is accepted wherever a variable is named:
+# jrecode(), jrelabel() and jencode() strip the quotes as the other slots
+# do; a variable list, and the single-variable slots, take a c() of names,
+# bare or quoted (no ranges, no helpers). (c) A bare word where a quoted
+# value goes gets jload()'s pointer with the call to run, at every argument
+# that takes a fixed word, and (rider B) at the free-text slots -- a name,
+# a sheet, a folder, a category. (d) On the vector path, when a data frame
+# in the workspace has a variable of the name read, two lines under the
+# title say so and give the call that reads the variable. Lean 4: the
+# not-a-data-frame stops name the one frame that has the variable where
+# they printed MyData. Rider A: a data frame's name in quotes gets the call
+# without them. Fixture names no workspace is likely to hold (zz_y*, .y*);
+# a check's working objects are made inside local().
+reset()
+.y_def <- getOption(".jst_default_data")
+options(.jst_default_data = NULL)
+.y_row <- function(v, name) any(grepl(paste0("^", name, " +[0-9]"), v))
+# .y_pl(): plines() for a capture taken outside check() (guard 3), as .u_pl()
+# in section U: a call that stops gives its error text, and the checks
+# reading it go red where the battery would have halted (the m04 mutant of
+# the S356 round halted here, on jdesc(d, c(Age, Gender)) refused).
+.y_pl <- function(expr) tryCatch(plines(expr),
+                                 error = function(e) paste0("[error] ", conditionMessage(e)))
+# -- (b) a c() of names, bare or quoted, in every list --------------------
+.y01 <- .y_pl(jdesc(d, c(Age, Gender)))
+check("Y01 jdesc(d, c(Age, Gender)): the two variables, not \"c(Age, Gender) was not found\"",
+      any(.y01 == "12 Cases in the 2 Variable Pool; 11 Complete on All") &&
+        .y_row(.y01, "Age") && .y_row(.y01, "Gender"))
+check("Y02 the quoted form and the mixed form read the same",
+      identical(plines(jdesc(d, c("Age", "Gender"))), .y01) &&
+        identical(plines(jdesc(d, c(Age, "Gender"))), .y01))
+check("Y03 a c() beside other names, in order: jdesc(d, Keep01, c(Age, Gender), \"Name\")",
+      local({ v <- plines(jdesc(d, Keep01, c(Age, Gender)))
+              i <- c(which(grepl("^Keep01 ", v)), which(grepl("^Age ", v)),
+                     which(grepl("^Gender ", v)))
+              length(i) == 3L && all(diff(i) > 0L) &&
+                any(v == "12 Cases in the 3 Variable Pool; 11 Complete on All") }))
+check("Y04 every list takes it: jfreq(), jscreen(), jcorr(), jalpha(), jsum(), javg(), jcomplete(), the four registration verbs, jconvert(), jdeclare_missing(), jplot()",
+      local({
+        f <- plines(jfreq(d, c(Gender, Keep01)))
+        s <- plines(jscreen(d, c("Age", Keep01)))
+        r <- plines(jcorr(d, c(Age, Keep01)))
+        a <- !errs(jalpha(d, c(Age, Keep01, Gender)))
+        su <- jsum(d, c(Age, Keep01)); av <- javg(d, c("Age", "Keep01"))
+        cm <- plines(jcomplete(d, c(Age, Keep01))); quiet(jcomplete(d, off))
+        dm <- plines(jdummy(d, c(Condition))); quiet(jdummy(d, Condition, remove = TRUE))
+        nu <- grab(jnumeric(d, c(Keep01, Gender))); quiet(jnumeric(d, NULL))
+        co <- grab(jcount(d, c(Keep01, Gender)));   quiet(jcount(d, NULL))
+        li <- grab(jlikert(d, c(Keep01, Gender)));  quiet(jlikert(d, NULL))
+        cv <- grab(jconvert(d, c(Age, Keep01), to = "stata"))
+        dc <- grab(jdeclare_missing(d, c(Age, Keep01), codes = -99, convention = "spss"))
+        pl <- !errs(jplot(d, c(Age)))
+        any(f == "Gender") && any(f == "Keep01") &&
+          any(s == "  Variables: 2") && any(grepl("Age & Keep01", r)) && a &&
+          length(su) == 12L && length(av) == 12L &&
+          any(grepl("Age", cm)) && any(grepl("Keep01", cm)) &&
+          any(grepl("Variable: Condition", dm)) &&
+          grepl("Keep01", nu) && grepl("Gender", nu) && !has(nu, "not found") &&
+          grepl("Keep01", co) && grepl("Gender", co) && !has(co, "not found") &&
+          grepl("Keep01", li) && grepl("Gender", li) && !has(li, "not found") &&
+          !grepl("not found", cv, fixed = TRUE) &&
+          !has(dc, "not found") && pl }))
+check("Y05 a misspelled name inside the c() is the one named: \"Agee was not found in the d data frame.\"",
+      identical(grab(jdesc(d, c(Age, Agee))),
+                "jdesc(): Agee was not found in the d data frame.\nCheck the spelling."))
+check("Y06 a range and a helper keep the not-found stop, as decided",
+      identical(grab(jdesc(d, Age:Gender)),
+                "jdesc(): Age:Gender was not found in the d data frame.\nCheck the spelling.") &&
+        identical(grab(jdesc(d, c(Age, starts_with("G")))),
+                  "jdesc(): c(Age, starts_with(\"G\")) was not found in the d data frame.\nCheck the spelling."))
+check("Y07 under a juse() default a c() of names the frame has is the frame's variables, with R12's line when the workspace shares a name -- and still the frame's when the workspace holds both names, where R's c() would have joined the two vectors",
+      local({ .y7 <- data.frame(zz_ya = c(1, 2, 3, 4, 5, 6), zz_yb = c(1, 2, 1, 2, 1, 2))
+              quiet(juse(.y7)); zz_ya <- c(9, 9)
+              v <- plines(jdesc(c(zz_ya, zz_yb)))
+              zz_yb <- c(8, 8)
+              w <- plines(jdesc(c(zz_ya, zz_yb))); quiet(juse(NULL))
+              any(v == "Using default data frame: .y7") &&
+                any(v == "zz_ya is the variable in .y7, not the separate object with that name.") &&
+                any(v == "6 Cases in the 2 Variable Pool") &&
+                any(w == "6 Cases in the 2 Variable Pool") && .y_row(w, "zz_ya") && .y_row(w, "zz_yb") &&
+                grepl("zz_ya and zz_yb are variables in .y7, not the separate objects with those names.",
+                      paste(w, collapse = " "), fixed = TRUE) }))
+check("Y08 with no frame in hand a c() keeps R's meaning: the joined vector, named as typed",
+      local({ zz_ya <- c(1, 2, 3); zz_yb <- c(4, 5, 6)
+              v <- plines(jdesc(c(zz_ya, zz_yb)))
+              any(v == "6 Cases in the 1 Variable Pool") && any(grepl("^c\\(zz_ya, zz_yb\\) +6 ", v)) }))
+# -- (b) the single-variable slots -----------------------------------------
+check("Y09 jrecode(d, \"Gender\", ...), jrelabel(d, \"Gender\", ...) and jencode(d, \"Name\") read the variable, as the bare form does",
+      local({ r1 <- suppressMessages(jrecode(d, "Gender", map = "1=0; 2=1"))
+              r2 <- suppressMessages(jrecode(d, Gender, map = "1=0; 2=1"))
+              l1 <- suppressMessages(jrelabel(d, "Gender", labels = "1=M; 2=F"))
+              l2 <- suppressMessages(jrelabel(d, Gender, labels = "1=M; 2=F"))
+              e1 <- suppressMessages(jencode(d, "Name"))
+              e2 <- suppressMessages(jencode(d, Name))
+              identical(r1, r2) && identical(l1, l2) && identical(e1, e2) }))
+check("Y10 a c() of one is the variable in the three; a c() of several stops, naming them (pinned whole)",
+      local({ ok1 <- identical(suppressMessages(jrecode(d, c(Gender), map = "1=0; 2=1")),
+                               suppressMessages(jrecode(d, Gender, map = "1=0; 2=1")))
+              g <- grab(jrecode(d, c(Age, Gender), map = "1=0"))
+              ok1 && identical(g, paste0(
+                "jrecode(): only one variable goes after the data frame, and this\n",
+                "call gives Age and Gender.\n",
+                "Name one variable, and run the call once for each.")) &&
+                identical(grab(jencode(d, c(Name, Age))), paste0(
+                  "jencode(): only one variable goes after the data frame, and this\n",
+                  "call gives Name and Age.\n",
+                  "Name one variable, and run the call once for each.")) &&
+                has(grab(jrelabel(d, c(Age, Gender), labels = "1=x")),
+                    "jrelabel(): only one variable goes after the data frame") }))
+check("Y11 by = c(Gender) groups; by = c(Gender, Keep01) stops (pinned whole)",
+      !errs(jdesc(d, Age, by = c(Gender))) &&
+        identical(grab(jdesc(d, Age, by = c(Gender, Keep01))), paste0(
+          "jdesc(): by = takes one variable, and this call gives Gender\n",
+          "and Keep01.\nName one variable.")))
+# -- rider A: a data frame's name in quotes ---------------------------------
+zz_y12 <- grab(jdesc("d", Age))
+check("Y12 jdesc(\"d\", Age): the name in quotes, and the call without them (pinned whole); it read \"Age needs the data frame, not the single column \"d\"\"",
+      identical(zz_y12, "jdesc(): \"d\" is in quotes.\nA data frame's name goes without them:\n  jdesc(d, Age)"))
+check("Y13 the same at the formula front door, juse(), jsave(), jsubset(), jcomplete() and jplot(), each with its own call",
+      identical(grab(jt(Age ~ Gender, "d")), "jt(): \"d\" is in quotes.\nA data frame's name goes without them:\n  jt(Age ~ Gender, d)") &&
+        identical(grab(juse("d")), "juse(): \"d\" is in quotes.\nA data frame's name goes without them:\n  juse(d)") &&
+        identical(grab(jsave("d", "x.rds")), "jsave(): \"d\" is in quotes.\nA data frame's name goes without them:\n  jsave(d, \"x.rds\")") &&
+        identical(grab(jsubset("d", Age > 40)), "jsubset(): \"d\" is in quotes.\nA data frame's name goes without them:\n  jsubset(d, Age > 40)") &&
+        identical(grab(jcomplete("d", Age)), "jcomplete(): \"d\" is in quotes.\nA data frame's name goes without them:\n  jcomplete(d, Age)") &&
+        identical(grab(jplot("d", Age)), "jplot(): \"d\" is in quotes.\nA data frame's name goes without them:\n  jplot(d, Age)"))
+check("Y14 a string that names no data frame is what it is: a one-case text variable",
+      local({ v <- plines(jfreq("zz_ynothing"))
+              any(v == "1 Cases in the 1 Variable Pool") && !any(grepl("in quotes", v)) }))
+# -- (d) the vector path's collision line -----------------------------------
+zz_y1 <- data.frame(zz_ya = c(20, 30, 40, 50, NA, 60), zz_yb = c(1, 2, 1, 2, 1, 2))
+zz_ya <- c(1, 2, 3)
+.y_l1 <- "zz_ya is a separate object in your workspace, not the variable in zz_y1."
+.y_l2 <- "To analyze the variable, name the data frame:"
+# .y_under(): the three things under the title -- the sentence (wrapped at
+# the pin, so joined), the "To analyze" line, the call line.
+.y_under <- function(v, title) {
+  i <- which(v == title)
+  if (length(i) != 1L) return(character(0))
+  j <- which(v == "To analyze the variable, name the data frame:")
+  if (length(j) != 1L || j <= i + 1L) return(character(0))
+  c(paste(v[(i + 1L):(j - 1L)], collapse = " "), v[j], v[j + 1L])
+}
+zz_y15 <- .y_pl(jdesc(zz_ya))
+check("Y15 jdesc(zz_ya) with zz_y1 holding zz_ya: the three lines under the title, and the vector still analyzed",
+      identical(.y_under(zz_y15, "Descriptive Statistics"), c(.y_l1, .y_l2, "  jdesc(zz_y1, zz_ya)")) &&
+        any(zz_y15 == "3 Cases in the 1 Variable Pool"))
+check("Y16 (zz_ya) and .GlobalEnv$zz_ya are the same object, read by name: the lines fire, the row as typed",
+      local({ a <- plines(jdesc((zz_ya))); b <- plines(jdesc(.GlobalEnv$zz_ya))
+              identical(.y_under(a, "Descriptive Statistics"), c(.y_l1, .y_l2, "  jdesc(zz_y1, zz_ya)")) &&
+                identical(.y_under(b, "Descriptive Statistics"), c(.y_l1, .y_l2, "  jdesc(zz_y1, zz_ya)")) &&
+                any(grepl("^\\(zz_ya\\) +3 ", a)) && any(grepl("^zz_ya +3 ", b)) }))
+check("Y17 jfreq() and jscreen() print the same lines, each naming its own call",
+      identical(.y_under(plines(jfreq(zz_ya)), "Frequencies"), c(.y_l1, .y_l2, "  jfreq(zz_y1, zz_ya)")) &&
+        identical(.y_under(plines(jscreen(zz_ya)), "Data Screening"), c(.y_l1, .y_l2, "  jscreen(zz_y1, zz_ya)")))
+check("Y18 no data frame holds the name: no line (zz_yx)",
+      local({ zz_yx <- c(4, 5, 6); v <- plines(jdesc(zz_yx))
+              !any(grepl("separate object", v)) && identical(v[2L], "") }))
+check("Y19 two frames hold it: both named, and the line keeps MyData",
+      local({ zz_y2 <- zz_y1; v <- plines(jdesc(zz_ya))
+              identical(.y_under(v, "Descriptive Statistics"),
+                        c("zz_ya is a separate object in your workspace, not the variable in zz_y1 or zz_y2.",
+                          .y_l2, "  jdesc(MyData, zz_ya)")) }))
+check("Y20 under a juse() default that lacks the variable the lines fire; under one that has it, R12's line instead",
+      local({ f <- data.frame(zz_yq = 1:3); quiet(juse(f))
+              a <- plines(jdesc(zz_ya))
+              quiet(juse(zz_y1)); b <- plines(jdesc(zz_ya)); quiet(juse(NULL))
+              identical(.y_under(a, "Descriptive Statistics"), c(.y_l1, .y_l2, "  jdesc(zz_y1, zz_ya)")) &&
+                !any(grepl("separate object in your workspace", b)) &&
+                any(b == "zz_ya is the variable in zz_y1, not the separate object with that name.") }))
+check("Y21 a column typed with its frame, and a copy under another name, get no line",
+      local({ zz_yc <- zz_y1$zz_ya; a <- plines(jdesc(zz_y1$zz_ya)); b <- plines(jdesc(zz_yc))
+              !any(grepl("separate object", c(a, b))) }))
+check("Y22 the line runs: jdesc(zz_y1, zz_ya) is the frame's variable, six cases",
+      local({ ln <- .y_under(zz_y15, "Descriptive Statistics")[3L]
+              v <- plines(eval(parse(text = ln)[[1]]))
+              any(v == "6 Cases in the 1 Variable Pool") }))
+check("Y23 the lines print at every output level, and are wrapped at the message width",
+      local({ quiet(joutput("minimal", quiet = TRUE)); v <- plines(jfreq(zz_ya)); quiet(joutput(NULL, quiet = TRUE))
+              identical(.y_under(v, "Frequencies"), c(.y_l1, .y_l2, "  jfreq(zz_y1, zz_ya)")) &&
+                all(nchar(v) <= .pin_width) }))
+# -- lean 4: the not-a-data-frame stops name the frame ----------------------
+check("Y24 jplot(zz_ya): the two fix lines name zz_y1, the one frame that has the variable (pinned whole)",
+      identical(grab(jplot(zz_ya)), paste0(
+        "jplot(): 'zz_ya' is not a data frame. Did you mean to use it as a\n",
+        "variable name?\n",
+        "If so, name the data frame first:\n",
+        "  jplot(zz_y1, zz_ya)\n",
+        "Or set a default first, then run the call:\n",
+        "  juse(zz_y1)\n",
+        "  jplot(zz_ya)")))
+check("Y25 jcorr() and jalpha() the same; a name found nowhere that a frame has names it too",
+      has(grab(jcorr(zz_ya)), "  jcorr(zz_y1, zz_ya)\n") && has(grab(jalpha(zz_ya)), "  juse(zz_y1)\n") &&
+        has(grab(jdesc(zz_yb)), "'zz_yb' not found. Did you mean") && has(grab(jdesc(zz_yb)), "  jdesc(zz_y1, zz_yb)\n"))
+check("Y26 on the vector path, the refusal of a second variable names the frame that has both; MyData when none has them",
+      local({ zz_yb <- c(1, 2, 3)
+              a <- grab(jdesc(zz_ya, zz_yb)); zz_yz <- 1; b <- grab(jdesc(zz_ya, zz_yz))
+              has(a, "Name the data frame first:\n  jdesc(zz_y1, zz_ya, zz_yb)") &&
+                has(b, "Name the data frame first:\n  jdesc(MyData, zz_ya, zz_yz)") }))
+check("Y27 two frames hold the variable: the stops keep MyData",
+      local({ zz_y2 <- zz_y1; has(grab(jplot(zz_ya)), "  jplot(MyData, zz_ya)\n") }))
+check("Y28 the named lines run: jplot(zz_y1, zz_ya) draws, juse(zz_y1) sets the default",
+      local({ ok <- !errs(jplot(zz_y1, zz_ya)); quiet(juse(zz_y1))
+              d0 <- getOption(".jst_default_data"); quiet(juse(NULL))
+              ok && identical(d0, "zz_y1") }))
+rm(zz_y1, zz_ya, .y_l1, .y_l2, .y_under, zz_y15)
+# -- (c) a bare word where a quoted value goes: the data-first doors ---------
+check("Y29 jdesc(d, Age, variable.id = labels): the pointer, the call to run (pinned whole); it was R's \"object 'labels' not found\"",
+      identical(grab(jdesc(d, Age, variable.id = labels)), paste0(
+        "jdesc(): labels is not in quotes.\n",
+        "variable.id = takes a display mode in quotes:\n",
+        "  jdesc(d, Age, variable.id = \"labels\")")))
+.y30 <- list(
+  f  = grab(jfreq(d, Gender, missing.detail = totals)),
+  s  = grab(jscreen(d, Age, stats = median)),
+  cm = grab(jcorr(d, Age, Keep01, method = spearman)),
+  cl = grab(jcorr(d, Age, Keep01, layout = stacked)),
+  a  = grab(jalpha(d, Age, Keep01, Gender, case.processing.detail = totals)))
+check("Y30 jfreq(missing.detail =), jscreen(stats =), jcorr(method =, layout =), jalpha(case.processing.detail =): each the pointer with its noun (pinned whole)",
+      identical(.y30$f, "jfreq(): totals is not in quotes.\nmissing.detail = takes a detail level in quotes:\n  jfreq(d, Gender, missing.detail = \"totals\")") &&
+        identical(.y30$s, "jscreen(): median is not in quotes.\nstats = takes a statistic name in quotes:\n  jscreen(d, Age, stats = \"median\")") &&
+        identical(.y30$cm, "jcorr(): spearman is not in quotes.\nmethod = takes a method name in quotes:\n  jcorr(d, Age, Keep01, method = \"spearman\")") &&
+        identical(.y30$cl, "jcorr(): stacked is not in quotes.\nlayout = takes a layout name in quotes:\n  jcorr(d, Age, Keep01, layout = \"stacked\")") &&
+        identical(.y30$a, "jalpha(): totals is not in quotes.\ncase.processing.detail = takes a detail level in quotes:\n  jalpha(d, Age, Keep01, Gender, case.processing.detail = \"totals\")"))
+check("Y31 joutput(): a level or a setting name in first position, a diagnostic, a row form and a display mode; a positional word gets the sentence form, a named one names the argument (pinned whole)",
+      identical(grab(joutput(full)), "joutput(): full is not in quotes.\nA level or setting name goes in quotes:\n  joutput(\"full\")") &&
+        identical(grab(joutput(digits)), "joutput(): digits is not in quotes.\nA level or setting name goes in quotes:\n  joutput(\"digits\")") &&
+        identical(grab(joutput(diagnostics = levene)), "joutput(): levene is not in quotes.\ndiagnostics = takes a diagnostic name in quotes:\n  joutput(diagnostics = \"levene\")") &&
+        identical(grab(joutput(case.processing.filter = list)), "joutput(): list is not in quotes.\ncase.processing.filter = takes a row form in quotes:\n  joutput(case.processing.filter = \"list\")") &&
+        identical(grab(joutput(variable.id = labels, quiet = TRUE)), "joutput(): labels is not in quotes.\nvariable.id = takes a display mode in quotes:\n  joutput(variable.id = \"labels\", quiet = TRUE)"))
+check("Y32 joptions(): the convention named or positional -- the line always names missing.convention -- a layout, a detail level; and data.dir = typed bare (rider B)",
+      identical(grab(joptions(missing.convention = spss)), "joptions(): spss is not in quotes.\nmissing.convention = takes a convention name in quotes:\n  joptions(missing.convention = \"spss\")") &&
+        identical(grab(joptions(spss)), "joptions(): spss is not in quotes.\nA convention name goes in quotes:\n  joptions(missing.convention = \"spss\")") &&
+        identical(grab(joptions(corr.layout = stacked)), "joptions(): stacked is not in quotes.\ncorr.layout = takes a layout name in quotes:\n  joptions(corr.layout = \"stacked\")") &&
+        identical(grab(joptions(missing.detail = per_code)), "joptions(): per_code is not in quotes.\nmissing.detail = takes a detail level in quotes:\n  joptions(missing.detail = \"per_code\")") &&
+        identical(grab(joptions(data.dir = Data)), "joptions(): Data is not in quotes.\ndata.dir = takes a folder name in quotes:\n  joptions(data.dir = \"Data\")"))
+check("Y33 rider B at jdata_dir(), jload(name =) and jload(sheet =): a bare symbol that resolves to nothing, before the file is looked for",
+      identical(grab(jdata_dir(Data)), "jdata_dir(): Data is not in quotes.\nA folder name goes in quotes:\n  jdata_dir(\"Data\")") &&
+        identical(grab(jload("nofile.rds", name = mydata)), "jload(): mydata is not in quotes.\nname = takes a name in quotes:\n  jload(\"nofile.rds\", name = \"mydata\")") &&
+        identical(grab(jload("nofile.xlsx", sheet = Data)), "jload(): Data is not in quotes.\nsheet = takes a sheet name in quotes:\n  jload(\"nofile.xlsx\", sheet = \"Data\")"))
+check("Y34 jdummy(ref =): a category typed bare, as typed; and the line runs whatever its case, the match made without regard to it",
+      local({ zz_yr <- data.frame(zz_yg = haven::labelled(c(1, 2, 1, 2, 1, 2), c(North = 1, South = 2)))
+              a <- grab(jdummy(zz_yr, zz_yg, ref = South)); b <- grab(jdummy(zz_yr, zz_yg, ref = south))
+              v <- plines(jdummy(zz_yr, zz_yg, ref = "south")); quiet(jdummy(zz_yr, zz_yg, remove = TRUE))
+              identical(a, "jdummy(): South is not in quotes.\nref = takes a category's code or label in quotes:\n  jdummy(zz_yr, zz_yg, ref = \"South\")") &&
+                identical(b, "jdummy(): south is not in quotes.\nref = takes a category's code or label in quotes:\n  jdummy(zz_yr, zz_yg, ref = \"south\")") &&
+                any(v == "  Reference category: zz_yg_South") }))
+check("Y35 the word is matched without regard to case and the line spells the value as the function takes it",
+      identical(grab(joutput(Full)), "joutput(): Full is not in quotes.\nA level or setting name goes in quotes:\n  joutput(\"full\")") &&
+        has(grab(jcorr(d, Age, Keep01, method = Spearman)), "  jcorr(d, Age, Keep01, method = \"spearman\")"))
+check("Y36 a name holding a value still works, and a word that is not one of the values is left to R",
+      local({ fmt <- "spearman"; ok <- !errs(jcorr(d, Age, Keep01, method = fmt))
+              ok && identical(grab(jdesc(d, Age, variable.id = label)), "object 'label' not found") }))
+check("Y37 every pointer's call line parses, and three of them run",
+      local({ g <- c(grab(jdesc(d, Age, variable.id = labels)), unlist(.y30),
+                     grab(joutput(full)), grab(joptions(spss)), grab(jdata_dir(Data)),
+                     grab(jload("nofile.rds", name = mydata)), grab(jdummy(d, Condition, ref = zz_ynot)))
+              ls <- grep("^  ", unlist(strsplit(g, "\n", fixed = TRUE)), value = TRUE)
+              length(ls) == 11L &&
+                all(vapply(ls, function(l) !inherits(try(parse(text = l), silent = TRUE), "try-error"), logical(1))) &&
+                !errs(jdesc(d, Age, variable.id = "labels")) &&
+                !errs(jcorr(d, Age, Keep01, method = "spearman")) &&
+                identical(jdata_dir("Data"), "Data") }))
+rm(.y30, zz_y12, .y01, .y_row, .y_pl)
+options(.jst_default_data = .y_def)
+rm(.y_def)
 reset()
 
 # =============================================================================

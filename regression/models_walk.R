@@ -42,6 +42,32 @@
 #           and the fit plot of a squared term.
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
+# S356 EDIT (v0.9.229, 2026-10-15): SECTION 23 ADDED, three renders -- 22
+#           sections -> 23. The NAMES slate (ruling R18) on the formula
+#           functions: a term in quotes (jt(Flourishing ~ "Condition"),
+#           jlm(... + "Stress")) stops before the title with the call given
+#           without them, where it crashed after it; a bare word where a
+#           quoted value goes -- diagnostics = levene, which = effects, std
+#           = gelman -- gets the pointer with the call to run, where R
+#           looked the word up; and (e) a term written .GlobalEnv$G on a
+#           frame holding a G is judged by what it gives, named as written,
+#           while d23$G keeps the S322 refusal. The full fit between the
+#           renders is run, not shown (#@SKIP). Every Expected FILLED BY
+#           RUNNING the file (fill.R). harness.R derive: Section 23 needs
+#           no other; verify: 42 of 43 Expected blocks found (Section 1's,
+#           as before), 23 of 23 sections in three orders and by prepare =
+#           TRUE. The human half of models_check.R section S.
+# LAST VERIFIED: v0.9.229, 2026-10-15 (S356) -- Section 23 WALKED on the
+#           WORKSTATION by Jeff through receive_all(). Render 3's stop,
+#           jt(Score ~ .GlobalEnv$G, data = d23), was questioned and
+#           answered: it is the S172 computed-term guard meeting a fetched
+#           factor, correct by the rules as they stand, and the reason its
+#           message states ("produces a categorical variable") is folded
+#           into ruling R19 (data frames only; the FRAMES slate), whose
+#           build RE-PINS this render. PENDING back to none; GitHub fea0b51
+#           (package). Sandbox: 42 of 43 Expected blocks found under
+#           rewalk() in three orders, as before (Section 1's block is not a
+#           contiguous run by design).
 # S353 EDIT (v0.9.226, 2026-10-12): SECTION 17 RE-PINNED MECHANICALLY
 #           under ruling R5 (the layout of a long printed call; walked
 #           once, in missing_convention_walk.R Section 64), so PENDING
@@ -2064,6 +2090,90 @@ rm(m22, q22, r22)
 #     The effect plots: Effect: xc is the same curve; Effect: I(xc^2)
 #     holds xc at 0. The console says "(2 effect plots produced, one per
 #     predictor)".
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 23 -- how a name is read: ruling R18's names slate (S356) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.229. Ruling R18 (Jeff, S355): a variable is named without quotes,
+# and anything that is not a variable goes in quotes. Three things on the
+# formula functions. (b) A variable in quotes inside a formula --
+# jt(Flourishing ~ "Condition", d) -- printed its title and stopped on R's
+# "missing value where TRUE/FALSE needed"; it is the sibling of "The
+# formula should not be in quotes" now, before the title, with the call as
+# typed and the quotes gone. (c) A bare word where a quoted value goes --
+# diagnostics = levene, which = effects -- met R's lookup of the word
+# ("object 'levene' not found"; for effects, a function R has, "'match'
+# requires vector arguments"); each gets jload()'s form with the call to
+# run. (e) jt(Score ~ .GlobalEnv$G, dd) with the data frame holding a G was
+# refused for the FRAME's G, with a registration offered that changed
+# nothing about the term; the guard reads the names a term reads, never
+# the component after $, so the term is judged by what it gives. The
+# assertion side is models_check.R section S. The stops are shown through
+# shown23(), so the file still runs end to end.
+shown23 <- function(expr) tryCatch(expr, error = function(e)
+  cat("Error: ", conditionMessage(e), "\n", sep = ""))
+
+# Render 1 -- a variable in quotes inside the formula, in jt() and jlm().
+shown23(jt(Flourishing ~ "Condition", data = d))
+shown23(jlm(Flourishing ~ SocialSupport + "Stress", data = d))
+
+# Expected:
+#   Error: jt(): "Condition" is in quotes.
+#   A variable in a formula is named without quotes:
+#     jt(Flourishing ~ Condition, data = d)
+#   Error: jlm(): "Stress" is in quotes.
+#   A variable in a formula is named without quotes:
+#     jlm(Flourishing ~ SocialSupport + Stress, data = d)
+
+# Render 2 -- a bare word where a quoted value goes.
+m23 <- jlm(Flourishing ~ SocialSupport + Stress, data = d)
+shown23(jaov(Flourishing ~ Condition, data = d, diagnostics = levene))
+shown23(jplot(m23, which = effects))
+shown23(jlm(Flourishing ~ SocialSupport, data = d, std = gelman))
+
+# Expected:
+#   Error: jaov(): levene is not in quotes.
+#   diagnostics = takes a diagnostic name in quotes:
+#     jaov(Flourishing ~ Condition, data = d, diagnostics = "levene")
+#   Error: jplot(): effects is not in quotes.
+#   which = takes a plot name in quotes:
+#     jplot(m23, which = "effects")
+#   Error: jlm(): gelman is not in quotes.
+#   std = takes a choice in quotes:
+#     jlm(Flourishing ~ SocialSupport, data = d, std = "gelman")
+
+# Render 3 -- a term that reads a workspace object through $, with the
+# data frame holding a variable of that name.
+d23 <- data.frame(Score = c(10, 14, 12, 18, 11, 20, 13, 16),
+                  G = factor(c("x", "y", "x", "y", "x", "y", "x", "y")))
+G <- factor(c("p", "p", "p", "p", "q", "q", "q", "q"))
+shown23(jt(Score ~ .GlobalEnv$G, data = d23))
+shown23(jt(Score ~ d23$G, data = d23))
+rm(m23, d23, G, shown23)
+
+# Expected:
+#   Independent Samples T-Test
+#   Error: jt(): The formula term .GlobalEnv$G produces a categorical variable,
+#   not a numeric one.
+#   Create it as a new column first, then use that column in the formula.
+#   Independent Samples T-Test
+#   Error: jt(): d23$G names the d23 data frame inside the formula.
+#   Name the variable on its own, and the data frame after the formula:
+#     jt(Score ~ G, data = d23)
+
+# Things to look at:
+#   - RENDER 1: no title; the quoted term named, and the call as typed with
+#     the quotes gone -- "Condition" in jt(), "Stress" beside the bare
+#     SocialSupport in jlm();
+#   - RENDER 2: the word as typed, what the argument takes, and the call
+#     with the word in quotes: diagnostics = "levene", which = "effects",
+#     std = "gelman";
+#   - RENDER 3: the first stop names the term as written, .GlobalEnv$G,
+#     and says what it gives -- a categorical variable -- with "Create it
+#     as a new column first"; nothing about the frame's G, no jnumeric()
+#     or jencode() line. The second, d23$G, keeps the S322 refusal: the
+#     frame named inside the formula, and the call with G on its own.
 
 
 # --- Restore session state ---------------------------------------------------

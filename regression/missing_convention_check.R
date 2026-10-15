@@ -10,6 +10,55 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S356 EDIT (v0.9.229, 2026-10-15): NEW N91 section, nineteen checks
+#           (N91a-N91s), the NAMES slate at the recode family and ruling
+#           R17. A: a bare word where a quoted value goes -- jconvert(to =
+#           stata), to = SAS with a variable and modify = TRUE kept,
+#           convention = stata / Stata / spss in jrecode(), jencode() and
+#           jdeclare_missing() -- the pointer with the call to run, the
+#           value spelled as the function takes it; a name holding a value
+#           left alone, a name spelled like a value too (stata <- "spss":
+#           to = stata converts to SPSS); the lines run. B, ruling R17's
+#           parser: a quoted label holds a semicolon; the SPSS and Stata
+#           habit 1='Yes' (and double quotes) read without the marks, which
+#           the labels carried until v0.9.228; an unquoted label as
+#           written, a mark partway through included; an equals sign
+#           inside quotes part of the label; a quoted label with text after
+#           its closing mark taken as written; an unbalanced mark stops
+#           naming the form; the same reading in jrecode(labels =),
+#           jdeclare_missing(labels =) and a marker rule. C, the lines the
+#           package offers: jdeclare_missing()'s marker refusal quotes a
+#           label holding a semicolon (the S353 example, which no string
+#           could carry) and the line runs, the label landing whole on .b;
+#           a label holding a semicolon and a quotation mark quoted with
+#           apostrophes; a label no string can carry left out of the line,
+#           the sentence after it saying so; ruling R5's layout breaking a
+#           long labels string only between its rules, and a short quoted
+#           label whose first word would fit the line above moved down
+#           whole; ruling R8's builder passing the user's quoted label
+#           through; jlogistic()'s 1/2 line; .jst_label_text(),
+#           .jst_split_label_rules() and .jst_unquote_label() as units.
+#           Every offered line RUN. SEVEN HUNDRED AND EIGHTY-FIVE checks.
+#           On the 0.9.228 master 18 red: N91a-c, N91e-s (N91d, the
+#           control, passes).
+#           MUTATION MAP (S356; twenty one-change mutants of the 0.9.229
+#           master, each run on the four batteries of the build): the word
+#           check off N91a N91b N91c; the word matched with regard to case
+#           N91b N91c; a name holding a value not exempt N91d; the labels
+#           string split at every semicolon N91e N91g N91h N91i N91k N91l
+#           N91n N91o N91p N91s; a printed label never quoted N91j N91k N91l
+#           N91m N91n N91p N91q N91s; the layout opening a quote only at a
+#           word start N91s; a quoted label kept its marks N91e N91f N91g
+#           N91i N91k N91l N91n N91o N91p N91r N91s; the left-out label
+#           unsaid N91m. The other 12 mutants red elsewhere, green here.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 785/785
+#           plain and under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, and entered dirty.
+#           LAST VERIFIED: v0.9.229, 2026-10-15 (S356) -- 785/785 on the
+#           WORKSTATION through receive_all(), which ran every battery
+#           green after a clean R CMD check and went on to the walks (the
+#           paste-back block was not posted; the walks it showed were
+#           walked), matching the sandbox; GitHub fea0b51.
 # S355 EDIT (v0.9.228, 2026-10-14): NEW N90 section, fifty-six checks
 #           (N90a-N90bd), Fix Slate W1: sixteen conformance-only wording
 #           items on the missing-value messages, on a slate Jeff approved
@@ -9448,6 +9497,159 @@ check("N90bb .jst_marker_recode_line() escapes a label it is given",
 rm(.spd90, .spd90b, .mix90, .hb90, .x90, .pa90, .qd90, .fd90, .fe90, .conv90, .lvl90,
    .under90, .calls90, .run90, .pin90, .pins90, .parse90, .p90sas, .p90st,
    list = ls(pattern = "^\\.m90", all.names = TRUE))
+
+# =============================================================================
+# N91 (S356) -- THE NAMES SLATE AT THE RECODE FAMILY, AND RULING R17: A LABEL
+# HOLDING A SEMICOLON. Parts:
+#   A  ruling R18 (c): a bare word where a quoted value goes -- to = stata,
+#      convention = spss -- gets jload()'s form with the call to run; a name
+#      holding a value still works.
+#   B  ruling R17 (Jeff, S356), the parser: a label may be quoted, with
+#      either mark, right after its equals sign, and a semicolon or an
+#      equals sign inside the quotes is part of the label; the SPSS and
+#      Stata habit, 1='Yes', gives Yes where it gave 'Yes' with the marks;
+#      an unquoted label reads as it is written, a quotation mark partway
+#      through included; a quote opened and never closed stops.
+#   C  the lines the package offers: a label holding a semicolon is quoted
+#      in every printed labels string (with the mark it lacks), and the
+#      line runs; a label no string can carry is left out, with the
+#      sentence that says so; a user's quoted label passes through ruling
+#      R8's builder whole; ruling R5's layout never breaks inside a quoted
+#      label.
+# jencode_check.R N50 holds jencode()'s twins. Fixtures dotted; working
+# objects in local().
+# =============================================================================
+.spd91 <- data.frame(V = haven::labelled_spss(c(1, 2, -99, 3), labels = c(Refused = -99), na_values = -99))
+.x91   <- data.frame(x = c(1, 2, 3, 2))
+.e91   <- data.frame(Q = c(1, 2, 9, 1))
+.qd91  <- data.frame(V = haven::labelled(c(1, 2, haven::tagged_na("a"), -99, 3),
+                     labels = c(Skipped = haven::tagged_na("a"), "Refused; not asked" = -99)))
+.qe91  <- data.frame(V = haven::labelled(c(1, 2, haven::tagged_na("a"), -99, 3),
+                     labels = c(Skipped = haven::tagged_na("a"), "Refused; \"no\"" = -99)))
+.qf91  <- data.frame(V = haven::labelled(c(1, 2, haven::tagged_na("a"), -99, -98, 3),
+                     labels = c(Skipped = haven::tagged_na("a"), "Don't; \"no\"" = -99, Refused = -98)))
+.qg91  <- data.frame(V = haven::labelled(c(1, 2, haven::tagged_na("a"), -99, -98, -97, 3),
+                     labels = c(Skipped = haven::tagged_na("a"),
+                                "Refused to answer; interviewer moved on" = -99,
+                                "Not applicable; skipped by design" = -98, "Don't know" = -97)))
+.hb91  <- data.frame(P = c(1, haven::tagged_na("a"), 2, -99))
+.qh91  <- data.frame(V = haven::labelled(c(1, 2, haven::tagged_na("a"), -99, -98, -97, 3),
+                     labels = c(Skipped = haven::tagged_na("a"),
+                                "Refused to answer; interviewer moved on" = -99,
+                                "Other; specify" = -98, "Don't know" = -97)))
+.conv91 <- function(cv, expr) {
+  old <- getOption(".jst_options_missing_convention")
+  options(.jst_options_missing_convention = cv)
+  on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+  force(expr)
+}
+.calls91 <- function(m) .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]])
+.run91 <- function(ln, cv = "stata") {
+  e <- new.env(parent = globalenv())
+  for (nm in c(".qd91", ".qe91", ".qf91", ".qg91", ".qh91", ".hb91", ".spd91"))
+    assign(nm, get(nm), envir = e)
+  ok <- tryCatch(.conv91(cv, { suppressMessages(eval(parse(text = ln), envir = e)); TRUE }),
+                 error = function(err) FALSE)
+  list(ok = ok, env = e)
+}
+.labs91 <- function(expr) names(labelled::val_labels(suppressMessages(expr)))
+# --- A: a bare word where a quoted value goes ----------------------------------
+check("N91a jconvert(d, to = stata): the pointer with the call to run (pinned whole); it was R's \"object 'stata' not found\"",
+      identical(grab(jconvert(.spd91, to = stata)),
+                "jconvert(): stata is not in quotes.\nto = takes a format name in quotes:\n  jconvert(.spd91, to = \"stata\")"))
+check("N91b ... the value spelled as the function takes it, the other arguments kept: to = SAS with a variable and modify = TRUE",
+      identical(grab(jconvert(.spd91, V, to = SAS, modify = TRUE)),
+                "jconvert(): SAS is not in quotes.\nto = takes a format name in quotes:\n  jconvert(.spd91, V, to = \"sas\", modify = TRUE)"))
+check("N91c convention = stata in jrecode(), Stata in jencode(), spss in jdeclare_missing() (pinned whole)",
+      identical(grab(jrecode(.x91, x, map = "1=.a; else=copy", convention = stata)),
+                "jrecode(): stata is not in quotes.\nconvention = takes a convention name in quotes:\n  jrecode(.x91, x, map = \"1=.a; else=copy\", convention = \"stata\")") &&
+        identical(grab(jencode(.e91, Q, convention = Stata)),
+                  "jencode(): Stata is not in quotes.\nconvention = takes a convention name in quotes:\n  jencode(.e91, Q, convention = \"stata\")") &&
+        identical(grab(jdeclare_missing(.spd91, V, codes = -98, convention = spss)),
+                  "jdeclare_missing(): spss is not in quotes.\nconvention = takes a convention name in quotes:\n  jdeclare_missing(.spd91, V, codes = -98, convention = \"spss\")"))
+check("N91d a name holding a value still works -- a name spelled like a value too (stata <- \"spss\"; to = stata converts to SPSS, no pointer) -- and the printed lines run",
+      local({ fmt <- "spss"
+              ok1 <- !inherits(try(suppressMessages(jdeclare_missing(.spd91, V, codes = -98, convention = fmt)), silent = TRUE), "try-error")
+              ok2 <- !inherits(try(suppressMessages(.conv91("stata", jconvert(.spd91, to = "stata"))), silent = TRUE), "try-error")
+              ok3 <- !inherits(try(suppressMessages(jrecode(.x91, x, map = "1=.a; else=copy", convention = "stata")), silent = TRUE), "try-error")
+              stata <- "spss"
+              ok4 <- local({ t <- data.frame(V = haven::labelled(c(1, 2, haven::tagged_na("a")), c(Skipped = haven::tagged_na("a"))))
+                             r <- try(suppressMessages(.conv91("stata", jconvert(t, to = stata))), silent = TRUE)
+                             !inherits(r, "try-error") && inherits(r$V, "haven_labelled_spss") })
+              ok1 && ok2 && ok3 && ok4 }))
+# --- B: ruling R17, the parser ----------------------------------------------------
+check("N91e a quoted label holds a semicolon: labels = \"1=Yes; 2=No; 9=\\\"Refused; not asked\\\"\" gives three labels",
+      identical(.labs91(jrelabel(.e91, Q, labels = "1=Yes; 2=No; 9=\"Refused; not asked\"")),
+                c("Yes", "No", "Refused; not asked")))
+check("N91f the SPSS and Stata habit, 1='Yes'; 2='No' (and double quotes): the labels without the marks, which they carried until v0.9.228",
+      identical(.labs91(jrelabel(.e91, Q, labels = "1='Yes'; 2='No'")), c("Yes", "No")) &&
+        identical(.labs91(jrelabel(.e91, Q, labels = '1="Yes"; 2="No"')), c("Yes", "No")))
+check("N91g an unquoted label reads as written, a quotation mark partway through included; an equals sign inside quotes is part of the label; a quoted label with text after its closing mark is taken as written",
+      identical(.labs91(jrelabel(.e91, Q, labels = "1=Don't know; 2=Said \"no\"; 9='Refused; \"no\"'")),
+                c("Don't know", "Said \"no\"", "Refused; \"no\"")) &&
+        identical(.labs91(jrelabel(.e91, Q, labels = "1=\"a=b; c\"; 2=\"Yes\" or so")), c("a=b; c", "\"Yes\" or so")))
+check("N91h a quote opened and never closed stops, naming the form (pinned by phrase)",
+      grepl("Unbalanced quotation mark in the labels argument. A quoted label must open and close with the same mark, as in 9=\"Refused; not asked\".",
+            .fl(grab(jrelabel(.e91, Q, labels = "1=\"Yes; 2=No"))), fixed = TRUE))
+check("N91i the same reading in jrecode(labels =), jdeclare_missing(labels =) and a labels string on a marker rule",
+      local({ r <- suppressMessages(.conv91("stata", jrecode(.e91, Q, map = "9=.a; else=copy", labels = ".a=\"Refused; not asked\"")))
+              dcl <- suppressMessages(jdeclare_missing(.e91, Q, labels = "9='Refused; not asked'", convention = "spss"))
+              "Refused; not asked" %in% names(labelled::val_labels(r)) &&
+                identical(names(labelled::val_labels(dcl$Q)), "Refused; not asked") }))
+# --- C: the lines the package offers ---------------------------------------------
+.m91j <- .conv91("stata", grab(jdeclare_missing(.qd91, V, codes = -99)))
+check("N91j jdeclare_missing()'s marker refusal: the label holding a semicolon quoted in the labels string (the S353 example, which could be written in no string)",
+      grepl("labels = \".b=\\\"Refused; not asked\\\"\"", .m91j, fixed = TRUE))
+check("N91k ... and the line runs, the label landing whole on .b",
+      local({ r <- .run91(.calls91(.m91j)[1])
+              lab <- labelled::val_labels(get(".qd91", envir = r$env)$VR)
+              r$ok && "Refused; not asked" %in% names(lab) &&
+                identical(haven::na_tag(unname(lab[names(lab) == "Refused; not asked"])), "b") }))
+.m91l <- .conv91("stata", grab(jdeclare_missing(.qe91, V, codes = -99)))
+check("N91l a label holding a semicolon and a quotation mark is quoted with apostrophes, and the line runs",
+      grepl("labels = \".b='Refused; \\\"no\\\"'\"", .m91l, fixed = TRUE) &&
+        local({ r <- .run91(.calls91(.m91l)[1])
+                r$ok && "Refused; \"no\"" %in% names(labelled::val_labels(get(".qe91", envir = r$env)$VR)) }))
+.m91m <- .conv91("stata", grab(jdeclare_missing(.qf91, V, codes = c(-99, -98))))
+check("N91m a label no string can carry (a semicolon and both marks) is left out of the line, which keeps the other label, and the sentence says so after the line",
+      grepl("labels = \".c=Refused\")\nThe label Don't; \"no\" cannot be written in a labels string, so the line\nleaves it out.\n", .m91m, fixed = TRUE) &&
+        !grepl("Don't; \\\"no\\\"", .m91m, fixed = TRUE) &&
+        .run91(.calls91(.m91m)[1])$ok)
+.m91n <- .conv91("stata", grab(jdeclare_missing(.qg91, V, codes = c(-99, -98, -97))))
+check("N91n ruling R5's layout breaks a long labels string only between its rules, never inside a quoted label; the laid-out line runs",
+      grepl("labels = \".b=\\\"Refused to answer; interviewer moved on\\\";\n", .m91n, fixed = TRUE) &&
+        grepl("\n                .c=\\\"Not applicable; skipped by design\\\"; .d=Don't know\")", .m91n, fixed = TRUE) &&
+        local({ r <- .run91(.calls91(.m91n)[1])
+                r$ok && all(c("Refused to answer; interviewer moved on", "Not applicable; skipped by design", "Don't know") %in%
+                              names(labelled::val_labels(get(".qg91", envir = r$env)$VR))) }))
+.m91o <- .conv91("stata", grab(jrecode(.hb91, P, map = "-99=missing; else=copy", labels = "missing=\"Refused; not asked\"")))
+check("N91o ruling R8's builder reads the user's labels string quote-aware: the quoted label passes through whole, and its line runs",
+      grepl("labels = \".b=\\\"Refused; not asked\\\"\"", .m91o, fixed = TRUE) &&
+        local({ r <- .run91(.calls91(.m91o)[1])
+                r$ok && "Refused; not asked" %in% names(labelled::val_labels(get(".hb91", envir = r$env)$PR)) }))
+check("N91p jlogistic()'s 1/2 recode line quotes a label holding a semicolon, and the line runs",
+      local({ g <- data.frame(Y = haven::labelled(c(1, 2, 1, 2, 1, 2, 2, 1), c("No; never" = 1, Yes = 2)), X = 1:8)
+              m <- grab(jlogistic(Y ~ X, g))
+              e <- new.env(parent = globalenv()); assign("g", g, envir = e)
+              ok <- tryCatch({ suppressMessages(eval(parse(text = .calls91(m)[1]), envir = e)); TRUE }, error = function(err) FALSE)
+              grepl("labels = \"0=\\\"No; never\\\"; 1=Yes\")", m, fixed = TRUE) && ok &&
+                identical(names(labelled::val_labels(get("g", envir = e)$YR)), c("No; never", "Yes")) }))
+check("N91q .jst_label_text(): plain as it is; a semicolon quoted; a label opening with a mark quoted with the other; both marks NA",
+      identical(.jst_label_text(c("plain", "a; b", "\"Yes\" or so", "a; \"b\"", "Don't; \"no\"")),
+                c("plain", "\\\"a; b\\\"", "'\\\"Yes\\\" or so'", "'a; \\\"b\\\"'", NA)))
+check("N91r .jst_split_label_rules() and .jst_unquote_label(): the rules of a string, the quotes kept for the unquoting",
+      identical(.jst_split_label_rules("1=Yes; 2=\"a; b\" ; 3='c'"), c("1=Yes", "2=\"a; b\"", "3='c'")) &&
+        identical(.jst_unquote_label(" \"a; b\" "), "a; b") && identical(.jst_unquote_label("'c'"), "c") &&
+        identical(.jst_unquote_label("\"Yes\" or so"), "\"Yes\" or so"))
+.m91s <- .conv91("stata", grab(jdeclare_missing(.qh91, V, codes = c(-99, -98, -97))))
+check("N91s a short quoted label whose first word would fit on the line above (.c=\"Other; specify\") moves down whole: a cut at its semicolon would have left the first line ending .c=\"Other; -- and the line runs, every label landing as written",
+      grepl("labels = \".b=\\\"Refused to answer; interviewer moved on\\\";\n                .c=\\\"Other; specify\\\"; .d=Don't know\")", .m91s, fixed = TRUE) &&
+        local({ r <- .run91(.calls91(.m91s)[1])
+                r$ok && identical(sort(names(labelled::val_labels(get(".qh91", envir = r$env)$VR))),
+                                  sort(c("Skipped", "Refused to answer; interviewer moved on",
+                                         "Other; specify", "Don't know"))) }))
+rm(.spd91, .x91, .e91, .qd91, .qe91, .qf91, .qg91, .qh91, .hb91, .conv91, .calls91, .run91, .labs91,
+   list = ls(pattern = "^\\.m91", all.names = TRUE))
 
 # N88s (S353) -- RULING R5 OVER EVERY CONDITION THE BATTERY TOOK. Each call a
 # message printed at the pinned width (an indented line with the shape of a

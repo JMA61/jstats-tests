@@ -25,6 +25,30 @@
 #           Stata-style or SAS-style, and the parse layer phrased by the
 #           setting.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S356 EDIT (v0.9.229, 2026-10-15): NEW N50 checks, four (N50a-d), the
+#           NAMES slate and ruling R17 at jencode(): a quoted name,
+#           jencode(d, "R", ...), reads the variable as the bare form does
+#           (it was '"R" was not found'), a c() of one the same, a c() of
+#           several stopping, naming them (pinned whole); convention =
+#           Stata typed bare gets the pointer with the call to run, the
+#           value as the function takes it, and the line runs; a quoted
+#           label holding a semicolon in labels =, either mark, an
+#           unquoted label as written. ONE HUNDRED AND TWENTY-SEVEN checks.
+#           On the 0.9.228 master 4 red: N50a-d.
+#           MUTATION MAP (S356; twenty one-change mutants of the 0.9.229
+#           master, each run on the four batteries of the build): the word
+#           check off N50c; the word matched with regard to case N50c; the
+#           single slot taking a c() of several N50a N50b; the labels string
+#           split at every semicolon N50d; a quoted label kept its marks
+#           N50d. The other 15 mutants red elsewhere, green here.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 127/127
+#           plain and under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, and entered dirty.
+#           LAST VERIFIED: v0.9.229, 2026-10-15 (S356) -- 127/127 on the
+#           WORKSTATION through receive_all(), which ran every battery
+#           green after a clean R CMD check and went on to the walks (the
+#           paste-back block was not posted; the walks it showed were
+#           walked), matching the sandbox; GitHub fea0b51.
 # S355 EDIT (v0.9.228, 2026-10-14): NEW N49 checks, seven (N49a-g), Fix
 #           Slate W1, jencode()'s twins of missing_convention_check.R N90:
 #           the no-target refusal, 'missing' quoted (S256); the parse layer
@@ -1661,6 +1685,42 @@ check("N49g control: with no lettered marker in the map the note still says to d
       grepl("Declare -98 with jdeclare_missing() so analyses exclude it.",
             flat(.conv49("stata", grab(jencode(.e49, R, map = "Yes=1; No=2; Refused=3; NA=-98")))), fixed = TRUE))
 rm(.e49, .conv49, .line49, .pin49, .pins49, .g49d)
+
+# =============================================================================
+# N50 (S356) -- THE NAMES SLATE AND RULING R17 AT jencode(). Ruling R18 (b):
+# a quoted name is accepted where jencode() refused it ('"R" was not found');
+# a c() of one is the variable, a c() of several stops, naming them. Ruling
+# R18 (c): convention = Stata typed bare gets the pointer with the call to
+# run. Ruling R17: a label in jencode(labels =) may be quoted, and a
+# semicolon inside the quotes is part of the label. missing_convention_check.R
+# N91 and filter_check.R section Y hold the rest of the slate.
+# =============================================================================
+.e50 <- data.frame(R = c("Yes", "No", "Refused", NA, "Yes"), S = c("a", "b", "a", "b", "a"),
+                   stringsAsFactors = FALSE)
+check("N50a jencode(.e50, \"R\", ...) reads the variable: the result the bare form gives; so does c(R)",
+      local({ a <- suppressMessages(jencode(.e50, "R", map = "Yes=1; No=2; Refused=9"))
+              b <- suppressMessages(jencode(.e50, R, map = "Yes=1; No=2; Refused=9"))
+              c3 <- suppressMessages(jencode(.e50, c(R), map = "Yes=1; No=2; Refused=9"))
+              identical(a, b) && identical(c3, b) }))
+check("N50b a c() of several stops, naming them (pinned whole)",
+      identical(grab(jencode(.e50, c(R, S))), paste0(
+        "jencode(): only one variable goes after the data frame, and this\n",
+        "call gives R and S.\n",
+        "Name one variable, and run the call once for each.")))
+check("N50c convention = Stata typed bare: the pointer, the value as the function takes it (pinned whole), and the line runs",
+      identical(grab(jencode(.e50, R, convention = Stata)), paste0(
+        "jencode(): Stata is not in quotes.\n",
+        "convention = takes a convention name in quotes:\n",
+        "  jencode(.e50, R, convention = \"stata\")")) &&
+        !inherits(try(suppressMessages(jencode(.e50, R, convention = "stata")), silent = TRUE), "try-error"))
+check("N50d a quoted label holding a semicolon in jencode(labels =), either mark; an unquoted label as written",
+      local({ a <- suppressMessages(jencode(.e50, R, map = "Yes=1; No=2; Refused=9",
+                                            labels = "1=Yes; 2=No; 9=\"Refused; not asked\""))
+              b <- suppressMessages(jencode(.e50, R, map = "Yes=1; No=2; Refused=9",
+                                            labels = "1='Yes'; 2=Said \"no\"; 9='Refused; not asked'"))
+              identical(names(labelled::val_labels(a)), c("Yes", "No", "Refused; not asked")) &&
+                identical(names(labelled::val_labels(b)), c("Yes", "Said \"no\"", "Refused; not asked")) }))
+rm(.e50)
 
 # --- Restore session state ---------------------------------------------------
 # Placed ABOVE the verdict so a failing run still leaves the session clean.

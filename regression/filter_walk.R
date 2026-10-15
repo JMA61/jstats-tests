@@ -42,6 +42,33 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S356 EDIT (v0.9.229): PART H ADDED, SECTIONS H1-H5 -- 49 sections -> 54;
+#           F1 RE-PINNED. The NAMES slate (ruling R18's four remaining
+#           items and riders A and B) on the data-first functions: H1 a
+#           c() of names, bare or quoted, in a variable list, a range
+#           still not found, a c() of several at jrecode()'s single slot;
+#           H2 a data frame's name in quotes at jdesc(), juse() and the
+#           formula front door, each call given without them; H3 the
+#           vector path's two lines under the title when a data frame in
+#           the workspace holds a variable of the name read, and no line
+#           when none does; H4 the not-a-data-frame stops naming the one
+#           frame that has the variable; H5 a bare word where a quoted
+#           value goes at jdesc(), joutput(), joptions() and jload(name =).
+#           F1's third render reads Tenure, a name only f1 holds (the new
+#           line names every frame holding the variable, and Age sat in
+#           six of the walk's), the fixture gaining a Tenure column and
+#           vector. Every Expected FILLED BY RUNNING the file (fill.R).
+#           harness.R derive: H4 needs H3 (the fixture frame); verify: 61
+#           of 61 Expected blocks found, 54 of 54 sections in three orders
+#           and by prepare = TRUE. The human half of filter_check.R
+#           section Y.
+# LAST VERIFIED: v0.9.229, 2026-10-15 (S356) -- F1 and H1-H5 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("I've walked all
+#           sections"; "most good", the one question raised in
+#           models_walk.R Section 23); PENDING back to none; GitHub fea0b51
+#           (package). Sandbox: every section through rewalk() as in a
+#           straight run, in three orders and by prepare = TRUE (harness.R
+#           verify).
 # S355 EDIT (v0.9.228): SECTION G5 ADDED -- 48 sections -> 49. Fix Slate
 #           W1 (the S352 item, met writing G4's notes): with no frame named
 #           and no juse() default, the resolver called a condition a name
@@ -1284,14 +1311,18 @@ caught(jsum(d, Gender = 1))
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # SECTION F1 -- the frame's variable, and the line that says so ----
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-# f1 is a twelve-case frame; Age and Gender, made in the workspace for some
-# other purpose, share its variables' names.
+# f1 is a twelve-case frame; Age, Gender and Tenure, made in the workspace
+# for some other purpose, share its variables' names. (S356: Render 3 reads
+# Tenure, a name only f1 holds, since the vector path's new line names
+# every data frame that has the variable -- the Setup's d and e hold Age.)
 
 f1 <- data.frame(Age    = c(21, 34, 45, 23, 36, 52, 41, 29, 33, 40, 38, NA),
-                 Gender = c(1, 2, 1, 2, 2, 1, 1, 2, 1, 2, 2, 1))
+                 Gender = c(1, 2, 1, 2, 2, 1, 1, 2, 1, 2, 2, 1),
+                 Tenure = c(3, 5, 8, 2, 6, 9, 7, 4, 5, 6, 5, 1))
 juse(f1)
 Age    <- c(1, 2, 3)
 Gender <- factor(c("m", "f", "f"))
+Tenure <- c(1, 2, 3)
 jdesc(Age)
 
 # Expected:
@@ -1323,20 +1354,23 @@ jdesc(Age, Gender)
 #   Gender      12        12        1    2   1.500  0.522
 
 juse(NULL)
-jdesc(Age)
+jdesc(Tenure)
 
 # Expected:
 #   Descriptive Statistics
+#   Tenure is a separate object in your workspace, not the variable in f1.
+#   To analyze the variable, name the data frame:
+#     jdesc(f1, Tenure)
 #
 #   3 Cases in the 1 Variable Pool
 #
-#   Warning: Age seems categorical. Descriptive statistics may not
+#   Warning: Tenure seems categorical. Descriptive statistics may not
 #   be meaningful.
 #   Variable  Total  Non_missing  Min  Max   Mean    SD
 #   --------  -----  -----------  ---  ---  -----  -----
-#   Age         3         3        1    3   2.000  1.000
+#   Tenure      3         3        1    3   2.000  1.000
 
-rm(f1, Age, Gender)
+rm(f1, Age, Gender, Tenure)
 
 # Things to look at:
 #   - Render 1: twelve cases, eleven with an age, from 21 to 52 -- the
@@ -1346,7 +1380,10 @@ rm(f1, Age, Gender)
 #     plural. Through v0.9.220 this call stopped: "Gender needs the data
 #     frame, not the single column Age."
 #   - Render 3: with no default there is no frame to read, so the
-#     workspace vector is described, as before, and no default note.
+#     workspace vector is described, as before, and no default note --
+#     and since v0.9.229 (ruling R18) two lines under the title say that
+#     Tenure is a separate object, not f1's variable, and give the call
+#     that reads the variable (Part H shows this on its own).
 #   - Not shown: a function, a list or a data frame sharing the name gets
 #     no line (filter_check.R U08); the line prints at every output level.
 
@@ -1556,6 +1593,192 @@ rm(.def_g5)
 #     default's two lines in the order they are run;
 #   - Render 2: a bare name keeps "not found" and its question, with the
 #     same lines.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART H -- HOW A NAME IS READ: RULING R18'S NAMES SLATE (S356) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.229. Ruling R18 (Jeff, S355): "Name a variable without quotes, after
+# its data frame. jstats always reads the data frame's variable, never a
+# separate object with the same name. Anything that is not a variable -- a
+# format, a convention, a map, a file name -- goes in quotes." The five
+# sections show the slate on the data-first functions; models_walk.R
+# Section 23 and missing_convention_walk.R Section 67 show it on the
+# formula functions and the recode family. The assertion side is
+# filter_check.R section Y.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION H1 -- a c() of names, bare or quoted, in a variable list ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# A variable list takes a c() of names, as the tidyverse does; until v0.9.228
+# jdesc(d, c(Age, Gender)) was "c(Age, Gender) was not found". A range and
+# a helper are still not found, as decided. The three single-variable
+# functions take a quoted name now (jrecode(d, "Gender", ...) was refused);
+# a c() of several there stops, naming them.
+
+jdesc(d, c(Age, "Gender"))
+caught(jdesc(d, Age:Gender))
+caught(jrecode(d, c(Age, Gender), map = "1=0"))
+
+# Expected:
+#   Descriptive Statistics
+#
+#   12 Cases in the 2 Variable Pool; 11 Complete on All
+#
+#   Warning: Gender seems categorical. Descriptive statistics may not
+#   be meaningful.
+#   Variable  Total  Non_missing  Min  Max   Mean     SD
+#   --------  -----  -----------  ---  ---  ------  ------
+#   Age         12        11       27   62  41.636  11.457
+#   Gender      12        12        1    2   1.500   0.522
+#
+#   Caught: jdesc(): Age:Gender was not found in the d data frame.
+#   Check the spelling.
+#   Caught: jrecode(): only one variable goes after the data frame, and this
+#   call gives Age and Gender.
+#   Name one variable, and run the call once for each.
+
+# Things to look at:
+#   - Render 1: both variables described, Age then Gender, from a c() that
+#     mixes a bare name and a quoted one;
+#   - Render 2: the range keeps the not-found stop;
+#   - Render 3: jrecode() names the two variables and says what to do.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION H2 -- a data frame's name in quotes ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# jdesc("d", Age) read the string as a single column ("Age needs the data
+# frame, not the single column "d""); juse("d") said '"d" not found.' When
+# the string names a data frame in the workspace, the call is given back
+# without the quotes.
+
+caught(jdesc("d", Age))
+caught(juse("d"))
+caught(jt(Age ~ Gender, "d"))
+
+# Expected:
+#   Caught: jdesc(): "d" is in quotes.
+#   A data frame's name goes without them:
+#     jdesc(d, Age)
+#   Caught: juse(): "d" is in quotes.
+#   A data frame's name goes without them:
+#     juse(d)
+#   Caught: jt(): "d" is in quotes.
+#   A data frame's name goes without them:
+#     jt(Age ~ Gender, d)
+
+# Things to look at:
+#   - the same two sentences in each, and the call as typed with the
+#     quotes gone -- the formula function's too, which said "(passed as a
+#     character string)".
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION H3 -- the vector path: a workspace object a data frame shares a name with ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# jdesc(zz_hv) with no data frame named and none set reads the workspace
+# object zz_hv and said nothing, while the data frame zz_h holds a variable
+# of that name (ruling R12's other half). Two lines under the title now say
+# which object was read and give the call that reads the variable. A
+# workspace object no frame shares a name with gets no line.
+
+zz_h  <- data.frame(zz_hv = c(20, 30, 40, 50, NA, 60), zz_hw = c(1, 2, 1, 2, 1, 2))
+zz_hv <- c(1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5)
+zz_hx <- c(4, 5, 6)
+jdesc(zz_hv)
+jfreq(zz_hx)
+
+# Expected:
+#   Descriptive Statistics
+#   zz_hv is a separate object in your workspace, not the variable in zz_h.
+#   To analyze the variable, name the data frame:
+#     jdesc(zz_h, zz_hv)
+#
+#   7 Cases in the 1 Variable Pool
+#
+#   Variable  Total  Non_missing  Min  Max   Mean    SD
+#   --------  -----  -----------  ---  ---  -----  -----
+#   zz_hv       7         7       1.5  7.5  4.500  2.160
+#
+#   Frequencies
+#
+#   3 Cases in the 1 Variable Pool
+#
+#   zz_hx
+#
+#          Freq  Total %  Valid %  Cum. %
+#   -----  ----  -------  -------  ------
+#   4        1     33.33   33.33    33.33
+#   5        1     33.33   33.33    66.67
+#   6        1     33.33   33.33   100.00
+#
+#   Total    3    100.00
+
+# Things to look at:
+#   - Render 1: the seven cases of the workspace vector are described, and
+#     the two lines under the title name zz_h and give jdesc(zz_h, zz_hv);
+#   - Render 2: no line for zz_hx, which no data frame holds.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION H4 -- the not-a-data-frame stops name the frame that has the variable ----
+# NEEDS: H3
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# jplot(zz_hv) stops, as it did, but its lines name zz_h, the one data frame
+# that has the variable, where they printed MyData; so does the vector
+# path's refusal of a second variable. With no frame, or several, MyData
+# stays.
+
+caught(jplot(zz_hv))
+caught(jdesc(zz_hv, zz_hw))
+rm(zz_h, zz_hv, zz_hx)
+
+# Expected:
+#   Caught: jplot(): 'zz_hv' is not a data frame. Did you mean to use it as a
+#   variable name?
+#   If so, name the data frame first:
+#     jplot(zz_h, zz_hv)
+#   Or set a default first, then run the call:
+#     juse(zz_h)
+#     jplot(zz_hv)
+#   Caught: jdesc(): zz_hw needs the data frame, not the single column zz_hv.
+#   Name the data frame first:
+#     jdesc(zz_h, zz_hv, zz_hw)
+
+# Things to look at:
+#   - Render 1: jplot(zz_h, zz_hv) and juse(zz_h), not MyData;
+#   - Render 2: jdesc(zz_h, zz_hv, zz_hw), the frame that has both.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION H5 -- a bare word where a quoted value goes ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# jdesc(d, Age, variable.id = labels), joutput(full), joptions(spss),
+# jload("f.rds", name = mydata): R looked the word up as an object ("object
+# 'labels' not found"). Each gets jload()'s form -- the word, that it is not
+# in quotes, what the argument takes, the call to run -- at every argument
+# that takes a fixed word, and at the free-text slots. A positional word
+# gets the sentence form; a named one names the argument.
+
+caught(jdesc(d, Age, variable.id = labels))
+caught(joutput(full))
+caught(joptions(spss))
+caught(jload("nofile.rds", name = mydata))
+
+# Expected:
+#   Caught: jdesc(): labels is not in quotes.
+#   variable.id = takes a display mode in quotes:
+#     jdesc(d, Age, variable.id = "labels")
+#   Caught: joutput(): full is not in quotes.
+#   A level or setting name goes in quotes:
+#     joutput("full")
+#   Caught: joptions(): spss is not in quotes.
+#   A convention name goes in quotes:
+#     joptions(missing.convention = "spss")
+#   Caught: jload(): mydata is not in quotes.
+#   name = takes a name in quotes:
+#     jload("nofile.rds", name = "mydata")
+
+# Things to look at:
+#   - the word as typed, then what the argument takes, then the call as
+#     typed with the word in quotes; joptions(spss) is given the named
+#     form, since its first position is read several ways.
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations

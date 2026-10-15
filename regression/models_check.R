@@ -81,6 +81,48 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S356 EDIT (v0.9.229, 2026-10-15): the NAMES slate (ruling R18) on the
+#           formula functions. SECTION S ADDED, S01-S15 (15 checks). (b) A
+#           term in quotes -- jt(y ~ "g", d), the outcome in jaov(), a term
+#           beside a bare one in jlm() and jlogistic(), jcrosstab(),
+#           jplot()'s formula form, a formula held in a name -- stops
+#           BEFORE the title with the call given without the quotes, the
+#           other arguments kept (it crashed after the title: "missing
+#           value where TRUE/FALSE needed", "invalid model formula", NA not
+#           found); a string inside a computed term is R code and fits;
+#           the printed lines run. (c) A bare word where a quoted value
+#           goes -- diagnostics = levene / Levene / vif / c(vif, qq), std =
+#           gelman, residuals = adjusted, variable.id = labels, jplot()'s
+#           which = effects (R had found the function effects), a c() with
+#           one word quoted, at = mean, type = histogram, line = lm, band =
+#           pi (R's number) -- gets jload()'s form with the call to run,
+#           the value spelled as the function takes it; a second variable
+#           in which's position stays a variable, one named like a plot
+#           (fit) included; a name holding a value works, a word that is
+#           not a value is left to R; every call line parses, four run.
+#           (e) jt(y ~ .GlobalEnv$G, d) on a frame holding a G is judged by
+#           what the term gives, named as written, no registration
+#           offered; a list's component the same; d$G keeps the S322
+#           refusal; a numeric object read through $ computes as lm()
+#           computes it, the frame's same-named column untouched, the
+#           missing cases counted on what the term reads; the frame's own
+#           categorical variable in log() keeps its refusal and a
+#           comparison on it computes. FOUR HUNDRED AND TWENTY-SIX checks.
+#           On the 0.9.228 master 10 red: S01-S03, S05-S08, S11-S13.
+#           MUTATION MAP (S356; twenty one-change mutants of the 0.9.229
+#           master, each run on the four batteries of the build): the word
+#           check off S06 S07 S08 S11; the word matched with regard to case
+#           S06; the quoted-term stop off S01 S02 S03 S05; the guard reading
+#           all.vars() again S12 S13; which read when positional S09. The
+#           other 15 mutants red elsewhere, green here.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): 426/426
+#           plain and under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, and entered dirty.
+#           LAST VERIFIED: v0.9.229, 2026-10-15 (S356) -- 426/426 on the
+#           WORKSTATION through receive_all(), which ran every battery
+#           green after a clean R CMD check and went on to the walks (the
+#           paste-back block was not posted; the walks it showed were
+#           walked), matching the sandbox; GitHub fea0b51.
 # S353 EDIT (v0.9.226, 2026-10-12): Fix Slate 9, the second half (ruling
 #           R5, the layout of a long printed call). No check added. The
 #           helpers of N18-N27 read each printed line as the call it
@@ -4290,6 +4332,126 @@ check("R06 ... the line runs, and jlogistic() runs on yR; under no setting the l
                                  error = function(err) FALSE)) }))
 rm(dr, dt)
 rm(list = intersect(c(".conv_r", ".line_r", ".r01", ".r05"), ls(all.names = TRUE)))
+
+# =============================================================================
+# S -- RULING R18'S NAMES SLATE AT THE FORMULA FUNCTIONS (S356, v0.9.229): A
+#      VARIABLE IN QUOTES INSIDE A FORMULA; A BARE WORD WHERE A QUOTED VALUE
+#      GOES; A TERM THAT READS A WORKSPACE OBJECT THROUGH $
+# =============================================================================
+# Ruling R18 (Jeff, S355). (b) jt(y ~ "g", d) printed its title and stopped
+# on R's "missing value where TRUE/FALSE needed"; jlm(y ~ x1 + "x2", d) on
+# "invalid model formula in ExtractVars"; jplot(y ~ "x1", d) said NA was not
+# found. A string standing as a term is the sibling of "The formula should
+# not be in quotes": the stop names the term and gives the call as typed
+# without the quotes, before the title; a string inside a computed term
+# (I(g == "a")) is R code and is untouched. (c) A bare word where a quoted
+# value goes -- diagnostics = levene, std = gelman, residuals = adjusted,
+# which = effects, at = mean, type = histogram, line = lm, band = pi -- met
+# R's own lookup of the word ("object 'levene' not found"; "'match' requires
+# vector arguments" when R found a function of that name); each gets
+# jload()'s form with the call to run, the value spelled as the function
+# takes it. (e) jt(y ~ .GlobalEnv$G, d) with d holding a G was refused for
+# the FRAME's G ("G is a categorical variable, so the formula term
+# .GlobalEnv$G cannot be computed", with a registration that would change
+# nothing about the term): the guard reads the names a term reads, never
+# the component after $, so the term is judged by what it gives, as lst$G
+# is; d$G keeps the S322 refusal. Working objects in local().
+.s_pin <- function(got, want) identical(got, want)
+check("S01 jt(y ~ \"g\", d): the quoted term, and the call without the quotes (pinned whole); it crashed after the title",
+      .s_pin(grab(jt(y ~ "g", d)),
+             "jt(): \"g\" is in quotes.\nA variable in a formula is named without quotes:\n  jt(y ~ g, d)"))
+check("S02 the outcome in quotes, in jaov(); a term beside a bare one in jlm() and jlogistic(); jcrosstab(); jplot()'s formula form -- each as typed, the other arguments kept",
+      .s_pin(grab(jaov("y" ~ g, d)), "jaov(): \"y\" is in quotes.\nA variable in a formula is named without quotes:\n  jaov(y ~ g, d)") &&
+        .s_pin(grab(jlm(y ~ x1 + "x2", d)), "jlm(): \"x2\" is in quotes.\nA variable in a formula is named without quotes:\n  jlm(y ~ x1 + x2, d)") &&
+        .s_pin(grab(jlogistic(yb ~ "x1" + x2, d)), "jlogistic(): \"x1\" is in quotes.\nA variable in a formula is named without quotes:\n  jlogistic(yb ~ x1 + x2, d)") &&
+        .s_pin(grab(jcrosstab(g ~ "hv", d)), "jcrosstab(): \"hv\" is in quotes.\nA variable in a formula is named without quotes:\n  jcrosstab(g ~ hv, d)") &&
+        .s_pin(grab(jplot(y ~ "x1", d)), "jplot(): \"x1\" is in quotes.\nA variable in a formula is named without quotes:\n  jplot(y ~ x1, d)") &&
+        .s_pin(grab(jt(y ~ "g", d, welch = TRUE)), "jt(): \"g\" is in quotes.\nA variable in a formula is named without quotes:\n  jt(y ~ g, d, welch = TRUE)"))
+check("S03 the stop comes before the title, and a formula held in a name is read the same",
+      local({ out <- tryCatch(capture.output(jt(y ~ "g", d)), error = function(e) character(0))
+              f <- y ~ "x1"
+              length(out) == 0L &&
+                .s_pin(grab(jlm(f, d)), "jlm(): \"x1\" is in quotes.\nA variable in a formula is named without quotes:\n  jlm(y ~ x1, d)") }))
+check("S04 a string inside a computed term is R code: jlm(y ~ I(g == \"a\"), d) fits, with no word about quotes",
+      local({ m <- quiet(jlm(y ~ I(g == "a"), d))
+              !is.null(m) && !grepl("in quotes", grab(jlm(y ~ I(g == "a"), d)), fixed = TRUE) }))
+check("S05 the printed lines run: jaov(y ~ g, d), jlm(y ~ x1 + x2, d) and jt(y ~ lg, d), the two-group form",
+      !is.null(quiet(jaov(y ~ g, d))) && !is.null(quiet(jlm(y ~ x1 + x2, d))) &&
+        !is.null(quiet(jt(y ~ lg, d))) &&
+        .s_pin(grab(jt(y ~ "lg", d)), "jt(): \"lg\" is in quotes.\nA variable in a formula is named without quotes:\n  jt(y ~ lg, d)"))
+# -- (c) a bare word where a quoted value goes ------------------------------
+check("S06 diagnostics = levene in jt(), Levene in jaov() (the value spelled as the function takes it), vif in jlogistic(), c(vif, qq) in jlm() (pinned whole)",
+      .s_pin(grab(jt(y ~ g, d, diagnostics = levene)), "jt(): levene is not in quotes.\ndiagnostics = takes a diagnostic name in quotes:\n  jt(y ~ g, d, diagnostics = \"levene\")") &&
+        .s_pin(grab(jaov(y ~ g, d, diagnostics = Levene)), "jaov(): Levene is not in quotes.\ndiagnostics = takes a diagnostic name in quotes:\n  jaov(y ~ g, d, diagnostics = \"levene\")") &&
+        .s_pin(grab(jlogistic(yb ~ x1, d, diagnostics = vif)), "jlogistic(): vif is not in quotes.\ndiagnostics = takes a diagnostic name in quotes:\n  jlogistic(yb ~ x1, d, diagnostics = \"vif\")") &&
+        .s_pin(grab(jlm(y ~ x1, d, diagnostics = c(vif, qq))), "jlm(): vif and qq are not in quotes.\ndiagnostics = takes a diagnostic name in quotes:\n  jlm(y ~ x1, d, diagnostics = c(\"vif\", \"qq\"))"))
+check("S07 std = gelman, residuals = adjusted, variable.id = labels: each its noun (pinned whole)",
+      .s_pin(grab(jlm(y ~ x1, d, std = gelman)), "jlm(): gelman is not in quotes.\nstd = takes a choice in quotes:\n  jlm(y ~ x1, d, std = \"gelman\")") &&
+        .s_pin(grab(jcrosstab(g ~ hv, d, residuals = adjusted)), "jcrosstab(): adjusted is not in quotes.\nresiduals = takes a residual type in quotes:\n  jcrosstab(g ~ hv, d, residuals = \"adjusted\")") &&
+        .s_pin(grab(jlm(y ~ x1, d, variable.id = labels)), "jlm(): labels is not in quotes.\nvariable.id = takes a display mode in quotes:\n  jlm(y ~ x1, d, variable.id = \"labels\")"))
+.s_r <- quiet(jlm(y ~ x1 + x2, d))
+check("S08 jplot(): which = effects (R found the function effects: \"'match' requires vector arguments\"), a c() with one word quoted, at = mean, type = histogram, line = lm, band = pi (pi is a number, not a string)",
+      .s_pin(grab(jplot(.s_r, which = effects)), "jplot(): effects is not in quotes.\nwhich = takes a plot name in quotes:\n  jplot(.s_r, which = \"effects\")") &&
+        .s_pin(grab(jplot(.s_r, which = c(fit, "qq"))), "jplot(): fit is not in quotes.\nwhich = takes a plot name in quotes:\n  jplot(.s_r, which = c(\"fit\", \"qq\"))") &&
+        .s_pin(grab(jplot(.s_r, which = "fit", at = mean)), "jplot(): mean is not in quotes.\nat = takes a choice in quotes:\n  jplot(.s_r, which = \"fit\", at = \"mean\")") &&
+        .s_pin(grab(jplot(d, x1, type = histogram)), "jplot(): histogram is not in quotes.\ntype = takes a plot type in quotes:\n  jplot(d, x1, type = \"histogram\")") &&
+        .s_pin(grab(jplot(y ~ x1, d, line = lm)), "jplot(): lm is not in quotes.\nline = takes a line type in quotes:\n  jplot(y ~ x1, d, line = \"lm\")") &&
+        .s_pin(grab(jplot(y ~ x1, d, line = "lm", band = pi)), "jplot(): pi is not in quotes.\nband = takes a band type in quotes:\n  jplot(y ~ x1, d, line = \"lm\", band = \"pi\")"))
+check("S09 a second variable in which's position is a variable, not a word: jplot(x1, x2) under a juse() default meets the scatter advice, no word about quotes -- and so does a variable named like a plot, jplot(x1, fit)",
+      local({ old <- getOption(".jst_default_data"); options(.jst_default_data = "d")
+              m <- grab(jplot(x1, x2))
+              zz_s9 <- d; zz_s9$fit <- d$x2; options(.jst_default_data = "zz_s9")
+              m2 <- grab(jplot(x1, fit)); options(.jst_default_data = old)
+              grepl("use formula syntax", m, fixed = TRUE) && !grepl("in quotes", m, fixed = TRUE) &&
+                grepl("use formula syntax", m2, fixed = TRUE) && !grepl("in quotes", m2, fixed = TRUE) }))
+check("S10 a name holding a value works, and a word that is not a value is left to R",
+      local({ dg <- "vif"; ok <- !is.null(quiet(jlm(y ~ x1, d, diagnostics = dg)))
+              ok && identical(grab(jlm(y ~ x1, d, std = gelmann)), "object 'gelmann' not found") }))
+check("S11 every pointer's call line parses, and four of them run",
+      local({ g <- c(grab(jt(y ~ g, d, diagnostics = levene)), grab(jlm(y ~ x1, d, std = gelman)),
+                     grab(jlm(y ~ x1, d, diagnostics = c(vif, qq))), grab(jcrosstab(g ~ hv, d, residuals = adjusted)),
+                     grab(jplot(.s_r, which = effects)), grab(jplot(.s_r, which = "fit", at = mean)),
+                     grab(jplot(y ~ x1, d, line = "lm", band = pi)))
+              ls <- grep("^  ", unlist(strsplit(g, "\n", fixed = TRUE)), value = TRUE)
+              length(ls) == 7L &&
+                all(vapply(ls, function(l) !inherits(try(parse(text = l), silent = TRUE), "try-error"), logical(1))) &&
+                !is.null(quiet(jaov(y ~ g, d, diagnostics = "levene"))) &&
+                !is.null(quiet(jlm(y ~ x1, d, std = "gelman"))) &&
+                !is.null(quiet(jlm(y ~ x1, d, diagnostics = c("vif", "qq")))) &&
+                !is.null(quiet(jplot(.s_r, which = "effects"))) }))
+rm(.s_r)
+# -- (e) a term reading a workspace object through $ -------------------------
+.s_d <- d[, c("y", "x1")]
+.s_d$G <- factor(rep(c("x", "y"), length.out = nrow(.s_d)))
+.s_d$W <- seq_len(nrow(.s_d))
+check("S12 jt(y ~ .GlobalEnv$G, .s_d) with the frame holding a G: the term is judged by what it gives, named as written (pinned whole); it was refused for the frame's G with jencode() offered",
+      local({ assign("zz_s_G", factor(rep(c("p", "q"), length.out = nrow(.s_d))), envir = globalenv())
+              on.exit(rm("zz_s_G", envir = globalenv()), add = TRUE)
+              names(.s_d)[names(.s_d) == "G"] <- "zz_s_G"
+              m <- grab(jt(y ~ .GlobalEnv$zz_s_G, .s_d))
+              .s_pin(m, paste0("jt(): The formula term .GlobalEnv$zz_s_G produces a categorical\n",
+                               "variable, not a numeric one.\n",
+                               "Create it as a new column first, then use that column in the formula.")) &&
+                !grepl("jencode", m, fixed = TRUE) && !grepl("jnumeric", m, fixed = TRUE) }))
+check("S13 a list's component the same way, and a data frame named inside the term keeps the S322 refusal",
+      local({ lst <- list(G = factor(rep(c("p", "q"), length.out = nrow(.s_d))))
+              a <- grab(jt(y ~ lst$G, .s_d)); b <- grab(jt(y ~ .s_d$G, .s_d))
+              grepl("jt(): The formula term lst$G produces a categorical variable, not a\nnumeric one.", a, fixed = TRUE) &&
+                grepl("names the .s_d data frame inside the formula.", b, fixed = TRUE) }))
+check("S14 a numeric object read through $ computes as lm() computes it, the frame's same-named column untouched: the coefficient is lm()'s, with the missing cases counted on what the term reads",
+      local({ zz_s_W <- rev(seq_len(nrow(.s_d))) * 0.5; zz_s_W[c(3, 7)] <- NA
+              assign("zz_s_W", zz_s_W, envir = globalenv())
+              on.exit(rm("zz_s_W", envir = globalenv()), add = TRUE)
+              names(.s_d)[names(.s_d) == "W"] <- "zz_s_W"
+              m <- quiet(jlm(y ~ .GlobalEnv$zz_s_W, .s_d))
+              truth <- stats::lm(y ~ .GlobalEnv$zz_s_W, data = .s_d)
+              !is.null(m) && near(b_of(m, ".GlobalEnv$zz_s_W"), stats::coef(truth)[[2L]]) &&
+                identical(m$sample_info$n_analysis, as.integer(nrow(.s_d) - 2L)) &&
+                !near(b_of(m, ".GlobalEnv$zz_s_W"), stats::coef(stats::lm(y ~ zz_s_W, data = .s_d))[[2L]]) }))
+check("S15 the frame's own categorical variable in a computed term keeps its refusal, and a comparison on it still computes",
+      grepl("g is a categorical variable, so the formula term log(g) cannot", flat(grab(jlm(y ~ log(g), d))), fixed = TRUE) &&
+        !is.null(quiet(jlm(y ~ I(g == "a"), d))))
+rm(.s_d, .s_pin)
 
 # --- Verdict -----------------------------------------------------------------
 

@@ -27,6 +27,19 @@
 #           Since S355 (Section 16): the NA rule's note on such a variable,
 #           and the parse layer phrased by the setting.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S356 EDIT (v0.9.229, 2026-10-15): SECTION 17 ADDED, three renders, for
+#           the NAMES slate (ruling R18) and ruling R17 at jencode(): the
+#           variable named in quotes, jencode(r17d, "Reply", ...), read as
+#           the bare form is (it was refused); convention = Stata typed
+#           bare, the pointer with the call to run; and a labels string
+#           whose quoted label holds a semicolon, the label landing whole.
+#           Every Expected FILLED BY RUNNING the file (fill.R). harness.R
+#           derive: Section 17 needs no other; verify: 31 of 31 Expected
+#           blocks found, 17 of 17 sections in three orders and by prepare
+#           = TRUE. The human half of jencode_check.R N50.
+#           LAST VERIFIED v0.9.229, 2026-10-15 (S356) -- Section 17 WALKED
+#           on the WORKSTATION through receive_all() ("I've walked all
+#           sections"); PENDING back to none; GitHub fea0b51 (package).
 # S355 EDIT (v0.9.228, 2026-10-14): SECTION 16 ADDED, two renders, for
 #           Fix Slate W1: the NA rule's note on a variable a map made
 #           Stata-style, which offered a declaration that would take .a
@@ -1528,6 +1541,92 @@ rm(r16d, r16)
 #   - RENDER 2: "SAS-style missing-value marker (.A through .Z)", and the
 #     word missing listed.
 
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 17 -- a quoted name; a bare word where a value goes; a quoted label (S356) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S356 (v0.9.229; the names slate and ruling R17). jencode(d, "Reply")
+# was refused ('"Reply" was not found') where every other slot took a quoted
+# name; it reads the variable now, and a c() of one. convention = Stata
+# typed bare met R's "object 'Stata' not found"; it gets jload()'s form with
+# the call to run. And a label in labels = may be quoted, a semicolon inside
+# the quotes part of the label (ruling R17). Inline fixture; the assertion
+# side is jencode_check.R N50.
+
+r17d <- data.frame(Reply = c("Yes", "No", "Refused", NA, "Yes"),
+                   stringsAsFactors = FALSE)
+
+# Render 1 -- the variable named in quotes, and in a c(): the same result
+# as the bare form, shown by the table.
+r17d$ReplyR <- jencode(r17d, "Reply", map = "Yes=1; No=2; Refused=9")
+jfreq(r17d, ReplyR)
+# Expected:
+#   Note: This call changes r17d only if you assign the result:
+#     r17d$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+#   Frequencies
+#
+#   5 Cases in the 1 Variable Pool
+#
+#   ReplyR
+#
+#                Freq  Total %  Valid %  Cum. %
+#   -----------  ----  -------  -------  ------
+#   Valid
+#   1: Yes         2     40.00    50.00   50.00
+#   2: No          1     20.00    25.00   75.00
+#   9: Refused     1     20.00    25.00  100.00
+#   Total valid    4     80.00   100.00
+#
+#   Missing
+#   System/NA      1     20.00       --      --
+#
+#   Total          5    100.00
+
+# Render 2 -- a bare word where a quoted value goes.
+try(jencode(r17d, Reply, convention = Stata))
+# Expected:
+#   Error : jencode(): Stata is not in quotes.
+#   convention = takes a convention name in quotes:
+#     jencode(r17d, Reply, convention = "stata")
+
+# Render 3 -- a quoted label holding a semicolon.
+r17d$ReplyR <- jencode(r17d, Reply, map = "Yes=1; No=2; Refused=9",
+                       labels = "1=Yes; 2=No; 9=\"Refused; not asked\"")
+jfreq(r17d, ReplyR)
+# Expected:
+#   Note: This call changes r17d only if you assign the result:
+#     r17d$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+#   Frequencies
+#
+#   5 Cases in the 1 Variable Pool
+#
+#   ReplyR
+#
+#                          Freq  Total %  Valid %  Cum. %
+#   ---------------------  ----  -------  -------  ------
+#   Valid
+#   1: Yes                   2     40.00    50.00   50.00
+#   2: No                    1     20.00    25.00   75.00
+#   9: Refused; not asked    1     20.00    25.00  100.00
+#   Total valid              4     80.00   100.00
+#
+#   Missing
+#   System/NA                1     20.00       --      --
+#
+#   Total                    5    100.00
+rm(r17d)
+
+# Things to look at:
+#   - RENDER 1: the assign-or-lose note, then the table with 1, 2 and 9 --
+#     the quoted name read as the bare one would be;
+#   - RENDER 2: "Stata is not in quotes.", what convention = takes, and the
+#     call with "stata" in quotes, spelled as the function takes it;
+#   - RENDER 3: the 9 row reads "9: Refused; not asked".
 
 
 # --- Restore session state ---------------------------------------------------

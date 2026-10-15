@@ -79,11 +79,29 @@
 #           vars =, the parse layer under sas, joptions()' codes-length
 #           refusal, jconvert()'s Pattern A list and its line, a label
 #           holding a quotation mark.
+#           PART S (S356) adds the names slate at the recode family -- a
+#           format name and a convention name typed without quotes -- and
+#           ruling R17: a label written in quotes in a labels string, a
+#           semicolon inside it part of the label, and the offered line
+#           that quotes such a label.
 # ORIGIN:   S226 (SAS-convention foundation, v0.9.123) + S227 (E17 jload
 #           messaging redesign, v0.9.124). Written S228, superseding the two
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S356 (v0.9.229; the NAMES slate, ruling R18's four remaining
+#           items, and ruling R17). NEW PART S, SECTION 67, four renders,
+#           every Expected FILLED BY RUNNING the file (fill.R): a bare word
+#           where a quoted value goes at jconvert(to = sas) and
+#           jdeclare_missing(convention = Spss), the pointer spelling the
+#           value as the function takes it; ruling R17 -- a label quoted in
+#           the labels string holds a semicolon ("Refused; not asked"), the
+#           SPSS and Stata habit 1='Yes' read without its marks, and the
+#           marker refusal's offered line quoting the label it carries,
+#           then run. harness.R derive: Section 67 needs no other; verify:
+#           68 of 68 sections in three orders and by prepare = TRUE; 85 of
+#           86 Expected blocks found (Section 10's, as before). The human
+#           half of missing_convention_check.R section N91.
 # EDITED:   S355 (v0.9.228; Fix Slate W1, sixteen wording items on the
 #           missing-value messages, with ruling R18's vars = pointer). NEW
 #           PART R, SECTION 66, six renders, every Expected FILLED BY
@@ -587,6 +605,14 @@
 #           Same messages either way (one frame), confirmed in the walk
 #           below against a sandbox capture of the same file; no Expected
 #           touched.
+# LAST VERIFIED: v0.9.229, 2026-10-15 (S356) -- Section 67 WALKED on the
+#           WORKSTATION through receive_all() ("I've walked all sections"),
+#           GitHub fea0b51 (package), after the SANDBOX run (R 4.3.3, UTF-8
+#           locale): Section 67's Expected filled by running the file
+#           (fill.R), 85 of 86 blocks found in the capture (Section 10's,
+#           as before), and all 68 sections through rewalk() in file order,
+#           reverse order and shuffled, and by prepare = TRUE; Section 67
+#           needs no other. PENDING back to none.
 # LAST VERIFIED: v0.9.228, 2026-10-15 (S355) -- Sections 19, 20, 21, 25,
 #           36, 39, 40, 41, 54, 56, 61, 63 and 66 WALKED on the WORKSTATION
 #           through receive_all() ("walked, all okay"), GitHub f89e83f
@@ -7256,6 +7282,135 @@ rm(w66, q66)
 #   - RENDER 5: Q: 9 ["Not asked"], then the declaration line, with
 #     modify = TRUE, and no "see jdeclare_missing()";
 #   - RENDER 6: labels = ".b=Said \"no\"", backslashes in the line.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART S -- the names slate at the recode family, and ruling R17 (S356) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.229. Ruling R18's (c) on the recode family -- a bare word where a
+# quoted value goes, to = stata or convention = spss, gets jload()'s form
+# with the call to run -- and ruling R17 (Jeff, S356): a value label may be
+# written in quotes, with either mark, right after its equals sign, and a
+# semicolon inside the quotes is part of the label, as a quoted word is read
+# on the map side; every line the package offers quotes a label that needs
+# it, so the line runs. The assertion side is missing_convention_check.R
+# N91; jencode_walk.R Section 17 shows jencode()'s side.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 67 -- a bare word where a value goes; a label holding a semicolon ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+joptions(missing.convention = "stata", quiet = TRUE)
+w67 <- data.frame(
+  A = haven::labelled_spss(c(1, -99, 3, 4, 5), na_values = -99),
+  Q = c(1, 2, 9, 1, 2))
+
+# Render 1 -- a format name and a convention name typed without quotes.
+# Until 0.9.228 R's "object 'stata' not found".
+try(jconvert(w67, to = sas))
+try(jdeclare_missing(w67, A, codes = -98, convention = Spss))
+# Expected:
+#   Error : jconvert(): sas is not in quotes.
+#   to = takes a format name in quotes:
+#     jconvert(w67, to = "sas")
+#   Error : jdeclare_missing(): Spss is not in quotes.
+#   convention = takes a convention name in quotes:
+#     jdeclare_missing(w67, A, codes = -98, convention = "spss")
+
+# Render 2 -- a label holding a semicolon, written in quotes; the SPSS and
+# Stata habit of quoting every label, which until 0.9.228 kept the marks
+# in the label ('Yes'); and an apostrophe partway through an unquoted
+# label, read as it is written.
+w67$Q <- jrelabel(w67, Q, labels = "1=Yes; 2=No; 9=\"Refused; not asked\"")
+jfreq(w67, Q)
+w67$Q <- jrelabel(w67, Q, labels = "1='Yes'; 2='No'; 9=Don't know")
+jfreq(w67, Q)
+# Expected:
+#   Frequencies
+#
+#   5 Cases in the 1 Variable Pool
+#
+#   Q
+#
+#                          Freq  Total %  Valid %  Cum. %
+#   ---------------------  ----  -------  -------  ------
+#   1: Yes                   2     40.00   40.00    40.00
+#   2: No                    2     40.00   40.00    80.00
+#   9: Refused; not asked    1     20.00   20.00   100.00
+#
+#   Total                    5    100.00
+#
+#   Frequencies
+#
+#   5 Cases in the 1 Variable Pool
+#
+#   Q
+#
+#                  Freq  Total %  Valid %  Cum. %
+#   -------------  ----  -------  -------  ------
+#   1: Yes           2     40.00   40.00    40.00
+#   2: No            2     40.00   40.00    80.00
+#   9: Don't know    1     20.00   20.00   100.00
+#
+#   Total            5    100.00
+
+# Render 3 -- the line the package offers quotes the label: the S353
+# example, whose label could be written in no labels string. V carries .a
+# and -99 is labeled "Refused; not asked".
+q67 <- data.frame(V = haven::labelled(c(1, 2, haven::tagged_na("a"), -99, 3),
+                  labels = c(Skipped = haven::tagged_na("a"),
+                             "Refused; not asked" = -99)))
+try(jdeclare_missing(q67, V, codes = -99))
+# Expected:
+#   Error : jdeclare_missing(): -99 would become .a under Stata convention, but
+#   V already carries .a ["Skipped"], so the two would share one missing value.
+#   To keep them distinct, recode -99 to a marker V does not use:
+#     q67$VR <- jrecode(q67, V, map = "-99=.b; else=copy",
+#         labels = ".b=\"Refused; not asked\"")
+#   Or, if they mean the same thing, recode -99 to .a:
+#     q67$VR <- jrecode(q67, V, map = "-99=.a; else=copy")
+
+# Render 4 -- the offered line, pasted and run: the label lands whole.
+q67$VR <- jrecode(q67, V, map = "-99=.b; else=copy",
+    labels = ".b=\"Refused; not asked\"")
+jfreq(q67, VR)
+# Expected:
+#   Note: This call changes q67 only if you assign the result:
+#     q67$<name> <- jrecode(...)
+#   To check the recode landed correctly, compare jfreq() on the original and
+#   the new column.
+#   Frequencies
+#
+#   5 Cases in the 1 Variable Pool
+#
+#   VR
+#
+#                              Freq  Total %  Valid %  Cum. %
+#   -------------------------  ----  -------  -------  ------
+#   Valid
+#   1                            1     20.00    33.33   33.33
+#   2                            1     20.00    33.33   66.67
+#   3                            1     20.00    33.33  100.00
+#   Total valid                  3     60.00   100.00
+#
+#   Missing
+#   .a ["Skipped"]               1     20.00       --      --
+#   .b ["Refused; not asked"]    1     20.00       --      --
+#   Total missing                2     40.00
+#
+#   Total                        5    100.00
+
+options(.jst_options_missing_convention = NULL)
+rm(w67, q67)
+
+# Things to look at:
+#   - RENDER 1: the word as typed, what the argument takes, the call with
+#     the value in quotes and spelled as the function takes it ("spss");
+#   - RENDER 2: the first table's third row reads "9: Refused; not asked";
+#     the second's rows read Yes, No and Don't know, no quotation marks;
+#   - RENDER 3: labels = ".b=\"Refused; not asked\"" in the offered line,
+#     the label in quotes, backslashes in the line;
+#   - RENDER 4: the pasted line runs, and the table shows the label whole
+#     on the .b row.
 
 
 # --- Restore session state ---------------------------------------------------
