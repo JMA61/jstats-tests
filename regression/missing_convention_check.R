@@ -10,6 +10,46 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S361 EDIT (v0.9.234, 2026-10-16): NEW N94 section, thirty-six checks
+#           (N94a-N94aj), Capability Slate C1's six smaller items where they
+#           speak in this battery's surfaces: jconvert()'s return-trip note
+#           SPSS to Stata, its prediction held to the trip back run (A); the
+#           load scan's convention-matched category, the setting read, the
+#           three categories' order, headings and legends, the hidden-row
+#           count, the offered lines run (B); jsave(preserve.declarations =
+#           FALSE) ahead of the .sav/.dta/.xpt pre-flight -- the refusals'
+#           second remedy at both tiers, the saves read back, the note's two
+#           forms, the type check still stopping, the offered line run (C);
+#           jload() reading the example files by name, package = TRUE, the
+#           shadow notes, quiet (D); the T/F advisory note (E). RE-PINNED:
+#           N82c (the scan's heading), N86ah N86aj N86ak N86al N86am (each
+#           refusal now ends on the save; the lines run are the conversion
+#           route alone, .cut86()), N87av N87ax (one more block, its line
+#           naming the file as typed, .pdl87()). EIGHT HUNDRED AND
+#           FORTY-FOUR checks.
+#           MUTATION MAP (40 mutants with format_check.R's, all red): the
+#           note's refused case N94h; its gate N94c N94e N94g N94i; the
+#           codes' order N94a N94d; several variables N94e; the setting's
+#           hits N94j N94l N94m N94p N94q; the category N82c N94j; the
+#           heading N94aj; the legends N94j N94l N94m; the hidden count
+#           N94p; the placeholder line N94q; the codes read from the setting
+#           N94m; the marker count N94u-w; the note's gate N94u-w, its zero
+#           form N94w; overwrite riding N94y; the .xpt route N94s N94t; the
+#           .dta and .sav second remedies N86ah N86ak N86al N94t; the
+#           fallback N94aa N94af; by name alone N94ab; the shadow notes
+#           N94ac N94ad; package = TRUE by extension N94ac N94ae; "Reading
+#           from" N94aa-ac, under quiet N94af; the T/F note's level N94ag,
+#           quiet N94ai, its blank line N94ah; the not-found list N94ae.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): run_all.R
+#           2710 across nine, plain and under the RStudio-handler stand-in,
+#           each again with a 35-character temp path (N94u and N94w read
+#           the Saved line flattened: a long path wraps it); entered dirty,
+#           plain and under the stand-in, both object sets: green, every
+#           changed object put back and named.
+#           LAST VERIFIED: v0.9.234, 2026-10-16 (S361) -- 844/844 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (9 run,
+#           2710 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox; GitHub 88a372e (package).
 # S360 EDIT (v0.9.233, 2026-10-16): N54j takes jdeclare_missing()'s call
 #           through printed() (Fix Slate 11's rider, the S359 item): its
 #           note -- "jdeclare_missing made no change to V. Its markers are
@@ -6902,7 +6942,9 @@ check("N82c the scan of suspected codes skips a labelled string variable and sti
         p <- tryCatch(printed(jload(g, name = "l82s", overwrite = TRUE)),
                       error = function(err) paste0("[error] ", conditionMessage(err)))
         ok <- !startsWith(p, "[error]") &&
-          grepl("Suspected missing-value codes detected:\n  Q:  -99 (2)\n", p,
+          # -99 is a missing.convention.codes value: convention-matched
+          # since v0.9.234, under the neutral heading (N94).
+          grepl("Missing-value codes detected:\n  Q:  -99 (2)\n", p,
                 fixed = TRUE) &&
           !grepl("Sx", p, fixed = TRUE)
         unlink(g); ok })
@@ -7700,6 +7742,19 @@ options(.jst_options_data_dir = NULL)
 }
 # .ends86(): does the message end with this text, exactly?
 .ends86 <- function(m, tail) endsWith(m, tail)
+# .pd86(): the alternative every refusal has ended on since v0.9.234 (N94):
+# the save that makes every declared missing value plain NA, the file as
+# typed, relative to the working directory.
+.pd86 <- function(nm, file) {
+  paste0("\nOr save every declared missing value as plain NA instead:\n",
+         "  jsave(", nm, ", \"", file, "\", preserve.declarations = FALSE)")
+}
+# .cut86(): the message before that alternative, so the lines run are the
+# conversion route alone -- the two are alternatives, not one sequence.
+.cut86 <- function(m) {
+  i <- regexpr("\nOr save every declared missing value as plain NA", m, fixed = TRUE)
+  if (i < 0L) m else substring(m, 1L, i - 1L)
+}
 # .after86(): the message after the first occurrence of a marker line.
 .after86 <- function(m, marker) {
   i <- regexpr(marker, m, fixed = TRUE)
@@ -7969,10 +8024,11 @@ m86ah <- grab(jsave(ds86, "ds86.dta"))
 check("N86ah the .dta refusal on a frame holding a declared string: the text variable made plain NA, then the rest, and jencode() for the other way",
       .ends86(m86ah, paste0("\n\nBefore saving to Stata format, run both:\n",
                             .route86("ds86"), "\n",
-                            "Or turn it into a numeric variable first with jencode().")) &&
+                            "Or turn it into a numeric variable first with jencode().",
+                            .pd86("ds86", "ds86.dta"))) &&
         startsWith(m86ah, "jsave(): 3 variables carry SPSS-style missing values,"))
 check("N86ai ... its two lines run, and the frame then saves as .dta (the integer variable converted too)",
-      local({ r <- .run86(m86ah, "ds86", ds86)
+      local({ r <- .run86(.cut86(m86ah), "ds86", ds86)
               !is.null(r) && identical(haven::na_tag(r$A), c(NA, NA, "a", NA, "b", NA)) &&
                 identical(haven::na_tag(r$L), c(NA, NA, "a", NA, NA, NA)) &&
                 is.null(attr(r$S, "na_values")) && sum(is.na(r$S)) == 2L &&
@@ -7980,7 +8036,8 @@ check("N86ai ... its two lines run, and the frame then saves as .dta (the intege
 m86aj <- .lvl86("minimal", grab(jsave(ds86, "ds86min.dta")))
 check("N86aj ... the minimal tier: the same two lines and the sentence, no jencode() line",
       .ends86(m86aj, paste0("the .dta format.\n",
-                            "Convert first, then save again:\n", .route86("ds86"))) &&
+                            "Convert first, then save again:\n", .route86("ds86"),
+                            .pd86("ds86", "ds86min.dta"))) &&
         !grepl("jencode", m86aj, fixed = TRUE))
 ds1_86 <- ds86["S"]
 m86ak <- grab(jsave(ds1_86, "ds1_86.dta"))
@@ -7988,16 +8045,18 @@ check("N86ak ... the text variable the only one declared: one line, \"run:\", \"
       .ends86(m86ak, paste0("\n\nBefore saving to Stata format, run:\n",
                             "  jconvert(ds1_86, vars = \"S\", to = \"baseR\", modify = TRUE)\n",
                             "S is text, so this makes its declared values plain NA.\n",
-                            "Or turn it into a numeric variable first with jencode().")) &&
-        .runsave86(m86ak, "ds1_86", ds1_86, "ds1_86.dta"))
+                            "Or turn it into a numeric variable first with jencode().",
+                            .pd86("ds1_86", "ds1_86.dta"))) &&
+        .runsave86(.cut86(m86ak), "ds1_86", ds1_86, "ds1_86.dta"))
 ds2_86 <- ds86; ds2_86$T <- ds86$S
 m86al <- grab(jsave(ds2_86, "ds2_86.dta"))
 check("N86al ... two text variables: vars = c(), \"S and T are text\", \"their\", \"Or turn each\", and the frame then saves",
       grepl("vars = c(\"S\", \"T\"), to = \"baseR\", modify = TRUE)\n", m86al, fixed = TRUE) &&
         grepl("\nS and T are text, so the first line makes their declared values plain NA.\n",
               m86al, fixed = TRUE) &&
-        .ends86(m86al, "\nOr turn each into a numeric variable first with jencode().") &&
-        .runsave86(m86al, "ds2_86", ds2_86, "ds2_86.dta"))
+        .ends86(m86al, paste0("\nOr turn each into a numeric variable first with jencode().",
+                              .pd86("ds2_86", "ds2_86.dta"))) &&
+        .runsave86(.cut86(m86al), "ds2_86", ds2_86, "ds2_86.dta"))
 oc86 <- data.frame(S = ds86$S,
                    X = haven::labelled_spss(c(1, 2, -99, -98, -97, -96),
                                             labels = c(a = -99, b = -98, c = -97, d = -96),
@@ -8007,9 +8066,12 @@ m86an <- .lvl86("minimal", grab(jsave(oc86, "oc86.sav")))
 check("N86am the .sav over-limit refusal on such a frame: the .rds route and \"reduce\", no Stata route",
       .ends86(m86am, paste0("To save in R format (.rds) instead, keeping all the codes:\n",
                             "  jsave(oc86, \"oc86.rds\")\n",
+                            "To save as SPSS format (.sav) with every declared missing value as plain NA:\n",
+                            "  jsave(oc86, \"oc86.sav\", preserve.declarations = FALSE)\n",
                             "Or reduce each variable's declared missing values to fit.")) &&
         !grepl("Stata", m86am, fixed = TRUE) &&
-        .ends86(m86an, "\nSave as R format (.rds) to keep all the codes, or reduce them first."))
+        .ends86(m86an, paste0("\nSave as R format (.rds) to keep all the codes, or reduce them first.",
+                              .pd86("oc86", "oc86.sav"))))
 ocx86 <- oc86["X"]
 check("N86an ... without a declared string the Stata route is offered, as before",
       grepl("To convert to Stata and save as Stata format (.dta), also keeping all the codes:",
@@ -8193,6 +8255,12 @@ rm(list = intersect(c("m86a", "m86b", "m86c", "m86e", "m86g", "m86i", "m86j",
 # scratch environment holding the frame under its name, under convention cv;
 # the environment afterwards, or NULL if a line errors. The convention is
 # the one the user would be in when pasting.
+# .pdl87(): the jsave() line with preserve.declarations = FALSE a refusal
+# offers since v0.9.234 (N94): the file as typed, slashes swapped.
+.pdl87 <- function(f) {
+  paste0("jsave(mydata, \"", gsub("\\", "/", file.path(.td87, f), fixed = TRUE),
+         "\", preserve.declarations = FALSE)")
+}
 .run87 <- function(m, nm, frame, k = NULL, cv = NULL) {
   ln <- .blocks87(m)
   if (!is.null(k)) ln <- ln[k]
@@ -8650,7 +8718,9 @@ check("N87av the .sav over-limit refusal on oc87[\"X\"]: each block of lines ope
       identical(.lines87(m87av), c(
         "mydata <- oc87[\"X\"]", "jsave(mydata, \"mydata.rds\")",
         "mydata <- oc87[\"X\"]", "jconvert(mydata, to = \"stata\", modify = TRUE)",
-        "jsave(mydata, \"mydata.dta\")")) &&
+        "jsave(mydata, \"mydata.dta\")",
+        # v0.9.234 (N94): the save that blanks them, its own block.
+        "mydata <- oc87[\"X\"]", .pdl87("oc87.sav"))) &&
         grepl("This variable in oc87[\"X\"] has more:", m87av, fixed = TRUE))
 check("N87aw ... every line parses, and each block runs",
       local({ ln <- .lines87(m87av)
@@ -8663,8 +8733,9 @@ check("N87ax the .dta refusal and the combined refusal on an expression: mydata 
       local({ a <- grab(jsave(oc87["X"], file.path(.td87, "oc87.dta")))
         cx <- oc87; cx$Z <- I(list(1, 2, 3, 4, 5))
         b <- grab(jsave(cx[c("X", "Z")], file.path(.td87, "oc87.dta")))
-        identical(.lines87(a), c("mydata <- oc87[\"X\"]", "jconvert(mydata, to = \"stata\", modify = TRUE)")) &&
-          !is.null(.run87(a, "oc87", oc87, cv = "stata")) &&
+        identical(.lines87(a), c("mydata <- oc87[\"X\"]", "jconvert(mydata, to = \"stata\", modify = TRUE)",
+                                 "mydata <- oc87[\"X\"]", .pdl87("oc87.dta"))) &&
+          !is.null(.run87(a, "oc87", oc87, k = 1:2, cv = "stata")) &&
           grepl("cx[c(\"X\", \"Z\")] cannot be saved to Stata format (.dta) yet", .fl(b), fixed = TRUE) &&
           all(c("mydata <- cx[c(\"X\", \"Z\")]", "mydata[c(\"Z\")] <- NULL") %in% .lines87(b)) }))
 check("N87ay controls: a name keeps its own lines and file names; a place's files take its last part",
@@ -10071,6 +10142,305 @@ check("N93j a declared string: its code in quotes, \"an ordinary value\"",
 setwd(.wd93)
 unlink(.td93, recursive = TRUE)
 rm(.wd93, .td93, .p93, .W93, .I93)
+
+# =============================================================================
+# N94 (S361) -- CAPABILITY SLATE C1, ITS SIX SMALLER ITEMS (v0.9.234). Five of
+# them speak in this battery's surfaces: (A) jconvert()'s return-trip note in
+# the SPSS-to-Stata direction, the mirror of the S314 note (the S354 item);
+# (B) the load scan's convention-matched category, a value in the
+# missing.convention.codes setting found whatever its size (the Session 23
+# item, Decision 5A); (C) jsave(preserve.declarations = FALSE) ahead of the
+# .sav/.dta/.xpt pre-flight, the refusals' second remedy and the note after
+# the write (the S218 item); (D) jload() reading the example files shipped in
+# inst/extdata by name, and package = TRUE forcing one (the Session 74 item's
+# second half); (E) the advisory note on a variable named T or F (the S289
+# item). The sixth, jscreen()'s "date (unparsed)", is format_check.R's
+# section AA. Fixtures dotted, in a folder of their own; working objects in
+# local().
+# =============================================================================
+.wd94 <- getwd()
+.td94 <- file.path(tempdir(), "jstats n94")
+unlink(.td94, recursive = TRUE); dir.create(.td94); setwd(.td94)
+.cv94 <- getOption(".jst_options_missing_convention")
+.cc94 <- getOption(".jst_options_missing_convention_codes")
+.ns94 <- getOption(".jst_missing_notice_shown")
+options(.jst_options_missing_convention = "spss",
+        .jst_options_missing_convention_codes = NULL)
+.S94 <- data.frame(
+  Score = haven::labelled_spss(c(1, 2, 9, -1, 3), labels = c("Not asked" = 9, Refused = -1),
+                               na_values = c(-1, 9)),
+  Mood  = haven::labelled_spss(c(1, -99, -98, 2, 3), na_values = c(-99, -98)),
+  Age   = haven::labelled_spss(c(30, -97, 40, -99, 50), na_values = c(-97, -99)))
+
+# --- A: the return-trip note, SPSS to Stata --------------------------------------
+check("N94a one variable whose codes are not the setting's: the note names the codes the trip back gives, in the report's order",
+      local({ m <- grab(jconvert(.S94, Score, to = "stata"))
+              grepl(paste0("  Score  9 [\"Not asked\"]  -> .a\n         -1 [\"Refused\"]   -> .b\n\n",
+                           "Note: converting Score back"), m, fixed = TRUE) &&
+                grepl("Note: converting Score back to SPSS-style missing values would give its codes -99, -98, not 9, -1. ",
+                      .fl(m), fixed = TRUE) }))
+check("N94b ... and it is so: converted back, the codes are -99 and -98, each with the label its code had",
+      local({ s <- suppressMessages(jconvert(.S94, Score, to = "stata"))
+              b <- suppressMessages(jconvert(s, Score, to = "spss"))
+              identical(as.numeric(attr(b$Score, "na_values")), c(-99, -98)) &&
+                identical(attr(b$Score, "labels")[["Not asked"]], -99) &&
+                identical(attr(b$Score, "labels")[["Refused"]], -98) }))
+check("N94c the setting's own codes come back as they went: no note",
+      !grepl("back to SPSS", grab(jconvert(.S94, Mood, to = "stata")), fixed = TRUE))
+check("N94d codes in another order than the setting's: the note (-97 and -99 come back as -98 and -99)",
+      grepl("would give its codes -99, -98, not -99, -97.", .fl(grab(jconvert(.S94, Age, to = "stata"))),
+            fixed = TRUE))
+check("N94e several variables share one note, to = \"sas\" as to = \"stata\"",
+      local({ a <- .fl(grab(jconvert(.S94, to = "sas"))); b <- .fl(grab(jconvert(.S94, to = "stata")))
+              s <- "Note: converting Score and Age back to SPSS-style missing values would give them other codes than those above."
+              grepl(s, a, fixed = TRUE) && grepl(s, b, fixed = TRUE) && !grepl("Mood back", a, fixed = TRUE) }))
+check("N94f missing.notice = FALSE: nothing",
+      identical(grab(jconvert(.S94, Score, to = "stata", missing.notice = FALSE)), ""))
+check("N94g the setting is what the trip back reads: with codes c(9, -1) Score comes back as it went",
+      local({ options(.jst_options_missing_convention_codes = c(9, -1))
+              on.exit(options(.jst_options_missing_convention_codes = NULL))
+              m <- grab(jconvert(.S94, Score, to = "stata"))
+              grepl("-> .b", m, fixed = TRUE) && !grepl("back to SPSS", m, fixed = TRUE) }))
+check("N94h a trip back that would be refused (one code, two markers) is not predicted: no note, and the trip back does refuse",
+      local({ options(.jst_options_missing_convention_codes = -99)
+              on.exit(options(.jst_options_missing_convention_codes = NULL))
+              m <- grab(jconvert(.S94, Score, to = "stata"))
+              s <- suppressMessages(jconvert(.S94, Score, to = "stata"))
+              !grepl("back to SPSS", m, fixed = TRUE) &&
+                inherits(tryCatch(suppressMessages(jconvert(s, Score, to = "spss")),
+                                  error = function(e) e), "error") }))
+check("N94i a range whose values come back as they were: the range note, no return-trip note",
+      local({ r <- data.frame(Q = haven::labelled_spss(c(1, -99, -98, -97, 2), na_range = c(-99, -95)))
+              m <- .fl(grab(jconvert(r, to = "stata")))
+              grepl("have no range concept", m, fixed = TRUE) && !grepl("back to SPSS", m, fixed = TRUE) }))
+
+# --- B: the load scan's convention-matched category --------------------------------
+.ages94 <- c(18, 25, 33, 41, 52, 60, 67, 74, 80, 29, 38, 45)
+.csv94 <- function(df, f) { utils::write.csv(df, f, row.names = FALSE); f }
+check("N94j -99 beside ages of 18 to 80 (which the heuristic leaves alone): convention-matched, under the neutral heading, with the setting's codes in the legend",
+      local({ f <- .csv94(data.frame(Age = c(.ages94, -99, -99)), "age94.csv")
+              p <- printed(jload(f, overwrite = TRUE))
+              grepl("Missing-value codes detected:\n  Age:  -99 (2)\n\nThese codes match", p, fixed = TRUE) &&
+                grepl(paste0("These codes match the missing.convention.codes setting (-99, -98, -97) but are ",
+                             "not formally declared, so they are not treated as missing. Declare them as ",
+                             "missing if they are; leave as-is if real."), .fl(p), fixed = TRUE) }))
+check("N94k a missing-suggestive label wins: -99 \"Refused\", undeclared, is label-only",
+      local({ g <- data.frame(Q = haven::labelled(c(1, 2, 3, 4, -99, 5), labels = c(Refused = -99)))
+              f <- "lab94.sav"; haven::write_sav(g, f)
+              p <- printed(jload(f, overwrite = TRUE))
+              grepl("  Q:  -99 [\"Refused\"] (1)\n", p, fixed = TRUE) &&
+                grepl("the value labels suggest they mark missing values", .fl(p), fixed = TRUE) &&
+                !grepl("convention", p, fixed = TRUE) }))
+check("N94l the three categories together: one row each, tagged, and a legend for each in the order label-only, convention-matched, suspected",
+      local({ g <- data.frame(L = haven::labelled(c(1, 2, 3, -98, 4, 5), labels = c("Don't know" = -98)),
+                              C = c(30, 41, 52, -97, 66, 77), S = c(1, 2, 3, 99, 4, 5))
+              f <- "mix94.sav"; haven::write_sav(g, f)
+              p <- printed(jload(f, overwrite = TRUE))
+              grepl("  C:  -97 (1)                 [convention-matched -- not formally declared]\n", p, fixed = TRUE) &&
+                grepl("  S:  99 (1)                  [suspected -- not formally defined]\n", p, fixed = TRUE) &&
+                grepl("[label-only -- not formally declared]:", p, fixed = TRUE) &&
+                regexpr("[label-only", p, fixed = TRUE) < regexpr("[convention-matched -- not formally declared]:", p, fixed = TRUE) &&
+                regexpr("[convention-matched -- not formally declared]:", p, fixed = TRUE) < regexpr("[suspected -- not formally defined]:", p, fixed = TRUE) &&
+                grepl("but they match the missing.convention.codes setting (-99, -98, -97).", .fl(p), fixed = TRUE) &&
+                startsWith(sub("^\n", "", p), "Missing-value codes detected:") }))
+check("N94m a changed setting is the one read: with codes -9 and -8, -9 is convention-matched and -99 beside ages is not flagged",
+      local({ options(.jst_options_missing_convention_codes = c(-9, -8))
+              on.exit(options(.jst_options_missing_convention_codes = NULL))
+              f <- .csv94(data.frame(Age = c(.ages94, -99, -99), Q = c(1:5, -9, 1:5, 2, 3, 4)), "set94.csv")
+              p <- printed(jload(f, overwrite = TRUE))
+              grepl("  Q:  -9 (1)\n", p, fixed = TRUE) && !grepl("Age:", p, fixed = TRUE) &&
+                grepl("setting (-9, -8)", p, fixed = TRUE) }))
+check("N94n a declared code is the narrative's, never the scan's",
+      local({ g <- data.frame(Age = haven::labelled_spss(c(.ages94, -99), na_values = -99))
+              f <- "dec94.sav"; haven::write_sav(g, f)
+              !grepl("codes detected", printed(jload(f, overwrite = TRUE)), fixed = TRUE) }))
+check("N94o only heuristic findings: the \"Suspected\" heading and its legend, as before",
+      local({ f <- .csv94(data.frame(S = c(1, 2, 3, 99, 4, 5)), "sus94.csv")
+              p <- printed(jload(f, overwrite = TRUE))
+              grepl("Suspected missing-value codes detected:\n  S:  99 (1)\n\nThese codes are not formally defined", p, fixed = TRUE) }))
+check("N94aj convention-matched and suspected, no label-only: the neutral heading, with the two bracketed legends (\"Suspected\" is for a scan of suspected values alone)",
+      local({ f <- .csv94(data.frame(C = c(30, 41, 52, -97, 66, 77), S = c(1, 2, 3, 99, 4, 5)), "cs94.csv")
+              p <- printed(jload(f, overwrite = TRUE))
+              startsWith(sub("^\n", "", p), "Missing-value codes detected:\n") &&
+                grepl("[convention-matched -- not formally declared]:", p, fixed = TRUE) &&
+                grepl("[suspected -- not formally defined]:", p, fixed = TRUE) }))
+check("N94p past ten rows the hidden ones are counted by category, convention-matched among them",
+      local({ cv <- function(i) c(30, 41, 52, -99, 66, 77); sv <- function(i) c(1, 2, 3, 99, 4, 5)
+              g <- as.data.frame(c(setNames(lapply(1:5, cv), paste0("C", 1:5)),
+                                   setNames(lapply(1:5, sv), paste0("S", 1:5)),
+                                   list(C6 = cv(6), S6 = sv(6))))
+              p <- printed(jload(.csv94(g, "many94.csv"), overwrite = TRUE))
+              grepl(paste0("  ... and 2 more:\n",
+                           "    1 with [convention-matched -- not formally declared]\n",
+                           "    1 with [suspected -- not formally defined]\n"), p, fixed = TRUE) }))
+check("N94q the offered lines for a convention-matched target: declare, and declare with placeholder labels -- each runs",
+      local({ f <- .csv94(data.frame(Age = c(.ages94, -99, -98)), "off94.csv")
+              p <- printed(jload(f, name = "o94", overwrite = TRUE))
+              cl <- .r5_calls(strsplit(p, "\n", fixed = TRUE)[[1]], shape = "^  jdeclare_missing\\(")
+              fl <- vapply(cl, .r5_flat, "", USE.NAMES = FALSE)
+              e <- new.env(); e$o94 <- o94
+              ok <- vapply(fl, function(l) !inherits(try(suppressMessages(eval(parse(text = l), e)), silent = TRUE),
+                                                       "try-error"), logical(1))
+              identical(fl, c("jdeclare_missing(o94, Age, codes = c(-99, -98), modify = TRUE)",
+                              "jdeclare_missing(o94, Age, codes = c(\"label1\" = -99, \"label2\" = -98), modify = TRUE)")) &&
+                all(ok) && identical(as.numeric(attr(e$o94$Age, "na_values")), c(-99, -98)) }))
+suppressWarnings(rm(list = intersect(c("o94", "age94", "lab94", "mix94", "set94", "dec94", "sus94", "many94", "off94", "cs94"),
+                                     ls(globalenv())), envir = globalenv()))
+
+# --- C: jsave(preserve.declarations = FALSE) ahead of the pre-flight -------------
+.D94 <- data.frame(
+  A  = haven::labelled_spss(c(1, -99, 2, -98, 3), labels = c(Refused = -99), na_values = c(-99, -98)),
+  Mk = haven::labelled(c(1, haven::tagged_na("a"), 3, 4, 5), labels = c(Refused = haven::tagged_na("a"))))
+check("N94r .dta: the refusal ends on the save that blanks them, beside the conversion",
+      endsWith(grab(jsave(.D94["A"], "r94.dta")),
+               paste0("Before saving to Stata format, convert with:\n",
+                      "  jconvert(.D94[\"A\"], to = \"stata\", modify = TRUE)\n",
+                      "Or save every declared missing value as plain NA instead:\n",
+                      "  jsave(.D94[\"A\"], \"r94.dta\", preserve.declarations = FALSE)\n")) ||
+        local({ m <- grab(jsave(.D94["A"], "r94.dta"))
+                grepl("Or save every declared missing value as plain NA instead:\n  mydata <- .D94[\"A\"]\n  jsave(mydata, \"r94.dta\", preserve.declarations = FALSE)", m, fixed = TRUE) }))
+check("N94s .sav with a marker: the same second remedy after the conversion; .xpt: the save that blanks them is its drop route, the jconvert(to = \"baseR\") line gone",
+      local({ d <- .D94
+              a <- grab(jsave(d, "s94.sav")); b <- grab(jsave(d, "s94.xpt"))
+              grepl("  jconvert(d, to = \"spss\", modify = TRUE)\nOr save every declared missing value as plain NA instead:\n  jsave(d, \"s94.sav\", preserve.declarations = FALSE)", a, fixed = TRUE) &&
+                grepl("To save as .xpt with every declared missing value as plain NA, run:\n  jsave(d, \"s94.xpt\", preserve.declarations = FALSE)\n", b, fixed = TRUE) &&
+                !grepl("baseR", b, fixed = TRUE) }))
+check("N94t minimal tier: the second remedy at .dta and .sav, and .xpt's drop line is the save",
+      local({ d <- .D94; old <- getOption(".jst_output_level"); options(.jst_output_level = "minimal")
+              on.exit(options(.jst_output_level = old))
+              a <- grab(jsave(d["A"], "t94.dta")); b <- grab(jsave(d, "t94.xpt"))
+              c2 <- grab(jsave(d["Mk"], "t94.sav"))
+              endsWith(c2, paste0("Convert first, then save again:\n",
+                                  "  mydata <- d[\"Mk\"]\n  jconvert(mydata, to = \"spss\", modify = TRUE)\n",
+                                  "Or save every declared missing value as plain NA instead:\n",
+                                  "  mydata <- d[\"Mk\"]\n  jsave(mydata, \"t94.sav\", preserve.declarations = FALSE)")) &&
+                endsWith(a, paste0("Or save every declared missing value as plain NA instead:\n",
+                                 "  mydata <- d[\"A\"]\n  jsave(mydata, \"t94.dta\", preserve.declarations = FALSE)")) &&
+                grepl("To drop them:\n  jsave(d, \"t94.xpt\", preserve.declarations = FALSE)", b, fixed = TRUE) }))
+check("N94u preserve.declarations = FALSE to .dta: saved, every declared value plain NA in the file, the count in a note, the data frame unchanged",
+      local({ d <- .D94
+              m <- grab(jsave(d, "u94.dta", preserve.declarations = FALSE))
+              back <- haven::read_dta("u94.dta")
+              # Flattened: the Saved line's path wraps where a temp path is long.
+              startsWith(.fl(m), "Note: 3 cells holding declared missing values were blanked (preserve.declarations = FALSE). Saved d to ") &&
+                identical(as.numeric(back$A), c(1, NA, 2, NA, 3)) && all(is.na(haven::na_tag(back$Mk))) &&
+                identical(attr(d$A, "na_values"), c(-99, -98)) && identical(haven::na_tag(d$Mk)[2], "a") }))
+check("N94v ... to .sav and .xpt too, where both forms had stopped the save",
+      local({ d <- .D94
+              a <- grab(jsave(d, "v94.sav", preserve.declarations = FALSE))
+              b <- grab(jsave(d, "v94.xpt", preserve.declarations = FALSE))
+              sv <- haven::read_sav("v94.sav", user_na = TRUE)
+              file.exists("v94.sav") && file.exists("v94.xpt") &&
+                is.null(attr(sv$A, "na_values")) && identical(as.numeric(sv$A), c(1, NA, 2, NA, 3)) &&
+                grepl("3 cells holding declared missing values were blanked", .fl(a), fixed = TRUE) &&
+                grepl("3 cells holding declared missing values were blanked", .fl(b), fixed = TRUE) }))
+check("N94w ... to .rds: the note, where it was silent; no cell holding one: the declarations dropped, said so",
+      local({ d <- .D94; z <- data.frame(Q = haven::labelled_spss(c(1, 2, 3), na_values = -99))
+              a <- grab(jsave(d, "w94.rds", preserve.declarations = FALSE))
+              b <- grab(jsave(z, "z94.rds", preserve.declarations = FALSE))
+              startsWith(a, "Note: 3 cells holding declared missing values were blanked") &&
+                startsWith(.fl(b), "Note: no cell held a declared missing value; the declarations were dropped (preserve.declarations = FALSE). Saved z to ") }))
+check("N94x the type check still stops a column a format cannot store, with no missing-value section under FALSE",
+      local({ d <- .D94; d$L <- I(list(1, 2, 3, 4, 5))
+              m <- grab(jsave(d, "x94.dta", preserve.declarations = FALSE))
+              grepl("is of a type that Stata format (.dta) cannot store", .fl(m), fixed = TRUE) &&
+                !grepl("missing values", m, fixed = TRUE) && !file.exists("x94.dta") }))
+check("N94y the offered line runs: it saves the file the refusal stopped, with the values blanked; overwrite = TRUE rides when given",
+      local({ d <- .D94
+              m <- grab(jsave(d, "y94.sav"))
+              cl <- .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]], shape = "^  jsave\\(")
+              invisible(grab(eval(parse(text = .r5_flat(cl[1])))))
+              file.create("y94b.sav")
+              m2 <- grab(jsave(d, "y94b.sav", overwrite = TRUE))
+              cl2 <- .r5_calls(strsplit(m2, "\n", fixed = TRUE)[[1]], shape = "^  jsave\\(")
+              length(cl) == 1L && file.exists("y94.sav") &&
+                is.null(attr(haven::read_sav("y94.sav", user_na = TRUE)$A, "na_values")) &&
+                identical(.r5_flat(cl2[1]),
+                          "jsave(d, \"y94b.sav\", overwrite = TRUE, preserve.declarations = FALSE)") }))
+
+# --- D: the example files shipped in inst/extdata ----------------------------------
+.ex94 <- system.file("extdata", "community_spss.sav", package = "jstats")
+check("N94z the example files are found: three of them, the .sav where system.file() finds it",
+      identical(.jst_extdata_files(), c("community_excel.xlsx", "community_spss.sav", "community_stata.dta")) &&
+        nzchar(.ex94) && identical(.jst_extdata_path("community_spss.sav"), .ex94))
+check("N94aa jload(\"community_spss.sav\") with no such file on disk: read from the example files, said so, the frame as haven reads the file",
+      local({ m <- grab(jload("community_spss.sav", overwrite = TRUE, missing.notice = FALSE, check.missing = FALSE))
+              h <- haven::read_sav(.ex94, user_na = TRUE)
+              startsWith(m, "Reading from the jstats example files\nLoaded community_spss (SPSS format; ") &&
+                identical(dim(community_spss), dim(h)) &&
+                identical(attr(community_spss$Income, "na_values"), attr(h$Income, "na_values")) }))
+check("N94ab its name alone reads it too: jload(\"community_stata\") gives the .dta",
+      startsWith(grab(jload("community_stata", overwrite = TRUE, missing.notice = FALSE, check.missing = FALSE)),
+                 "Reading from the jstats example files\nLoaded community_stata (Stata format; "))
+check("N94ac a file of that name on disk is read instead, with the note and the call that reads the shipped one -- which runs",
+      local({ file.copy(.ex94, "community_spss.sav", overwrite = TRUE)
+              m <- grab(jload("community_spss.sav", overwrite = TRUE, missing.notice = FALSE, check.missing = FALSE))
+              cl <- .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]], shape = "^  jload\\(")
+              r <- grab(eval(parse(text = sub(")$", ", overwrite = TRUE, missing.notice = FALSE, check.missing = FALSE)", .r5_flat(cl[1])))))
+              startsWith(m, paste0("A local file and a jstats example file are both named 'community_spss.sav'.\n",
+                                   "The local file was loaded.\nTo load the example file instead, use:\n",
+                                   "  jload(\"community_spss.sav\", package = TRUE)\nLoaded community_spss")) &&
+                startsWith(r, "Reading from the jstats example files\nLoaded community_spss") }))
+check("N94ad ... and by its name alone, the same note naming it so",
+      local({ m <- grab(jload("community_spss", overwrite = TRUE, missing.notice = FALSE, check.missing = FALSE))
+              unlink("community_spss.sav")
+              grepl(paste0("A local file and a jstats example file are both named 'community_spss'.\n",
+                           "The local file was loaded.\nTo load the example file instead, use:\n",
+                           "  jload(\"community_spss\", package = TRUE)\n"), m, fixed = TRUE) }))
+check("N94ae package = TRUE: a name that is neither lists both; a dataset with an extension, and a path, get the line that runs",
+      local({ a <- grab(jload("nothing.sav", package = TRUE))
+              b <- grab(jload("community.rds", package = TRUE))
+              cc <- grab(jload("x/community_spss.sav", package = TRUE))
+              identical(.fl(a), paste0("jload(): No jstats example dataset or file named 'nothing.sav'. ",
+                                       "Shipped datasets: clinic, community. ",
+                                       "Example files: community_excel.xlsx, community_spss.sav, community_stata.dta.")) &&
+                grepl("Drop the extension:\n  jload(\"community\", package = TRUE)", b, fixed = TRUE) &&
+                grepl("Drop the path:\n  jload(\"community_spss.sav\", package = TRUE)", cc, fixed = TRUE) &&
+                startsWith(.fl(b), "jload(): package = TRUE loads a jstats example dataset by its name alone.") &&
+                startsWith(.fl(cc), "jload(): package = TRUE loads a jstats example dataset or file by its name alone.") }))
+check("N94af quiet = TRUE: no \"Reading from\" line; a dataset's name is still the dataset",
+      local({ a <- grab(jload("community_excel.xlsx", overwrite = TRUE, quiet = TRUE, check.missing = FALSE))
+              b <- grab(jload("clinic", overwrite = TRUE, missing.notice = FALSE, check.missing = FALSE))
+              identical(a, "") && exists("community_excel") &&
+                startsWith(b, "Loaded the jstats example dataset 'clinic'") }))
+suppressWarnings(rm(list = intersect(c("community_spss", "community_stata", "community_excel", "clinic"),
+                                     ls(globalenv())), envir = globalenv()))
+
+# --- E: a variable named T or F ------------------------------------------------------
+check("N94ag standard output: no note on a variable named T",
+      local({ f <- .csv94(data.frame(T = 1:3, y = 4:6), "tf94.csv")
+              # Nothing but the Loaded line: no note, and no blank line set
+              # for one.
+              identical(grab(jload(f, overwrite = TRUE)), "Loaded tf94 (CSV format; 3 cases, 2 variables)\n") }))
+check("N94ah joutput(\"full\"): the note, one blank line below the Loaded line, and its rename line runs",
+      local({ old <- getOption(".jst_output_level"); options(.jst_output_level = "full")
+              on.exit(options(.jst_output_level = old))
+              f <- .csv94(data.frame(T = 1:3, y = 4:6), "tf94.csv")
+              m <- grab(jload(f, overwrite = TRUE))
+              e <- new.env(); e$tf94 <- tf94
+              cl <- .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]], shape = "^  names\\(")
+              eval(parse(text = .r5_flat(cl[1])), e)
+              grepl(" variables)\n\nNote: T is a variable in tf94.\njstats reads", m, fixed = TRUE) &&
+                endsWith(.fl(m), paste0("Note: T is a variable in tf94. jstats reads it as the variable, but in base R T ",
+                                        "also stands for TRUE, and code run inside tf94 (with(), subset()) reads the ",
+                                        "variable in its place. To rename it, replacing newname: ",
+                                        "names(tf94)[names(tf94) == \"T\"] <- \"newname\" ")) &&
+                identical(names(e$tf94), c("newname", "y")) }))
+check("N94ai two of them: one note, both named, a rename line each; quiet = TRUE: none",
+      local({ old <- getOption(".jst_output_level"); options(.jst_output_level = "full")
+              on.exit(options(.jst_output_level = old))
+              f <- .csv94(data.frame(T = 1:3, F = 3:1), "tf94b.csv")
+              m <- .fl(grab(jload(f, overwrite = TRUE)))
+              q <- grab(jload(f, overwrite = TRUE, quiet = TRUE))
+              grepl("Note: T and F are variables in tf94b. jstats reads them as the variables, but in base R T and F also stand for TRUE and FALSE", m, fixed = TRUE) &&
+                grepl("names(tf94b)[names(tf94b) == \"F\"] <- \"newname2\"", m, fixed = TRUE) && identical(q, "") }))
+suppressWarnings(rm(list = intersect(c("tf94", "tf94b"), ls(globalenv())), envir = globalenv()))
+
+setwd(.wd94)
+unlink(.td94, recursive = TRUE)
+options(.jst_options_missing_convention = .cv94, .jst_options_missing_convention_codes = .cc94,
+        .jst_missing_notice_shown = .ns94)
+rm(.wd94, .td94, .cv94, .cc94, .ns94, .S94, .ages94, .csv94, .D94, .ex94)
 
 # N88s (S353) -- RULING R5 OVER EVERY CONDITION THE BATTERY TOOK. Each call a
 # message printed at the pinned width (an indented line with the shape of a

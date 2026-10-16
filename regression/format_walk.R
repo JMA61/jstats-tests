@@ -156,6 +156,16 @@
 #           mechanically under rulings R4 and R7 and not walked. Sandbox:
 #           every Expected block under rewalk() as in a straight run
 #           (harness.R verify).
+# S361 EDIT (v0.9.234): CAPABILITY SLATE C1. Section 34 NEW, two
+#           renders: jscreen()'s "date (unparsed)" sub-class, the footnote's
+#           as.Date() lines, the two-digit-year note, and the range() line
+#           run (the S222 item's E3). Filled by running (fill.R); needs no
+#           earlier section. The human half of format_check.R section AA.
+# LAST VERIFIED: v0.9.234, 2026-10-16 (S361) -- Section 34 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; GitHub 88a372e (package). Sandbox:
+#           harness.R verify, 34 of 34 sections in three orders and by
+#           prepare = TRUE; 51 of 51 Expected blocks.
 # S346 EDIT (v0.9.219): FIX SLATE 8, FIRST CUT, AND DIAGNOSTICS. Sections
 #           27-31 NEW (see LOCKS), each Expected FILLED BY RUNNING the file
 #           (fill.R, Testing Conventions); they are the PENDING sections.
@@ -3360,6 +3370,80 @@ rm(f33, f33w)
 #     "categories" (format_check.R Z17).
 #   - Every column of each table is in the S328 form; "Valid %" now holds
 #     100.00, so its block is as wide as "Cum. %".
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 34 -- jscreen(): dates stored as text (S361) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 361 (v0.9.234), the S222 item's E3 on its lean (okayed S336). A CSV
+# file stores dates as text, and as text each date is a category: the
+# Sub-class said "9561-category" of a column of reception dates. A text
+# variable whose every value is a date in one shape now reads
+# "date (unparsed)"; a footnote under the Variable Types table gives the
+# as.Date() line, two when the values fit day/month and month/day; and a
+# two-digit year gets a note, because as.Date() puts 69-99 in the 1900s and
+# 00-68 in the 2000s without a word -- a birth date of 03-Jul-68 becomes
+# 2068. The assertion side is format_check.R section AA.
+
+f34 <- data.frame(
+  ID     = c(101, 102, 103, 104, 105, 106),
+  Visit  = c("2015-04-01", "2016-05-02", NA, "2017-06-03", "", "2019-12-31"),
+  Birth  = c("1-Apr-75", "28-Nov-81", "3-Jul-68", "12-Jan-99", "5-May-90", "9-Sep-62"),
+  Booked = c("01/02/2015", "03/04/2016", "05/06/2017", "07/08/2018", "09/10/2019", "11/12/2020"),
+  Ward   = c("A", "B", "C", "A", "B", "C"),
+  stringsAsFactors = FALSE)
+
+# Render 1 -- three date variables beside an identifier and a word.
+jscreen(f34)
+# Expected:
+#   Data Screening
+#     Cases: 6
+#     Variables: 5
+#     Cases with missing data: 1
+#     Cases with blank text: 1
+#     Variables with outliers: 0
+#
+#   Variable Types
+#   Variable  jstats Class  Sub-class        Unique Values
+#   --------  ------------  ---------------  -------------
+#   ID        Numeric                              6
+#   Visit     Categorical   date (unparsed)        5
+#   Birth     Categorical   date (unparsed)        6
+#   Booked    Categorical   date (unparsed)        6
+#   Ward      Categorical   3-category             3
+#
+#   date (unparsed): text in a date format, which as.Date() makes a date:
+#     f34$Visit <- as.Date(f34$Visit, format = "%Y-%m-%d")
+#     f34$Birth <- as.Date(f34$Birth, format = "%d-%b-%y")
+#   Booked's values fit day/month and month/day; run the line that fits:
+#     f34$Booked <- as.Date(f34$Booked, format = "%d/%m/%Y")
+#     f34$Booked <- as.Date(f34$Booked, format = "%m/%d/%Y")
+#
+#   Note: Birth has two-digit years (as in 1-Apr-75).
+#   as.Date() puts 69-99 in the 1900s and 00-68 in the 2000s, so check the
+#   years it gives:
+#     range(as.Date(f34$Birth, format = "%d-%b-%y"))
+#
+#   Missing Data & Outliers (outliers > 3 SD from mean)
+#   Variable  Missing  % Missing  Blank  % Blank
+#   --------  -------  ---------  -----  -------
+#   Visit        1        16.7      1      16.7
+
+# Render 2 -- what the note warns of, run: the range the line gives.
+range(as.Date(f34$Birth, format = "%d-%b-%y"))
+# Expected:
+#   [1] "1975-04-01" "2068-07-03"
+rm(f34)
+
+# Things to look at:
+#   - the Sub-class column: "date (unparsed)" for Visit, Birth and Booked,
+#     their Unique Values counts as before (Visit's blank cell one of them).
+#   - the footnote under the table: one line per variable, Booked's two
+#     after a sentence saying its values fit either order. Is "run the line
+#     that fits" enough to send a reader to look at the data?
+#   - the note: Birth has two-digit years, an example value, and the range()
+#     line. Render 2 is that line run: 1968 printed as 2068.
+#   - Ward and ID: unchanged.
+
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations

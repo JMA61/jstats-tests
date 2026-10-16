@@ -109,6 +109,27 @@
 #           from its values (jlogistic's fit tables, jalpha, jdesc's Mean
 #           and SD, the VIF tables, jscreen's stats columns) and to jt's
 #           Cohen's d line, which had the eta-squared defect.
+# S361 EDIT (v0.9.234, 2026-10-16): SECTION AA ADDED, AA01-AA13 (13
+#           checks): jscreen()'s dates stored as text (the S222 item's E3,
+#           on its lean): "date (unparsed)" in the Sub-class column and the
+#           returned table, the footnote's as.Date() line (it runs), the
+#           two-digit-year note with its range() line, SAS's DATE9. form,
+#           day/month against month/day, a value that is not a date, several
+#           variables and a factor, types = FALSE, the vector path and an
+#           expression, the month-name forms, a jdummy() registration that
+#           stands, the closing blank line. THREE HUNDRED AND TWENTY-THREE
+#           checks. MUTATION MAP (9 of the round's 40): the year note AA03;
+#           one format of two AA06 AA08; detection off AA01-AA03; the
+#           footnote's blank line AA01; the parse check AA06 AA07; the data
+#           name AA10; blank cells AA01 AA02 AA08; the class gate AA13; the
+#           two-fit lines AA06 AA08.
+#           Sandbox: run_all.R 2710 across nine, four ways, as above;
+#           entered dirty, plain and under the stand-in, both object sets:
+#           green, every changed object put back and named.
+#           LAST VERIFIED: v0.9.234, 2026-10-16 (S361) -- 323/323 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (9 run,
+#           2710 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox; GitHub 88a372e (package).
 # S359 EDIT (v0.9.232, 2026-10-16): GUARD 5 (the S345 item, Scripts Slate
 #           B): the values of the workspace's objects on entry, put back at
 #           the foot when a run changed them, and named ("Put back as they
@@ -4268,6 +4289,95 @@ check("Z23 a text variable labelled on its blank value: the blank cells are the 
                     "c: C       0      0.00    0.00   100.00")) })
 rm(list = intersect(c("z_a", "z_b", "z_b0", "z_c", "z_s", "z_lab", "z_fac", "z_h",
                       ".z_a", ".z_fq", ".z_cn", "z_row"), ls(all.names = TRUE)))
+
+# =============================================================================
+# SECTION AA -- jscreen(): DATES STORED AS TEXT (S361, v0.9.234)
+# =============================================================================
+# The S222 item, E3, on its lean (okayed S336): a text variable whose every
+# value is a date in one shape is "date (unparsed)" in the Sub-class column,
+# where it read "9561-category"; a footnote under the Variable Types table
+# gives the as.Date() line (two when day/month and month/day both fit), and a
+# two-digit year gets a consequential note with the range() line, because
+# as.Date() puts 69-99 in the 1900s and 00-68 in the 2000s without a word.
+cat("\n--- AA. jscreen(): dates stored as text ---\n")
+aa_d <- data.frame(
+  Visit = c("2015-04-01", "2016-05-02", NA, "2017-06-03", "", "2019-12-31"),
+  Admit = c("1-Apr-15", "28-Nov-07", "3-Jul-68", "12-Jan-99", "5-May-01", "9-Sep-09"),
+  Sas   = c("28NOV2007", "04AUG1994", "01JAN2000", "15MAR2010", "30JUN2012", "31DEC1999"),
+  Amb   = c("01/02/2015", "03/04/2016", "05/06/2017", "07/08/2018", "09/10/2019", "11/12/2020"),
+  Word  = c("a", "b", "c", "a", "b", "c"),
+  Near  = c("2015-13-01", "2016-05-02", "2017-06-03", "2018-01-01", "2019-12-31", "2020-01-02"),
+  stringsAsFactors = FALSE)
+check("AA01 an ISO date column: \"date (unparsed)\" in its Sub-class cell and in the returned table, the footnote's line under the table, and no year note",
+      { r <- NULL; v <- both_out(r <- jscreen(aa_d, Visit))
+        k <- grep("^Visit +Categorical", v)
+        length(k) == 1L && grepl("date \\(unparsed\\)", v[k]) &&
+          identical(r$SubClass, "date (unparsed)") &&
+          identical(v[(k + 1L):(k + 3L)],
+                    c("", "date (unparsed): text in a date format, which as.Date() makes a date:",
+                      "  aa_d$Visit <- as.Date(aa_d$Visit, format = \"%Y-%m-%d\")")) &&
+          !any(grepl("two-digit", v)) })
+check("AA02 the footnote's line runs, and gives a Date variable holding every date",
+      local({ v <- both_out(jscreen(aa_d, Visit)); ln <- trimws(grep("<- as.Date", v, value = TRUE, fixed = TRUE)[1])
+              e <- new.env(); e$aa_d <- aa_d; eval(parse(text = ln), e)
+              inherits(e$aa_d$Visit, "Date") && sum(!is.na(e$aa_d$Visit)) == 4L }))
+check("AA03 a two-digit year: the note, one blank line under the footnote, naming the variable, a value as an example, and the range() line",
+      { v <- both_out(jscreen(aa_d, Admit)); k <- grep("^Note: Admit", v)
+        length(k) == 1L && identical(v[k - 1L], "") &&
+          identical(v[k - 2L], "  aa_d$Admit <- as.Date(aa_d$Admit, format = \"%d-%b-%y\")") &&
+          identical(v[k], "Note: Admit has two-digit years (as in 1-Apr-15).") &&
+          grepl("^as.Date\\(\\) puts 69-99 in the 1900s and 00-68 in the 2000s", v[k + 1L]) &&
+          "  range(as.Date(aa_d$Admit, format = \"%d-%b-%y\"))" %in% v })
+check("AA04 ... and the range() line shows what the note warns of: 3-Jul-68 is read as 2068",
+      identical(format(max(as.Date(aa_d$Admit, format = "%d-%b-%y")), "%Y"), "2068"))
+check("AA05 SAS's DATE9. form (28NOV2007) is read as %d%b%Y",
+      "  aa_d$Sas <- as.Date(aa_d$Sas, format = \"%d%b%Y\")" %in% both_out(jscreen(aa_d, Sas)))
+check("AA06 day/month or month/day the values do not settle: the sentence and both lines; a day over 12 settles it, and so does a month position over 12",
+      { v <- both_out(jscreen(aa_d, Amb))
+        d1 <- data.frame(x = c("13/02/2015", "03/04/2016")); d2 <- data.frame(x = c("02/13/2015", "04/03/2016"))
+        w1 <- both_out(jscreen(d1)); w2 <- both_out(jscreen(d2))
+        k <- grep("^Amb's values", v)
+        length(k) == 1L &&
+          identical(v[k:(k + 2L)],
+                    c("Amb's values fit day/month and month/day; run the line that fits:",
+                      "  aa_d$Amb <- as.Date(aa_d$Amb, format = \"%d/%m/%Y\")",
+                      "  aa_d$Amb <- as.Date(aa_d$Amb, format = \"%m/%d/%Y\")")) &&
+          "  d1$x <- as.Date(d1$x, format = \"%d/%m/%Y\")" %in% w1 && !any(grepl("%m/%d", w1)) &&
+          "  d2$x <- as.Date(d2$x, format = \"%m/%d/%Y\")" %in% w2 && !any(grepl("%d/%m", w2)) })
+check("AA07 a value that is not a date keeps the variable Categorical by its count, and no footnote; a word variable likewise",
+      { r <- NULL; v <- both_out(r <- jscreen(aa_d, Near, Word))
+        identical(r$SubClass, c("6-category", "3-category")) && !any(grepl("as.Date", v)) })
+check("AA08 several: one footnote, a line each in table order, the two-fit variable after them; a factor of dates counts",
+      { d <- aa_d; d$Fac <- factor(d$Sas)
+        v <- both_out(jscreen(d, Visit, Amb, Fac, Admit))
+        k <- grep("^date \\(unparsed\\)", v)
+        length(k) == 1L &&
+          identical(v[(k + 1L):(k + 3L)],
+                    c("  d$Visit <- as.Date(d$Visit, format = \"%Y-%m-%d\")",
+                      "  d$Fac <- as.Date(d$Fac, format = \"%d%b%Y\")",
+                      "  d$Admit <- as.Date(d$Admit, format = \"%d-%b-%y\")")) &&
+          grepl("^Amb's values", v[k + 4L]) })
+check("AA09 types = FALSE prints no Variable Types table, so neither the footnote nor the note",
+      { v <- both_out(jscreen(aa_d, Admit, types = FALSE)); !any(grepl("as.Date|two-digit", v)) })
+check("AA10 the vector path names the column's data frame; an expression given as the data names mydata",
+      { mk <- function() aa_d[c("Sas")]
+        a <- both_out(jscreen(aa_d$Sas)); b <- both_out(jscreen(mk()))
+        "  aa_d$Sas <- as.Date(aa_d$Sas, format = \"%d%b%Y\")" %in% a &&
+          "  mydata$Sas <- as.Date(mydata$Sas, format = \"%d%b%Y\")" %in% b })
+check("AA11 the month-name forms: 1 April 2015 and April 1, 2015",
+      { d <- data.frame(a = c("1 April 2015", "12 May 2016"), b = c("April 1, 2015", "May 12, 2016"))
+        v <- both_out(jscreen(d))
+        "  d$a <- as.Date(d$a, format = \"%d %b %Y\")" %in% v &&
+          "  d$b <- as.Date(d$b, format = \"%b %d, %Y\")" %in% v })
+check("AA13 a date variable registered with jdummy() keeps its registered sub-class: the user's declaration stands, and no footnote",
+      local({ d <- data.frame(V = c("2015-04-01", "2016-05-02", "2015-04-01", "2016-05-02"), y = 1:4)
+              invisible(both_out(jdummy(d, V)))
+              r <- NULL; v <- both_out(r <- jscreen(d, V))
+              on.exit(invisible(both_out(jdummy(d, V, remove = TRUE))))
+              identical(r$SubClass, "dichotomy") && !any(grepl("as.Date", v, fixed = TRUE)) }))
+check("AA12 the output still ends on exactly one blank line, with the footnote and the note in it",
+      { v <- both_out(jscreen(aa_d)); identical(v[length(v)], "") && nzchar(v[length(v) - 1L]) })
+rm(list = intersect(c("aa_d"), ls(all.names = TRUE)))
 
 
 # --- Verdict -----------------------------------------------------------------

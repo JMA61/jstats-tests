@@ -231,6 +231,30 @@
 #           f(NULL) would reach the sole-frame-or-STOP path with no default
 #           to resolve against. No Expected touched; confirmed in the walk
 #           below.
+# S361 EDIT (v0.9.234): CAPABILITY SLATE C1, ITS SIX SMALLER ITEMS.
+#           Sections 21 and 22 NEW, each Expected FILLED BY RUNNING the
+#           file (fill.R), the Saved lines that name a temporary folder
+#           trimmed from Section 21's blocks. Section 21: jsave(
+#           preserve.declarations = FALSE) ahead of the .sav/.dta/.xpt
+#           pre-flight -- the refusal's second remedy, the save, the note
+#           with the count, the file without declarations, the .xpt drop
+#           route, R format's note (the S218 item). Section 22: jload()
+#           reading the example files by name, a local copy winning with
+#           the call that reads the shipped one, package = TRUE's refusals,
+#           and the advisory note on a variable named T (the Session 74 and
+#           S289 items). RE-PINNED, by running: Sections 4 and 5 (Contact's
+#           -99 is convention-matched, the Session 23 item), 15 and 19
+#           (each refusal's second remedy; their saves now run in the walk's
+#           folder by name, so the line names the file as typed); prose
+#           updated in Sections 6 and 7 (the same line, a temporary path).
+#           harness.R derive: no section needs another it does not name.
+#           The assertion side is missing_convention_check.R N94.
+# LAST VERIFIED: v0.9.234, 2026-10-16 (S361) -- Sections 4, 5, 6, 7, 15,
+#           19, 21 and 22 WALKED on the WORKSTATION by Jeff through
+#           receive_all() ("walked, all okay"); PENDING back to none;
+#           GitHub 88a372e (package). Sandbox: harness.R verify, 22 of 22
+#           sections in three orders and by prepare = TRUE; 66 of 67
+#           Expected blocks (Section 9's, as before).
 # LAST VERIFIED: v0.9.232, 2026-10-16 (S359) -- Sections 15, 16 and 20
 #           WALKED on the WORKSTATION by Jeff through receive_all(), under
 #           the tool's default walk line ("walked, all okay"); PENDING back
@@ -521,14 +545,15 @@ jload(f_plain, name = "clinic", overwrite = TRUE)
 #
 #   Missing-value codes detected:
 #     Rating:   -99 ["Refused"] (1)  [label-only -- not formally declared]
-#     Contact:  -99 (1)              [suspected -- not formally defined]
+#     Contact:  -99 (1)              [convention-matched -- not formally declared]
 #
 #   [label-only -- not formally declared]:
 #     not automatically treated as NA, but the value labels suggest they mark
 #     missing values.
 #     Declare them as missing if they are; leave as-is if real.
-#   [suspected -- not formally defined]:
-#     not automatically treated as NA.
+#   [convention-matched -- not formally declared]:
+#     not automatically treated as NA, but they match the
+#     missing.convention.codes setting (-99, -98, -97).
 #     Declare them as missing if they are; leave as-is if real.
 #
 #   No missing-value convention is selected, so this code cannot be
@@ -545,6 +570,9 @@ jload(f_plain, name = "clinic", overwrite = TRUE)
 #   To make the choice permanent, put the same line in your .Rprofile.
 #   Then, to declare one variable's codes as missing:
 #     jdeclare_missing(clinic, Rating, codes = -99, modify = TRUE)
+# RE-PINNED S361 (v0.9.234; the Session 23 item): Contact's -99 is a
+# missing.convention.codes value, so it is convention-matched, with its
+# own legend, where it was suspected.
 # Things to look at:
 #   - the menu, then the line, which runs once a convention is chosen
 #   - "this code" in the menu's head, beside the block's "codes" (the
@@ -555,8 +583,11 @@ jload(f_plain, name = "clinic", overwrite = TRUE)
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # SECTION 5 -- the scan's commented label-at-the-same-time example ----
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-# The second, commented example fires only when the target is a SUSPECTED
-# (unlabelled) variable, so this fixture holds only the bare-code column.
+# The second, commented example fires only when the target is an
+# unlabelled variable -- SUSPECTED, or since S361 (v0.9.234) convention-
+# matched, as Contact's -99 now is: "Missing-value codes detected:" and the
+# setting's legend, where it said "Suspected" -- so this fixture holds only
+# the bare-code column.
 
 # RE-PINNED S352 (v0.9.225; ruling R15): the menu first, as in Section 4.
 # The pin quoted the second line in its pre-S267 commented form; it is now
@@ -567,11 +598,12 @@ jload(f_susp, name = "clinic", overwrite = TRUE)
 # Expected:
 #   Loaded clinic (R format; 3 cases, 1 variable)
 #
-#   Suspected missing-value codes detected:
+#   Missing-value codes detected:
 #     Contact:  -99 (1)
 #
-#   These codes are not formally defined, so they are not treated as missing.
-#   Declare them as missing if they are; leave as-is if real.
+#   These codes match the missing.convention.codes setting (-99, -98, -97) but
+#   are not formally declared, so they are not treated as missing. Declare them
+#   as missing if they are; leave as-is if real.
 #
 #   No missing-value convention is selected, so this code cannot be
 #   declared yet.
@@ -628,6 +660,18 @@ joutput(NULL)
 # Expected: each of the six carries a convert recipe in the form
 #   jconvert(spss_df, to = "stata", modify = TRUE)
 #
+# UPDATED S361 (v0.9.234; the S218 item): each refusal now also offers the
+# save that makes every declared missing value plain NA in the file,
+#   Or save every declared missing value as plain NA instead:
+#     jsave(spss_df, "<tempdir>/walk_out.dta", overwrite = TRUE,
+#         preserve.declarations = FALSE)
+# at both tiers of the .dta and .sav refusals, and the .xpt refusal's drop
+# route is that save, where it was jconvert(spss_df, to = "baseR", modify =
+# TRUE): "To save as .xpt with every declared missing value as plain NA,
+# run:" at the standard tier, "To drop them:" above the same line at the
+# minimal. The path is the one typed, here a temporary folder. Section 21
+# shows the saves themselves.
+#
 # UPDATED S268 for S267, and the change is to the SHAPE of all three
 # minimal tiers, not to their words. S230 had split them per Rule E --
 # the incompatibility sentence and the remedy sentence each starting
@@ -667,8 +711,9 @@ joutput(NULL)
 # continuation of the old head, so every one of its three branches was
 # affected, not just the one this section renders.
 #
-# IT NOW RENDERS (transcribed from a render through the real emitter at
-# width 76, not predicted):
+# IT THEN RENDERED (transcribed from a render through the real emitter at
+# width 76, not predicted; the drop line has been the jsave() line above
+# since S361):
 #
 #   jsave(): 2 variables carry missing-value codes, incompatible with
 #   the .xpt format.
@@ -731,7 +776,14 @@ show(".sav UDM-limit refusal (4 codes, cap is 3)",
 #   the codes:
 #     jconvert(over_df, to = "stata", modify = TRUE)
 #     jsave(over_df, "over_df.dta")
+#   To save as SPSS format (.sav) with every declared missing value as plain NA:
+#     jsave(over_df, "<tempdir>/walk_out.sav", overwrite = TRUE,
+#         preserve.declarations = FALSE)
 #   Or reduce each variable's declared missing values to fit.
+#
+# UPDATED S361 (v0.9.234; the S218 item): the fourth route, the save with
+# preserve.declarations = FALSE, ahead of "Or reduce". Its path is the one
+# typed, a temporary folder here, so the block is prose.
 #
 # RE-PINNED S268 for S267. The two lines this section was built to watch
 # SURVIVE verbatim -- they are still adjacent, still in that order, and
@@ -1426,11 +1478,16 @@ jload(fm15, name = "mx15", overwrite = TRUE, missing.notice = TRUE)
 #     joptions(missing.convention = "stata")
 #   Source is text, so the first line makes its declared values plain NA.
 
+# RE-PINNED S361 (v0.9.234; the S218 item): the .dta and .sav refusals end
+# on the save that blanks the values, "Or save every declared missing value
+# as plain NA instead:", whose line names the file as typed, so these saves
+# now run in the walk's folder by name (they gave a temporary path).
 cat("\n--- jsave() to Stata format, standard then minimal ---\n")
 ds15 <- readRDS(f15)
-try(jsave(ds15, file.path(.walkdir, "ds15.dta")))
+.wd15 <- getwd(); setwd(.walkdir)
+try(jsave(ds15, "ds15.dta"))
 joutput("minimal", quiet = TRUE)
-try(jsave(ds15, file.path(.walkdir, "ds15.dta")))
+try(jsave(ds15, "ds15.dta"))
 joutput(NULL, quiet = TRUE)
 # Expected:
 #   Error : jsave(): 3 variables carry SPSS-style missing values, incompatible
@@ -1442,18 +1499,23 @@ joutput(NULL, quiet = TRUE)
 #     jconvert(ds15, to = "stata", modify = TRUE)
 #   Source is text, so the first line makes its declared values plain NA.
 #   Or turn it into a numeric variable first with jencode().
+#   Or save every declared missing value as plain NA instead:
+#     jsave(ds15, "ds15.dta", preserve.declarations = FALSE)
 #   Error : jsave(): 3 variables carry SPSS-style missing values, incompatible
 #   with the .dta format.
 #   Convert first, then save again:
 #     jconvert(ds15, vars = "Source", to = "baseR", modify = TRUE)
 #     jconvert(ds15, to = "stata", modify = TRUE)
 #   Source is text, so the first line makes its declared values plain NA.
+#   Or save every declared missing value as plain NA instead:
+#     jsave(ds15, "ds15.dta", preserve.declarations = FALSE)
 
 cat("\n--- jsave() to SPSS format, more codes than it allows, standard then minimal ---\n")
-try(jsave(oc15, file.path(.walkdir, "oc15.sav")))
+try(jsave(oc15, "oc15.sav"))
 joutput("minimal", quiet = TRUE)
-try(jsave(oc15, file.path(.walkdir, "oc15.sav")))
+try(jsave(oc15, "oc15.sav"))
 joutput(NULL, quiet = TRUE)
+setwd(.wd15)
 # Expected:
 #   Error : jsave(): SPSS format (.sav) allows at most 3 declared missing values
 #   per variable, or a range plus one code.
@@ -1463,10 +1525,14 @@ joutput(NULL, quiet = TRUE)
 #
 #   To save in R format (.rds) instead, keeping all the codes:
 #     jsave(oc15, "oc15.rds")
+#   To save as SPSS format (.sav) with every declared missing value as plain NA:
+#     jsave(oc15, "oc15.sav", preserve.declarations = FALSE)
 #   Or reduce each variable's declared missing values to fit.
 #   Error : jsave(): 1 variable has more declared missing values than SPSS
 #   format (.sav) allows (at most 3, or a range plus one).
 #   Save as R format (.rds) to keep all the codes, or reduce them first.
+#   Or save every declared missing value as plain NA instead:
+#     jsave(oc15, "oc15.sav", preserve.declarations = FALSE)
 
 cat("\n--- jsave() to CSV format ---\n")
 .wd15 <- getwd(); setwd(.walkdir)
@@ -1786,9 +1852,14 @@ oc19 <- data.frame(
   Y = c(1L, 2L, 3L, 4L, 5L))
 cx19 <- oc19; cx19$Z <- I(list(1, 2, 3, 4, 5))
 
-# Render 1 -- the .sav over-limit refusal: two blocks, each opening on
+# RE-PINNED S361 (v0.9.234; the S218 item): each refusal has one more
+# block, the save that blanks the values, opening on mydata too; the saves
+# run in the walk's folder by name, so its line names the file as typed.
+
+# Render 1 -- the .sav over-limit refusal: three blocks, each opening on
 # mydata.
-try(jsave(oc19["X"], file.path(.walkdir, "oc19.sav")))
+.wd19 <- getwd(); setwd(.walkdir)
+try(jsave(oc19["X"], "oc19.sav"))
 # Expected:
 #   Error : jsave(): SPSS format (.sav) allows at most 3 declared missing values
 #   per variable, or a range plus one code.
@@ -1804,11 +1875,14 @@ try(jsave(oc19["X"], file.path(.walkdir, "oc19.sav")))
 #     mydata <- oc19["X"]
 #     jconvert(mydata, to = "stata", modify = TRUE)
 #     jsave(mydata, "mydata.dta")
+#   To save as SPSS format (.sav) with every declared missing value as plain NA:
+#     mydata <- oc19["X"]
+#     jsave(mydata, "oc19.sav", preserve.declarations = FALSE)
 #   Or reduce each variable's declared missing values to fit.
 
 # Render 2 -- two problems at once (a list column and SPSS-style missing
 # values) in a .dta file.
-try(jsave(cx19[c("X", "Z")], file.path(.walkdir, "oc19.dta")))
+try(jsave(cx19[c("X", "Z")], "oc19.dta"))
 # Expected:
 #   Error : jsave(): cx19[c("X", "Z")] cannot be saved to Stata format (.dta)
 #   yet -- 2 things to fix:
@@ -1828,9 +1902,13 @@ try(jsave(cx19[c("X", "Z")], file.path(.walkdir, "oc19.dta")))
 #   Before saving to Stata format, convert with:
 #     mydata <- cx19[c("X", "Z")]
 #     jconvert(mydata, to = "stata", modify = TRUE)
+#   Or save every declared missing value as plain NA instead:
+#     mydata <- cx19[c("X", "Z")]
+#     jsave(mydata, "oc19.dta", preserve.declarations = FALSE)
 #
 #   Fix the above, then run jsave() again.
-rm(oc19, cx19)
+setwd(.wd19)
+rm(oc19, cx19, .wd19)
 
 # Things to look at:
 #   - each block runs on its own, so each opens on "mydata <- ...";
@@ -2024,6 +2102,180 @@ rm(.wd20, .wp20, s20, l20, cm20, jai20, sk20, ag20)
 #   - Render 5: the second and fourth notes are "Nothing was written." alone.
 #   - Render 6: SKILL.md's first line runs to the paragraph's width; its
 #     words are AGENTS.md's after "Note for AI assistants: ".
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 21 -- jsave(preserve.declarations = FALSE): the saves the pre-flight stopped (S361) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S361 (v0.9.234; the S218 item, decided in principle at S218).
+# preserve.declarations = FALSE makes every declared missing value plain NA
+# in the file, and it now does so BEFORE the .sav, .dta and .xpt checks, so
+# a save they refused for a missing-value form the format cannot hold goes
+# ahead -- an explicit instruction, which the no-silent-loss rule allows --
+# and a note gives the count after the write. Each refusal offers that save
+# beside the conversion (two remedies in opposite directions, voice Rule D's
+# equal-standing carve-out); the .xpt refusal's drop route is that save,
+# where it was jconvert(to = "baseR", modify = TRUE), which made the values
+# NA in the data frame too. Sections 6, 7, 15 and 19 show the same line in
+# their refusals. The assertion side is missing_convention_check.R N94r-y.
+# (The Saved lines name a temporary folder, so each Expected stops above
+# them.)
+.wd21 <- getwd(); setwd(.walkdir)
+d21 <- data.frame(Income = spss_df$Income, Mood = c(stata_df$Mood, NA))
+
+# Render 1 -- the .dta refusal: the conversion, then the save that blanks them.
+try(jsave(d21, "d21.dta", overwrite = TRUE))
+# Expected:
+#   Error : jsave(): 1 variable carries SPSS-style missing values, incompatible
+#   with the .dta format:
+#     Income
+#
+#   Before saving to Stata format, convert with:
+#     jconvert(d21, to = "stata", modify = TRUE)
+#   Or save every declared missing value as plain NA instead:
+#     jsave(d21, "d21.dta", overwrite = TRUE, preserve.declarations = FALSE)
+
+# Render 2 -- that save, run: the note, then the Saved line.
+jsave(d21, "d21.dta", overwrite = TRUE, preserve.declarations = FALSE)
+# Expected:
+#   Note: 3 cells holding declared missing values were blanked
+#   (preserve.declarations = FALSE).
+
+# Render 3 -- the file holds no declarations; the data frame still does.
+jload("d21.dta", name = "l21", overwrite = TRUE)
+attr(d21$Income, "na_values")
+# Expected:
+#   Loaded l21 (Stata format; 4 cases, 2 variables)
+#   [1] -99 -98
+
+# Render 4 -- .xpt, where both forms are refused: the drop route is the save.
+try(jsave(d21, "d21.xpt", overwrite = TRUE))
+# Expected:
+#   Error : jsave(): 2 variables carry missing-value codes, incompatible with
+#   the .xpt format:
+#     Mood, Income
+#
+#   To save as .xpt with every declared missing value as plain NA, run:
+#     jsave(d21, "d21.xpt", overwrite = TRUE, preserve.declarations = FALSE)
+#
+#   To preserve these codes, convert them to one form with jconvert() first,
+#   then save as SPSS format (.sav) or Stata format (.dta) instead.
+
+# Render 5 -- R format, where the same call had blanked them without a word;
+# and a frame whose declared codes no cell holds.
+jsave(d21, "d21.rds", overwrite = TRUE, preserve.declarations = FALSE)
+# Expected:
+#   Note: 3 cells holding declared missing values were blanked
+#   (preserve.declarations = FALSE).
+z21 <- data.frame(Q = haven::labelled_spss(c(1, 2, 3), na_values = -99))
+jsave(z21, "z21.rds", overwrite = TRUE, preserve.declarations = FALSE)
+# Expected:
+#   Note: no cell held a declared missing value; the declarations were dropped
+#   (preserve.declarations = FALSE).
+setwd(.wd21)
+rm(.wd21, d21, l21, z21)
+
+# Things to look at:
+#   - RENDER 1: "Or save every declared missing value as plain NA instead:"
+#     -- the conversion keeps them, as Stata-style missing values; this
+#     drops which code each was. Do the two read as a choice, neither
+#     recommended?
+#   - RENDER 2: 3 cells: Income's -99 and -98, and Mood's .a -- a marker is
+#     counted too, since what is dropped is which marker it was.
+#   - RENDER 3: no narrative on the load (nothing declared), and the data
+#     frame's own declaration unchanged: the save blanked the file only.
+#   - RENDER 4: one route to drop them, where there were two to choose from.
+#   - RENDER 5: the second note, when there was nothing to blank.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 22 -- jload(): the example files, and a variable named T or F (S361) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S361 (v0.9.234). Two load notes. (1) The Session 74 item's second
+# half (decided S77 and S107): jstats ships community as three files a
+# colleague might send -- community_spss.sav, community_stata.dta and
+# community_excel.xlsx -- and jload() now reads one by name when no file of
+# that name is on disk, where it took system.file(). A file on disk wins and
+# is said to win, with the call that reads the shipped one; package = TRUE
+# forces it, as it forces a shipped dataset. (2) The S289 item: at
+# joutput("full"), a note on a variable named T or F, which base R code run
+# inside the data frame reads in place of TRUE or FALSE. The assertion side
+# is missing_convention_check.R N94z-ai.
+.wd22 <- getwd(); setwd(.walkdir)
+unlink(c("community_spss.sav", "community_stata.dta"))
+
+# Render 1 -- by name, with its extension and without.
+jload("community_spss.sav", overwrite = TRUE, missing.notice = FALSE)
+jload("community_stata", overwrite = TRUE, missing.notice = FALSE)
+# Expected:
+#   Reading from the jstats example files
+#   Loaded community_spss (SPSS format; 103 cases, 15 variables)
+#   Reading from the jstats example files
+#   Loaded community_stata (Stata format; 103 cases, 15 variables)
+
+# Render 2 -- a copy of the file on disk: read instead, and the line that
+# reads the shipped one, run.
+invisible(file.copy(system.file("extdata", "community_spss.sav", package = "jstats"),
+                    "community_spss.sav", overwrite = TRUE))
+jload("community_spss.sav", overwrite = TRUE, missing.notice = FALSE)
+jload("community_spss.sav", package = TRUE, overwrite = TRUE, missing.notice = FALSE)
+# Expected:
+#   A local file and a jstats example file are both named 'community_spss.sav'.
+#   The local file was loaded.
+#   To load the example file instead, use:
+#     jload("community_spss.sav", package = TRUE)
+#   Loaded community_spss (SPSS format; 103 cases, 15 variables)
+#   Reading from the jstats example files
+#   Loaded community_spss (SPSS format; 103 cases, 15 variables)
+
+# Render 3 -- package = TRUE given a name it does not ship, a dataset's
+# name with an extension, and a path.
+try(jload("survey.sav", package = TRUE))
+try(jload("community.rds", package = TRUE))
+try(jload("data/community_spss.sav", package = TRUE))
+# Expected:
+#   Error : jload(): No jstats example dataset or file named 'survey.sav'.
+#   Shipped datasets: clinic, community.
+#   Example files: community_excel.xlsx, community_spss.sav,
+#   community_stata.dta.
+#   Error : jload(): package = TRUE loads a jstats example dataset by its
+#   name alone.
+#   Drop the extension:
+#     jload("community", package = TRUE)
+#   Error : jload(): package = TRUE loads a jstats example dataset or file by
+#   its name alone.
+#   Drop the path:
+#     jload("community_spss.sav", package = TRUE)
+
+# Render 4 -- a variable named T, at joutput("full"); at the standard level
+# no note.
+utils::write.csv(data.frame(T = c(1, 2, 1), Score = c(4, 5, 6)), "tf22.csv",
+                 row.names = FALSE)
+joutput("full", quiet = TRUE)
+jload("tf22.csv", overwrite = TRUE)
+joutput(NULL, quiet = TRUE)
+# Expected:
+#   Loaded tf22 (CSV format; 3 cases, 2 variables)
+#
+#   Note: T is a variable in tf22.
+#   jstats reads it as the variable, but in base R T also stands for TRUE, and
+#   code run inside tf22 (with(), subset()) reads the variable in its place.
+#   To rename it, replacing newname:
+#     names(tf22)[names(tf22) == "T"] <- "newname"
+unlink(c("community_spss.sav", "tf22.csv"))
+setwd(.wd22)
+rm(.wd22, community_spss, community_stata, tf22)
+
+# Things to look at:
+#   - RENDER 1: "Reading from the jstats example files" where a data.dir
+#     read says "Reading from <folder>", above the usual Loaded line.
+#   - RENDER 2: the note before the Loaded line, as the note for a shipped
+#     dataset reads; the line it gives runs.
+#   - RENDER 3: the names jstats ships, datasets and files, in the refusal.
+#   - RENDER 4: the note is advisory, so it shows at "full" only -- is
+#     that where it belongs? "jstats reads it as the variable": the S289
+#     item feared a clash in a jstats call, which ruling R18 has since
+#     ruled out; the clash left is base R's (with(), subset()).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

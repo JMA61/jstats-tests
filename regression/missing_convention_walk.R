@@ -634,6 +634,21 @@
 #           Same messages either way (one frame), confirmed in the walk
 #           below against a sandbox capture of the same file; no Expected
 #           touched.
+# S361 EDIT (v0.9.234): CAPABILITY SLATE C1. PART U NEW: Section 69,
+#           jconvert()'s return-trip note in the SPSS-to-Stata direction
+#           (the S354 item), three renders with modify = TRUE; Section 70,
+#           the load scan's convention-matched category (the Session 23
+#           item), three renders, the last the shipped community_excel.xlsx.
+#           Section 59 Render 4 RE-PINNED: its -99 is convention-matched.
+#           Each Expected FILLED BY RUNNING the file (fill.R). harness.R
+#           derive: the new sections need no earlier one. The assertion
+#           side is missing_convention_check.R N94a-q and N94aj.
+# LAST VERIFIED: v0.9.234, 2026-10-16 (S361) -- Sections 59, 69 and 70
+#           WALKED on the WORKSTATION by Jeff through receive_all()
+#           ("walked, all okay"); PENDING back to none; GitHub 88a372e
+#           (package). Sandbox: harness.R verify, 71 of 71 sections in three
+#           orders and by prepare = TRUE; 93 of 94 Expected blocks (Section
+#           10's, as before).
 # LAST VERIFIED: v0.9.232, 2026-10-16 (S359) -- Section 30 WALKED on the
 #           WORKSTATION by Jeff through receive_all(), under the tool's
 #           default walk line ("walked, all okay"); PENDING back to none;
@@ -6566,7 +6581,11 @@ try(jdeclare_missing(u59, V, codes = -99))
 #     u59$VR <- jrecode(u59, V, map = "-99=.a; else=copy", convention = "stata")
 
 # Render 4 -- the load scan on a file whose variable carries .a beside two
-# -99s: the recode lines in place of the declaration.
+# -99s: the recode lines in place of the declaration. RE-PINNED S361
+# (v0.9.234): -99 is a missing.convention.codes value, so the scan files it
+# as convention-matched -- "Missing-value codes detected:" and the
+# setting's legend, where it said "Suspected" -- and the recode lines are
+# as they were (Section 70; missing_convention_check.R N94j-q).
 joptions(missing.convention = "stata", quiet = TRUE)
 saveRDS(data.frame(Score = haven::labelled(
   c(1, 2, 3, 4, 5, -99, -99, 2, 3, 4, 1, haven::tagged_na("a")),
@@ -6579,11 +6598,12 @@ jload(file.path(tempdir(), "sc59.rds"))
 #   1 variable has Stata-style missing values:
 #     Score: .a ["Skipped"]
 #
-#   Suspected missing-value codes detected:
+#   Missing-value codes detected:
 #     Score:  -99 (2)
 #
-#   These codes are not formally defined, so they are not treated as missing.
-#   Declare them as missing if they are; leave as-is if real.
+#   These codes match the missing.convention.codes setting (-99, -98, -97) but
+#   are not formally declared, so they are not treated as missing. Declare them
+#   as missing if they are; leave as-is if real.
 #
 #   To recode one variable's codes to markers it does not use:
 #     sc59$ScoreR <- jrecode(sc59, Score, map = "-99=.b; else=copy")
@@ -7521,6 +7541,218 @@ rm(w68)
 #     after a typed .A under spss; Stata-style after .a, and after .A under
 #     a stata setting;
 #   - neither "tokens" nor "tagged missings" anywhere.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART U -- Capability Slate C1: the trip back, and the setting's codes (S361) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.234. Two new messages on this walk's surface. Section 69: jconvert()
+# says, converting SPSS-style codes to Stata-style or SAS-style markers, when
+# the trip back would give other codes -- the mirror of the note Section 43
+# shows for the other direction (the S354 item). Section 70: the load scan
+# has a third category, convention-matched -- a value in the
+# missing.convention.codes setting, found whatever its size -- between
+# label-only and suspected (the Session 23 item, as Decision 5A locked it).
+# The assertion side is missing_convention_check.R N94a-q.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 69 -- jconvert(): converting back would give other codes ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SPSS-to-Stata letters a variable's codes by size, largest first (9 -> .a,
+# -1 -> .b); the trip back gives the markers the setting's codes in letter
+# order (.a -> -99, .b -> -98). Until now only ?jconvert said so.
+w69 <- data.frame(
+  Score = haven::labelled_spss(c(1, 2, 9, -1, 3), labels = c("Not asked" = 9, Refused = -1),
+                               na_values = c(-1, 9)),
+  Mood  = haven::labelled_spss(c(1, -99, -98, 2, 3), na_values = c(-99, -98)),
+  Age   = haven::labelled_spss(c(30, -97, 40, -99, 50), na_values = c(-97, -99)))
+
+x69 <- w69
+
+# Render 1 -- one variable: the codes both ways, in the report's order.
+jconvert(x69, Score, to = "stata", modify = TRUE)
+# Expected:
+#   Converted to Stata-style missing values in 1 variable:
+#     Score  9 ["Not asked"]  -> .a
+#            -1 ["Refused"]   -> .b
+#
+#   Note: converting Score back to SPSS-style missing values would give its
+#   codes -99, -98, not 9, -1.
+#
+#   To keep it across sessions, save the data frame:
+#     jsave(x69, "x69.rds")
+
+# Render 2 -- the trip back, run: the codes the note named, the labels on them.
+jconvert(x69, Score, to = "spss", modify = TRUE)
+# Expected:
+#   Converted to SPSS-style missing values in 1 variable:
+#     Score  .a ["Not asked"]  -> -99
+#            .b ["Refused"]    -> -98
+#
+#   To keep it across sessions, save the data frame:
+#     jsave(x69, "x69.rds")
+
+# Render 3 -- the whole frame, to SAS-style: Mood's codes are the setting's
+# and come back as they went; Score and Age share one note.
+jconvert(w69, to = "sas", modify = TRUE)
+# Expected:
+#   Converted to SAS-style missing values in 3 variables:
+#     Score  9 ["Not asked"]  -> .A
+#            -1 ["Refused"]   -> .B
+#     Mood   -99              -> .A
+#            -98              -> .B
+#     Age    -99              -> .A
+#            -97              -> .B
+#
+#   Note: converting Score and Age back to SPSS-style missing values would give
+#   them other codes than those above.
+#
+#   To keep it across sessions, save the data frame:
+#     jsave(w69, "w69.rds")
+rm(w69, x69)
+
+# Things to look at:
+#   - RENDER 1: "would give its codes -99, -98, not 9, -1." -- read each
+#     code against the one above it in the report (9 is .a, and .a comes
+#     back as -99). The item's sketch had "not -1, 9", the order typed;
+#     the report's order lets the two lists pair up.
+#   - RENDER 2: the trip back says nothing of the numbers; Render 1 already
+#     did.
+#   - RENDER 3: no note for Mood. Is "would give them other codes than
+#     those above" enough for several, or should each variable's codes
+#     be named, as for one?
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 70 -- the load scan: values that match the setting's codes ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# The scan reported a value only when it looked out of place beside the
+# variable's others (-99 on a 1-to-5 scale), so -99 beside ages of 18 to 80
+# went unreported. A value in the missing.convention.codes setting is now a
+# candidate whatever its size; a label suggesting missingness still wins
+# (label-only), and what is neither stays suspected.
+.wd70 <- getwd(); setwd(tempdir())
+utils::write.csv(data.frame(Age = c(18, 25, 33, 41, 52, 60, 67, 74, 80, 29, -99, -99)),
+                 "w70.csv", row.names = FALSE)
+w70b <- data.frame(L = haven::labelled(c(1, 2, 3, -98, 4, 5), labels = c("Don't know" = -98)),
+                   C = c(30, 41, 52, -97, 66, 77), S = c(1, 2, 3, 99, 4, 5))
+haven::write_sav(w70b, "w70b.sav")
+
+# Render 1 -- -99 beside ages, which the scan had passed over.
+jload("w70.csv", overwrite = TRUE)
+# Expected:
+#   Loaded w70 (CSV format; 12 cases, 1 variable)
+#
+#   Missing-value codes detected:
+#     Age:  -99 (2)
+#
+#   These codes match the missing.convention.codes setting (-99, -98, -97) but
+#   are not formally declared, so they are not treated as missing. Declare them
+#   as missing if they are; leave as-is if real.
+#
+#   No missing-value convention is selected, so this code cannot be
+#   declared yet.
+#   Choose one for this session:
+#     joptions(missing.convention = "stata")
+#         Lowercase markers behave as true NAs in base R.
+#         Recommended if you also run base R or AI-generated code.
+#     joptions(missing.convention = "spss")
+#         Codes stay visible numbers; jstats treats them as missing.
+#         Base R does not.
+#     joptions(missing.convention = "sas")
+#         Like Stata, with uppercase markers (.A-.Z).
+#   To make the choice permanent, put the same line in your .Rprofile.
+#   Then, to declare one variable's codes as missing:
+#     jdeclare_missing(w70, Age, codes = -99, modify = TRUE)
+#   To declare and label them in one call, replacing the placeholder names:
+#     jdeclare_missing(w70, Age, codes = c("label1" = -99), modify = TRUE)
+
+# Render 2 -- the three categories in one file, one row each.
+jload("w70b.sav", overwrite = TRUE)
+# Expected:
+#   Loaded w70b (SPSS format; 6 cases, 3 variables)
+#
+#   Missing-value codes detected:
+#     L:  -98 ["Don't know"] (1)  [label-only -- not formally declared]
+#     C:  -97 (1)                 [convention-matched -- not formally declared]
+#     S:  99 (1)                  [suspected -- not formally defined]
+#
+#   [label-only -- not formally declared]:
+#     not automatically treated as NA, but the value labels suggest they mark
+#     missing values.
+#     Declare them as missing if they are; leave as-is if real.
+#   [convention-matched -- not formally declared]:
+#     not automatically treated as NA, but they match the
+#     missing.convention.codes setting (-99, -98, -97).
+#     Declare them as missing if they are; leave as-is if real.
+#   [suspected -- not formally defined]:
+#     not automatically treated as NA.
+#     Declare them as missing if they are; leave as-is if real.
+#
+#   No missing-value convention is selected, so this code cannot be
+#   declared yet.
+#   Choose one for this session:
+#     joptions(missing.convention = "stata")
+#         Lowercase markers behave as true NAs in base R.
+#         Recommended if you also run base R or AI-generated code.
+#     joptions(missing.convention = "spss")
+#         Codes stay visible numbers; jstats treats them as missing.
+#         Base R does not.
+#     joptions(missing.convention = "sas")
+#         Like Stata, with uppercase markers (.A-.Z).
+#   To make the choice permanent, put the same line in your .Rprofile.
+#   Then, to declare one variable's codes as missing:
+#     jdeclare_missing(w70b, L, codes = -98, modify = TRUE)
+
+# Render 3 -- the Excel example file shipped with jstats: its codes lost
+# their declarations in Excel, and the scan finds every one.
+jload("community_excel.xlsx", overwrite = TRUE)
+# Expected:
+#   Reading from the jstats example files
+#   Loaded community_excel (Excel format; 103 cases, 15 variables)
+#
+#   Missing-value codes detected:
+#     Income:        -99 (3), -98 (3)
+#     Education:     -99 (3), -98 (3)
+#     Smoker:        -99 (5)
+#     Environment1:  -99 (6), -98 (6)
+#     Environment3:  -99 (6), -98 (6)
+#
+#   These codes match the missing.convention.codes setting (-99, -98, -97) but
+#   are not formally declared, so they are not treated as missing. Declare them
+#   as missing if they are; leave as-is if real.
+#
+#   No missing-value convention is selected, so these codes cannot be
+#   declared yet.
+#   Choose one for this session:
+#     joptions(missing.convention = "stata")
+#         Lowercase markers behave as true NAs in base R.
+#         Recommended if you also run base R or AI-generated code.
+#     joptions(missing.convention = "spss")
+#         Codes stay visible numbers; jstats treats them as missing.
+#         Base R does not.
+#     joptions(missing.convention = "sas")
+#         Like Stata, with uppercase markers (.A-.Z).
+#   To make the choice permanent, put the same line in your .Rprofile.
+#   Then, to declare one variable's codes as missing:
+#     jdeclare_missing(community_excel, Income, codes = c(-99, -98),
+#         modify = TRUE)
+#   To declare and label them in one call, replacing the placeholder names:
+#     jdeclare_missing(community_excel, Income,
+#         codes = c("label1" = -99, "label2" = -98), modify = TRUE)
+setwd(.wd70)
+unlink(file.path(tempdir(), c("w70.csv", "w70b.sav")))
+rm(.wd70, w70, w70b, community_excel)
+
+# Things to look at:
+#   - RENDER 1: "Missing-value codes detected:", where an all-suspected
+#     scan says "Suspected ...": the code is one jstats itself recommends.
+#     Does the legend's "match the missing.convention.codes setting
+#     (-99, -98, -97)" say why without teaching the setting?
+#   - RENDER 2: the bracketed tags line up, and the three legends follow
+#     the rows' order: label-only, convention-matched, suspected.
+#   - RENDER 3: before this build only Education and Smoker would have been
+#     reported (a -99 beside an income of thousands is not out of place).
 
 
 # --- Restore session state ---------------------------------------------------
