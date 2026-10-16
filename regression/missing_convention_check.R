@@ -10,6 +10,47 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S359 EDIT (v0.9.232, 2026-10-16): NEW N93 section, ten checks
+#           (N93a-N93j), Fix Slate 10's jsave() note for Excel and CSV,
+#           raised by Jeff on the walk of missing_convention_walk.R Section
+#           30: the labels line only when a variable carries a label (his
+#           lean, okayed S357), the metadata line only when one declares
+#           missing values, no note for a frame with neither; the variables
+#           whose cells hold a declared code named with the codes held, a
+#           code no cell holds left out, more than three counted; the call
+#           to run with the data's name and the path just written, "mydata
+#           <- ..." first for an expression, each run; a declared string in
+#           quotes. The offered call is read through .r5_calls(): a long
+#           temporary path lays it out over three lines. RE-PINNED: N86av,
+#           N86aw and N92j (the note's new sentences). N88s counts a
+#           laid-out call's line over the width only when it is not a single
+#           piece (ruling R5 keeps a quoted path whole): the first run with a
+#           35-character temp path counted the paths in N86's offered jsave()
+#           lines, and N93's checks read the Saved line flattened. GUARD 5 (the S345 item, Scripts Slate B): the
+#           values of the workspace's objects on entry, put back at the foot
+#           when a run changed them, and named ("Put back as they were on
+#           entry: ..."), before guard 2's clean-up on a green run and
+#           before the stop on a red one.
+#           EIGHT HUNDRED AND EIGHT checks.
+#           MUTATION MAP: the labels line on every frame N93a N93i; the old
+#           "jsave(...)" pointer N93c N93e N93f; codes no cell holds named
+#           N86av N86aw N92j N93c N93d N93g N93j.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): run_all.R
+#           2646 across nine, plain and under the RStudio-handler stand-in,
+#           each again with a 35-character temp path; every battery entered
+#           dirty, plain and under the stand-in (joutput("full"), width 100,
+#           diagnostics on, a stata convention, the color option, a juse()
+#           default, and objects named Age, Gender, Keep01, Name, d, x, s,
+#           y, g, e, f, m, r and a; again plain with n, v, w and z): all
+#           green, the width, level, default
+#           frame and convention as on entry, and every object a run changed
+#           put back by guard 5 and named; the four stores (.jst_filter,
+#           .jst_complete, .jst_dummy, .jst_registry) left empty where they
+#           were NULL, as at S357.
+#           LAST VERIFIED: v0.9.232, 2026-10-16 (S359) -- 808/808 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (9 run,
+#           2646 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox; GitHub 6cf15d7 (package).
 # S357 EDIT (v0.9.230, 2026-10-16): NEW N92 section, thirteen checks
 #           (N92a-N92m), Fix Slate W2's load, save and jai() wording: the
 #           mixed-frame note opening on the data frame (Rule T); Case 4's
@@ -1364,6 +1405,28 @@ stopifnot(exists("joptions", mode = "function"))
 # battery made beyond it is removed at the foot, so a walk that reports on
 # the data frames in the workspace can follow a battery in one session.
 .entry_names <- ls(globalenv(), all.names = TRUE)
+
+# Guard 5 (S359; the S345 item): the VALUES of the workspace's objects on
+# entry, so the foot can put back any a run changed. Guard 2 compares
+# names only, and a fixture or a working object named like one of the
+# user's own -- d, x, s -- replaced it. Held by reference, so nothing is
+# copied unless the run changes the object. Dotted names are the harness's
+# and are left out.
+.entry_values <- mget(grep("^\\.", .entry_names, value = TRUE, invert = TRUE),
+                      envir = globalenv())
+.ws_restore <- function() {
+  back <- names(.entry_values)[vapply(names(.entry_values), function(nm) {
+    !exists(nm, envir = globalenv(), inherits = FALSE) ||
+      !identical(get(nm, envir = globalenv(), inherits = FALSE),
+                 .entry_values[[nm]])
+  }, logical(1))]
+  for (nm in back) assign(nm, .entry_values[[nm]], envir = globalenv())
+  if (length(back) > 0L) {
+    cat("Put back as they were on entry: ", paste(back, collapse = ", "),
+        "\n", sep = "")
+  }
+  invisible(back)
+}
 
 # Session-option hygiene. This battery sets and clears the missing-convention
 # option repeatedly. Record the entering value and restore it at the foot, so
@@ -7987,13 +8050,13 @@ check("N86au Case 1 is as v0.9.214 made it: to = \"baseR\" for the frame, no sen
       .ends86(m86au, paste0("To make them missing in base R as well, convert:\n",
                             "  jconvert(ld86, to = \"baseR\", modify = TRUE)\n")))
 m86av <- grab(jsave(ds86, "ds86.csv"))
-check("N86av the CSV note's rider: over a declared string, \"ordinary values\", no \"-99 ... literal numbers\"",
-      grepl(paste0("Any SPSS-style missing values are written as ordinary values ",
-                   "and will read back as valid data."), .fl(m86av), fixed = TRUE) &&
+check("N86av the CSV note's rider: over a declared string, \"ordinary values\", the strings named in quotes (S359: the variables and codes named, where it said \"Any SPSS-style missing values\")",
+      grepl(paste0("The declared missing values of S (\"X\" and \"Y\"), A (-99 and -98), and L (-99) ",
+                   "are written as ordinary values and will read back as valid data."), .fl(m86av), fixed = TRUE) &&
         !grepl("literal numbers", m86av, fixed = TRUE))
-check("N86aw ... with a Stata-style variable beside it, \"ordinary values\" too; a numeric frame keeps \"-99 ... literal numbers\"",
-      grepl("written as ordinary values.", .fl(grab(jsave(mx86, "mx86.csv"))), fixed = TRUE) &&
-        grepl("(e.g. -99) are written as literal numbers",
+check("N86aw ... with a Stata-style variable beside it, \"ordinary values\" too; a numeric frame says \"ordinary numbers\", the codes named",
+      grepl("written as ordinary values and", .fl(grab(jsave(mx86, "mx86.csv"))), fixed = TRUE) &&
+        grepl("A's declared missing values -99 and -98 are written as ordinary numbers and will read back as valid data.",
               .fl(grab(jsave(ds86["A"], "a86.csv"))), fixed = TRUE))
 check("N86ax jconvert(to = \"stata\") after the first line: no label report on the text variable (it was one before)",
       local({ ld86 <- ds86
@@ -9855,13 +9918,14 @@ check("N92i jcorr() and jalpha()'s minimum: one sentence a line (pinned whole)",
       local({ d <- data.frame(a = 1:5, b = c(2, 4, 3, 5, 1))
               identical(grab(jcorr(d, a)), "jcorr(): At least 2 variables are required.\nOnly 1 was provided.") &&
                 identical(grab(jalpha(d, a)), "jalpha(): At least 2 items are required.\nOnly 1 was provided.") }))
-check("N92j jsave()'s CSV note: one sentence a line, \"missing values\" where it said \"missing-value codes\", in each branch",
+check("N92j jsave()'s CSV note: one sentence a line, \"missing values\" where it said \"missing-value codes\", in each branch (re-pinned S359: the code named)",
       local({ ms <- grab(jsave(data.frame(S = .S92), "s92.csv"))
               mt <- grab(jsave(data.frame(T = .T92), "t92.csv"))
               mb <- grab(jsave(data.frame(S = .S92, T = .T92), "b92.csv"))
-              grepl("Any SPSS-style missing values (e.g. -99) are written as literal numbers", .fl(ms), fixed = TRUE) &&
+              grepl("missing-value metadata.\nS's declared missing value -99 is written as an ordinary number", ms, fixed = TRUE) &&
                 grepl("missing-value metadata.\nStata-style missing values (.a, .b, ...) are", mt, fixed = TRUE) &&
-                grepl("Declared missing values lose their missing status", .fl(mb), fixed = TRUE) &&
+                grepl("S's declared missing value -99 is written as an ordinary number", .fl(mb), fixed = TRUE) &&
+                grepl("Stata-style missing values (.a, .b, ...) are written as blank cells", .fl(mb), fixed = TRUE) &&
                 !any(grepl("missing-value codes", c(ms, mt, mb), fixed = TRUE)) }))
 check("N92k ... the blanked count in number: \"1 cell holding a declared missing value was blanked\", the labels sentence on a line of its own",
       local({ m <- grab(jsave(data.frame(S = .S92), "p92.csv", preserve.declarations = FALSE))
@@ -9895,6 +9959,103 @@ rm(.wd92, .ns92, .td92, .S92, .T92, .conv92, .jai92, .r92, .fam92)
 suppressWarnings(rm(list = intersect(c(".l92", ".c92"), ls(globalenv(), all.names = TRUE)),
                     envir = globalenv()))
 
+# =============================================================================
+# N93 (S359) -- FIX SLATE 10: jsave()'S EXCEL/CSV NOTE SAYS WHAT THE FRAME HAD
+# TO LOSE. Raised by Jeff on the walk of missing_convention_walk.R Section 30
+# (v0.9.231; the S357 item): (1) the labels line printed on a frame with no
+# labels -- it now prints only when a variable carries a variable label or
+# value labels (Jeff's lean: as the registration note fires only on
+# registrations), and the metadata line only when a variable declares
+# missing values; a frame with neither gets no note; (2) "Any SPSS-style
+# missing values (e.g. -99) are written as literal numbers" hedged what the
+# package knows -- the variables and the declared codes their cells hold are
+# named, a code no cell holds is not; (3) "jsave(..., preserve.declarations =
+# FALSE)" did not run as printed -- the line is the call to run, with the
+# data's name and the path just written ("mydata <- ..." first for an
+# expression), and N93e runs it. Fixtures dotted, in a folder of their own;
+# working objects in local().
+# =============================================================================
+.wd93 <- getwd()
+.td93 <- file.path(tempdir(), "jstats n93")
+unlink(.td93, recursive = TRUE); dir.create(.td93); setwd(.td93)
+.p93 <- function(m) gsub(normalizePath(.td93, winslash = "/", mustWork = FALSE),
+                         "<dir>", m, fixed = TRUE)
+.W93 <- data.frame(a = 1:3, b = c(2.5, 3, 1))
+.I93 <- haven::labelled_spss(c(100, -99, 300), na_values = c(-99, -98))
+check("N93a a frame with no labels and no declarations: no note at all (it said \"CSV format (.csv) does not store variable labels or value labels.\")",
+      local({ m <- grab(jsave(.W93, "w93.csv"))
+              !grepl("Note:", m, fixed = TRUE) && startsWith(.fl(m), "Saved .W93 to ") }))
+check("N93b a variable label alone: the labels line alone, in both formats",
+      local({ wl <- .W93; attr(wl$a, "label") <- "Age"
+              a <- grab(jsave(wl, "wl93.csv")); b <- grab(jsave(wl, "wl93.xlsx"))
+              startsWith(.fl(a), "Note: CSV format (.csv) does not store variable labels or value labels. Saved wl to ") &&
+                startsWith(.fl(b), "Note: Excel format (.xlsx) does not store variable labels or value labels. Saved wl to ") }))
+check("N93c a declared code and no labels: the metadata line, the variable and its code named, the call to run -- the whole note",
+      local({ wv <- data.frame(Income = .I93, b = 1:3)
+              m <- .p93(grab(jsave(wv, "wv93.csv")))
+              cl <- .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]], shape = "^  jsave\\(")
+              startsWith(m, paste0(
+                "Note: CSV format (.csv) does not store missing-value metadata.\n",
+                "Income's declared missing value -99 is written as an ordinary number and\n",
+                "will read back as valid data.\n",
+                "To write it as an empty cell instead, save with:\n  jsave(wv,")) &&
+                identical(vapply(cl, .r5_flat, "", USE.NAMES = FALSE),
+                          "jsave(wv, \"<dir>/wv93.csv\", overwrite = TRUE, preserve.declarations = FALSE)") &&
+                grepl(")\nSaved wv to", m, fixed = TRUE) }))
+check("N93d several variables, with labels: each named with the codes its cells hold, a range's held values among them, the labels line first",
+      local({ wv <- data.frame(
+                Income = haven::labelled_spss(c(100, -99, -98), labels = c(Refused = -99),
+                                              na_values = c(-99, -98)),
+                Q2 = haven::labelled_spss(c(-97, 2, 3), na_range = c(-99, -90)), b = 1:3)
+              m <- grab(jsave(wv, "wv93d.xlsx"))
+              grepl(paste0("Note: Excel format (.xlsx) does not store variable labels, value labels, or missing-value metadata. ",
+                           "The declared missing values of Income (-99 and -98) and Q2 (-97) are written as ordinary ",
+                           "numbers and will read back as valid data. To write them as empty cells instead, save with: "),
+                    gsub("\\s+", " ", m), fixed = TRUE) }))
+check("N93e the printed line runs: it rewrites the file with the declared code as an empty cell, which reads back missing",
+      local({ wv <- data.frame(Income = .I93, b = 1:3)
+              m <- grab(jsave(wv, "wv93e.csv"))
+              code <- .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]], shape = "^  jsave\\(wv,")
+              invisible(grab(eval(parse(text = code[1]))))
+              back <- utils::read.csv("wv93e.csv")
+              length(code) == 1L && identical(back$Income, c(100L, NA, 300L)) }))
+check("N93f an expression given as the data: the block opens on \"mydata <- ...\", and the two lines run",
+      local({ wv <- data.frame(Income = .I93, b = 1:3); mk93 <- function() wv
+              m <- .p93(grab(jsave(mk93(), "mk93.csv")))
+              cl <- .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]], shape = "^  (mydata <- |jsave\\()")
+              grepl("save with:\n  mydata <- mk93()\n  jsave(mydata,", m, fixed = TRUE) &&
+                identical(vapply(cl, .r5_flat, "", USE.NAMES = FALSE),
+                          c("mydata <- mk93()",
+                            "jsave(mydata, \"<dir>/mk93.csv\", overwrite = TRUE, preserve.declarations = FALSE)")) &&
+                local({ cr <- .r5_calls(strsplit(grab(jsave(mk93(), "mk93.csv", overwrite = TRUE)), "\n", fixed = TRUE)[[1]],
+                                        shape = "^  (mydata <- |jsave\\()")
+                        e <- new.env(); e$mk93 <- mk93
+                        invisible(grab(eval(parse(text = paste(cr, collapse = "\n")), e)))
+                        length(cr) == 2L && is.na(utils::read.csv("mk93.csv")$Income[2]) }) }))
+check("N93g a declared code no cell holds is not named; with none held, no sentence and no line -- the metadata line alone",
+      local({ ga <- data.frame(Income = haven::labelled_spss(c(1, -99, 3), na_values = c(-99, -98)))
+              gb <- data.frame(Income = haven::labelled_spss(c(1, 2, 3), na_values = -99))
+              a <- grab(jsave(ga, "g93a.csv")); b <- grab(jsave(gb, "g93b.csv"))
+              grepl("declared missing value -99 is written", gsub("\\s+", " ", a), fixed = TRUE) &&
+                !grepl("-98", a, fixed = TRUE) &&
+                startsWith(b, "Note: CSV format (.csv) does not store missing-value metadata.\nSaved ") }))
+check("N93h more than three variables: their count and the first three named",
+      local({ many <- as.data.frame(lapply(1:5, function(i) haven::labelled_spss(c(1, -99), na_values = -99)))
+              names(many) <- paste0("V", 1:5)
+              grepl("The declared missing values of 5 variables (V1, V2, V3, ... and 2 more) are written as ordinary numbers",
+                    gsub("\\s+", " ", grab(jsave(many, "many93.csv"))), fixed = TRUE) }))
+check("N93i preserve.declarations = FALSE with no labels: the blanked count alone (it said \"does not store variable labels or value labels\" first)",
+      local({ wv <- data.frame(Income = .I93, b = 1:3)
+              m <- grab(jsave(wv, "p93.csv", preserve.declarations = FALSE))
+              startsWith(.fl(m), "Note: 1 cell holding a declared missing value was blanked (preserve.declarations = FALSE). Saved wv to ") }))
+check("N93j a declared string: its code in quotes, \"an ordinary value\"",
+      local({ tx <- data.frame(t = haven::labelled_spss(c("a", "Refused", "b"), na_values = "Refused"))
+              grepl("t's declared missing value \"Refused\" is written as an ordinary value and will read back as valid data.",
+                    gsub("\\s+", " ", grab(jsave(tx, "tx93.csv"))), fixed = TRUE) }))
+setwd(.wd93)
+unlink(.td93, recursive = TRUE)
+rm(.wd93, .td93, .p93, .W93, .I93)
+
 # N88s (S353) -- RULING R5 OVER EVERY CONDITION THE BATTERY TOOK. Each call a
 # message printed at the pinned width (an indented line with the shape of a
 # call or an assignment, a call laid out over lines kept whole): one whose
@@ -9912,7 +10073,11 @@ for (.s in .sw) {
     if (length(.l) > 1L) .r5s$laid <- .r5s$laid + 1L
     if (length(.l) == 1L && nchar(.l) + 2L > .pin_width)
       .r5s$long <- c(.r5s$long, .l)
-    if (length(.l) > 1L) .r5s$over <- c(.r5s$over, .l[nchar(.l) > .pin_width])
+    # A single piece -- a quoted path, a long name -- is kept whole past the
+    # width (ruling R5); since S359 one is not counted over it. A temporary
+    # path in jsave()'s offered line reached it on a long temp folder.
+    if (length(.l) > 1L) .r5s$over <- c(.r5s$over, .l[nchar(.l) > .pin_width &
+                                         !grepl("^ *(\"[^\"]*\"|'[^']*'|[^ \"']+)[,)]*$", .l)])
   }
 }
 check(paste0("N88s every call in a message, at the pinned width: none left as one long line, and a laid-out call over the width only in a single piece (",
@@ -9940,10 +10105,12 @@ if (.n_ok == .n) {
   # Fixture cleanup (S337, the S249 item): a green run leaves nothing behind
   # but .results, which run_all.R reads. A red run keeps its fixtures, for
   # a look at what failed.
+  .ws_restore()   # guard 5, ahead of guard 2's cleanup
   rm(list = setdiff(ls(globalenv(), all.names = TRUE),
                     c(.entry_names, ".results")), envir = globalenv())
 } else {
   cat("\nRESULT: FAIL (", .n_ok, "/", .n, " passed)\n", sep = "")
   for (r in .results) if (!r$ok) cat("  failed: ", r$desc, "\n", sep = "")
+  .ws_restore()   # guard 5: the user's objects back, a red run's fixtures kept
   stop("assertion battery failed", call. = FALSE)
 }

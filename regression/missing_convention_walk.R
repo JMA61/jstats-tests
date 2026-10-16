@@ -89,6 +89,18 @@
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S359 (v0.9.232; Fix Slate 10). SECTION 30's prose pin of
+#           jsave()'s CSV note rewritten by hand to the note as it now
+#           prints -- no labels line, since wv has none; Income and its code
+#           named; the call to run -- the section pinning its renders in
+#           prose, so no Expected block moved (Jeff raised the note on this
+#           section's walk at S357; his lean, okayed then: the labels line
+#           only when there are labels to lose). On the PENDING line. A
+#           capture of every section on 0.9.231 and 0.9.232 moves only 30
+#           and, in a temporary path alone, 11, 12 and 17. harness.R verify:
+#           69 of 69 sections in three orders and by prepare = TRUE; 87 of 88
+#           Expected blocks found (Section 10's, as before). The assertion
+#           side is missing_convention_check.R N93a-j.
 # EDITED:   S357 (v0.9.230; Fix Slate W2). NEW PART T, SECTION 68,
 #           filled by running (fill.R): jdeclare_missing() given a marker
 #           for a variable with none names the family as missing values,
@@ -622,6 +634,10 @@
 #           Same messages either way (one frame), confirmed in the walk
 #           below against a sandbox capture of the same file; no Expected
 #           touched.
+# LAST VERIFIED: v0.9.232, 2026-10-16 (S359) -- Section 30 WALKED on the
+#           WORKSTATION by Jeff through receive_all(), under the tool's
+#           default walk line ("walked, all okay"); PENDING back to none;
+#           GitHub 6cf15d7 (package).
 # LAST VERIFIED: v0.9.231, 2026-10-16 (S357) -- Sections 8, 21, 30 and
 #           68 WALKED on the WORKSTATION through receive_all() on v0.9.231,
 #           under the tool's default walk line: the v0.9.230 walks held to
@@ -3549,8 +3565,18 @@ jsave(wv, file.path(tempdir(), "wv.csv"), overwrite = TRUE)
 # declares nothing, so the stray is a pure guess and jload's narrative
 # owns it on the way back in.
 #
-# Expected, third call: the CSV label-loss note only -- no D6 on a
-# format with no declaration slot.
+# Expected, third call: the CSV note only -- no D6 on a format with no
+# declaration slot. Since v0.9.232 (S359; Jeff's walk of this section at
+# S357) it says what this frame had to lose, verbatim:
+#   "Note: CSV format (.csv) does not store missing-value metadata.
+#    Income's declared missing value -99 is written as an ordinary number and
+#    will read back as valid data.
+#    To write it as an empty cell instead, save with:
+#      jsave(wv, "<normalized path>/wv.csv", overwrite = TRUE,
+#          preserve.declarations = FALSE)"
+# -- no labels line, since wv has no labels; Income and its code named,
+# where it said "Any SPSS-style missing values (e.g. -99)"; and the call
+# to run, where it said "jsave(..., preserve.declarations = FALSE)".
 #
 # Things to look at:
 #   - The resave line echoes the NORMALIZED absolute path, so it pastes

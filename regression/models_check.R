@@ -81,6 +81,66 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S359 EDIT (v0.9.232, 2026-10-16): Fix Slate 10 and Scripts Slate B. NEW
+#           SECTION U, eighteen checks (U01-U18), Fix Slate 10 at the
+#           models: the intercept-only model, y ~ 1, in jlm() and
+#           jlogistic() (Jeff, S358: "yes, support both") -- one coefficient
+#           row, no standardized column, one line in place of the F test or
+#           the Omnibus Test, R-squared 0, the return's numbers base R's --
+#           with its diagnostics and jplot() leaving out the plots that need
+#           a predictor, in one note (U01-U08); the collinearity warning
+#           naming the term the fit dropped, one and two (U09); jplot()
+#           predicting from the terms the fit kept, without R's
+#           rank-deficient warning (U10); one effect plot per variable, a
+#           term computed from a variable in that variable's plot, a dropped
+#           variable named in the count line (Jeff's S358 okay; U11-U14);
+#           the count line, and the logistic diagnostics list, laid out as
+#           an output's last line (U15-U16); ggplot2's "Removed N rows"
+#           warnings caught where each plot is drawn and summed up in one
+#           note, and the tracker as a unit (U17-U18). NEW SECTION V,
+#           fifteen checks (V01-V15), the S212 item: an ordinary jlm() and
+#           jlogistic() on the shipped clinic data held to base R's fit
+#           number by number, and the printed table to the returned numbers
+#           (V01-V06); Session 212's reproducers -- a computed logical as a
+#           0/1 column, categorical = and numeric = on a computed term, no
+#           "seems categorical" hedge on a computed small-integer term, a
+#           variable named scale beside scale(x) (V07-V11); ref = "auto"
+#           across Session 212's eleven registration shapes (V12-V15).
+#           RE-PINNED: E07 (the warning names x3), Q25 (jlogistic() with its
+#           parentheses, Rule AE), Q30 ("one per variable"), Q33b (ggplot2's
+#           warnings caught: one note under the plot list, where it held
+#           that they reached the user), Q37 (one plot: jplot() returns the
+#           plot itself). GUARD 5 (the S345 item, Scripts Slate B): the
+#           values of the workspace's objects on entry, put back at the foot
+#           when a run changed them, and named ("Put back as they were on
+#           entry: ..."), before guard 2's clean-up on a green run and
+#           before the stop on a red one.
+#           FOUR HUNDRED AND SIXTY-NINE checks.
+#           MUTATION MAP: the intercept-only branch off in jlm() U02; in
+#           jlogistic()'s Omnibus Test U05; the one-row interval left a
+#           vector U04-U06 U08; the old collinearity wording E07 U09; R's
+#           rank-deficient warning let through U10 U14; every predictor an
+#           effect plot U11 U12 U14; a blank line above the count line U15;
+#           none below the logistic list U16; ggplot2's warnings not taken
+#           Q33b U17 U18; the one-case cause not found Q33b U17 U18; the
+#           no-predictor plots kept U07 U08; Rule AE off Q25; the label tier
+#           of ref = "auto" off V12; the code-1 tier off V13.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): run_all.R
+#           2646 across nine, plain and under the RStudio-handler stand-in,
+#           each again with a 35-character temp path; every battery entered
+#           dirty, plain and under the stand-in (joutput("full"), width 100,
+#           diagnostics on, a stata convention, the color option, a juse()
+#           default, and objects named Age, Gender, Keep01, Name, d, x, s,
+#           y, g, e, f, m, r and a; again plain with n, v, w and z): all
+#           green, the width, level, default
+#           frame and convention as on entry, and every object a run changed
+#           put back by guard 5 and named; the four stores (.jst_filter,
+#           .jst_complete, .jst_dummy, .jst_registry) left empty where they
+#           were NULL, as at S357.
+#           LAST VERIFIED: v0.9.232, 2026-10-16 (S359) -- 469/469 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (9 run,
+#           2646 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox; GitHub 6cf15d7 (package).
 # S357 EDIT (v0.9.231, 2026-10-16): the FRAMES slate, ruling R19 -- data
 #           frames only. NEW SECTION T, ten checks (T01-T10): a one-per-case
 #           object read by any function of a term (I(a2), log(), factor(),
@@ -841,6 +901,28 @@ stopifnot(exists("jload", mode = "function"))
 # the data frames in the workspace can follow a battery in one session.
 .entry_names <- ls(globalenv(), all.names = TRUE)
 
+# Guard 5 (S359; the S345 item): the VALUES of the workspace's objects on
+# entry, so the foot can put back any a run changed. Guard 2 compares
+# names only, and a fixture or a working object named like one of the
+# user's own -- d, x, s -- replaced it. Held by reference, so nothing is
+# copied unless the run changes the object. Dotted names are the harness's
+# and are left out.
+.entry_values <- mget(grep("^\\.", .entry_names, value = TRUE, invert = TRUE),
+                      envir = globalenv())
+.ws_restore <- function() {
+  back <- names(.entry_values)[vapply(names(.entry_values), function(nm) {
+    !exists(nm, envir = globalenv(), inherits = FALSE) ||
+      !identical(get(nm, envir = globalenv(), inherits = FALSE),
+                 .entry_values[[nm]])
+  }, logical(1))]
+  for (nm in back) assign(nm, .entry_values[[nm]], envir = globalenv())
+  if (length(back) > 0L) {
+    cat("Put back as they were on entry: ", paste(back, collapse = ", "),
+        "\n", sep = "")
+  }
+  invisible(back)
+}
+
 # Session state to hand back at the foot (record / force / restore, S253).
 .entry_message_width <- getOption(".jst_options_message_width")
 .entry_default_data  <- getOption(".jst_default_data")
@@ -1252,8 +1334,9 @@ check("E06 a constant predictor: jlogistic stops with jlm's zero-variance wordin
             flat(grab(jlogistic(yb ~ x1 + k, data = d))), fixed = TRUE) &&
         identical(flat(sub("^jlogistic\\(\\): ", "", grab(jlogistic(yb ~ x1 + k, data = d)))),
                   flat(sub("^jlm\\(\\): ", "", grab(jlm(y ~ x1 + k, data = d))))))
-check("E07 an aliased predictor: the collinearity warning fires (x3 = x1 + x2)",
-      grepl("One or more variables have been removed from the model due to collinearity.",
+check("E07 an aliased predictor: the collinearity warning fires, naming it (x3 = x1 + x2; S359: it said \"One or more variables have been removed\")",
+      grepl(paste0("x3 was removed from the model: it is an exact linear combination of the ",
+                   "other predictors, so its coefficient cannot be estimated."),
             flat(grab(jlogistic(yb ~ x1 + x2 + x3, data = d))), fixed = TRUE))
 .l3 <- quiet(jlogistic(yb ~ x1 + x2 + x3, data = d, ci = TRUE))
 check("E08 an aliased predictor: the call returns (it crashed building the return object)",
@@ -4148,20 +4231,20 @@ check("Q24 the dichotomy notes end on the state to reach, not a method (voice Ru
           grepl("  jdummy(dq, t37)\nOr make it a 0/1 variable in the data frame.\n", b, fixed = TRUE) &&
           !grepl("jrecode", paste(a, b), fixed = TRUE) }))
 .q25 <- grab(jlogistic(bl ~ x1, data = dq))
-check("Q25 jlogistic()'s text-outcome refusal: a sentence a line, 'Encode' over the jencode() call, the blank coded 0 so the word is modeled (it said 'Recode' and offered \"Y=0; blank=1\")",
+check("Q25 jlogistic()'s text-outcome refusal: a sentence a line, 'Encode' over the jencode() call, the blank coded 0 so the word is modeled (it said 'Recode' and offered \"Y=0; blank=1\"); jlogistic() with its parentheses (Rule AE, S359)",
       identical(flat(.q25), paste0(
         "jlogistic(): 'bl' has text categories Y/<blank>. ",
         "Encode it as a 0/1 variable, so that the modeled category is explicit: ",
         "dq$blR <- jencode(dq, bl, map = \"blank=0; Y=1\") ",
         "Then use blR as your dependent variable (the category mapped to 1 is the one ",
-        "jlogistic models).")) &&
+        "jlogistic() models).")) &&
         grepl("^jlogistic\\(\\): 'bl' has text categories Y/<blank>\\.\nEncode it", .q25) &&
         identical(flat(grab(jlogistic(gn ~ x1, data = dq))), paste0(
           "jlogistic(): 'gn' has text categories u/v. ",
           "Encode it as a 0/1 variable, so that the modeled category is explicit: ",
           "dq$gnR <- jencode(dq, gn, map = \"u=0; v=1\") ",
           "Then use gnR as your dependent variable (the category mapped to 1 is the one ",
-          "jlogistic models).")))
+          "jlogistic() models).")))
 check("Q26 an expression given as the data: named first, and the lines run to an outcome jlogistic() fits (the line was \"mk()$blR <- jencode(mk(), ...)\")",
       local({ mk_q <- function() dq
         e  <- new.env(parent = globalenv()); assign("mk_q", mk_q, envir = e)
@@ -4204,11 +4287,11 @@ check("Q29 jlm()'s plot list takes jlogistic()'s form, word for word: the count,
             "to navigate):", "  1. Residuals vs Fitted", "  2. Normal Q-Q",
             "  3. Scale-Location", "  4. Cook's Distance", "  5. Residuals vs Leverage")) &&
           identical(o[i - 1L], "") }))
-check("Q30 jplot()'s effect plots counted in number: '(1 effect plot produced)' (it read '1 effect plots')",
+check("Q30 jplot()'s effect plots counted in number: '(1 effect plot produced)' (it read '1 effect plots'); in variables since S359 (it said 'one per predictor')",
       local({ m1 <- quiet(jlm(y ~ x1, data = dq)); m2 <- quiet(jlm(y ~ x1 + x2, data = dq))
         any(.q_both(jplot(m1, which = "effects")) == "(1 effect plot produced)") &&
           any(.q_both(jplot(m2, which = "effects")) ==
-                "(2 effect plots produced, one per predictor)") }))
+                "(2 effect plots produced, one per variable)") }))
 d9 <- data.frame(y = c(0.1, -0.4, 0.3, 0.9, 0.2, -0.1, 1.3, 0.8, NA),
                  x = c(1, 1, 1, 2, 2, 2, 3, 3, 3))
 check("Q31 the smoother's warnings are caught where the plots are drawn: no warning of R's own, one note under the plot list, pinned whole (twelve raw loess warnings printed)",
@@ -4235,13 +4318,20 @@ check("Q33 control: a model whose smoother raises nothing gets no note, by jlm()
         !any(grepl("trend line", c(o, p), fixed = TRUE)) &&
           length(.q_warns(jplot(m, which = c("residuals", "scale", "leverage")))) == 0L }))
 
-check("Q33b control: a warning that is not the smoother's still passes -- a one-case category's leverage of 1 leaves a standardized residual missing, and ggplot2's own warnings about the removed row reach the user",
+check("Q33b a one-case category's leverage of 1 leaves a standardized residual undefined: ggplot2's own warnings about the removed row are caught where the plots are drawn, and one note under the plot list names the plots and the case (S359; they printed raw, held to the end)",
       local({ set.seed(3472)
         z <- data.frame(y = stats::rnorm(30), x = stats::rnorm(30),
                         g = c(rep("a", 15), rep("b", 14), "c"), stringsAsFactors = FALSE)
         w <- .q_warns(jlm(y ~ x + g, data = z,
                           diagnostics = c("residuals", "scale", "leverage")))
-        length(w) > 0L && !any(grepl("pseudoinverse|neighborhood|singularit", w)) }))
+        o <- .q_both(jlm(y ~ x + g, data = z,
+                         diagnostics = c("residuals", "scale", "leverage")))
+        i <- which(o == "  3. Residuals vs Leverage")
+        length(w) == 0L && length(i) == 1L &&
+          identical(trimws(flat(paste(o[(i + 1L):length(o)], collapse = "\n"))),
+                    paste0("Note: Scale-Location and Residuals vs Leverage leave out 1 case with a ",
+                           "leverage of 1, whose standardized residual is undefined.")) &&
+          identical(o[i + 1L], "") }))
 
 # ---- Q34-Q38: the fit plot, the equation, the box plots ----------------------
 dq$xc <- round(seq(-2, 2, length.out = .q_n), 3)
@@ -4278,7 +4368,9 @@ check("Q37 the effect plots and jlogistic()'s probability plot follow a squared 
         grDevices::pdf(NULL)
         pl <- suppressMessages(suppressWarnings(jplot(m, which = "effects")))
         grDevices::dev.off()
-        ln <- ggplot2::ggplot_build(pl$effect_xc)$data[[2L]]
+        # One plot since S359 (one per variable): jplot() returns the plot itself.
+        pl <- if (inherits(pl, "ggplot")) pl else pl$effect_xc
+        ln <- ggplot2::ggplot_build(pl)$data[[2L]]
         set.seed(3471)
         dq$bc <- stats::rbinom(.q_n, 1, stats::plogis(-1 + 1.5 * dq$xc^2))
         g  <- quiet(jlogistic(bc ~ xc + I(xc^2), data = dq))
@@ -4650,6 +4742,373 @@ check("T10 .jst_frame_object() as a unit: no object in the value positions (%in%
                 identical(op(quote(w), bare = TRUE), "w") }))
 rm(.t_has, .t_obj, .t_fix)
 
+# =============================================================================
+# U -- FIX SLATE 10, MODELS AND PLOTS (S359, v0.9.232)
+# =============================================================================
+# The intercept-only model, y ~ 1, fitted by jlm() and jlogistic() (Jeff,
+# S358: "yes, support both"): one coefficient row, no standardized column, no
+# F test or Omnibus Test -- one line in its place -- R-squared 0; the plots
+# that need a predictor, or are drawn against the fitted values or the
+# leverage, left out with one note. The collinearity warning names the term
+# the fit dropped. jplot() predicts from the terms the fit kept without R's
+# rank-deficient warning; draws one effect plot per variable, a term
+# computed from a variable in that variable's plot (Jeff's S358 okay); lays
+# its count line out as an output's last line; and the logistic diagnostics
+# list likewise. ggplot2's own "Removed N rows" warnings are caught where a
+# plot is drawn (Q33b holds jlm()'s note; U17 jplot()'s). Every oracle a fit
+# of base R's. Fixtures dotted; working objects in local().
+# =============================================================================
+.u_both <- function(expr) {
+  op  <- options(warn = 1L)
+  tf  <- tempfile(); con <- file(tf, open = "wt"); sink(con)
+  grDevices::pdf(NULL)
+  ok <- tryCatch({
+    withCallingHandlers(force(expr),
+      message = function(m) {
+        cat(conditionMessage(m), file = con, sep = ""); invokeRestart("muffleMessage")
+      },
+      warning = function(w) {
+        cat("Warning: ", conditionMessage(w), "\n", file = con, sep = "")
+        invokeRestart("muffleWarning")
+      })
+    TRUE
+  }, error = function(e) FALSE,
+  finally = { grDevices::dev.off(); sink(); close(con); options(op) })
+  res <- readLines(tf, warn = FALSE); unlink(tf)
+  if (!ok) return("[error]")
+  gsub("\033\\[[0-9;]*[A-Za-z]", "", res)
+}
+.u_warns <- function(expr) {
+  w <- character(0)
+  zz <- textConnection(".junk", "w", local = TRUE); sink(zz, type = "output")
+  grDevices::pdf(NULL)
+  on.exit({ grDevices::dev.off(); sink(type = "output"); close(zz) }, add = TRUE)
+  withCallingHandlers(
+    tryCatch(suppressMessages(expr), error = function(e) NULL),
+    warning = function(x) { w <<- c(w, conditionMessage(x)); invokeRestart("muffleWarning") })
+  w
+}
+# .u_plots(): what jplot() returns, as a named list of plots, drawn to no
+# device; .u_line(): a plot's line layer, as ggplot2 builds it.
+.u_plots <- function(expr) {
+  grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+  p <- suppressMessages(suppressWarnings(utils::capture.output(v <- expr)))
+  if (inherits(v, "ggplot")) list(v) else v
+}
+.u_line <- function(p) {
+  b <- ggplot2::ggplot_build(p)$data
+  b[[which(vapply(b, function(l) "y" %in% names(l) && !"ymin" %in% names(l) &&
+                    nrow(l) >= 80L, logical(1)))[1L]]]
+}
+# .u_msg(): the messages a jplot() call gives, drawn to no device.
+.u_msg <- function(expr) {
+  grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+  grab(expr)
+}
+set.seed(2)
+.u_d <- data.frame(Y = stats::rbinom(60, 1, 0.3), X = round(stats::rnorm(60, 50, 10), 1))
+
+check("U01 jlm(X ~ 1): one coefficient row, the mean of the outcome tested against 0, as lm() gives it -- b, SE, t and p (it stopped with R's 'Non-numeric argument to mathematical function' after the title)",
+      local({ r <- quiet(jlm(X ~ 1, data = .u_d))
+              cf <- summary(stats::lm(X ~ 1, data = .u_d))$coefficients
+              cr <- r$coefficients_raw
+              !is.null(r) && nrow(cr) == 1L && identical(cr$term, "(Intercept)") &&
+                near(cr$b, mean(.u_d$X)) && near(cr$b, cf[1, 1]) && near(cr$SE, cf[1, 2]) &&
+                near(cr$t, cf[1, 3]) && near(cr$p, cf[1, 4]) }))
+check("U02 ... the table has no standardized column, the F line says there is nothing to test, R-squared is 0 (pinned)",
+      local({ o <- .u_both(jlm(X ~ 1, data = .u_d))
+              i <- which(o == "Coefficients")
+              length(i) == 1L &&
+                identical(trimws(o[i + 1L]), "b      SE      t      p") &&
+                startsWith(o[i + 3L], "(Intercept)  48.595  1.439  33.768  <.001") &&
+                any(o == "R-squared: 0.000    Adjusted R-squared: 0.000") &&
+                any(o == "F-statistic: none (the model has no predictors to test)") &&
+                any(o == "  Regression: 0.000") && !any(grepl("^Warning", o)) }))
+check("U03 ... the return: F and p NA, df1 0, df2 the residual df, R-squared 0; std = \"gelman\" and ci = TRUE fit too, ci the lm() interval",
+      local({ r <- quiet(jlm(X ~ 1, data = .u_d, std = "gelman", ci = TRUE))
+              ci <- stats::confint(stats::lm(X ~ 1, data = .u_d))
+              !is.null(r) && is.na(r$f_statistic[["value"]]) && is.na(r$f_statistic[["p"]]) &&
+                identical(unname(r$f_statistic[["df1"]]), 0) &&
+                identical(unname(r$f_statistic[["df2"]]), 59) && identical(r$r_squared, 0) &&
+                near(r$coefficients_raw$ci_lower, ci[1, 1]) && near(r$coefficients_raw$ci_upper, ci[1, 2]) }))
+check("U04 jlogistic(Y ~ 1): B the log odds of the modeled category, as glm() gives it, Exp(B) and the profile interval exp(confint()) (it stopped on 'incorrect number of dimensions')",
+      local({ r   <- quiet(jlogistic(Y ~ 1, data = .u_d))
+              fit <- stats::glm(Y ~ 1, data = .u_d, family = stats::binomial)
+              ci  <- suppressMessages(stats::confint(fit))
+              cr  <- r$coefficients_raw
+              !is.null(r) && nrow(cr) == 1L && near(cr$b, stats::qlogis(mean(.u_d$Y)), 1e-6) &&
+                near(cr$b, stats::coef(fit)[[1]]) &&
+                near(cr$exp_b, mean(.u_d$Y) / (1 - mean(.u_d$Y)), 1e-6) &&
+                near(cr$exp_ci_lower, exp(ci[[1]]), 1e-6) && near(cr$exp_ci_upper, exp(ci[[2]]), 1e-6) }))
+check("U05 ... the Omnibus Test's caption with one line beneath it in place of the table, the pseudo R-squared values 0, -2LL and AIC glm()'s (pinned)",
+      local({ o <- .u_both(jlogistic(Y ~ 1, data = .u_d))
+              fit <- stats::glm(Y ~ 1, data = .u_d, family = stats::binomial)
+              i <- which(o == "Omnibus Test of Model Coefficients")
+              j <- which(o == "Model Summary")
+              length(i) == 1L && length(j) == 1L &&
+                identical(o[i + 1:2], c("None: the model has no predictors to test.", "")) &&
+                identical(j, i + 3L) &&
+                grepl(paste0("^ *", sprintf("%.3f", stats::deviance(fit)), " +0\\.000 +0\\.000 +",
+                             sprintf("%.3f", stats::AIC(fit)), "$"), o[j + 3L]) &&
+                startsWith(o[which(o == "Coefficients") + 3L],
+                           "(Intercept)  -0.547  0.268  4.162   1  .041   0.579") }))
+check("U06 ... the return: chi-square 0 on 0 df, p NA, the pseudo R-squared values 0",
+      local({ r <- quiet(jlogistic(Y ~ 1, data = .u_d))
+              f <- r$fit_raw
+              !is.null(r) && identical(f$chi_sq, 0) && identical(f$omnibus_df, 0L) &&
+                is.na(f$omnibus_p) && identical(f$cox_snell_r2, 0) && near(f$nagelkerke_r2, 0) }))
+check("U07 jlm(X ~ 1, diagnostics = TRUE): the two plots it can draw in the list, then one blank line and the note naming the three left out; no warning (the smoother failed raw: 'Computation failed in stat_smooth()')",
+      local({ o <- .u_both(jlm(X ~ 1, data = .u_d, diagnostics = TRUE))
+              i <- which(o == "  2. Cook's Distance")
+              length(i) == 1L &&
+                identical(o[i - 3:1], c("2 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane",
+                                        "to navigate):", "  1. Normal Q-Q")) &&
+                identical(o[i + 1:4], c("",
+                  "Note: The model has no predictors, so Residuals vs Fitted, Scale-Location,",
+                  "and Residuals vs Leverage are not drawn.", "")) &&
+                !any(grepl("^Warning", o)) }))
+check("U08 jplot() on the two intercept-only results: one note naming what is left out, the rest drawn -- Normal Q-Q and Cook's Distance; Cook's Distance (it stopped: '`focal` must be one of the independent variables')",
+      local({ m <- quiet(jlm(X ~ 1, data = .u_d)); g <- quiet(jlogistic(Y ~ 1, data = .u_d))
+              a <- .u_msg(jplot(m)); b <- .u_msg(jplot(g))
+              pa <- .u_plots(jplot(m)); pg <- .u_plots(jplot(g, which = "all"))
+              identical(trimws(flat(a)), "Note: The model has no predictors, so the fit plot and Residuals vs Fitted are not drawn.") &&
+                identical(trimws(flat(b)), "Note: The model has no predictors, so the probability plot, ROC Curve, and Calibration Plot are not drawn.") &&
+                identical(names(pa), c("qq", "cooks")) && length(pg) == 1L &&
+                identical(pg[[1L]]$labels$title, "Cook's Distance") }))
+
+.u_c <- data.frame(y = c(2.1, 3.4, 1.9, 4.2, 3.3, 2.8, 3.9, 4.4, 2.6, 3.1, 1.7, 3.8),
+                   x = c(1.2, 2.3, 0.8, 3.1, 2.2, 1.9, 2.8, 3.5, 1.4, 2.0, 0.6, 2.9),
+                   z = c(5.1, 3.2, 6.3, 2.4, 4.5, 4.6, 3.7, 1.8, 5.9, 4.1, 6.2, 2.3),
+                   yb = c(0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0))
+.u_c$x2 <- 2 * .u_c$x; .u_c$w <- .u_c$x + .u_c$z
+check("U09 the collinearity warning names the term the fit dropped and says why, in jlm() and jlogistic() alike; two in number; an interaction as the table writes it (it said 'One or more variables have been removed from the model due to collinearity.')",
+      identical(flat(grab(jlm(y ~ x + x2 + z, data = .u_c))),
+                paste0("x2 was removed from the model: it is an exact linear combination of the ",
+                       "other predictors, so its coefficient cannot be estimated.")) &&
+        grepl("x2 was removed from the model: it is an exact linear combination",
+              flat(grab(jlogistic(yb ~ x + x2, data = .u_c))), fixed = TRUE) &&
+        grepl(paste0("x2 and w were removed from the model: each is an exact linear combination ",
+                     "of the other predictors, so their coefficients cannot be estimated."),
+              flat(grab(jlm(y ~ x + z + x2 + w, data = .u_c))), fixed = TRUE) &&
+        grepl("x * z was removed from the model:",
+              flat(grab(jlm(y ~ x * z + I(x * z), data = .u_c))), fixed = TRUE))
+check("U10 jplot() on a model with an aliased term: no 'prediction from rank-deficient fit' warning from the fit plot or the effect plots, and the fit line is the kept terms' prediction",
+      local({ m <- quiet(jlm(y ~ x + x2 + z, data = .u_c))
+              w <- c(.u_warns(jplot(m, which = "fit")), .u_warns(jplot(m, which = "effects")))
+              ln <- .u_line(.u_plots(jplot(m, which = "fit"))[[1L]])
+              cf <- stats::coef(stats::lm(y ~ x + z, data = .u_c))
+              length(w) == 0L && near(ln$y, cf[[1]] + cf[[2]] * ln$x, 1e-6) }))
+.u_q <- data.frame(xc = round(seq(-2, 2, length.out = 25), 3))
+.u_q$yc <- round(1 + .u_q$xc + 2 * .u_q$xc^2 + rep(c(0.3, -0.2, 0.1, -0.4, 0.2), 5), 3)
+.u_q$zc <- round(rep(c(1.5, -0.5, 2.5, 0.5, -1.5), 5), 3)
+check("U11 one effect plot per variable: y ~ xc + I(xc^2) draws one plot, Effect: xc, its line the whole curve; the count line in number (it drew a second plot, Effect: I(xc^2), with xc held at 0)",
+      local({ m  <- quiet(jlm(yc ~ xc + I(xc^2), data = .u_q))
+              pl <- .u_plots(jplot(m, which = "effects"))
+              cf <- stats::coef(stats::lm(yc ~ xc + I(xc^2), data = .u_q))
+              ln <- .u_line(pl[[1L]])
+              length(pl) == 1L && identical(pl[[1L]]$labels$title, "Effect: xc") &&
+                near(ln$y, cf[[1]] + cf[[2]] * ln$x + cf[[3]] * ln$x^2, 1e-6) &&
+                any(.u_both(jplot(m, which = "effects")) == "(1 effect plot produced)") }))
+check("U12 a product drawn in each of its variables' plots, the other held at 0: two plots, xc and zc, each slope the main effect; '(2 effect plots produced, one per variable)'",
+      local({ m  <- quiet(jlm(yc ~ xc + zc + I(xc * zc), data = .u_q))
+              pl <- .u_plots(jplot(m, which = "effects"))
+              cf <- stats::coef(stats::lm(yc ~ xc + zc + I(xc * zc), data = .u_q))
+              a  <- .u_line(pl$effect_xc); b <- .u_line(pl$effect_zc)
+              identical(names(pl), c("effect_xc", "effect_zc")) &&
+                near(a$y, cf[[1]] + cf[[2]] * a$x, 1e-6) && near(b$y, cf[[1]] + cf[[3]] * b$x, 1e-6) &&
+                any(.u_both(jplot(m, which = "effects")) == "(2 effect plots produced, one per variable)") }))
+check("U13 control: a computed term none of whose variables is in the model by itself keeps a plot of its own -- y ~ log(x) + z draws log(x) and z",
+      local({ m <- quiet(jlm(y ~ log(x) + z, data = .u_c))
+              identical(names(.u_plots(jplot(m, which = "effects"))), c("effect_log(x)", "effect_z")) }))
+check("U14 a variable the fit dropped has no effect plot, and the count line names it (it drew a flat line for x2)",
+      local({ m <- quiet(jlm(y ~ x + x2 + z, data = .u_c))
+              o <- .u_both(jplot(m, which = "effects"))
+              identical(names(.u_plots(jplot(m, which = "effects"))), c("effect_x", "effect_z")) &&
+                identical(flat(paste(o[o != ""], collapse = " ")),
+                          "(2 effect plots produced, one per variable; none for x2, which was removed from the model)") }))
+check("U15 the count line is laid out as an output's last line: nothing above it, one blank line after it (it opened on a blank line and ended without one)",
+      local({ m <- quiet(jlm(y ~ x + z, data = .u_c))
+              identical(.u_both(jplot(m, which = "effects")),
+                        c("(2 effect plots produced, one per variable)", "")) &&
+                identical(.u_both(jplot(m, which = c("fit", "effects"))),
+                          c("(2 effect plots produced, one per variable)", "")) }))
+check("U16 the logistic diagnostics list likewise: nothing above it, one blank line after it (it opened on a blank line and ended without one); the one-plot form the same",
+      local({ g <- quiet(jlogistic(yb ~ x + z, data = .u_c))
+              a <- .u_both(jplot(g, which = c("calibration", "cooks")))
+              b <- .u_both(jplot(g, which = "cooks"))
+              identical(a, c("2 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane",
+                             "to navigate):", "  1. Calibration Plot", "  2. Cook's Distance", "")) &&
+                identical(b, c("(Diagnostic plot produced: Cook's Distance)", "")) }))
+check("U17 jplot()'s diagnostic plots on the one-case model: ggplot2's warnings caught there too, and the note opens jplot()'s output with no blank line above it",
+      local({ set.seed(3472)
+              z <- data.frame(y = stats::rnorm(30), x = stats::rnorm(30),
+                              g = c(rep("a", 15), rep("b", 14), "c"), stringsAsFactors = FALSE)
+              m <- quiet(jlm(y ~ x + g, data = z))
+              o <- .u_both(jplot(m, which = c("scale", "leverage")))
+              length(.u_warns(jplot(m, which = c("scale", "leverage")))) == 0L &&
+                identical(o, c("Note: Scale-Location and Residuals vs Leverage leave out 1 case with a",
+                               "leverage of 1, whose standardized residual is undefined.")) }))
+check("U18 .jst_gg_removed_tracker() as a unit: takes both ggplot2 wordings and nothing else, counts the most a plot left out, and states the leverage cause only when every case left out has one",
+      local({ tr <- jstats:::.jst_gg_removed_tracker()
+              w1 <- simpleWarning("Removed 2 rows containing missing values (`geom_point()`).")
+              w2 <- simpleWarning("Removed 1 row containing missing values or values outside the scale range (`geom_point()`).")
+              w3 <- simpleWarning("Computation failed in `stat_smooth()`")
+              ok <- tr$take(w1, "A") && tr$take(w2, "B") && !tr$take(w3, "C")
+              lev <- tr$note(c(1, 1, 0.2)); gen <- tr$note(c(1, 0.3, 0.2))
+              ok && identical(flat(lev), "Note: A and B leave out 2 cases with a leverage of 1, whose standardized residual is undefined.") &&
+                identical(flat(gen), "Note: A and B leave out 2 cases whose values are missing or infinite.") &&
+                identical(jstats:::.jst_gg_removed_tracker()$note(1), character(0)) }))
+rm(.u_both, .u_warns, .u_plots, .u_line, .u_msg, .u_d, .u_c, .u_q)
+
+# =============================================================================
+# V -- JLM() AND JLOGISTIC()'S ORDINARY OUTPUT AND THE FORMULA TRANSFORMS
+#      (S359; what the retired dev/tests 100, 110 and 240 held -- the S212
+#      item, Scripts Slate B)
+# =============================================================================
+# The battery held the fixes made to the two models; nothing held what they
+# print on an ordinary call. V01-V06 hold every number of an ordinary jlm()
+# and jlogistic() on the shipped clinic data to base R's fit, and the
+# printed table to the returned numbers. V07-V11 are Session 212's
+# reproducers: a computed logical entered as a 0/1 column ("(1)", its beta
+# blank, the numbers a saved column gives), categorical = and numeric = on
+# a computed term, the hedge that does not fire on a computed small-integer
+# term, and a categorical variable named scale beside scale(x) (AUDIT-029).
+# V12-V14: the ref = "auto" default across Session 212's eleven
+# registration shapes -- the label tier, the code-1 tier, and everything
+# else as ref = "first" left it. Fixtures dotted; working objects in local().
+# =============================================================================
+.v_cl <- clinic
+check("V01 an ordinary jlm(): every coefficient's b, SE, t and p are lm()'s",
+      local({ r <- quiet(jlm(Flourishing ~ SocialSupport + ScreenTime, data = .v_cl))
+              cf <- summary(stats::lm(Flourishing ~ SocialSupport + ScreenTime, data = .v_cl))$coefficients
+              cr <- r$coefficients_raw
+              !is.null(r) && identical(cr$term, rownames(cf)) &&
+                near(cr$b, cf[, 1]) && near(cr$SE, cf[, 2]) && near(cr$t, cf[, 3]) && near(cr$p, cf[, 4]) }))
+check("V02 ... R-squared, adjusted R-squared, the residual SE, F with its two df and p, and the sums of squares are lm()'s and anova()'s",
+      local({ r <- quiet(jlm(Flourishing ~ SocialSupport + ScreenTime, data = .v_cl))
+              fit <- stats::lm(Flourishing ~ SocialSupport + ScreenTime, data = .v_cl)
+              s <- summary(fit); f <- s$fstatistic; a <- stats::anova(fit)
+              !is.null(r) && near(r$r_squared, s$r.squared) && near(r$adj_r_squared, s$adj.r.squared) &&
+                near(r$residual_se, s$sigma) && near(r$f_statistic[["value"]], f[[1]]) &&
+                identical(unname(r$f_statistic[c("df1", "df2")]), unname(f[2:3])) &&
+                near(r$f_statistic[["p"]], stats::pf(f[[1]], f[[2]], f[[3]], lower.tail = FALSE)) &&
+                near(r$sums_of_squares[["residual"]], a[["Sum Sq"]][3]) &&
+                near(r$sums_of_squares[["regression"]], sum(a[["Sum Sq"]][1:2])) && identical(r$n, 70L) }))
+check("V03 ... the printed rows are the returned numbers at three places, and the fit lines too",
+      local({ r <- quiet(jlm(Flourishing ~ SocialSupport + ScreenTime, data = .v_cl))
+              o <- strsplit(shown(jlm(Flourishing ~ SocialSupport + ScreenTime, data = .v_cl)), "\n")[[1]]
+              cr <- r$coefficients_raw
+              row <- function(t) strsplit(trimws(o[startsWith(o, t)][1L]), " +")[[1]]
+              all(vapply(seq_len(nrow(cr)), function(k) {
+                v <- row(cr$term[k]); v <- v[-seq_len(length(strsplit(cr$term[k], " ")[[1]]))]
+                identical(v[1:3], sprintf("%.3f", c(cr$b[k], cr$SE[k], cr$t[k])))
+              }, logical(1))) &&
+                any(o == sprintf("R-squared: %.3f    Adjusted R-squared: %.3f", r$r_squared, r$adj_r_squared)) &&
+                any(o == sprintf("F-statistic: %.3f on 2 and 67 DF, p-value: %s", r$f_statistic[["value"]],
+                                 jstats:::.jst_fmt_p(r$f_statistic[["p"]]))) }))
+check("V04 an ordinary jlogistic(): B, SE, Wald (z squared), p and Exp(B) are glm()'s",
+      local({ r <- quiet(jlogistic(SoughtHelp ~ Flourishing + ScreenTime, data = .v_cl))
+              fit <- stats::glm(SoughtHelp ~ Flourishing + ScreenTime, data = .v_cl, family = stats::binomial)
+              cf <- summary(fit)$coefficients; cr <- r$coefficients_raw
+              !is.null(r) && identical(cr$term, rownames(cf)) && near(cr$b, cf[, 1]) && near(cr$SE, cf[, 2]) &&
+                near(cr$Wald, cf[, 3]^2) && near(cr$p, cf[, 4]) && near(cr$exp_b, exp(cf[, 1])) }))
+check("V05 ... -2LL, the Omnibus chi-square on its df and its p, Cox & Snell's and Nagelkerke's R-squared and AIC, from glm()'s two deviances",
+      local({ r <- quiet(jlogistic(SoughtHelp ~ Flourishing + ScreenTime, data = .v_cl))
+              fit <- stats::glm(SoughtHelp ~ Flourishing + ScreenTime, data = .v_cl, family = stats::binomial)
+              f <- r$fit_raw; n <- stats::nobs(fit)
+              cs <- 1 - exp((fit$deviance - fit$null.deviance) / n)
+              !is.null(r) && near(f$deviance, fit$deviance) && near(f$chi_sq, fit$null.deviance - fit$deviance) &&
+                identical(as.integer(f$omnibus_df), 2L) &&
+                near(f$omnibus_p, stats::pchisq(fit$null.deviance - fit$deviance, 2, lower.tail = FALSE)) &&
+                near(f$cox_snell_r2, cs) && near(f$nagelkerke_r2, cs / (1 - exp(-fit$null.deviance / n))) &&
+                near(f$aic, stats::AIC(fit)) }))
+check("V06 ... and the printed Coefficients rows and Model Summary row are those numbers",
+      local({ r <- quiet(jlogistic(SoughtHelp ~ Flourishing + ScreenTime, data = .v_cl))
+              o <- strsplit(shown(jlogistic(SoughtHelp ~ Flourishing + ScreenTime, data = .v_cl)), "\n")[[1]]
+              cr <- r$coefficients_raw; f <- r$fit_raw
+              lead <- function(t) strsplit(trimws(o[startsWith(o, t)][1L]), " +")[[1]][2:3]
+              identical(lead("Flourishing"), sprintf("%.3f", c(cr$b[2], cr$SE[2]))) &&
+                identical(lead("ScreenTime"), sprintf("%.3f", c(cr$b[3], cr$SE[3]))) &&
+                identical(strsplit(trimws(o[which(o == "Model Summary") + 3L]), " +")[[1]],
+                          sprintf("%.3f", c(f$deviance, f$cox_snell_r2, f$nagelkerke_r2, f$aic))) }))
+check("V07 S212 reproducer A, a computed logical: I(ScreenTime > 4) enters as a 0/1 column, prints as 'I(ScreenTime > 4) (1)' with its beta blank, and its numbers are a saved 0/1 column's",
+      local({ dd <- .v_cl; dd$Heavy <- as.numeric(dd$ScreenTime > 4)
+              r <- quiet(jlm(Flourishing ~ I(ScreenTime > 4) + SocialSupport, data = dd))
+              s <- quiet(jlm(Flourishing ~ Heavy + SocialSupport, data = dd))
+              o <- strsplit(shown(jlm(Flourishing ~ I(ScreenTime > 4) + SocialSupport, data = dd)), "\n")[[1]]
+              rw <- o[startsWith(o, "I(ScreenTime > 4) (1)")]
+              !is.null(r) && length(rw) == 1L &&
+                identical(length(strsplit(trimws(sub("^I\\(ScreenTime > 4\\) \\(1\\)", "", rw)), " +")[[1]]), 4L) &&
+                near(r$coefficients_raw$b, s$coefficients_raw$b) && near(r$coefficients_raw$SE, s$coefficients_raw$SE) }))
+check("V08 ... categorical = on a computed term is honored: the term's categories as dummy rows, the fit lm()'s with factor()",
+      local({ tm <- "I(round(pmin(ScreenTime, 5)))"
+              r <- quiet(jlm(Flourishing ~ I(round(pmin(ScreenTime, 5))) + SocialSupport, data = .v_cl,
+                             categorical = tm))
+              fit <- stats::lm(Flourishing ~ factor(round(pmin(ScreenTime, 5))) + SocialSupport, data = .v_cl)
+              !is.null(r) && identical(nrow(r$coefficients_raw), length(stats::coef(fit))) &&
+                near(sort(r$coefficients_raw$b), sort(unname(stats::coef(fit)))) }))
+check("V09 ... numeric = naming the computed logical fits it as the same 0/1 column",
+      local({ a <- quiet(jlm(Flourishing ~ I(ScreenTime > 4) + SocialSupport, data = .v_cl))
+              b <- quiet(jlm(Flourishing ~ I(ScreenTime > 4) + SocialSupport, data = .v_cl,
+                             numeric = "I(ScreenTime > 4)"))
+              !is.null(a) && !is.null(b) && near(a$coefficients_raw$b, b$coefficients_raw$b) }))
+check("V10 ... the 'seems categorical' hedge does not fire on a computed small-integer term (it steered to jdummy() and jrecode() calls that cannot take an inline term)",
+      local({ a <- grab(jlm(Flourishing ~ I(SocialSupport >= 3) + SleepHours, data = .v_cl))
+              b <- grab(jlm(Flourishing ~ I(pmin(ScreenTime, 6) %/% 2) + SleepHours, data = .v_cl))
+              !grepl("seems categorical", paste(a, b), fixed = TRUE) }))
+check("V11 S212 reproducer D (AUDIT-029): a categorical variable named scale beside scale(x) -- the transform and the grouped dummies in one fit, lm()'s numbers",
+      local({ set.seed(99)
+              dd <- data.frame(y = stats::rnorm(80), x = stats::rnorm(80))
+              dd$scale <- haven::labelled(sample(1:3, 80, TRUE), labels = c(Low = 1, Mid = 2, High = 3))
+              r <- quiet(jlm(y ~ scale(x) + scale, data = dd, categorical = "scale"))
+              fit <- stats::lm(y ~ scale(x) + factor(as.numeric(scale)), data = dd)
+              !is.null(r) && identical(nrow(r$coefficients_raw), 4L) &&
+                near(r$coefficients_raw$b, unname(stats::coef(fit))) }))
+.v_reg <- local({
+  heavy <- .v_cl$ScreenTime > 4
+  data.frame(
+    YN12  = haven::labelled(ifelse(heavy, 1, 2), labels = c(Yes = 1, No = 2)),
+    Rev12 = haven::labelled(ifelse(heavy, 2, 1), labels = c(No = 1, Yes = 2)),
+    HL12  = haven::labelled(ifelse(heavy, 1, 2), labels = c(Heavy = 1, Light = 2)),
+    B01   = as.numeric(heavy),
+    B01L  = haven::labelled(as.numeric(heavy), labels = c(No = 0, Yes = 1)),
+    FHL   = factor(ifelse(heavy, "Heavy", "Light")),
+    CYN   = ifelse(heavy, "Yes", "No"),
+    LG    = heavy,
+    Odd   = ifelse(heavy, 10, 5),
+    Cond  = .v_cl$Condition,
+    y     = .v_cl$Flourishing,
+    stringsAsFactors = FALSE)
+})
+# The reference each shape takes, from the registration jdummy() stores.
+.v_ref <- function(v, ...) {
+  quiet(jdummy(.v_reg, NULL))
+  quiet(eval(substitute(jdummy(.v_reg, V, ...), list(V = as.name(v)))))
+  ds <- jstats:::.jst_get_dummy(".v_reg")
+  quiet(jdummy(.v_reg, NULL))
+  hit <- Filter(function(r) identical(r$var_name, v), ds)
+  if (length(hit) != 1L) NA_character_ else
+    sub(paste0("^", v, "_"), "", as.character(hit[[1L]]$ref_label))
+}
+check("V12 ref = \"auto\", the label tier: a recognized yes/no pair models the affirmative whatever its codes -- 1 = Yes / 2 = No, 1 = No / 2 = Yes, 0 = No / 1 = Yes, and text Yes/No all take No as the reference",
+      identical(.v_ref("YN12"), "No") && identical(.v_ref("Rev12"), "No") &&
+        identical(.v_ref("B01L"), "No") && identical(.v_ref("CYN"), "No"))
+check("V13 ... the code-1 tier: 1 = Heavy / 2 = Light models Heavy (Light the reference); a plain 0/1 models 1; a logical models TRUE",
+      identical(.v_ref("HL12"), "Light") && identical(.v_ref("B01"), "0") &&
+        identical(.v_ref("LG"), "FALSE"))
+check("V14 ... and everything else as ref = \"first\" left it: a factor's first level, codes 5/10 their lowest, a four-category variable its first category",
+      identical(.v_ref("FHL"), "Heavy") && identical(.v_ref("Odd"), "5") &&
+        identical(.v_ref("Cond"), "Control"))
+check("V15 ... explicit ref = \"first\" on 1 = Yes / 2 = No takes Yes; and the registered 1 = Yes / 2 = No in a model is the dummy YN12_Yes, its intercept the No group's mean",
+      local({ a <- .v_ref("YN12", ref = "first")
+              quiet(jdummy(.v_reg, YN12))
+              r <- quiet(jlm(y ~ YN12, data = .v_reg))
+              quiet(jdummy(.v_reg, NULL))
+              no <- mean(.v_reg$y[unclass(.v_reg$YN12) == 2])
+              identical(a, "Yes") && !is.null(r) && "YN12_Yes" %in% r$coefficients_raw$term &&
+                near(r$coefficients_raw$b[1], no) }))
+rm(.v_cl, .v_reg, .v_ref)
+
 # --- Verdict -----------------------------------------------------------------
 
 quiet(jdummy(clear.all = TRUE))
@@ -4665,10 +5124,12 @@ if (.n_ok == .n) {
   # Fixture cleanup (S337, the S249 item): a green run leaves nothing behind
   # but .results, which run_all.R reads. A red run keeps its fixtures, for
   # a look at what failed.
+  .ws_restore()   # guard 5, ahead of guard 2's cleanup
   rm(list = setdiff(ls(globalenv(), all.names = TRUE),
                     c(.entry_names, ".results")), envir = globalenv())
 } else {
   cat("\nRESULT: FAIL (", .n_ok, "/", .n, " passed)\n", sep = "")
   for (r in .results) if (!r$ok) cat("  failed: ", r$desc, "\n", sep = "")
+  .ws_restore()   # guard 5: the user's objects back, a red run's fixtures kept
   stop("assertion battery failed", call. = FALSE)
 }

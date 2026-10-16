@@ -40,8 +40,34 @@
 #           refusal, an expression given as the data, "(a dichotomy)";
 #           jlm()'s plot list in jlogistic()'s form, the smoother's note,
 #           and the fit plot of a squared term.
+#           Since S359 (v0.9.232, Section 25): the intercept-only model in
+#           both, the term the fit dropped named, one effect plot per
+#           variable, the count line and the logistic list as an output's
+#           last line, and ggplot2's removed-row warnings in one note.
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
+# S359 EDIT (v0.9.232; Fix Slate 10): SECTION 25 ADDED, seven renders --
+#           24 sections -> 25 -- filled by running (fill.R): the
+#           intercept-only model in jlm() and jlogistic() (Jeff, S358: "yes,
+#           support both"), its diagnostics and jplot() on both; the
+#           collinearity warning naming the term the fit dropped, one and
+#           two; one effect plot per variable (Jeff's S358 okay), a squared
+#           term and a product; the count line laid out as an output's last
+#           line; ggplot2's "Removed 1 rows" warnings summed up in one note;
+#           the logistic diagnostics list in the count line's layout.
+#           SECTIONS 21 AND 22 RE-PINNED, refilled by running after a
+#           capture of every section on 0.9.231 and 0.9.232: "jlogistic()
+#           models)" (Rule AE), and Section 22's count line "(1 effect plot
+#           produced)" for a variable and its square, with nothing above it.
+#           All three on the PENDING line: wording and layout Claude chose.
+#           harness.R derive: Section 25 needs no other; verify: 55 of 56
+#           Expected blocks found (Section 1's, as before), 25 of 25 sections
+#           in three orders and by prepare = TRUE. The human half of
+#           models_check.R section U.
+# LAST VERIFIED: v0.9.232, 2026-10-16 (S359) -- Sections 21, 22 and 25
+#           WALKED on the WORKSTATION by Jeff through receive_all(), under
+#           the tool's default walk line ("walked, all okay"); PENDING back
+#           to none; GitHub 6cf15d7 (package).
 # S357 EDIT (v0.9.231; the FRAMES slate, ruling R19): SECTION 24 ADDED,
 #           four renders, filled by running (fill.R): a computed term
 #           reading a workspace vector of one value per case and an object
@@ -1917,7 +1943,7 @@ shown21(jlogistic(tick ~ x1, data = mk21()))
 #   Encode it as a 0/1 variable, so that the modeled category is explicit:
 #     m21$tickR <- jencode(m21, tick, map = "blank=0; Y=1")
 #   Then use tickR as your dependent variable (the category mapped to 1 is the
-#   one jlogistic models).
+#   one jlogistic() models).
 #
 #   Logistic Regression
 #   Error: jlogistic(): 'tick' has text categories Y/<blank>.
@@ -1925,7 +1951,7 @@ shown21(jlogistic(tick ~ x1, data = mk21()))
 #     mydata <- mk21()
 #     mydata$tickR <- jencode(mydata, tick, map = "blank=0; Y=1")
 #   Then use tickR as your dependent variable (the category mapped to 1 is the
-#   one jlogistic models).
+#   one jlogistic() models).
 
 # Render 4 -- arithmetic on a labelled categorical variable, the frame
 # given as an expression.
@@ -2091,8 +2117,7 @@ jplot(r22, which = "effects")
 #     Residual:   1.038
 #     Total:      203.443
 #
-#
-#   (2 effect plots produced, one per predictor)
+#   (1 effect plot produced)
 
 rm(m22, q22, r22)
 
@@ -2103,12 +2128,14 @@ rm(m22, q22, r22)
 #     note: the three plots with a trend line named, and the count of
 #     the smoother's problems. No "Warning:" line anywhere. In the pane,
 #     the trend lines of those three plots are the ones to distrust.
-#   - RENDER 2: the fit plot (the first of the three drawn) is a curve
+#   - RENDER 2: the fit plot (the first of the two drawn) is a curve
 #     through the points; its subtitle is the equation, "yc = ... +
 #     ...·I(xc^2)", with no backticks and no "(line shown at ...)" line.
-#     The effect plots: Effect: xc is the same curve; Effect: I(xc^2)
-#     holds xc at 0. The console says "(2 effect plots produced, one per
-#     predictor)".
+#     The effect plot: one, Effect: xc, the same curve -- one plot per
+#     variable since v0.9.232, so the Effect: I(xc^2) that held xc at 0 is
+#     gone. The console says "(1 effect plot produced)", with the jlm()
+#     output's one blank line above it and none of its own (S359: it
+#     opened on a blank line of its own, so two stood together).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -2295,6 +2322,257 @@ rm(shown24, w24, G24, cut24, codes24, fl24, ran24)
 #   - RENDER 3: "Put both in a data frame first:" and two lines that put
 #     fl24 and w24 in mydata and describe fl24 there;
 #   - RENDER 4: four TRUEs.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 25 -- Fix Slate 10: the intercept-only model, the dropped term, the plots (S359) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.232. jlm(y ~ 1) and jlogistic(y ~ 1) stopped with R's error after the
+# title; Jeff's lean at S358 ("yes, support both"): one coefficient row, one
+# line in place of the F test or the Omnibus Test, R-squared 0. The plots
+# that need a predictor, or are drawn against the fitted values or the
+# leverage, are left out with one note. The collinearity warning names the
+# term the fit dropped. jplot() draws one effect plot per variable (a term
+# computed from a variable in that variable's plot; Jeff's S358 okay) and
+# lays its count line out as an output's last line -- none above, one
+# blank below -- as the logistic diagnostics list now is. ggplot2's own
+# "Removed 1 rows" warnings are caught where each plot is drawn and summed
+# up in one note under the plot list. The assertion side is models_check.R
+# sections U and V. The fixtures are inline; warn = 1, so each warning
+# prints where it is raised.
+.warn25 <- options(warn = 1)
+set.seed(2)
+y25 <- data.frame(Y = stats::rbinom(60, 1, 0.3), X = round(stats::rnorm(60, 50, 10), 1))
+
+# Render 1 -- jlm(X ~ 1): the coefficient is the mean of X; no beta column.
+jlm(X ~ 1, data = y25)
+# Expected:
+#   Linear Regression
+#
+#   Analysis N: 60
+#
+#   Coefficients
+#                   b      SE      t      p
+#   -----------  ------  -----  ------  -----
+#   (Intercept)  48.595  1.439  33.768  <.001
+#
+#   Outcome: X
+#
+#   R-squared: 0.000    Adjusted R-squared: 0.000
+#   Residual Standard Error: 11.147
+#
+#   F-statistic: none (the model has no predictors to test)
+#   Sum of Squares:
+#     Regression: 0.000
+#     Residual:   7331.408
+#     Total:      7331.409
+
+# Render 2 -- jlogistic(Y ~ 1): B is the log odds of a 1 (22 of 60).
+jlogistic(Y ~ 1, data = y25)
+# Expected:
+#   Logistic Regression
+#
+#   Analysis N: 60
+#
+#   Coefficients
+#                   b      SE    Wald  df    p   Exp(B)
+#   -----------  ------  -----  -----  --  ----  ------
+#   (Intercept)  -0.547  0.268  4.162   1  .041   0.579
+#
+#   Outcome: Y
+#
+#   Omnibus Test of Model Coefficients
+#   None: the model has no predictors to test.
+#
+#   Model Summary
+#   -2 Log Likelihood  Cox & Snell R²  Nagelkerke R²    AIC
+#   -----------------  --------------  -------------  ------
+#         78.859            0.000          0.000      80.859
+#
+#   Dependent Variable Encoding
+#     Modeled (1):   1
+#     Reference (0): 0
+
+# Render 3 -- the diagnostics of jlm(X ~ 1), and jplot() on both results.
+grDevices::pdf(NULL)
+jlm(X ~ 1, data = y25, diagnostics = TRUE)
+# Expected:
+#   Linear Regression
+#
+#   Analysis N: 60
+#
+#   Coefficients
+#                   b      SE      t      p
+#   -----------  ------  -----  ------  -----
+#   (Intercept)  48.595  1.439  33.768  <.001
+#
+#   Outcome: X
+#
+#   R-squared: 0.000    Adjusted R-squared: 0.000
+#   Residual Standard Error: 11.147
+#
+#   F-statistic: none (the model has no predictors to test)
+#   Sum of Squares:
+#     Regression: 0.000
+#     Residual:   7331.408
+#     Total:      7331.409
+#
+#   2 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane
+#   to navigate):
+#     1. Normal Q-Q
+#     2. Cook's Distance
+#
+#   Note: The model has no predictors, so Residuals vs Fitted, Scale-Location,
+#   and Residuals vs Leverage are not drawn.
+r25a <- jlm(X ~ 1, data = y25)
+r25b <- jlogistic(Y ~ 1, data = y25)
+p25a <- jplot(r25a)
+p25b <- jplot(r25b)
+# Expected:
+#   Note: The model has no predictors, so the fit plot and Residuals vs Fitted
+#   are not drawn.
+#   Note: The model has no predictors, so the probability plot, ROC Curve, and
+#   Calibration Plot are not drawn.
+#   (Diagnostic plot produced: Cook's Distance)
+
+# Render 4 -- a predictor that is an exact linear combination of others.
+c25 <- data.frame(y = c(2.1, 3.4, 1.9, 4.2, 3.3, 2.8, 3.9, 4.4, 2.6, 3.1, 1.7, 3.8),
+                  x = c(1.2, 2.3, 0.8, 3.1, 2.2, 1.9, 2.8, 3.5, 1.4, 2.0, 0.6, 2.9),
+                  z = c(5.1, 3.2, 6.3, 2.4, 4.5, 4.6, 3.7, 1.8, 5.9, 4.1, 6.2, 2.3))
+c25$x2 <- 2 * c25$x
+c25$w  <- c25$x + c25$z
+r25c <- jlm(y ~ x + x2 + z, data = c25)
+# Expected:
+#   Linear Regression
+#
+#   Analysis N: 12
+#
+#   Warning: x2 was removed from the model: it is an exact linear combination of
+#   the other predictors, so its coefficient cannot be estimated.
+#   Coefficients
+#                  b      SE      t      β      p
+#   -----------  -----  -----  ------  -----  -----
+#   (Intercept)  0.312  0.507   0.616          .553
+#   x            1.137  0.112  10.135  1.169  <.001
+#   z            0.107  0.067   1.595  0.184   .145
+#
+#   Outcome: y
+#
+#   R-squared: 0.990    Adjusted R-squared: 0.987
+#   Residual Standard Error: 0.101
+#
+#   F-statistic: 429.559 on 2 and 9 DF, p-value: <.001
+#   Sum of Squares:
+#     Regression: 8.808
+#     Residual:   0.092
+#     Total:      8.900
+invisible(utils::capture.output(r25d <- jlm(y ~ x + z + x2 + w, data = c25)))
+p25c <- jplot(r25c, which = c("fit", "effects"))
+# Expected:
+#   Warning: x2 and w were removed from the model: each is an exact linear
+#   combination of the other predictors, so their coefficients cannot
+#   be estimated.
+#   (2 effect plots produced, one per variable; none for x2, which was removed
+#   from the model)
+
+# Render 5 -- one effect plot per variable: a squared term in its
+# variable's plot, a product in both of its variables' plots.
+q25 <- data.frame(xc = round(seq(-2, 2, length.out = 25), 3))
+q25$yc <- round(1 + q25$xc + 2 * q25$xc^2 + rep(c(0.3, -0.2, 0.1, -0.4, 0.2), 5), 3)
+q25$zc <- round(rep(c(1.5, -0.5, 2.5, 0.5, -1.5), 5), 3)
+r25e <- jlm(yc ~ xc + I(xc^2), data = q25)
+r25f <- jlm(yc ~ xc + zc + I(xc * zc), data = q25)
+p25e <- jplot(r25e, which = "effects")
+print(p25e$labels$title)
+p25f <- jplot(r25f, which = "effects")
+print(vapply(p25f, function(p) p$labels$title, character(1)))
+# Expected:
+#   (1 effect plot produced)
+#
+#   [1] "Effect: xc"
+#   (2 effect plots produced, one per variable)
+#
+#      effect_xc    effect_zc 
+#   "Effect: xc" "Effect: zc" 
+
+# Render 6 -- a one-case category: ggplot2's warnings, caught; one note.
+set.seed(3472)
+z25 <- data.frame(y = stats::rnorm(30), x = stats::rnorm(30),
+                  g = c(rep("a", 15), rep("b", 14), "c"), stringsAsFactors = FALSE)
+jlm(y ~ x + g, data = z25, diagnostics = c("residuals", "scale", "leverage"))
+# Expected:
+#   Linear Regression
+#
+#   Analysis N: 30
+#
+#   Coefficients
+#                      b      SE      t      β      p
+#   --------------  ------  -----  ------  -----  ----
+#   (Intercept)      0.513  0.313   1.640         .113
+#   x                0.043  0.227   0.191  0.038  .850
+#   g (ref = 1: a)
+#     2: b          -0.309  0.435  -0.710         .484
+#     3: c          -0.071  1.172  -0.060         .952
+#
+#   Outcome: y
+#
+#   R-squared: 0.019    Adjusted R-squared: -0.094
+#   Residual Standard Error: 1.135
+#
+#   F-statistic: 0.170 on 3 and 26 DF, p-value: .916
+#   Sum of Squares:
+#     Regression: 0.655
+#     Residual:   33.486
+#     Total:      34.141
+#
+#   3 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane
+#   to navigate):
+#     1. Residuals vs Fitted
+#     2. Scale-Location
+#     3. Residuals vs Leverage
+#
+#   Note: Scale-Location and Residuals vs Leverage leave out 1 case with a
+#   leverage of 1, whose standardized residual is undefined.
+
+# Render 7 -- jplot()'s logistic diagnostics list.
+c25$yb <- c(0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0)
+r25g <- jlogistic(yb ~ x + z, data = c25)
+p25g <- jplot(r25g, which = c("calibration", "cooks"))
+# Expected:
+#   2 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane
+#   to navigate):
+#     1. Calibration Plot
+#     2. Cook's Distance
+grDevices::dev.off()
+options(.warn25)
+rm(.warn25, y25, c25, q25, z25, r25a, r25b, r25c, r25d, r25e, r25f,
+   r25g, p25a, p25b, p25c, p25e, p25f, p25g)
+
+# Things to look at:
+#   - RENDER 1: one row, (Intercept), with b, SE, t and p and no beta
+#     column; "F-statistic: none (the model has no predictors to test)";
+#     R-squared and Adjusted R-squared 0.000; Regression SS 0.000;
+#   - RENDER 2: one row, B -0.547 and Exp(B) 0.579 (22/38); under "Omnibus
+#     Test of Model Coefficients" the line "None: the model has no
+#     predictors to test." where the table was; both pseudo R-squared 0.000;
+#   - RENDER 3: "2 diagnostic plots produced", Normal Q-Q and Cook's
+#     Distance, then one blank line and the note naming the three left out;
+#     jplot()'s two notes;
+#   - RENDER 4: "x2 was removed from the model: it is an exact linear
+#     combination of the other predictors, so its coefficient cannot be
+#     estimated." under "Analysis N" (warn = 1 prints it there), and the
+#     two-term form "x2 and w were removed ... each is ... their
+#     coefficients"; jplot() on the first: no R warning, and the count line
+#     "(2 effect plots produced, one per variable; none for x2, which was
+#     removed from the model)" with nothing above it and one blank line
+#     below;
+#   - RENDER 5: the squared-term model has one plot, "Effect: xc"; the
+#     product model two, "Effect: xc" and "Effect: zc" -- no plot is titled
+#     with I( );
+#   - RENDER 6: no "Removed 1 rows" warnings; one blank line under the plot
+#     list, then "Note: Scale-Location and Residuals vs Leverage leave out 1
+#     case with a leverage of 1, whose standardized residual is undefined.";
+#   - RENDER 7: the list with nothing above it and one blank line after it.
 
 # --- Restore session state ---------------------------------------------------
 

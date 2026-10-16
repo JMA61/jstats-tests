@@ -45,6 +45,27 @@
 #           errors), and jupdate() printed "jstats has been updated." with
 #           nothing installed -- reproduced live in the sandbox against a
 #           blocked network.
+# S359 EDIT (v0.9.232, 2026-10-16): GUARD 5 (the S345 item, Scripts Slate
+#           B): the values of the workspace's objects on entry, put back at
+#           the foot when a run changed them, and named ("Put back as they
+#           were on entry: ..."), before guard 2's clean-up on a green run
+#           and before the stop on a red one. No check changed.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): run_all.R
+#           2646 across nine, plain and under the RStudio-handler stand-in,
+#           each again with a 35-character temp path; every battery entered
+#           dirty, plain and under the stand-in (joutput("full"), width 100,
+#           diagnostics on, a stata convention, the color option, a juse()
+#           default, and objects named Age, Gender, Keep01, Name, d, x, s,
+#           y, g, e, f, m, r and a; again plain with n, v, w and z): all
+#           green, the width, level, default
+#           frame and convention as on entry, and every object a run changed
+#           put back by guard 5 and named; the four stores (.jst_filter,
+#           .jst_complete, .jst_dummy, .jst_registry) left empty where they
+#           were NULL, as at S357.
+#           LAST VERIFIED: v0.9.232, 2026-10-16 (S359) -- 42/42 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (9 run,
+#           2646 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox; GitHub 6cf15d7 (package).
 # S340 EDIT (v0.9.214, 2026-10-05): Fix Slate 3, the Session 202 item
 #           (the package with the network blocked or writes contained).
 #           SECTIONS F, G AND H ADDED, 12 checks. F01-F05: the REAL
@@ -186,6 +207,28 @@ stopifnot(exists("jload", mode = "function"))
 # battery made beyond it is removed at the foot, so a walk that reports on
 # the data frames in the workspace can follow a battery in one session.
 .entry_names <- ls(globalenv(), all.names = TRUE)
+
+# Guard 5 (S359; the S345 item): the VALUES of the workspace's objects on
+# entry, so the foot can put back any a run changed. Guard 2 compares
+# names only, and a fixture or a working object named like one of the
+# user's own -- d, x, s -- replaced it. Held by reference, so nothing is
+# copied unless the run changes the object. Dotted names are the harness's
+# and are left out.
+.entry_values <- mget(grep("^\\.", .entry_names, value = TRUE, invert = TRUE),
+                      envir = globalenv())
+.ws_restore <- function() {
+  back <- names(.entry_values)[vapply(names(.entry_values), function(nm) {
+    !exists(nm, envir = globalenv(), inherits = FALSE) ||
+      !identical(get(nm, envir = globalenv(), inherits = FALSE),
+                 .entry_values[[nm]])
+  }, logical(1))]
+  for (nm in back) assign(nm, .entry_values[[nm]], envir = globalenv())
+  if (length(back) > 0L) {
+    cat("Put back as they were on entry: ", paste(back, collapse = ", "),
+        "\n", sep = "")
+  }
+  invisible(back)
+}
 
 # Width pin (S253, mandatory). The startup lines are packageStartupMessage()
 # literals, not emitter output, so the width cannot move them -- pinned
@@ -632,10 +675,12 @@ if (.n_ok == .n) {
   # Fixture cleanup (S337, the S249 item): a green run leaves nothing behind
   # but .results, which run_all.R reads. A red run keeps its fixtures, for
   # a look at what failed.
+  .ws_restore()   # guard 5, ahead of guard 2's cleanup
   rm(list = setdiff(ls(globalenv(), all.names = TRUE),
                     c(.entry_names, ".results")), envir = globalenv())
 } else {
   cat("\nRESULT: FAIL (", .n_ok, "/", .n, " passed)\n", sep = "")
   for (r in .results) if (!r$ok) cat("  failed: ", r$desc, "\n", sep = "")
+  .ws_restore()   # guard 5: the user's objects back, a red run's fixtures kept
   stop("assertion battery failed", call. = FALSE)
 }

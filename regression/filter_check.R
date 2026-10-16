@@ -142,6 +142,56 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S359 EDIT (v0.9.232, 2026-10-16): Fix Slate 10 and Scripts Slate B. NEW
+#           SECTION AA, ten checks (AA01-AA10): (1) the vector path's
+#           refusal of a condition naming another variable of the column's
+#           frame is the same whatever the workspace holds -- a separate
+#           Keep01 of three values, or of one per case, had let jdesc()
+#           analyze d's own Keep01 (found by the S342 dirty entry; it was
+#           this battery's I07 I08 I22 reds entered dirty) (AA01-AA03);
+#           (2) the shape check counts CASES and names the workspace object
+#           a wrong count came from, as ruling R19's stop names one, its
+#           own fix line kept (the S357 item; Jeff, S358: "okay on your
+#           default"), per call, bare, after jcomplete() and as a unit
+#           (AA04-AA07); (3) the pipeline masks declared missing values only
+#           in the analysis variables and the columns its settings read, a
+#           column only a condition reads still read with its codes missing,
+#           and every column when a variable is not in the frame (the S217
+#           item's fix 2) (AA08-AA10). NEW B08b and D09b: a wrong count with
+#           no object to name, the plain form in cases. RE-PINNED to the
+#           case wording and the named object: B01, B08, D08, D09, N06, N30,
+#           O38, O39, V04. S26 runs its two calls with no Keep01, Gender or
+#           Name in the workspace (a computed vector has no frame, so a
+#           workspace object of that name is what its condition reads), put
+#           back after. GUARD 5 (the S345 item, Scripts Slate B): the
+#           values of the workspace's objects on entry, put back at the foot
+#           when a run changed them, and named ("Put back as they were on
+#           entry: ..."), before guard 2's clean-up on a green run and
+#           before the stop on a red one.
+#           FIVE HUNDRED AND FIFTY-TWO checks.
+#           MUTATION MAP: twenty-four one-change mutants of the 0.9.232
+#           master, each run on the batteries it bears on: the object never
+#           named B08 D08 D09 N06 N30 O38 O39 AA04-AA07; "rows" in the plain
+#           form B08b D09b; the filters' columns not masked L02 AA08 AA09
+#           (and cps_check.R N41b N44c N44d N54d N57n); the fallback to every
+#           column dropped AA10; the vector path reading the workspace AA01
+#           AA02.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): run_all.R
+#           2646 across nine, plain and under the RStudio-handler stand-in,
+#           each again with a 35-character temp path; every battery entered
+#           dirty, plain and under the stand-in (joutput("full"), width 100,
+#           diagnostics on, a stata convention, the color option, a juse()
+#           default, and objects named Age, Gender, Keep01, Name, d, x, s,
+#           y, g, e, f, m, r and a; again plain with n, v, w and z): all
+#           green, the width, level, default
+#           frame and convention as on entry, and every object a run changed
+#           put back by guard 5 and named; the four stores (.jst_filter,
+#           .jst_complete, .jst_dummy, .jst_registry) left empty where they
+#           were NULL, as at S357.
+#           LAST VERIFIED: v0.9.232, 2026-10-16 (S359) -- 552/552 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (9 run,
+#           2646 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox; GitHub 6cf15d7 (package).
 # S357 EDIT (v0.9.231, 2026-10-16): the FRAMES slate, ruling R19 -- data
 #           frames only. NEW SECTION Z, eight checks (Z01-Z08): jsubset()
 #           set on a one-per-case object refused with the line that adds it
@@ -1095,6 +1145,28 @@ stopifnot(exists("jload", mode = "function"))
 # the data frames in the workspace can follow a battery in one session.
 .entry_names <- ls(globalenv(), all.names = TRUE)
 
+# Guard 5 (S359; the S345 item): the VALUES of the workspace's objects on
+# entry, so the foot can put back any a run changed. Guard 2 compares
+# names only, and a fixture or a working object named like one of the
+# user's own -- d, x, s -- replaced it. Held by reference, so nothing is
+# copied unless the run changes the object. Dotted names are the harness's
+# and are left out.
+.entry_values <- mget(grep("^\\.", .entry_names, value = TRUE, invert = TRUE),
+                      envir = globalenv())
+.ws_restore <- function() {
+  back <- names(.entry_values)[vapply(names(.entry_values), function(nm) {
+    !exists(nm, envir = globalenv(), inherits = FALSE) ||
+      !identical(get(nm, envir = globalenv(), inherits = FALSE),
+                 .entry_values[[nm]])
+  }, logical(1))]
+  for (nm in back) assign(nm, .entry_values[[nm]], envir = globalenv())
+  if (length(back) > 0L) {
+    cat("Put back as they were on entry: ", paste(back, collapse = ", "),
+        "\n", sep = "")
+  }
+  invisible(back)
+}
+
 # Session state to hand back at the foot (record / force / restore, S253).
 .entry_message_width <- getOption(".jst_options_message_width")
 .entry_default_data  <- getOption(".jst_default_data")
@@ -1312,7 +1384,7 @@ reset()
 reset()
 .b01 <- grab(jsubset(d, TRUE))
 check("B01 TRUE: a single value, no parenthetical for the literal",
-      has(flat(.b01), "TRUE is a single value, not one TRUE or FALSE for every row."))
+      has(flat(.b01), "TRUE is a single value, not one TRUE or FALSE for every case."))
 check("B02 an aggregate: a single value WITH the computed value shown",
       has(grab(jsubset(d, mean(Age, na.rm = TRUE) > 40)),
           "is a single value (TRUE)"))
@@ -1330,9 +1402,14 @@ check("B07 an empty result: 'no values at all'",
       has(grab(jsubset(d, character(0))), "has no values at all"))
 keep3 <- c(TRUE, FALSE, TRUE)
 .b08 <- grab(jsubset(d, keep3 == TRUE))
-check("B08 wrong count: '3 values for 12 rows' and the own-columns fix",
-      has(.b08, "keep3 == TRUE has 3 values for 12 rows") &&
-      has(.b08, "Build the filter from the data frame's own columns"))
+check("B08 wrong count from a workspace object: named as ruling R19's stop names one, counted in cases, and the own-columns fix (S359; it said '3 values for 12 rows')",
+      has(flat(.b08), paste0("jsubset(): In keep3 == TRUE, keep3 is not in the d data frame; it is a separate object in your workspace. ",
+                             "It has 3 values for the 12 cases in the d data frame, not one TRUE or FALSE for every case.")) &&
+      has(.b08, "\nBuild the filter from the data frame's own columns, for example:\n  jsubset(Age < 40)"))
+check("B08b wrong count with no object to name: the plain form, counted in cases",
+      has(flat(grab(jsubset(d, c(TRUE, FALSE)))),
+          "jsubset(): c(TRUE, FALSE) has 2 values for 12 cases, not one TRUE or FALSE for every case.") &&
+        is.null(fs_of("d")))
 check("B09 nothing is stored after a refused set",
       is.null(fs_of("d")))
 check("B10 an evaluation failure is REFUSED (S330; it was silent, and the filter stored), and nothing is stored",
@@ -1552,10 +1629,17 @@ check("D07 the stale-to-be filter applies cleanly while the counts match",
 s <- s[-1, ]
 keep12 <- rep(TRUE, 12)
 .d08 <- grab(jdesc(s, Age))
-check("D08 stored, gone stale: names the frame, the filter and the counts",
-      has(flat(.d08), "jdesc(): the jsubset filter for the s data frame, Age > 35 & keep12, has 12 values for 11 rows."))
-check("D09 ... states the requirement and BOTH exits, off first",
-      has(.d08, "A filter must give one TRUE or FALSE for every row.\nTo set it aside, run:\n  jsubset(s, off)\nTo delete it, run:\n  jsubset(s, NULL)"))
+check("D08 stored, gone stale: names the frame, the filter, the object and the counts, in cases (S359; it said 'has 12 values for 11 rows')",
+      has(flat(.d08), paste0("jdesc(): the jsubset filter for the s data frame, Age > 35 & keep12, cannot be applied: ",
+                             "keep12 is not in the s data frame; it is a separate object in your workspace, with 12 values for 11 cases.")))
+check("D09 ... and BOTH exits, off first",
+      has(.d08, "11 cases.\nTo set it aside, run:\n  jsubset(s, off)\nTo delete it, run:\n  jsubset(s, NULL)"))
+check("D09b a stale count with no object to name: the plain stored form, the requirement in cases, both exits (S359)",
+      { ds <- d
+        quiet(jsubset(ds, rep(Age > 35, length.out = 12))); ds <- ds[-1, ]
+        m <- grab(jdesc(ds, Age)); quiet(jsubset(ds, NULL)); rm(ds)
+        has(flat(m), "jdesc(): the jsubset filter for the ds data frame, rep(Age > 35, length.out = 12), has 12 values for 11 cases.") &&
+          has(m, "11 cases.\nA filter must give one TRUE or FALSE for every case.\nTo set it aside, run:\n  jsubset(ds, off)") })
 check("D10 ... and it is an ERROR despite on_error = \"warn\" (always stops)",
       errs(jdesc(s, Age)))
 check("D11 ... the same on another analysis function",
@@ -2700,8 +2784,9 @@ ns <- nf; n_keep <- TRUE
 quiet(jsubset(ns, Age > 35 & n_keep)); quiet(jsubset(ns, off)); ns <- ns[-1, ]; n_keep <- rep(TRUE, 12)
 .fn06 <- grab(jsubset(ns, on))
 check("N06 a filter that no longer matches the frame's rows: the shape error, with the same close",
-      has(flat(.fn06), "jsubset(): the jsubset filter for the ns data frame, Age > 35 & n_keep, has 12 values for 11 rows.") &&
-        has(.fn06, "A filter must give one TRUE or FALSE for every row.\nThe filter stays off.\nTo delete it, run:\n  jsubset(ns, NULL)") &&
+      has(flat(.fn06), paste0("jsubset(): the jsubset filter for the ns data frame, Age > 35 & n_keep, cannot be applied: ",
+                              "n_keep is not in the ns data frame; it is a separate object in your workspace, with 12 values for 11 cases.")) &&
+        has(.fn06, "11 cases.\nThe filter stays off.\nTo delete it, run:\n  jsubset(ns, NULL)") &&
         !has(.fn06, "To set it aside") && identical(fs_of("ns")$active, FALSE))
 reset()
 n_vv <- 40   # a value when set (R19, S357)
@@ -2861,7 +2946,7 @@ check("N30 a wrong shape, and a vector that would be recycled, each in a line of
         quiet(jsubset(ns, NULL)); n_vv <- 40; quiet(jsubset(nf, Age >= n_vv))
         n_vv <- c(30, 40, 50)
         s2 <- grab(jsubset())
-        has(s1, "jsubset set but inactive for ns: Age > 35 & n_keep\nIt cannot be applied: it has 12 values for 11 rows.\n") &&
+        has(flat(s1), "jsubset set but inactive for ns: Age > 35 & n_keep It cannot be applied: n_keep is not in the ns data frame; it is a separate object in your workspace, with 12 values for 11 cases. ") &&
           has(flat(s2), "jsubset active for nf: Age >= n_vv It cannot be applied: n_vv is not in the nf data frame; it is a separate object in your workspace, with 3 values for 12 cases. ") })
 reset()
 n_noisy <- function(x) { warning("n_noisy warned"); message("n_noisy spoke"); x > 40 }
@@ -3303,12 +3388,12 @@ o_m <- d[1:3, ]; o_v3 <- TRUE
 quiet(jsubset(o_m, Age > 0 & o_v3)); o_m <- o_m[1, , drop = FALSE]
 o_v3 <- c(TRUE, FALSE, TRUE)
 .fo38 <- grab(jdesc(o_m, Age))
-check("O38 a stored filter on a frame cut to ONE row: 'has 3 values for 1 row.'",
-      has(flat(.fo38), "the jsubset filter for the o_m data frame, Age > 0 & o_v3, has 3 values for 1 row.") &&
-        !has(.fo38, "1 rows"))
+check("O38 a stored filter on a frame cut to ONE row: '3 values for 1 case.' (S359; it said '1 row')",
+      has(flat(.fo38), "the jsubset filter for the o_m data frame, Age > 0 & o_v3, cannot be applied: o_v3 is not in the o_m data frame; it is a separate object in your workspace, with 3 values for 1 case.") &&
+        !has(.fo38, "1 cases"))
 o_m <- d[1:2, ]
-check("O39 control: two rows are still 'rows'",
-      has(flat(grab(jdesc(o_m, Age))), "Age > 0 & o_v3, has 3 values for 2 rows."))
+check("O39 control: two are 'cases'",
+      has(flat(grab(jdesc(o_m, Age))), "with 3 values for 2 cases."))
 reset()
 rm(list = intersect(c("o_z", "o_y", "o_g", "o_n", "o_on", "o_m", "o_v3", "o_d2"), ls()))
 
@@ -3844,8 +3929,16 @@ check("S25 a second variable beside a computed vector: the sentence, and NO fix 
                        "first, and each variable on its own.")) &&
         length(.s_code(.s25)) == 0L)
 check("S26 ... by = and a condition naming another variable likewise",
-      { b <- grab(jdesc(log(d$Age), by = Gender))
+      { # The two calls run with no Keep01, Gender or Name in the workspace
+        # (Scripts Slate B, the S342 dirty entry): a computed vector has no
+        # frame, so a workspace object of that name is what its condition
+        # would read, and the expected refusal is for none.
+        aside <- intersect(c("Keep01", "Gender", "Name"), ls(globalenv()))
+        held  <- mget(aside, envir = globalenv())
+        rm(list = aside, envir = globalenv())
+        b <- grab(jdesc(log(d$Age), by = Gender))
         s <- grab(jfreq(d$Gender[d$Age > 40], subset = Keep01 == 1))
+        list2env(held, envir = globalenv())
         has(flat(b), "jdesc(): by = Gender needs the data frame, not the single column log(d$Age).") &&
           endsWith(b, "Name the data frame first, and each variable on its own.") &&
           length(.s_code(b)) == 0L &&
@@ -4165,8 +4258,8 @@ check("V03 jsubset() on a one-row frame sets the filter, and an analysis applies
 check("V04 a condition that names no variable is refused on one row as anywhere: TRUE, and a workspace comparison",
       { a <- grab(jfreq(zz_v1, g, subset = TRUE))
         b <- local({ zz_vk <- 3; grab(jfreq(zz_v1, g, subset = zz_vk > 1)) })
-        has(flat(a), "subset = TRUE is a single value, not one TRUE or FALSE for every row.") &&
-          has(flat(b), "subset = zz_vk > 1 is a single value (TRUE), not one TRUE or FALSE for every row.") })
+        has(flat(a), "subset = TRUE is a single value, not one TRUE or FALSE for every case.") &&
+          has(flat(b), "subset = zz_vk > 1 is a single value (TRUE), not one TRUE or FALSE for every case.") })
 check("V05 control: on two rows a single value is still refused",
       has(flat(grab(jfreq(zz_v2, g, subset = mean(x3) > 1))),
           "subset = mean(x3) > 1 is a single value (TRUE)"))
@@ -4758,6 +4851,120 @@ rm(.z_fix, .z_obj)
 reset()
 
 # =============================================================================
+# AA -- FIX SLATE 10 AND SCRIPTS SLATE B AT THE FILTERS (S359, v0.9.232)
+# =============================================================================
+# (1) The vector path's refusal of a condition naming another variable of
+# the column's frame no longer depends on the workspace (the S342 dirty
+# entry): with a separate Keep01 in the workspace, jdesc(d$Age, subset =
+# Keep01 == 1) passed the check and was analyzed on d's own Keep01 (ruling
+# R18: the frame's variable is the one read), where with none it was
+# refused. (2) The filter shape check counts CASES and names the workspace
+# object a wrong-length result came from, as ruling R19's stop names one
+# (the S357 item; Jeff's S358 okay), keeping its own fix line. (3) The
+# pipeline masks declared missing values only in the analysis variables and
+# the columns its settings read (the S217 item's fix 2): a column only a
+# condition reads is still read with its declared codes missing. Fixtures
+# dotted; working objects in local(); a workspace name set for a check is
+# put back as it was by .aa_ws().
+# =============================================================================
+reset()
+# .aa_ws(): run expr with a workspace name set to val (NULL: absent), and
+# put the name back as it was.
+.aa_ws <- function(nm, val, expr) {
+  had <- exists(nm, envir = globalenv(), inherits = FALSE)
+  old <- if (had) get(nm, envir = globalenv()) else NULL
+  if (is.null(val)) {
+    if (had) rm(list = nm, envir = globalenv())
+  } else {
+    assign(nm, val, envir = globalenv())
+  }
+  on.exit({
+    if (had) assign(nm, old, envir = globalenv())
+    else if (exists(nm, envir = globalenv(), inherits = FALSE)) rm(list = nm, envir = globalenv())
+  }, add = TRUE)
+  expr
+}
+check("AA01 the vector path refuses a condition on another variable of the column's frame whatever the workspace holds: a separate Keep01 of 3 values, or of one value per case, gives the same refusal as none (it analyzed d's own Keep01)",
+      local({ clean <- .aa_ws("Keep01", NULL, grab(jdesc(d$Age, subset = Keep01 == 1)))
+              k3  <- .aa_ws("Keep01", c(1, 0, 1), grab(jdesc(d$Age, subset = Keep01 == 1)))
+              k12 <- .aa_ws("Keep01", rep(1, 12), grab(jdesc(d$Age, subset = Keep01 == 1)))
+              has(flat(clean), "jdesc(): subset = Keep01 == 1 refers to Keep01, which the single column d$Age does not contain.") &&
+                identical(k3, clean) && identical(k12, clean) }))
+check("AA02 ... jfreq() and jscreen() alike",
+      local({ f0 <- .aa_ws("Keep01", NULL, grab(jfreq(d$Gender, subset = Keep01 == 1)))
+              f1 <- .aa_ws("Keep01", c(1, 0, 1), grab(jfreq(d$Gender, subset = Keep01 == 1)))
+              s0 <- .aa_ws("Keep01", NULL, grab(jscreen(d$Age, subset = Keep01 == 1)))
+              s1 <- .aa_ws("Keep01", rep(0, 12), grab(jscreen(d$Age, subset = Keep01 == 1)))
+              has(f0, "refers to Keep01") && identical(f1, f0) &&
+                has(s0, "refers to Keep01") && identical(s1, s0) }))
+check("AA03 control: a workspace value a condition names is still read on the vector path (a cutoff), and a column of a frame is analyzed in its frame",
+      .aa_ws("zz_aa_cut", 40, !errs(jdesc(d$Age, subset = Age > zz_aa_cut))) &&
+        identical(.aa_ws("zz_aa_cut", 40, plines(jdesc(d$Age, subset = Age > zz_aa_cut))),
+                  .aa_ws("zz_aa_cut", 40, plines(jdesc(d, Age, subset = Age > zz_aa_cut)))))
+check("AA04 the shape check per call names the object a wrong count came from, counts cases, and keeps its own fix line (it said 'has 5 values for 12 rows')",
+      local({ keep5 <- c(TRUE, FALSE, TRUE, TRUE, FALSE)
+              m <- grab(jfreq(d, Gender, subset = keep5 == TRUE))
+              identical(m, paste0(
+                "jfreq(): In subset = keep5 == TRUE, keep5 is not in the d data\n",
+                "frame; it is a separate object in your workspace.\n",
+                "It has 5 values for the 12 cases in the d data frame, not one TRUE or FALSE\n",
+                "for every case.\n",
+                "In your jfreq() call, compare a variable to a value, for example\n",
+                "subset = Age < 40.")) }))
+check("AA05 ... a frame cut by jcomplete() first: 'the 11 cases left after filtering'",
+      local({ keep5 <- c(TRUE, FALSE, TRUE, TRUE, FALSE)
+              quiet(jcomplete(d, Age))
+              m <- grab(jdesc(d, Gender, subset = keep5 == TRUE)); quiet(jcomplete(d, NULL))
+              has(flat(m), "It has 5 values for the 11 cases left after filtering, not one TRUE or FALSE for every case.") }))
+check("AA06 ... a bare name of the wrong length is the object itself: no 'In keep5,' before it",
+      local({ keep5 <- c(TRUE, FALSE, TRUE, TRUE, FALSE)
+              m <- grab(jsubset(d, keep5))
+              startsWith(m, "jsubset(): keep5 is not in the d data frame; it is a separate") &&
+                has(flat(m), "It has 5 values for the 12 cases in the d data frame, not one TRUE or FALSE for every case.") &&
+                is.null(fs_of("d")) }))
+check("AA07 .jst_check_mask_shape() as a unit: the stored and reactivate forms with an object read as the stored recycling stop does -- 'cannot be applied: keep5 is not in ..., with 5 values for 12 cases.' -- and close on their exits",
+      local({ ob <- list(operand = quote(keep5), n = 5L)
+              f  <- function(origin) tryCatch(
+                jstats:::.jst_check_mask_shape(rep(TRUE, 5), 12L, quote(keep5 == TRUE),
+                                               "keep5 == TRUE", origin, data_name = "d",
+                                               object = ob),
+                error = function(e) conditionMessage(e))
+              a <- f("stored"); b <- f("reactivate")
+              has(flat(a), "the jsubset filter for the d data frame, keep5 == TRUE, cannot be applied: keep5 is not in the d data frame; it is a separate object in your workspace, with 5 values for 12 cases.") &&
+                has(a, "12 cases.\nTo set it aside, run:\n  jsubset(d, off)") &&
+                has(b, "12 cases.\nThe filter stays off.\nTo delete it, run:\n  jsubset(d, NULL)") }))
+.aa_m <- local({
+  set.seed(359); n <- 40
+  data.frame(
+    y = round(stats::rnorm(n, 50, 10)),
+    f = haven::labelled_spss(ifelse(seq_len(n) %% 5 == 0, -99, rep(1:4, 10)),
+                             labels = c(Refused = -99), na_values = -99),
+    k = haven::labelled_spss(ifelse(seq_len(n) %% 8 == 0, -98, seq_len(n)),
+                             labels = c(DK = -98), na_values = -98))
+})
+check("AA08 a column only a per-call condition reads is masked for it: its 8 declared cells are missing to subset = f > 1, as before the narrowing (the Filtered column's '(8 missing)')",
+      local({ ln <- plines(jdesc(.aa_m, y, subset = f > 1))
+              any(grepl("subset = +[0-9]+ +[0-9]+ +f > 1 \\(8 missing\\)$", ln)) }))
+check("AA09 ... and for a stored jsubset() on it, and a jcomplete() on a third column: 5 cases excluded for k's declared code",
+      local({ quiet(jsubset(.aa_m, f > 1)); a <- plines(jdesc(.aa_m, y)); quiet(jsubset(.aa_m, NULL))
+              quiet(jcomplete(.aa_m, k)); b <- plines(jdesc(.aa_m, y)); quiet(jcomplete(.aa_m, NULL))
+              any(grepl("jsubset\\(\\) +[0-9]+ +[0-9]+ +f > 1 \\(8 missing\\)$", a)) &&
+                any(grepl("^ *jcomplete\\(\\) +5 +35", b)) }))
+check("AA10 .jst_apply_pipeline() as a unit: given vars, only those columns and the columns a setting reads are masked; a name that is not a column, or none, masks every column",
+      local({ dat <- .aa_m
+              p1 <- jstats:::.jst_apply_pipeline(dat, ".aa_m", FALSE, vars = "y")$data
+              p2 <- jstats:::.jst_apply_pipeline(dat, ".aa_m", FALSE, vars = "y",
+                                                  subset_expr = quote(f > 0))$data
+              p3 <- jstats:::.jst_apply_pipeline(dat, ".aa_m", FALSE, vars = c("y", "zz_cut"))$data
+              p4 <- jstats:::.jst_apply_pipeline(dat, ".aa_m", FALSE)$data
+              -99 %in% unclass(p1$f) && -98 %in% unclass(p1$k) &&
+                !(-99 %in% unclass(p2$f)) && -98 %in% unclass(p2$k) &&
+                !(-99 %in% unclass(p3$f)) && !(-98 %in% unclass(p3$k)) &&
+                !(-99 %in% unclass(p4$f)) && !(-98 %in% unclass(p4$k)) }))
+rm(.aa_ws, .aa_m)
+reset()
+
+# =============================================================================
 # P -- THE MESSAGE SURFACE, SWEPT (S337)
 # =============================================================================
 # P01 (S337) -- NO PREMATURE BREAK, swept over every condition grab() took.
@@ -4886,10 +5093,12 @@ if (.n_ok == .n) {
   # Fixture cleanup (S337, the S249 item): a green run leaves nothing behind
   # but .results, which run_all.R reads. A red run keeps its fixtures, for
   # a look at what failed.
+  .ws_restore()   # guard 5, ahead of guard 2's cleanup
   rm(list = setdiff(ls(globalenv(), all.names = TRUE),
                     c(.entry_names, ".results")), envir = globalenv())
 } else {
   cat("\nRESULT: FAIL (", .n_ok, "/", .n, " passed)\n", sep = "")
   for (r in .results) if (!r$ok) cat("  failed: ", r$desc, "\n", sep = "")
+  .ws_restore()   # guard 5: the user's objects back, a red run's fixtures kept
   stop("assertion battery failed", call. = FALSE)
 }

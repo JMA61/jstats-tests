@@ -14,9 +14,10 @@
 #           regression/run_all.R, which treats a stop() as FAIL.
 # CONTRACT: one printed line per check, a final "RESULT: PASS (n/n)" line,
 #           and stop() if and only if any check failed.
-# GUARDS:   four things every battery carries, each of which caught a whole
+# GUARDS:   five things every battery carries, each of which caught a whole
 #           class where a per-item assertion did not (the S249, S285 and
-#           S291 items, built in at S337). Keep them when filling in:
+#           S291 items, built in at S337; the fifth, the S345 item, at
+#           S359). Keep them when filling in:
 #           1. THE SESSION IS HANDED BACK. Setup records what it is about
 #              to force (the message width, the juse() default, the output
 #              level) and the foot restores it, ABOVE the verdict so a red
@@ -38,6 +39,14 @@
 #              them: no prose line over the pin, no premature break, every
 #              runnable line parses. A message nobody wrote an assertion
 #              for is still swept.
+#           5. THE USER'S OBJECTS COME BACK AS THEY WERE (S359). Setup holds
+#              the workspace's undotted objects by reference (.entry_values);
+#              the foot puts back any a run changed or removed and names
+#              them on one line, on a green run and a red one. A fixture or
+#              a working object named like the user's own -- d, x, s --
+#              replaced it; guard 2 compares names only. Fixtures and
+#              helpers stay dotted all the same, and a check's working
+#              objects go in local().
 # =============================================================================
 
 # --- Setup -------------------------------------------------------------------
@@ -48,6 +57,28 @@ stopifnot(exists("jload", mode = "function"))
 
 # Guard 2: what is in the workspace on entry.
 .entry_names <- ls(globalenv(), all.names = TRUE)
+
+# Guard 5 (S359; the S345 item): the VALUES of the workspace's objects on
+# entry, so the foot can put back any a run changed. Guard 2 compares
+# names only, and a fixture or a working object named like one of the
+# user's own -- d, x, s -- replaced it. Held by reference, so nothing is
+# copied unless the run changes the object. Dotted names are the harness's
+# and are left out.
+.entry_values <- mget(grep("^\\.", .entry_names, value = TRUE, invert = TRUE),
+                      envir = globalenv())
+.ws_restore <- function() {
+  back <- names(.entry_values)[vapply(names(.entry_values), function(nm) {
+    !exists(nm, envir = globalenv(), inherits = FALSE) ||
+      !identical(get(nm, envir = globalenv(), inherits = FALSE),
+                 .entry_values[[nm]])
+  }, logical(1))]
+  for (nm in back) assign(nm, .entry_values[[nm]], envir = globalenv())
+  if (length(back) > 0L) {
+    cat("Put back as they were on entry: ", paste(back, collapse = ", "),
+        "\n", sep = "")
+  }
+  invisible(back)
+}
 
 # Guard 1: session state to hand back at the foot (record / force / restore).
 .entry_message_width <- getOption(".jst_options_message_width")
@@ -264,10 +295,12 @@ if (.n_ok == .n) {
   cat("\nRESULT: PASS (", .n_ok, "/", .n, ")\n", sep = "")
   # Guard 2: a green run leaves nothing behind but .results. A red run keeps
   # its fixtures, for a look at what failed.
+  .ws_restore()   # guard 5, ahead of guard 2's cleanup
   rm(list = setdiff(ls(globalenv(), all.names = TRUE),
                     c(.entry_names, ".results")), envir = globalenv())
 } else {
   cat("\nRESULT: FAIL (", .n_ok, "/", .n, " passed)\n", sep = "")
   for (r in .results) if (!r$ok) cat("  failed: ", r$desc, "\n", sep = "")
+  .ws_restore()   # guard 5: the user's objects back, a red run's fixtures kept
   stop("assertion battery failed", call. = FALSE)
 }

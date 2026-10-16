@@ -33,6 +33,9 @@
 #           and a setting made on an expression (G1-G3); since S352
 #           quiet = TRUE with no data frame in hand (G4); since S355 a
 #           condition, and a bare name, with no data frame in hand (G5);
+#           since S359 the shape check counting cases and naming the
+#           workspace object a wrong count came from (I1), and the vector
+#           path's refusal of a condition on another variable (I2);
 #           and Part E, the named-item detector: a
 #           top-level single = in jsubset() and in a variable list, the
 #           misspelled-input case it is told apart from, and the no-subset
@@ -42,6 +45,29 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S359 EDIT (v0.9.232; Fix Slate 10 and Scripts Slate B): PART I ADDED,
+#           SECTIONS I1-I2 -- 54 sections -> 56; B1-B7, D3, D4 and G1
+#           RE-PINNED. The filter shape check counts CASES where it counted
+#           rows ("not one TRUE or FALSE for every case"), and a result of
+#           the wrong length that came from a workspace object names the
+#           object as ruling R19's stop does, keeping its own fix line (the
+#           S357 item; Jeff, S358: "okay on your default"): I1 per call,
+#           bare, after jcomplete() and a literal with no object to name.
+#           I2: the vector path's refusal of a condition naming another
+#           variable of the column's frame no longer hangs on a workspace
+#           object of that name (found by the S342 dirty entry, Scripts
+#           Slate B). I1 and I2 filled by running (fill.R); B1-B7, D3, D4
+#           and G1 refilled the same way after a capture of every section
+#           on 0.9.231 and 0.9.232 -- B1-B5, B7, D3 and G1 change one word,
+#           "row" to "case"; B6 and D4 name the object. All eleven on the
+#           PENDING line: wording Claude drafted to the lean. harness.R
+#           derive: I1 and I2 need no other section; verify: 67 of 67
+#           Expected blocks found, 56 of 56 sections in three orders and by
+#           prepare = TRUE. The assertion side is filter_check.R section AA.
+# LAST VERIFIED: v0.9.232, 2026-10-16 (S359) -- B1-B7, D3, D4, G1, I1 and I2
+#           WALKED on the WORKSTATION by Jeff through receive_all(), under
+#           the tool's default walk line ("walked, all okay"); PENDING back
+#           to none; GitHub 6cf15d7 (package).
 # S357 EDIT (v0.9.231; the FRAMES slate, ruling R19): NINE SECTIONS RE-PINNED
 #           OR RE-BUILT, no section added (models_walk.R Section 24 shows
 #           R19's shapes). C5, C6, D4, D5 and D12 set their stored filter
@@ -468,7 +494,7 @@ caught(jsubset(d, TRUE))
 
 # Expected:
 #   Caught: jsubset(): TRUE is a single value, not one TRUE or FALSE for
-#   every row.
+#   every case.
 #   Compare a variable to a value, for example:
 #     jsubset(Age < 40)
 
@@ -482,7 +508,7 @@ caught(jsubset(d, T))
 
 # Expected:
 #   Caught: jsubset(): T is a single value (TRUE), not one TRUE or FALSE for
-#   every row.
+#   every case.
 #   Compare a variable to a value, for example:
 #     jsubset(Age < 40)
 
@@ -495,7 +521,7 @@ caught(jsubset(d, mean(Age, na.rm = TRUE) > 40))
 
 # Expected:
 #   Caught: jsubset(): mean(Age, na.rm = TRUE) > 40 is a single value (TRUE),
-#   not one TRUE or FALSE for every row.
+#   not one TRUE or FALSE for every case.
 #   Compare a variable to a value, for example:
 #     jsubset(Age < 40)
 
@@ -508,7 +534,7 @@ caught(jsubset(d, Keep01 * 1))
 
 # Expected:
 #   Caught: jsubset(): Keep01 * 1 is numeric, not one TRUE or FALSE for
-#   every row.
+#   every case.
 #   Compare a variable to a value, for example:
 #     jsubset(Age < 40)
 
@@ -520,7 +546,7 @@ caught(jsubset(d, Keep01 * 1))
 caught(jsubset(d, "null"))
 
 # Expected:
-#   Caught: jsubset(): "null" is text, not one TRUE or FALSE for every row.
+#   Caught: jsubset(): "null" is text, not one TRUE or FALSE for every case.
 #   To clear the filter, use NULL without quotes:
 #     jsubset(d, NULL)
 
@@ -533,8 +559,10 @@ keep3 <- c(TRUE, FALSE, TRUE)
 caught(jsubset(d, keep3 == TRUE))
 
 # Expected:
-#   Caught: jsubset(): keep3 == TRUE has 3 values for 12 rows, not one TRUE or
-#   FALSE for every row.
+#   Caught: jsubset(): In keep3 == TRUE, keep3 is not in the d data frame; it is
+#   a separate object in your workspace.
+#   It has 3 values for the 12 cases in the d data frame, not one TRUE or FALSE
+#   for every case.
 #   Build the filter from the data frame's own columns, for example:
 #     jsubset(Age < 40)
 
@@ -551,7 +579,7 @@ jsubset()
 # Expected:
 #   jsubset activated for d: Age < 40
 #   Caught: jsubset(): TRUE is a single value, not one TRUE or FALSE for
-#   every row.
+#   every case.
 #   Compare a variable to a value, for example:
 #     jsubset(Age < 40)
 #   Your earlier filter for the d data frame is unchanged.
@@ -935,7 +963,7 @@ caught(jdesc(d, Age, subset = TRUE))
 # Expected:
 #   Descriptive Statistics
 #   Caught: jdesc(): subset = TRUE is a single value, not one TRUE or FALSE for
-#   every row.
+#   every case.
 #   In your jdesc() call, compare a variable to a value, for example
 #   subset = Age < 40.
 
@@ -973,8 +1001,8 @@ jsubset(s, NULL)
 #
 #   Descriptive Statistics
 #   Caught: jdesc(): the jsubset filter for the s data frame, Age > 35 & keep12,
-#   has 12 values for 11 rows.
-#   A filter must give one TRUE or FALSE for every row.
+#   cannot be applied: keep12 is not in the s data frame; it is a separate
+#   object in your workspace, with 12 values for 11 cases.
 #   To set it aside, run:
 #     jsubset(s, off)
 #   To delete it, run:
@@ -1467,7 +1495,7 @@ caught(jfreq(one, g, subset = TRUE))
 # Expected:
 #   Frequencies
 #   Caught: jfreq(): subset = TRUE is a single value, not one TRUE or FALSE for
-#   every row.
+#   every case.
 #   In your jfreq() call, compare a variable to a value, for example
 #   subset = Age < 40.
 #
@@ -1817,6 +1845,106 @@ caught(jload("nofile.rds", name = mydata))
 #   - the word as typed, then what the argument takes, then the call as
 #     typed with the word in quotes; joptions(spss) is given the named
 #     form, since its first position is read several ways.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART I -- FIX SLATE 10 AND SCRIPTS SLATE B AT THE FILTERS (S359) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.232. The filter shape check counts CASES, where it counted rows, and
+# names the workspace object a result of the wrong length came from, as
+# ruling R19's stop names one (the S357 item; Jeff, S358: "okay on your
+# default") -- keeping its own fix line, since a vector of the wrong length
+# cannot be added to the data frame. Sections B1-B7, D3, D4 and G1 are
+# re-pinned for the same change. And the vector path's refusal of a
+# condition naming another variable of the column's frame no longer
+# depends on the workspace (the S342 dirty entry). The assertion side is
+# filter_check.R section AA.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION I1 -- a wrong count from a workspace object, per call, bare, after jcomplete() ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# keep5 holds five values for d's twelve cases. Render 1 is per call;
+# Render 2 the bare name, which is the object itself; Render 3 the same
+# per-call condition after jcomplete() has cut d to the 11 cases with an
+# Age, and Render 4 a literal of the wrong length, which has no object to
+# name and keeps the plain form.
+
+keep5 <- c(TRUE, FALSE, TRUE, TRUE, FALSE)
+caught(jfreq(d, Gender, subset = keep5 == TRUE))
+# Expected:
+#   Frequencies
+#   Caught: jfreq(): In subset = keep5 == TRUE, keep5 is not in the d data
+#   frame; it is a separate object in your workspace.
+#   It has 5 values for the 12 cases in the d data frame, not one TRUE or FALSE
+#   for every case.
+#   In your jfreq() call, compare a variable to a value, for example
+#   subset = Age < 40.
+caught(jsubset(d, keep5))
+# Expected:
+#   Caught: jsubset(): keep5 is not in the d data frame; it is a separate object
+#   in your workspace.
+#   It has 5 values for the 12 cases in the d data frame, not one TRUE or FALSE
+#   for every case.
+#   Build the filter from the data frame's own columns, for example:
+#     jsubset(Age < 40)
+jcomplete(d, Age)
+caught(jdesc(d, Gender, subset = keep5 == TRUE))
+# Expected:
+#   Descriptive Statistics
+#   Caught: jdesc(): In subset = keep5 == TRUE, keep5 is not in the d data
+#   frame; it is a separate object in your workspace.
+#   It has 5 values for the 11 cases left after filtering, not one TRUE or FALSE
+#   for every case.
+#   In your jdesc() call, compare a variable to a value, for example
+#   subset = Age < 40.
+jcomplete(d, NULL)
+caught(jsubset(d, c(TRUE, FALSE)))
+# Expected:
+#   Caught: jsubset(): c(TRUE, FALSE) has 2 values for 12 cases, not one TRUE or
+#   FALSE for every case.
+#   Build the filter from the data frame's own columns, for example:
+#     jsubset(Age < 40)
+rm(keep5)
+
+# Things to look at:
+#   - Render 1: "In subset = keep5 == TRUE, keep5 is not in the d data
+#     frame; it is a separate object in your workspace." then "It has 5
+#     values for the 12 cases in the d data frame, not one TRUE or FALSE
+#     for every case." and jfreq()'s own fix line;
+#   - Render 2: "keep5 is not in ..." with no "In keep5," before it, and
+#     the own-columns fix with jsubset(Age < 40);
+#   - Render 3: "the 11 cases left after filtering";
+#   - Render 4: "c(TRUE, FALSE) has 2 values for 12 cases" -- "cases", and
+#     no object named.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION I2 -- the vector path: a workspace object named like a variable of the column's frame ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# d$Age is analyzed in its frame, d, where Keep01 is d's variable (ruling
+# R18), so a condition naming Keep01 is refused, with the frame form as the
+# fix. Until v0.9.232 a separate Keep01 in the workspace let the call
+# through, and it was then analyzed on d's own Keep01 (the Scripts Slate B
+# dirty entry). Render 1 is with no Keep01 in the workspace; Render 2 with
+# one; the two are the same.
+
+caught(jdesc(d$Age, subset = Keep01 == 1))
+# Expected:
+#   Caught: jdesc(): subset = Keep01 == 1 refers to Keep01, which the single
+#   column d$Age does not contain.
+#   Name the data frame first:
+#     jdesc(d, Age, subset = Keep01 == 1)
+Keep01 <- c(1, 0, 1)
+caught(jdesc(d$Age, subset = Keep01 == 1))
+# Expected:
+#   Caught: jdesc(): subset = Keep01 == 1 refers to Keep01, which the single
+#   column d$Age does not contain.
+#   Name the data frame first:
+#     jdesc(d, Age, subset = Keep01 == 1)
+rm(Keep01)
+
+# Things to look at:
+#   - Render 1 and Render 2: the same three lines -- "refers to Keep01,
+#     which the single column d$Age does not contain.", "Name the data
+#     frame first:" and jdesc(d, Age, subset = Keep01 == 1).
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations

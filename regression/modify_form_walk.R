@@ -14,8 +14,23 @@
 #           variable's missing cells (ruling R13), and the layout of
 #           jload()'s Loaded line among its notes (ruling R6).
 #           Since S352 also jsave() given an expression as the data
-#           (Section 19).
+#           (Section 19). Since S359 the Excel and CSV note naming what the
+#           frame had to lose, with the call to run (Sections 15, 16, 20).
 # ORIGIN:   S229
+# EDITED:   S359 (v0.9.232; Fix Slate 10, jsave()'s Excel and CSV note,
+#           Jeff's lean okayed at S357: the labels line only when there are
+#           labels to lose). SECTIONS 15, 16 AND 20 RE-PINNED by hand from
+#           captures of every section on 0.9.231 and 0.9.232: the labels
+#           line gone from a frame with none (Section 16's fc16), the
+#           variables whose cells hold a declared code named with the codes,
+#           and the call to run in place of "jsave(..., preserve.declarations
+#           = FALSE)". That call names the file's full path, a temporary
+#           folder, so each Expected stops above it, as the Saved lines are
+#           left out. All three on the PENDING line: wording Claude drafted.
+#           harness.R verify: 20 of 20 sections in three orders and by
+#           prepare = TRUE; 56 of 57 Expected blocks found (Section 9's
+#           summary, as before). The assertion side is
+#           missing_convention_check.R N93a-j.
 # EDITED:   S357 (v0.9.230; Fix Slate W2, the load, save and jai()
 #           wording). NEW SECTION 20, filled by running (fill.R): "R
 #           format" for .rds in the Loaded line and the format list, the
@@ -216,6 +231,10 @@
 #           f(NULL) would reach the sole-frame-or-STOP path with no default
 #           to resolve against. No Expected touched; confirmed in the walk
 #           below.
+# LAST VERIFIED: v0.9.232, 2026-10-16 (S359) -- Sections 15, 16 and 20
+#           WALKED on the WORKSTATION by Jeff through receive_all(), under
+#           the tool's default walk line ("walked, all okay"); PENDING back
+#           to none; GitHub 6cf15d7 (package).
 # LAST VERIFIED: v0.9.231, 2026-10-16 (S357) -- Sections 3, 13, 15, 17
 #           and 20 WALKED on the WORKSTATION through receive_all() on
 #           v0.9.231, under the tool's default walk line: the v0.9.230
@@ -1456,16 +1475,19 @@ setwd(.wd15)
 # Expected:
 #   Note: CSV format (.csv) does not store variable labels, value labels, or
 #   missing-value metadata.
-#   Any SPSS-style missing values are written as ordinary values and will read
-#   back as valid data.
-#   Alternatively, use jsave(..., preserve.declarations = FALSE) to blank them
-#   to empty cells instead.
+#   The declared missing values of Source ("X" and "Y"), Income (-99 and -98),
+#   and Visits (-99) are written as ordinary values and will read back as
+#   valid data.
+#   To write them as empty cells instead, save with:
 
 options(.jst_options_missing_convention = "none")
 rm(ds15, mx15, oc15, f15, fm15, .wd15)
 
 # The Saved line names a temporary folder, which differs on every run, so
-# no Expected above pins it.
+# no Expected above pins it. Since S359 the CSV note ends on the call to
+# run, jsave(ds15, "<the full path>/ds15.csv", overwrite = TRUE,
+# preserve.declarations = FALSE), whose path is that folder too; the
+# Expected stops at "save with:".
 #
 # Things to look at:
 #   - CASE 4: the SPSS remedy is unchanged; the Stata one is the two lines
@@ -1484,9 +1506,10 @@ rm(ds15, mx15, oc15, f15, fm15, .wd15)
 #   - THE .dta REFUSAL ends on "Or turn it into a numeric variable first
 #     with jencode()." at the standard tier only.
 #   - THE .sav REFUSAL offers .rds and "reduce": no Stata route.
-#   - THE CSV NOTE says "ordinary values ... valid data" -- Source's
-#     declared codes are words, not -99. A frame of numbers keeps "(e.g.
-#     -99) ... literal numbers" (N86aw).
+#   - THE CSV NOTE (S359) names each variable whose cells hold a declared
+#     code, with the codes held: Source's in quotes, so "ordinary values";
+#     then "save with:" and the call to run, ds15 and the full path of the
+#     file just written (missing_convention_check.R N93).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -1531,8 +1554,6 @@ jsave(tx16, "tx16.xpt", overwrite = TRUE)
 cat("\n--- CSV format, a factor beside the text variable ---\n")
 jsave(fc16, "fc16.csv", overwrite = TRUE)
 # Expected:
-#   Note: CSV format (.csv) does not store variable labels or value labels.
-#
 #   Note: CSV format (.csv) cannot store a missing value in a text or
 #   categorical variable.
 #   3 missing cells in Group (1) and Source (2) were saved as blank text.
@@ -1601,8 +1622,9 @@ rm(.wd16, tx16, fc16, v16, b16, c16)
 #     cells, and in which variable; the two formats that keep them.
 #     Visits and Score lose nothing -- a missing NUMBER survives every
 #     format -- and are not named.
-#   - CSV: the label note, a blank line, then this note; Group (1) and
-#     Source (2) with their counts, and "a text or categorical variable".
+#   - CSV: this note alone -- fc16 carries no labels, so since S359 no
+#     label note comes first; Group (1) and Source (2) with their counts,
+#     and "a text or categorical variable".
 #   - ONE CELL: "1 missing cell ... was saved", "keep it missing".
 #   - READ BACK: jfreq() shows Source's two cells as <blank>, valid, with
 #     its footnote -- jload() unchanged, as the ruling says; the note at
@@ -1892,15 +1914,18 @@ try(jload("r20"))
 
 # Render 4 -- jsave()'s note for a CSV file: SPSS-style, Stata-style, both,
 # and with preserve.declarations = FALSE. (The Saved lines under each name
-# a temporary folder; only the notes are pinned.)
+# a temporary folder; only the notes are pinned. Since S359 the jsave()
+# line a note offers names that folder too, so each Expected stops above
+# it: under s20a after "mydata <- s20["Income"]", under s20c at "save
+# with:", the Stata-style sentence pinned on its own below.)
 invisible(jsave(s20["Income"], "s20a.csv", overwrite = TRUE))
 # Expected:
 #   Note: CSV format (.csv) does not store variable labels, value labels, or
 #   missing-value metadata.
-#   Any SPSS-style missing values (e.g. -99) are written as literal numbers and
-#   will read back as ordinary values.
-#   Alternatively, use jsave(..., preserve.declarations = FALSE) to blank them
-#   to empty cells instead.
+#   Income's declared missing values -99 and -98 are written as ordinary numbers
+#   and will read back as valid data.
+#   To write them as empty cells instead, save with:
+#     mydata <- s20["Income"]
 invisible(jsave(s20["Mood"], "s20b.csv", overwrite = TRUE))
 # Expected:
 #   Note: CSV format (.csv) does not store variable labels, value labels, or
@@ -1911,10 +1936,12 @@ invisible(jsave(s20, "s20c.csv", overwrite = TRUE))
 # Expected:
 #   Note: CSV format (.csv) does not store variable labels, value labels, or
 #   missing-value metadata.
-#   Declared missing values lose their missing status, which may result in them
-#   being written as ordinary numbers.
-#   Alternatively, use jsave(..., preserve.declarations = FALSE) to blank them
-#   to empty cells instead.
+#   Income's declared missing values -99 and -98 are written as ordinary numbers
+#   and will read back as valid data.
+#   To write them as empty cells instead, save with:
+# Expected:
+#   Stata-style missing values (.a, .b, ...) are written as blank cells; the
+#   distinction between them is not preserved.
 invisible(jsave(spss_df["Education"], "s20d.csv", overwrite = TRUE,
                 preserve.declarations = FALSE))
 # Expected:
@@ -1989,7 +2016,11 @@ rm(.wd20, .wp20, s20, l20, cm20, jai20, sk20, ag20)
 #     files can contain multiple named objects. Use load(...) to load these
 #     directly."
 #   - Render 4: each sentence on its own line; "missing values" throughout;
-#     "1 cell holding a declared missing value was blanked".
+#     "1 cell holding a declared missing value was blanked". Since S359 the
+#     first and third notes name Income and its two codes, and offer the
+#     call to run: under s20a after "mydata <- s20["Income"]", the
+#     expression given as the data; under s20c with s20 itself, the
+#     Stata-style sentence after it.
 #   - Render 5: the second and fourth notes are "Nothing was written." alone.
 #   - Render 6: SKILL.md's first line runs to the paragraph's width; its
 #     words are AGENTS.md's after "Note for AI assistants: ".
