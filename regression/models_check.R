@@ -81,6 +81,60 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S360 EDIT (v0.9.233, 2026-10-16): Fix Slate 11. NEW SECTION W, fifteen
+#           checks (W01-W15): a dummy-coded variable is ONE variable in
+#           jplot() (Jeff, S360: "okay on your default"; "fix in this
+#           build") -- one effect plot, its categories along the axis in
+#           code order, labeled as the coefficient table labels them, the
+#           predicted mean and its 95% interval at each held to predict.lm()
+#           at x = 0, at = "mean" and at = list(x = 50) (W01-W03); a
+#           two-category variable and a jdummy(ref = 2) registration on a
+#           labelled variable (W04); a variable whose every dummy column the
+#           fit dropped named in the count line (W05); the fit plot's
+#           default focal the first predictor not dummy-coded, focal = g
+#           drawn at its categories with the cases behind, "(means shown at
+#           x = 0)", a dummy column read as its variable, the refusal
+#           listing variables, a model whose only predictor is dummy-coded
+#           (W06-W09); jlogistic()'s probability plot the same, its
+#           probabilities glm()'s link and SE carried over (W10-W11); a
+#           result made before this build drawn as before (W12, control);
+#           the equation note (W13); the fit equation's sign and the ROC
+#           axis in ASCII, no pdf() warning (W14); the plot's labels the
+#           table's after a filter leaves a category out (W15). Section U's
+#           helpers are removed after section W, which uses them.
+#           FOUR HUNDRED AND EIGHTY-FOUR checks.
+#           MUTATION MAP (nineteen, each one change to the master, run
+#           through section W): the dummy groups off W01-W11 W13 W15; the
+#           default focal the first predictor W06 W10; a dummy column not
+#           read as its variable W08 W11; the logistic interval at 2 SE W10
+#           (it survived W10 at x = 0, where the probabilities are near 1e-9
+#           and all.equal() compares absolutely; W10 holds x at 50 since);
+#           every dummy set in each category's row W02 W03 W04 W07 W09 W10;
+#           the categories out of code order W04; a dropped group not
+#           dropped W05; "means" and "probabilities" back to "line" W07,
+#           W10; every case in the reference W07; the minus sign back in the
+#           equation, in the scatter's equation, the en dash back in the ROC
+#           axis W14 each; the old equation note W13; jlogistic()'s old
+#           default focal W10; no categorical branch in the effect plots
+#           W01-W05 W15; the codes as the labels W02 W04 W10 W15; the cases'
+#           jitter wider than their category W07; the category's own dummy
+#           columns held by at = W02 W03 W04. On v0.9.232 section W reads
+#           1/15 (W12, the control, passes).
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): run_all.R
+#           2661 across nine, plain and under the RStudio-handler stand-in,
+#           each again with a 35-character temp path; models_check.R and
+#           missing_convention_check.R entered dirty, plain and under the
+#           stand-in (joutput("full"), width 100, diagnostics on, a stata
+#           convention, the color option, a juse() default, and objects
+#           named Age, Gender, Keep01, Name, d, x, s, y, g, e, f, m, r and a;
+#           again with n, v, w and z): green, the width, level, default
+#           frame and convention as on entry, every object a run changed put
+#           back by guard 5 and named, the four stores empty lists where
+#           they were unset, as before.
+#           LAST VERIFIED: v0.9.233, 2026-10-16 (S360) -- 484/484 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (9 run,
+#           2661 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox; GitHub cfbf813 (package).
 # S359 EDIT (v0.9.232, 2026-10-16): Fix Slate 10 and Scripts Slate B. NEW
 #           SECTION U, eighteen checks (U01-U18), Fix Slate 10 at the
 #           models: the intercept-only model, y ~ 1, in jlm() and
@@ -4958,7 +5012,8 @@ check("U18 .jst_gg_removed_tracker() as a unit: takes both ggplot2 wordings and 
               ok && identical(flat(lev), "Note: A and B leave out 2 cases with a leverage of 1, whose standardized residual is undefined.") &&
                 identical(flat(gen), "Note: A and B leave out 2 cases whose values are missing or infinite.") &&
                 identical(jstats:::.jst_gg_removed_tracker()$note(1), character(0)) }))
-rm(.u_both, .u_warns, .u_plots, .u_line, .u_msg, .u_d, .u_c, .u_q)
+# The .u_ helpers stay for section W, which removes them (S360).
+rm(.u_d, .u_c, .u_q)
 
 # =============================================================================
 # V -- JLM() AND JLOGISTIC()'S ORDINARY OUTPUT AND THE FORMULA TRANSFORMS
@@ -5108,6 +5163,171 @@ check("V15 ... explicit ref = \"first\" on 1 = Yes / 2 = No takes Yes; and the r
               identical(a, "Yes") && !is.null(r) && "YN12_Yes" %in% r$coefficients_raw$term &&
                 near(r$coefficients_raw$b[1], no) }))
 rm(.v_cl, .v_reg, .v_ref)
+
+# =============================================================================
+# W -- FIX SLATE 11: A DUMMY-CODED VARIABLE IS ONE VARIABLE IN jplot(); PLOT
+#      TEXT IN ASCII (S360, v0.9.233)
+# =============================================================================
+# The effect plots draw a dummy-coded variable as ONE plot (Jeff, S360: "okay
+# on your default"): its categories along the axis, labeled as the
+# coefficient table labels them, the predicted outcome at each with its 95%
+# interval -- where v0.9.232 drew Effect: g_b, g_c and g_d under "(4 effect
+# plots produced, one per variable)". The fit plot and jlogistic()'s
+# probability plot take focal as a variable ("fix in this build"): the
+# default the first predictor not dummy-coded (it was g_b when g came
+# first), focal = g drawn the same way with the cases behind, a dummy column
+# read as its variable, the refusal listing variables. The equation note
+# counts predictors as variables. The fit equation's minus sign and the ROC
+# axis's en dash are hyphens (pdf() on macOS and Linux dropped both, with a
+# warning each). Every oracle a fit of base R's. Fixtures dotted; working
+# objects in local().
+# =============================================================================
+set.seed(360)
+.w_d <- data.frame(x = round(stats::rnorm(48, 50, 10), 1),
+                   g = rep(c("a", "b", "c", "d"), 12),
+                   s = rep(c("No", "Yes"), each = 24), stringsAsFactors = FALSE)
+.w_d$y <- round(10 + 0.3 * .w_d$x + c(a = 0, b = 2, c = 4, d = 1)[.w_d$g] +
+                  (.w_d$s == "Yes") + stats::rnorm(48), 2)
+.w_d$o <- stats::rbinom(48, 1, stats::plogis((.w_d$y - mean(.w_d$y)) / 6))
+.w_l <- .w_d
+.w_l$grp <- haven::labelled(match(.w_d$g, c("a", "b", "c", "d")),
+                            c(Low = 1, Mid = 2, High = 3, Top = 4))
+.w_g4 <- c("a", "b", "c", "d")
+
+check("W01 y ~ x + g, g with four categories: two effect plots, Effect: x and Effect: g, and the count line true (it drew Effect: g_b, g_c and g_d under '(4 effect plots produced, one per variable)')",
+      local({ m  <- quiet(jlm(y ~ x + g, data = .w_d))
+              pl <- .u_plots(jplot(m, which = "effects"))
+              identical(names(pl), c("effect_x", "effect_g")) &&
+                identical(pl$effect_g$labels$title, "Effect: g") &&
+                identical(pl$effect_g$labels$x, "g") &&
+                identical(.u_both(jplot(m, which = "effects")),
+                          c("(2 effect plots produced, one per variable)", "")) }))
+check("W02 ... g's plot: its categories along the axis in code order, labeled as the coefficient table labels them; at each the predicted mean and its 95% confidence interval, x held at 0 -- predict.lm()'s",
+      local({ m  <- quiet(jlm(y ~ x + g, data = .w_d))
+              pd <- .u_plots(jplot(m, which = "effects"))$effect_g$layers[[1L]]$data
+              f  <- stats::lm(y ~ x + g, data = .w_d)
+              pr <- stats::predict(f, data.frame(x = 0, g = .w_g4), interval = "confidence")
+              tb <- shown(jlm(y ~ x + g, data = .w_d))
+              identical(levels(pd$x), c("1: a", "2: b", "3: c", "4: d")) &&
+                grepl("g (ref = 1: a)", tb, fixed = TRUE) && grepl("\n  4: d ", tb, fixed = TRUE) &&
+                near(pd$fit, pr[, "fit"]) && near(pd$lwr, pr[, "lwr"]) &&
+                near(pd$upr, pr[, "upr"]) }))
+check("W03 ... the other variables held as at = sets them: at = \"mean\" holds x at its mean, at = list(x = 50) at 50",
+      local({ m <- quiet(jlm(y ~ x + g, data = .w_d))
+              f <- stats::lm(y ~ x + g, data = .w_d)
+              a <- .u_plots(jplot(m, which = "effects", at = "mean"))$effect_g$layers[[1L]]$data
+              b <- .u_plots(jplot(m, which = "effects", at = list(x = 50)))$effect_g$layers[[1L]]$data
+              near(a$fit, stats::predict(f, data.frame(x = mean(.w_d$x), g = .w_g4))) &&
+                near(b$fit, stats::predict(f, data.frame(x = 50, g = .w_g4))) }))
+check("W04 a two-category variable is one plot of its two categories; a variable registered with jdummy(ref = 2) keeps its categories in code order, its value labels on the axis and its reference where the code puts it",
+      local({ ps <- .u_plots(jplot(quiet(jlm(y ~ x + s, data = .w_d)), which = "effects"))
+              quiet(jdummy(.w_l, grp, ref = 2))
+              r <- quiet(jlm(y ~ grp + x, data = .w_l))
+              quiet(jdummy(.w_l, NULL))
+              pg <- .u_plots(jplot(r, which = "effects"))
+              f  <- stats::lm(y ~ x + factor(unclass(grp)), data = .w_l)
+              identical(names(ps), c("effect_x", "effect_s")) &&
+                identical(levels(ps$effect_s$layers[[1L]]$data$x), c("1: No", "2: Yes")) &&
+                identical(names(pg), c("effect_grp", "effect_x")) &&
+                identical(levels(pg$effect_grp$layers[[1L]]$data$x),
+                          c("1: Low", "2: Mid", "3: High", "4: Top")) &&
+                near(pg$effect_grp$layers[[1L]]$data$fit,
+                     stats::predict(f, data.frame(x = 0, grp = 1:4))) &&
+                identical(r$dummy_groups$grp$dummy, c("grp_Low", NA, "grp_High", "grp_Top")) }))
+check("W05 a variable every one of whose dummy columns the fit dropped has no effect plot, and the count line names it",
+      local({ z5 <- .w_d; z5$h <- z5$g
+              m  <- quiet(jlm(y ~ x + g + h, data = z5))
+              o  <- .u_both(jplot(m, which = "effects"))
+              identical(names(.u_plots(jplot(m, which = "effects"))), c("effect_x", "effect_g")) &&
+                identical(flat(paste(o[o != ""], collapse = " ")),
+                          "(2 effect plots produced, one per variable; none for h, which was removed from the model)") }))
+check("W06 the fit plot with g first in the formula: the default focal is the first predictor not dummy-coded, x, its line drawn with g at its reference (it drew g_b along the axis)",
+      local({ m  <- quiet(jlm(y ~ g + x, data = .w_d))
+              p  <- .u_plots(jplot(m, which = "fit"))[[1L]]
+              cf <- stats::coef(stats::lm(y ~ g + x, data = .w_d))
+              ln <- .u_line(p)
+              identical(p$labels$x, "x") &&
+                grepl("(line shown at g_b = 0, g_c = 0, g_d = 0)", p$labels$subtitle, fixed = TRUE) &&
+                near(ln$y, cf[[1]] + cf[["x"]] * ln$x, 1e-6) }))
+check("W07 ... focal = g: its categories along the axis, the predicted mean at each with its interval, x held at 0, '(means shown at x = 0)'; the cases behind them, each over its own category",
+      local({ m   <- quiet(jlm(y ~ g + x, data = .w_d))
+              p   <- .u_plots(jplot(m, which = "fit", focal = g))[[1L]]
+              pr  <- stats::predict(stats::lm(y ~ g + x, data = .w_d),
+                                    data.frame(x = 0, g = .w_g4), interval = "confidence")
+              pts <- ggplot2::ggplot_build(p)$data[[1L]]
+              ci  <- match(.w_d$g, .w_g4)
+              pd  <- p$layers[[2L]]$data
+              identical(p$labels$x, "g") &&
+                grepl("(means shown at x = 0)", p$labels$subtitle, fixed = TRUE) &&
+                !grepl("line shown", p$labels$subtitle, fixed = TRUE) &&
+                near(pd$fit, pr[, "fit"]) && near(pd$lwr, pr[, "lwr"]) &&
+                nrow(pts) == nrow(.w_d) && all(round(pts$x) == ci) &&
+                all(abs(pts$x - ci) <= 0.12 + 1e-9) && near(pts$y, .w_d$y) }))
+check("W08 focal names a variable: focal = g_c, a dummy column the old refusal listed, draws g; a name that is not a variable stops with the model's variables listed (it listed g_b, g_c, g_d, x)",
+      local({ m <- quiet(jlm(y ~ g + x, data = .w_d))
+              p <- .u_plots(jplot(m, which = "fit", focal = g_c))[[1L]]
+              e <- .u_msg(jplot(m, which = "fit", focal = q))
+              identical(p$labels$x, "g") &&
+                identical(flat(e), "jplot(): `focal` must be one of the independent variables in the model: g, x") }))
+check("W09 a model whose only predictor is dummy-coded: the fit plot draws it, its categories along the axis at their means, the equation naming its dummy columns as the coefficients do, nothing held",
+      local({ m  <- quiet(jlm(y ~ g, data = .w_d))
+              p  <- .u_plots(jplot(m, which = "fit"))[[1L]]
+              mu <- as.vector(tapply(.w_d$y, .w_d$g, mean)[.w_g4])
+              identical(p$labels$x, "g") && near(p$layers[[2L]]$data$fit, mu) &&
+                startsWith(p$labels$subtitle, "y = ") &&
+                grepl("·g_b", p$labels$subtitle, fixed = TRUE) &&
+                !grepl("shown at", p$labels$subtitle, fixed = TRUE) }))
+check("W10 jlogistic(): the probability plot's default focal is x with g first; focal = g gives the predicted probability at each category with its interval -- glm()'s link and standard error carried to the probability scale -- under '(probabilities shown at x = 50)' (at x = 50, where the probabilities are not near 0: all.equal() compares values below its tolerance absolutely)",
+      local({ m  <- quiet(jlogistic(o ~ g + x, data = .w_d))
+              a  <- .u_plots(jplot(m, which = "probability"))[[1L]]
+              b  <- .u_plots(jplot(m, which = "probability", focal = g, at = list(x = 50)))[[1L]]
+              f  <- stats::glm(o ~ g + x, data = .w_d, family = stats::binomial)
+              pr <- stats::predict(f, data.frame(x = 50, g = .w_g4), type = "link", se.fit = TRUE)
+              pd <- b$layers[[2L]]$data
+              identical(a$labels$x, "x") && identical(b$labels$x, "g") &&
+                identical(levels(pd$x), c("1: a", "2: b", "3: c", "4: d")) &&
+                near(pd$fit, stats::plogis(pr$fit), 1e-6) &&
+                near(pd$lwr, stats::plogis(pr$fit - 1.96 * pr$se.fit), 1e-6) &&
+                near(pd$upr, stats::plogis(pr$fit + 1.96 * pr$se.fit), 1e-6) &&
+                grepl("(probabilities shown at x = 50)", b$labels$subtitle, fixed = TRUE) }))
+check("W11 ... and in jlogistic(): focal = g_b draws g, and a name that is not a variable stops with the variables listed",
+      local({ m <- quiet(jlogistic(o ~ g + x, data = .w_d))
+              p <- .u_plots(jplot(m, which = "probability", focal = g_b))[[1L]]
+              e <- .u_msg(jplot(m, which = "probability", focal = q))
+              identical(p$labels$x, "g") &&
+                identical(flat(e), "jplot(): `focal` must be one of the independent variables in the model: g, x") }))
+check("W12 control: a result made before this build, with no dummy_groups, draws its dummy columns as before",
+      local({ m <- quiet(jlm(y ~ x + g, data = .w_d)); m$dummy_groups <- NULL
+              identical(names(.u_plots(jplot(m, which = "effects"))),
+                        c("effect_x", "effect_g_b", "effect_g_c", "effect_g_d")) }))
+check("W13 the equation note counts predictors as variables: y ~ x + g gives 'more than 3 terms' (it said 'model has 4 predictors'); four numeric predictors keep 'model has 4 predictors'",
+      local({ z13 <- .w_d
+              z13$x2 <- rep(c(3, 1, 4, 1, 5, 9), 8); z13$x3 <- rep(c(2, 7, 1, 8), 12)
+              z13$x4 <- rep(1:12, 4)
+              s1 <- .u_plots(jplot(quiet(jlm(y ~ x + g, data = .w_d)), which = "fit"))[[1L]]$labels$subtitle
+              s2 <- .u_plots(jplot(quiet(jlm(y ~ x + x2 + x3 + x4, data = z13)), which = "fit"))[[1L]]$labels$subtitle
+              grepl("(equation omitted: more than 3 terms; see jlm() output for coefficients)", s1, fixed = TRUE) &&
+                grepl("(equation omitted: model has 4 predictors; see jlm() output for coefficients)", s2, fixed = TRUE) }))
+check("W14 plot text in ASCII: a negative slope's sign is a hyphen in the fit plot's equation and in a data-first line = \"lm\" scatter's, the ROC axis reads '(1 - Specificity)', and none of the three warns when drawn to pdf() (Latin-1 has neither the minus sign nor the en dash)",
+      local({ z14 <- data.frame(x = 1:20, y = 40 - 2 * (1:20) + rep(c(0.5, -0.5), 10),
+                                o = rep(c(1, 1, 0, 1, 0, 0, 0, 1, 0, 0), 2))
+              a <- .u_plots(jplot(quiet(jlm(y ~ x, data = z14)), which = "fit"))[[1L]]
+              b <- .u_plots(jplot(y ~ x, z14, line = "lm"))[[1L]]
+              r <- .u_plots(jplot(quiet(jlogistic(o ~ x, data = z14)), which = "roc"))[[1L]]
+              w <- c(.u_warns(print(a)), .u_warns(print(b)), .u_warns(print(r)))
+              grepl("^y = 40\\.08 - 2\\.01·x", a$labels$subtitle) &&
+                grepl("^y = 40\\.08 - 2\\.01·x", b$labels$subtitle) &&
+                identical(r$labels$x, "False Positive Rate (1 - Specificity)") &&
+                !any(grepl("conversion failure", w, fixed = TRUE)) }))
+check("W15 the plot labels a category as the coefficient table does when a filter leaves one out: subset = g != \"c\" draws three categories, the table's reference and its two rows",
+      local({ m  <- quiet(jlm(y ~ x + g, data = .w_d, subset = g != "c"))
+              tb <- strsplit(shown(jlm(y ~ x + g, data = .w_d, subset = g != "c")), "\n")[[1L]]
+              h  <- which(startsWith(tb, "g (ref = "))
+              rows <- trimws(sub("^  ([^ ]+: [^ ]+).*$", "\\1", tb[h + 1:2]))
+              ref  <- sub("^g \\(ref = (.*)\\)$", "\\1", tb[h])
+              lv <- levels(.u_plots(jplot(m, which = "effects"))$effect_g$layers[[1L]]$data$x)
+              length(h) == 1L && identical(lv, c(ref, rows)) && identical(lv, c("1: a", "2: b", "3: d")) }))
+rm(.w_d, .w_l, .w_g4, .u_both, .u_warns, .u_plots, .u_line, .u_msg)
 
 # --- Verdict -----------------------------------------------------------------
 

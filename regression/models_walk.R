@@ -44,8 +44,31 @@
 #           both, the term the fit dropped named, one effect plot per
 #           variable, the count line and the logistic list as an output's
 #           last line, and ggplot2's removed-row warnings in one note.
+#           Since S360 (v0.9.233, Section 26): a dummy-coded variable as one
+#           variable in jplot() -- one effect plot at its categories, the
+#           fit and probability plots' focal variable, the equation note --
+#           and the fit equation and ROC axis in ASCII.
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
+# S360 EDIT (v0.9.233; Fix Slate 11): SECTION 26 ADDED, five renders --
+#           25 sections -> 26 -- filled by running (fill.R): a dummy-coded
+#           variable as ONE effect plot, its categories along the axis
+#           (Jeff's okay of the lean, S360), the predictions printed under
+#           the count line; the fit plot's default focal and focal = g, the
+#           cases behind the categories, "(means shown at x = 0)" (Jeff:
+#           "fix in this build"); the refusal listing variables;
+#           jlogistic()'s probability plot at focal = g; the fit equation's
+#           hyphen and the ROC axis. On the PENDING line: a design Claude
+#           drew. A capture of every section of every walk on 0.9.232 and
+#           0.9.233: no other section moved (temporary paths aside).
+#           harness.R derive: Section 26 needs no other; verify: 61 of 62
+#           Expected blocks found (Section 1's, as before), 26 of 26
+#           sections in three orders and by prepare = TRUE. A full run
+#           raises the same eight warnings as before Section 26.
+#           The human half of models_check.R section W.
+# LAST VERIFIED: v0.9.233, 2026-10-16 (S360) -- Section 26 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; GitHub cfbf813 (package).
 # S359 EDIT (v0.9.232; Fix Slate 10): SECTION 25 ADDED, seven renders --
 #           24 sections -> 25 -- filled by running (fill.R): the
 #           intercept-only model in jlm() and jlogistic() (Jeff, S358: "yes,
@@ -2573,6 +2596,158 @@ rm(.warn25, y25, c25, q25, z25, r25a, r25b, r25c, r25d, r25e, r25f,
 #     list, then "Note: Scale-Location and Residuals vs Leverage leave out 1
 #     case with a leverage of 1, whose standardized residual is undefined.";
 #   - RENDER 7: the list with nothing above it and one blank line after it.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 26 -- Fix Slate 11: a dummy-coded variable is one variable in jplot() (S360) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.233. LOOK AT THE PLOTS PANE after each render.
+#   - The effect plots drew a dummy-coded variable as one plot per dummy
+#     column -- Effect: g_b, g_c and g_d, each a line across 0 to 1 -- under
+#     "(4 effect plots produced, one per variable)". Jeff's okay of the lean
+#     at S360: ONE plot, its categories along the axis, labeled as the
+#     coefficient table labels them, the predicted outcome at each as a
+#     point with its 95% interval as a bar, the other variables held as at
+#     = sets them (at 0 by default, as for every effect plot).
+#   - The fit plot took the first predictor in the formula as its default
+#     focal variable, so jlm(y ~ g + x) drew g_b along the axis, and focal
+#     = g was refused with g_b, g_c, g_d and x listed (Jeff: "fix in this
+#     build"). focal names a variable now; the default is the first
+#     predictor that is not dummy-coded; focal = g draws the categories,
+#     the cases behind them, "(means shown at x = 0)". jlogistic()'s
+#     probability plot the same, "(probabilities shown at x = 0)".
+#   - The equation note counted the dummy columns as predictors ("model
+#     has 4 predictors" for x and g); where the two counts differ it says
+#     "more than 3 terms".
+#   - The fit equation's minus sign and the ROC axis's en dash are plain
+#     hyphens: pdf() on macOS and Linux dropped both, with a warning each
+#     (Jeff's run on Windows drew both).
+# The assertion side is models_check.R section W. The fixture is inline;
+# the stop is shown through shown26(), so the file still runs end to end.
+shown26 <- function(expr) tryCatch(expr, error = function(e)
+  cat("Error: ", conditionMessage(e), "\n", sep = ""))
+set.seed(360)
+d26 <- data.frame(x = round(stats::rnorm(48, 50, 10), 1),
+                  g = rep(c("a", "b", "c", "d"), 12), stringsAsFactors = FALSE)
+d26$y <- round(10 + 0.3 * d26$x + c(a = 0, b = 2, c = 4, d = 1)[d26$g] +
+                 stats::rnorm(48), 2)
+d26$o <- stats::rbinom(48, 1, stats::plogis((d26$y - mean(d26$y)) / 6))
+
+# Render 1 -- the model, then its effect plots: Effect: x, a line; Effect:
+# g, four categories. The predictions at x = 0 printed under the count line
+# are the intercept plus each category's b.
+r26a <- jlm(y ~ x + g, data = d26)
+# Expected:
+#   Linear Regression
+#
+#   Analysis N: 48
+#
+#   Coefficients
+#                     b      SE      t      β      p
+#   --------------  -----  -----  ------  -----  -----
+#   (Intercept)     9.836  0.851  11.560         <.001
+#   x               0.299  0.015  19.918  0.901  <.001
+#   g (ref = 1: a)
+#     2: b          2.818  0.417   6.759         <.001
+#     3: c          4.463  0.424  10.532         <.001
+#     4: d          1.487  0.416   3.573         <.001
+#
+#   Outcome: y
+#
+#   R-squared: 0.919    Adjusted R-squared: 0.912
+#   Residual Standard Error: 1.017
+#
+#   F-statistic: 122.580 on 4 and 43 DF, p-value: <.001
+#   Sum of Squares:
+#     Regression: 507.351
+#     Residual:   44.493
+#     Total:      551.845
+p26a <- jplot(r26a, which = "effects")
+print(p26a$effect_g$layers[[1]]$data, digits = 4)
+# Expected:
+#   (2 effect plots produced, one per variable)
+#
+#        x    fit    lwr   upr
+#   1 1: a  9.836  8.120 11.55
+#   2 2: b 12.655 10.867 14.44
+#   3 3: c 14.299 12.741 15.86
+#   4 4: d 11.323  9.659 12.99
+
+# Render 2 -- the fit plot with g first in the formula: x by default, then
+# focal = g, then focal = g with x held at its mean. Each plot's subtitle
+# printed under it.
+invisible(utils::capture.output(r26b <- jlm(y ~ g + x, data = d26)))
+p26b <- jplot(r26b, which = "fit")
+cat(p26b$labels$subtitle, "\n", sep = "")
+p26c <- jplot(r26b, which = "fit", focal = g)
+cat(p26c$labels$subtitle, "\n", sep = "")
+p26g <- jplot(r26b, which = "fit", focal = g, at = "mean")
+cat(p26g$labels$subtitle, "\n", sep = "")
+# Expected:
+#   R² = 0.919
+#   (line shown at g_b = 0, g_c = 0, g_d = 0)
+#   (equation omitted: more than 3 terms; see jlm() output for coefficients)
+#   R² = 0.919
+#   (means shown at x = 0)
+#   (equation omitted: more than 3 terms; see jlm() output for coefficients)
+#   R² = 0.919
+#   (means shown at x = 51.92)
+#   (equation omitted: more than 3 terms; see jlm() output for coefficients)
+
+# Render 3 -- a name that is not a variable of the model.
+shown26(jplot(r26b, which = "fit", focal = q))
+# Expected:
+#   Error: jplot(): `focal` must be one of the independent variables in the
+#   model: g, x
+
+# Render 4 -- jlogistic(): the probability plot at focal = g, x held at its
+# mean (at x = 0 every probability is near 0).
+invisible(utils::capture.output(r26c <- jlogistic(o ~ g + x, data = d26)))
+p26d <- jplot(r26c, which = "probability", focal = g, at = "mean")
+cat(p26d$labels$subtitle, "\n", sep = "")
+# Expected:
+#   (probabilities shown at x = 51.92)
+
+# Render 5 -- a negative slope's equation, and the ROC axis.
+z26 <- data.frame(x = 1:20, y = 40 - 2 * (1:20) + rep(c(0.5, -0.5), 10),
+                  o = rep(c(1, 1, 0, 1, 0, 0, 0, 1, 0, 0), 2))
+invisible(utils::capture.output(r26d <- jlm(y ~ x, data = z26)))
+invisible(utils::capture.output(r26e <- jlogistic(o ~ x, data = z26)))
+p26e <- jplot(r26d, which = "fit")
+cat(p26e$labels$subtitle, "\n", sep = "")
+p26f <- jplot(r26e, which = "roc")
+cat(p26f$labels$x, "\n", sep = "")
+# Expected:
+#   y = 40.08 - 2.01·x    R² = 0.998
+#   (Diagnostic plot produced: ROC Curve)
+#
+#   False Positive Rate (1 - Specificity)
+rm(shown26, d26, z26, r26a, r26b, r26c, r26d, r26e, p26a, p26b, p26c, p26d,
+   p26e, p26f, p26g)
+
+# Things to look at:
+#   - RENDER 1: in the pane, Effect: x is a line with its band as before;
+#     Effect: g has the four categories "1: a" to "4: d" along the axis,
+#     each a point with a bar, no line between them. Under the table, "(2
+#     effect plots produced, one per variable)" with one blank line after
+#     it, and the four predictions: 1: a is the intercept, each other the
+#     intercept plus its b;
+#   - RENDER 2: the first plot has x along the axis, its line drawn with g
+#     at its reference ("(line shown at g_b = 0, g_c = 0, g_d = 0)"); the
+#     second has g's four categories, the cases spread a little sideways
+#     over each so they can be seen, the predicted mean and its bar in
+#     front, "(means shown at x = 0)" -- x is about 50 in these data, so at
+#     x = 0 the means sit well below the cases, as a fitted line held at 0
+#     sits away from its points; the third, at = "mean", puts the means
+#     among the cases, "(means shown at x = 51.92)". All three say
+#     "(equation omitted: more than 3 terms; see jlm() output for
+#     coefficients)";
+#   - RENDER 3: the refusal lists the model's variables, g and x;
+#   - RENDER 4: the predicted probability at each category with its bar,
+#     the cases at 0 and 1 behind them, "(probabilities shown at x =
+#     51.92)";
+#   - RENDER 5: the equation reads "y = 40.08 - 2.01..." with a plain
+#     hyphen, and the ROC axis "False Positive Rate (1 - Specificity)".
 
 # --- Restore session state ---------------------------------------------------
 

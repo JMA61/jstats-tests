@@ -10,6 +10,20 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S360 EDIT (v0.9.233, 2026-10-16): N54j takes jdeclare_missing()'s call
+#           through printed() (Fix Slate 11's rider, the S359 item): its
+#           note -- "jdeclare_missing made no change to V. Its markers are
+#           already missing values, so a bare marker has nothing to name."
+#           -- is printed output, which suppressMessages() let through onto
+#           every run's log between N54i and N54j; its working object in
+#           local(). No check added; EIGHT HUNDRED AND EIGHT checks.
+#           Sandbox: run_all.R 2661 across nine, four ways as at S359, the
+#           note gone from every log; entered dirty as at S359: green, every
+#           object a run changed put back and named.
+#           LAST VERIFIED: v0.9.233, 2026-10-16 (S360) -- 808/808 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (9 run,
+#           2661 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox; GitHub cfbf813 (package).
 # S359 EDIT (v0.9.232, 2026-10-16): NEW N93 section, ten checks
 #           (N93a-N93j), Fix Slate 10's jsave() note for Excel and CSV,
 #           raised by Jeff on the walk of missing_convention_walk.R Section
@@ -3091,11 +3105,13 @@ check("N54i the all-bare scaffold follows the call's own modify state",
           !grepl("f54a <- ", m2, fixed = TRUE)
       })
 check("N54j the all-bare note leaves the column untouched",
-      {
-        out <- suppressMessages(jdeclare_missing(f54a, V, codes = ".a"))
+      local({
+        # Through printed() (Session 360): the note is printed output, which
+        # suppressMessages() let through onto every run's log.
+        printed(out <- jdeclare_missing(f54a, V, codes = ".a"))
         identical(labelled::val_labels(out$V),
                   labelled::val_labels(f54a$V))
-      })
+      }))
 
 # --- Bulk: presence is a property of the COLUMN, so it splits the group -----
 f54b <- data.frame(
