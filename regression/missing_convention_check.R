@@ -10,6 +10,18 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S362 EDIT (v0.9.235, 2026-10-16): N86w RE-PINNED for ruling R9: the CSV
+#           file whose quoted header is "a,b" now loads with the variable
+#           named a_b, its header the label, where read.csv() had made it
+#           a.b; the check reads the name, the label, and the values
+#           through as.vector(), the label being on them. No check added;
+#           EIGHT HUNDRED AND FORTY-FOUR checks. The import surface's own
+#           battery is the new import_check.R.
+#           LAST VERIFIED: v0.9.236, 2026-10-17 (S362) -- 844/844 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           2800 checks)"; R CMD check 0 errors, 0 warnings, 0 notes), and
+#           on v0.9.235 (2794 across ten), matching the sandbox; GitHub
+#           b3e9e2b (package).
 # S361 EDIT (v0.9.234, 2026-10-16): NEW N94 section, thirty-six checks
 #           (N94a-N94aj), Capability Slate C1's six smaller items where they
 #           speak in this battery's surfaces: jconvert()'s return-trip note
@@ -7929,11 +7941,14 @@ check("N86v ... one numeric column: every case, the missing ones NA",
       local({ invisible(grab(jsave(n86, "n86.csv")))
               invisible(grab(jload("n86.csv", name = "b86")))
               identical(b86$x, c(1L, NA, 3L, NA)) }))
-check("N86w ... the last case missing is kept; a quoted name holding a comma is one column; two columns still drop an empty line",
+check("N86w ... the last case missing is kept; a quoted name holding a comma is one column (since S362 named a_b, its header the label); two columns still drop an empty line",
       local({ invisible(grab(jload("last86.csv", name = "l86")))
               invisible(grab(jload("q86.csv", name = "q86")))
               invisible(grab(jload("two86.csv", name = "t86")))
-              identical(l86$x, c("a", "")) && identical(q86[[1]], c(1L, NA, 2L)) &&
+              identical(l86$x, c("a", "")) &&
+                identical(names(q86), "a_b") &&
+                identical(attr(q86[[1]], "label"), "a,b") &&
+                identical(as.vector(q86[[1]]), c(1L, NA, 2L)) &&
                 nrow(t86) == 2L }))
 
 # --- D: ruling R13, a text variable's missing cells ---------------------------

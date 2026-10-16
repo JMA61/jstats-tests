@@ -16,7 +16,26 @@
 #           Since S352 also jsave() given an expression as the data
 #           (Section 19). Since S359 the Excel and CSV note naming what the
 #           frame had to lose, with the call to run (Sections 15, 16, 20).
+#           Since S362 the import surface: the names jload() changes, skip
+#           = and the title note, a CSV file's shape and encoding, sheet =
+#           and a reader's own error, and jsave()'s names, labels, Excel
+#           size and .xpt dataset name (Sections 23-26).
 # ORIGIN:   S229
+# EDITED:   S362 (v0.9.235; ruling R9 with ruling R20 and the import
+#           audit's findings). NEW SECTIONS 23-26, filled by running
+#           (fill.R), the Saved lines of Section 26 left out (a temporary
+#           folder): 23, the names jload() changes from an Excel file, a
+#           CSV file, an SPSS file, none from an .rds file, and the data
+#           frame's own name; 24, skip = and the title note, the CSV
+#           file's stop with the same call; 25, the CSV shapes that loaded
+#           wrong without a word, the Windows-1252 note, sheet = and a
+#           reader's own error; 26, jsave()'s refused names in each
+#           format, clean.names = TRUE, the label notes, Excel's sheet size
+#           and the .xpt dataset's name. All four on the PENDING line: new
+#           design and wording, Claude's call (instructions Section 15
+#           [SLATE-BUILDS]). No earlier section moved (harness.R dump of
+#           every section on 0.9.234 and 0.9.235). The assertion side is
+#           the new import_check.R.
 # EDITED:   S359 (v0.9.232; Fix Slate 10, jsave()'s Excel and CSV note,
 #           Jeff's lean okayed at S357: the labels line only when there are
 #           labels to lose). SECTIONS 15, 16 AND 20 RE-PINNED by hand from
@@ -249,6 +268,15 @@
 #           updated in Sections 6 and 7 (the same line, a temporary path).
 #           harness.R derive: no section needs another it does not name.
 #           The assertion side is missing_convention_check.R N94.
+# LAST VERIFIED: v0.9.236, 2026-10-17 (S362) -- Sections 23, 24, 25 and
+#           26 WALKED on the WORKSTATION by Jeff through receive_all() on
+#           v0.9.235 ("walked, all okay"), and again on v0.9.236 ("walked,
+#           all okay"); PENDING back to none; GitHub b3e9e2b (package).
+#           Sandbox: harness.R verify on v0.9.235, 26 of 26 sections in
+#           three orders and by prepare = TRUE; 86 of 87 Expected blocks
+#           (Section 9's, as before). Every section captured on v0.9.235
+#           and v0.9.236: identical apart from temp paths and the version
+#           jai() prints.
 # LAST VERIFIED: v0.9.234, 2026-10-16 (S361) -- Sections 4, 5, 6, 7, 15,
 #           19, 21 and 22 WALKED on the WORKSTATION by Jeff through
 #           receive_all() ("walked, all okay"); PENDING back to none;
@@ -2276,6 +2304,379 @@ rm(.wd22, community_spss, community_stata, tf22)
 #     that where it belongs? "jstats reads it as the variable": the S289
 #     item feared a clash in a jstats call, which ruling R18 has since
 #     ruled out; the clash left is base R's (with(), subset()).
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 23 -- jload(): variable names from outside R (ruling R9, ruling R20; S362) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S362 (v0.9.235). Ruling R9 part (1) (Jeff, S345: "Yes to each
+# part") with ruling R20 (Jeff, S362, on the import audit's
+# recommendation). A file from outside R -- every format but .rds -- can
+# hold names R cannot use as they are. Each is changed by one rule:
+# spaces and symbols at either end dropped, any other run of characters
+# that are not letters, digits or underscores one underscore, an X before a
+# digit, an underscore or a word R reserves, V and the column's position
+# for an empty name, _2 for a repeat, 32 characters at most. A name R takes
+# is never touched. The old name becomes the variable's label unless it has
+# one, and a note lists every change. Until now Excel kept the names as
+# typed (backticks in every call) and read.csv() rewrote them its own way
+# (X2024.score, Age..years.), neither said. The assertion side is
+# import_check.R sections A-E.
+.wd23 <- getwd(); setwd(.walkdir)
+d23 <- data.frame(1:2, 3:4, 5:6, 7:8, 9:10, 11:12, 13:14, 15:16)
+names(d23) <- c("2024 score", "Age (years)", "Agree?", "Score", "Score", "",
+                "if", "id")
+writexl::write_xlsx(d23, "names23.xlsx")
+writeLines(c("\"2024 score\",\"Age (years)\",\"Agree?\",Score,Score,,if,id",
+             "1,3,5,7,9,11,13,15", "2,4,6,8,10,12,14,16"), "names23.csv")
+
+# Render 1 -- an Excel file: the note under the Loaded line.
+jload("names23.xlsx", name = "x23", overwrite = TRUE)
+# Expected:
+#   Loaded x23 (Excel format; 2 cases, 8 variables)
+#
+#   Note: 6 variable names were changed to valid R names:
+#     "2024 score"   -> X2024_score
+#     "Age (years)"  -> Age_years
+#     "Agree?"       -> Agree
+#     "Score"        -> Score_2
+#     ""             -> V6
+#     "if"           -> Xif
+#   The original names are the variables' labels.
+
+# Render 2 -- the same headers in a CSV file: the same names (identical()
+# prints TRUE), where read.csv() gave X2024.score and Age..years.
+jload("names23.csv", name = "c23", overwrite = TRUE)
+identical(names(c23), names(x23))
+# Expected:
+#   Loaded c23 (CSV format; 2 cases, 8 variables)
+#
+#   Note: 6 variable names were changed to valid R names:
+#     "2024 score"   -> X2024_score
+#     "Age (years)"  -> Age_years
+#     "Agree?"       -> Agree
+#     "Score"        -> Score_2
+#     ""             -> V6
+#     "if"           -> Xif
+#   The original names are the variables' labels.
+#   [1] TRUE
+
+# Render 3 -- an SPSS file whose names SPSS takes and R does not; one has
+# a label of its own, which it keeps.
+s23 <- data.frame(`Q1@A` = c(1, 2), `INC$` = c(3, 4), check.names = FALSE)
+attr(s23[["Q1@A"]], "label") <- "Q1 part A"
+haven::write_sav(s23, "names23.sav")
+jload("names23.sav", name = "v23", overwrite = TRUE)
+# Expected:
+#   Loaded v23 (SPSS format; 2 cases, 2 variables)
+#
+#   Note: 2 variable names were changed to valid R names:
+#     "Q1@A"  -> Q1_A
+#     "INC$"  -> INC
+#   A variable with no label of its own has its original name as its label.
+
+# Render 4 -- an .rds file comes back as it was saved: no note, the names
+# as they were (R9's exemption; the S345 student case).
+saveRDS(d23[c(1, 2)], "own23.rds")
+jload("own23.rds", name = "r23", overwrite = TRUE)
+names(r23)
+# Expected:
+#   Loaded r23 (R format; 2 cases, 2 variables)
+#   [1] "2024 score"  "Age (years)"
+
+# Render 5 -- the data frame's own name, from a file's name: underscores,
+# as the variables get, where make.names() gave My.Survey..final.
+invisible(file.copy("names23.xlsx", "My Survey (final).xlsx", overwrite = TRUE))
+jload("My Survey (final).xlsx", overwrite = TRUE)
+# Expected:
+#   Loaded My_Survey_final (Excel format; 2 cases, 8 variables)
+#
+#   Note: 6 variable names were changed to valid R names:
+#     "2024 score"   -> X2024_score
+#     "Age (years)"  -> Age_years
+#     "Agree?"       -> Agree
+#     "Score"        -> Score_2
+#     ""             -> V6
+#     "if"           -> Xif
+#   The original names are the variables' labels.
+unlink(c("names23.xlsx", "names23.csv", "names23.sav", "own23.rds",
+         "My Survey (final).xlsx"))
+setwd(.wd23)
+rm(.wd23, d23, s23, x23, c23, v23, r23, My_Survey_final)
+
+# Things to look at:
+#   - RENDER 1: the old names in quotes, so an empty one shows as "" and a
+#     space at the end would show; the arrow column; the label line.
+#   - RENDER 3: the two kinds in one note -- Q1_A keeps "Q1 part A", INC
+#     takes "INC$" -- and the sentence that covers both.
+#   - Is "valid R names" the phrase for a reader new to R?
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 24 -- skip = and a title above the names (ruling R9 part 2; S362) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S362 (v0.9.235). A sheet whose first row is a title loaded the
+# title as a variable name, the real names as a case and every column as
+# text, and readxl said only "New names:". Now, when at most half the
+# columns of the first row have a name and a later row holds words in at
+# least half of them, a note gives the row the names seem to be in and the
+# skip = call. A CSV file in that shape stopped on R's "more columns than
+# column names", or, when the title held a comma, loaded wrong without a
+# word; it stops now with the same call. The assertion side is
+# import_check.R section F.
+.wd24 <- getwd(); setwd(.walkdir)
+t24 <- data.frame(x = c("Community Survey 2024", NA, "id", "1", "2"),
+                  y = c(NA, NA, "age", "23", "35"),
+                  z = c(NA, NA, "score", "4", "5"))
+writexl::write_xlsx(t24, "title24.xlsx", col_names = FALSE)
+writeLines(c("Community Survey 2024", "", "id,age,score", "1,23,4", "2,35,5"),
+           "title24.csv")
+
+# Render 1 -- the Excel file, read as it stands: the title note, then the
+# name note for what was read.
+jload("title24.xlsx", name = "e24", overwrite = TRUE)
+# Expected:
+#   Loaded e24 (Excel format; 4 cases, 3 variables)
+#
+#   Note: row 1 of title24.xlsx has a name in only 1 of its 3 columns, so it may
+#   be a title rather than the variable names.
+#   The names seem to be in row 3.
+#   To read from there, skip the 2 rows above them:
+#     jload("title24.xlsx", name = "e24", overwrite = TRUE, skip = 2)
+#
+#   Note: 3 variable names were changed to valid R names:
+#     "Community Survey 2024"  -> Community_Survey_2024
+#     ""                       -> V2
+#     ""                       -> V3
+#   The original name is the variable's label.
+
+# Render 2 -- the call the note gives, run.
+jload("title24.xlsx", name = "e24", skip = 2, overwrite = TRUE)
+names(e24)
+# Expected:
+#   Loaded e24 (Excel format; 2 cases, 3 variables)
+#   [1] "id"    "age"   "score"
+
+# Render 3 -- the CSV file stops, with the same call; run, it reads.
+try(jload("title24.csv", name = "c24", overwrite = TRUE))
+jload("title24.csv", name = "c24", skip = 2, overwrite = TRUE)
+# Expected:
+#   Error : jload(): the first line of title24.csv holds 1 value, but most lines
+#   below it hold 3.
+#   The variable names seem to be on line 3.
+#   To read from there, skip the 2 lines above them:
+#     jload("title24.csv", name = "c24", overwrite = TRUE, skip = 2)
+#   Loaded c24 (CSV format; 2 cases, 3 variables)
+
+# Render 4 -- one unnamed column is not a title: the name note alone.
+g24 <- data.frame(1:2, 3:4, 5:6); names(g24) <- c("id", "", "score")
+writexl::write_xlsx(g24, "gap24.xlsx")
+jload("gap24.xlsx", name = "g24", overwrite = TRUE)
+# Expected:
+#   Loaded g24 (Excel format; 2 cases, 3 variables)
+#
+#   Note: 1 variable name was changed to a valid R name:
+#     ""  -> V2
+unlink(c("title24.xlsx", "title24.csv", "gap24.xlsx"))
+setwd(.wd24)
+rm(.wd24, t24, e24, c24, g24)
+
+# Things to look at:
+#   - RENDER 1: "row 1 ... may be a title rather than the variable names":
+#     a guess, said as one. Two notes, the title note first.
+#   - RENDER 3: a stop where Render 1 is a note: the CSV file cannot be
+#     read past its first line as it stands, the sheet can.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 25 -- what a file read wrong without a word now says (the import audit; S362) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S362 (v0.9.235). The import audit's silent cases, and the raw
+# messages it found. A CSV file's values are counted line by line before
+# it is read: a first line shorter than the rows (whose first values R made
+# row names, dropped), a later line longer than the first (which R split
+# into two cases), a semicolon file from European Excel (which loaded as
+# one variable holding the decimals) and an empty file each stop in
+# jstats's words; a Windows-1252 file (Excel's "CSV (Comma delimited)" on
+# Windows) is read, and said to be, where it stopped on "invalid multibyte
+# string". sheet = naming no sheet, and a file its reader cannot read, are
+# said in jstats's words. The assertion side is import_check.R sections H-L.
+.wd25 <- getwd(); setwd(.walkdir)
+writeLines(c("age,score", "1,23,4", "2,35,5"), "short25.csv")
+writeLines(c("a,b,c", "1,2,3", "4,5,6", "7,8,9", "10,11,12", "13,14,15",
+             "16,17,18,19,20", "21,22,23"), "ragged25.csv")
+writeLines(c("id;age;score", "1;23;4,5", "2;35;5,25"), "semi25.csv")
+invisible(writeBin(raw(0), "empty25.csv"))
+invisible(writeBin(iconv("id,answer\n1,Don\u2019t know\n2,Caf\u00e9\n", "UTF-8",
+                         "CP1252", toRaw = TRUE)[[1]], "w1252_25.csv"))
+writexl::write_xlsx(data.frame(id = 1:2), "one25.xlsx")
+writeLines("not a workbook", "bad25.xlsx")
+
+# Render 1 -- a first line short of a name, and a line too long.
+try(jload("short25.csv", name = "z25"))
+try(jload("ragged25.csv", name = "z25"))
+# Expected:
+#   Error : jload(): the first line of short25.csv has 2 names, but most lines
+#   below it hold 3 values.
+#   Add the missing name to the first line of the file, then run jload() again.
+#   Error : jload(): line 7 of ragged25.csv holds 5 values, but the first line
+#   has 3 names, so R would split it into two cases.
+#   Correct that line of the file, then run jload() again.
+
+# Render 2 -- a semicolon file, and an empty one.
+try(jload("semi25.csv", name = "z25"))
+try(jload("empty25.csv", name = "z25"))
+# Expected:
+#   Error : jload(): semi25.csv separates its values with semicolons, as Excel
+#   does in many European settings.
+#   jload() reads files whose values are separated by commas.
+#   Save it from Excel as an .xlsx file and load that, or read it with base R:
+#     z25 <- read.csv2("semi25.csv")
+#   Error : jload(): empty25.csv is empty: it holds no lines.
+
+# Render 3 -- a Windows-1252 file: read, and the note; the curly apostrophe
+# and the accented letter read right (TRUE).
+jload("w1252_25.csv", name = "w25", overwrite = TRUE)
+identical(w25$answer, c("Don\u2019t know", "Caf\u00e9"))
+# Expected:
+#   Loaded w25 (CSV format; 2 cases, 2 variables)
+#
+#   Note: w1252_25.csv is not in UTF-8, the encoding R reads, so it was read as
+#   Windows-1252, the encoding Excel on Windows saves a CSV file in.
+#   Check its accented letters and symbols.
+#   [1] TRUE
+
+# Render 4 -- sheet = naming no sheet.
+try(jload("one25.xlsx", name = "z25", sheet = "Wave2"))
+# Expected:
+#   Error : jload(): one25.xlsx has no sheet named "Wave2".
+#   Its only sheet is "Sheet1":
+#     jload("one25.xlsx", name = "z25", sheet = "Sheet1")
+
+# Render 5 -- a file its reader cannot read. (R's own message, the line
+# under "R reported:", names the file's full path, a temporary folder, so
+# the Expected stops above it.)
+try(jload("bad25.xlsx", name = "z25"))
+# Expected:
+#   Error : jload(): bad25.xlsx could not be read.
+#   R reported:
+unlink(c("short25.csv", "ragged25.csv", "semi25.csv", "empty25.csv",
+         "w1252_25.csv", "one25.xlsx", "bad25.xlsx"))
+setwd(.wd25)
+rm(.wd25, w25)
+
+# Things to look at:
+#   - RENDER 1: each names the file, the line, and what to do; "R would
+#     split it into two cases" says why it stops at all.
+#   - RENDER 2: the semicolon stop's two ways out, Excel or base R.
+#   - RENDER 3: the note's wording for a researcher who never chose an
+#     encoding: is "Check its accented letters and symbols." enough?
+#   - RENDER 5: the readxl message under "R reported:" (Rule AH).
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 26 -- jsave(): names a format refuses, labels it shortens, and Excel's size (S362) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S362 (v0.9.235). Ruling R20's second half: a name R takes may be
+# one a format refuses -- a word Stata reserves (long), a dot (Stata,
+# SAS), two names SPSS and SAS read as one (age, Age), a word SPSS reserves
+# (BY). haven and ReadStat checked in their own words and one name at a
+# time; one check now names every refused name, why, and what it would
+# become, and clean.names = TRUE changes them in the file only. Also: the
+# labels a format shortens, said (ReadStat cut a .dta label inside a
+# character); Excel's sheet size, said before writing; and the dataset
+# inside an .xpt file named after the file asked for, not jsave()'s
+# temporary file. The assertion side is import_check.R sections M-P.
+# (The Saved lines name a temporary folder, so each Expected stops above
+# them.)
+.wd26 <- getwd(); setwd(.walkdir)
+d26 <- data.frame(age = 1:3, Age = 4:6, long = 7:9, BY = 1:3, total.score = 1:3,
+                  check.names = FALSE)
+
+# Render 1 -- the same data frame refused by .sav, .dta and .xpt, each for
+# its own names.
+try(jsave(d26, "d26.sav", overwrite = TRUE))
+try(jsave(d26, "d26.dta", overwrite = TRUE))
+try(jsave(d26, "d26.xpt", overwrite = TRUE))
+# Expected:
+#   Error : jsave(): 2 variable names in the d26 data frame cannot be used in
+#   SPSS format (.sav):
+#     "Age"  -> Age_2  (SPSS reads it as age)
+#     "BY"   -> XBY    (a word SPSS reserves)
+#   To save the file with these names (the d26 data frame keeps its own):
+#     jsave(d26, "d26.sav", overwrite = TRUE, clean.names = TRUE)
+#   Error : jsave(): 2 variable names in the d26 data frame cannot be used in
+#   Stata format (.dta):
+#     "long"         -> Xlong        (a word Stata reserves)
+#     "total.score"  -> total_score  (holds a character Stata does not take)
+#   To save the file with these names (the d26 data frame keeps its own):
+#     jsave(d26, "d26.dta", overwrite = TRUE, clean.names = TRUE)
+#   Error : jsave(): 2 variable names in the d26 data frame cannot be used in
+#   SAS interchange format (.xpt):
+#     "Age"          -> Age_2        (SAS reads it as age)
+#     "total.score"  -> total_score  (holds a character SAS does not take)
+#   To save the file with these names (the d26 data frame keeps its own):
+#     jsave(d26, "d26.xpt", overwrite = TRUE, clean.names = TRUE)
+
+# Render 2 -- the call the message gives, run: the note, then the Saved
+# line; the file's names; the data frame's.
+jsave(d26, "d26.dta", overwrite = TRUE, clean.names = TRUE)
+# Expected:
+#   Note: 2 variable names were changed in the file to names Stata format (.dta)
+#   takes; the d26 data frame keeps its own:
+#     "long"         -> Xlong
+#     "total.score"  -> total_score
+#   The original names are the variables' labels in the file.
+names(haven::read_dta("d26.dta"))
+names(d26)
+# Expected:
+#   [1] "age"         "Age"         "Xlong"       "BY"          "total_score"
+#   [1] "age"         "Age"         "long"        "BY"          "total.score"
+
+# Render 3 -- a long label in .sav, and a label of accented letters in .dta.
+L26 <- data.frame(q1 = c(1, 2))
+attr(L26$q1, "label") <- paste(rep("How satisfied are you with the services you received?", 6),
+                               collapse = " ")
+jsave(L26, "L26.sav", overwrite = TRUE)
+# Expected:
+#   Note: SPSS format (.sav) keeps 256 bytes of a variable label and 120 of a
+#   value label (fewer letters when they are accented).
+#   Shortened in the file: the variable label of q1.
+#   The L26 data frame keeps it whole.
+attr(L26$q1, "label") <- strrep("\u00e9", 100)
+jsave(L26, "L26.dta", overwrite = TRUE)
+# Expected:
+#   Note: Stata format (.dta) keeps 80 characters of a variable label and of the
+#   data frame's label.
+#   Shortened in the file: the variable label of q1.
+#   The L26 data frame keeps it whole.
+
+# Render 4 -- more cases than an Excel sheet holds; an .xpt file whose
+# name is not a SAS name.
+big26 <- data.frame(id = seq_len(1048576L))
+try(jsave(big26, "big26.xlsx"))
+jsave(d26["age"], "my data.xpt", overwrite = TRUE)
+# Expected:
+#   Error : jsave(): the big26 data frame has 1,048,576 cases, and Excel format
+#   (.xlsx) holds at most 1,048,575.
+#   A sheet has 1,048,576 rows, one of them for the variable names.
+#   Save it in another format, for example:
+#     jsave(big26, "big26.rds")
+#     jsave(big26, "big26.csv")
+#   Note: inside my data.xpt the dataset is named my_data.
+#   A SAS dataset name holds only the letters A to Z, digits and underscores, up
+#   to 32 characters.
+unlink(c("d26.dta", "L26.sav", "L26.dta", "my data.xpt"))
+setwd(.wd26)
+rm(.wd26, d26, L26, big26)
+
+# Things to look at:
+#   - RENDER 1: the reason column. "SPSS reads it as age" for a name that
+#     differs from another only in case.
+#   - RENDER 2: the data frame keeps age, Age, long, BY, total.score; the
+#     file has Xlong and total_score, each old name its label there.
+#   - RENDER 3: the label note's wording (bytes, letters).
+#   - RENDER 4: the offered saves; the dataset name inside the .xpt file.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
