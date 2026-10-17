@@ -18,8 +18,18 @@
 #           Since v0.9.236 (section R): jsave()'s CSV file starts with the
 #           UTF-8 byte-order mark when it holds a character beyond ASCII,
 #           and is otherwise what write.csv() writes, byte for byte.
+#           Since v0.9.237 (section S; Fix Slate 12, ruling R21): jload()'s
+#           header = and its stop on a format that carries its own names;
+#           the note on names that are all numbers, with the header = FALSE
+#           call; the note on rows and columns that may not be data -- a
+#           sheet's empty rows, empty unnamed columns and footnotes by row
+#           and column letter, a CSV file's line of commas, trailing comma
+#           and write.csv() row numbers by line and column number; every
+#           line jload() offers keeping the call (the multi-sheet note's
+#           folder, skip =, header = FALSE); and the overwrite note of a
+#           session that cannot ask, printed at the replacement.
 # ORIGIN:   S362 (v0.9.235). The tenth battery. Section R added S362, the
-#           second build (v0.9.236).
+#           second build (v0.9.236). Section S added S365 (v0.9.237).
 # FIXTURES: written by this file into a folder of R's temporary folder,
 #           except one that R cannot write: datasets/import_guess_text.xlsx
 #           (section G). writexl gives every cell of a column one type, and
@@ -33,6 +43,42 @@
 #           id 1 to 1200; v the numbers 1 to 1100, then "unknown" 100
 #           times. Its content is fixed; its bytes carry the time it was
 #           written.
+#           S365, two more, for section S, made the same way (openpyxl
+#           3.1.5): datasets/import_blank_rows.xlsx, the import audit's
+#           item 17 sheet -- number cells in column A with text cells below
+#           them -- and datasets/import_offset.xlsx, data that do not start
+#           in A1, where writexl always starts:
+#               wb = openpyxl.Workbook(); ws = wb.active; ws.title = "Sheet1"
+#               ws.append(["id", "age", None, "score"])
+#               for r in [[1, 23, None, 4], [2, 35, None, 5], [3, 41, None, 3]]:
+#                   ws.append(r)
+#               ws.append([None] * 4)
+#               for r in [[4, 29, None, 2], [5, 52, None, 5]]: ws.append(r)
+#               ws.append([None] * 4)
+#               ws.append(["Source: synthetic survey, 2024", None, None, None])
+#               ws.append(["Note: * fewer than 5 cases", None, None, None])
+#               wb.save("import_blank_rows.xlsx")
+#               wb = openpyxl.Workbook(); ws = wb.active; ws.title = "Offset"
+#               ws["A1"] = "Wave 2 survey"
+#               for c, v in zip("BCE", ["id", "age", "score"]): ws[c + "3"] = v
+#               for c, v in zip("BCE", [1, 23, 4]): ws[c + "4"] = v
+#               for c, v in zip("BCE", [2, 35, 5]): ws[c + "6"] = v
+#               ws = wb.create_sheet("Footnote")
+#               for c, v in zip("BC", ["id", "age"]): ws[c + "1"] = v
+#               for i, (a, b) in enumerate([(1, 23), (2, 35)], start=2):
+#                   ws["B%d" % i] = a; ws["C%d" % i] = b
+#               ws["A5"] = "Source: synthetic survey, 2024"
+#               ws = wb.create_sheet("Far")
+#               for c, v in zip("BCE", ["id", "age", "score"]): ws[c + "1"] = v
+#               for i in range(2, 252):
+#                   ws["B%d" % i] = i - 1; ws["C%d" % i] = 20 + i % 50
+#                   ws["E%d" % i] = i % 7
+#               ws["A253"] = "Source: synthetic survey, 2024"
+#               wb.save("import_offset.xlsx")
+#           Offset: a title in A1, the data in B3:E6 with D empty and row 5
+#           empty. Footnote: the data in B1:C3, a footnote in A5. Far: the
+#           data in B1:E251 with D empty, a footnote in A253 -- below the
+#           200 rows jload() reads first to find where the data start.
 # MUTATION MAP (S362; 42 one-change mutants of the new code, this battery
 #           on each): the outer strip A01 A05-A07 B01 B03 C03; the
 #           underscore collapse A07; V's position A01 A06 B01 B03 C04 C05
@@ -64,6 +110,33 @@
 #           read_or_stop() (excel_sheets() runs first on the same file, in
 #           the same helper, and refuses every unreadable file this
 #           battery can make: K01).
+#           Section S (v0.9.237, S365; 44 one-change mutants of the new
+#           code, run detached, this battery on each): the format stop's
+#           extension test S10; header = TRUE written out S06; Excel's
+#           col_names and V names S04 S27; col.names S13b; the count most
+#           lines hold S13 S14, compared S03 S12-S15 S24, returned S13b
+#           S15; one column under header = FALSE S15; the read.csv2()
+#           line S16; empty names S05 S07b; the number pattern S26; the
+#           note's one-name form S08, its V1 to Vk S02, its six names S09,
+#           its line S02 S03, its wording S02 S04 S08; none beside a title
+#           note F01 S23 (S23 tested "is empty" and missed the mutant's
+#           "are empty": fixed, the mutant run again, red); one-column
+#           files S22; unnamed variables only B04 B05 C06 F05 I01 R02 S22
+#           S25; row numbers in order S21b, the other variables' empty row
+#           S21b; a number ends the footnotes S20b; "made text" only when
+#           all are numbers S20b, only for number cells S18; the sheet's
+#           row S17-S19b S23, its columns left of the data S19b; the CSV
+#           names line S20 S20b S21b, a case quoted over two lines S20b;
+#           a line of spaces S20b; one thing or several S18 S21 S24; "is"
+#           or "are" S19-S23; the note's place C04 S17; the detector off
+#           S17-S25; the multi-sheet line's overwrite = TRUE S27, the note
+#           itself J04 S27; header = FALSE carried S02 S03 S27 S28, skip =
+#           F01-F03 F06 F07 F09 S28, package = TRUE S11, the sheet stop's
+#           skip = S28; the replaced note S29 (twice). ONE SURVIVOR, read
+#           before recorded: the dataset clause of the format stop taken
+#           out -- a jstats dataset has no extension, so the extension test
+#           stops it on its own (an equivalent mutant; the clause chooses
+#           the sentence).
 # FIRST WORKSTATION RUN (S362, the first delivery): 81/83. F03 -- the
 #           title note's line, run as offered, met jload()'s overwrite
 #           question: the workstation runs the batteries in an interactive
@@ -75,19 +148,32 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
-# LAST VERIFIED: v0.9.236, 2026-10-17 (S362) -- 90/90 on the WORKSTATION
+# LAST VERIFIED: v0.9.237, 2026-10-17 (S365) -- 124/124 on the WORKSTATION
+#           through receive_all() ("ALL BATTERIES GREEN (10 run, 2834
+#           checks)"; R CMD check 0 errors, 0 warnings, 0 notes); GitHub
+#           9ac3314 (package). S29 passes there as asked (interactive()
+#           TRUE); the sandbox's runs are the ones that check it.
+# SANDBOX:  v0.9.237, 2026-10-17 (S365) -- 124/124, run_all.R 2834
+#           across ten, plain and under the RStudio-handler stand-in, each
+#           again with a 35-character temp path, once with interactive()
+#           TRUE, and entered dirty (joutput("full") with diagnostics, width
+#           110, a juse() default, a stata convention, jstats.color = TRUE,
+#           workspace objects named like its working objects), plain and
+#           under the stand-in: green, nothing changed. S29 is checked only
+#           where interactive() is FALSE (the workstation asks its question
+#           there); on the workstation it passes as asked.
+# EARLIER:  v0.9.236, 2026-10-17 (S362) -- 90/90 on the WORKSTATION
 #           through receive_all() ("ALL BATTERIES GREEN (10 run, 2800
 #           checks)"; R CMD check 0 errors, 0 warnings, 0 notes); GitHub
 #           b3e9e2b (package). Jeff opened jsave()'s CSV file in Excel on
 #           Windows: Muller, Cafe and Don't know as typed, accents and the
 #           curly apostrophe intact (section R's case, which no battery
-#           can see).
-# SANDBOX:  v0.9.236, 2026-10-17 (S362, the second
-#           build) -- 90/90, run_all.R 2800 across ten, plain and
-#           under the RStudio-handler stand-in, each again with a
-#           35-character temp path, once with interactive() TRUE, and
-#           entered dirty: green, nothing changed. On the workstation:
-#           v0.9.235, 84/84 (S362, second delivery).
+#           can see). In the SANDBOX (the second build): 90/90, run_all.R
+#           2800 across ten, plain and under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, once with
+#           interactive() TRUE, and entered dirty: green, nothing changed.
+#           On the workstation before it: v0.9.235, 84/84 (S362, second
+#           delivery).
 # EARLIER:  v0.9.235 in the SANDBOX, 2026-10-17 (S362, second
 #           delivery) -- 84/84, run_all.R 2794 across ten, plain and under
 #           the RStudio-handler stand-in, each again with a 35-character
@@ -856,6 +942,269 @@ check("R06 ... writing the mark leaves nothing else in the folder, and overwrite
         b <- .R_bytes(file.path(sub, "only.csv"))
         identical(list.files(sub, all.files = TRUE, no.. = TRUE), "only.csv") &&
           identical(b[1:3], .R_bom) && !identical(b[4:6], .R_bom) }))
+
+# --- S: header =, names that are all numbers, and what may not be data -------
+
+# v0.9.237 (S365; Fix Slate 12, ruling R21). A CSV file or a sheet with no
+# names row lost its first case to the names (1 -> X1); a sheet's empty rows,
+# empty unnamed column and footnotes -- and a CSV file's line of commas,
+# trailing comma and write.csv() row numbers -- loaded as data; nothing said
+# so. jload() gains header = (ruling R21, Jeff, S364), and each case gets a
+# note (the S362 leans). Two fixtures R cannot write, in the datasets folder:
+# import_blank_rows.xlsx and import_offset.xlsx (the header says how they
+# were made). The rider: every line jload() offers keeps the call.
+.ix_w("nohead.csv", c("1,23,4", "2,35,5", "3,41,3"))
+writexl::write_xlsx(data.frame(a = c(1, 2, 3), b = c(23, 35, 41), c = c(4, 5, 3)),
+                    .ix("nohead.xlsx"), col_names = FALSE)
+.mS <- grab(jload(.ix("nohead.csv"), name = ".xS", overwrite = TRUE))
+
+check("S01 header = must be TRUE or FALSE",
+      all(vapply(list(NA, "no", 0, c(TRUE, FALSE), NULL), function(v)
+        identical(grab(jload(.ix("nohead.csv"), name = ".hk", header = v)),
+                  "jload(): `header` must be TRUE or FALSE."), logical(1))))
+check("S02 a CSV file with no names row: a note before the name note says the line may be the first case and gives the call with header = FALSE (the case had become the names without a word)",
+      identical(.fl(.note(.mS, "every variable name")), .fl(paste0(
+        "Note: every variable name read from nohead.csv is a number (1, 23, 4), so ",
+        "the line they came from may be the first case rather than the names.\n",
+        "To read that line as a case, with the variables named V1, V2, and V3:\n",
+        "  jload(\"<DIR>/nohead.csv\", name = \".xS\", overwrite = TRUE, header = FALSE)\n",
+        "\n",
+        "Note: 3 variable names were changed to valid R names:\n",
+        "  \"1\"   -> X1\n",
+        "  \"23\"  -> X23\n",
+        "  \"4\"   -> X4\n",
+        "The original names are the variables' labels.\n"))) &&
+        exists(".xS") && nrow(.xS) == 2L)
+check("S03 ... the offered call runs, over the frame the first read made: 3 cases, V1 to V3, the numbers as read",
+      local({ cl <- .calls(.mS); e <- new.env()
+        assign(".xS", "made by the first read", envir = e)
+        length(cl) == 1L && { invisible(grab(eval(cl[[1]], e))); TRUE } &&
+          identical(names(e$.xS), c("V1", "V2", "V3")) &&
+          identical(e$.xS$V2, c(23L, 35L, 41L)) }))
+check("S04 ... an Excel sheet with no names row: the same note (\"row\" where a CSV file has \"line\"); header = FALSE reads row 1 as a case",
+      local({ m <- .fl(grab(jload(.ix("nohead.xlsx"), name = "k", overwrite = TRUE)))
+        grepl("every variable name read from nohead.xlsx is a number (1, 23, 4), so the row they came from may be the first case rather than the names. To read that row as a case", m, fixed = TRUE) &&
+          { invisible(grab(jload(.ix("nohead.xlsx"), name = "k", header = FALSE,
+                                 overwrite = TRUE)))
+            identical(names(k), c("V1", "V2", "V3")) && identical(k$V1, c(1, 2, 3)) } }))
+check("S05 ... an empty name does not stop the note (a first case with a missing value has one): \"is a number or empty\"",
+      local({ .ix_w("gap1.csv", c("1,,3", "4,5,6"))
+        m <- .fl(grab(jload(.ix("gap1.csv"), name = "k", overwrite = TRUE)))
+        grepl("every variable name read from gap1.csv is a number or empty (1, \"\", 3), so", m, fixed = TRUE) }))
+check("S06 ... header = TRUE written out says the numbers are names: no note, the name note as before",
+      local({ m <- grab(jload(.ix("nohead.csv"), name = "k", header = TRUE, overwrite = TRUE))
+        !grepl("every variable name", m, fixed = TRUE) &&
+          grepl("Note: 3 variable names were changed", m, fixed = TRUE) && nrow(k) == 2L }))
+check("S07 ... a name that is not a number beside years: no note",
+      local({ .ix_w("years.csv", c("id,2019,2020", "1,5,6"))
+        !grepl("every variable name",
+               grab(jload(.ix("years.csv"), name = "k", overwrite = TRUE)), fixed = TRUE) }))
+check("S07b ... a names line of nothing but commas: no note (no name is a number)",
+      local({ .ix_w("allempty.csv", c(",,", "1,2,3"))
+        !grepl("every variable name",
+               grab(jload(.ix("allempty.csv"), name = "k", overwrite = TRUE)), fixed = TRUE) }))
+check("S08 ... one name: \"the variable name ... is a number\" and \"the variable named V1\"",
+      local({ .ix_w("one5.csv", c("5", "7", "9"))
+        m <- .fl(grab(jload(.ix("one5.csv"), name = "k", overwrite = TRUE)))
+        grepl("Note: the variable name read from one5.csv is a number (5), so the line it came from may be the first case rather than a name.", m, fixed = TRUE) &&
+          grepl("with the variable named V1:", m, fixed = TRUE) }))
+check("S09 ... eight names: the first six and a count; \"V1 to V8\"",
+      local({ .ix_w("wide8.csv", c(paste(1:8, collapse = ","), paste(11:18, collapse = ",")))
+        m <- .fl(grab(jload(.ix("wide8.csv"), name = "k", overwrite = TRUE)))
+        grepl("is a number (1, 2, 3, 4, 5, 6 and 2 more), so", m, fixed = TRUE) &&
+          grepl("named V1 to V8:", m, fixed = TRUE) }))
+check("S10 header = FALSE on a format that carries its own names stops before anything is loaded, with the call that runs; header = TRUE there passes",
+      local({ haven::write_sav(data.frame(a = 1:2), .ix("hs.sav"))
+        m <- grab(jload(.ix("hs.sav"), name = "hs10", header = FALSE))
+        identical(.fl(m), .fl(paste0(
+          "jload(): header = FALSE is only for Excel format (.xlsx, .xls) and CSV ",
+          "format (.csv).\n",
+          "hs.sav is in SPSS format (.sav), which carries its own variable names.\n",
+          "To load it, drop header = FALSE:\n",
+          "  jload(\"<DIR>/hs.sav\", name = \"hs10\")"))) &&
+          !exists("hs10", inherits = FALSE) &&
+          { e <- new.env(); invisible(grab(eval(.calls(m)[[1]], e)))
+            exists("hs10", envir = e, inherits = FALSE) } &&
+          { invisible(grab(jload(.ix("hs.sav"), name = "hs10", header = TRUE,
+                                 overwrite = TRUE)))
+            exists("hs10", inherits = FALSE) } }))
+check("S11 ... a .dta file, an .rds file and a jstats dataset the same, the dataset's line keeping package = TRUE",
+      local({ haven::write_dta(data.frame(a = 1:2), .ix("hs.dta"))
+        saveRDS(data.frame(a = 1:2), .ix("hs.rds"))
+        m1 <- .fl(grab(jload(.ix("hs.dta"), name = "k", header = FALSE)))
+        m2 <- .fl(grab(jload(.ix("hs.rds"), name = "k", header = FALSE)))
+        m3 <- .fl(grab(jload("community", name = "k", package = TRUE, header = FALSE)))
+        grepl("hs.dta is in Stata format (.dta), which carries its own variable names.", m1, fixed = TRUE) &&
+          grepl("hs.rds is in R format (.rds), which carries its own variable names.", m2, fixed = TRUE) &&
+          grepl("community is a jstats example dataset, which carries its own variable names. To load it, drop header = FALSE: jload(\"community\", name = \"k\", package = TRUE)", m3, fixed = TRUE) &&
+          !exists("k", inherits = FALSE) }))
+check("S12 header = FALSE with skip =: the lines above skipped, then every line a case",
+      local({ .ix_w("skipnh.csv", c("Scores, 2024", "", "1,23,4", "2,35,5"))
+        invisible(grab(jload(.ix("skipnh.csv"), name = "k", skip = 2, header = FALSE,
+                             overwrite = TRUE)))
+        identical(names(k), c("V1", "V2", "V3")) && identical(k$V1, 1:2) }))
+check("S13 header = FALSE measures each line against the count most lines hold: a short first line is a case with its last cells empty; a long line past the first five stops (R would have split it)",
+      local({ .ix_w("short1.csv", c("1,2", "3,4,5", "6,7,8", "9,10,11"))
+        invisible(grab(jload(.ix("short1.csv"), name = "k", header = FALSE, overwrite = TRUE)))
+        .ix_w("late.csv", c("1,2", "3,4", "5,6", "7,8", "9,10", "11,12,13", "14,15"))
+        m <- grab(jload(.ix("late.csv"), name = "k2", header = FALSE))
+        nrow(k) == 4L && identical(k$V3, c(NA, 5L, 8L, 11L)) &&
+          identical(.fl(m), .fl(paste0(
+            "jload(): line 6 of late.csv holds 3 values, but most lines hold 2, so R ",
+            "would split it into two cases.\n",
+            "Correct that line of the file, then run jload() again."))) &&
+          !exists("k2", inherits = FALSE) }))
+check("S13b ... five short lines, then more lines of a larger count: that count's variables, nothing split (read.csv() counts only the first five lines)",
+      local({ .ix_w("five.csv", c(rep("1,2", 5), rep("3,4,5", 6)))
+        invisible(grab(jload(.ix("five.csv"), name = "k", header = FALSE, overwrite = TRUE)))
+        identical(dim(k), c(11L, 3L)) && identical(k$V3, c(rep(NA, 5), rep(5L, 6))) }))
+check("S14 ... several long lines, listed",
+      local({ .ix_w("late2.csv", c("1,2", "3,4", "5,6,7", "8,9", "10,11,12", "13,14"))
+        grepl("lines 3 and 5 of late2.csv hold more values than most lines (2), so R would split each into two cases.",
+              .fl(grab(jload(.ix("late2.csv"), name = "k", header = FALSE))), fixed = TRUE) }))
+check("S15 ... a one-column file read with header = FALSE keeps its empty lines as cases (Session 351)",
+      local({ .ix_w("onenh.csv", c("a", "", "b", "c"))
+        invisible(grab(jload(.ix("onenh.csv"), name = "k", header = FALSE, overwrite = TRUE)))
+        identical(k$V1, c("a", "", "b", "c")) }))
+check("S16 ... a semicolon file stops as before, its read.csv2() line carrying skip = and header = FALSE, and running",
+      local({ .ix_w("seminh.csv", c("Wave 2", "1;23;4,5", "2;35;5,25"))
+        m <- grab(jload(.ix("seminh.csv"), name = ".s16", skip = 1, header = FALSE))
+        cl <- .calls(m); e <- new.env()
+        grepl(".s16 <- read.csv2(\"<DIR>/seminh.csv\", skip = 1, header = FALSE)", .fl(m), fixed = TRUE) &&
+          length(cl) == 1L && { eval(cl[[1]], e); identical(dim(e$.s16), c(2L, 3L)) } }))
+
+.mS2 <- grab(jload(file.path(.ix_data, "import_blank_rows.xlsx"), name = ".xS2",
+                   overwrite = TRUE))
+check("S17 the import audit's sheet: its empty rows, footnotes and empty column named by row and column in one note, before the name note; nothing removed (they had loaded as cases and a variable without a word)",
+      identical(.fl(.note(.mS2, "rows 5")), .fl(paste0(
+        "Note: rows 5 and 8 of import_blank_rows.xlsx (cases 4 and 7) are empty.\n",
+        "Rows 9 and 10 (cases 8 and 9) have text in the first column only, below the ",
+        "data, so they may be footnotes.\n",
+        "Because of them, id was read as text.\n",
+        "Column C (V3) has no name and is empty.\n",
+        "They were read as data, and nothing was removed.\n",
+        "To leave them out, delete them from the file and load the file again.\n",
+        "\n",
+        "Note: 1 variable name was changed to a valid R name:\n",
+        "  \"\"  -> V3\n"))) &&
+        exists(".xS2") && identical(dim(.xS2), c(9L, 4L)))
+check("S18 ... digits stored as text in Excel beside a footnote: the footnote named, but not said to have made the variable text (it was text in the sheet)",
+      local({ writexl::write_xlsx(data.frame(id = c("1", "2", "Source: a survey"),
+                                             age = c(23, 35, NA)), .ix("astext.xlsx"))
+        m <- .fl(grab(jload(.ix("astext.xlsx"), name = "k", overwrite = TRUE)))
+        grepl("Note: row 4 of astext.xlsx (case 3) has text in the first column only, below the data, so it may be a footnote. It was read as data", m, fixed = TRUE) &&
+          !grepl("was read as text", m, fixed = TRUE) }))
+check("S19 ... a sheet whose data start in B3 below a title, read with skip = 2: the row and the column as the sheet has them (column D, not C); a footnote in column A beside data in B and C",
+      local({ f <- file.path(.ix_data, "import_offset.xlsx")
+        m1 <- .fl(grab(jload(f, name = "k", sheet = "Offset", skip = 2, overwrite = TRUE)))
+        m2 <- .fl(grab(jload(f, name = "k", sheet = "Footnote", overwrite = TRUE)))
+        grepl("Note: row 5 of import_offset.xlsx (case 2) is empty. Column D (V3) has no name and is empty. They were read as data", m1, fixed = TRUE) &&
+          grepl("Note: row 4 of import_offset.xlsx (case 3) is empty. Row 5 (case 4) has text in the first column only, below the data, so it may be a footnote. They were read", m2, fixed = TRUE) }))
+check("S19b ... a footnote in column A below row 200 beside data in B to E: column D, not E (one cell left of the data, found down the whole sheet, moves the first column)",
+      grepl("Note: row 252 of import_offset.xlsx (case 251) is empty. Row 253 (case 252) has text in the first column only, below the data, so it may be a footnote. Column D (V4) has no name and is empty.",
+            .fl(grab(jload(file.path(.ix_data, "import_offset.xlsx"), name = ".s19",
+                           sheet = "Far", overwrite = TRUE))), fixed = TRUE))
+check("S20 the CSV kin: a line of commas and Excel's quoted footnotes, by line, and the variable they made text",
+      local({ .ix_w("foot.csv", c("id,age,grp", "1,23,a", ",,", "2,35,b",
+                                  "\"Source: synthetic survey, 2024\",,",
+                                  "\"Note: * fewer than 5 cases\",,"))
+        m <- grab(jload(.ix("foot.csv"), name = "k", overwrite = TRUE))
+        identical(.fl(.note(m, "line 3")), .fl(paste0(
+          "Note: line 3 of foot.csv (case 2) is empty.\n",
+          "Lines 5 and 6 (cases 4 and 5) have text in the first column only, below ",
+          "the data, so they may be footnotes.\n",
+          "Because of them, id was read as text.\n",
+          "They were read as data, and nothing was removed.\n",
+          "To leave them out, delete them from the file and load the file again."))) &&
+          nrow(k) == 5L }))
+check("S20b ... the run below the data stops at a case holding only a number (an id); no variable is said to be made text when its other values are not all numbers; a footnote quoted across two lines is named by its first line; a line of spaces is empty",
+      local({ .ix_w("idonly.csv", c("id,age", "1,23", "2,35", "3,", "Source: x,"))
+        .ix_w("mixed.csv", c("id,age", "1,23", "x,35", "Source: x,"))
+        .ix_w("twoline.csv", c("id,age", "1,23", "2,35", "\"Source: one", "line two\","))
+        .ix_w("spaces.csv", c("a,b", "x,y", "  ,  ", "z,w"))
+        m1 <- .fl(grab(jload(.ix("idonly.csv"), name = "k", overwrite = TRUE)))
+        m2 <- .fl(grab(jload(.ix("mixed.csv"), name = "k", overwrite = TRUE)))
+        m3 <- .fl(grab(jload(.ix("twoline.csv"), name = "k", overwrite = TRUE)))
+        m4 <- .fl(grab(jload(.ix("spaces.csv"), name = "k", overwrite = TRUE)))
+        grepl("Note: line 5 of idonly.csv (case 4) has text in the first column only, below the data, so it may be a footnote. Because of it, id was read as text.", m1, fixed = TRUE) &&
+          grepl("Note: line 4 of mixed.csv (case 3) has text", m2, fixed = TRUE) &&
+          !grepl("was read as text", m2, fixed = TRUE) &&
+          grepl("Note: line 4 of twoline.csv (case 3) has text in the first column only", m3, fixed = TRUE) &&
+          grepl("Note: line 3 of spaces.csv (case 2) is empty.", m4, fixed = TRUE) }))
+check("S21 ... a trailing comma's empty column and the row numbers write.csv() writes, by column number (sections C04 and C05's files)",
+      local({ m1 <- .fl(grab(jload(.ix("trail.csv"), name = "k", overwrite = TRUE)))
+        m2 <- .fl(grab(jload(.ix("rn.csv"), name = "k", overwrite = TRUE)))
+        grepl("Note: column 4 of trail.csv (V4) has no name and is empty. It was read as data, and nothing was removed. To leave it out, delete it from the file and load the file again.", m1, fixed = TRUE) &&
+          grepl("Note: column 1 of rn.csv (V1) has no name and holds the numbers 1 to 2 in order, so it may be row numbers, as R's write.csv() writes them.", m2, fixed = TRUE) }))
+check("S21b ... an unnamed first column of other numbers is not row numbers; beside write.csv()'s row numbers, a case empty in every other variable is named",
+      local({ .ix_w("notrn.csv", c("\"\",age", "7,23", "9,35"))
+        utils::write.csv(data.frame(a = c(1, NA, 3), b = c(4, NA, 6)), .ix("rnna.csv"))
+        m1 <- grab(jload(.ix("notrn.csv"), name = "k", overwrite = TRUE))
+        m2 <- .fl(grab(jload(.ix("rnna.csv"), name = "k", overwrite = TRUE)))
+        !grepl("row numbers", m1, fixed = TRUE) &&
+          grepl("Note: line 3 of rnna.csv (case 2) is empty. Column 1 (V1) has no name and holds the numbers 1 to 3 in order, so it may be row numbers", m2, fixed = TRUE) }))
+check("S22 ... not named: the empty line of a one-column file, a case with a missing value (Session 351); a named variable with nothing in it",
+      local({ .ix_w("onecol.csv", c("notes", "a", "", "b"))
+        m1 <- grab(jload(.ix("onecol.csv"), name = "k", overwrite = TRUE))
+        .ix_w("named.csv", c("id,comment", "1,", "2,"))
+        m2 <- grab(jload(.ix("named.csv"), name = "k2", overwrite = TRUE))
+        !grepl("Note:", m1, fixed = TRUE) && !grepl("Note:", m2, fixed = TRUE) &&
+          identical(k$notes, c("a", "", "b")) && all(is.na(k2$comment)) }))
+check("S23 ... beside a title note there is none -- its skip = call reads the sheet again, and that read gets it",
+      local({ t <- data.frame(x = c("Survey", NA, "id", "1", NA, "2"),
+                              y = c(NA, NA, "age", "23", NA, "35"),
+                              z = c(NA, NA, "score", "4", NA, "5"))
+        writexl::write_xlsx(t, .ix("tb.xlsx"), col_names = FALSE)
+        m1 <- .fl(grab(jload(.ix("tb.xlsx"), name = "k", overwrite = TRUE)))
+        m2 <- .fl(grab(jload(.ix("tb.xlsx"), name = "k", skip = 2, overwrite = TRUE)))
+        grepl("may be a title", m1, fixed = TRUE) && !grepl("empty", m1, fixed = TRUE) &&
+          grepl("Note: row 5 of tb.xlsx (case 2) is empty.", m2, fixed = TRUE) }))
+check("S24 ... with header = FALSE, a column with nothing in it is named (there are no names to check)",
+      local({ .ix_w("nhblank.csv", c("1,,3", "4,,6"))
+        grepl("Note: column 2 of nhblank.csv (V2) is empty. It was read as data",
+              .fl(grab(jload(.ix("nhblank.csv"), name = "k", header = FALSE,
+                             overwrite = TRUE))), fixed = TRUE) }))
+check("S25 both notes print under quiet = TRUE, as the other notes on what a read found do; a clean file gets neither",
+      local({ m1 <- grab(jload(.ix("nohead.csv"), name = "k", quiet = TRUE, overwrite = TRUE))
+        m2 <- .fl(grab(jload(.ix("trail.csv"), name = "k", quiet = TRUE, overwrite = TRUE)))
+        m3 <- grab(jload(.ix("plain.csv"), name = "k", overwrite = TRUE))
+        m4 <- grab(jload(.ix("clean.xlsx"), name = "k", overwrite = TRUE))
+        grepl("every variable name read from nohead.csv", m1, fixed = TRUE) &&
+          !grepl("Loaded", m1, fixed = TRUE) &&
+          grepl("column 4 of trail.csv (V4)", m2, fixed = TRUE) &&
+          !grepl("Note:", m3, fixed = TRUE) && !grepl("Note:", m4, fixed = TRUE) }))
+check("S26 what reads as a number: digits, a sign, a decimal point, an exponent; not Inf, NA, 1,000 or 50%; and an Excel column's letters",
+      identical(jstats:::.jst_is_number_text(c("7", "-2.5", "1e3", ".5", " 12 ", "Inf",
+                                               "NA", "1,000", "50%", "", NA, "x1")),
+                c(TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
+                  FALSE, FALSE)) &&
+        identical(jstats:::.jst_excel_col_letters(c(1, 3, 26, 27, 52, 703)),
+                  c("A", "C", "Z", "AA", "AZ", "AAA")))
+check("S27 the note on a file of several sheets: its line keeps the folder as typed, name = and header = FALSE, with overwrite = TRUE, and runs (it had been jload(\"two.xlsx\", sheet = \"B\"), which read another file or none)",
+      local({ sub <- .ix("S27"); dir.create(sub)
+        writexl::write_xlsx(list(A = data.frame(x = 1:2), B = data.frame(y = 3:4)),
+                            file.path(sub, "two.xlsx"))
+        m <- grab(jload(file.path(sub, "two.xlsx"), name = "k", header = FALSE))
+        cl <- .calls(m); e <- new.env(); assign("k", "first", envir = e)
+        grepl("jload(\"<DIR>/S27/two.xlsx\", name = \"k\", overwrite = TRUE, sheet = \"B\", header = FALSE)",
+              .fl(m), fixed = TRUE) &&
+          length(cl) == 1L && { invisible(grab(eval(cl[[1]], e)))
+            identical(e$k$V1, c("y", "3", "4")) } }))
+check("S28 ... the sheet stop's line and the leading-digit stop's line keep skip = and header = FALSE",
+      local({ m1 <- .fl(grab(jload(.ix("clean.xlsx"), name = "k", sheet = "Nope", skip = 1,
+                                   header = FALSE)))
+        file.copy(.ix("nohead.csv"), .ix("2024s.csv"))
+        m2 <- .fl(grab(jload(.ix("2024s.csv"), header = FALSE)))
+        grepl("jload(\"<DIR>/clean.xlsx\", name = \"k\", sheet = \"Sheet1\", skip = 1, header = FALSE)", m1, fixed = TRUE) &&
+          grepl("jload(\"<DIR>/2024s.csv\", name = \"s\", header = FALSE)", m2, fixed = TRUE) }))
+check("S29 a session that cannot ask says a name was replaced when the load replaces it, so a call that stops says nothing of it (it had said \"has been replaced\" and then stopped); run where interactive() is FALSE, since the workstation asks its question there",
+      interactive() || local({
+        k <- "here before"
+        m1 <- grab(jload(.ix("clean.xlsx"), name = "k", sheet = "Nope"))
+        ok1 <- !grepl("replaced", m1, fixed = TRUE) && identical(k, "here before")
+        m2 <- grab(jload(.ix("plain.csv"), name = "k"))
+        ok1 && grepl("'k' already existed and has been replaced.\n\nLoaded k", m2, fixed = TRUE) &&
+          is.data.frame(k) }))
 
 # --- The message surface, swept (guard 4) ------------------------------------
 

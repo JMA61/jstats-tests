@@ -19,8 +19,30 @@
 #           Since S362 the import surface: the names jload() changes, skip
 #           = and the title note, a CSV file's shape and encoding, sheet =
 #           and a reader's own error, and jsave()'s names, labels, Excel
-#           size and .xpt dataset name (Sections 23-26).
+#           size and .xpt dataset name (Sections 23-26). Since S365 a file
+#           with no names row and jload(header =), the rows and columns
+#           that may not be data, and the lines jload() offers keeping the
+#           call (Sections 27-29).
 # ORIGIN:   S229
+# EDITED:   S365 (v0.9.237; Fix Slate 12, the import audit's items 14 and
+#           17, with ruling R21). NEW SECTIONS 27-29, filled by running
+#           (fill.R): 27, jload(header =) -- the note on names that are all
+#           numbers, from a CSV file and a sheet, its header = FALSE call
+#           run, header = TRUE written out, the stop on a format that
+#           carries its own names, and a long line under header = FALSE; 28,
+#           the note on rows and columns that may not be data -- the
+#           audit's sheet (datasets/import_blank_rows.xlsx), a CSV file's
+#           line of commas, footnotes, trailing comma and write.csv() row
+#           numbers, a sheet whose data start in B3
+#           (datasets/import_offset.xlsx), and a one-column file left
+#           alone; 29, the lines jload() offers keeping the call -- the
+#           multi-sheet note's folder, the sheet stop's skip = and header =
+#           FALSE. All three on the PENDING line: new design and wording,
+#           Claude's call (instructions Section 15 [SLATE-BUILDS]). Section
+#           28 reads the two fixtures from the test-data folder. No earlier
+#           section moved (harness.R dump of every section on 0.9.236 and
+#           0.9.237, temporary paths aside). The assertion side is
+#           import_check.R section S.
 # EDITED:   S362 (v0.9.235; ruling R9 with ruling R20 and the import
 #           audit's findings). NEW SECTIONS 23-26, filled by running
 #           (fill.R), the Saved lines of Section 26 left out (a temporary
@@ -268,6 +290,13 @@
 #           updated in Sections 6 and 7 (the same line, a temporary path).
 #           harness.R derive: no section needs another it does not name.
 #           The assertion side is missing_convention_check.R N94.
+# LAST VERIFIED: v0.9.237, 2026-10-17 (S365) -- Sections 27, 28 and 29
+#           WALKED on the WORKSTATION by Jeff through receive_all()
+#           ("walked, all okay"); PENDING back to none; GitHub 9ac3314
+#           (package). Sandbox: harness.R verify, 29 of 29 sections in three
+#           orders and by prepare = TRUE; 100 of 101 Expected blocks
+#           (Section 9's, as before). Every section captured on v0.9.236
+#           and v0.9.237: identical apart from temp paths.
 # LAST VERIFIED: v0.9.236, 2026-10-17 (S362) -- Sections 23, 24, 25 and
 #           26 WALKED on the WORKSTATION by Jeff through receive_all() on
 #           v0.9.235 ("walked, all okay"), and again on v0.9.236 ("walked,
@@ -2677,6 +2706,274 @@ rm(.wd26, d26, L26, big26)
 #     file has Xlong and total_score, each old name its label there.
 #   - RENDER 3: the label note's wording (bytes, letters).
 #   - RENDER 4: the offered saves; the dataset name inside the .xpt file.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 27 -- jload(header =): a file with no names row (ruling R21; S365) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S365 (v0.9.237; Fix Slate 12). A CSV file or a sheet with no names
+# row lost its first case to the names, which were then numbers (1 became
+# X1), and only the name note said anything. When every name read is a
+# number, or empty, a note now says the row may be the first case and gives
+# the call with header = FALSE (ruling R21, Jeff, S364: "add a "header"
+# argument to jload ... Yes, that's a good idea."), which reads it as a
+# case and names the variables V1, V2, ... header = TRUE written out says
+# the numbers are names, and the note is not shown. Every other format
+# carries its own names, so header = FALSE stops there. The assertion side
+# is import_check.R section S.
+.wd27 <- getwd(); setwd(.walkdir)
+writeLines(c("1,23,4", "2,35,5", "3,41,3"), "nohead27.csv")
+writexl::write_xlsx(data.frame(a = c(1, 2, 3), b = c(23, 35, 41), c = c(4, 5, 3)),
+                    "nohead27.xlsx", col_names = FALSE)
+writeLines(c("2019,2020,2021", "5,6,7", "8,9,10"), "years27.csv")
+haven::write_sav(data.frame(id = 1:2, age = c(23, 35)), "survey27.sav")
+writeLines(c("1,2", "3,4", "5,6", "7,8", "9,10", "11,12,13", "14,15"),
+           "late27.csv")
+
+# Render 1 -- the CSV file read as it stands: two cases, the note first,
+# then the name note.
+jload("nohead27.csv", name = "n27", overwrite = TRUE)
+# Expected:
+#   Loaded n27 (CSV format; 2 cases, 3 variables)
+#
+#   Note: every variable name read from nohead27.csv is a number (1, 23, 4), so
+#   the line they came from may be the first case rather than the names.
+#   To read that line as a case, with the variables named V1, V2, and V3:
+#     jload("nohead27.csv", name = "n27", overwrite = TRUE, header = FALSE)
+#
+#   Note: 3 variable names were changed to valid R names:
+#     "1"   -> X1
+#     "23"  -> X23
+#     "4"   -> X4
+#   The original names are the variables' labels.
+
+# Render 2 -- the call the note gives, run: three cases, V1 to V3.
+jload("nohead27.csv", name = "n27", overwrite = TRUE, header = FALSE)
+n27
+# Expected:
+#   Loaded n27 (CSV format; 3 cases, 3 variables)
+#     V1 V2 V3
+#   1  1 23  4
+#   2  2 35  5
+#   3  3 41  3
+
+# Render 3 -- the same sheet in Excel: "row" where the CSV file has "line".
+jload("nohead27.xlsx", name = "x27", overwrite = TRUE)
+# Expected:
+#   Loaded x27 (Excel format; 2 cases, 3 variables)
+#
+#   Note: every variable name read from nohead27.xlsx is a number (1, 23, 4), so
+#   the row they came from may be the first case rather than the names.
+#   To read that row as a case, with the variables named V1, V2, and V3:
+#     jload("nohead27.xlsx", name = "x27", overwrite = TRUE, header = FALSE)
+#
+#   Note: 3 variable names were changed to valid R names:
+#     "1"   -> X1
+#     "23"  -> X23
+#     "4"   -> X4
+#   The original names are the variables' labels.
+
+# Render 4 -- years as names, said so with header = TRUE: the name note
+# alone.
+jload("years27.csv", name = "y27", overwrite = TRUE, header = TRUE)
+# Expected:
+#   Loaded y27 (CSV format; 2 cases, 3 variables)
+#
+#   Note: 3 variable names were changed to valid R names:
+#     "2019"  -> X2019
+#     "2020"  -> X2020
+#     "2021"  -> X2021
+#   The original names are the variables' labels.
+
+# Render 5 -- header = FALSE on an SPSS file and on a jstats dataset: a
+# stop, with the call that runs.
+try(jload("survey27.sav", name = "s27", header = FALSE))
+try(jload("community", name = "s27", package = TRUE, header = FALSE))
+# Expected:
+#   Error : jload(): header = FALSE is only for Excel format (.xlsx, .xls) and
+#   CSV format (.csv).
+#   survey27.sav is in SPSS format (.sav), which carries its own variable names.
+#   To load it, drop header = FALSE:
+#     jload("survey27.sav", name = "s27")
+#   Error : jload(): header = FALSE is only for Excel format (.xlsx, .xls) and
+#   CSV format (.csv).
+#   community is a jstats example dataset, which carries its own variable names.
+#   To load it, drop header = FALSE:
+#     jload("community", name = "s27", package = TRUE)
+
+# Render 6 -- header = FALSE measures each line against the count most
+# lines hold: a long line past the first five stops, as a line longer than
+# the names line does.
+try(jload("late27.csv", name = "l27", header = FALSE))
+# Expected:
+#   Error : jload(): line 6 of late27.csv holds 3 values, but most lines hold 2,
+#   so R would split it into two cases.
+#   Correct that line of the file, then run jload() again.
+unlink(c("nohead27.csv", "nohead27.xlsx", "years27.csv", "survey27.sav",
+         "late27.csv"))
+setwd(.wd27)
+rm(.wd27, n27, x27, y27)
+
+# Things to look at:
+#   - RENDER 1: "every variable name read from nohead27.csv is a number":
+#     a guess, said as one ("may be"); the call carries overwrite = TRUE,
+#     since the read just made n27.
+#   - RENDER 4: header = TRUE as the way to say the numbers are names.
+#   - RENDER 5: the stop's second line, "carries its own variable names".
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 28 -- rows and columns that may not be data (the import audit's item 17; S365) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S365 (v0.9.237; Fix Slate 12). A sheet's empty rows, an empty column
+# with no name and the footnotes below the data loaded as cases and a
+# variable, the footnotes turning id into text, and nothing said so; so did
+# a CSV file's line of commas, a trailing comma's column and the row
+# numbers R's write.csv() writes. One note now names them by their place in
+# the file, the case numbers or the variable names beside, says when the
+# footnotes made a variable text, and that nothing was removed (Jeff's S362
+# lean: "a note naming them; nothing dropped"). The sheet is the audit's,
+# a file in the test-data folder (R cannot write a column of numbers with
+# text below them). The assertion side is import_check.R section S.
+.wd28 <- getwd(); setwd(.walkdir)
+.ds28 <- "E:/00 R Projects/00_jstats_test_data/datasets"
+writeLines(c("id,age,grp", "1,23,a", ",,", "2,35,b",
+             "\"Source: synthetic survey, 2024\",,",
+             "\"Note: * fewer than 5 cases\",,"), "foot28.csv")
+writeLines(c("a,b,c,", "1,2,3,", "4,5,6,"), "trail28.csv")
+utils::write.csv(data.frame(age = c(23, 35, 41), score = c(4, 5, 3)),
+                 "rows28.csv")
+writeLines(c("notes", "a", "", "b"), "one28.csv")
+
+# Render 1 -- the audit's sheet: two empty rows, two footnotes, an empty
+# column; then the name note for the column's name.
+jload(file.path(.ds28, "import_blank_rows.xlsx"), name = "b28", overwrite = TRUE)
+# Expected:
+#   Loaded b28 (Excel format; 9 cases, 4 variables)
+#
+#   Note: rows 5 and 8 of import_blank_rows.xlsx (cases 4 and 7) are empty.
+#   Rows 9 and 10 (cases 8 and 9) have text in the first column only, below the
+#   data, so they may be footnotes.
+#   Because of them, id was read as text.
+#   Column C (V3) has no name and is empty.
+#   They were read as data, and nothing was removed.
+#   To leave them out, delete them from the file and load the file again.
+#
+#   Note: 1 variable name was changed to a valid R name:
+#     ""  -> V3
+
+# Render 2 -- the CSV kin: a line of commas and Excel's quoted footnotes,
+# by line; a trailing comma's column; write.csv()'s row numbers.
+jload("foot28.csv", name = "f28", overwrite = TRUE)
+# Expected:
+#   Loaded f28 (CSV format; 5 cases, 3 variables)
+#
+#   Note: line 3 of foot28.csv (case 2) is empty.
+#   Lines 5 and 6 (cases 4 and 5) have text in the first column only, below the
+#   data, so they may be footnotes.
+#   Because of them, id was read as text.
+#   They were read as data, and nothing was removed.
+#   To leave them out, delete them from the file and load the file again.
+jload("trail28.csv", name = "t28", overwrite = TRUE)
+# Expected:
+#   Loaded t28 (CSV format; 2 cases, 4 variables)
+#
+#   Note: column 4 of trail28.csv (V4) has no name and is empty.
+#   It was read as data, and nothing was removed.
+#   To leave it out, delete it from the file and load the file again.
+#
+#   Note: 1 variable name was changed to a valid R name:
+#     ""  -> V4
+jload("rows28.csv", name = "r28", overwrite = TRUE)
+# Expected:
+#   Loaded r28 (CSV format; 3 cases, 3 variables)
+#
+#   Note: column 1 of rows28.csv (V1) has no name and holds the numbers 1 to 3
+#   in order, so it may be row numbers, as R's write.csv() writes them.
+#   It was read as data, and nothing was removed.
+#   To leave it out, delete it from the file and load the file again.
+#
+#   Note: 1 variable name was changed to a valid R name:
+#     ""  -> V1
+
+# Render 3 -- a sheet whose data start in B3, below a title: the rows and
+# the column counted as the sheet has them (column D, not C).
+jload(file.path(.ds28, "import_offset.xlsx"), name = "o28", overwrite = TRUE,
+      sheet = "Offset", skip = 2)
+# Expected:
+#   Loaded o28 (Excel format; 3 cases, 4 variables)
+#
+#   Note: row 5 of import_offset.xlsx (case 2) is empty.
+#   Column D (V3) has no name and is empty.
+#   They were read as data, and nothing was removed.
+#   To leave them out, delete them from the file and load the file again.
+#
+#   Note: 1 variable name was changed to a valid R name:
+#     ""  -> V3
+
+# Render 4 -- a one-column file: its empty line is a case with a missing
+# value (Session 351), and no note.
+jload("one28.csv", name = "e28", overwrite = TRUE)
+# Expected:
+#   Loaded e28 (CSV format; 3 cases, 1 variable)
+unlink(c("foot28.csv", "trail28.csv", "rows28.csv", "one28.csv"))
+setwd(.wd28)
+rm(.wd28, .ds28, b28, f28, t28, r28, o28, e28)
+
+# Things to look at:
+#   - RENDER 1: one sentence for each kind found, the rows and the column
+#     by their place in the sheet, the cases and the variable beside them.
+#   - RENDER 1: "Because of them, id was read as text." -- said only when
+#     the other cells are numbers in the sheet, not digits stored as text.
+#   - RENDER 2: "line" for a CSV file, "row" for a sheet; the row numbers'
+#     "may be".
+#   - The way out: delete them from the file and load it again. No R line
+#     is offered: removing rows in base R (d[-4, ]) drops the labels jload()
+#     gives a CSV file's renamed variables.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 29 -- the lines jload() offers keep the call (S365) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S365 (v0.9.237; Fix Slate 12's rider). The note on a file of several
+# sheets offered jload("two29.xlsx", sheet = "B"), the file's name without
+# the folder typed, which read another file of that name or none; and the
+# sheet stop's line, like the stop for a name starting with a digit,
+# dropped skip =. Every line jload() offers is now the call as typed with
+# the one change: the folder, name =, sheet =, skip = and header = FALSE
+# kept, and overwrite = TRUE where the read has made the data frame.
+.wd29 <- getwd(); setwd(.walkdir)
+dir.create("in29", showWarnings = FALSE)
+writexl::write_xlsx(list(A = data.frame(x = 1:2), B = data.frame(y = 3:4)),
+                    "in29/two29.xlsx")
+
+# Render 1 -- a file of two sheets, in a folder: the line keeps the folder
+# and the call's name; then the line, run.
+jload("in29/two29.xlsx", name = "w29", overwrite = TRUE)
+jload("in29/two29.xlsx", name = "w29", overwrite = TRUE, sheet = "B")
+# Expected:
+#   This file has 2 sheets: A, B
+#   Reading the first sheet ("A"). To read a different sheet, use:
+#     jload("in29/two29.xlsx", name = "w29", overwrite = TRUE, sheet = "B")
+#   Loaded w29 (Excel format; 2 cases, 1 variable)
+#   Loaded w29 (Excel format; 2 cases, 1 variable)
+
+# Render 2 -- sheet = naming no sheet, with skip = and header = FALSE: the
+# line keeps both.
+try(jload("in29/two29.xlsx", name = "v29", sheet = "C", skip = 1,
+          header = FALSE))
+# Expected:
+#   Error : jload(): two29.xlsx has no sheet named "C".
+#   Its sheets are "A" and "B".
+#   To read one, name it:
+#     jload("in29/two29.xlsx", name = "v29", sheet = "A", skip = 1,
+#         header = FALSE)
+unlink("in29", recursive = TRUE)
+setwd(.wd29)
+rm(.wd29, w29)
+
+# Things to look at:
+#   - RENDER 1: the line names the folder, and carries overwrite = TRUE.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
