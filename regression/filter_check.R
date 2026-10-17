@@ -132,7 +132,13 @@
 #           a formula call and first in any other -- the one holding the
 #           formula's variables, or for a call with no variable to match
 #           any one data frame, else MyData -- the call's other arguments
-#           kept, each line running.
+#           kept, each line running -- PLUS (S369, sections AC and AD) A
+#           jplot() CALL FORWARDED THROUGH A WRAPPER'S ..., read as the
+#           direct call is (ruling R18: the data frame's variable); and the
+#           resolver's default-not-found stop, jsave()'s data-omitted stop
+#           and jcopy()'s no-source stop laid out, one sentence a line,
+#           jcopy() given the two routes, and a line to run under the
+#           no-variables stops of jcorr(), jalpha(), jsum() and javg().
 # ORIGIN:   S289 (design S284 / S288; code S289 v0.9.163); sections F and
 #           G, the A rewrite, the Under40 fixture column, and the bare-name
 #           message re-assertions (A01 A02 D01-D03 F06) S290 (v0.9.164);
@@ -148,6 +154,106 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S369 EDIT 2 (v0.9.242, 2026-10-18): Fix Slate 17 and ruling R22. NEW
+#           SECTION AE, eleven checks (AE01-AE11): a call naming neither a
+#           data frame nor a variable, with no default, to a function that
+#           needs variables gets ONE stop -- jcorr(method = "spearman")
+#           pinned whole (AE01); jdesc(), jfreq(), jalpha(), jsum(), javg()
+#           and jplot() the same, each its own count and example (AE02);
+#           each example runs (AE03); display options kept, arguments that
+#           name or depend on the variables left out (AE04); jscreen(), an
+#           empty first argument with a variable and a formula keep section
+#           AB's routes (AE05, control); a default set, the functions' own
+#           stops as before (AE06, control); the riders -- jcomplete()'s and
+#           jplot()'s no-variables stops (AE07), jplot()'s over-two stop,
+#           whose old example stopped (AE08), jcopy()'s three, the third
+#           R's "object not found" until now (AE09), their lines running
+#           (AE10); and, found building it, a call naming its variables and
+#           no data frame keeps the whole call in both routes, the data
+#           frame holding every variable named (AE11; jcorr(Score, Age) had
+#           been offered jcorr(ab1, Score)). AB03 re-scoped to jscreen(),
+#           AB05's option case and AB07's data-first calls given variables
+#           (R22 now answers a call with none). FIVE HUNDRED AND
+#           EIGHTY-EIGHT checks.
+#           MUTATION MAP: fourteen one-change mutants of the 0.9.242 master,
+#           run detached, every one red: R22 off AE01-AE04; no option kept
+#           AE01 AE04; every named argument kept AE04; jsum()'s and javg()'s
+#           assignment dropped AE02 AE04; jplot()'s count AE02; the whole
+#           call not kept AB05 AE11, or its frame matched on the first
+#           variable alone AE11; jcomplete()'s old stop AE07, jplot()'s
+#           AE07; the old over-two example AE08; jcopy()'s not-found guard
+#           off AE09 AE10, its frame always MyData AE09 AE10, the
+#           destination dropped AE09; jsum()'s example naming a missing
+#           column AE02 AE03. Section AE red on v0.9.241 (AE01-AE04,
+#           AE07-AE11, with AB05); AE05 and AE06, the controls, green.
+#           LAST VERIFIED: v0.9.242, 2026-10-18 (S369) -- 588/588 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           2898 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox; GitHub fbeb84d (package).
+#           LAST VERIFIED (v0.9.241, the first build): 577/577 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           2887 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
+# S369 EDIT (v0.9.241, 2026-10-17): Fix Slate 16. NEW SECTION AC, nine
+#           checks (AC01-AC09): a jplot() call forwarded through a wrapper's
+#           ... -- with a workspace Score, .wrap(data = h, Score) plots h's
+#           Score as the direct call does, either order (AC01; it stopped on
+#           rlang's error); a variable not found named against h (AC02; "the
+#           ..1 data frame"); .wrap(Score) under a default (AC03; a variable
+#           named "..1"); the second-frame stop naming both as typed (AC04;
+#           "data = ..1"); by = and subset = forwarded beside workspace
+#           objects of their names (AC05); a wrapper passing its own data
+#           frame (AC06); a wrapper called from a function's frame (AC07);
+#           a forwarded formula and result object, and the direct call,
+#           unchanged (AC08, control); two variables under a default, the
+#           second a variable, not `which`, and their stops the direct
+#           call's (AC09; "..1" named on 0.9.240). NEW SECTION AD, seven checks
+#           (AD01-AD07): jsave()'s data-omitted stop one sentence a line,
+#           "Name them, for example:" over the call, nothing written (AD01);
+#           a default whose data frame has gone, the resolver's stop in
+#           jscreen() and jcopy() alike, pinned whole (AD02); jcopy(ad9) with
+#           no default, both routes, the destination not a variable to match
+#           (AD03); both of jcopy()'s routes run (AD04); the no-variables
+#           stops of jcorr() and jalpha() (AD05) and jsum() and javg() (AD06)
+#           with a line to run, pinned whole; each line, taken from the stop,
+#           runs on community (AD07). N09 and N18 RE-PINNED (one sentence a
+#           line). H26 and H27 run with no workspace Score, through .aa_ws(),
+#           now defined ahead of them (it was section AA's): their premise,
+#           not a package defect (S368). FIVE HUNDRED AND SEVENTY-SEVEN checks.
+#           (Section AE, eleven checks, came with EDIT 2, above.)
+#           MUTATION MAP: twenty-one one-change mutants of the 0.9.241 master,
+#           run detached on this battery (and, for the stops, on
+#           missing_convention_check.R), every one red: the unedited generic
+#           AC01-AC07; x's quosure taken after the force AC01-AC07; the ..N
+#           arguments passed on H29 AC01-AC03 AC05 AC07; the caller's
+#           environment AC07; no quosure for a mixed wrapper's x AC06; the
+#           second-frame stop from match.call() AC04; ..N never recognized
+#           AC01-AC07; the dots' quosures matched one place out AC02 AC04
+#           AC05; which's quosure dropped AC09 (written after the first
+#           round, on that mutant's survival); the resolver's old stop N09
+#           N18 AD02; jcopy()'s tryCatch back AD02-AD04; jcopy() matching its
+#           destination AD03 AD04, or with no default guard AD03 AD04, or
+#           .jst_no_frame_stop() ignoring vars AD03 AD04; jsave()'s old stop
+#           AD01; jload()'s old stops (N86f, N86bg in missing_convention_
+#           check.R); jcorr()'s and jalpha()'s line dropped AD05 AD07 (and
+#           N92i); jsum()'s line naming a missing column AD06 AD07; javg()'s
+#           line calling jsum() AD06.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): run_all.R
+#           2887 across ten, plain and under the RStudio-handler stand-in,
+#           each again with a 36-character temp path, once with
+#           interactive() TRUE: all green. Sections AC and AD red on
+#           v0.9.240 (AC01-AC07, AC09, AD01-AD07), with N09 and N18. R CMD
+#           check on the installed build found what no battery could: the
+#           generic's first form stopped on "bad binding access" in jplot(m,
+#           which = "coef") once byte-compiled at install, which load_all()
+#           does not do (the help page's example); its matching loop moved
+#           into the helper, Status OK. Entered dirty
+#           (joutput("full") with diagnostics, width 100, a stata
+#           convention, the color option, a juse() default, and objects
+#           named Score, Group, Age, Gender, d, e, s, x, d1, ab1, ad9,
+#           g6copy, Nope, h7), plain and under the stand-in: green, nothing
+#           added, nothing lost, no value changed -- H26 and H29, red so on
+#           0.9.240, green.
 # S368 EDIT (v0.9.240, 2026-10-17): Fix Slate 15. NEW SECTION AB, nine
 #           checks (AB01-AB09): a call that names no data frame, with no
 #           juse() default, gave the resolver's "No data frame specified
@@ -1999,16 +2105,38 @@ check("H24 two variables under a default: the second is a variable, not `which`"
         identical(nrow(.p$data), 12L) && "fill" %in% names(.p$mapping) })
 check("H25 control: a which = TYPED by name is still an unused input, not a variable",
       has(grab(jplot(Gender, which = "core")), "jplot(): unused input: which"))
+# .aa_ws(): run expr with a workspace name set to val (NULL: absent), and
+# put the name back as it was. Defined here since S369 (it was section AA's,
+# S359), for H26 and H27, and used again by sections AA and AC.
+.aa_ws <- function(nm, val, expr) {
+  had <- exists(nm, envir = globalenv(), inherits = FALSE)
+  old <- if (had) get(nm, envir = globalenv()) else NULL
+  if (is.null(val)) {
+    if (had) rm(list = nm, envir = globalenv())
+  } else {
+    assign(nm, val, envir = globalenv())
+  }
+  on.exit({
+    if (had) assign(nm, old, envir = globalenv())
+    else if (exists(nm, envir = globalenv(), inherits = FALSE)) rm(list = nm, envir = globalenv())
+  }, add = TRUE)
+  expr
+}
 # (iii) the method-resolution sibling. A DECOY jplot.default in the calling
 # frame is what the old fallback found there -- the name, evaluated in the
 # caller's frame -- so on the old master both calls die on the decoy; the
 # rewrite carries the real method in a frame of its own, ahead of the caller.
+# Both run with no workspace object named Score (S369, Fix Slate 16): with
+# one, jplot(Score) evaluates to it, and R's own dispatch reaches the decoy
+# before jstats does -- the check's premise, not the package (S368).
 check("H26 the fallback reaches the package's jplot.default, not one in the caller's frame",
-      identical(local({ jplot.default <- function(...) stop("decoy reached")
-                        nrow(pval(jplot(Score))$data) }), 12L))
+      identical(.aa_ws("Score", NULL,
+                       local({ jplot.default <- function(...) stop("decoy reached")
+                               nrow(pval(jplot(Score))$data) })), 12L))
 check("H27 ... on the data = route too",
-      identical(local({ jplot.default <- function(...) stop("decoy reached")
-                        nrow(pval(jplot(data = h, Score))$data) }), 12L))
+      identical(.aa_ws("Score", NULL,
+                       local({ jplot.default <- function(...) stop("decoy reached")
+                               nrow(pval(jplot(data = h, Score))$data) })), 12L))
 quiet(juse(NULL))
 check("H28 control: the result-object form still dispatches (which = \"coef\")",
       !errs(jplot(pval(jlm(Score ~ Age, h)), which = "coef")))
@@ -2863,9 +2991,9 @@ check("N08 on for a filter that was never off: the analysis-time stop exactly --
 reset()
 nf2 <- nf
 quiet(juse(nf2)); quiet(jsubset(Age < 40)); quiet(jsubset(off)); rm(nf2)
-check("N09 the juse() default frame gone: jsubset(on) is the default-not-found stop, and the filter stays off",
+check("N09 the juse() default frame gone: jsubset(on) is the default-not-found stop, and the filter stays off (re-pinned S369: one sentence a line, section AD)",
       has(flat(grab(jsubset(on))),
-          "jsubset(): Default data frame nf2 not found. It may have been removed or renamed.") &&
+          "jsubset(): the default data frame nf2 was not found. It may have been removed or renamed.") &&
         identical(fs_of("nf2")$active, FALSE))
 check("N10 ... while off needs no frame, and still answers",
       has(grab(jsubset(off)), "jsubset deactivated for nf2."))
@@ -2918,9 +3046,9 @@ check("N17 on for a setting that was never off: the analysis-time stop exactly, 
 reset()
 nk2 <- d
 quiet(juse(nk2)); quiet(jcomplete(Age)); quiet(jcomplete(off)); rm(nk2)
-check("N18 the juse() default frame gone: jcomplete(on) is the default-not-found stop; a setting that can be applied is reactivated as before",
+check("N18 the juse() default frame gone: jcomplete(on) is the default-not-found stop; a setting that can be applied is reactivated as before (re-pinned S369)",
       has(flat(grab(jcomplete(on))),
-          "jcomplete(): Default data frame nk2 not found. It may have been removed or renamed.") &&
+          "jcomplete(): the default data frame nk2 was not found. It may have been removed or renamed.") &&
         identical(cs_of("nk2")$active, FALSE) &&
         { reset(); quiet(jcomplete(nf, Age)); quiet(jcomplete(nf, off))
           identical(grab(jcomplete(nf, on)), "jcomplete reactivated for nf: Age\n") &&
@@ -4924,22 +5052,7 @@ reset()
 # put back as it was by .aa_ws().
 # =============================================================================
 reset()
-# .aa_ws(): run expr with a workspace name set to val (NULL: absent), and
-# put the name back as it was.
-.aa_ws <- function(nm, val, expr) {
-  had <- exists(nm, envir = globalenv(), inherits = FALSE)
-  old <- if (had) get(nm, envir = globalenv()) else NULL
-  if (is.null(val)) {
-    if (had) rm(list = nm, envir = globalenv())
-  } else {
-    assign(nm, val, envir = globalenv())
-  }
-  on.exit({
-    if (had) assign(nm, old, envir = globalenv())
-    else if (exists(nm, envir = globalenv(), inherits = FALSE)) rm(list = nm, envir = globalenv())
-  }, add = TRUE)
-  expr
-}
+# (.aa_ws() is defined in section H, ahead of H26, since S369.)
 check("AA01 the vector path refuses a condition on another variable of the column's frame whatever the workspace holds: a separate Keep01 of 3 values, or of one value per case, gives the same refusal as none (it analyzed d's own Keep01)",
       local({ clean <- .aa_ws("Keep01", NULL, grab(jdesc(d$Age, subset = Keep01 == 1)))
               k3  <- .aa_ws("Keep01", c(1, 0, 1), grab(jdesc(d$Age, subset = Keep01 == 1)))
@@ -5017,7 +5130,7 @@ check("AA10 .jst_apply_pipeline() as a unit: given vars, only those columns and 
                 !(-99 %in% unclass(p2$f)) && -98 %in% unclass(p2$k) &&
                 !(-99 %in% unclass(p3$f)) && !(-98 %in% unclass(p3$k)) &&
                 !(-99 %in% unclass(p4$f)) && !(-98 %in% unclass(p4$k)) }))
-rm(.aa_ws, .aa_m)
+rm(.aa_m)
 reset()
 
 # =============================================================================
@@ -5082,10 +5195,10 @@ check("AB02 ... jaov(), jlm(), jlogistic(), jcrosstab() and jplot()'s formula pa
           identical(.ab_lines(m), c(k[[2]], "juse(ab1)", deparse(k[[1]]))) &&
             has(m, "\nName the data frame after the formula:\n")
         }, logical(1))) }))
-check("AB03 a call with no variable to match -- jscreen(), jcorr(), jdesc(), jfreq(), jalpha() -- in a workspace holding one data frame: that frame named first; with two, MyData, while a formula still names the one that holds its variables",
+check("AB03 a call with no variable to match -- jscreen() -- in a workspace holding one data frame: that frame named first; with two, MyData, while a formula still names the one that holds its variables (re-scoped S369: jcorr(), jdesc(), jfreq() and jalpha() given nothing get ruling R22's single stop, section AE)",
       local({ e1 <- .ab_ws(ab1 = .ab1)
         e2 <- .ab_ws(ab1 = .ab1, ab2 = data.frame(x = 1))
-        one <- vapply(c("jscreen", "jcorr", "jdesc", "jfreq", "jalpha"), function(fn) {
+        one <- vapply(c("jscreen"), function(fn) {
           identical(.ab_in(e1, call(fn)),
                     .ab_routes(fn, "Name the data frame first:", "ab1", paste0(fn, "()"))) &&
             identical(.ab_in(e2, call(fn)),
@@ -5105,7 +5218,7 @@ check("AB04 MyData when no data frame, or two, hold the formula's variables; a h
           identical(first(.ab_ws(.h = .ab1, x = 1:3, ab1 = .ab1)), "jt(Score ~ Group, ab1)") &&
           identical(.ab_lines(.ab_in(.ab_ws(.h = .ab1, x = 1:3), quote(jscreen())))[1],
                     "jscreen(MyData)") }))
-check("AB05 the call's other arguments are kept: an argument after the formula, a formula given as formula = (data = after it), an empty first argument (filled, and kept in the default route), a named option, jcopy()'s name =",
+check("AB05 the call's other arguments are kept: an argument after the formula, a formula given as formula = (data = after it), an empty first argument (filled, and kept in the default route), a named option beside the variables (S369: jcorr(Age, Score, method =), since jcorr(method =) alone gets R22's single stop), jcopy()'s name =",
       local({ e <- .ab_ws(ab1 = .ab1)
         identical(.ab_lines(.ab_in(e, quote(jt(Score ~ Group, paired = FALSE)))),
                   c("jt(Score ~ Group, ab1, paired = FALSE)", "juse(ab1)",
@@ -5114,8 +5227,8 @@ check("AB05 the call's other arguments are kept: an argument after the formula, 
                     "jt(formula = Score ~ Group, data = ab1)") &&
           identical(.ab_lines(.ab_in(e, quote(jdesc(, Age)))),
                     c("jdesc(ab1, Age)", "juse(ab1)", "jdesc(, Age)")) &&
-          identical(.ab_lines(.ab_in(e, quote(jcorr(method = "spearman"))))[1],
-                    "jcorr(ab1, method = \"spearman\")") &&
+          identical(.ab_lines(.ab_in(e, quote(jcorr(Age, Score, method = "spearman"))))[1],
+                    "jcorr(ab1, Age, Score, method = \"spearman\")") &&
           identical(.ab_lines(.ab_in(e, quote(jcopy(name = ab9)))),
                     c("jcopy(ab1, name = ab9)", "juse(ab1)", "jcopy(name = ab9)")) }))
 check("AB06 both routes run as printed: the first line of jt(), jlm() and jscreen() runs as it stands; after juse(), the call as typed runs on the default; the default is put back",
@@ -5130,12 +5243,13 @@ check("AB06 both routes run as printed: the first line of jt(), jlm() and jscree
                          finally = options(.jst_default_data = NULL))
           r1 && r2 }, logical(1))
         all(ok) && is.null(getOption(".jst_default_data")) }))
-check("AB07 the one-route sentence is gone from every function that reached it -- the five formula functions, jplot(), jscreen(), jcorr(), jalpha(), jdesc(), jfreq(), jsum() -- each giving the lead on a line of its own, then the two routes",
+check("AB07 the one-route sentence is gone from every function that reached it -- the five formula functions, jplot(), jscreen(), jcorr(), jalpha(), jdesc(), jfreq(), jsum() -- each giving the lead on a line of its own, then the two routes (S369: the data-first calls given a variable after an empty first argument, since a call with none gets R22's single stop, section AE)",
       local({ e <- .ab_ws(ab1 = .ab1)
         calls <- list(quote(jt(Score ~ Group)), quote(jaov(Score ~ Group)), quote(jlm(Score ~ Age)),
                       quote(jlogistic(Group ~ Age)), quote(jcrosstab(Group ~ Score)),
-                      quote(jplot(Score ~ Age)), quote(jscreen()), quote(jcorr()), quote(jalpha()),
-                      quote(jdesc()), quote(jfreq()), quote(jsum()))
+                      quote(jplot(Score ~ Age)), quote(jscreen()), quote(jcorr(, Score, Age)),
+                      quote(jalpha(, Score, Age)), quote(jdesc(, Age)), quote(jfreq(, Group)),
+                      quote(jsum(, Score, Age)))
         all(vapply(calls, function(cl) {
           m <- .ab_in(e, cl)
           ln <- strsplit(m, "\n", fixed = TRUE)[[1]]
@@ -5154,6 +5268,357 @@ check("AB09 .jst_no_frame_stop() as a unit: with no jstats call on the stack, th
                        "Name the data frame in the call, or set a default first with juse().")))
 options(.jst_default_data = .ab_def)
 rm(.ab_def, .ab_fns, .ab_ws, .ab1, .ab_in, .ab_lines, .ab_routes)
+reset()
+
+# =============================================================================
+# AC -- A jplot() CALL FORWARDED THROUGH A WRAPPER'S ... (S369, v0.9.241;
+#       Fix Slate 16)
+# =============================================================================
+# .wrap <- function(...) jplot(...): inside the generic, match.call() gives
+# every argument the wrapper forwarded as ..1, ..2, and the generic passed
+# those names on to jplot.default. With a separate Score in the workspace,
+# .wrap(data = h, Score) stopped on rlang's "`expr` must be a symbol,
+# scalar, or call." (the generic had forced the promise, and rlang, reaching
+# it again through ..N, captured the forced value); .wrap(data = h, Nope)
+# said "the ..1 data frame"; .wrap(Score) under a juse() default stopped on
+# a variable named "..1", with R's "restarting interrupted promise
+# evaluation"; the second-frame stop named "data = ..1" and "..2". The
+# forwarded call now reads as the direct call does -- ruling R18: the data
+# frame's variable, never a separate object with its name (the lean okayed
+# at S369). H29, in a clean workspace, is the case that already worked. A
+# workspace name is set, and put back, by .aa_ws().
+reset()
+.ac_wrap <- function(...) jplot(...)
+.ac_wd   <- function(dat, ...) jplot(data = dat, ...)
+.ac_both <- paste0("jplot(): data = e is a second data frame alongside h.\n",
+                   "Specify the data frame once, before the variable names.")
+check("AC01 a separate Score of two values in the workspace: .wrap(data = h, Score) plots h's Score, 12 rows, as jplot(data = h, Score) does, in either order, with the same output (it stopped on rlang's error)",
+      .aa_ws("Score", c(9, 9), {
+        a <- pval(.ac_wrap(data = h, Score))
+        b <- pval(.ac_wrap(Score, data = h))
+        identical(nrow(a$data), 12L) && identical(nrow(b$data), 12L) &&
+          identical(a$data, pval(jplot(data = h, Score))$data) &&
+          identical(plines(.ac_wrap(data = h, Score)), plines(jplot(data = h, Score))) }))
+check("AC02 a variable not found, through the wrapper: named against h, the direct call's stop (it said \"the ..1 data frame\")",
+      { m <- grab(.ac_wrap(data = h, Nope))
+        identical(m, grab(jplot(data = h, Nope))) &&
+          has(m, "jplot(): Nope was not found in the h data frame.") && !has(m, "..1") })
+quiet(juse(h))
+check("AC03 under a juse() default, .wrap(Score) plots the default's Score with the direct call's output, with or without a workspace Score; .wrap(Nope) is the direct call's stop (it stopped on a variable named ..1, with R's warning)",
+      .aa_ws("Score", NULL, {
+        identical(plines(.ac_wrap(Score)), plines(jplot(Score))) &&
+          identical(nrow(pval(.ac_wrap(Score))$data), 12L) &&
+          identical(grab(.ac_wrap(Score)), grab(jplot(Score))) &&
+          identical(grab(.ac_wrap(Nope)), grab(jplot(Nope))) &&
+          !has(grab(.ac_wrap(Nope)), "..1") }) &&
+      .aa_ws("Score", c(9, 9), {
+        identical(plines(.ac_wrap(Score)), plines(jplot(Score))) &&
+          identical(nrow(pval(.ac_wrap(Score))$data), 12L) }))
+quiet(juse(NULL))
+check("AC04 a data frame given both ways, through the wrapper: the stop names both as typed, the direct call's (it named \"data = ..1\" and \"..2\")",
+      { m <- grab(.ac_wrap(h, Score, data = e))
+        identical(m, grab(jplot(h, Score, data = e))) && has(m, .ac_both) })
+check("AC05 by = and subset = forwarded, with workspace objects named like h's variables: the direct call's plot (by = Gender; subset = Age < 40, 5 of 12 rows)",
+      .aa_ws("Gender", "x", .aa_ws("Age", 1:2, {
+        a <- pval(.ac_wrap(data = h, Score, by = Gender))
+        s <- pval(.ac_wrap(data = h, Score, subset = Age < 40))
+        identical(a$data, pval(jplot(data = h, Score, by = Gender))$data) &&
+          identical(nrow(s$data), 5L) })))
+check("AC06 a wrapper that passes its own data frame and forwards the variable (function(dat, ...) jplot(data = dat, ...)), a separate Score in the workspace: h's Score, 12 rows (it stopped on rlang's error)",
+      .aa_ws("Score", c(9, 9), identical(nrow(pval(.ac_wd(h, Score))$data), 12L)))
+check("AC07 a wrapper called from a function whose own frame holds the data frame and a Score: that frame's data frame, and its variable",
+      local({ f <- function() { h7 <- data.frame(Score = 1:9); Score <- 1:2
+                                nrow(pval(.ac_wrap(data = h7, Score))$data) }
+              identical(f(), 9L) }))
+quiet(juse(h))
+check("AC09 two variables under a juse() default, through the wrapper: the second is a variable, not `which` -- a grouped bar chart of h's two, 12 rows, with workspace objects of both names; a name not found, either side, and two numeric variables give the direct call's stop, never naming ..1 (they named ..1)",
+      .aa_ws("Gender", "x", .aa_ws("Condition", 1:2, {
+        a <- pval(.ac_wrap(Gender, Condition, categorical = c("Gender", "Condition")))
+        b <- pval(jplot(Gender, Condition, categorical = c("Gender", "Condition")))
+        identical(nrow(a$data), 12L) && "fill" %in% names(a$mapping) &&
+          identical(a$data, b$data) })) &&
+      { m1 <- grab(.ac_wrap(Gender, Nope)); m2 <- grab(.ac_wrap(Nope, Gender))
+        m3 <- grab(.ac_wrap(Score, Age))
+        identical(m1, grab(jplot(Gender, Nope))) && identical(m2, grab(jplot(Nope, Gender))) &&
+          identical(m3, grab(jplot(Score, Age))) && has(m3, "use formula syntax") &&
+          !any(grepl("..1", c(m1, m2, m3), fixed = TRUE)) })
+quiet(juse(NULL))
+check("AC08 control: a forwarded formula and a forwarded result object still dispatch, and the direct call is unchanged",
+      !errs(.ac_wrap(Score ~ Age, h)) &&
+        !errs(.ac_wrap(pval(jlm(Score ~ Age, h)), which = "coef")) &&
+        .aa_ws("Score", c(9, 9), identical(nrow(pval(jplot(data = h, Score))$data), 12L)))
+rm(.ac_wrap, .ac_wd, .ac_both)
+reset()
+
+# =============================================================================
+# AD -- FOUR STOPS LAID OUT, AND A LINE TO RUN UNDER THE NO-VARIABLES STOPS
+#       (S369, v0.9.241; Fix Slate 16)
+# =============================================================================
+# One sentence a line and each call on a line of its own (voice Rules E and
+# L), where two sentences or an inline call shared a line: jsave()'s "all
+# subsequent arguments must be named. Use jsave(file = "yourfile.ext")"; the
+# resolver's "Default data frame X not found. It may have been removed or
+# renamed." (N09 and N18 re-pinned); jload()'s "Provide a filename, e.g.
+# jload("mydata.sav")" (missing_convention_check.R N86f and N86bg). And
+# jcopy(newdata) with no default gives the no-data-frame stop's two routes
+# (section AB), its one name the destination, not a variable to match; with
+# a default set whose data frame has gone, the resolver's own stop, where a
+# tryCatch had said "No source given and no juse() default set". jcorr(),
+# jalpha(), jsum() and javg() short of two variables give a line to run, as
+# jdesc()'s no-variables stop does: community's own columns, never the call's
+# data frame (S338), and each line runs. The jcopy() workspaces are stand-in
+# environments whose parent is the base environment (.ad_ws(), section AB's
+# form).
+reset()
+.ad_def <- getOption(".jst_default_data")
+options(.jst_default_data = NULL)
+.ad_ws <- function(...) {
+  e <- new.env(parent = baseenv())
+  fr <- list(...)
+  for (nm in names(fr)) assign(nm, fr[[nm]], envir = e)
+  for (f in c("jcopy", "juse")) assign(f, get(f, envir = globalenv()), envir = e)
+  e
+}
+.ad1 <- data.frame(a = 1:5, b = c(2, 4, 3, 5, 1))
+.ad_f <- file.path(tempdir(), "ad01.rds")
+check("AD01 jsave() with the data omitted and a second argument unnamed: the sentence, then \"Name them, for example:\" and the call on a line of its own, and nothing written (it said \"... must be named. Use jsave(file = \"yourfile.ext\")\")",
+      local(tryCatch({ options(.jst_default_data = "d")
+                       m <- grab(jsave(.ad_f, TRUE))
+                       has(flat(m), "jsave(): when the data argument is omitted, all subsequent arguments must be named.") &&
+                         endsWith(m, "named.\nName them, for example:\n  jsave(file = \"mydata.sav\", overwrite = TRUE)") &&
+                         !file.exists(.ad_f) },
+                     finally = options(.jst_default_data = NULL))))
+check("AD02 a default whose data frame has gone: the resolver's stop, one sentence a line, in jscreen() and in jcopy() alike, and jcopy() changes nothing (pinned whole; jcopy() had said \"No source given and no juse() default set\")",
+      local(tryCatch({ options(.jst_default_data = "ad_gone")
+                       txt <- "the default data frame ad_gone was not found.\nIt may have been removed or renamed."
+                       had <- exists("ad9", envir = globalenv(), inherits = FALSE)
+                       was <- if (had) get("ad9", envir = globalenv()) else NULL
+                       ok  <- identical(grab(jscreen()), paste0("jscreen(): ", txt)) &&
+                         identical(grab(jcopy(ad9)), paste0("jcopy(): ", txt))
+                       ok && identical(exists("ad9", envir = globalenv(), inherits = FALSE), had) &&
+                         (!had || identical(get("ad9", envir = globalenv()), was)) },
+                     finally = options(.jst_default_data = NULL))))
+check("AD03 jcopy(ad9) with no default: both routes, the one data frame in the workspace named first (pinned whole); with two, MyData -- even when one holds a variable named like the destination, which is not a variable to match",
+      local({ e1 <- .ad_ws(ad1 = .ad1)
+        e2 <- .ad_ws(ad1 = .ad1, ad2 = data.frame(ad9 = 1:3))
+        identical(grab(eval(quote(jcopy(ad9)), e1)), paste0(
+          "jcopy(): no data frame was named or set as the default.\n",
+          "Name the data frame first:\n",
+          "  jcopy(ad1, ad9)\n",
+          "Or set a default first, then run the call:\n",
+          "  juse(ad1)\n",
+          "  jcopy(ad9)")) &&
+          has(grab(eval(quote(jcopy(ad9)), e2)), "\n  jcopy(MyData, ad9)\n") &&
+          !exists("ad9", envir = e1, inherits = FALSE) }))
+check("AD04 both of jcopy()'s routes run as printed: the first line makes the copy; after juse(), the call as typed makes it from the default",
+      local({ e1 <- .ad_ws(ad1 = .ad1)
+        ln <- sub("^  ", "", grep("^  ", strsplit(grab(eval(quote(jcopy(ad9)), e1)), "\n",
+                                                   fixed = TRUE)[[1]], value = TRUE))
+        e2 <- .ad_ws(ad1 = .ad1)
+        r1 <- { quiet(eval(parse(text = ln[1])[[1]], e1)); identical(get("ad9", envir = e1), .ad1) }
+        r2 <- tryCatch({ quiet(eval(parse(text = ln[2])[[1]], e2))
+                         quiet(eval(parse(text = ln[3])[[1]], e2))
+                         identical(get("ad9", envir = e2), .ad1) },
+                       finally = options(.jst_default_data = NULL))
+        length(ln) == 3L && r1 && r2 }))
+.ad_lines <- c(
+  jcorr  = "  jcorr(community, Income, Age, WellbeingScore)",
+  jalpha = "  jalpha(community, Environment1, Environment3, Environment4)",
+  jsum   = "  community$EnvTotal <- jsum(community, Environment1, Environment3)",
+  javg   = "  community$EnvAvg <- javg(community, Environment1, Environment3)")
+check("AD05 jcorr() and jalpha() short of two variables: the count, then a line to run under \"for example:\" -- with none and with one (pinned whole)",
+      identical(grab(jcorr(.ad1)), paste0(
+        "jcorr(): At least 2 variables are required.\nNone were provided.\n",
+        "Provide two or more variable names, for example:\n", .ad_lines[["jcorr"]])) &&
+      identical(grab(jcorr(.ad1, a)), paste0(
+        "jcorr(): At least 2 variables are required.\nOnly 1 was provided.\n",
+        "Provide two or more variable names, for example:\n", .ad_lines[["jcorr"]])) &&
+      identical(grab(jalpha(.ad1)), paste0(
+        "jalpha(): At least 2 items are required.\nNone were provided.\n",
+        "Provide two or more item names, for example:\n", .ad_lines[["jalpha"]])) &&
+      identical(grab(jalpha(.ad1, a)), paste0(
+        "jalpha(): At least 2 items are required.\nOnly 1 was provided.\n",
+        "Provide two or more item names, for example:\n", .ad_lines[["jalpha"]])))
+check("AD06 jsum() and javg() the same, with none and with one (pinned whole)",
+      all(vapply(c("jsum", "javg"), function(fn) {
+        want <- paste0(fn, "(): At least 2 variables are required.\n",
+                       "Provide two or more variable names, for example:\n", .ad_lines[[fn]])
+        identical(grab(eval(call(fn, quote(.ad1)))), want) &&
+          identical(grab(eval(call(fn, quote(.ad1), quote(a)))), want)
+      }, logical(1))))
+check("AD07 each stop's last line, taken from the stop itself, runs as printed on the shipped community data frame, and none names the call's data frame",
+      local({ ms <- c(grab(jcorr(.ad1)), grab(jalpha(.ad1)), grab(jsum(.ad1)), grab(javg(.ad1)))
+              ln <- vapply(strsplit(ms, "\n", fixed = TRUE), function(x) x[length(x)], "")
+              ok <- vapply(ln, function(l) {
+                env <- new.env()
+                startsWith(l, "  ") && !errs(eval(parse(text = sub("^  ", "", l))[[1]], env))
+              }, logical(1))
+              length(ln) == 4L && all(ok) && !any(grepl(".ad1", ln, fixed = TRUE)) }))
+options(.jst_default_data = .ad_def)
+rm(.ad_def, .ad_ws, .ad1, .ad_f, .ad_lines)
+reset()
+
+# =============================================================================
+# AE -- NO DATA FRAME AND NO VARIABLES: ONE STOP (S369, v0.9.242; ruling R22,
+#       Fix Slate 17)
+# =============================================================================
+# jcorr(method = "spearman") with no data frame and no default gave section
+# AB's two routes, and either, run, stopped again: "At least 2 variables are
+# required." A call that names neither a data frame nor a variable, to a
+# function that needs variables -- jdesc(), jfreq(), jcorr(), jalpha(),
+# jsum(), javg(), jplot() -- now gets ONE stop (ruling R22, Jeff at S369, on
+# the sketch: "all recommendations are good including the suggested
+# wording"): both are missing, and the function's own example on community,
+# keeping the call's display options and leaving out the arguments that name
+# or depend on the user's variables. jscreen() keeps the two routes (a data
+# frame alone is enough for it), as does a call with a variable or a
+# formula. And the riders, one sentence a line, each example on a line of
+# its own: jcomplete()'s and jplot()'s no-variables stops, jplot()'s
+# over-two stop (whose old example itself stopped), and jcopy()'s three --
+# no name for the copy, a source that is not a data frame, a source found
+# nowhere (R's "object not found" until v0.9.242). The workspaces are
+# stand-in environments whose parent is the base environment (section AB's
+# .ab_ws() form).
+reset()
+.ae_def <- getOption(".jst_default_data")
+options(.jst_default_data = NULL)
+.ae_ws <- function(...) {
+  e <- new.env(parent = baseenv())
+  fr <- list(...)
+  for (nm in names(fr)) assign(nm, fr[[nm]], envir = e)
+  for (f in c("jdesc", "jfreq", "jcorr", "jalpha", "jsum", "javg", "jplot",
+              "jscreen", "jcopy", "jcomplete", "jt", "juse")) assign(f, get(f, envir = globalenv()), envir = e)
+  e
+}
+.ae1 <- data.frame(Score = c(1, 4, 2, 5, 3, 6, 2, 7), Group = rep(1:2, 4), Age = 21:28)
+.ae_in <- function(e, expr) grab(eval(expr, e))
+.ae_last <- function(m) { l <- strsplit(m, "\n", fixed = TRUE)[[1]]; sub("^  ", "", l[length(l)]) }
+# .ae_ex(): the example under "for example:", its lines joined -- a call
+# wider than the pinned width is laid out over two (ruling R5).
+.ae_ex <- function(m) {
+  l <- strsplit(m, "\n", fixed = TRUE)[[1]]
+  i <- grep("for example:$", l)[1L]
+  gsub(" +", " ", trimws(paste(l[(i + 1L):length(l)], collapse = " ")))
+}
+.ae_want <- c(
+  jdesc  = "jdesc(community, Age, Income)",
+  jfreq  = "jfreq(community, Region)",
+  jcorr  = "jcorr(community, Income, Age, WellbeingScore)",
+  jalpha = "jalpha(community, Environment1, Environment3, Environment4)",
+  jsum   = "community$EnvTotal <- jsum(community, Environment1, Environment3)",
+  javg   = "community$EnvAvg <- javg(community, Environment1, Environment3)",
+  jplot  = "jplot(community, Age)")
+.ae_n <- c(jdesc = "one or more", jfreq = "one or more", jcorr = "two or more",
+           jalpha = "two or more", jsum = "two or more", javg = "two or more",
+           jplot = "one or two")
+check("AE01 jcorr(method = \"spearman\"), no data frame and no default: one stop -- both missing, and community's example with method = kept (pinned whole; it gave two routes, each stopping again)",
+      local({ e <- .ae_ws(ae1 = .ae1)
+        identical(.ae_in(e, quote(jcorr(method = "spearman"))), paste0(
+          "jcorr(): no data frame and no variables were named.\n",
+          "Name a data frame and two or more of its variables, for example:\n",
+          "  jcorr(community, Income, Age, WellbeingScore, method = \"spearman\")")) }))
+check("AE02 the seven functions given nothing: the same stop, each its own count and example, three lines, no juse() route",
+      local({ e <- .ae_ws(ae1 = .ae1)
+        all(vapply(names(.ae_want), function(fn) {
+          m <- .ae_in(e, call(fn))
+          identical(m, paste0(fn, "(): no data frame and no variables were named.\n",
+                              "Name a data frame and ", .ae_n[[fn]],
+                              " of its variables, for example:\n", "  ", .ae_want[[fn]])) &&
+            !has(m, "juse(")
+        }, logical(1))) }))
+check("AE03 each example line runs as printed, on the shipped community data frame",
+      local({ e <- .ae_ws(ae1 = .ae1)
+        all(vapply(names(.ae_want), function(fn) {
+          ln <- .ae_ex(.ae_in(e, call(fn)))
+          !errs(eval(parse(text = ln)[[1]], new.env()))
+        }, logical(1))) }))
+check("AE04 the call's display options are kept (digits =, method =, labels =, fixed =, var.label =), the arguments that name or depend on the user's variables left out (subset =, by =, numeric =, min.valid =), and the line still runs",
+      local({ e <- .ae_ws(ae1 = .ae1)
+        l1 <- .ae_ex(.ae_in(e, quote(jcorr(digits = 2, subset = Age > 1, method = "kendall"))))
+        l2 <- .ae_ex(.ae_in(e, quote(jdesc(numeric = "Score", digits = 2, by = Group))))
+        l3 <- .ae_ex(.ae_in(e, quote(jplot(by = Group, labels = "names"))))
+        l4 <- .ae_ex(.ae_in(e, quote(javg(fixed = TRUE, var.label = "Env", min.valid = 3))))
+        identical(l1, "jcorr(community, Income, Age, WellbeingScore, digits = 2, method = \"kendall\")") &&
+          identical(l2, "jdesc(community, Age, Income, digits = 2)") &&
+          identical(l3, "jplot(community, Age, labels = \"names\")") &&
+          identical(l4, "community$EnvAvg <- javg(community, Environment1, Environment3, fixed = TRUE, var.label = \"Env\")") &&
+          all(vapply(list(l1, l2, l3), function(l) !errs(eval(parse(text = l)[[1]], new.env())),
+                     logical(1))) }))
+check("AE05 control: jscreen() given nothing, an empty first argument with a variable, and a formula keep section AB's two routes",
+      local({ e <- .ae_ws(ae1 = .ae1)
+        r <- c(.ae_in(e, quote(jscreen())), .ae_in(e, quote(jdesc(, Age))),
+               .ae_in(e, quote(jcorr(, Score, Age))), .ae_in(e, quote(jt(Score ~ Group))),
+               .ae_in(e, quote(jplot(Score ~ Age))))
+        all(has(r, "no data frame was named or set as the default.\n")) &&
+          all(has(r, "Or set a default first, then run the call:")) }))
+check("AE06 control: with a default set, the seven given nothing get their own no-variables stops, as before (jcorr()'s and jalpha()'s count, jsum()'s and javg()'s line)",
+      local({ e <- .ae_ws(ae1 = .ae1)
+        tryCatch({ options(.jst_default_data = "ae1")
+                   m1 <- .ae_in(e, quote(jcorr())); m2 <- .ae_in(e, quote(jdesc()))
+                   has(m1, "At least 2 variables are required.\nNone were provided.") &&
+                     has(m2, "no variables specified.") && !has(m1, "no data frame") },
+                 finally = options(.jst_default_data = NULL)) }))
+check("AE07 jcomplete() and jplot() given a data frame and no variables: one sentence a line, the example on a line of its own, and it runs (pinned whole)",
+      local({ m1 <- grab(jcomplete(.ae1)); m2 <- grab(jplot(.ae1))
+        identical(m1, paste0("jcomplete(): no variables specified.\n",
+                             "Provide one or more variable names, for example:\n",
+                             "  jcomplete(community, Age, Income)")) &&
+          identical(m2, paste0("jplot(): no variables specified.\n",
+                               "Provide one or more variable names, for example:\n",
+                               "  jplot(community, Age)")) &&
+          !errs(eval(parse(text = .ae_last(m2))[[1]], new.env())) &&
+          { r <- !errs(eval(parse(text = .ae_last(m1))[[1]], new.env()))
+            quiet(jcomplete(community, NULL)); r } }))
+check("AE08 jplot() given three variables: one sentence a line, an example that runs -- the old one, jplot(community, Age, Income, by = Region), stopped for two numeric variables (pinned whole)",
+      { m <- grab(jplot(.ae1, Score, Group, Age))
+        identical(m, paste0("jplot(): only 1 or 2 variables can be plotted at once.\n",
+                            "To show a variable by the groups of another, use by =, for example:\n",
+                            "  jplot(community, Age, by = Region)\n",
+                            "Or call jplot() once for each variable.")) &&
+          !errs(jplot(community, Age, by = Region)) &&
+          errs(jplot(community, Age, Income, by = Region)) })
+check("AE09 jcopy() with no name for the copy, a source that is not a data frame, a source found nowhere: what was typed is the subject, the call on a line of its own, the one data frame in the workspace named (MyData with none), the destination kept (pinned whole; the third was R's \"object 'nofr' not found\")",
+      local({ e1 <- .ae_ws(ae1 = .ae1); e0 <- .ae_ws()
+        identical(.ae_in(e1, quote(jcopy())), paste0(
+          "jcopy(): no name was given for the copy.\n",
+          "Name the data frame, then the copy, for example:\n", "  jcopy(ae1, newdata)")) &&
+          identical(.ae_in(e0, quote(jcopy())), paste0(
+            "jcopy(): no name was given for the copy.\n",
+            "Name the data frame, then the copy, for example:\n", "  jcopy(MyData, newdata)")) &&
+          identical(.ae_in(e1, quote(jcopy(1:3, ae9))), paste0(
+            "jcopy(): 1:3 is not a data frame.\n",
+            "Name a data frame to copy, for example:\n", "  jcopy(ae1, ae9)")) &&
+          identical(.ae_in(e1, quote(jcopy(nofr, ae9))), paste0(
+            "jcopy(): 'nofr' not found.\n",
+            "Name a data frame to copy, for example:\n", "  jcopy(ae1, ae9)")) &&
+          !exists("ae9", envir = e1, inherits = FALSE) }))
+check("AE10 jcopy()'s offered lines run as printed: the copy is made, and is the source",
+      local({ e1 <- .ae_ws(ae1 = .ae1); e2 <- .ae_ws(ae1 = .ae1)
+        ln <- .ae_last(.ae_in(e1, quote(jcopy(nofr, ae9))))
+        quiet(eval(parse(text = ln)[[1]], e1))
+        ln2 <- .ae_last(.ae_in(e2, quote(jcopy())))
+        quiet(eval(parse(text = ln2)[[1]], e2))
+        identical(get("ae9", envir = e1), .ae1) && identical(get("newdata", envir = e2), .ae1) }))
+check("AE11 a data-first call that names its variables and no data frame -- jcorr(Score, Age, method =): both routes keep the whole call, the data frame holding its variables named first, where they kept only the first variable (jcorr(ab1, Score), which stopped again); each runs as printed",
+      local({ e <- .ae_ws(ae1 = .ae1, ae2 = data.frame(x = 1))
+        m <- .ae_in(e, quote(jcorr(Score, Age, method = "spearman")))
+        ln <- sub("^  ", "", grep("^  ", strsplit(m, "\n", fixed = TRUE)[[1]], value = TRUE))
+        ok1 <- identical(ln, c("jcorr(ae1, Score, Age, method = \"spearman\")", "juse(ae1)",
+                               "jcorr(Score, Age, method = \"spearman\")"))
+        ok2 <- identical(sub("^  ", "", grep("^  ", strsplit(.ae_in(e, quote(jdesc(Age, by = Group))), "\n",
+                                                             fixed = TRUE)[[1]], value = TRUE))[1],
+                         "jdesc(ae1, Age, by = Group)")
+        # the data frame holding EVERY variable the call names: ae3 holds
+        # Score alone, so it is not named, and ae1 is
+        e3 <- .ae_ws(ae1 = .ae1, ae3 = data.frame(Score = 1:3))
+        ok3 <- has(.ae_in(e3, quote(jcorr(Score, Age))), "\n  jcorr(ae1, Score, Age)\n")
+        r1 <- !errs(eval(parse(text = ln[1])[[1]], e))
+        r2 <- tryCatch({ quiet(eval(parse(text = ln[2])[[1]], e))
+                         !errs(eval(parse(text = ln[3])[[1]], e)) },
+                       finally = options(.jst_default_data = NULL))
+        ok1 && ok2 && ok3 && r1 && r2 }))
+options(.jst_default_data = .ae_def)
+rm(.ae_def, .ae_ws, .ae1, .ae_in, .ae_last, .ae_ex, .ae_want, .ae_n)
 reset()
 
 # =============================================================================

@@ -47,6 +47,45 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S369 EDIT 2 (v0.9.242; Fix Slate 17): SECTION G6 EXTENDED AGAIN, Render 3
+#           RE-PINNED and Renders 3b and 3c NEW -- ruling R22's one stop
+#           when neither a data frame nor variables are named, in the seven
+#           functions that need variables, and both routes keeping the whole
+#           call when the variables are named; NEW SECTION G7 -- 57 sections
+#           -> 58 -- the six riders laid out one sentence a line. Filled by
+#           running the file (fill.R, "#@SKIP" ahead of Render 3). No other
+#           section moved (harness.R dump of every section of every walk on
+#           0.9.241 and 0.9.242: only G6 and G7 here, and the date in
+#           modify_form_walk.R Section 10's jai() line). On the PENDING
+#           line: R22's wording as Jeff okayed it, the riders Claude's.
+#           harness.R derive: the six NEEDS lines as they were, G7 needing
+#           none; verify: 78 of 78 Expected blocks found, 58 of 58 sections
+#           in three orders and by prepare = TRUE. The human half of
+#           filter_check.R section AE.
+# LAST VERIFIED: v0.9.242, 2026-10-18 (S369) -- G6 and G7 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 2898 checks); GitHub fbeb84d
+#           (package). Sandbox: harness.R verify, 58 of 58 sections in three
+#           orders and by prepare = TRUE.
+# LAST VERIFIED: v0.9.241, 2026-10-18 (S369) -- G6 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           R CMD check 0 errors, 0 warnings, 0 notes; ALL BATTERIES GREEN
+#           (10 run, 2887 checks).
+# S369 EDIT (v0.9.241; Fix Slate 16): SECTION G6 EXTENDED, three renders
+#           (4-6): the no-variables stops of jcorr(), jalpha(), jsum() and
+#           javg() give a line to run on community's own columns; jcopy()
+#           with no default gives the two routes, its one name the
+#           destination; a default whose data frame has gone gives the
+#           resolver's stop one sentence a line, in jcopy() as in jdesc().
+#           Filled by running the file (fill.R, "#@SKIP" ahead of Render 4).
+#           On the PENDING line: wording Claude drafted (Fix Slate 16's
+#           items 3 and 4). No existing Expected moved (harness.R dump of
+#           every section of every walk on 0.9.240 and 0.9.241: none
+#           differed). harness.R derive: the six NEEDS lines as they were,
+#           G6 needing none; verify: 73 of 73 Expected blocks found, 57 of
+#           57 sections in three orders and by prepare = TRUE. The human
+#           half of filter_check.R section AD.
 # S368 EDIT (v0.9.240; Fix Slate 15): SECTION G6 ADDED -- 56 sections -> 57.
 #           A call that names no data frame, with no juse() default, gets
 #           both routes, as G5's stops do (the lean okayed at S367), where
@@ -1729,28 +1768,210 @@ caught(jscreen())
 .ws_g6$g6 <- g6; .ws_g6$jcorr <- jcorr
 caught(evalq(jcorr(method = "spearman"), .ws_g6))
 # Expected:
-#   Caught: jcorr(): no data frame was named or set as the default.
-#   Name the data frame first:
-#     jcorr(g6, method = "spearman")
+#   Caught: jcorr(): no data frame and no variables were named.
+#   Name a data frame and two or more of its variables, for example:
+#     jcorr(community, Income, Age, WellbeingScore, method = "spearman")
+
+# Render 3b (S369, ruling R22): the other six functions that need variables,
+# given nothing, in .ws_g6; jsum() with min.valid =, which depends on the
+# variables and is left out of the example.
+.ws_g6$jdesc <- jdesc; .ws_g6$jfreq <- jfreq; .ws_g6$jalpha <- jalpha
+.ws_g6$jsum <- jsum; .ws_g6$javg <- javg; .ws_g6$jplot <- jplot
+caught(evalq(jdesc(), .ws_g6))
+caught(evalq(jfreq(), .ws_g6))
+caught(evalq(jalpha(), .ws_g6))
+caught(evalq(jsum(min.valid = 1), .ws_g6))
+caught(evalq(javg(), .ws_g6))
+caught(evalq(jplot(), .ws_g6))
+# Expected:
+#   Caught: jdesc(): no data frame and no variables were named.
+#   Name a data frame and one or more of its variables, for example:
+#     jdesc(community, Age, Income)
+#   Caught: jfreq(): no data frame and no variables were named.
+#   Name a data frame and one or more of its variables, for example:
+#     jfreq(community, Region)
+#   Caught: jalpha(): no data frame and no variables were named.
+#   Name a data frame and two or more of its variables, for example:
+#     jalpha(community, Environment1, Environment3, Environment4)
+#   Caught: jsum(): no data frame and no variables were named.
+#   Name a data frame and two or more of its variables, for example:
+#     community$EnvTotal <- jsum(community, Environment1, Environment3)
+#   Caught: javg(): no data frame and no variables were named.
+#   Name a data frame and two or more of its variables, for example:
+#     community$EnvAvg <- javg(community, Environment1, Environment3)
+#   Caught: jplot(): no data frame and no variables were named.
+#   Name a data frame and one or two of its variables, for example:
+#     jplot(community, Age)
+
+# Render 3c (S369): the variables named, the data frame not -- both routes
+# keep the whole call.
+caught(evalq(jcorr(Score6, Group6, method = "spearman"), .ws_g6))
+# Expected:
+#   Caught: jcorr(): 'Score6' not found. Did you mean to use it as a
+#   variable name?
+#   If so, name the data frame first:
+#     jcorr(g6, Score6, Group6, method = "spearman")
 #   Or set a default first, then run the call:
 #     juse(g6)
-#     jcorr(method = "spearman")
+#     jcorr(Score6, Group6, method = "spearman")
+
+# Render 4 (S369): short of two variables, each of these stops gives a line
+# to run, as jdesc()'s no-variables stop does. jcorr() and jsum() given
+# none; jalpha() and javg() given one.
+caught(jcorr(g6))
+caught(jalpha(g6, Score6))
+caught(jsum(g6))
+caught(javg(g6, Score6))
+# Expected:
+#   Caught: jcorr(): At least 2 variables are required.
+#   None were provided.
+#   Provide two or more variable names, for example:
+#     jcorr(community, Income, Age, WellbeingScore)
+#   Caught: jalpha(): At least 2 items are required.
+#   Only 1 was provided.
+#   Provide two or more item names, for example:
+#     jalpha(community, Environment1, Environment3, Environment4)
+#   Caught: jsum(): At least 2 variables are required.
+#   Provide two or more variable names, for example:
+#     community$EnvTotal <- jsum(community, Environment1, Environment3)
+#   Caught: javg(): At least 2 variables are required.
+#   Provide two or more variable names, for example:
+#     community$EnvAvg <- javg(community, Environment1, Environment3)
+
+# Render 5 (S369): jcopy() with no default, in .ws_g6: the same two routes,
+# its one name the copy's destination.
+.ws_g6$jcopy <- jcopy
+caught(evalq(jcopy(g6copy), .ws_g6))
+# Expected:
+#   Caught: jcopy(): no data frame was named or set as the default.
+#   Name the data frame first:
+#     jcopy(g6, g6copy)
+#   Or set a default first, then run the call:
+#     juse(g6)
+#     jcopy(g6copy)
+
+# Render 6 (S369): a default whose data frame has gone, in jdesc() and in
+# jcopy().
+options(.jst_default_data = "g6_gone")
+caught(jdesc(Score6))
+caught(jcopy(g6copy))
+# Expected:
+#   Caught: jdesc(): the default data frame g6_gone was not found.
+#   It may have been removed or renamed.
+#   Caught: jcopy(): the default data frame g6_gone was not found.
+#   It may have been removed or renamed.
 options(.jst_default_data = .def_g6)
 rm(.def_g6, .ws_g6, g6)
 
 # Things to look at:
+#   - RULING R22 (S369, v0.9.242; Fix Slate 17; Jeff: "all recommendations
+#     are good including the suggested wording"): Render 3 had given the
+#     two routes -- jcorr(g6, method = "spearman"), or juse(g6) and the call
+#     -- and either, run, stopped again for want of variables. One stop
+#     now: neither a data frame nor variables were named, and the
+#     function's own example on community, method = "spearman" kept.
+#     Render 3b: the same in jdesc(), jfreq(), jalpha(), jsum(), javg() and
+#     jplot(), each its own count and example; a display option such as
+#     method = or digits = is kept, an argument that names or depends on
+#     your variables (by =, subset =, min.valid =) is not. jscreen()
+#     (Render 2) keeps the two routes: it screens every column of a data
+#     frame given alone (filter_check.R AE01-AE06).
+#   - Render 3c (S369, found building Fix Slate 17): jcorr(Score6, Group6,
+#     method = "spearman") had been offered jcorr(g6, Score6) and
+#     jcorr(Score6) -- the second variable and method = dropped, so the
+#     first line stopped again. Both routes now keep the whole call
+#     (filter_check.R AE11).
 #   - Render 1: the lead on a line of its own, "Name the data frame after
 #     the formula:" and jt(Score6 ~ Group6, g6), then juse(g6) and the call
 #     as typed. Does "after the formula" read naturally beside G5's "Name
 #     the data frame first:"?
 #   - Render 2: MyData in both routes, since the walk's workspace holds
 #     several data frames and jscreen() has no variable to match.
-#   - Render 3: the one data frame named first, method = "spearman" kept in
-#     both lines.
 #   - jdesc(), jfreq(), jcorr(), jalpha() and jsum() given nothing get the
 #     same two routes, and their first line, run, then stops for want of
 #     variables, with that function's own message (filter_check.R AB03 and
-#     AB07).
+#     AB07) -- since S369 a message with a line to run in each (Render 4).
+#   - Render 4 (S369, v0.9.241; Fix Slate 16, Claude's call): "At least 2
+#     variables are required." and, where it said so, how many were given,
+#     then "Provide two or more variable names, for example:" ("item names"
+#     for jalpha()) and a line on community's own columns -- never the
+#     call's data frame (S338) -- which runs as printed (filter_check.R AD05-
+#     AD07). jsum() and javg() show the assignment, as their help pages do.
+#     Does the lead read well under "At least 2 ... are required."?
+#   - Render 5 (S369): jcopy(g6copy) had said "No source given and no juse()
+#     default set. Either name the source -- jcopy(mydata, g6copy) -- or set
+#     a default with juse(mydata).", two sentences run together and the
+#     calls inline. It now gives the two routes, naming g6, the one data
+#     frame in .ws_g6; g6copy is the destination, so it is not a variable
+#     to match (filter_check.R AD03-AD04).
+#   - Render 6 (S369): one sentence a line, "the default data frame g6_gone"
+#     (voice Rule T) where it said "Default data frame g6_gone not found.
+#     It may have been removed or renamed." on one line. jcopy() gives the
+#     resolver's own stop: it had turned every resolver error into "no
+#     juse() default set", untrue here (filter_check.R AD02).
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# G7 -- six stops laid out: jcomplete(), jplot() and jcopy() (S369) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.242 (Fix Slate 17's riders, Claude's call). Six stops gave their
+# example after "e.g." inside a sentence; each now has one sentence a line
+# and the call on a line of its own (voice Rules E and L). Render 1 is
+# jcomplete() and jplot() given a data frame and no variables; Render 2
+# jplot() given three; Render 3 jcopy() with no name for the copy, a source
+# that is not a data frame, and a source found nowhere, in .ws_g7, a
+# stand-in for a console session holding one data frame. The assertion side
+# is filter_check.R AE07-AE10.
+g7 <- data.frame(Score7 = c(4, 7, 5, 8, 6, 9), Group7 = rep(1:2, 3), Age7 = 31:36)
+
+caught(jcomplete(g7))
+caught(jplot(g7))
+# Expected:
+#   Caught: jcomplete(): no variables specified.
+#   Provide one or more variable names, for example:
+#     jcomplete(community, Age, Income)
+#   Caught: jplot(): no variables specified.
+#   Provide one or more variable names, for example:
+#     jplot(community, Age)
+
+caught(jplot(g7, Score7, Group7, Age7))
+# Expected:
+#   Caught: jplot(): only 1 or 2 variables can be plotted at once.
+#   To show a variable by the groups of another, use by =, for example:
+#     jplot(community, Age, by = Region)
+#   Or call jplot() once for each variable.
+
+.ws_g7 <- new.env(parent = baseenv())
+.ws_g7$g7 <- g7; .ws_g7$jcopy <- jcopy
+caught(evalq(jcopy(), .ws_g7))
+caught(evalq(jcopy(1:3, g7copy), .ws_g7))
+caught(evalq(jcopy(g7x, g7copy), .ws_g7))
+# Expected:
+#   Caught: jcopy(): no name was given for the copy.
+#   Name the data frame, then the copy, for example:
+#     jcopy(g7, newdata)
+#   Caught: jcopy(): 1:3 is not a data frame.
+#   Name a data frame to copy, for example:
+#     jcopy(g7, g7copy)
+#   Caught: jcopy(): 'g7x' not found.
+#   Name a data frame to copy, for example:
+#     jcopy(g7, g7copy)
+rm(.ws_g7, g7)
+
+# Things to look at:
+#   - Render 1: "no variables specified." then "Provide one or more
+#     variable names, for example:" and a line on community, as jdesc()'s
+#     and jfreq()'s stops have; jcomplete() had said "Provide at least one
+#     variable name, e.g. jcomplete(DV, IV1, IV2).", a line that does not
+#     run. jcomplete(community, Age, Income), run, sets a setting on
+#     community: is that acceptable for an example, or would a placeholder
+#     (MyData, DV, IV1) read better here?
+#   - Render 2: the old example, jplot(community, Age, Income, by =
+#     Region), itself stopped (two numeric variables want the formula
+#     form). The new one, jplot(community, Age, by = Region), draws Age by
+#     region.
+#   - Render 3: what was typed is the subject (voice Rule AD) -- 1:3, g7x --
+#     the copy's name kept, g7 named as the one data frame in .ws_g7. The
+#     third had been R's own "object 'g7x' not found".
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # PART H -- HOW A NAME IS READ: RULING R18'S NAMES SLATE (S356) ----

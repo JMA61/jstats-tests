@@ -91,7 +91,9 @@ tryCatch(jload(""),
          error = function(e) cat("Caught: ", conditionMessage(e), "\n",
                                  sep = ""))
 
-# Expected: Caught: jload(): Provide a filename, e.g. jload("mydata.sav")
+# Expected:
+#   Caught: jload(): Provide a filename, for example:
+#     jload("mydata.sav")
 # (Remember: an UNwrapped error under a plain try() prints "Error : " with
 # a space -- that spacing is the wrapper, not a message defect.)
 

@@ -25,6 +25,20 @@
 #           call (Sections 27-29). Since S367 jload()'s warnings on an
 #           argument the format does not use (Section 30).
 # ORIGIN:   S229
+# EDITED:   S369 (v0.9.241; Fix Slate 16). SECTION 13 EXTENDED, two
+#           blocks filled by running (fill.R, "#@SKIP" ahead of the first):
+#           jload("") and jload() given a data frame as an expression give
+#           "Provide a filename, for example:" and the call on a line of its
+#           own; jsave() with a default set, the data omitted and a second
+#           argument unnamed, one sentence a line and "Name them, for
+#           example:" above the call (Claude's call, Fix Slate 16's item 3).
+#           On the PENDING line. No other section moved (harness.R dump of
+#           every section of every walk on 0.9.240 and 0.9.241: none
+#           differed). The assertion side is missing_convention_check.R N86f
+#           and N86bg (re-pinned) and filter_check.R AD01. harness.R derive:
+#           the five NEEDS lines as they were; verify: 30 of 30 sections in
+#           three orders and by prepare = TRUE; 108 of 109 Expected blocks
+#           found (Section 9's, as before).
 # EDITED:   S368 (v0.9.240; Fix Slate 15). SECTION 13 RE-PINNED AND
 #           EXTENDED, filled by running (fill.R): jsave() given a vector, or
 #           a name found nowhere, gives "Provide a data frame, for example:"
@@ -350,6 +364,11 @@
 #           updated in Sections 6 and 7 (the same line, a temporary path).
 #           harness.R derive: no section needs another it does not name.
 #           The assertion side is missing_convention_check.R N94.
+# LAST VERIFIED: v0.9.241, 2026-10-18 (S369) -- Section 13 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 2887 checks). Unchanged by
+#           v0.9.242 (harness.R dump: no section of this walk moved).
 # LAST VERIFIED: v0.9.240, 2026-10-17 (S368) -- Section 13 WALKED on the
 #           WORKSTATION by Jeff through receive_all() ("walked, all okay");
 #           PENDING back to none; GitHub d62f372 (package). Sandbox:
@@ -1534,6 +1553,26 @@ try(jload("x13.RData"))
 #   Load it with base R:
 #     load("x13.RData")
 
+cat("\n--- an empty file name; a data frame given as an expression ---\n")
+try(jload(""))
+try(jload(d13[1:2, , drop = FALSE]))
+# Expected:
+#   Error : jload(): Provide a filename, for example:
+#     jload("mydata.sav")
+#   Error : jload(): d13[1:2, , drop = FALSE] is a data frame, not a file name.
+#   Provide a filename, for example:
+#     jload("mydata.sav")
+
+cat("\n--- jsave() with a default set, the data omitted, a second argument unnamed ---\n")
+options(.jst_default_data = "d13")
+try(jsave("t13.rds", TRUE))
+options(.jst_default_data = NULL)
+# Expected:
+#   Error : jsave(): when the data argument is omitted, all subsequent arguments
+#   must be named.
+#   Name them, for example:
+#     jsave(file = "mydata.sav", overwrite = TRUE)
+
 options(.jst_default_data = .def13)
 setwd(.wd13)
 rm(.wd13, .def13, .ws13, .ws13b, .ns13, .m13, d13, p13, z13)
@@ -1548,7 +1587,8 @@ rm(.wd13, .def13, .ws13, .ws13b, .ns13, .m13, d13, p13, z13)
 #   - jsave("t13.rds") with a default set still saves the default, as it
 #     always did (N86h); this message is for no default only.
 #   - "jload(""): Provide a filename" -- an empty string TYPED as such --
-#     is unchanged (N86f); only an expression that came out empty is named.
+#     keeps the generic stop (N86f); only an expression that came out empty
+#     is named.
 #   - THE NAME A DIGIT IS OFFERED (S366, v0.9.238; Fix Slate 13): the one
 #     the cleaner gives, an X before the digit -- X2024zz13, X2b -- where
 #     the digits had been stripped (zz13, b), which offered name = "" for
@@ -1589,6 +1629,19 @@ rm(.wd13, .def13, .ws13, .ws13b, .ns13, .m13, d13, p13, z13)
 #     It gets both routes with the example file, under "Name the data frame
 #     first, then the file:" and "Or set a default first, then name the
 #     file:" -- MyData in the walk's workspace, d13 in .ws13.
+#   - THE LAST TWO "e.g." STOPS (S369, v0.9.241; Fix Slate 16, Claude's
+#     call): jload("") and jload() given a data frame as an expression said
+#     "Provide a filename, e.g. jload("mydata.sav")" on one line, the
+#     sentence before it on the line above. The example now has a line of
+#     its own under "Provide a filename, for example:", as jsave()'s does
+#     (missing_convention_check.R N86f and N86bg).
+#   - THE DATA OMITTED, A SECOND ARGUMENT UNNAMED (S369): jsave("t13.rds",
+#     TRUE) with a default set said "when the data argument is omitted, all
+#     subsequent arguments must be named. Use jsave(file =
+#     "yourfile.ext")" -- two sentences and an inline call run together.
+#     One sentence a line, then "Name them, for example:" and a call that
+#     names the file and an argument after it (filter_check.R AD01). Does
+#     overwrite = TRUE make the point, or would the file alone do?
 #   - A FILE THAT EXISTS (S368): one sentence a line, the path on a line of
 #     its own (Rules E and Z), where "File '<path>' already exists. Use
 #     overwrite = TRUE to replace it." put both sentences and the path on

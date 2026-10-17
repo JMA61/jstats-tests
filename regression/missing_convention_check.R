@@ -10,6 +10,21 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S369 EDIT (v0.9.241, 2026-10-17): N86f, N86bg AND N92i RE-PINNED for
+#           Fix Slate 16: jload("") and jload() given a data frame as an
+#           expression say "Provide a filename, for example:" and give the
+#           call on a line of its own, where the example sat after "e.g." on
+#           the sentence's line; jcorr() and jalpha() short of two variables
+#           give a line to run under "Provide two or more variable names
+#           (item names), for example:". No check added; EIGHT HUNDRED AND
+#           FORTY-FOUR checks. The new checks are filter_check.R sections AC
+#           and AD. Sandbox: the five ways and entered dirty, plain and under
+#           the stand-in, green; N86f, N86bg and N92i red on v0.9.240 and on
+#           the mutants that put each old stop back.
+#           LAST VERIFIED: v0.9.241, 2026-10-18 (S369) -- 844/844 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           2887 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox. Unchanged by v0.9.242's Fix Slate 17.
 # S368 EDIT (v0.9.240, 2026-10-17): N86i RE-PINNED for Fix Slate 15:
 #           jsave() given a vector says "Provide a data frame, for example:"
 #           and gives the call on a line of its own, where the example sat
@@ -7863,8 +7878,8 @@ check("N86e ... system.file() finding no file: the call as the subject, and what
         "is \"\", an empty file name.\n",
         "system.file() gives \"\" when the file is not in the package."))) &&
         .ends86(m86e, "\nsystem.file() gives \"\" when the file is not in the package."))
-check("N86f an empty string typed as such keeps the generic stop",
-      identical(grab(jload("")), "jload(): Provide a filename, e.g. jload(\"mydata.sav\")"))
+check("N86f an empty string typed as such keeps the generic stop (re-pinned S369, v0.9.241: the example on a line of its own, Rules E and L)",
+      identical(grab(jload("")), "jload(): Provide a filename, for example:\n  jload(\"mydata.sav\")"))
 m86g <- .def86(NULL, grab(jsave("t86.rds")))
 check("N86g jsave() given a file name alone, with no default set: the file named, both routes offered -- the data frame named first, or a default set -- and nothing written (re-pinned S367, v0.9.239: it had offered the first route alone; MyData in both here, where the workspace holds many data frames; the one-frame case is import_check.R U08)",
       identical(.fl(m86g), .fl(paste0(
@@ -7964,10 +7979,13 @@ check("N86bf ... a doubled backslash in the same path becomes a slash too; DEL i
         .ends86(m1, "\n  \"C:/data/temp.csv\"") &&
           grepl("(\\t as a tab)", m1, fixed = TRUE) &&
           grepl("Type the path again with forward slashes", .fl(m2), fixed = TRUE) }))
-check("N86bg jload() given a data frame as an expression: the expression named, and the generic line",
+check("N86bg jload() given a data frame as an expression: the expression named, and the generic line (re-pinned S369: the example on a line of its own)",
       identical(.fl(grab(jload(d86[1:2, , drop = FALSE]))),
                 .fl(paste0("jload(): d86[1:2, , drop = FALSE] is a data frame, not a file name.\n",
-                           "Provide a filename, e.g. jload(\"mydata.sav\")"))))
+                           "Provide a filename, for example:\n",
+                           "  jload(\"mydata.sav\")"))) &&
+        endsWith(grab(jload(d86[1:2, , drop = FALSE])),
+                 "\nProvide a filename, for example:\n  jload(\"mydata.sav\")"))
 
 # --- C: a CSV file of one column ------------------------------------------------
 v86 <- data.frame(Source = c("web", "phone", NA, "web", "mail", NA, "web", "phone"))
@@ -10060,10 +10078,16 @@ check("N92h the .RData redirect in one voice: typed (pinned whole) and bare -- t
                         "Load it with base R:\n", "  load(\"y92.RData\")")) &&
         endsWith(grab(jload("z92")), "\n  load(\"z92.rda\")"))
 # --- H: Rule E and the term -------------------------------------------------------------
-check("N92i jcorr() and jalpha()'s minimum: one sentence a line (pinned whole)",
+check("N92i jcorr() and jalpha()'s minimum: one sentence a line (pinned whole; re-pinned S369, v0.9.241: a line to run under \"for example:\", filter_check.R AD05)",
       local({ d <- data.frame(a = 1:5, b = c(2, 4, 3, 5, 1))
-              identical(grab(jcorr(d, a)), "jcorr(): At least 2 variables are required.\nOnly 1 was provided.") &&
-                identical(grab(jalpha(d, a)), "jalpha(): At least 2 items are required.\nOnly 1 was provided.") }))
+              identical(grab(jcorr(d, a)), paste0(
+                "jcorr(): At least 2 variables are required.\nOnly 1 was provided.\n",
+                "Provide two or more variable names, for example:\n",
+                "  jcorr(community, Income, Age, WellbeingScore)")) &&
+                identical(grab(jalpha(d, a)), paste0(
+                  "jalpha(): At least 2 items are required.\nOnly 1 was provided.\n",
+                  "Provide two or more item names, for example:\n",
+                  "  jalpha(community, Environment1, Environment3, Environment4)")) }))
 check("N92j jsave()'s CSV note: one sentence a line, \"missing values\" where it said \"missing-value codes\", in each branch (re-pinned S359: the code named)",
       local({ ms <- grab(jsave(data.frame(S = .S92), "s92.csv"))
               mt <- grab(jsave(data.frame(T = .T92), "t92.csv"))
