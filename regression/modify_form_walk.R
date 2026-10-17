@@ -22,8 +22,32 @@
 #           size and .xpt dataset name (Sections 23-26). Since S365 a file
 #           with no names row and jload(header =), the rows and columns
 #           that may not be data, and the lines jload() offers keeping the
-#           call (Sections 27-29).
+#           call (Sections 27-29). Since S367 jload()'s warnings on an
+#           argument the format does not use (Section 30).
 # ORIGIN:   S229
+# EDITED:   S367 (v0.9.239; Fix Slate 14). SECTION 13 RE-PINNED AND
+#           EXTENDED, filled by running (fill.R): jsave() given a file name
+#           alone with no default set offers both routes, as the analysis
+#           functions' stop does (the lean okayed at S366); a new block runs
+#           it in .ws13, a stand-in workspace holding one data frame, which
+#           the stop names, and for jsave(file =) and a call with overwrite
+#           = TRUE (Claude's call: the same stop, the call's arguments
+#           kept). NEW SECTION 30, filled by running: jload()'s sheet = and
+#           skip = warnings one sentence a line (Rule E, Claude's call), and
+#           a jstats example dataset named as one where each had said
+#           "this . file". Both on the PENDING line. Setup gains warn = 1
+#           (rule 4: Section 30's beat is a warning), restored at the foot;
+#           no other section warns. No other section moved (harness.R dump
+#           of every section of every walk on 0.9.238 and 0.9.239: only
+#           this file's Section 13 differed). jsave()'s overwrite question
+#           after the checks that can stop a save changes no layout here --
+#           a stop where a session that asks had asked first; it is
+#           import_check.R section U's, on a copy of jsave() run as at the
+#           console. The assertion side is section U and
+#           missing_convention_check.R N86g (re-pinned). harness.R derive:
+#           the five NEEDS lines as they were; verify: 30 of 30 sections in
+#           three orders and by prepare = TRUE; 103 of 104 Expected blocks
+#           found (Section 9's, as before).
 # EDITED:   S366 (v0.9.238; Fix Slate 13). SECTIONS 13 AND 29 RE-PINNED
 #           from captures of every section on 0.9.237 and 0.9.238
 #           (repin.py): 13, the leading-digit stop's offered name, the
@@ -306,6 +330,14 @@
 #           updated in Sections 6 and 7 (the same line, a temporary path).
 #           harness.R derive: no section needs another it does not name.
 #           The assertion side is missing_convention_check.R N94.
+# LAST VERIFIED: v0.9.239, 2026-10-17 (S367) -- Sections 13 and 30
+#           WALKED on the WORKSTATION by Jeff through receive_all()
+#           ("walked, all okay"); PENDING back to none; GitHub 6e35be6
+#           (package). Sandbox: harness.R verify, 30 of 30 sections in three
+#           orders and by prepare = TRUE; 103 of 104 Expected blocks
+#           (Section 9's, as before). Every section of every walk captured
+#           on v0.9.238 and v0.9.239: this file's Section 13 moved as
+#           re-pinned, the rest identical apart from temp paths.
 # LAST VERIFIED: v0.9.238, 2026-10-17 (S366) -- Sections 13 and 29
 #           WALKED on the WORKSTATION by Jeff through receive_all()
 #           ("walked, all okay"); PENDING back to none; GitHub 9ab5efa
@@ -471,10 +503,17 @@ stopifnot(exists("jload", mode = "function"))
 # no longer echoes a settings panel.
 .entry_convention    <- getOption(".jst_options_missing_convention")
 .entry_message_width <- getOption(".jst_options_message_width")
+.entry_warn          <- getOption("warn")
 .pin_width           <- 76L
 
 options(.jst_options_missing_convention = "none")
 options(.jst_options_message_width = .pin_width)
+
+# warn = 1 (conventions file, rule 4, S248; here since S367): Section 30's
+# beat is a warning, which a source() run would otherwise defer to the foot
+# of the file. No other section warns. Changes nothing for a line-by-line
+# run; restored at the foot.
+options(warn = 1)
 
 # Neutral pipeline state (never assume the prior state is clean).
 juse(NULL); jsubset(clear.all = TRUE); jcomplete(clear.all = TRUE)
@@ -1339,6 +1378,42 @@ try(jsave("t13.rds"))
 #   given to save.
 #   Name the data frame first:
 #     jsave(MyData, "t13.rds")
+#   Or set a default first, then run the call:
+#     juse(MyData)
+#     jsave("t13.rds")
+
+# The walk's workspace holds Setup's four data frames and d13, so the stop
+# above names none of them. .ws13 stands in for a console session whose
+# workspace holds one data frame, d13: jsave() run in it sees only what it
+# holds. Then the same stop for the file named with file =, and for a call
+# that also gives overwrite = TRUE.
+.ws13 <- new.env(parent = baseenv())
+.ws13$d13 <- d13; .ws13$jsave <- jsave
+cat("\n--- ... in a workspace holding one data frame; with file =; with overwrite = TRUE ---\n")
+try(evalq(jsave("t13.rds"), .ws13))
+try(evalq(jsave(file = "t13.rds"), .ws13))
+try(evalq(jsave("t13.rds", overwrite = TRUE), .ws13))
+# Expected:
+#   Error : jsave(): "t13.rds" is a file name, and no data frame was
+#   given to save.
+#   Name the data frame first:
+#     jsave(d13, "t13.rds")
+#   Or set a default first, then run the call:
+#     juse(d13)
+#     jsave("t13.rds")
+#   Error : jsave(): no data frame was given to save.
+#   Name the data frame first:
+#     jsave(d13, file = "t13.rds")
+#   Or set a default first, then run the call:
+#     juse(d13)
+#     jsave(file = "t13.rds")
+#   Error : jsave(): "t13.rds" is a file name, and no data frame was
+#   given to save.
+#   Name the data frame first:
+#     jsave(d13, "t13.rds", overwrite = TRUE)
+#   Or set a default first, then run the call:
+#     juse(d13)
+#     jsave("t13.rds", overwrite = TRUE)
 
 cat("\n--- jsave() given a vector ---\n")
 try(jsave(z13, "x13.rds"))
@@ -1368,7 +1443,7 @@ try(jload("x13.RData"))
 
 options(.jst_default_data = .def13)
 setwd(.wd13)
-rm(.wd13, .def13, d13, p13, z13)
+rm(.wd13, .def13, .ws13, d13, p13, z13)
 
 # Things to look at:
 #   - EACH LINE THAT IS OFFERED RUNS (missing_convention_check.R N86a-c and
@@ -1385,6 +1460,21 @@ rm(.wd13, .def13, d13, p13, z13)
 #     the cleaner gives, an X before the digit -- X2024zz13, X2b -- where
 #     the digits had been stripped (zz13, b), which offered name = "" for
 #     a file named only with digits (import_check.R T01-T02).
+#   - BOTH ROUTES (S367, v0.9.239; Fix Slate 14, the lean okayed at S366):
+#     jsave() given a file name alone, no default set, offers the default
+#     route under the first, as the analysis functions' stop for the same
+#     condition does ("Or set a default first, then run the call:"). The
+#     data frame named is the one data frame in the workspace, else MyData:
+#     MyData in the walk's workspace, which holds five; d13 in .ws13, which
+#     holds d13 alone. Does the stand-in read as a console session with one
+#     data frame?
+#   - FILE = AND THE CALL'S OTHER ARGUMENTS (S367; Claude's call):
+#     jsave(file = "t13.rds") gets the same stop, its first line "no data
+#     frame was given to save." -- it had reached the resolver's "No data
+#     frame specified and no default set. Use juse() to set a default.",
+#     the one route the stop above lacked -- and both lines keep file =
+#     and overwrite = TRUE, as jload()'s lines keep the call since S365
+#     (import_check.R U08-U12; missing_convention_check.R N86g re-pinned).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -3010,6 +3100,56 @@ rm(.wd29, w29)
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 30 -- an argument jload() does not use for the format (S367) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S367 (v0.9.239; Fix Slate 14). sheet = on a file that is not an
+# Excel file, and skip = on one that is neither Excel nor CSV, are ignored
+# with a warning, and the file is loaded. Each warning had put its two
+# sentences on one line (Rule E), and said "Ignoring it for this . file." of
+# a jstats example dataset, which has no extension.
+.wd30 <- getwd(); setwd(.walkdir)
+writeLines(c("x", "1", "2"), "in30.csv")
+saveRDS(data.frame(x = 1:3), "in30.rds")
+
+# Render 1 -- sheet = on a CSV file, then skip = on an .rds file.
+jload("in30.csv", name = "w30", sheet = 2, overwrite = TRUE)
+jload("in30.rds", name = "w30", skip = 1, overwrite = TRUE)
+# Expected:
+#   Warning: `sheet` is only used for Excel format (.xlsx, .xls).
+#   Ignoring it for this .csv file.
+#   Loaded w30 (CSV format; 2 cases, 1 variable)
+#   Warning: `skip` is only used for Excel format (.xlsx, .xls) and CSV
+#   format (.csv).
+#   Ignoring it for this .rds file.
+#   Loaded w30 (R format; 3 cases, 1 variable)
+
+# Render 2 -- both on a jstats example dataset. missing.notice = FALSE: the
+# dataset's note on its declared missing values is Section 1's.
+jload("community", package = TRUE, name = "w30", sheet = 1, skip = 1,
+      overwrite = TRUE, missing.notice = FALSE)
+# Expected:
+#   Warning: `sheet` is only used for Excel format (.xlsx, .xls).
+#   Ignoring it for this jstats example dataset.
+#   Warning: `skip` is only used for Excel format (.xlsx, .xls) and CSV
+#   format (.csv).
+#   Ignoring it for this jstats example dataset.
+#   Loaded the jstats example dataset 'community'
+unlink(c("in30.csv", "in30.rds"))
+setwd(.wd30)
+rm(.wd30, w30)
+
+# Things to look at:
+#   - ONE SENTENCE A LINE (Rule E; Claude's call, the S366 item): "`sheet`
+#     is only used for Excel format (.xlsx, .xls)." and "Ignoring it for
+#     this .csv file." had shared a line, and so had skip ='s two.
+#   - RENDER 2: "Ignoring it for this jstats example dataset." where each
+#     warning had said "this . file" (Claude's call; a defect in the same
+#     two messages, found in the build).
+#   - The file or dataset is loaded either way, the argument ignored
+#     (import_check.R U06-U07).
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # <Free-form notes from the most recent walk: anything that looked off,
@@ -3065,5 +3205,6 @@ rm(.wd29, w29)
 # cleared slot behind instead, whatever the session arrived with.
 options(.jst_options_missing_convention = .entry_convention)
 options(.jst_options_message_width = .entry_message_width)
+options(warn = .entry_warn)
 
 cat("\n--- End of modify_form_walk.R ---\n")

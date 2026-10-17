@@ -10,6 +10,19 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S367 EDIT (v0.9.239, 2026-10-17): N86g RE-PINNED for Fix Slate 14:
+#           jsave() given a file name alone with no default set offers both
+#           routes -- the data frame named first, or a default set and the
+#           call run again -- where it had offered the first alone; MyData
+#           in both lines here, where the workspace holds many data frames.
+#           No check added; EIGHT HUNDRED AND FORTY-FOUR checks. The new
+#           checks are import_check.R section U (the one-frame case U08).
+#           LAST VERIFIED: v0.9.239, 2026-10-17 (S367) -- 844/844 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           2853 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox (the five ways and entered dirty, plain
+#           and under the stand-in; N86g red on v0.9.238's one-route stop,
+#           run as a mutant); GitHub 6e35be6 (package).
 # S366 EDIT (v0.9.238, 2026-10-17): N86j RE-PINNED for Fix Slate 13: the
 #           stop for a file name starting with a digit offers the name the
 #           import cleaner gives, X2024zz86, where it had stripped the
@@ -7839,12 +7852,15 @@ check("N86e ... system.file() finding no file: the call as the subject, and what
 check("N86f an empty string typed as such keeps the generic stop",
       identical(grab(jload("")), "jload(): Provide a filename, e.g. jload(\"mydata.sav\")"))
 m86g <- .def86(NULL, grab(jsave("t86.rds")))
-check("N86g jsave() given a file name alone, with no default set: the file named, the data frame asked for, nothing written",
+check("N86g jsave() given a file name alone, with no default set: the file named, both routes offered -- the data frame named first, or a default set -- and nothing written (re-pinned S367, v0.9.239: it had offered the first route alone; MyData in both here, where the workspace holds many data frames; the one-frame case is import_check.R U08)",
       identical(.fl(m86g), .fl(paste0(
         "jsave(): \"t86.rds\" is a file name, and no data frame was given to save.\n",
         "Name the data frame first:\n",
-        "  jsave(MyData, \"t86.rds\")"))) &&
-        .ends86(m86g, "\nName the data frame first:\n  jsave(MyData, \"t86.rds\")") &&
+        "  jsave(MyData, \"t86.rds\")\n",
+        "Or set a default first, then run the call:\n",
+        "  juse(MyData)\n",
+        "  jsave(\"t86.rds\")"))) &&
+        .ends86(m86g, "\nOr set a default first, then run the call:\n  juse(MyData)\n  jsave(\"t86.rds\")") &&
         !grepl("variable name", m86g) && !file.exists("t86.rds"))
 check("N86h ... with a default set, the same call saves the default, as before",
       local({ invisible(.def86("d86", grab(jsave("t86.rds")))); file.exists("t86.rds") }))

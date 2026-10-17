@@ -34,9 +34,22 @@
 #           check that can stop a load, and still before the read and the
 #           multi-sheet note, the Loading line after the answer; the
 #           multi-sheet note one sentence a line, and none with sheet =.
+#           Since v0.9.239 (section U; Fix Slate 14): in a session that
+#           asks, jsave()'s overwrite question comes after every check that
+#           can stop a save -- a name the format refuses, a declared missing
+#           value or a column type it cannot hold, Excel's sheet size, a
+#           folder R cannot write to -- and still before the write, the .dta
+#           note on SAS-style markers after the answer; a session that
+#           cannot ask still stops on the file first; jload()'s sheet = and
+#           skip = warnings one sentence a line, a jstats example dataset
+#           named as one; and jsave()'s no-default stop, for a file named
+#           alone or with file =, offering both routes, the one data frame
+#           in the workspace named, the call's other arguments kept, each
+#           line running.
 # ORIGIN:   S362 (v0.9.235). The tenth battery. Section R added S362, the
 #           second build (v0.9.236). Section S added S365 (v0.9.237).
-#           Section T added S366 (v0.9.238).
+#           Section T added S366 (v0.9.238). Section U added S367
+#           (v0.9.239).
 # FIXTURES: written by this file into a folder of R's temporary folder,
 #           except one that R cannot write: datasets/import_guess_text.xlsx
 #           (section G). writexl gives every cell of a column one type, and
@@ -161,6 +174,24 @@
 #           M03 put the question above loading_line()'s definition and
 #           stopped there -- red for the wrong reason; rewritten to the old
 #           place proper, it reds T03 T04 alone.
+#           Section U (v0.9.239, S367; 20 one-change mutants of the new
+#           code, run detached, this battery on each and
+#           missing_convention_check.R on the two that reach N86g, every one
+#           red): the question before every check U01-U03, between the
+#           pre-flight and Excel's size U03, the folder probe at its old
+#           place after the question U03; never asked U04, asked in every
+#           session U05; the cannot-ask stop below the checks U05; the .dta
+#           note before the question U04; the sheet = warning's two
+#           sentences on one line U06 (the round's one survivor, then: at
+#           the pinned width the wrap broke the line where the fix does, so
+#           U06 gained the width of 120 and the mutant was run again, red),
+#           the skip = warning's U06; the dataset form dropped U07; MyData
+#           always U08-U11, the first data frame of several U09, a hidden
+#           one counted U09; the second route dropped U08-U11 and N86g, its
+#           juse() line MyData U08-U11; the other arguments dropped U11,
+#           file = dropped U11; the file = stop gone U11, firing under a
+#           default U12; the file-name stop's old one route U08-U11 and
+#           N86g.
 # FIRST WORKSTATION RUN (S362, the first delivery): 81/83. F03 -- the
 #           title note's line, run as offered, met jload()'s overwrite
 #           question: the workstation runs the batteries in an interactive
@@ -172,24 +203,34 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
-# LAST VERIFIED: v0.9.238, 2026-10-17 (S366) -- 131/131 on the WORKSTATION
+# LAST VERIFIED: v0.9.239, 2026-10-17 (S367) -- 143/143 on the WORKSTATION
+#           through receive_all() ("ALL BATTERIES GREEN (10 run, 2853
+#           checks)"; R CMD check 0 errors, 0 warnings, 0 notes); GitHub
+#           6e35be6 (package). Section U asks its question of a copy of
+#           jsave() and reads a stand-in workspace, so it runs there as in
+#           the sandbox.
+# EARLIER:  v0.9.238, 2026-10-17 (S366) -- 131/131 on the WORKSTATION
 #           through receive_all() ("ALL BATTERIES GREEN (10 run, 2841
 #           checks)"; R CMD check 0 errors, 0 warnings, 0 notes); GitHub
 #           9ab5efa (package). S29 passes there as asked (interactive()
 #           TRUE); section T asks its question of a copy of jload(), so it
 #           runs there as in the sandbox.
-# SANDBOX:  v0.9.238, 2026-10-17 (S366) -- 131/131, run_all.R 2841
+# SANDBOX:  v0.9.239, 2026-10-17 (S367) -- 143/143, run_all.R 2853
 #           across ten, plain and under the RStudio-handler stand-in, each
 #           again with a 35-character temp path, once with interactive()
 #           TRUE, and entered dirty (joutput("full") with diagnostics, width
 #           110, a juse() default, a stata convention, jstats.color = TRUE,
 #           workspace objects named like its working objects), plain and
-#           under the stand-in: green, nothing changed. Section T red on
-#           v0.9.237 where it should be (S28 T01-T04 T07; T05 and T06 hold
-#           what did not change). S29 is checked only where interactive()
-#           is FALSE (the workstation asks its question there); section T
-#           asks its question of a copy of jload(), the same everywhere.
-#           Before it: v0.9.237 (S365), 124/124 the same five ways.
+#           under the stand-in: green, nothing changed. Section U red on
+#           v0.9.238 where it should be (U01-U03 U06-U11; U04, U05 and U12
+#           hold what did not change). Section U asks its question of a
+#           copy of jsave(), the same everywhere; its stops read a stand-in
+#           workspace, so what the global environment holds cannot move
+#           them. U10 names its file bare, data.dir the fixture folder for
+#           the check: with the 35-character temp path, a first draft that
+#           named the file by its path put the whole path in the stop's
+#           first line, past 76 columns (Z01).
+#           Before it: v0.9.238 (S366), 131/131 the same five ways.
 # EARLIER:  v0.9.237, 2026-10-17 (S365) -- 124/124 on the WORKSTATION
 #           through receive_all() ("ALL BATTERIES GREEN (10 run, 2834
 #           checks)"; R CMD check 0 errors, 0 warnings, 0 notes); GitHub
@@ -1337,6 +1378,199 @@ check("T07 the multi-sheet note puts one sentence on a line (Rule E): \"Reading 
         m2 <- grab(jload(.ix("twoT.xlsx"), name = "k", sheet = "B", overwrite = TRUE))
         grepl("This file has 2 sheets: A, B\nReading the first sheet (\"A\").\nTo read a different sheet, use:\n  jload(\"", m, fixed = TRUE) &&
           !grepl("sheets", m2, fixed = TRUE) && identical(k$y, c(3, 4)) }))
+
+# --- U: jsave()'s question, jload()'s two warnings, jsave()'s no-default stop -
+
+# v0.9.239 (S367; Fix Slate 14). In a session that asks, jsave()'s overwrite
+# question came before the checks that can stop a save -- a name the format
+# refuses, a declared missing value it cannot hold, a column type it cannot
+# store, Excel's sheet size, a folder R cannot write to -- so its answer was
+# taken for a save that then stopped, the file untouched. jload()'s sheet =
+# and skip = warnings put two sentences on one line (Rule E), and said "this .
+# file" of a jstats example dataset. jsave("t.rds") with no default offered
+# one route (name the data frame), jsave(file = "t.rds") the other (set a
+# default); each now offers both, as the analysis functions' stop does, the
+# one data frame in the workspace named. The question is checked on a copy of
+# jsave() run as at the console (.askU(), section T's .askT() pattern; a
+# folder R cannot write to is stood in by the copy's .jst_lib_writable()).
+# The workspace the stop reads is a stand-in environment whose parent is the
+# base environment (.wsU()), so the data frames it holds are the only ones
+# the stop can see, whatever the global environment holds.
+.askU <- function(answer, asks = TRUE, writable = TRUE) {
+  f <- jsave
+  e <- new.env(parent = environment(f))
+  e$interactive <- function() asks
+  # The marker drops the prompt's folder: guard 4 (Z01) reads every message
+  # a check catches, and a temporary folder's path made this line long.
+  e$.jst_confirm <- function(prompt, remedy, subject = "overwrite") {
+    message("<asked> ", sub("^File '[^']*[/\\\\]", "File '", prompt), answer)
+    identical(answer, "y")
+  }
+  if (!writable) e$.jst_lib_writable <- function(lib) FALSE
+  environment(f) <- e
+  f
+}
+.wsU <- function(...) {
+  e <- new.env(parent = baseenv())
+  fr <- list(...)
+  for (nm in names(fr)) assign(nm, fr[[nm]], envir = e)
+  assign("jsave", jsave, envir = e)
+  assign("juse", juse, envir = e)
+  e
+}
+.nodefU <- function(expr) {
+  old <- getOption(".jst_default_data")
+  options(.jst_default_data = NULL)
+  on.exit(options(.jst_default_data = old), add = TRUE)
+  force(expr)
+}
+.dU  <- data.frame(`my var` = 1:3, check.names = FALSE)
+.spU <- data.frame(Income = haven::labelled_spss(c(1, -99, 3),
+                                                 labels = c(Refused = -99),
+                                                 na_values = -99))
+.stU <- data.frame(Mood = haven::labelled(c(3, haven::tagged_na("a")),
+                                          labels = c(Refused = haven::tagged_na("a"))))
+
+check("U01 in a session that asks, a name the format refuses stops jsave() BEFORE the overwrite question, and the file is untouched (the question had been asked first, its answer taken for a save that then stopped)",
+      local({ writeLines("before", .ix("U01.sav"))
+        m <- grab(.askU("y")(.dU, .ix("U01.sav")))
+        grepl("1 variable name in the .dU data frame cannot be used in SPSS format (.sav):",
+              .fl(m), fixed = TRUE) &&
+          !grepl("<asked>", m, fixed = TRUE) &&
+          identical(readLines(.ix("U01.sav")), "before") }))
+check("U02 ... and so do a declared missing value the format cannot hold -- SPSS-style in .dta, Stata-style in .sav, either in .xpt -- and a column type it cannot store",
+      local({ cx <- data.frame(z = complex(real = 1:2, imaginary = 0))
+        cases <- list(list(.spU, "U02.dta", "carries SPSS-style missing values, incompatible with the .dta format:"),
+                      list(.stU, "U02.sav", "carries Stata-style missing values, incompatible with the .sav format:"),
+                      list(.spU, "U02.xpt", "carries missing-value codes, incompatible with the .xpt format:"),
+                      list(cx,   "U02c.sav", "1 column is of a type that SPSS format (.sav) cannot store:"))
+        all(vapply(cases, function(k) {
+          writeLines("before", .ix(k[[2]]))
+          m <- grab(.askU("y")(k[[1]], .ix(k[[2]])))
+          grepl(k[[3]], .fl(m), fixed = TRUE) && !grepl("<asked>", m, fixed = TRUE) &&
+            identical(readLines(.ix(k[[2]])), "before")
+        }, logical(1))) }))
+check("U03 ... and so do Excel's sheet size and a folder R cannot write to (the probe stood in on the copy)",
+      local({ wide <- as.data.frame(matrix(1L, 1L, 16385L))
+        writeLines("before", .ix("U03.xlsx")); writeLines("before", .ix("U03.rds"))
+        m1 <- grab(.askU("y")(wide, .ix("U03.xlsx")))
+        m2 <- grab(.askU("y", writable = FALSE)(data.frame(a = 1), .ix("U03.rds")))
+        grepl("16,385 variables, and Excel format (.xlsx) holds at most 16,384.",
+              .fl(m1), fixed = TRUE) &&
+          grepl("R cannot write to this folder:", m2, fixed = TRUE) &&
+          !grepl("<asked>", m1, fixed = TRUE) && !grepl("<asked>", m2, fixed = TRUE) &&
+          identical(readLines(.ix("U03.xlsx")), "before") &&
+          identical(readLines(.ix("U03.rds")), "before") }))
+check("U04 ... the question is still asked before the write: answered n, the save is cancelled and the file untouched; answered y, the file is replaced; and the .dta note on SAS-style markers, a note on what the save does, follows the answer",
+      local({ a <- data.frame(a = 1:3)
+        writeLines("before", .ix("U04.rds"))
+        m1 <- grab(.askU("n")(a, .ix("U04.rds")))
+        ok1 <- grepl("<asked> File '", m1, fixed = TRUE) &&
+          grepl("U04.rds' already exists. Overwrite? (y/n): n", .fl(m1), fixed = TRUE) &&
+          grepl("Save cancelled.", m1, fixed = TRUE) &&
+          identical(readLines(.ix("U04.rds")), "before")
+        m2 <- grab(.askU("y")(a, .ix("U04.rds")))
+        ok2 <- grepl("<asked>", m2, fixed = TRUE) && grepl("Saved a to", m2, fixed = TRUE) &&
+          identical(readRDS(.ix("U04.rds")), a)
+        sas <- data.frame(Mood = haven::labelled(c(3, haven::tagged_na("A")),
+                                                 labels = c(Refused = haven::tagged_na("A"))))
+        writeLines("before", .ix("U04.dta"))
+        lv <- getOption(".jst_output_level")
+        m3 <- tryCatch({ options(.jst_output_level = "full")
+                         grab(.askU("y")(sas, .ix("U04.dta"))) },
+                       finally = options(.jst_output_level = lv))
+        at <- function(s) regexpr(s, m3, fixed = TRUE)
+        ok1 && ok2 && at("<asked>") > 0L &&
+          at("<asked>") < at("SAS-style missing values (.A, .B, ...) converted") }))
+check("U05 a session that cannot ask still stops on the file that exists first, as before; with no file in the way the name refusal stops the save, and nothing is written",
+      local({ writeLines("before", .ix("U05.sav"))
+        m1 <- grab(.askU("y", asks = FALSE)(.dU, .ix("U05.sav")))
+        m2 <- grab(.askU("y")(.dU, .ix("U05b.sav")))
+        grepl("U05.sav' already exists. Use overwrite = TRUE to replace it.", .fl(m1), fixed = TRUE) &&
+          !grepl("cannot be used", m1, fixed = TRUE) && !grepl("<asked>", m1, fixed = TRUE) &&
+          identical(readLines(.ix("U05.sav")), "before") &&
+          grepl("cannot be used in SPSS format (.sav):", .fl(m2), fixed = TRUE) &&
+          !grepl("<asked>", m2, fixed = TRUE) && !file.exists(.ix("U05b.sav")) }))
+check("U06 jload()'s two warnings put one sentence on a line (Rule E), at the pinned width and at 120, the widest the setting takes, where only the line break itself can end a line: sheet = on a CSV file, skip = on an .rds file (each had put both sentences on one line), and the file is loaded",
+      local({ .ix_w("U06.csv", c("x", "1"))
+        saveRDS(data.frame(x = 1:2), .ix("U06.rds"))
+        m1 <- grab(jload(.ix("U06.csv"), name = "k", sheet = 2, overwrite = TRUE))
+        m2 <- grab(jload(.ix("U06.rds"), name = "k2", skip = 1, overwrite = TRUE))
+        wd <- getOption(".jst_options_message_width")
+        w <- tryCatch({ options(.jst_options_message_width = 120L)
+          c(grab(jload(.ix("U06.csv"), name = "k3", sheet = 2, overwrite = TRUE)),
+            grab(jload(.ix("U06.rds"), name = "k4", skip = 1, overwrite = TRUE))) },
+          finally = options(.jst_options_message_width = wd))
+        grepl("`sheet` is only used for Excel format (.xlsx, .xls).\nIgnoring it for this .csv file.",
+              m1, fixed = TRUE) &&
+          grepl("`skip` is only used for Excel format (.xlsx, .xls) and CSV", m2, fixed = TRUE) &&
+          grepl("(.csv).\nIgnoring it for this .rds file.", m2, fixed = TRUE) &&
+          grepl("`sheet` is only used for Excel format (.xlsx, .xls).\nIgnoring it for this .csv file.",
+                w[1], fixed = TRUE) &&
+          grepl("`skip` is only used for Excel format (.xlsx, .xls) and CSV format (.csv).\nIgnoring it for this .rds file.",
+                w[2], fixed = TRUE) &&
+          nrow(k) == 1L && nrow(k2) == 2L && nrow(k3) == 1L && nrow(k4) == 2L }))
+check("U07 ... and a jstats example dataset is named as one, \"this jstats example dataset\" (each had said \"this . file\")",
+      local({ m <- grab(jload("clinic", package = TRUE, name = "k", sheet = 1, skip = 1,
+                              overwrite = TRUE))
+        lengths(regmatches(m, gregexpr("Ignoring it for this jstats example dataset.",
+                                       m, fixed = TRUE))) == 2L &&
+          !grepl("this . file", m, fixed = TRUE) && is.data.frame(k) }))
+check("U08 jsave() given a file name alone, no default set, in a workspace holding one data frame: both routes, that data frame named in each (it had offered one route, with MyData)",
+      local({ e <- .wsU(d1 = data.frame(a = 1:3))
+        m <- .nodefU(grab(eval(quote(jsave("U08.rds")), e)))
+        identical(.fl(m), .fl(paste0(
+          "jsave(): \"U08.rds\" is a file name, and no data frame was given to save.\n",
+          "Name the data frame first:\n",
+          "  jsave(d1, \"U08.rds\")\n",
+          "Or set a default first, then run the call:\n",
+          "  juse(d1)\n",
+          "  jsave(\"U08.rds\")"))) }))
+check("U09 ... with no data frame in the workspace, or two, MyData in both routes; a hidden data frame and an object that is not a data frame are not counted",
+      local({ ex <- function(fr) .fl(paste0(
+          "jsave(): \"U09.rds\" is a file name, and no data frame was given to save.\n",
+          "Name the data frame first:\n  jsave(", fr, ", \"U09.rds\")\n",
+          "Or set a default first, then run the call:\n  juse(", fr, ")\n",
+          "  jsave(\"U09.rds\")"))
+        go <- function(e) .fl(.nodefU(grab(eval(quote(jsave("U09.rds")), e))))
+        identical(go(.wsU()), ex("MyData")) &&
+          identical(go(.wsU(d1 = data.frame(a = 1), d2 = data.frame(b = 2))), ex("MyData")) &&
+          identical(go(.wsU(x = 1:3, .h = data.frame(a = 1), d3 = data.frame(b = 1))), ex("d3")) }))
+check("U10 ... both routes run as printed: the first saves the data frame named, the second, after juse(), saves the default; nothing was written by the stop (the file named bare, data.dir the fixture folder for the check: a path quoted in the first line is longer than the line where the temporary folder is long)",
+      local({ e <- .wsU(d1 = data.frame(a = 1:3)); f <- .ix("U10.rds")
+        dd <- getOption(".jst_options_data_dir")
+        tryCatch({ options(.jst_options_data_dir = .ix_dir)
+          m <- .nodefU(grab(eval(quote(jsave("U10.rds")), e)))
+          cl <- .calls(m)
+          ok0 <- length(cl) == 3L && !file.exists(f)
+          .nodefU({ invisible(grab(eval(cl[[1]], e))) })
+          ok1 <- identical(readRDS(f), e$d1)
+          unlink(f)
+          .nodefU({ invisible(grab(eval(cl[[2]], e))); invisible(grab(eval(cl[[3]], e))) })
+          ok0 && ok1 && identical(readRDS(f), e$d1) },
+          finally = options(.jst_options_data_dir = dd)) }))
+check("U11 jsave(file = \"...\") with no default gets the same two routes, file = kept (it had reached the resolver's one route, \"Use juse() to set a default.\"), and both lines keep the call's other arguments",
+      local({ e <- .wsU(d1 = data.frame(a = 1:3))
+        m1 <- .nodefU(grab(eval(quote(jsave(file = "U11.rds")), e)))
+        m2 <- .nodefU(grab(eval(quote(jsave("U11.rds", overwrite = TRUE,
+                                            clean.names = TRUE)), e)))
+        identical(.fl(m1), .fl(paste0(
+          "jsave(): no data frame was given to save.\n",
+          "Name the data frame first:\n  jsave(d1, file = \"U11.rds\")\n",
+          "Or set a default first, then run the call:\n  juse(d1)\n",
+          "  jsave(file = \"U11.rds\")"))) &&
+          grepl("jsave(d1, \"U11.rds\", overwrite = TRUE, clean.names = TRUE) Or set",
+                .fl(m2), fixed = TRUE) &&
+          grepl("juse(d1) jsave(\"U11.rds\", overwrite = TRUE, clean.names = TRUE)",
+                .fl(m2), fixed = TRUE) }))
+check("U12 ... with a default set, jsave(file = \"...\") and jsave(\"...\") save the default, as before (missing_convention_check.R N86h)",
+      local({ e <- .wsU(d1 = data.frame(a = 1:3)); f1 <- .ix("U12a.rds"); f2 <- .ix("U12b.rds")
+        old <- getOption(".jst_default_data")
+        tryCatch({ options(.jst_default_data = "d1")
+                   invisible(grab(eval(bquote(jsave(file = .(f1))), e)))
+                   invisible(grab(eval(bquote(jsave(.(f2))), e))) },
+                 finally = options(.jst_default_data = old))
+        identical(readRDS(f1), e$d1) && identical(readRDS(f2), e$d1) }))
 
 # --- The message surface, swept (guard 4) ------------------------------------
 
