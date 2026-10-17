@@ -10,6 +10,32 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S370 EDIT (v0.9.243, 2026-10-18): N81ai AND N81aj RE-PINNED for Fix
+#           Slate 18: jdeclare_missing() given a data frame and no variables
+#           gives a line on community on a line of its own, "for example:
+#           jdeclare_missing(community, Age, codes = -99, convention =
+#           "spss")", where its example sat inside the sentence and named
+#           MyData beside invented variables; N81aj also asserts the call's
+#           data frame is never the example's. The names() lines as they
+#           were. No check added; EIGHT HUNDRED AND FORTY-FOUR checks. The
+#           new checks are filter_check.R section AF (AF07 pins the stop
+#           whole). Found by the sandbox's first full run of the build: a
+#           grep for the old stop's first words had missed these two, which
+#           pin its example.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): run_all.R
+#           2910 across ten, plain and under the RStudio-handler stand-in,
+#           each again with a 38-character temp path, once with
+#           interactive() TRUE: all green; R CMD check --no-manual on the
+#           built package, Status OK. Entered dirty (joutput("full") with
+#           diagnostics, width 90, a stata convention, the color option, a
+#           juse() default, and objects named Score, Group, Age, Gender,
+#           Name, d, e, s, x, d1, ab1, ad9, g6copy, Nope, h7, af1, g8,
+#           OwnsHome, Region, zzdirty), plain and under the stand-in: green,
+#           nothing added, nothing lost, no value changed.
+#           LAST VERIFIED: v0.9.243, 2026-10-18 (S370) -- 844/844 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           2910 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox; GitHub 127e63b (package).
 # S369 EDIT (v0.9.241, 2026-10-17): N86f, N86bg AND N92i RE-PINNED for
 #           Fix Slate 16: jload("") and jload() given a data frame as an
 #           expression say "Provide a filename, for example:" and give the
@@ -6906,15 +6932,20 @@ check("N81ah control: a plain name keeps both lines",
                   "  jdeclare_missing(d81, V, ..., modify = TRUE)")))
 m81ai <- .fl(grab(jdeclare_missing(mk81(), codes = -99)))
 m81aj <- .fl(grab(jdeclare_missing(d81, codes = -99)))
-check("N81ai no variables, data an expression: the example and the names() line both read MyData",
-      grepl("(for example jdeclare_missing(MyData, Age, Income, codes = c(-99)))",
-            m81ai, fixed = TRUE) &&
+# N81ai and N81aj RE-PINNED S370 (Fix Slate 18): the example is a line on
+# community, on a line of its own (filter_check.R AF07 pins the stop whole);
+# it had read "(for example jdeclare_missing(MyData, Age, Income, codes =
+# c(-99)))" inside the sentence. The names() line is as it was.
+.ex81 <- "for example: jdeclare_missing(community, Age, codes = -99, convention = \"spss\")"
+check("N81ai no variables, data an expression: the example is community's line, the names() line reads MyData",
+      grepl(.ex81, m81ai, fixed = TRUE) &&
         grepl("use vars = names(MyData).", m81ai, fixed = TRUE) &&
         !grepl("mk81()", m81ai, fixed = TRUE))
-check("N81aj no variables, data a name: the example reads MyData, the names() line keeps the data frame",
-      grepl("(for example jdeclare_missing(MyData, Age, Income, codes = c(-99)))",
-            m81aj, fixed = TRUE) &&
+check("N81aj no variables, data a name: the example is community's line, never the call's data frame; the names() line keeps it",
+      grepl(.ex81, m81aj, fixed = TRUE) &&
+        !grepl("jdeclare_missing(d81", m81aj, fixed = TRUE) &&
         grepl("use vars = names(d81).", m81aj, fixed = TRUE))
+rm(.ex81)
 check("N81ak .jst_data_arg_kind(): a name, no argument, two places, and three expressions",
       identical(vapply(list(quote(d), NULL, quote(l$d), quote(l[["d"]]$e),
                             quote(mk()), quote(d[1:3, ]), quote(mk()$d)),

@@ -25,6 +25,22 @@
 #           call (Sections 27-29). Since S367 jload()'s warnings on an
 #           argument the format does not use (Section 30).
 # ORIGIN:   S229
+# EDITED:   S370 (v0.9.243; Fix Slate 18). SECTION 12 RE-PINNED from the
+#           captures of every section on 0.9.242 and 0.9.243 (repin.py):
+#           jdeclare_missing() given a data frame and no variables says
+#           "no variables specified." and gives a line on community on a
+#           line of its own, where its example sat inside a sentence and
+#           named MyData beside invented variables; the vars = names() line
+#           as it was (Claude's wording, Fix Slate 18's second lean); the
+#           prose above the block and its "Things to look at" line updated.
+#           No other section moved (temporary paths aside). On the PENDING
+#           line. The assertion side is filter_check.R AF07 and
+#           missing_convention_check.R N81ai and N81aj (re-pinned); the
+#           stop's render beside its siblings is filter_walk.R G8. harness.R
+#           derive: the five NEEDS lines as they were; verify: 30 of 30
+#           sections in three orders and by prepare = TRUE; 106 of 109
+#           Expected blocks found in this sandbox, the same three as on
+#           0.9.242 (Section 9's, and Section 28's two Loaded lines).
 # EDITED:   S369 (v0.9.241; Fix Slate 16). SECTION 13 EXTENDED, two
 #           blocks filled by running (fill.R, "#@SKIP" ahead of the first):
 #           jload("") and jload() given a data frame as an expression give
@@ -364,6 +380,10 @@
 #           updated in Sections 6 and 7 (the same line, a temporary path).
 #           harness.R derive: no section needs another it does not name.
 #           The assertion side is missing_convention_check.R N94.
+# LAST VERIFIED: v0.9.243, 2026-10-18 (S370) -- Section 12 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 2910 checks); GitHub 127e63b (package).
 # LAST VERIFIED: v0.9.241, 2026-10-18 (S369) -- Section 13 WALKED on the
 #           WORKSTATION by Jeff through receive_all() ("walked, all okay");
 #           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
@@ -1329,23 +1349,24 @@ d12c <- jdeclare_missing(lst12$d, Rating, codes = c(Refused = -99))
 #     lst12$d <- jdeclare_missing(lst12$d, Rating, ...)
 
 # The refusal for a call that names no variables (finding 5). Its example
-# line named the call's data frame beside two invented variables; an
-# example names MyData (voice Rule AC). The names() line is built from the
-# call and keeps the data frame it named, unless that was an expression --
-# names(mk12()) would run the call a second time for a throwaway copy's
-# names.
+# line named the call's data frame beside two invented variables; from S339
+# it named MyData (voice Rule AC), and since S370 (Fix Slate 18) it is a
+# line on community that runs, on a line of its own, as jdesc()'s and
+# jrecode()'s are. The names() line is built from the call and keeps the
+# data frame it named, unless that was an expression -- names(mk12()) would
+# run the call a second time for a throwaway copy's names.
 cat("\n--- no variables: a name, then a call ---\n")
 try(jdeclare_missing(plain_df, codes = -99))
 try(jdeclare_missing(mk12(), codes = -99))
 
 # Expected:
-#   Error : jdeclare_missing(): specify at least one variable to declare on:
-#   unquoted names (for example jdeclare_missing(MyData, Age, Income,
-#   codes = c(-99))) or quoted names via vars = c(...).
+#   Error : jdeclare_missing(): no variables specified.
+#   Provide one or more variable names, for example:
+#     jdeclare_missing(community, Age, codes = -99, convention = "spss")
 #   To apply one declaration to every variable, use vars = names(plain_df).
-#   Error : jdeclare_missing(): specify at least one variable to declare on:
-#   unquoted names (for example jdeclare_missing(MyData, Age, Income,
-#   codes = c(-99))) or quoted names via vars = c(...).
+#   Error : jdeclare_missing(): no variables specified.
+#   Provide one or more variable names, for example:
+#     jdeclare_missing(community, Age, codes = -99, convention = "spss")
 #   To apply one declaration to every variable, use vars = names(MyData).
 
 options(.jst_options_missing_convention = "none")
@@ -1361,9 +1382,10 @@ rm(mk12, mkc12, lst12, d12a, d12b, d12c)
 #   - THE PLACE: lst12$d gets its own assignment line and no modify line.
 #     Running that line with the "..." filled in does land the declaration
 #     in the list (missing_convention_check.R N81ag runs it).
-#   - THE REFUSAL, both runs: "MyData" in the example; "names(plain_df)" in
-#     the first and "names(MyData)" in the second. Two different rules on
-#     neighbouring lines -- does the second run's pair read as consistent?
+#   - THE REFUSAL, both runs (S370): "no variables specified." and a line
+#     on community, which runs; then "names(plain_df)" in the first and
+#     "names(MyData)" in the second. Does the community line sit well above
+#     a names() line built from your own data frame?
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

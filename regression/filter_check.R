@@ -138,7 +138,10 @@
 #           resolver's default-not-found stop, jsave()'s data-omitted stop
 #           and jcopy()'s no-source stop laid out, one sentence a line,
 #           jcopy() given the two routes, and a line to run under the
-#           no-variables stops of jcorr(), jalpha(), jsum() and javg().
+#           no-variables stops of jcorr(), jalpha(), jsum() and javg() --
+#           PLUS (S370, section AF) ruling R22's one stop in the recode
+#           family and jconvert(), their stops for a data frame given alone,
+#           and the registration verbs' and jsubset()'s stops laid out.
 # ORIGIN:   S289 (design S284 / S288; code S289 v0.9.163); sections F and
 #           G, the A rewrite, the Under40 fixture column, and the bare-name
 #           message re-assertions (A01 A02 D01-D03 F06) S290 (v0.9.164);
@@ -154,6 +157,65 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S370 EDIT (v0.9.243, 2026-10-18): Fix Slate 18. NEW SECTION AF, twelve
+#           checks (AF01-AF12): ruling R22's one stop reaches jrecode()
+#           (AF01, pinned whole), jencode(), jrelabel() and
+#           jdeclare_missing() (AF02), and jconvert(), whose stop names the
+#           target format (AF03) -- each had given section AB's two routes,
+#           and either, run, stopped again; a call naming its variable or
+#           target by argument (orig.var =, orig =, var =, vars =, to =),
+#           or jconvert() under a session convention, keeps the two routes
+#           (AF04, control); only modify = and missing.notice = are kept
+#           from these calls (AF05); jrecode(), jencode() and jrelabel()
+#           given a data frame alone say "no variable specified." with the
+#           same example, under a juse() default too (AF06; "Variable names
+#           cannot be blank." until now); jdeclare_missing()'s stop laid out
+#           the same way, its vars = names() line as it was (AF07); each
+#           function's two stops agree (AF08); every line the slate's stops
+#           offer on community, taken from the stop, runs with no error and
+#           no warning under no convention and under spss, stata and sas
+#           (AF09); the registration verbs' stops, the example on a line of
+#           its own (AF10); the riders -- the verbs (AF11) and jsubset()
+#           (AF12) given an expression and nothing else get the stop for
+#           what is missing, where the refusal offered jnumeric(mydata) or
+#           invented jsubset(mydata, Age < 40); jsubset() given no condition
+#           (AF12). T09 RE-PINNED (the new stop in place of the blank-name
+#           stop). SIX HUNDRED checks.
+#           MUTATION MAP: twenty-two one-change mutants of the 0.9.243
+#           master, run detached, every one red: R22 not reaching the
+#           recode family AF01 AF02 AF05 AF08; nor jconvert() AF03 AF05
+#           AF09; the named arguments ignored AF04; the session convention
+#           ignored AF04; the call's options kept as the seven's are AF05;
+#           the assignment dropped AE02 AE04 AF01 AF02 AF05 AF08; jrecode()'s,
+#           jencode()'s and jrelabel()'s new check off T09 AF06 AF08 (each);
+#           the vars = names() line dropped AF07 AF08 P02; its MyData for an
+#           expression AF07; one and several swapped T09 AF06 AF07;
+#           jencode()'s example naming a column community lacks T09 AF02
+#           AF06 AF08 AF09; jnumeric()'s old tail AF09 AF10 P02; jcount()'s
+#           example on community AF10; jdummy()'s VarName AF09 AF10; the
+#           expression refusal first in jnumeric() AF11, in jdummy() AF11;
+#           jsubset()'s old order AF12; its example on the call's frame
+#           AF09 AF12; jdeclare_missing()'s example without its convention
+#           AF02 AF05 AF07 AF08 AF09; jrecode()'s map broken T09 AF01 AF05
+#           AF06 AF08 AF09. (AF09 first ran the battery's own copy of the
+#           recode family's lines, and three of these mutants left it green;
+#           it now takes every line from its stop, and the three were run
+#           again.) Section AF red on v0.9.242 (AF01-AF03, AF05-AF12, with
+#           T09); AF04, the control, green.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): run_all.R
+#           2910 across ten, plain and under the RStudio-handler stand-in,
+#           each again with a 38-character temp path, once with
+#           interactive() TRUE: all green; R CMD check --no-manual on the
+#           built package, Status OK. Entered dirty (joutput("full") with
+#           diagnostics, width 90, a stata convention, the color option, a
+#           juse() default, and objects named Score, Group, Age, Gender,
+#           Name, d, e, s, x, d1, ab1, ad9, g6copy, Nope, h7, af1, g8,
+#           OwnsHome, Region, zzdirty), plain and under the stand-in: green,
+#           nothing added, nothing lost, no value changed.
+#           LAST VERIFIED: v0.9.243, 2026-10-18 (S370) -- 600/600 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           2910 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox; GitHub 127e63b (package).
 # S369 EDIT 2 (v0.9.242, 2026-10-18): Fix Slate 17 and ruling R22. NEW
 #           SECTION AE, eleven checks (AE01-AE11): a call naming neither a
 #           data frame nor a variable, with no default, to a function that
@@ -4236,11 +4298,15 @@ check("T08 no site keeps the older form: no \"Variable '\", no quoted frame, no 
                      grab(jencode(d, Nam)), grab(jalpha(d, Agee:Gender)),
                      grab(jsum(d, Age:Gendr)), unlist(.t06)), collapse = "\n")
         !has(m, "Variable '") && !has(m, "in 'd'") && !has(m, "capitalization") })
-check("T09 the variable left out altogether gets the blank-name stop (it read \"Variable '' not found in 'd'.\")",
-      { want <- "Variable names cannot be blank.\nCheck for a stray comma or period in the call."
-        identical(grab(jrecode(d, map = "1=2")), paste0("jrecode(): ", want)) &&
-          identical(grab(jencode(d)), paste0("jencode(): ", want)) &&
-          identical(grab(jrelabel(d, labels = "1=x")), paste0("jrelabel(): ", want)) })
+check("T09 the variable left out altogether says no variable was named, with a line on community (RE-PINNED S370, Fix Slate 18: the blank-name stop since S343, \"Variable names cannot be blank.\"; it read \"Variable '' not found in 'd'.\" before that)",
+      { want <- function(what, ex) paste0("no variable specified.\nProvide ", what,
+                                          ", for example:\n  ", ex)
+        identical(grab(jrecode(d, map = "1=2")), paste0("jrecode(): ", want("the variable to recode",
+                  "community$OwnsHome01 <- jrecode(community, OwnsHome, map = \"1=1; 2=0\")"))) &&
+          identical(grab(jencode(d)), paste0("jencode(): ", want("the text variable to encode",
+                    "community$IDNumber <- jencode(community, RespondentID)"))) &&
+          identical(grab(jrelabel(d, labels = "1=x")), paste0("jrelabel(): ", want("the variable to label",
+                    "community$Age <- jrelabel(community, Age, var.label = \"Age in years\")"))) })
 check("T10 controls: a variable that is found is recoded, relabeled and encoded as before; a range resolves; the order stop is as it was",
       { r <- suppressMessages(jrecode(d, Gender, map = "1=0; 2=1"))
         l <- suppressMessages(jrelabel(d, Gender, labels = "1=M; 2=F"))
@@ -5619,6 +5685,209 @@ check("AE11 a data-first call that names its variables and no data frame -- jcor
         ok1 && ok2 && ok3 && r1 && r2 }))
 options(.jst_default_data = .ae_def)
 rm(.ae_def, .ae_ws, .ae1, .ae_in, .ae_last, .ae_ex, .ae_want, .ae_n)
+reset()
+
+# =============================================================================
+# AF -- THE RECODE FAMILY'S FRONT DOORS, AND FOUR STOPS LAID OUT (S370,
+#       v0.9.243; Fix Slate 18)
+# =============================================================================
+# Ruling R22's single stop reaches jrecode(), jencode(), jrelabel(),
+# jdeclare_missing() and jconvert() given nothing: they gave section AB's two
+# routes, jrecode(MyData) and juse(MyData) with jrecode(), and either, run,
+# stopped again for want of a variable or a target (the lean okayed S369).
+# Given a data frame alone, jrecode(), jencode() and jrelabel() said
+# "Variable names cannot be blank." / "Check for a stray comma or period in
+# the call."; they now say no variable was named and give the same example
+# as their R22 stop, a line on community; jdeclare_missing()'s stop is laid
+# out the same way, its vars = names() line kept. The registration verbs'
+# stops put their examples on a line of their own (jdummy()'s four calls in
+# one sentence, one of them not a call it takes), and jsubset() given no
+# condition gives a line on community, never the call's data frame with a
+# variable it may lack. Riders, defects on these surfaces found building it:
+# the verbs and jsubset() given an expression and nothing else get the
+# no-variables stop, where the expression refusal offered a line that
+# stopped there (jnumeric(mydata)) or invented a condition (jsubset(mydata,
+# Age < 40)). Stand-in workspaces, as section AE's; the .jst_ options a
+# check's examples change are put back.
+reset()
+.af_def <- getOption(".jst_default_data")
+options(.jst_default_data = NULL)
+.af_ws <- function(...) {
+  e <- new.env(parent = baseenv())
+  fr <- list(...)
+  for (nm in names(fr)) assign(nm, fr[[nm]], envir = e)
+  for (f in c("jrecode", "jencode", "jrelabel", "jdeclare_missing", "jconvert",
+              "jnumeric", "jcount", "jlikert", "jdummy", "jsubset", "juse",
+              "jdesc")) assign(f, get(f, envir = globalenv()), envir = e)
+  e
+}
+.af1 <- data.frame(Score = c(1, 4, 2, 5, 3, 6, 2, 7), Group = rep(1:2, 4),
+                   Name = c("a", "b", "c", "d", "e", "f", "g", "h"),
+                   stringsAsFactors = FALSE)
+.af_in <- function(e, expr) grab(eval(expr, e))
+.af_ex <- function(m) {
+  l <- strsplit(m, "\n", fixed = TRUE)[[1]]
+  i <- grep("for example:$", l)[1L]
+  j <- i + 1L
+  while (j < length(l) && grepl("^      ", l[j + 1L])) j <- j + 1L
+  gsub(" +", " ", trimws(paste(l[(i + 1L):j], collapse = " ")))
+}
+# .af_keep(): run code, then put back every .jst_ option as it was -- the
+# examples register on community, set a filter on it or change a convention.
+.af_keep <- function(code) {
+  before <- options()[grep("^\\.jst_", names(options()))]
+  on.exit({
+    now <- names(options())[grep("^\\.jst_", names(options()))]
+    gone <- setdiff(now, names(before))
+    if (length(gone)) options(stats::setNames(rep(list(NULL), length(gone)), gone))
+    options(before)
+  })
+  force(code)
+}
+# .af_clean(): TRUE when the line runs with no error and no warning.
+.af_clean <- function(ln) {
+  w <- 0L
+  ok <- tryCatch(withCallingHandlers({
+      suppressMessages(utils::capture.output(eval(parse(text = ln)[[1]], new.env())))
+      TRUE },
+    warning = function(x) { w <<- w + 1L; invokeRestart("muffleWarning") }),
+    error = function(x) FALSE)
+  isTRUE(ok) && w == 0L
+}
+.af_want <- c(
+  jrecode  = "community$OwnsHome01 <- jrecode(community, OwnsHome, map = \"1=1; 2=0\")",
+  jencode  = "community$IDNumber <- jencode(community, RespondentID)",
+  jrelabel = "community$Age <- jrelabel(community, Age, var.label = \"Age in years\")",
+  jdeclare_missing = "jdeclare_missing(community, Age, codes = -99, convention = \"spss\")")
+.af_r22 <- c(jrecode = "one of its variables", jencode = "one of its text variables",
+             jrelabel = "one of its variables",
+             jdeclare_missing = "one or more of its variables")
+check("AF01 jrecode(), no data frame and no default: ruling R22's one stop -- both missing, and its own example on community, assigned to a column (pinned whole; it gave two routes, each stopping again)",
+      local({ e <- .af_ws(af1 = .af1)
+        identical(.af_in(e, quote(jrecode())), paste0(
+          "jrecode(): no data frame and no variables were named.\n",
+          "Name a data frame and one of its variables, for example:\n",
+          "  community$OwnsHome01 <- jrecode(community, OwnsHome, map = \"1=1; 2=0\")")) }))
+check("AF02 ... jencode(), jrelabel() and jdeclare_missing() the same, each its own count and example, three lines, no juse() route",
+      local({ e <- .af_ws(af1 = .af1)
+        all(vapply(c("jencode", "jrelabel", "jdeclare_missing"), function(fn) {
+          m <- .af_in(e, call(fn))
+          identical(m, paste0(fn, "(): no data frame and no variables were named.\n",
+                              "Name a data frame and ", .af_r22[[fn]], ", for example:\n",
+                              "  ", .af_want[[fn]])) && !has(m, "juse(")
+        }, logical(1))) }))
+check("AF03 jconvert(), no data frame, no target and no convention: the stop names the target as missing, with jconvert(community, to = \"stata\") (pinned whole)",
+      local({ e <- .af_ws(af1 = .af1)
+        .af_keep({ options(.jst_options_missing_convention = "none")
+          identical(.af_in(e, quote(jconvert())), paste0(
+            "jconvert(): no data frame and no target format were named.\n",
+            "Name a data frame and a target format, for example:\n",
+            "  jconvert(community, to = \"stata\")")) }) }))
+check("AF04 control: a call that names its variable or its target by argument lacks only the data frame and keeps section AB's two routes -- orig.var = (and orig =, typed short), var =, vars =, to = -- as does jconvert() under a session convention, which supplies the target",
+      local({ e <- .af_ws(af1 = .af1)
+        r <- c(.af_in(e, quote(jrecode(orig.var = Score, map = "1=2"))),
+               .af_in(e, quote(jrecode(orig = Score, map = "1=2"))),
+               .af_in(e, quote(jencode(var = Name))),
+               .af_in(e, quote(jrelabel(var = Score, var.label = "S"))),
+               .af_in(e, quote(jdeclare_missing(vars = "Score", codes = -99))),
+               .af_in(e, quote(jconvert(to = "stata"))),
+               .af_in(e, quote(jconvert(vars = "Score"))))
+        conv <- .af_keep({ options(.jst_options_missing_convention = "stata")
+                           .af_in(e, quote(jconvert())) })
+        all(has(c(r, conv), "no data frame was named or set as the default.\n")) &&
+          all(has(c(r, conv), "Or set a default first, then run the call:")) &&
+          has(r[6], "\n  jconvert(af1, to = \"stata\")\n") &&
+          has(conv, "\n  jconvert(af1)\n") }))
+check("AF05 R22's stop keeps only modify = and missing.notice = from these calls (jdeclare_missing(), jconvert()); map =, labels =, codes = and convention =, which depend on the user's variables, are left out; the kept line runs",
+      local({ e <- .af_ws(af1 = .af1)
+        l1 <- .af_ex(.af_in(e, quote(jdeclare_missing(modify = TRUE, codes = -98, labels = "-98=x"))))
+        l2 <- .af_keep({ options(.jst_options_missing_convention = "none")
+                         .af_ex(.af_in(e, quote(jconvert(missing.notice = FALSE)))) })
+        l3 <- .af_ex(.af_in(e, quote(jrecode(map = "1=2", labels = "2=b", convention = "stata"))))
+        identical(l1, "jdeclare_missing(community, Age, codes = -99, convention = \"spss\", modify = TRUE)") &&
+          identical(l2, "jconvert(community, to = \"stata\", missing.notice = FALSE)") &&
+          identical(l3, .af_want[["jrecode"]]) &&
+          .af_keep(.af_clean(l2)) }))
+check("AF06 jrecode(), jencode() and jrelabel() given a data frame alone: \"no variable specified.\" and the same example as their R22 stop, on a line of its own (pinned whole; it said \"Variable names cannot be blank.\" / \"Check for a stray comma or period in the call.\"); a map given changes nothing, and under a juse() default the bare call is the same stop",
+      local({ e <- .af_ws(af1 = .af1)
+        want <- function(fn, what) paste0(fn, "(): no variable specified.\n",
+                                          "Provide ", what, ", for example:\n",
+                                          "  ", .af_want[[fn]])
+        m <- list(.af_in(e, quote(jrecode(af1))), .af_in(e, quote(jencode(af1))),
+                  .af_in(e, quote(jrelabel(af1))), .af_in(e, quote(jrecode(af1, map = "1=2"))))
+        dflt <- tryCatch({ options(.jst_default_data = "af1")
+                           c(.af_in(e, quote(jrecode())), .af_in(e, quote(jencode())),
+                             .af_in(e, quote(jrelabel(labels = "1=x")))) },
+                         finally = options(.jst_default_data = NULL))
+        identical(m[[1]], want("jrecode", "the variable to recode")) &&
+          identical(m[[2]], want("jencode", "the text variable to encode")) &&
+          identical(m[[3]], want("jrelabel", "the variable to label")) &&
+          identical(m[[4]], m[[1]]) &&
+          identical(dflt, c(m[[1]], m[[2]], m[[3]])) &&
+          !any(has(unlist(m), "cannot be blank")) }))
+check("AF07 jdeclare_missing() given a data frame alone: the same layout, its line on community, then the vars = names() line built from the call -- MyData for an expression, the default's name under juse() (pinned whole; the example sat inside a sentence and named MyData beside invented variables)",
+      local({ e <- .af_ws(af1 = .af1, af_mk = function() .af1)
+        lead <- paste0("jdeclare_missing(): no variables specified.\n",
+                       "Provide one or more variable names, for example:\n",
+                       "  ", .af_want[["jdeclare_missing"]], "\n",
+                       "To apply one declaration to every variable, use vars = names(")
+        m1 <- .af_in(e, quote(jdeclare_missing(af1, codes = -99)))
+        m2 <- .af_in(e, quote(jdeclare_missing(af_mk(), codes = -99)))
+        m3 <- tryCatch({ options(.jst_default_data = "af1")
+                         .af_in(e, quote(jdeclare_missing(codes = -99))) },
+                       finally = options(.jst_default_data = NULL))
+        identical(m1, paste0(lead, "af1).")) && identical(m2, paste0(lead, "MyData).")) &&
+          identical(m3, m1) }))
+check("AF08 each function's two stops give one example: R22's (nothing named) and its own (a data frame alone) agree, jencode(), jrelabel() and jdeclare_missing() as jrecode()",
+      local({ e <- .af_ws(af1 = .af1)
+        all(vapply(names(.af_want), function(fn) {
+          identical(.af_ex(.af_in(e, call(fn))), .af_want[[fn]]) &&
+            identical(.af_ex(.af_in(e, call(fn, as.name("af1")))), .af_want[[fn]])
+        }, logical(1))) }))
+check("AF09 every line these stops offer on community runs as printed -- no error, no warning -- with no convention set and under spss, stata and sas: each taken from its stop -- the recode family's four, jconvert()'s, jnumeric()'s, jlikert()'s, jdummy()'s and jsubset()'s (jcount()'s is a placeholder: community holds no count)",
+      local({ e <- .af_ws(af1 = .af1)
+        lines <- c(vapply(names(.af_want), function(fn) .af_ex(.af_in(e, call(fn))), ""),
+                   .af_keep({ options(.jst_options_missing_convention = "none")
+                              .af_ex(.af_in(e, quote(jconvert()))) }),
+                   .af_ex(.af_in(e, quote(jnumeric(af1)))), .af_ex(.af_in(e, quote(jlikert(af1)))),
+                   .af_ex(.af_in(e, quote(jdummy(af1)))), .af_ex(.af_in(e, quote(jsubset(af1)))))
+        all(vapply(c("none", "spss", "stata", "sas"), function(st) {
+          .af_keep({ options(.jst_options_missing_convention = st)
+                     all(vapply(lines, function(ln) .af_keep(.af_clean(ln)), logical(1))) })
+        }, logical(1))) && length(lines) == 9L }))
+check("AF10 jnumeric(), jcount(), jlikert() and jdummy() given a data frame and no variables: one sentence a line, the example on a line of its own -- community's for three, MyData's for jcount() (pinned whole; they gave it inline after \"e.g.\" on the call's data frame with <var1>, and jdummy() four calls in one sentence)",
+      local({ e <- .af_ws(af1 = .af1)
+        want <- function(fn, ex) paste0(fn, "(): no variables specified.\n",
+                                        "Provide one or more variable names, for example:\n",
+                                        "  ", ex)
+        identical(.af_in(e, quote(jnumeric(af1))), want("jnumeric", "jnumeric(community, Environment2)")) &&
+          identical(.af_in(e, quote(jcount(af1))), want("jcount", "jcount(MyData, Arrests)")) &&
+          identical(.af_in(e, quote(jlikert(af1))), want("jlikert", "jlikert(community, Environment1, Environment2)")) &&
+          identical(.af_in(e, quote(jdummy(af1))), want("jdummy", "jdummy(community, Region)")) }))
+check("AF11 rider: the four verbs given an expression and nothing else get the no-variables stop, where the expression refusal offered jnumeric(mydata), which stopped there; with a variable named, the refusal as before; nothing is registered",
+      local({ e <- .af_ws(af1 = .af1, af_mk = function() .af1)
+        r <- c(.af_in(e, quote(jnumeric(af_mk()))), .af_in(e, quote(jcount(af_mk()))),
+               .af_in(e, quote(jlikert(af_mk()))), .af_in(e, quote(jdummy(af_mk()))),
+               .af_in(e, quote(jnumeric(af_mk(), remove = TRUE))))
+        ctl <- .af_in(e, quote(jdummy(af_mk(), Group)))
+        all(has(r, "(): no variables specified.\nProvide one or more variable names, for example:\n")) &&
+          !any(has(r, "mydata")) &&
+          has(ctl, "jdummy(): af_mk() is not a name") && has(ctl, "  jdummy(mydata, Group)") &&
+          is.null(jstats:::.jst_get_registry("af_mk()")) &&
+          is.null(getOption(".jst_dummy", list())[["af_mk()"]]) }))
+check("AF12 jsubset() given a data frame and no condition: what is missing, then a line on community (pinned whole; it said \"the condition must be a logical expression. Example: jsubset(af1, Age < 40)\" for a data frame with no Age); an expression with no condition the same stop, where the refusal offered jsubset(mydata, Age < 40); nothing stored",
+      local({ e <- .af_ws(af1 = .af1, af_mk = function() .af1)
+        want <- paste0("jsubset(): no condition specified.\n",
+                       "Provide a condition, for example:\n",
+                       "  jsubset(community, Age < 40)")
+        m1 <- .af_in(e, quote(jsubset(af1))); m2 <- .af_in(e, quote(jsubset(af_mk())))
+        ctl <- .af_in(e, quote(jsubset(af_mk(), Score > 2)))
+        identical(m1, want) && identical(m2, want) &&
+          has(ctl, "jsubset(): af_mk() is not a name") && has(ctl, "  jsubset(mydata, Score > 2)") &&
+          !has(ctl, "Age < 40") &&
+          length(getOption(".jst_filter", default = list())) == 0L }))
+options(.jst_default_data = .af_def)
+rm(.af_def, .af_ws, .af1, .af_in, .af_ex, .af_keep, .af_clean, .af_want, .af_r22)
 reset()
 
 # =============================================================================

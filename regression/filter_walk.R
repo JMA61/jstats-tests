@@ -35,6 +35,8 @@
 #           condition, and a bare name, with no data frame in hand (G5);
 #           since S368 a call with no data frame and no default, given both
 #           routes (G6);
+#           since S370 the recode family, jconvert(), the registration
+#           verbs and jsubset() given no variable or no condition (G8);
 #           since S359 the shape check counting cases and naming the
 #           workspace object a wrong count came from (I1), and the vector
 #           path's refusal of a condition on another variable (I2);
@@ -47,6 +49,31 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S370 EDIT (v0.9.243; Fix Slate 18): NEW SECTION G8 -- 58 sections -> 59.
+#           Five renders: ruling R22's one stop in jrecode(), jencode(),
+#           jrelabel(), jdeclare_missing() and jconvert() given nothing
+#           (jconvert()'s naming the target format); jconvert(to = "stata")
+#           and jconvert() under a session convention keeping G6's two
+#           routes; the four given a data frame alone, "no variable
+#           specified." with the same example (it said "Variable names
+#           cannot be blank."); the registration verbs' stops, the example
+#           on a line of its own; jsubset() given no condition, and the
+#           riders, jsubset() and jnumeric() given an expression and nothing
+#           else. Filled by running the file (fill.R). No other section of
+#           this walk moved (harness.R dump of every section of every walk
+#           on 0.9.242 and 0.9.243: only modify_form_walk.R Section 12, the
+#           old jdeclare_missing() stop, re-pinned there). On the PENDING
+#           line: wording Claude drafted to the two leans okayed at S369
+#           ("ok on all recommendations"). harness.R derive: the six NEEDS
+#           lines as they were, G8 needing none; verify: 83 of 83 Expected
+#           blocks found, 59 of 59 sections in three orders and by prepare =
+#           TRUE. The human half of filter_check.R section AF.
+# LAST VERIFIED: v0.9.243, 2026-10-18 (S370) -- G8 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 2910 checks); GitHub 127e63b (package).
+#           Sandbox: harness.R verify, 59 of 59 sections in three orders and
+#           by prepare = TRUE.
 # S369 EDIT 2 (v0.9.242; Fix Slate 17): SECTION G6 EXTENDED AGAIN, Render 3
 #           RE-PINNED and Renders 3b and 3c NEW -- ruling R22's one stop
 #           when neither a data frame nor variables are named, in the seven
@@ -1972,6 +1999,177 @@ rm(.ws_g7, g7)
 #   - Render 3: what was typed is the subject (voice Rule AD) -- 1:3, g7x --
 #     the copy's name kept, g7 named as the one data frame in .ws_g7. The
 #     third had been R's own "object 'g7x' not found".
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# G8 -- the recode family and the registration verbs given no variable (S370) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.243 (Fix Slate 18; its two leans okayed at S369, "ok on all
+# recommendations", the wording Claude's). Render 1: ruling R22's one stop
+# reaches jrecode(), jencode(), jrelabel(), jdeclare_missing() and
+# jconvert() given nothing, with no default and no convention: they gave
+# G6's two routes, jrecode(MyData) and juse(MyData) with jrecode(), and
+# either, run, stopped again for want of a variable or a target. Render 2:
+# a call that names its target (or variable) by argument lacks only the
+# data frame and keeps the two routes, as jconvert() does under a session
+# convention, which supplies the target; in .ws_g8, a stand-in for a
+# console session holding one data frame. Render 3: the same four given a
+# data frame alone, where jrecode(), jencode() and jrelabel() had said
+# "Variable names cannot be blank." / "Check for a stray comma or period
+# in the call." Render 4: the registration verbs' stops, the example on a
+# line of its own. Render 5: jsubset() given no condition, and the riders
+# -- jsubset() and jnumeric() given an expression and nothing else. The
+# assertion side is filter_check.R section AF.
+.def_g8 <- getOption(".jst_default_data")
+.conv_g8 <- getOption(".jst_options_missing_convention")
+options(.jst_default_data = NULL, .jst_options_missing_convention = "none")
+g8 <- data.frame(Score8 = c(4, 7, 5, 8, 6, 9), Group8 = rep(1:2, 3),
+                 Name8 = c("a", "b", "c", "d", "e", "f"))
+
+# Render 1: nothing given.
+caught(jrecode())
+caught(jencode())
+caught(jrelabel())
+caught(jdeclare_missing())
+caught(jconvert())
+# Expected:
+#   Caught: jrecode(): no data frame and no variables were named.
+#   Name a data frame and one of its variables, for example:
+#     community$OwnsHome01 <- jrecode(community, OwnsHome, map = "1=1; 2=0")
+#   Caught: jencode(): no data frame and no variables were named.
+#   Name a data frame and one of its text variables, for example:
+#     community$IDNumber <- jencode(community, RespondentID)
+#   Caught: jrelabel(): no data frame and no variables were named.
+#   Name a data frame and one of its variables, for example:
+#     community$Age <- jrelabel(community, Age, var.label = "Age in years")
+#   Caught: jdeclare_missing(): no data frame and no variables were named.
+#   Name a data frame and one or more of its variables, for example:
+#     jdeclare_missing(community, Age, codes = -99, convention = "spss")
+#   Caught: jconvert(): no data frame and no target format were named.
+#   Name a data frame and a target format, for example:
+#     jconvert(community, to = "stata")
+
+# Render 2: the target named, then a convention set, in .ws_g8.
+.ws_g8 <- new.env(parent = baseenv())
+.ws_g8$g8 <- g8; .ws_g8$jconvert <- jconvert
+caught(evalq(jconvert(to = "stata"), .ws_g8))
+options(.jst_options_missing_convention = "stata")
+caught(evalq(jconvert(), .ws_g8))
+options(.jst_options_missing_convention = "none")
+# Expected:
+#   Caught: jconvert(): no data frame was named or set as the default.
+#   Name the data frame first:
+#     jconvert(g8, to = "stata")
+#   Or set a default first, then run the call:
+#     juse(g8)
+#     jconvert(to = "stata")
+#   Caught: jconvert(): no data frame was named or set as the default.
+#   Name the data frame first:
+#     jconvert(g8)
+#   Or set a default first, then run the call:
+#     juse(g8)
+#     jconvert()
+
+# Render 3: a data frame alone.
+caught(jrecode(g8))
+caught(jencode(g8))
+caught(jrelabel(g8))
+caught(jdeclare_missing(g8))
+# Expected:
+#   Caught: jrecode(): no variable specified.
+#   Provide the variable to recode, for example:
+#     community$OwnsHome01 <- jrecode(community, OwnsHome, map = "1=1; 2=0")
+#   Caught: jencode(): no variable specified.
+#   Provide the text variable to encode, for example:
+#     community$IDNumber <- jencode(community, RespondentID)
+#   Caught: jrelabel(): no variable specified.
+#   Provide the variable to label, for example:
+#     community$Age <- jrelabel(community, Age, var.label = "Age in years")
+#   Caught: jdeclare_missing(): no variables specified.
+#   Provide one or more variable names, for example:
+#     jdeclare_missing(community, Age, codes = -99, convention = "spss")
+#   To apply one declaration to every variable, use vars = names(g8).
+
+# Render 4: the registration verbs.
+caught(jnumeric(g8))
+caught(jcount(g8))
+caught(jlikert(g8))
+caught(jdummy(g8))
+# Expected:
+#   Caught: jnumeric(): no variables specified.
+#   Provide one or more variable names, for example:
+#     jnumeric(community, Environment2)
+#   Caught: jcount(): no variables specified.
+#   Provide one or more variable names, for example:
+#     jcount(MyData, Arrests)
+#   Caught: jlikert(): no variables specified.
+#   Provide one or more variable names, for example:
+#     jlikert(community, Environment1, Environment2)
+#   Caught: jdummy(): no variables specified.
+#   Provide one or more variable names, for example:
+#     jdummy(community, Region)
+
+# Render 5: jsubset() given no condition; an expression and nothing else.
+mk8 <- function() g8
+caught(jsubset(g8))
+caught(jsubset(mk8()))
+caught(jnumeric(mk8()))
+# Expected:
+#   Caught: jsubset(): no condition specified.
+#   Provide a condition, for example:
+#     jsubset(community, Age < 40)
+#   Caught: jsubset(): no condition specified.
+#   Provide a condition, for example:
+#     jsubset(community, Age < 40)
+#   Caught: jnumeric(): no variables specified.
+#   Provide one or more variable names, for example:
+#     jnumeric(community, Environment2)
+options(.jst_default_data = .def_g8, .jst_options_missing_convention = .conv_g8)
+rm(.def_g8, .conv_g8, .ws_g8, g8, mk8)
+
+# Things to look at:
+#   - Render 1: R22's wording, as G6 Render 3 has it, with each function's
+#     own count -- "one of its variables", "one of its text variables",
+#     "one or more of its variables" -- and jconvert()'s "no target format"
+#     in place of variables, since it converts a whole data frame given a
+#     target. The example is the one each function's own stop gives
+#     (Render 3), so the two agree (filter_check.R AF01-AF03, AF08).
+#   - The examples are lines on community that run as printed with no
+#     convention set and under spss, stata and sas (AF09). jrecode(),
+#     jencode() and jrelabel() return a variable, so their lines assign it
+#     to a column, as jsum()'s and javg()'s do. jdeclare_missing()'s names
+#     convention = "spss": a declaration on a plain variable needs a
+#     convention, and community's declared values are SPSS-style, so the
+#     line runs whatever the session's setting.
+#   - jencode()'s example: community's one text variable is RespondentID,
+#     so the line encodes the IDs -- it runs, and lists 103 codes. The
+#     alternative is the help page's placeholder, MyData$StatusR <-
+#     jencode(MyData, Status), which reads better and does not run. Which?
+#   - Render 2: jconvert(to = "stata") and jconvert() under a stata
+#     setting lack only the data frame, so they keep the two routes, g8
+#     named (AF04).
+#   - Render 3: "no variable specified." (one variable) and "no variables
+#     specified." (jdeclare_missing()), as jdesc()'s and jfreq()'s stops
+#     have since S338; jdeclare_missing()'s vars = names(g8) line kept from
+#     its old stop, which had its example inside a sentence (AF06, AF07).
+#   - Render 4: one sentence a line, the example on a line of its own --
+#     community's columns, except jcount()'s: community holds no count, so
+#     its line is a placeholder, MyData and Arrests (voice Rule AC). They
+#     had given jnumeric(g8, <var1>, <var2>) inline after "e.g.". jdummy()
+#     had given four calls in one sentence -- jdummy(VarName),
+#     jdummy(VarName, remove = TRUE), jdummy(VarName = NULL) and
+#     jdummy(clear.all = TRUE) -- the third not a call jdummy() takes; it
+#     now gives the one form the call was missing, as the other three
+#     verbs do, the remove and clear forms left to its help page and its
+#     status display (voice Rule D). Is anything lost by that?
+#   - Render 5: jsubset(g8) had said "the condition must be a logical
+#     expression. Example: jsubset(g8, Age < 40)" -- g8 has no Age. It now
+#     says what is missing and gives a line on community (AF12). The two
+#     riders, both defects on these surfaces found building the slate:
+#     jsubset(mk8()) had offered "mydata <- mk8()" and "jsubset(mydata, Age
+#     < 40)", inventing the condition, and jnumeric(mk8()) "jnumeric(mydata)",
+#     which stopped for want of variables. Both now get the stop for what
+#     is missing; with a condition or a variable named, the expression's
+#     refusal and its two lines are as before (AF11, AF12).
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # PART H -- HOW A NAME IS READ: RULING R18'S NAMES SLATE (S356) ----
