@@ -38,9 +38,11 @@
 #           missing_convention_check.R N81ai and N81aj (re-pinned); the
 #           stop's render beside its siblings is filter_walk.R G8. harness.R
 #           derive: the five NEEDS lines as they were; verify: 30 of 30
-#           sections in three orders and by prepare = TRUE; 106 of 109
-#           Expected blocks found in this sandbox, the same three as on
-#           0.9.242 (Section 9's, and Section 28's two Loaded lines).
+#           sections in three orders and by prepare = TRUE; 108 of 109
+#           Expected blocks found (Section 9's, as before), with the
+#           dataset path replaced by an absolute one, as since S368 (run
+#           first without it, 106: Section 28's two Loaded lines, the
+#           S368 trap, on 0.9.242 as on 0.9.243).
 # EDITED:   S369 (v0.9.241; Fix Slate 16). SECTION 13 EXTENDED, two
 #           blocks filled by running (fill.R, "#@SKIP" ahead of the first):
 #           jload("") and jload() given a data frame as an expression give
