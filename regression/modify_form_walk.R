@@ -25,6 +25,26 @@
 #           call (Sections 27-29). Since S367 jload()'s warnings on an
 #           argument the format does not use (Section 30).
 # ORIGIN:   S229
+# EDITED:   S368 (v0.9.240; Fix Slate 15). SECTION 13 RE-PINNED AND
+#           EXTENDED, filled by running (fill.R): jsave() given a vector, or
+#           a name found nowhere, gives "Provide a data frame, for example:"
+#           and the call on a line of its own (Rules E and L, Claude's
+#           call), naming the one data frame in the workspace -- MyData
+#           here, d13 in .ws13, which now holds z13 as well -- the not-found
+#           stop keeping the file the call named; a file name without its
+#           quotes, ruling R18's pointer, as jload()'s; no file name, the
+#           example under its sentence; jsave() with nothing and no default,
+#           both routes with the example file (MyData; d13 in .ws13); and a
+#           file that exists where the session cannot ask -- .ws13b, whose
+#           jsave() sees interactive() FALSE, the walk folder shown as
+#           <walk folder> -- one sentence a line, the path on a line of its
+#           own. On the PENDING line. No other section moved (harness.R dump
+#           of every section of every walk on 0.9.239 and 0.9.240: only this
+#           file's Section 13 differed). The assertion side is
+#           import_check.R section V and missing_convention_check.R N86i
+#           (re-pinned). harness.R derive: the five NEEDS lines as they
+#           were; verify: 30 of 30 sections in three orders and by prepare =
+#           TRUE; 106 of 107 Expected blocks found (Section 9's, as before).
 # EDITED:   S367 (v0.9.239; Fix Slate 14). SECTION 13 RE-PINNED AND
 #           EXTENDED, filled by running (fill.R): jsave() given a file name
 #           alone with no default set offers both routes, as the analysis
@@ -330,6 +350,14 @@
 #           updated in Sections 6 and 7 (the same line, a temporary path).
 #           harness.R derive: no section needs another it does not name.
 #           The assertion side is missing_convention_check.R N94.
+# LAST VERIFIED: v0.9.240, 2026-10-17 (S368) -- Section 13 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; GitHub d62f372 (package). Sandbox:
+#           harness.R verify, 30 of 30 sections in three orders and by
+#           prepare = TRUE; 106 of 107 Expected blocks (Section 9's, as
+#           before). Every section of every walk captured on v0.9.239 and
+#           v0.9.240: this file's Section 13 moved as re-pinned, the rest
+#           identical apart from temp paths.
 # LAST VERIFIED: v0.9.239, 2026-10-17 (S367) -- Sections 13 and 30
 #           WALKED on the WORKSTATION by Jeff through receive_all()
 #           ("walked, all okay"); PENDING back to none; GitHub 6e35be6
@@ -1415,11 +1443,76 @@ try(evalq(jsave("t13.rds", overwrite = TRUE), .ws13))
 #     juse(d13)
 #     jsave("t13.rds", overwrite = TRUE)
 
-cat("\n--- jsave() given a vector ---\n")
+cat("\n--- jsave() given a vector; given a name found nowhere ---\n")
 try(jsave(z13, "x13.rds"))
+try(jsave(d1x, "d13.rds"))
 # Expected:
 #   Error : jsave(): 'z13' is not a data frame.
-#   Provide a data frame, e.g. jsave(MyData, "mydata.sav")
+#   Provide a data frame, for example:
+#     jsave(MyData, "mydata.sav")
+#   Error : jsave(): 'd1x' not found.
+#   Provide a data frame, for example:
+#     jsave(MyData, "d13.rds")
+
+cat("\n--- ... the same two in a workspace holding one data frame ---\n")
+.ws13$z13 <- z13
+try(evalq(jsave(z13, "x13.rds"), .ws13))
+try(evalq(jsave(d1x, "d13.rds"), .ws13))
+# Expected:
+#   Error : jsave(): 'z13' is not a data frame.
+#   Provide a data frame, for example:
+#     jsave(d13, "mydata.sav")
+#   Error : jsave(): 'd1x' not found.
+#   Provide a data frame, for example:
+#     jsave(d13, "d13.rds")
+
+cat("\n--- a file name without its quotes; no file name; nothing at all ---\n")
+try(jsave(d13, d13.rds))
+try(jsave(d13))
+try(jsave())
+try(evalq(jsave(), .ws13))
+# Expected:
+#   Error : jsave(): d13.rds is not in quotes.
+#   A file name goes in quotes:
+#     jsave(d13, "d13.rds")
+#   Error : jsave(): Provide a filename with extension, for example:
+#     jsave(d13, "mydata.sav")
+#   Supported formats:
+#     .sav       SPSS
+#     .dta       Stata
+#     .xpt       SAS interchange
+#     .xlsx      Excel
+#     .csv       Comma-separated values
+#     .rds       R
+#   Error : jsave(): no data frame or file name was given.
+#   Name the data frame first, then the file:
+#     jsave(MyData, "mydata.sav")
+#   Or set a default first, then name the file:
+#     juse(MyData)
+#     jsave("mydata.sav")
+#   Error : jsave(): no data frame or file name was given.
+#   Name the data frame first, then the file:
+#     jsave(d13, "mydata.sav")
+#   Or set a default first, then name the file:
+#     juse(d13)
+#     jsave("mydata.sav")
+
+# A session that cannot ask -- a script run with Rscript -- stops on a file
+# that exists. .ws13b holds d13 and a jsave() that sees such a session (its
+# interactive() says FALSE); the walk folder is shown as <walk folder>,
+# since a temporary folder differs on every run.
+saveRDS(d13, "e13.rds")
+.ns13 <- new.env(parent = environment(jsave)); .ns13$interactive <- function() FALSE
+.ws13b <- new.env(parent = baseenv()); .ws13b$d13 <- d13
+.ws13b$jsave <- jsave; environment(.ws13b$jsave) <- .ns13
+cat("\n--- a file that exists, where the session cannot ask ---\n")
+.m13 <- tryCatch(evalq(jsave(d13, "e13.rds"), .ws13b), error = conditionMessage)
+cat("Error : ", gsub(normalizePath(.walkdir, winslash = "/"), "<walk folder>",
+                     .m13, fixed = TRUE), "\n", sep = "")
+# Expected:
+#   Error : jsave(): this file already exists:
+#     <walk folder>/e13.rds
+#   Use overwrite = TRUE to replace it.
 
 cat("\n--- a name starting with a digit: the file's, then one given with name = ---\n")
 try(jload("2024zz13.csv"))
@@ -1443,7 +1536,7 @@ try(jload("x13.RData"))
 
 options(.jst_default_data = .def13)
 setwd(.wd13)
-rm(.wd13, .def13, .ws13, d13, p13, z13)
+rm(.wd13, .def13, .ws13, .ws13b, .ns13, .m13, d13, p13, z13)
 
 # Things to look at:
 #   - EACH LINE THAT IS OFFERED RUNS (missing_convention_check.R N86a-c and
@@ -1475,6 +1568,32 @@ rm(.wd13, .def13, .ws13, d13, p13, z13)
 #     the one route the stop above lacked -- and both lines keep file =
 #     and overwrite = TRUE, as jload()'s lines keep the call since S365
 #     (import_check.R U08-U12; missing_convention_check.R N86g re-pinned).
+#   - THE EXAMPLE ON A LINE OF ITS OWN (S368, v0.9.240; Fix Slate 15,
+#     Claude's call): jsave() given a vector, or a name found nowhere,
+#     said "Provide a data frame, e.g. jsave(MyData, "mydata.sav")" on the
+#     line of the sentence before it. "Provide a data frame, for example:"
+#     now has a line of its own and the call one under it (Rules E and L),
+#     naming the one data frame in the workspace: MyData in the walk's,
+#     d13 in .ws13. Under the stop for a name found nowhere -- most often
+#     a misspelled data frame -- the call keeps the file the call named
+#     (d13.rds); an object that is not a data frame gets the example file.
+#     Does keeping the file read as the fix for a typo?
+#   - A FILE NAME WITHOUT ITS QUOTES (S368): jload()'s pointer (ruling
+#     R18), the call as typed with the name quoted, where it said "'d13.rds'
+#     is not quoted. Filenames must be in quotes, e.g. jsave(d13,
+#     "d13.rds")" on one line. No file name: the example under its sentence,
+#     naming d13, then the formats.
+#   - NOTHING AT ALL (S368): jsave() with no data frame, no file and no
+#     default would have been offered jsave(MyData) by the resolver's new
+#     two routes (filter_walk.R G6), which stops again for want of a file.
+#     It gets both routes with the example file, under "Name the data frame
+#     first, then the file:" and "Or set a default first, then name the
+#     file:" -- MyData in the walk's workspace, d13 in .ws13.
+#   - A FILE THAT EXISTS (S368): one sentence a line, the path on a line of
+#     its own (Rules E and Z), where "File '<path>' already exists. Use
+#     overwrite = TRUE to replace it." put both sentences and the path on
+#     one line, so a long path made a long line. A session that asks asks
+#     its question instead, unchanged (import_check.R U04, V01-V02).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

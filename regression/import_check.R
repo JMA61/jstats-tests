@@ -46,10 +46,20 @@
 #           alone or with file =, offering both routes, the one data frame
 #           in the workspace named, the call's other arguments kept, each
 #           line running.
+#           Since v0.9.240 (section V; Fix Slate 15): jsave()'s front-door
+#           stops -- a data argument not found, not evaluable, NULL or not a
+#           data frame, and no file name -- give "for example:" and the call
+#           on a line of its own, naming the one data frame in the workspace
+#           (the not-found stop keeping the call's file); a file name typed
+#           without its quotes gets ruling R18's pointer, as jload()'s;
+#           jsave() with nothing and no default, both routes with the example
+#           file; and where the session cannot ask, a file that exists stops
+#           with one sentence a line and the path on a line of its own (U05
+#           re-pinned).
 # ORIGIN:   S362 (v0.9.235). The tenth battery. Section R added S362, the
 #           second build (v0.9.236). Section S added S365 (v0.9.237).
 #           Section T added S366 (v0.9.238). Section U added S367
-#           (v0.9.239).
+#           (v0.9.239). Section V added, U05 re-pinned, S368 (v0.9.240).
 # FIXTURES: written by this file into a folder of R's temporary folder,
 #           except one that R cannot write: datasets/import_guess_text.xlsx
 #           (section G). writexl gives every cell of a column one type, and
@@ -192,6 +202,19 @@
 #           file = dropped U11; the file = stop gone U11, firing under a
 #           default U12; the file-name stop's old one route U08-U11 and
 #           N86g.
+#           Section V (v0.9.240, S368; 15 one-change mutants of the new
+#           code, run detached, this battery on each and
+#           missing_convention_check.R on the three that reach N86i, every
+#           one red): the call's file kept under every stop V03 N86i, under
+#           none V03-V05; the example's frame always MyData V03-V05; the
+#           not-found, not-evaluable, NULL and not-a-data-frame examples
+#           back on the sentence's line V03 (the last N86i too); the
+#           existing-file stop's old sentence U05 V01 V02, its path not
+#           indented U05 V01 V02; the unquoted pointer rebuilding the wrong
+#           argument V06; jsave() with nothing reaching the resolver V08
+#           V09, its headings the file-alone stop's V08, its example file
+#           another V08 V09; the no-filename example naming MyData V07 V09,
+#           an expression pasted where mydata goes V07.
 # FIRST WORKSTATION RUN (S362, the first delivery): 81/83. F03 -- the
 #           title note's line, run as offered, met jload()'s overwrite
 #           question: the workstation runs the batteries in an interactive
@@ -203,7 +226,13 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
-# LAST VERIFIED: v0.9.239, 2026-10-17 (S367) -- 143/143 on the WORKSTATION
+# LAST VERIFIED: v0.9.240, 2026-10-17 (S368) -- 152/152 on the WORKSTATION
+#           through receive_all() ("ALL BATTERIES GREEN (10 run, 2871
+#           checks)"; R CMD check 0 errors, 0 warnings, 0 notes); GitHub
+#           d62f372 (package). Section V reads a stand-in workspace and
+#           takes the existing-file stop from section U's copy, so it runs
+#           there as in the sandbox.
+# EARLIER:  v0.9.239, 2026-10-17 (S367) -- 143/143 on the WORKSTATION
 #           through receive_all() ("ALL BATTERIES GREEN (10 run, 2853
 #           checks)"; R CMD check 0 errors, 0 warnings, 0 notes); GitHub
 #           6e35be6 (package). Section U asks its question of a copy of
@@ -215,7 +244,19 @@
 #           9ab5efa (package). S29 passes there as asked (interactive()
 #           TRUE); section T asks its question of a copy of jload(), so it
 #           runs there as in the sandbox.
-# SANDBOX:  v0.9.239, 2026-10-17 (S367) -- 143/143, run_all.R 2853
+# SANDBOX:  v0.9.240, 2026-10-17 (S368) -- 152/152, run_all.R 2871
+#           across ten, plain and under the RStudio-handler stand-in, each
+#           again with a 36-character temp path, once with interactive()
+#           TRUE, and entered dirty (joutput("full") with diagnostics, width
+#           100, a juse() default, a stata convention, jstats.color = TRUE,
+#           workspace objects named like its working objects -- d1, x, n0,
+#           fname, Bad), plain and under the stand-in: green, nothing
+#           changed. Section V and U05 red on v0.9.239, every check. V01-V02
+#           take the existing-file stop from section U's copy in a session
+#           that cannot ask, so they run the same in every session; V02's
+#           path is longer than the line wherever the temporary folder is.
+#           Before it: v0.9.239 (S367), 143/143 the same five ways.
+# EARLIER:  v0.9.239, 2026-10-17 (S367) -- 143/143, run_all.R 2853
 #           across ten, plain and under the RStudio-handler stand-in, each
 #           again with a 35-character temp path, once with interactive()
 #           TRUE, and entered dirty (joutput("full") with diagnostics, width
@@ -1486,7 +1527,8 @@ check("U05 a session that cannot ask still stops on the file that exists first, 
       local({ writeLines("before", .ix("U05.sav"))
         m1 <- grab(.askU("y", asks = FALSE)(.dU, .ix("U05.sav")))
         m2 <- grab(.askU("y")(.dU, .ix("U05b.sav")))
-        grepl("U05.sav' already exists. Use overwrite = TRUE to replace it.", .fl(m1), fixed = TRUE) &&
+        startsWith(m1, "this file already exists:\n  ") &&
+          grepl("U05.sav\nUse overwrite = TRUE to replace it.", m1, fixed = TRUE) &&
           !grepl("cannot be used", m1, fixed = TRUE) && !grepl("<asked>", m1, fixed = TRUE) &&
           identical(readLines(.ix("U05.sav")), "before") &&
           grepl("cannot be used in SPSS format (.sav):", .fl(m2), fixed = TRUE) &&
@@ -1571,6 +1613,132 @@ check("U12 ... with a default set, jsave(file = \"...\") and jsave(\"...\") save
                    invisible(grab(eval(bquote(jsave(.(f2))), e))) },
                  finally = options(.jst_default_data = old))
         identical(readRDS(f1), e$d1) && identical(readRDS(f2), e$d1) }))
+
+# --- V: jsave()'s front-door stops and its existing-file stop, laid out ------
+
+# v0.9.240 (S368; Fix Slate 15). jsave()'s stops for a data argument that is
+# not found, cannot be evaluated, is NULL or is not a data frame each gave
+# "Provide a data frame, e.g. jsave(MyData, "mydata.sav")" on the line of the
+# sentence before it; the no-filename stop gave its "e.g." call inline; the
+# unquoted-file stop gave "'out.rds' is not quoted. Filenames must be in
+# quotes, e.g. ..." on one line; and where the session cannot ask, a file that
+# exists stopped with "File '<path>' already exists. Use overwrite = TRUE to
+# replace it.", both sentences and the path on one line. Each now puts one
+# sentence on a line and the call, or the path, on a line of its own (Rules E,
+# L and Z), the example naming the one data frame in the workspace (MyData
+# with none or several); the unquoted file name gets ruling R18's pointer, as
+# jload()'s; and jsave() given neither a data frame nor a file, with no
+# default, gets both routes with the example file, where the resolver would
+# have offered jsave(d), which stops again. The workspace is .wsU()'s
+# stand-in; the existing-file stop is taken from section U's copy, .askU(),
+# in a session that cannot ask, so it carries no "jsave():" prefix.
+check("V01 a session that cannot ask, a file that exists: one sentence a line and the path on a line of its own (it put both sentences and the path on one line); nothing written",
+      local({ f <- .ix("V01.rds"); writeLines("before", f)
+        m <- grab(.askU("y", asks = FALSE)(data.frame(a = 1), f))
+        identical(m, paste0("this file already exists:\n",
+                            "  ", normalizePath(f, winslash = "/", mustWork = FALSE), "\n",
+                            "Use overwrite = TRUE to replace it.")) &&
+          identical(readLines(f), "before") }))
+check("V02 ... a path longer than the line, with spaces in its folder names, is still one line, never broken",
+      local({ dd <- .ix("a folder name with spaces in it/and another folder name with spaces")
+        dir.create(dd, recursive = TRUE); f <- file.path(dd, "V02.rds")
+        writeLines("before", f)
+        np <- normalizePath(f, winslash = "/", mustWork = FALSE)
+        ln <- strsplit(grab(.askU("y", asks = FALSE)(data.frame(a = 1), f)), "\n", fixed = TRUE)[[1]]
+        nchar(np) > .pin_width && length(ln) == 3L && identical(ln[2], paste0("  ", np)) }))
+check("V03 the four data-argument stops -- not found, could not be evaluated, NULL, not a data frame -- each give the example on a line of its own, naming the one data frame in the workspace (each gave \"e.g. jsave(MyData, ...)\" inline); the not-found stop keeps the file the call named; nothing is written",
+      local({ e <- .wsU(d1 = data.frame(a = 1:3), x = 1:3, n0 = NULL)
+        ex <- function(lead, file) paste0("jsave(): ", lead, "\n",
+                                          "Provide a data frame, for example:\n",
+                                          "  jsave(d1, \"", file, "\")")
+        g <- function(cl) .nodefU(grab(eval(cl, e)))
+        identical(g(quote(jsave(Bad, "V03.sav"))), ex("'Bad' not found.", "V03.sav")) &&
+          identical(g(quote(jsave(d1[, "zz"], "V03.sav"))),
+                    ex("'d1[, \"zz\"]' could not be evaluated.", "mydata.sav")) &&
+          identical(g(quote(jsave(n0, "V03.sav"))), ex("'n0' is NULL.", "mydata.sav")) &&
+          identical(g(quote(jsave(x, "V03.sav"))), ex("'x' is not a data frame.", "mydata.sav")) &&
+          !file.exists("V03.sav") && !file.exists(.ix("V03.sav")) }))
+check("V04 ... MyData with no data frame in the workspace, or two; a file given as a name, or none, is the example file",
+      local({ g <- function(e, cl) .nodefU(grab(eval(cl, e)))
+        last <- function(m) tail(strsplit(m, "\n", fixed = TRUE)[[1]], 1L)
+        e0 <- .wsU(); e2 <- .wsU(d1 = data.frame(a = 1), d2 = data.frame(b = 2))
+        e1 <- .wsU(d1 = data.frame(a = 1), fn = "V04.sav")
+        identical(last(g(e0, quote(jsave(Bad, "V04.sav")))), "  jsave(MyData, \"V04.sav\")") &&
+          identical(last(g(e2, quote(jsave(Bad, "V04.sav")))), "  jsave(MyData, \"V04.sav\")") &&
+          identical(last(g(e2, quote(jsave(x9, "V04.sav")))), "  jsave(MyData, \"V04.sav\")") &&
+          identical(last(g(e1, quote(jsave(Bad, fn)))), "  jsave(d1, \"mydata.sav\")") &&
+          identical(last(g(e1, quote(jsave(Bad)))), "  jsave(d1, \"mydata.sav\")") }))
+check("V05 the not-found line runs as printed: it saves the data frame named to the file the call named (data.dir the fixture folder for the check)",
+      local({ e <- .wsU(d1 = data.frame(a = 1:3)); f <- .ix("V05.rds")
+        dd <- getOption(".jst_options_data_dir")
+        tryCatch({ options(.jst_options_data_dir = .ix_dir)
+          cl <- .calls(.nodefU(grab(eval(quote(jsave(dX, "V05.rds")), e))))
+          ok0 <- length(cl) == 1L && !file.exists(f)
+          .nodefU(invisible(grab(eval(cl[[1]], e))))
+          ok0 && identical(readRDS(f), e$d1) },
+          finally = options(.jst_options_data_dir = dd)) }))
+check("V06 a file name typed without its quotes: ruling R18's pointer, as jload()'s -- the name, then the call as typed with it quoted, file = and the other arguments kept (it gave \"'out.rds' is not quoted. Filenames must be in quotes, e.g. ...\" on one line); the line runs; a name that holds a file name is not refused",
+      local({ e <- .wsU(d1 = data.frame(a = 1:3))
+        dd <- getOption(".jst_options_data_dir")
+        tryCatch({ options(.jst_options_data_dir = .ix_dir)
+          m1 <- .nodefU(grab(eval(quote(jsave(d1, V06.rds)), e)))
+          m2 <- .nodefU(grab(eval(quote(jsave(d1, file = V06.rds, overwrite = TRUE)), e)))
+          ok <- identical(m1, paste0("jsave(): V06.rds is not in quotes.\n",
+                                     "A file name goes in quotes:\n",
+                                     "  jsave(d1, \"V06.rds\")")) &&
+            identical(m2, paste0("jsave(): V06.rds is not in quotes.\n",
+                                 "file = takes a file name in quotes:\n",
+                                 "  jsave(d1, file = \"V06.rds\", overwrite = TRUE)"))
+          .nodefU(invisible(grab(eval(.calls(m1)[[1]], e))))
+          ok1 <- identical(readRDS(.ix("V06.rds")), e$d1)
+          e$fname <- "V06b.rds"
+          .nodefU(invisible(grab(eval(quote(jsave(d1, fname)), e))))
+          ok && ok1 && identical(readRDS(.ix("V06b.rds")), e$d1) },
+          finally = options(.jst_options_data_dir = dd)) }))
+check("V07 no file name, or one that is not a name: the example on a line of its own, naming the data frame being saved, then the formats (it gave \"e.g. jsave(MyData, ...)\" inline); an expression is named mydata first, as the pre-flight's lines name it",
+      local({ e <- .wsU(d1 = data.frame(a = 1:3))
+        fm <- paste0("Supported formats:\n  .sav       SPSS\n  .dta       Stata\n",
+                     "  .xpt       SAS interchange\n  .xlsx      Excel\n",
+                     "  .csv       Comma-separated values\n  .rds       R")
+        m1 <- .nodefU(grab(eval(quote(jsave(d1)), e)))
+        m2 <- .nodefU(grab(eval(quote(jsave(d1, 42)), e)))
+        m3 <- .nodefU(grab(eval(quote(jsave(d1[1:2, , drop = FALSE])), e)))
+        identical(m1, paste0("jsave(): Provide a filename with extension, for example:\n",
+                             "  jsave(d1, \"mydata.sav\")\n", fm)) &&
+          identical(m2, m1) &&
+          identical(m3, paste0("jsave(): Provide a filename with extension, for example:\n",
+                               "  mydata <- d1[1:2, , drop = FALSE]\n",
+                               "  jsave(mydata, \"mydata.sav\")\n", fm)) }))
+check("V08 jsave() given neither a data frame nor a file, no default: both routes with the example file, under headings that say the file is named too, the call's other arguments kept (the resolver would have offered jsave(d1), which stops again for want of a file)",
+      local({ e <- .wsU(d1 = data.frame(a = 1:3))
+        m1 <- .nodefU(grab(eval(quote(jsave()), e)))
+        m2 <- .nodefU(grab(eval(quote(jsave(overwrite = TRUE)), e)))
+        identical(m1, paste0("jsave(): no data frame or file name was given.\n",
+                             "Name the data frame first, then the file:\n",
+                             "  jsave(d1, \"mydata.sav\")\n",
+                             "Or set a default first, then name the file:\n",
+                             "  juse(d1)\n",
+                             "  jsave(\"mydata.sav\")")) &&
+          identical(vapply(.calls(m2), deparse, ""),
+                    c("jsave(d1, \"mydata.sav\", overwrite = TRUE)", "juse(d1)",
+                      "jsave(\"mydata.sav\", overwrite = TRUE)")) &&
+          identical(deparse(.calls(.nodefU(grab(eval(quote(jsave()), .wsU()))))[[1]]),
+                    "jsave(MyData, \"mydata.sav\")") }))
+check("V09 ... both routes run as printed, each saving the data frame named; with a default set, jsave() alone gives the no-filename stop, naming the default",
+      local({ e <- .wsU(d1 = data.frame(a = 1:3)); f <- .ix("mydata.sav")
+        dd <- getOption(".jst_options_data_dir")
+        tryCatch({ options(.jst_options_data_dir = .ix_dir)
+          cl <- .calls(.nodefU(grab(eval(quote(jsave(overwrite = TRUE)), e))))
+          .nodefU(invisible(grab(eval(cl[[1]], e))))
+          ok1 <- identical(as.integer(haven::read_sav(f)$a), 1:3)
+          unlink(f)
+          .nodefU({ invisible(grab(eval(cl[[2]], e))); invisible(grab(eval(cl[[3]], e))) })
+          ok2 <- identical(as.integer(haven::read_sav(f)$a), 1:3)
+          old <- getOption(".jst_default_data")
+          m <- tryCatch({ options(.jst_default_data = "d1"); grab(eval(quote(jsave()), e)) },
+                        finally = options(.jst_default_data = old))
+          ok1 && ok2 && startsWith(m, "jsave(): Provide a filename with extension, for example:\n  jsave(d1, \"mydata.sav\")\n") },
+          finally = options(.jst_options_data_dir = dd)) }))
 
 # --- The message surface, swept (guard 4) ------------------------------------
 

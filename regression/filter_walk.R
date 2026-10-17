@@ -33,6 +33,8 @@
 #           and a setting made on an expression (G1-G3); since S352
 #           quiet = TRUE with no data frame in hand (G4); since S355 a
 #           condition, and a bare name, with no data frame in hand (G5);
+#           since S368 a call with no data frame and no default, given both
+#           routes (G6);
 #           since S359 the shape check counting cases and naming the
 #           workspace object a wrong count came from (I1), and the vector
 #           path's refusal of a condition on another variable (I2);
@@ -45,6 +47,29 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S368 EDIT (v0.9.240; Fix Slate 15): SECTION G6 ADDED -- 56 sections -> 57.
+#           A call that names no data frame, with no juse() default, gets
+#           both routes, as G5's stops do (the lean okayed at S367), where
+#           it had "No data frame specified and no default set. Use juse()
+#           to set a default.": the data frame named after the formula in a
+#           formula call, first in any other -- the one holding the
+#           formula's variables, or the one data frame in the workspace for
+#           a call with no variable to match, else MyData. Three renders: a
+#           formula only g6 holds; jscreen() in the walk's workspace
+#           (MyData); jcorr(method = "spearman") in .ws_g6, a stand-in
+#           workspace holding one data frame. Filled by running the file
+#           (fill.R). No existing Expected moved (harness.R dump of every
+#           section of every walk on 0.9.239 and 0.9.240: no section of this
+#           walk differed). On the PENDING line: wording Claude drafted to
+#           the lean. harness.R derive: the six NEEDS lines as they were, G6
+#           needing none; verify: 70 of 70 Expected blocks found, 57 of 57
+#           sections in three orders and by prepare = TRUE. The human half
+#           of filter_check.R section AB.
+# LAST VERIFIED: v0.9.240, 2026-10-17 (S368) -- G6 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; GitHub d62f372 (package). Sandbox: every
+#           section through rewalk() as in a straight run, in three orders
+#           and by prepare = TRUE (harness.R verify).
 # S359 EDIT (v0.9.232; Fix Slate 10 and Scripts Slate B): PART I ADDED,
 #           SECTIONS I1-I2 -- 54 sections -> 56; B1-B7, D3, D4 and G1
 #           RE-PINNED. The filter shape check counts CASES where it counted
@@ -1659,6 +1684,73 @@ rm(.def_g5)
 #     default's two lines in the order they are run;
 #   - Render 2: a bare name keeps "not found" and its question, with the
 #     same lines.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# G6 -- no data frame and no default: both routes (S368) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.240 (Fix Slate 15; the lean okayed at S367). A call that names no data
+# frame, with no juse() default, stopped in every function that reached the
+# resolver this way with one route, two sentences on one line:
+#   jt(): No data frame specified and no default set. Use juse() to set
+#   a default.
+# It now offers both, as G5's stops do: the call with the data frame named
+# -- after the formula in a formula call, first in any other -- or a default
+# set and the call run again. The data frame named is the one in the
+# workspace holding every variable the formula names; a call with no
+# variable to match counts any one data frame; MyData with none or several.
+# Render 1 is a formula whose variables only g6 holds; Render 2 a call with
+# no variable to match, in the walk's workspace, which holds several data
+# frames; Render 3 the same with an argument, in .ws_g6, a stand-in for a
+# console session whose workspace holds one data frame. The assertion side
+# is filter_check.R section AB.
+.def_g6 <- getOption(".jst_default_data")
+options(.jst_default_data = NULL)
+g6 <- data.frame(Score6 = c(4, 7, 5, 8, 6, 9), Group6 = rep(1:2, 3))
+
+caught(jt(Score6 ~ Group6))
+# Expected:
+#   Caught: jt(): no data frame was named or set as the default.
+#   Name the data frame after the formula:
+#     jt(Score6 ~ Group6, g6)
+#   Or set a default first, then run the call:
+#     juse(g6)
+#     jt(Score6 ~ Group6)
+
+caught(jscreen())
+# Expected:
+#   Caught: jscreen(): no data frame was named or set as the default.
+#   Name the data frame first:
+#     jscreen(MyData)
+#   Or set a default first, then run the call:
+#     juse(MyData)
+#     jscreen()
+
+.ws_g6 <- new.env(parent = baseenv())
+.ws_g6$g6 <- g6; .ws_g6$jcorr <- jcorr
+caught(evalq(jcorr(method = "spearman"), .ws_g6))
+# Expected:
+#   Caught: jcorr(): no data frame was named or set as the default.
+#   Name the data frame first:
+#     jcorr(g6, method = "spearman")
+#   Or set a default first, then run the call:
+#     juse(g6)
+#     jcorr(method = "spearman")
+options(.jst_default_data = .def_g6)
+rm(.def_g6, .ws_g6, g6)
+
+# Things to look at:
+#   - Render 1: the lead on a line of its own, "Name the data frame after
+#     the formula:" and jt(Score6 ~ Group6, g6), then juse(g6) and the call
+#     as typed. Does "after the formula" read naturally beside G5's "Name
+#     the data frame first:"?
+#   - Render 2: MyData in both routes, since the walk's workspace holds
+#     several data frames and jscreen() has no variable to match.
+#   - Render 3: the one data frame named first, method = "spearman" kept in
+#     both lines.
+#   - jdesc(), jfreq(), jcorr(), jalpha() and jsum() given nothing get the
+#     same two routes, and their first line, run, then stops for want of
+#     variables, with that function's own message (filter_check.R AB03 and
+#     AB07).
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # PART H -- HOW A NAME IS READ: RULING R18'S NAMES SLATE (S356) ----

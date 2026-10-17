@@ -10,6 +10,20 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S368 EDIT (v0.9.240, 2026-10-17): N86i RE-PINNED for Fix Slate 15:
+#           jsave() given a vector says "Provide a data frame, for example:"
+#           and gives the call on a line of its own, where the example sat
+#           after "e.g." on the line of the sentence before it; MyData here,
+#           where the workspace holds many data frames. No check added;
+#           EIGHT HUNDRED AND FORTY-FOUR checks. The new checks are
+#           import_check.R section V (the one-frame case V03) and
+#           filter_check.R section AB.
+#           LAST VERIFIED: v0.9.240, 2026-10-17 (S368) -- 844/844 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           2871 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox (the five ways and entered dirty, plain
+#           and under the stand-in; N86i red on the example put back on the
+#           sentence's line, run as a mutant); GitHub d62f372 (package).
 # S367 EDIT (v0.9.239, 2026-10-17): N86g RE-PINNED for Fix Slate 14:
 #           jsave() given a file name alone with no default set offers both
 #           routes -- the data frame named first, or a default set and the
@@ -7866,9 +7880,10 @@ check("N86h ... with a default set, the same call saves the default, as before",
       local({ invisible(.def86("d86", grab(jsave("t86.rds")))); file.exists("t86.rds") }))
 z86 <- 1:3
 m86i <- grab(jsave(z86, "x86.rds"))
-check("N86i jsave() given a vector: 'z86' is not a data frame, with no article and no class",
-      identical(.fl(m86i), .fl(paste0("jsave(): 'z86' is not a data frame. ",
-                                      "Provide a data frame, e.g. jsave(MyData, \"mydata.sav\")"))) &&
+check("N86i jsave() given a vector: 'z86' is not a data frame, with no article and no class, and the example on a line of its own (re-pinned S368, v0.9.240: the example sat after \"e.g.\" on the line of the sentence before it; MyData here, where the workspace holds many data frames; the one-frame case is import_check.R V03)",
+      identical(m86i, paste0("jsave(): 'z86' is not a data frame.\n",
+                             "Provide a data frame, for example:\n",
+                             "  jsave(MyData, \"mydata.sav\")")) &&
         !grepl("integer", m86i))
 writeLines(c("x", "1"), "2024zz86.csv")
 m86j <- grab(jload("2024zz86.csv"))

@@ -126,7 +126,13 @@
 #           empty vector is refused as typed, never as "temp_df"; off, on
 #           or NULL given with a condition is refused with both calls; a
 #           fix line keeps the data frame the call named; and jfreq()
-#           prints its title before the filters run, as jdesc() does.
+#           prints its title before the filters run, as jdesc() does --
+#           PLUS (S368, section AB) A CALL WITH NO DATA FRAME AND NO
+#           DEFAULT: both routes, the data frame named after the formula in
+#           a formula call and first in any other -- the one holding the
+#           formula's variables, or for a call with no variable to match
+#           any one data frame, else MyData -- the call's other arguments
+#           kept, each line running.
 # ORIGIN:   S289 (design S284 / S288; code S289 v0.9.163); sections F and
 #           G, the A rewrite, the Under40 fixture column, and the bare-name
 #           message re-assertions (A01 A02 D01-D03 F06) S290 (v0.9.164);
@@ -142,6 +148,56 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S368 EDIT (v0.9.240, 2026-10-17): Fix Slate 15. NEW SECTION AB, nine
+#           checks (AB01-AB09): a call that names no data frame, with no
+#           juse() default, gave the resolver's "No data frame specified
+#           and no default set. Use juse() to set a default." -- one route,
+#           two sentences on one line -- in every function that reached it;
+#           it now gives both routes, as section X's stops and jsave()'s
+#           since S367 do (the lean okayed at S367): jt(Score ~ Group)
+#           pinned whole (AB01); the other formula functions and jplot()'s
+#           formula path (AB02); a call with no variable to match naming the
+#           one data frame, or MyData among two (AB03); MyData when none or
+#           two hold the formula's variables, a hidden frame and a vector
+#           not counted, the dot of y ~ . not a variable, a data-first
+#           call's unnamed variables matched (AB04); the call's other
+#           arguments kept -- after the formula, formula = (data = after
+#           it), an empty first argument, a named option, jcopy()'s name =
+#           (AB05); both routes run (AB06); the old sentence gone from the
+#           twelve calls, each lead on a line of its own (AB07); a default
+#           set, as before (AB08); the helper's fallback with no jstats call
+#           on the stack (AB09). The workspace the stop reads is a stand-in
+#           environment whose parent is the base environment (.ab_ws()).
+#           FIVE HUNDRED AND SIXTY-ONE checks.
+#           MUTATION MAP: thirteen one-change mutants of the 0.9.240 master,
+#           run detached on this battery, every one red: the old stop
+#           AB01-AB05 AB07; the formula not found AB01-AB06; data = not
+#           named AB05; formula = not seen AB05; an empty first argument not
+#           filled AB04 AB05, not recognized AB04 AB05; the formula's
+#           variables ignored AB01-AB04; the dot kept AB04; the unnamed
+#           variables ignored AB04; the fallback's wording AB09; the second
+#           route the first AB01-AB03 AB05; the heading "first" in a formula
+#           call AB01 AB02; the frame never named AB01-AB06.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): run_all.R
+#           2871 across ten, plain and under the RStudio-handler stand-in,
+#           each again with a 36-character temp path, once with
+#           interactive() TRUE: all green. Section AB red on v0.9.239
+#           (AB01-AB07, AB09; AB08 holds what did not change). Entered
+#           dirty (joutput("full") with diagnostics, width 100, a stata
+#           convention, the color option, a juse() default, and objects
+#           named Score, Group, Age, d, e, s, x, d1, ab1): H26 and H29 red,
+#           on v0.9.239 as on v0.9.240, and green with no workspace Score --
+#           a workspace object named like h's variable. H26's decoy
+#           jplot.default is then reached by R's own dispatch, since jplot(
+#           Score) evaluates to the workspace vector (the check's premise);
+#           H29's .wrap(data = h, Score) stops with rlang's "`expr` must be
+#           a symbol, scalar, or call." (a package defect on the forwarded
+#           variable-list path). Reported S368; not this slate's surface.
+#           Section AB itself reads only its stand-in workspaces.
+#           LAST VERIFIED: v0.9.240, 2026-10-17 (S368) -- 561/561 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           2871 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox; GitHub d62f372 (package).
 # S359 EDIT (v0.9.232, 2026-10-16): Fix Slate 10 and Scripts Slate B. NEW
 #           SECTION AA, ten checks (AA01-AA10): (1) the vector path's
 #           refusal of a condition naming another variable of the column's
@@ -4962,6 +5018,142 @@ check("AA10 .jst_apply_pipeline() as a unit: given vars, only those columns and 
                 !(-99 %in% unclass(p3$f)) && !(-98 %in% unclass(p3$k)) &&
                 !(-99 %in% unclass(p4$f)) && !(-98 %in% unclass(p4$k)) }))
 rm(.aa_ws, .aa_m)
+reset()
+
+# =============================================================================
+# AB -- NO DATA FRAME AND NO DEFAULT: BOTH ROUTES (S368, v0.9.240; Fix
+#       Slate 15)
+# =============================================================================
+# A call that names no data frame, with no juse() default -- jt(Score ~
+# Group), jscreen() -- reached the resolver's first stop, "No data frame
+# specified and no default set. Use juse() to set a default.": one route, two
+# sentences on one line. It now offers both routes, as the stop for a name not
+# found (section X) and jsave()'s since S367 do: the call with the data frame
+# named -- after the formula in a formula call, first in any other -- or a
+# default set and the call run again. The data frame named is the one in the
+# workspace holding every variable the formula names; a call with no variable
+# to match counts any one data frame; MyData with none or several. The
+# workspace the stop reads is a stand-in environment whose parent is the base
+# environment (.ab_ws()), so the data frames it holds are the only ones it can
+# see, whatever the global environment holds. Run with no default set; the
+# default is put back after.
+reset()
+.ab_def <- getOption(".jst_default_data")
+options(.jst_default_data = NULL)
+.ab_fns <- c("jt", "jaov", "jlm", "jlogistic", "jcrosstab", "jplot", "jscreen",
+             "jcorr", "jdesc", "jfreq", "jalpha", "jcopy", "jsum", "juse")
+.ab_ws <- function(...) {
+  e <- new.env(parent = baseenv())
+  fr <- list(...)
+  for (nm in names(fr)) assign(nm, fr[[nm]], envir = e)
+  for (f in .ab_fns) assign(f, get(f, envir = globalenv()), envir = e)
+  e
+}
+.ab1 <- data.frame(Score = c(1, 4, 2, 5, 3, 6, 2, 7), Group = rep(1:2, 4),
+                   Age = 21:28)
+.ab_in <- function(e, expr) grab(eval(expr, e))
+.ab_lines <- function(m) sub("^  ", "", grep("^  ", strsplit(m, "\n", fixed = TRUE)[[1]], value = TRUE))
+.ab_routes <- function(fn, first_line, fr, typed) paste0(
+  fn, "(): no data frame was named or set as the default.\n",
+  first_line, "\n",
+  "  ", fn, "(", fr, ")\n",
+  "Or set a default first, then run the call:\n",
+  "  juse(", sub("^([^,)]*).*$", "\\1", fr), ")\n",
+  "  ", typed)
+
+check("AB01 jt(Score ~ Group), no data frame and no default: both routes, the data frame named after the formula, each sentence and each call on a line of its own (it said \"No data frame specified and no default set. Use juse() to set a default.\"; pinned whole)",
+      local({ e <- .ab_ws(ab1 = .ab1, ab2 = data.frame(x = 1))
+        identical(.ab_in(e, quote(jt(Score ~ Group))), paste0(
+          "jt(): no data frame was named or set as the default.\n",
+          "Name the data frame after the formula:\n",
+          "  jt(Score ~ Group, ab1)\n",
+          "Or set a default first, then run the call:\n",
+          "  juse(ab1)\n",
+          "  jt(Score ~ Group)")) }))
+check("AB02 ... jaov(), jlm(), jlogistic(), jcrosstab() and jplot()'s formula path the same, the call as typed in the default route",
+      local({ e <- .ab_ws(ab1 = .ab1, ab2 = data.frame(x = 1))
+        cases <- list(list(quote(jaov(Score ~ Group)), "jaov(Score ~ Group, ab1)"),
+                      list(quote(jlm(Score ~ Age)), "jlm(Score ~ Age, ab1)"),
+                      list(quote(jlogistic(Group ~ Age)), "jlogistic(Group ~ Age, ab1)"),
+                      list(quote(jcrosstab(Group ~ Score)), "jcrosstab(Group ~ Score, ab1)"),
+                      list(quote(jplot(Score ~ Age)), "jplot(Score ~ Age, ab1)"))
+        all(vapply(cases, function(k) {
+          m <- .ab_in(e, k[[1]])
+          identical(.ab_lines(m), c(k[[2]], "juse(ab1)", deparse(k[[1]]))) &&
+            has(m, "\nName the data frame after the formula:\n")
+        }, logical(1))) }))
+check("AB03 a call with no variable to match -- jscreen(), jcorr(), jdesc(), jfreq(), jalpha() -- in a workspace holding one data frame: that frame named first; with two, MyData, while a formula still names the one that holds its variables",
+      local({ e1 <- .ab_ws(ab1 = .ab1)
+        e2 <- .ab_ws(ab1 = .ab1, ab2 = data.frame(x = 1))
+        one <- vapply(c("jscreen", "jcorr", "jdesc", "jfreq", "jalpha"), function(fn) {
+          identical(.ab_in(e1, call(fn)),
+                    .ab_routes(fn, "Name the data frame first:", "ab1", paste0(fn, "()"))) &&
+            identical(.ab_in(e2, call(fn)),
+                      .ab_routes(fn, "Name the data frame first:", "MyData", paste0(fn, "()")))
+        }, logical(1))
+        all(one) && identical(.ab_lines(.ab_in(e2, quote(jt(Score ~ Group))))[1],
+                              "jt(Score ~ Group, ab1)") }))
+check("AB04 MyData when no data frame, or two, hold the formula's variables; a hidden data frame and an object that is not a data frame are not counted; the dot of y ~ . is not a variable to match; outside a formula, the call's unnamed variables are matched",
+      local({ first <- function(e) .ab_lines(.ab_in(e, quote(jt(Score ~ Group))))[1]
+        identical(.ab_lines(.ab_in(.ab_ws(ab1 = .ab1, ab5 = data.frame(Age = 1)),
+                                   quote(jdesc(, Score))))[1], "jdesc(ab1, Score)") &&
+        identical(.ab_lines(.ab_in(.ab_ws(ab1 = .ab1, ab2 = data.frame(x = 1)),
+                                   quote(jlm(Score ~ .))))[1], "jlm(Score ~ ., ab1)") &&
+        identical(first(.ab_ws()), "jt(Score ~ Group, MyData)") &&
+          identical(first(.ab_ws(ab1 = .ab1, ab3 = .ab1)), "jt(Score ~ Group, MyData)") &&
+          identical(first(.ab_ws(ab4 = data.frame(Score = 1))), "jt(Score ~ Group, MyData)") &&
+          identical(first(.ab_ws(.h = .ab1, x = 1:3, ab1 = .ab1)), "jt(Score ~ Group, ab1)") &&
+          identical(.ab_lines(.ab_in(.ab_ws(.h = .ab1, x = 1:3), quote(jscreen())))[1],
+                    "jscreen(MyData)") }))
+check("AB05 the call's other arguments are kept: an argument after the formula, a formula given as formula = (data = after it), an empty first argument (filled, and kept in the default route), a named option, jcopy()'s name =",
+      local({ e <- .ab_ws(ab1 = .ab1)
+        identical(.ab_lines(.ab_in(e, quote(jt(Score ~ Group, paired = FALSE)))),
+                  c("jt(Score ~ Group, ab1, paired = FALSE)", "juse(ab1)",
+                    "jt(Score ~ Group, paired = FALSE)")) &&
+          identical(.ab_lines(.ab_in(e, quote(jt(formula = Score ~ Group))))[1],
+                    "jt(formula = Score ~ Group, data = ab1)") &&
+          identical(.ab_lines(.ab_in(e, quote(jdesc(, Age)))),
+                    c("jdesc(ab1, Age)", "juse(ab1)", "jdesc(, Age)")) &&
+          identical(.ab_lines(.ab_in(e, quote(jcorr(method = "spearman"))))[1],
+                    "jcorr(ab1, method = \"spearman\")") &&
+          identical(.ab_lines(.ab_in(e, quote(jcopy(name = ab9)))),
+                    c("jcopy(ab1, name = ab9)", "juse(ab1)", "jcopy(name = ab9)")) }))
+check("AB06 both routes run as printed: the first line of jt(), jlm() and jscreen() runs as it stands; after juse(), the call as typed runs on the default; the default is put back",
+      local({ e <- .ab_ws(ab1 = .ab1)
+        ok <- vapply(list(quote(jt(Score ~ Group)), quote(jlm(Score ~ Age)), quote(jscreen())),
+                     function(cl) {
+          ln <- .ab_lines(.ab_in(e, cl))
+          if (length(ln) != 3L) return(FALSE)
+          r1 <- !errs(eval(parse(text = ln[1])[[1]], e))
+          r2 <- tryCatch({ quiet(eval(parse(text = ln[2])[[1]], e))
+                           !errs(eval(parse(text = ln[3])[[1]], e)) },
+                         finally = options(.jst_default_data = NULL))
+          r1 && r2 }, logical(1))
+        all(ok) && is.null(getOption(".jst_default_data")) }))
+check("AB07 the one-route sentence is gone from every function that reached it -- the five formula functions, jplot(), jscreen(), jcorr(), jalpha(), jdesc(), jfreq(), jsum() -- each giving the lead on a line of its own, then the two routes",
+      local({ e <- .ab_ws(ab1 = .ab1)
+        calls <- list(quote(jt(Score ~ Group)), quote(jaov(Score ~ Group)), quote(jlm(Score ~ Age)),
+                      quote(jlogistic(Group ~ Age)), quote(jcrosstab(Group ~ Score)),
+                      quote(jplot(Score ~ Age)), quote(jscreen()), quote(jcorr()), quote(jalpha()),
+                      quote(jdesc()), quote(jfreq()), quote(jsum()))
+        all(vapply(calls, function(cl) {
+          m <- .ab_in(e, cl)
+          ln <- strsplit(m, "\n", fixed = TRUE)[[1]]
+          !has(m, "Use juse() to set a default.") && !has(m, "No data frame specified") &&
+            identical(ln[1], paste0(as.character(cl[[1]]), "(): no data frame was named or set as the default.")) &&
+            length(ln) == 6L && identical(ln[4], "Or set a default first, then run the call:")
+        }, logical(1))) }))
+check("AB08 control: with a default set, the same calls run on the default, as before",
+      local({ e <- .ab_ws(ab1 = .ab1)
+        tryCatch({ options(.jst_default_data = "ab1")
+                   !errs(eval(quote(jt(Score ~ Group)), e)) && !errs(eval(quote(jscreen()), e)) },
+                 finally = options(.jst_default_data = NULL)) }))
+check("AB09 .jst_no_frame_stop() as a unit: with no jstats call on the stack, the sentence and a one-line way out, no call to rebuild",
+      identical(tryCatch(jstats:::.jst_no_frame_stop(emptyenv()), error = function(e) conditionMessage(e)),
+                paste0("no data frame was named or set as the default.\n",
+                       "Name the data frame in the call, or set a default first with juse().")))
+options(.jst_default_data = .ab_def)
+rm(.ab_def, .ab_fns, .ab_ws, .ab1, .ab_in, .ab_lines, .ab_routes)
 reset()
 
 # =============================================================================
