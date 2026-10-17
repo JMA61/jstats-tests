@@ -10,6 +10,18 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S366 EDIT (v0.9.238, 2026-10-17): N86j RE-PINNED for Fix Slate 13: the
+#           stop for a file name starting with a digit offers the name the
+#           import cleaner gives, X2024zz86, where it had stripped the
+#           digits to zz86; the check now pins the offered line, then runs
+#           it. No check added; EIGHT HUNDRED AND FORTY-FOUR checks. The
+#           new checks are import_check.R section T.
+#           LAST VERIFIED: v0.9.238, 2026-10-17 (S366) -- 844/844 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           2841 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox (the five ways and entered dirty, plain
+#           and under the stand-in; N86j red on v0.9.237); GitHub 9ab5efa
+#           (package).
 # S362 EDIT (v0.9.235, 2026-10-16): N86w RE-PINNED for ruling R9: the CSV
 #           file whose quoted header is "a,b" now loads with the variable
 #           named a_b, its header the label, where read.csv() had made it
@@ -7844,12 +7856,13 @@ check("N86i jsave() given a vector: 'z86' is not a data frame, with no article a
         !grepl("integer", m86i))
 writeLines(c("x", "1"), "2024zz86.csv")
 m86j <- grab(jload("2024zz86.csv"))
-check("N86j a file name starting with a digit: the rule stated of a data frame's name, and the offered call runs",
+check("N86j a file name starting with a digit: the rule stated of a data frame's name, and the offered call runs (re-pinned S366, v0.9.238: it offers the cleaner's name, X2024zz86, where it had stripped the digits to zz86)",
       grepl("R does not allow a data frame's name to start with a digit.",
             .fl(m86j), fixed = TRUE) &&
         !grepl("variable", m86j) &&
+        identical(.last86(m86j), "jload(\"2024zz86.csv\", name = \"X2024zz86\")") &&
         local({ invisible(grab(eval(parse(text = .last86(m86j)))))
-                exists("zz86", inherits = FALSE) }))
+                exists("X2024zz86", inherits = FALSE) }))
 check("N86k ... a name given with name = is the name the message names, not the file",
       startsWith(.fl(grab(jload("zz86.csv", name = "2b"))),
                  "jload(): The name '2b' starts with a number. R does not allow a data frame's"))

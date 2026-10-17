@@ -24,6 +24,22 @@
 #           that may not be data, and the lines jload() offers keeping the
 #           call (Sections 27-29).
 # ORIGIN:   S229
+# EDITED:   S366 (v0.9.238; Fix Slate 13). SECTIONS 13 AND 29 RE-PINNED
+#           from captures of every section on 0.9.237 and 0.9.238
+#           (repin.py): 13, the leading-digit stop's offered name, the
+#           cleaner's (X2024zz13, X2b) where the digits had been stripped
+#           (zz13, b) -- the lean okayed at the S365 closeout; 29, the
+#           multi-sheet note one sentence a line (Rule E, Claude's call).
+#           Both on the PENDING line. No other section moved (Section 10's
+#           orientation stamp names the build's version, pinned nowhere).
+#           The overwrite question's new place, after the checks that can
+#           stop a load, changes no layout here -- a stop where a session
+#           that asks had asked first; it is import_check.R section T's,
+#           on a copy of jload() run as at the console. The assertion side
+#           is section T and missing_convention_check.R N86j (re-pinned).
+#           harness.R verify: 29 of 29 sections in three orders and by
+#           prepare = TRUE; 100 of 101 Expected blocks found (Section 9's,
+#           as before).
 # EDITED:   S365 (v0.9.237; Fix Slate 12, the import audit's items 14 and
 #           17, with ruling R21). NEW SECTIONS 27-29, filled by running
 #           (fill.R): 27, jload(header =) -- the note on names that are all
@@ -290,6 +306,15 @@
 #           updated in Sections 6 and 7 (the same line, a temporary path).
 #           harness.R derive: no section needs another it does not name.
 #           The assertion side is missing_convention_check.R N94.
+# LAST VERIFIED: v0.9.238, 2026-10-17 (S366) -- Sections 13 and 29
+#           WALKED on the WORKSTATION by Jeff through receive_all()
+#           ("walked, all okay"); PENDING back to none; GitHub 9ab5efa
+#           (package). Sandbox: harness.R verify, 29 of 29 sections in three
+#           orders and by prepare = TRUE; 100 of 101 Expected blocks
+#           (Section 9's, as before). Every section captured on v0.9.237
+#           and v0.9.238: Sections 13 and 29 moved as re-pinned, Section 10
+#           by its version stamp alone (pinned nowhere), the rest identical
+#           apart from temp paths.
 # LAST VERIFIED: v0.9.237, 2026-10-17 (S365) -- Sections 27, 28 and 29
 #           WALKED on the WORKSTATION by Jeff through receive_all()
 #           ("walked, all okay"); PENDING back to none; GitHub 9ac3314
@@ -1328,11 +1353,11 @@ try(jload("zz13.csv", name = "2b"))
 #   Error : jload(): The filename '2024zz13.csv' starts with a number.
 #   R does not allow a data frame's name to start with a digit.
 #   Provide a name, e.g.:
-#     jload("2024zz13.csv", name = "zz13")
+#     jload("2024zz13.csv", name = "X2024zz13")
 #   Error : jload(): The name '2b' starts with a number.
 #   R does not allow a data frame's name to start with a digit.
 #   Provide a name, e.g.:
-#     jload("zz13.csv", name = "b")
+#     jload("zz13.csv", name = "X2b")
 
 cat("\n--- an .RData file ---\n")
 try(jload("x13.RData"))
@@ -1356,6 +1381,10 @@ rm(.wd13, .def13, d13, p13, z13)
 #     always did (N86h); this message is for no default only.
 #   - "jload(""): Provide a filename" -- an empty string TYPED as such --
 #     is unchanged (N86f); only an expression that came out empty is named.
+#   - THE NAME A DIGIT IS OFFERED (S366, v0.9.238; Fix Slate 13): the one
+#     the cleaner gives, an X before the digit -- X2024zz13, X2b -- where
+#     the digits had been stripped (zz13, b), which offered name = "" for
+#     a file named only with digits (import_check.R T01-T02).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -2953,7 +2982,8 @@ jload("in29/two29.xlsx", name = "w29", overwrite = TRUE)
 jload("in29/two29.xlsx", name = "w29", overwrite = TRUE, sheet = "B")
 # Expected:
 #   This file has 2 sheets: A, B
-#   Reading the first sheet ("A"). To read a different sheet, use:
+#   Reading the first sheet ("A").
+#   To read a different sheet, use:
 #     jload("in29/two29.xlsx", name = "w29", overwrite = TRUE, sheet = "B")
 #   Loaded w29 (Excel format; 2 cases, 1 variable)
 #   Loaded w29 (Excel format; 2 cases, 1 variable)
@@ -2974,6 +3004,9 @@ rm(.wd29, w29)
 
 # Things to look at:
 #   - RENDER 1: the line names the folder, and carries overwrite = TRUE.
+#   - RENDER 1 (S366, v0.9.238; Fix Slate 13): one sentence a line --
+#     "Reading the first sheet ("A")." and "To read a different sheet,
+#     use:" had shared a line (Rule E).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

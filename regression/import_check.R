@@ -28,8 +28,15 @@
 #           line jload() offers keeping the call (the multi-sheet note's
 #           folder, skip =, header = FALSE); and the overwrite note of a
 #           session that cannot ask, printed at the replacement.
+#           Since v0.9.238 (section T; Fix Slate 13): the leading-digit stop
+#           offers the name the cleaner gives (X2024), and the line runs; in
+#           a session that asks, the overwrite question comes after every
+#           check that can stop a load, and still before the read and the
+#           multi-sheet note, the Loading line after the answer; the
+#           multi-sheet note one sentence a line, and none with sheet =.
 # ORIGIN:   S362 (v0.9.235). The tenth battery. Section R added S362, the
 #           second build (v0.9.236). Section S added S365 (v0.9.237).
+#           Section T added S366 (v0.9.238).
 # FIXTURES: written by this file into a folder of R's temporary folder,
 #           except one that R cannot write: datasets/import_guess_text.xlsx
 #           (section G). writexl gives every cell of a column one type, and
@@ -137,6 +144,23 @@
 #           out -- a jstats dataset has no extension, so the extension test
 #           stops it on its own (an equivalent mutant; the clause chooses
 #           the sentence).
+#           Section T (v0.9.238, S366; 16 one-change mutants of the new
+#           code, run detached, this battery on each and
+#           missing_convention_check.R on the four that reach it, every one
+#           red): the offered name with its digits stripped S28 T01 T02
+#           (and N86j), by make.names() T01; the question before every check
+#           T03 T04, between the CSV and the Excel checks T04, never asked
+#           T05 T06, asked in every session S29; the Loading line always
+#           first T06, never after the answer T06, only after the question's
+#           place T06; the multi-sheet note before the question T05, its two
+#           sentences on one line T07, for one sheet F02 F03, though sheet =
+#           was given T07 (the round's one survivor, then: T07 gained the
+#           case and the mutant was run again); the replaced note where the
+#           question was answered T05, never S29; overwrite = TRUE ignored
+#           (missing_convention_check.R N86bb N86bd N94ac N94ai). A first
+#           M03 put the question above loading_line()'s definition and
+#           stopped there -- red for the wrong reason; rewritten to the old
+#           place proper, it reds T03 T04 alone.
 # FIRST WORKSTATION RUN (S362, the first delivery): 81/83. F03 -- the
 #           title note's line, run as offered, met jload()'s overwrite
 #           question: the workstation runs the batteries in an interactive
@@ -148,20 +172,29 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
-# LAST VERIFIED: v0.9.237, 2026-10-17 (S365) -- 124/124 on the WORKSTATION
-#           through receive_all() ("ALL BATTERIES GREEN (10 run, 2834
+# LAST VERIFIED: v0.9.238, 2026-10-17 (S366) -- 131/131 on the WORKSTATION
+#           through receive_all() ("ALL BATTERIES GREEN (10 run, 2841
 #           checks)"; R CMD check 0 errors, 0 warnings, 0 notes); GitHub
-#           9ac3314 (package). S29 passes there as asked (interactive()
-#           TRUE); the sandbox's runs are the ones that check it.
-# SANDBOX:  v0.9.237, 2026-10-17 (S365) -- 124/124, run_all.R 2834
+#           9ab5efa (package). S29 passes there as asked (interactive()
+#           TRUE); section T asks its question of a copy of jload(), so it
+#           runs there as in the sandbox.
+# SANDBOX:  v0.9.238, 2026-10-17 (S366) -- 131/131, run_all.R 2841
 #           across ten, plain and under the RStudio-handler stand-in, each
 #           again with a 35-character temp path, once with interactive()
 #           TRUE, and entered dirty (joutput("full") with diagnostics, width
 #           110, a juse() default, a stata convention, jstats.color = TRUE,
 #           workspace objects named like its working objects), plain and
-#           under the stand-in: green, nothing changed. S29 is checked only
-#           where interactive() is FALSE (the workstation asks its question
-#           there); on the workstation it passes as asked.
+#           under the stand-in: green, nothing changed. Section T red on
+#           v0.9.237 where it should be (S28 T01-T04 T07; T05 and T06 hold
+#           what did not change). S29 is checked only where interactive()
+#           is FALSE (the workstation asks its question there); section T
+#           asks its question of a copy of jload(), the same everywhere.
+#           Before it: v0.9.237 (S365), 124/124 the same five ways.
+# EARLIER:  v0.9.237, 2026-10-17 (S365) -- 124/124 on the WORKSTATION
+#           through receive_all() ("ALL BATTERIES GREEN (10 run, 2834
+#           checks)"; R CMD check 0 errors, 0 warnings, 0 notes); GitHub
+#           9ac3314 (package). S29 passes there as asked (interactive()
+#           TRUE); the sandbox's runs are the ones that check it.
 # EARLIER:  v0.9.236, 2026-10-17 (S362) -- 90/90 on the WORKSTATION
 #           through receive_all() ("ALL BATTERIES GREEN (10 run, 2800
 #           checks)"; R CMD check 0 errors, 0 warnings, 0 notes); GitHub
@@ -1190,13 +1223,13 @@ check("S27 the note on a file of several sheets: its line keeps the folder as ty
               .fl(m), fixed = TRUE) &&
           length(cl) == 1L && { invisible(grab(eval(cl[[1]], e)))
             identical(e$k$V1, c("y", "3", "4")) } }))
-check("S28 ... the sheet stop's line and the leading-digit stop's line keep skip = and header = FALSE",
+check("S28 ... the sheet stop's line and the leading-digit stop's line keep skip = and header = FALSE (re-pinned S366: the name offered is the cleaner's, X2024s, section T)",
       local({ m1 <- .fl(grab(jload(.ix("clean.xlsx"), name = "k", sheet = "Nope", skip = 1,
                                    header = FALSE)))
         file.copy(.ix("nohead.csv"), .ix("2024s.csv"))
         m2 <- .fl(grab(jload(.ix("2024s.csv"), header = FALSE)))
         grepl("jload(\"<DIR>/clean.xlsx\", name = \"k\", sheet = \"Sheet1\", skip = 1, header = FALSE)", m1, fixed = TRUE) &&
-          grepl("jload(\"<DIR>/2024s.csv\", name = \"s\", header = FALSE)", m2, fixed = TRUE) }))
+          grepl("jload(\"<DIR>/2024s.csv\", name = \"X2024s\", header = FALSE)", m2, fixed = TRUE) }))
 check("S29 a session that cannot ask says a name was replaced when the load replaces it, so a call that stops says nothing of it (it had said \"has been replaced\" and then stopped); run where interactive() is FALSE, since the workstation asks its question there",
       interactive() || local({
         k <- "here before"
@@ -1205,6 +1238,105 @@ check("S29 a session that cannot ask says a name was replaced when the load repl
         m2 <- grab(jload(.ix("plain.csv"), name = "k"))
         ok1 && grepl("'k' already existed and has been replaced.\n\nLoaded k", m2, fixed = TRUE) &&
           is.data.frame(k) }))
+
+# --- T: the leading-digit name, the overwrite question, the sheets note ------
+
+# v0.9.238 (S366; Fix Slate 13). The leading-digit stop offered the name with
+# its digits stripped: 2024.csv got name = "", which loaded the data frame as
+# V1, and 2024 wave.csv name = " wave". In a session that asks, the overwrite
+# question came before the checks that can stop a load, so its answer was
+# taken for a load that then stopped. The multi-sheet note put two sentences
+# on one line (Rule E). The question is checked on a copy of jload() run as
+# at the console -- interactive() TRUE, the question answered as given and
+# marked "<asked>" where it is asked (missing_convention_check.R's .jai92
+# pattern) -- so it is checked the same way in Rscript and on the workstation.
+.askT <- function(answer) {
+  f <- jload
+  e <- new.env(parent = environment(f))
+  e$interactive <- function() TRUE
+  e$.jst_confirm <- function(prompt, remedy, subject = "overwrite") {
+    message("<asked> ", prompt, answer)
+    identical(answer, "y")
+  }
+  environment(f) <- e
+  f
+}
+.ix_w("2024.csv", c("x", "1", "2"))
+.ix_w("2024 wave.csv", c("x", "1"))
+.ix_w("2024.backup.csv", c("x", "1"))
+writexl::write_xlsx(list(A = data.frame(x = 1:2), B = data.frame(y = 3:4)),
+                    .ix("twoT.xlsx"))
+
+check("T01 a file name starting with a digit is offered the name the cleaner gives: 2024.csv name = \"X2024\" (it had been name = \"\", which loaded the data frame as V1), 2024 wave.csv X2024_wave (\" wave\"), 2024.backup.csv X2024_backup (.backup, a hidden name), and name = \"2b\" X2b (b)",
+      local({ m1 <- .fl(grab(jload(.ix("2024.csv"))))
+        m2 <- .fl(grab(jload(.ix("2024 wave.csv"))))
+        m3 <- .fl(grab(jload(.ix("2024.backup.csv"))))
+        m4 <- .fl(grab(jload(.ix("2024.csv"), name = "2b")))
+        grepl("starts with a number. R does not allow a data frame's name to start with a digit. Provide a name, e.g.: jload(\"<DIR>/2024.csv\", name = \"X2024\")", m1, fixed = TRUE) &&
+          grepl("jload(\"<DIR>/2024 wave.csv\", name = \"X2024_wave\")", m2, fixed = TRUE) &&
+          grepl("jload(\"<DIR>/2024.backup.csv\", name = \"X2024_backup\")", m3, fixed = TRUE) &&
+          grepl("The name '2b' starts with a number.", m4, fixed = TRUE) &&
+          grepl("jload(\"<DIR>/2024.csv\", name = \"X2b\")", m4, fixed = TRUE) &&
+          identical(jstats:::.jst_clean_object_name("2024.backup"), "X2024_backup") }))
+check("T02 ... each offered line runs, and loads the data frame under the name it offers",
+      local({ ok <- TRUE
+        for (f in c("2024.csv", "2024 wave.csv", "2024.backup.csv")) {
+          cl <- .calls(grab(jload(.ix(f)))); e <- new.env()
+          ok <- ok && length(cl) == 1L && { invisible(grab(eval(cl[[1]], e))); TRUE } &&
+            identical(ls(e, all.names = TRUE), cl[[1]]$name) &&
+            is.data.frame(get(cl[[1]]$name, envir = e))
+        }
+        ok }))
+check("T03 in a session that asks, a CSV file whose shape stops the load -- a long line, an empty file -- stops it BEFORE the overwrite question, and the data frame of that name is left alone (the question had been asked first, its answer taken for a load that then stopped)",
+      local({ .ix_w("longT.csv", c("id,age", "1,23", "2,35,9"))
+        file.create(.ix("emptyT.csv"))
+        k <- "here before"
+        m1 <- grab(.askT("y")(.ix("longT.csv"), name = "k"))
+        m2 <- grab(.askT("y")(.ix("emptyT.csv"), name = "k"))
+        grepl("line 3 of longT.csv holds 3 values", m1, fixed = TRUE) &&
+          grepl("emptyT.csv is empty: it holds no lines.", m2, fixed = TRUE) &&
+          !grepl("<asked>", m1, fixed = TRUE) && !grepl("<asked>", m2, fixed = TRUE) &&
+          identical(k, "here before") }))
+check("T04 ... and an Excel file's: sheet = naming no sheet, a file that is not a workbook",
+      local({ .ix_w("brokenT.xlsx", "not a workbook")
+        k <- "here before"
+        m1 <- grab(.askT("y")(.ix("twoT.xlsx"), name = "k", sheet = "Nope"))
+        m2 <- grab(.askT("y")(.ix("brokenT.xlsx"), name = "k"))
+        grepl("twoT.xlsx has no sheet named \"Nope\".", m1, fixed = TRUE) &&
+          grepl("brokenT.xlsx could not be read.", m2, fixed = TRUE) &&
+          !grepl("<asked>", m1, fixed = TRUE) && !grepl("<asked>", m2, fixed = TRUE) &&
+          identical(k, "here before") }))
+check("T05 ... the question is still asked before the read and before the multi-sheet note: answered n, the load is cancelled with no note and nothing read; answered y, the question, the note, then the Loaded line, and not the note of a session that cannot ask",
+      local({ k <- "here before"
+        m1 <- grab(.askT("n")(.ix("twoT.xlsx"), name = "k"))
+        ok1 <- grepl("<asked> 'k' already exists in your environment. Overwrite? (y/n): n", m1, fixed = TRUE) &&
+          grepl("Load cancelled.", m1, fixed = TRUE) && !grepl("sheets", m1, fixed = TRUE) &&
+          identical(k, "here before")
+        m2 <- grab(.askT("y")(.ix("twoT.xlsx"), name = "k"))
+        at <- function(s) regexpr(s, m2, fixed = TRUE)
+        ok1 && at("<asked>") > 0L && at("<asked>") < at("This file has 2 sheets") &&
+          at("This file has 2 sheets") < at("Loaded k") && is.data.frame(k) &&
+          !grepl("replaced", m2, fixed = TRUE) }))
+check("T06 the Loading line of a file of 1 MB or more: with no question it comes first, as before, so the checks run under it (a stop below it); where the question is asked it follows the answer, and a no prints none",
+      local({ big <- data.frame(a = seq_len(60000), b = "abcdefghijklmnop", c = 1.5)
+        utils::write.csv(big, .ix("bigT.csv"), row.names = FALSE)
+        utils::write.csv(big, .ix("bigbadT.csv"), row.names = FALSE)
+        cat("1,x,2,3\n", file = .ix("bigbadT.csv"), append = TRUE)
+        m1 <- grab(jload(.ix("bigT.csv"), name = "bg"))
+        m2 <- grab(jload(.ix("bigbadT.csv"), name = "bgb"))
+        m3 <- grab(.askT("y")(.ix("bigT.csv"), name = "bg"))
+        m4 <- grab(.askT("n")(.ix("bigT.csv"), name = "bg"))
+        at <- function(s) regexpr(s, m3, fixed = TRUE)
+        isTRUE(file.size(.ix("bigT.csv")) >= 1024^2) &&
+          startsWith(m1, "Loading bg ...") &&
+          startsWith(m2, "Loading bgb ...") && grepl("holds 4 values", m2, fixed = TRUE) &&
+          at("<asked>") > 0L && at("<asked>") < at("Loading bg ...") &&
+          !grepl("Loading", m4, fixed = TRUE) && grepl("Load cancelled.", m4, fixed = TRUE) }))
+check("T07 the multi-sheet note puts one sentence on a line (Rule E): \"Reading the first sheet (\\\"A\\\").\" and \"To read a different sheet, use:\" (they had shared a line); with sheet = naming one of the sheets there is no note",
+      local({ m <- grab(jload(.ix("twoT.xlsx"), name = "k", overwrite = TRUE))
+        m2 <- grab(jload(.ix("twoT.xlsx"), name = "k", sheet = "B", overwrite = TRUE))
+        grepl("This file has 2 sheets: A, B\nReading the first sheet (\"A\").\nTo read a different sheet, use:\n  jload(\"", m, fixed = TRUE) &&
+          !grepl("sheets", m2, fixed = TRUE) && identical(k$y, c(3, 4)) }))
 
 # --- The message surface, swept (guard 4) ------------------------------------
 
