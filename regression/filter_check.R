@@ -141,7 +141,11 @@
 #           no-variables stops of jcorr(), jalpha(), jsum() and javg() --
 #           PLUS (S370, section AF) ruling R22's one stop in the recode
 #           family and jconvert(), their stops for a data frame given alone,
-#           and the registration verbs' and jsubset()'s stops laid out.
+#           and the registration verbs' and jsubset()'s stops laid out --
+#           PLUS (S371, section AG) ruling R23 (a line that would stop again
+#           for a missing input gets ruling R22's stop), the offered lines
+#           of the front doors that stopped when run (the S371 audit), and
+#           the recode family's map and labels stops laid out.
 # ORIGIN:   S289 (design S284 / S288; code S289 v0.9.163); sections F and
 #           G, the A rewrite, the Under40 fixture column, and the bare-name
 #           message re-assertions (A01 A02 D01-D03 F06) S290 (v0.9.164);
@@ -157,6 +161,78 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S371 EDIT (v0.9.244, 2026-10-18): Fix Slate 19 and ruling R23, from the
+#           S371 remedy-line audit (regression/remedy_audit.R). NEW SECTION
+#           AG, seventeen checks (AG01-AG17): under a juse() default the
+#           data left out -- jsum(, A, B), javg(), jrecode(orig.var =),
+#           jrecode(, A), jencode(var =), jencode(, X) -- runs, where each
+#           stopped on R's "argument "data_sub" is missing" (AG01); the
+#           default's route names the arguments after the variable in
+#           jrecode(), jencode() and jrelabel() (AG02), and both routes run
+#           as printed (AG03); under a default the named-arguments stop
+#           checks the first name first (AG04) and gives the call with its
+#           one unnamed argument named, on a line of its own (AG05); ruling
+#           R23 -- the not-found stop (AG06) and the no-data-frame stop
+#           (AG07) give ruling R22's form when their line would stop for a
+#           map, codes, a convention, a target, a label or a second
+#           variable, with controls (a session convention, a variable
+#           already declaring, and a name no data frame holds, AG08); a
+#           quoted name with no variable (AG09), a value naming no variable
+#           (AG10) and a single value (AG11) given as the data, and
+#           jcomplete() given an expression alone (AG12); a condition typed
+#           with one = and no data frame or default names one (AG13); the
+#           filter stops' generic examples set on community (AG14); the
+#           recode family's quoted-string stops, the example on a line of
+#           its own, and jrecode() with no map (AG15); every example R23's
+#           stops give runs under no convention and spss, stata and sas
+#           (AG16); the status notes' set lines (AG17). RE-PINNED by the
+#           same changes: A17 B08 B15 (the example on community), C07 C24
+#           (the status notes), G02 R23c W03 (the single-= line naming the
+#           data frame), O25 X03 Y24 (the variable-name question on a line
+#           of its own), Y25 (jcorr() and jalpha() given one name: R23),
+#           AF04 (jdeclare_missing(vars =, codes =) and jconvert(vars =)
+#           with no convention lack an input, so the control takes the
+#           first under stata and leaves the second to AG07). SIX HUNDRED
+#           AND SEVENTEEN checks.
+#           MUTATION MAP: twenty-five one-change mutants of the 0.9.244
+#           master, run detached, every one red: jsum()'s, jrecode()'s and
+#           jencode()'s default guard off AG01 (each); the default's route
+#           as typed AG02 AG03; the first name not checked AG04; the named
+#           line dropped AG05; no gap check Y25 AG06 AG07 AG09 AG10 AG16;
+#           R23 reaching MyData O23 O24 O25 X03 X05 AG08; jrecode()'s map
+#           not missed AG06 AG07 AG16; a declared variable not seen AG07;
+#           the session convention ignored AF04 AG07; the quoted stop's
+#           gap off AG09 AG16; the value stop off AG10 AG16; the single
+#           value stop off AG11; jcomplete()'s expression refusal first
+#           AG12; the filter syntax stop not naming the frame R23c AG13;
+#           the named input not naming it G02 W03 AG13; the keyword
+#           example taking no frame A17 AG14; the shape example back B15
+#           AG14; the status notes back C07 AG17 and C24 AG17; jrecode()'s
+#           old no-map stop AG15; the question back on its line O25 X03 Y24
+#           Y25 AG02 AG08; the example line dropping the call's options AE01
+#           AE04 AF05 AG06; jdeclare_missing()'s codes not missed AG06. On
+#           v0.9.243 the battery reads 588/617: all of AG and the twelve
+#           re-pins red, AF04 green.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): run_all.R
+#           2927 across ten, plain and under the RStudio-handler stand-in,
+#           each again with a 38-character temp path, once with
+#           interactive() TRUE: all green; R CMD check --no-manual on the
+#           built package, Status OK. Entered dirty (joutput("full") with
+#           diagnostics, width 90, a stata convention, the color option, a
+#           juse() default, and objects named Score, Group, X, Name, Age,
+#           Gender, d, e, s, x, ag1, nofr, mk, Scorx, nonexist, Nam9, g9,
+#           OwnsHome, Region, zzdirty), plain and under the stand-in: the
+#           first entry read 614/617 -- AG06, AG07 and AG16 red under the
+#           stata convention, the section having assumed none (a session
+#           convention supplies jconvert()'s target and jdeclare_missing()'s
+#           convention, so those calls keep the two routes). The section
+#           now sets no convention with no default, and puts the entry's
+#           back; entered again: 617/617 both ways, nothing added, nothing
+#           lost, no value changed.
+#           LAST VERIFIED: v0.9.244, 2026-10-18 (S371) -- 617/617 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           2927 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox; GitHub 1a533d8 (package).
 # S370 EDIT (v0.9.243, 2026-10-18): Fix Slate 18. NEW SECTION AF, twelve
 #           checks (AF01-AF12): ruling R22's one stop reaches jrecode()
 #           (AF01, pinned whole), jencode(), jrelabel() and
@@ -1594,8 +1670,9 @@ check("A15 ... the fix built from the input, NOT's operand parenthesized, the fr
 check("A16 lowercase not(...) is caught too, and echoed as typed (Rule AB)",
       has(flat(grab(jsubset(d, not(Age < 40) & Gender == 1))),
           "uses not, which R does not recognize"))
-check("A17 a keyword that is not a call head falls back to a generic example, which takes no frame: its variables are not the user's",
-      has(grab(jsubset(d, Age < 40 & AND)), "\n  jsubset(Age < 40 & Volunteer == 1)"))
+check("A17 a keyword that is not a call head falls back to a generic example, set on community, never the user's frame: its variables are community's (S371 re-pin: it took no frame, and stopped with no default)",
+      has(grab(jsubset(d, Age < 40 & AND)), "\n  jsubset(community, Age < 40 & Volunteer == 1)") &&
+        !has(grab(jsubset(d, Age < 40 & AND)), "jsubset(d, "))
 quiet(jsubset(d, NULL))
 check("A18 the real xor() is ACCEPTED at set time (was refused before S290)",
       has(grab(jsubset(d, xor(Age < 40, Gender == 1))), "jsubset activated for d"))
@@ -1629,7 +1706,7 @@ keep3 <- c(TRUE, FALSE, TRUE)
 check("B08 wrong count from a workspace object: named as ruling R19's stop names one, counted in cases, and the own-columns fix (S359; it said '3 values for 12 rows')",
       has(flat(.b08), paste0("jsubset(): In keep3 == TRUE, keep3 is not in the d data frame; it is a separate object in your workspace. ",
                              "It has 3 values for the 12 cases in the d data frame, not one TRUE or FALSE for every case.")) &&
-      has(.b08, "\nBuild the filter from the data frame's own columns, for example:\n  jsubset(Age < 40)"))
+      has(.b08, "\nBuild the filter from the data frame's own columns, for example:\n  jsubset(community, Age < 40)"))
 check("B08b wrong count with no object to name: the plain form, counted in cases",
       has(flat(grab(jsubset(d, c(TRUE, FALSE)))),
           "jsubset(): c(TRUE, FALSE) has 2 values for 12 cases, not one TRUE or FALSE for every case.") &&
@@ -1656,8 +1733,9 @@ check("B14 ... and a warning on a well-shaped filter neither blocks nor leaks",
         has(.g, "jsubset activated for d") && !has(.g, "NAs introduced") })
 quiet(jsubset(d, NULL))
 quiet(juse(d))
-check("B15 default-frame form: the example carries no frame",
-      has(grab(jsubset(TRUE)), "\n  jsubset(Age < 40)"))
+check("B15 default-frame form: the example is set on community, never the default's frame (S371 re-pin: it named no frame)",
+      has(grab(jsubset(TRUE)), "\n  jsubset(community, Age < 40)") &&
+        !has(grab(jsubset(TRUE)), "jsubset(d, "))
 check("B16 default-frame quoted null: jsubset(NULL) without a frame",
       has(grab(jsubset("null")), "  jsubset(NULL)"))
 reset()
@@ -1688,9 +1766,9 @@ check("C05 ... again: nothing to clear",
       has(grab(jsubset(d, NULL)), "No jsubset set for d. Nothing to clear."))
 check("C06 jsubset(d, off) with none set",
       has(grab(jsubset(d, off)), "No jsubset set for d. Nothing to deactivate."))
-check("C07 jsubset(d, on) with none set names the named-frame set form",
+check("C07 jsubset(d, on) with none set: one sentence a line and a line on community that sets one (S371 re-pin: \"Use jsubset(d, expression) to set one.\")",
       has(grab(jsubset(d, on)),
-          "No jsubset set for d. Use jsubset(d, expression) to set one."))
+          "No jsubset set for d.\nTo set one, give a condition, for example:\n  jsubset(community, Age < 40)"))
 
 quiet(jsubset(d, Age < 40)); quiet(jsubset(e, Gender == 1))
 quiet(jsubset(d, off))
@@ -1769,10 +1847,10 @@ check("C22 jcomplete(d, NULL) clears that frame only, reporting what it had",
 check("C23 ... again: nothing to clear",
       has(grab(jcomplete(d, NULL)),
           "No jcomplete filter set for d. Nothing to clear."))
-check("C24 jcomplete(d, off) / (d, on) with none set; on names the named-frame set form",
+check("C24 jcomplete(d, off) / (d, on) with none set; on gives a line on community that sets one (S371 re-pin: \"Use jcomplete(d, var1, var2, ...) to set one.\")",
       has(grab(jcomplete(d, off)), "No jcomplete filter set for d.") &&
-      has(flat(grab(jcomplete(d, on))),
-          "No jcomplete filter set for d. Use jcomplete(d, var1, var2, ...) to set one."))
+      has(grab(jcomplete(d, on)),
+          "No jcomplete filter set for d.\nTo set one, name its variables, for example:\n  jcomplete(community, Age, Income)"))
 quiet(jcomplete(d, Age)); quiet(jcomplete(e, Age))
 quiet(jcomplete(e, NULL))
 check("C25 two frames: NULL on e leaves d's entry",
@@ -1975,8 +2053,8 @@ reset()
 .g01 <- grab(jsubset(Gender = 1))
 check("G01 jsubset(Gender = 1): caught by jstats (R used to say 'unused argument')",
       has(flat(.g01), "jsubset(): Gender = 1 uses a single =, which does not test equality in R."))
-check("G02 ... with the jsubset(...) fix form",
-      has(.g01, "\n  jsubset(Gender == 1)"))
+check("G02 ... with the jsubset(...) fix form, naming a data frame since there is no default -- MyData here, d and e both holding Gender (S371 re-pin, ruling R23: it offered the bare call)",
+      has(.g01, "Use == (two equals signs), and name the data frame:\n  jsubset(MyData, Gender == 1)"))
 check("G03 jsubset(d, Gender = 1): the frame form is caught the same way, and its fix line keeps the frame (S338)",
       has(grab(jsubset(d, Gender = 1)), "\n  jsubset(d, Gender == 1)"))
 check("G04 jsubset's own grammar is intact: jsubset(d, Age < 40) still activates",
@@ -3544,10 +3622,10 @@ check("O24 a name found nowhere is still 'not found'",
       has(flat(.fo24), "jcorr(): 'o_nowhere' not found. Did you mean to use it as a variable name?") &&
         !has(.fo24, "is not a data frame"))
 check("O25 the sentence is the shared resolver's: jalpha(), jdummy(), jsubset() and jcomplete() say it too",
-      has(grab(jalpha(o_n)), "jalpha(): 'o_n' is not a data frame. Did you mean") &&
-        has(grab(jdummy(o_n)), "jdummy(): 'o_n' is not a data frame. Did you mean") &&
-        has(grab(jsubset(o_n, Age < 30)), "jsubset(): 'o_n' is not a data frame. Did you mean") &&
-        has(grab(jcomplete(o_n, Age)), "jcomplete(): 'o_n' is not a data frame. Did you mean"))
+      has(grab(jalpha(o_n)), "jalpha(): 'o_n' is not a data frame.\nDid you mean") &&
+        has(grab(jdummy(o_n)), "jdummy(): 'o_n' is not a data frame.\nDid you mean") &&
+        has(grab(jsubset(o_n, Age < 30)), "jsubset(): 'o_n' is not a data frame.\nDid you mean") &&
+        has(grab(jcomplete(o_n, Age)), "jcomplete(): 'o_n' is not a data frame.\nDid you mean"))
 
 # ---- O26-O37: more than one condition ---------------------------------------
 reset(); quiet(juse(d))
@@ -3900,8 +3978,12 @@ check("R23b jsubset((zz_r_grp = 1) & (Age < 40)) under a default: the single-= r
         !exists("zz_r_grp", envir = globalenv(), inherits = FALSE) &&
         is.null(fs_of("r_w")))
 quiet(juse(NULL))
-check("R23c with no default: the same refusal (it said 'not found' and offered the call with its single = still in it), and nothing assigned",
-      identical(grab(jsubset((zz_r_grp = 1) & (Age < 40))), .r23b) &&
+check("R23c with no default: the same refusal (it said 'not found' and offered the call with its single = still in it), its line naming r_w, the one data frame holding zz_r_grp and Age (S371 re-pin, ruling R23: the bare call stopped again), and nothing assigned",
+      identical(grab(jsubset((zz_r_grp = 1) & (Age < 40))), paste0(
+        "jsubset(): (zz_r_grp = 1) & (Age < 40) uses a single =, which does\n",
+        "not test equality in R.\n",
+        "Use == (two equals signs), and name the data frame:\n",
+        "  jsubset(r_w, (zz_r_grp == 1) & (Age < 40))")) &&
         !exists("zz_r_grp", envir = globalenv(), inherits = FALSE))
 check("R23d control: a condition with no single = is evaluated and set as before",
       { quiet(juse(r_w))
@@ -4680,10 +4762,11 @@ check("W01 no frame in hand, a condition and quiet = TRUE: an unused input (it o
       identical(grab(jsubset(x3 > 1, quiet = TRUE)), "jsubset(): unused input: quiet"))
 check("W02 ... the same beside a condition given by name (expr =)",
       identical(grab(jsubset(expr = x3 > 1, quiet = TRUE)), "jsubset(): unused input: quiet"))
-check("W03 a named input on its own is still read as a condition typed with one =, its line as before",
+check("W03 a named input on its own is still read as a condition typed with one =; with no default its line names a data frame, MyData here (S371 re-pin, ruling R23)",
       identical(grab(jsubset(Gender = 1)),
                 paste0("jsubset(): Gender = 1 uses a single =, which does not test\n",
-                       "equality in R.\nUse == (two equals signs):\n  jsubset(Gender == 1)")))
+                       "equality in R.\nUse == (two equals signs), and name the data frame:\n",
+                       "  jsubset(MyData, Gender == 1)")))
 check("W04 nothing is stored by any of them",
       length(getOption(".jst_filter", default = list())) == 0L ||
         all(vapply(getOption(".jst_filter"), is.null, logical(1))))
@@ -4718,10 +4801,10 @@ check("X01 a condition and no frame: it needs a data frame, the two ways given, 
         "  jsubset(.x90_nowhere > 40)")))
 check("X02 ... no \"not found\" and no variable-name question for a condition",
       !has(.gx1, "not found") && !has(.gx1, "variable name"))
-check("X03 a bare name found nowhere keeps its question, and its fixes take lines of their own (pinned whole)",
+check("X03 a bare name found nowhere keeps its question, on a line of its own (S371 re-pin), and its fixes take lines of their own (pinned whole)",
       identical(.gx2, paste0(
-        "jcorr(): '.x90_nowhere' not found. Did you mean to use it as a\n",
-        "variable name?\n",
+        "jcorr(): '.x90_nowhere' not found.\n",
+        "Did you mean to use it as a variable name?\n",
         "If so, name the data frame first:\n",
         "  jcorr(MyData, .x90_nowhere)\n",
         "Or set a default first, then run the call:\n",
@@ -4929,16 +5012,17 @@ check("Y23 the lines print at every output level, and are wrapped at the message
 # -- lean 4: the not-a-data-frame stops name the frame ----------------------
 check("Y24 jplot(zz_ya): the two fix lines name zz_y1, the one frame that has the variable (pinned whole)",
       identical(grab(jplot(zz_ya)), paste0(
-        "jplot(): 'zz_ya' is not a data frame. Did you mean to use it as a\n",
-        "variable name?\n",
+        "jplot(): 'zz_ya' is not a data frame.\n",
+        "Did you mean to use it as a variable name?\n",
         "If so, name the data frame first:\n",
         "  jplot(zz_y1, zz_ya)\n",
         "Or set a default first, then run the call:\n",
         "  juse(zz_y1)\n",
         "  jplot(zz_ya)")))
-check("Y25 jcorr() and jalpha() the same; a name found nowhere that a frame has names it too",
-      has(grab(jcorr(zz_ya)), "  jcorr(zz_y1, zz_ya)\n") && has(grab(jalpha(zz_ya)), "  juse(zz_y1)\n") &&
-        has(grab(jdesc(zz_yb)), "'zz_yb' not found. Did you mean") && has(grab(jdesc(zz_yb)), "  jdesc(zz_y1, zz_yb)\n"))
+check("Y25 jcorr() and jalpha() given that one name need a second variable, so ruling R23's stop (S371 re-pin: they were offered jcorr(zz_y1, zz_ya), which stopped for one); a name found nowhere that a frame has names it",
+      has(grab(jcorr(zz_ya)), "jcorr(): no data frame and no second variable were named.\n") &&
+        has(grab(jalpha(zz_ya)), "\n  jalpha(community, Environment1, Environment3, Environment4)") &&
+        has(grab(jdesc(zz_yb)), "'zz_yb' not found.\nDid you mean") && has(grab(jdesc(zz_yb)), "  jdesc(zz_y1, zz_yb)\n"))
 check("Y26 on the vector path, the refusal of a second variable names the frame that has both; MyData when none has them",
       local({ zz_yb <- c(1, 2, 3)
               a <- grab(jdesc(zz_ya, zz_yb)); zz_yz <- 1; b <- grab(jdesc(zz_ya, zz_yz))
@@ -5783,21 +5867,21 @@ check("AF03 jconvert(), no data frame, no target and no convention: the stop nam
             "jconvert(): no data frame and no target format were named.\n",
             "Name a data frame and a target format, for example:\n",
             "  jconvert(community, to = \"stata\")")) }) }))
-check("AF04 control: a call that names its variable or its target by argument lacks only the data frame and keeps section AB's two routes -- orig.var = (and orig =, typed short), var =, vars =, to = -- as does jconvert() under a session convention, which supplies the target",
+check("AF04 control: a call that names its variable or its target by argument lacks only the data frame and keeps section AB's two routes -- orig.var = (and orig =, typed short), var =, to = -- as does jconvert() under a session convention, which supplies the target, and jdeclare_missing(vars =, codes =) under one (S371: with none set, it and jconvert(vars =) lack an input too, and get ruling R23's stop, section AG)",
       local({ e <- .af_ws(af1 = .af1)
         r <- c(.af_in(e, quote(jrecode(orig.var = Score, map = "1=2"))),
                .af_in(e, quote(jrecode(orig = Score, map = "1=2"))),
                .af_in(e, quote(jencode(var = Name))),
                .af_in(e, quote(jrelabel(var = Score, var.label = "S"))),
-               .af_in(e, quote(jdeclare_missing(vars = "Score", codes = -99))),
-               .af_in(e, quote(jconvert(to = "stata"))),
-               .af_in(e, quote(jconvert(vars = "Score"))))
+               .af_in(e, quote(jconvert(to = "stata"))))
         conv <- .af_keep({ options(.jst_options_missing_convention = "stata")
-                           .af_in(e, quote(jconvert())) })
+                           c(.af_in(e, quote(jconvert())),
+                             .af_in(e, quote(jdeclare_missing(vars = "Score", codes = -99)))) })
         all(has(c(r, conv), "no data frame was named or set as the default.\n")) &&
           all(has(c(r, conv), "Or set a default first, then run the call:")) &&
-          has(r[6], "\n  jconvert(af1, to = \"stata\")\n") &&
-          has(conv, "\n  jconvert(af1)\n") }))
+          has(r[5], "\n  jconvert(af1, to = \"stata\")\n") &&
+          has(conv[1], "\n  jconvert(af1)\n") &&
+          has(conv[2], "\n  jdeclare_missing(af1, vars = \"Score\", codes = -99)\n") }))
 check("AF05 R22's stop keeps only modify = and missing.notice = from these calls (jdeclare_missing(), jconvert()); map =, labels =, codes = and convention =, which depend on the user's variables, are left out; the kept line runs",
       local({ e <- .af_ws(af1 = .af1)
         l1 <- .af_ex(.af_in(e, quote(jdeclare_missing(modify = TRUE, codes = -98, labels = "-98=x"))))
@@ -5888,6 +5972,322 @@ check("AF12 jsubset() given a data frame and no condition: what is missing, then
           length(getOption(".jst_filter", default = list())) == 0L }))
 options(.jst_default_data = .af_def)
 rm(.af_def, .af_ws, .af1, .af_in, .af_ex, .af_keep, .af_clean, .af_want, .af_r22)
+reset()
+
+# =============================================================================
+# AG -- THE REMEDY-LINE AUDIT'S FRONT DOORS (S371, v0.9.244; Fix Slate 19,
+#       ruling R23)
+# =============================================================================
+# The Session 371 audit ran every line a message offers, in the state the
+# message was raised in. On these front doors: under a juse() default,
+# jsum(, A, B), javg(, A, B), jrecode(orig.var = A, ...) and jencode(var = X)
+# stopped on R's "argument "data_sub" is missing, with no default" (jsum()
+# after printing its totals); the default route, "juse(d)" then
+# "jrecode(Score, "1=2")", stopped on jrecode()'s rule that arguments after
+# an omitted data frame are named, as jencode()'s and jrelabel()'s did; that
+# rule's stop, under a default, rewrote jencode(dta, Name, map = "a=1") as
+# "jencode(dta, map = Name)", the map dropped; a rebuilt call that still
+# lacked an input -- jrecode(g6, Score) with no map, jcorr(g6, Score) with one
+# variable, jplot(g6) from jplot("g6"), jsubset(Gender == 1) with no data frame
+# -- stopped again (ruling R23: such a stop gives ruling R22's form, what is
+# missing and the function's example on community, where its line can name
+# a data frame of the workspace); jplot(1:3) was offered jplot(MyData, 1:3)
+# and nofr <- 5; jdesc(nofr, Age) jdesc(MyData, nofr, Age); jcomplete(mk())
+# was offered jcomplete(mydata), which stopped for its variables; the
+# generic filter examples, jsubset(Age < 40), stopped with no default or on
+# one without Age. And item 8's layout: the not-found stop's question on a
+# line of its own, the named-arguments stop's line, the status notes' set
+# example (jsubset(d, expression), whose word ran as R's own function), the
+# recode family's "must be a single quoted string" stops. Stand-in
+# workspaces, as sections AE and AF's. The section runs with no default
+# and no convention set, which ruling R23's stops depend on (a session
+# convention supplies jconvert()'s target and jdeclare_missing()'s
+# convention); each check that sets one sets it inside .ag_keep().
+reset()
+.ag_def <- getOption(".jst_default_data")
+.ag_conv <- getOption(".jst_options_missing_convention")
+options(.jst_default_data = NULL, .jst_options_missing_convention = "none")
+.ag_ws <- function(...) {
+  e <- new.env(parent = baseenv())
+  fr <- list(...)
+  for (nm in names(fr)) assign(nm, fr[[nm]], envir = e)
+  for (f in c("jrecode", "jencode", "jrelabel", "jdeclare_missing", "jconvert",
+              "jcorr", "jalpha", "jdesc", "jplot", "jsum", "javg", "jcomplete",
+              "jsubset", "juse")) assign(f, get(f, envir = globalenv()), envir = e)
+  e
+}
+.ag1 <- data.frame(Score = c(1, 4, 2, 5, 3, 6, 2, 7), Group = rep(1:2, 4),
+                   X = c(2, 1, 4, 3, 6, 5, 7, 8),
+                   Name = c("a", "b", "c", "d", "e", "f", "g", "h"),
+                   stringsAsFactors = FALSE)
+.ag_in <- function(e, expr) grab(eval(expr, e))
+.ag_keep <- function(code) {
+  before <- options()[grep("^\\.jst_", names(options()))]
+  on.exit({
+    now <- names(options())[grep("^\\.jst_", names(options()))]
+    gone <- setdiff(now, names(before))
+    if (length(gone)) options(stats::setNames(rep(list(NULL), length(gone)), gone))
+    options(before)
+  })
+  force(code)
+}
+# .ag_runs(): run lines from a message, in order, in a copy of a stand-in
+# workspace that sees the package (its parent the global environment): TRUE
+# when none errors, warns or asks.
+.ag_runs <- function(lines, ...) {
+  w <- new.env(parent = globalenv())
+  fr <- list(...)
+  for (nm in names(fr)) assign(nm, fr[[nm]], envir = w)
+  bad <- 0L
+  .ag_keep(for (ln in lines) {
+    ok <- tryCatch(withCallingHandlers({
+        suppressMessages(utils::capture.output(eval(parse(text = ln)[[1]], w)))
+        TRUE },
+      warning = function(x) { bad <<- bad + 1L; invokeRestart("muffleWarning") }),
+      error = function(x) FALSE)
+    if (!isTRUE(ok)) bad <- bad + 1L
+  })
+  bad == 0L
+}
+# .ag_lines(): the lines a message offers -- every line with two leading
+# spaces that parses -- in order, in groups under each colon line.
+.ag_lines <- function(m) {
+  l <- strsplit(m, "\n", fixed = TRUE)[[1]]
+  out <- list(); cur <- NULL
+  for (x in l) {
+    if (grepl(":$", x) && !grepl("^ ", x)) { if (length(cur)) out[[length(out) + 1L]] <- cur; cur <- character(0); next }
+    if (grepl("^  [^ ]", x) && !is.null(cur)) cur <- c(cur, sub("^  ", "", x))
+  }
+  if (length(cur)) out[[length(out) + 1L]] <- cur
+  out
+}
+
+check("AG01 under a juse() default, the data left out -- jsum(, A, B), javg(, A, B), jrecode(orig.var = A, ...), jrecode(, A, ...), jencode(var = X), jencode(, X) -- each runs and returns its result (each stopped on R's \"argument \"data_sub\" is missing\", jsum() after printing its totals); the assignment lines name the default",
+      local({ e <- .ag_ws(ag1 = .ag1)
+        .ag_keep({ quiet(eval(quote(juse(ag1)), e))
+          r1 <- eval(quote(jsum(, Score, X)), e); m1 <- .ag_in(e, quote(jsum(, Score, X)))
+          r2 <- eval(quote(javg(, Score, X)), e)
+          r3 <- eval(quote(jrecode(orig.var = Score, map = "1=2; else=copy")), e)
+          r4 <- eval(quote(jrecode(, Score, map = "1=2; else=copy")), e)
+          m4 <- .ag_in(e, quote(jrecode(, Score, map = "1=2; else=copy")))
+          r5 <- eval(quote(jencode(var = Name)), e); r6 <- eval(quote(jencode(, Name)), e)
+          isTRUE(all.equal(as.numeric(r1), .ag1$Score + .ag1$X)) &&
+            isTRUE(all.equal(as.numeric(r2), (.ag1$Score + .ag1$X) / 2)) &&
+            identical(as.numeric(r3), as.numeric(ifelse(.ag1$Score == 1, 2, .ag1$Score))) &&
+            identical(as.numeric(r4), as.numeric(r3)) &&
+            identical(as.numeric(r5), as.numeric(1:8)) && identical(as.numeric(r6), as.numeric(1:8)) &&
+            has(m1, "\n  ag1$<name> <- jsum(...)\n") && has(m4, "\n  ag1$<name> <- jrecode(...)\n") &&
+            !any(has(c(m1, m4), "data_sub")) }) }))
+check("AG02 the default route names the arguments after the variable in jrecode(), jencode() and jrelabel(), as they require with no data frame -- the not-found stop and the no-data-frame stop (pinned whole; the route was the call as typed, jrecode(Score, \"1=2\"), which stopped on that rule)",
+      local({ e <- .ag_ws(ag1 = .ag1)
+        identical(.ag_in(e, quote(jrecode(Score, "1=2; else=copy"))), paste0(
+          "jrecode(): 'Score' not found.\n",
+          "Did you mean to use it as a variable name?\n",
+          "If so, name the data frame first:\n",
+          "  jrecode(ag1, Score, \"1=2; else=copy\")\n",
+          "Or set a default first, then run the call:\n",
+          "  juse(ag1)\n",
+          "  jrecode(Score, map = \"1=2; else=copy\")")) &&
+          has(.ag_in(e, quote(jencode(Name, "a=1"))), "\n  juse(ag1)\n  jencode(Name, map = \"a=1\")") &&
+          has(.ag_in(e, quote(jrelabel(Score, "1=One"))), "\n  juse(ag1)\n  jrelabel(Score, labels = \"1=One\")") &&
+          identical(.ag_in(e, quote(jrecode(, Score, "1=2; else=copy"))), paste0(
+            "jrecode(): no data frame was named or set as the default.\n",
+            "Name the data frame first:\n",
+            "  jrecode(ag1, Score, \"1=2; else=copy\")\n",
+            "Or set a default first, then run the call:\n",
+            "  juse(ag1)\n",
+            "  jrecode(Score, map = \"1=2; else=copy\")")) }))
+check("AG03 ... and both routes run as printed, each taken from its stop: the first alone, the second's two lines in order",
+      local({ e <- .ag_ws(ag1 = .ag1)
+        ms <- c(.ag_in(e, quote(jrecode(Score, "1=2; else=copy"))),
+                .ag_in(e, quote(jencode(Name, "a=1; else=NA"))),
+                .ag_in(e, quote(jrelabel(Score, "1=One"))),
+                .ag_in(e, quote(jrecode(, Score, "1=2; else=copy"))))
+        all(vapply(ms, function(m) { g <- .ag_lines(m)
+          length(g) == 2L && .ag_runs(g[[1]], ag1 = .ag1) && .ag_runs(g[[2]], ag1 = .ag1) },
+          logical(1))) }))
+check("AG04 under a default, a first argument the default lacks gets the not-found sentence with the default hint, where the named-arguments stop rewrote the call by position and dropped its map (pinned whole); jrecode() and jrelabel() the same",
+      local({ e <- .ag_ws(ag1 = .ag1)
+        .ag_keep({ quiet(eval(quote(juse(ag1)), e))
+          a <- .ag_in(e, quote(jencode(nonexist, Name, map = "a=1")))
+          b <- .ag_in(e, quote(jrecode(nonexist, Score, map = "1=2")))
+          cc <- .ag_in(e, quote(jrelabel(nonexist, Score, labels = "1=One")))
+          identical(a, paste0(
+            "jencode(): nonexist was not found in the ag1 data frame.\n",
+            "Check the spelling.\n",
+            "ag1 is the juse() default -- if you meant a different data frame, name it\n",
+            "in the call.")) &&
+            identical(sub("^jrecode", "jencode", b), a) &&
+            identical(sub("^jrelabel", "jencode", cc), a) }) }))
+check("AG05 ... and a variable of the default with an unnamed argument after it: one sentence a line and the call with that argument named, on a line of its own, which runs (pinned whole; \"Use jrecode(Score, map = ...)\" was inline); with two unnamed, the sentence alone",
+      local({ e <- .ag_ws(ag1 = .ag1)
+        .ag_keep({ quiet(eval(quote(juse(ag1)), e))
+          m <- .ag_in(e, quote(jrecode(Score, "1=2; else=copy")))
+          m2 <- .ag_in(e, quote(jrelabel(Score, "1=One")))
+          m3 <- .ag_in(e, quote(jrecode(Score, Group, map = "1=2")))
+          identical(m, paste0(
+            "jrecode(): when the data argument is omitted, all subsequent\n",
+            "arguments must be named.\n",
+            "Name the map:\n",
+            "  jrecode(Score, map = \"1=2; else=copy\")")) &&
+            has(m2, "Name the labels:\n  jrelabel(Score, labels = \"1=One\")") &&
+            identical(m3, paste0(
+              "jrecode(): when the data argument is omitted, all subsequent\n",
+              "arguments must be named.")) &&
+            .ag_runs(c("juse(ag1)", .ag_lines(m)[[1]]), ag1 = .ag1) }) }))
+check("AG06 ruling R23: the not-found stop's line would stop again for want of an input, so ruling R22's form -- jrecode(Score) a map (pinned whole), jdeclare_missing(Score) the codes, jconvert(Score) the target, jrelabel(Score) a label, jcorr(Score, method = ...) and jalpha(Score) a second variable, the method kept",
+      local({ e <- .ag_ws(ag1 = .ag1)
+        identical(.ag_in(e, quote(jrecode(Score))), paste0(
+          "jrecode(): no data frame and no map were named.\n",
+          "Name a data frame, one of its variables and a map, for example:\n",
+          "  community$OwnsHome01 <- jrecode(community, OwnsHome, map = \"1=1; 2=0\")")) &&
+          identical(.ag_in(e, quote(jdeclare_missing(Score))), paste0(
+            "jdeclare_missing(): no data frame and no codes were named.\n",
+            "Name a data frame, one or more of its variables and the codes, for example:\n",
+            "  jdeclare_missing(community, Age, codes = -99, convention = \"spss\")")) &&
+          identical(.ag_in(e, quote(jconvert(Score))), paste0(
+            "jconvert(): no data frame and no target format were named.\n",
+            "Name a data frame and a target format, for example:\n",
+            "  jconvert(community, to = \"stata\")")) &&
+          has(.ag_in(e, quote(jrelabel(Score))), "no data frame and no labels were named.\nName a data frame, one of its variables and a label, for example:\n") &&
+          identical(.ag_in(e, quote(jcorr(Score, method = "spearman"))), paste0(
+            "jcorr(): no data frame and no second variable were named.\n",
+            "Name a data frame and two or more of its variables, for example:\n",
+            "  jcorr(community, Income, Age, WellbeingScore, method = \"spearman\")")) &&
+          has(.ag_in(e, quote(jalpha(Score))), "jalpha(): no data frame and no second variable were named.\n") }))
+check("AG07 ... the no-data-frame stop's routes the same: jrecode(orig.var = Score) lacks a map, jdeclare_missing(vars = \"Score\", codes = -99) a convention, jconvert(vars = \"Score\") a target (pinned whole); controls -- under a session convention both keep the two routes, and so does a variable already declaring missing values",
+      local({ e <- .ag_ws(ag1 = .ag1)
+        dd <- data.frame(D = haven::labelled_spss(c(1, -99, 3), na_values = -99))
+        e2 <- .ag_ws(dd = dd)
+        a <- .ag_in(e, quote(jdeclare_missing(vars = "Score", codes = -99)))
+        conv <- .ag_keep({ options(.jst_options_missing_convention = "stata")
+          c(.ag_in(e, quote(jdeclare_missing(vars = "Score", codes = -99))),
+            .ag_in(e, quote(jconvert(vars = "Score")))) })
+        ctl <- .ag_in(e2, quote(jdeclare_missing(vars = "D", codes = -98)))
+        has(.ag_in(e, quote(jrecode(orig.var = Score))), "jrecode(): no data frame and no map were named.\n") &&
+          identical(a, paste0(
+            "jdeclare_missing(): no data frame and no convention were named.\n",
+            "Name a data frame, one or more of its variables, the codes and a convention,\n",
+            "for example:\n",
+            "  jdeclare_missing(community, Age, codes = -99, convention = \"spss\")")) &&
+          has(.ag_in(e, quote(jconvert(vars = "Score"))), "jconvert(): no data frame and no target format were named.\n") &&
+          all(has(c(conv, ctl), "Or set a default first, then run the call:")) &&
+          has(ctl, "\n  jdeclare_missing(dd, vars = \"D\", codes = -98)\n") }))
+check("AG08 control: a name no data frame holds keeps the not-found stop and its two routes -- the name may be a data frame's typed wrong, which ruling R22's lead would not say (pinned whole)",
+      local({ e <- .ag_ws(ag1 = .ag1)
+        identical(.ag_in(e, quote(jrecode(Scorx))), paste0(
+          "jrecode(): 'Scorx' not found.\n",
+          "Did you mean to use it as a variable name?\n",
+          "If so, name the data frame first:\n",
+          "  jrecode(MyData, Scorx)\n",
+          "Or set a default first, then run the call:\n",
+          "  juse(MyData)\n",
+          "  jrecode(Scorx)")) }))
+check("AG09 a data frame's name in quotes with no variable: \"ag1\" is in quotes, and no variables were named, with the example (pinned whole; jplot(ag1) was offered, which stopped); with a variable, the quotes stop as before",
+      local({ e <- .ag_ws(ag1 = .ag1)
+        identical(.ag_in(e, quote(jplot("ag1"))), paste0(
+          "jplot(): \"ag1\" is in quotes, and no variables were named.\n",
+          "Name a data frame without quotes and one or two of its variables,\n",
+          "for example:\n",
+          "  jplot(community, Age)")) &&
+          has(.ag_in(e, quote(jdesc("ag1"))), "jdesc(): \"ag1\" is in quotes, and no variables were named.\n") &&
+          identical(.ag_in(e, quote(jdesc("ag1", Score))), paste0(
+            "jdesc(): \"ag1\" is in quotes.\n",
+            "A data frame's name goes without them:\n",
+            "  jdesc(ag1, Score)")) }))
+check("AG10 a value that names no variable given as the data -- jplot(1:3), jplot(list(1)) -- is no data frame, and the lines leave it out: alone, ruling R23's stop (pinned whole); with a variable, both routes naming the data frame holding it, which run (they offered jplot(MyData, 1:3))",
+      local({ e <- .ag_ws(ag1 = .ag1)
+        m <- .ag_in(e, quote(jplot(1:3, Score)))
+        identical(.ag_in(e, quote(jplot(1:3))), paste0(
+          "jplot(): 1:3 is not a data frame, and no variables were named.\n",
+          "Name a data frame and one or two of its variables, for example:\n",
+          "  jplot(community, Age)")) &&
+          has(.ag_in(e, quote(jplot(list(1)))), "jplot(): list(1) is not a data frame, and no variables were named.\n") &&
+          identical(m, paste0(
+            "jplot(): 1:3 is not a data frame.\n",
+            "Name the data frame first:\n",
+            "  jplot(ag1, Score)\n",
+            "Or set a default first, then run the call:\n",
+            "  juse(ag1)\n",
+            "  jplot(Score)")) &&
+          all(vapply(.ag_lines(m), .ag_runs, logical(1), ag1 = .ag1)) }))
+check("AG11 a single value given as the data with a variable after it -- nofr <- 5; jdesc(nofr, Score) -- is said to be one, and the line leaves it out (pinned whole; it was offered as a variable, jdesc(MyData, nofr, Age)); the single value alone is still described",
+      local({ e <- .ag_ws(ag1 = .ag1, nofr = 5)
+        identical(.ag_in(e, quote(jdesc(nofr, Score))), paste0(
+          "jdesc(): nofr is a single value, not a data frame.\n",
+          "Name the data frame first:\n",
+          "  jdesc(ag1, Score)")) &&
+          !errs(eval(quote(jdesc(nofr)), e)) }))
+check("AG12 jcomplete() given an expression and nothing else: the no-variables stop (pinned whole), where the refusal offered jcomplete(mydata), which stopped there; with a variable, the refusal as before",
+      local({ e <- .ag_ws(ag1 = .ag1, mk = function() .ag1)
+        identical(.ag_in(e, quote(jcomplete(mk()))), paste0(
+          "jcomplete(): no variables specified.\n",
+          "Provide one or more variable names, for example:\n",
+          "  jcomplete(community, Age, Income)")) &&
+          has(.ag_in(e, quote(jcomplete(mk(), Score))), "  mydata <- mk()\n  jcomplete(mydata, Score)") }))
+check("AG13 a condition typed with one = and no data frame or default: the line names the data frame holding its variables, \"and name the data frame\" said (pinned whole); MyData when two hold it; under a default, as before",
+      local({ e <- .ag_ws(ag1 = .ag1); e2 <- .ag_ws(ag1 = .ag1, ag2 = .ag1)
+        a <- .ag_in(e, quote(jsubset(Group = 1)))
+        b <- .ag_in(e, quote(jsubset((Group = 1) & (Score < 4))))
+        cc <- .ag_in(e2, quote(jsubset(Group = 1)))
+        dflt <- .ag_keep({ quiet(eval(quote(juse(ag1)), e)); .ag_in(e, quote(jsubset(Group = 1))) })
+        identical(a, paste0(
+          "jsubset(): Group = 1 uses a single =, which does not test\n",
+          "equality in R.\n",
+          "Use == (two equals signs), and name the data frame:\n",
+          "  jsubset(ag1, Group == 1)")) &&
+          has(b, "and name the data frame:\n  jsubset(ag1, (Group == 1) & (Score < 4))") &&
+          has(cc, "  jsubset(MyData, Group == 1)") &&
+          has(dflt, "Use == (two equals signs):\n  jsubset(Group == 1)") && !has(dflt, "name the data frame") }))
+check("AG14 the filter stops' generic examples are set on community -- the shape stop and the keyword stop -- never the call's frame, and run as printed (they gave jsubset(Age < 40), which stopped with no default or on a default without Age)",
+      local({ e <- .ag_ws(ag1 = .ag1)
+        a <- .ag_in(e, quote(jsubset(ag1, Score + 1)))
+        b <- .ag_in(e, quote(jsubset(ag1, Score < 4 & AND)))
+        has(a, "Compare a variable to a value, for example:\n  jsubset(community, Age < 40)") &&
+          has(b, "Use & (single ampersand):\n  jsubset(community, Age < 40 & Volunteer == 1)") &&
+          !any(has(c(a, b), "jsubset(ag1")) &&
+          all(vapply(c(.ag_lines(a), .ag_lines(b)), .ag_runs, logical(1))) }))
+check("AG15 the recode family's quoted-string stops: one sentence, then the example on a line of its own (each had \"e.g.\" inline); jrecode() with no map gives its own example, which runs (pinned whole)",
+      local({ e <- .ag_ws(ag1 = .ag1)
+        m <- .ag_in(e, quote(jrecode(ag1, Score)))
+        identical(m, paste0(
+          "jrecode(): no map specified.\n",
+          "Provide a map in quotes, for example:\n",
+          "  community$OwnsHome01 <- jrecode(community, OwnsHome, map = \"1=1; 2=0\")")) &&
+          .ag_runs(.ag_lines(m)[[1]]) &&
+          identical(.ag_in(e, quote(jrecode(ag1, Score, map = 1))),
+                    "jrecode(): the map must be one quoted string, for example:\n  map = \"1=1; 2=0\"") &&
+          identical(.ag_in(e, quote(jencode(ag1, Name, map = 2))),
+                    "jencode(): the map must be one quoted string, for example:\n  map = \"Bail=1; Parole=2\"") &&
+          has(.ag_in(e, quote(jrecode(ag1, Score, map = "1=2; else=copy", labels = 1))), "the labels must be one quoted string, for example:\n  labels = ") &&
+          has(.ag_in(e, quote(jencode(ag1, Name, labels = 1))), "the labels must be one quoted string, for example:\n  labels = ") &&
+          has(.ag_in(e, quote(jrelabel(ag1, Score, labels = 1))), "the labels must be one quoted string, for example:\n  labels = ") &&
+          has(flat(.ag_in(e, quote(jdeclare_missing(ag1, Score, codes = -99, labels = 1, convention = "spss")))),
+              "the labels must be one quoted string, for example:   labels = ") &&
+          !any(has(c(m, .ag_in(e, quote(jrecode(ag1, Score, map = 1)))), "e.g.")) }))
+check("AG16 every example ruling R23's stops give runs as printed, with no convention set and under spss, stata and sas -- each taken from its stop",
+      local({ e <- .ag_ws(ag1 = .ag1)
+        ms <- c(.ag_in(e, quote(jrecode(Score))), .ag_in(e, quote(jdeclare_missing(Score))),
+                .ag_in(e, quote(jconvert(Score))), .ag_in(e, quote(jrelabel(Score))),
+                .ag_in(e, quote(jcorr(Score, method = "spearman"))), .ag_in(e, quote(jalpha(Score))),
+                .ag_in(e, quote(jplot("ag1"))), .ag_in(e, quote(jplot(1:3))))
+        lns <- unlist(lapply(ms, .ag_lines), recursive = FALSE)
+        length(lns) == 8L &&
+          all(vapply(c("none", "spss", "stata", "sas"), function(cv)
+            .ag_keep({ options(.jst_options_missing_convention = cv)
+                       all(vapply(lns, .ag_runs, logical(1))) }), logical(1))) }))
+check("AG17 the status notes' set example: one sentence a line and a line on community that sets one, for jsubset() and jcomplete() (pinned whole; \"Use jsubset(ag1, expression) to set one.\")",
+      local({ e <- .ag_ws(ag1 = .ag1)
+        identical(.ag_in(e, quote(jsubset(ag1, on))), paste0(
+          "No jsubset set for ag1.\n",
+          "To set one, give a condition, for example:\n",
+          "  jsubset(community, Age < 40)\n")) &&
+          identical(.ag_in(e, quote(jcomplete(ag1, on))), paste0(
+            "No jcomplete filter set for ag1.\n",
+            "To set one, name its variables, for example:\n",
+            "  jcomplete(community, Age, Income)\n")) }))
+options(.jst_default_data = .ag_def, .jst_options_missing_convention = .ag_conv)
+rm(.ag_def, .ag_conv, .ag_ws, .ag1, .ag_in, .ag_keep, .ag_runs, .ag_lines)
 reset()
 
 # =============================================================================

@@ -37,6 +37,10 @@
 #           routes (G6);
 #           since S370 the recode family, jconvert(), the registration
 #           verbs and jsubset() given no variable or no condition (G8);
+#           since S371 a line that would stop again replaced by ruling
+#           R22's stop (ruling R23), the default's route naming its
+#           arguments, the lines when what is given as the data is no data
+#           frame, and the recode family's map and labels stops (G9);
 #           since S359 the shape check counting cases and naming the
 #           workspace object a wrong count came from (I1), and the vector
 #           path's refusal of a condition on another variable (I2);
@@ -49,6 +53,35 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S371 EDIT (v0.9.244; Fix Slate 19): NEW SECTION G9 -- 59 sections -> 60.
+#           Seven renders: ruling R23 (Jeff, S371) -- a call naming a
+#           variable and no data frame that also lacks an input it needs
+#           gets ruling R22's one stop, saying what is missing (a map,
+#           labels, codes, a convention, a second variable); the two routes
+#           kept where only the data frame is missing, the default's route
+#           naming the arguments after the variable; the named-arguments
+#           stop under a default; a quoted name, a value, a single value and
+#           an expression given as the data; a condition typed with one =
+#           and no data frame or default naming one; the generic examples
+#           and the status notes' lines set on community; the recode
+#           family's map and labels stops. Filled by running the file.
+#           RE-PINNED by running, the moved lines found by capturing every
+#           walk whole on 0.9.243 and on 0.9.244 and comparing (36 lines,
+#           all in this walk): B1-B4, B6, B7 and I1 (the generic example
+#           set on community), E1 and G4 (the single-= line naming the data
+#           frame, ruling R23), G5, G6 and H4 (the variable-name question on
+#           a line of its own); I1's and G4's notes amended. All on the
+#           PENDING line: the community example and the question's line are
+#           layouts Claude chose. Sandbox: 90 of 90 Expected blocks found in
+#           a straight run (70 of 90 on 0.9.243 -- the 13 re-pinned blocks
+#           and G9's 7 -- so the check discriminates); G9 run with the Setup
+#           alone, 7 of 7, so it NEEDS none. The human half of
+#           filter_check.R section AG.
+# LAST VERIFIED: v0.9.244, 2026-10-18 (S371) -- B1-B4, B6, B7, E1, G4-G6,
+#           G9, H4 and I1 WALKED on the WORKSTATION by Jeff through
+#           receive_all() ("walked, all okay"); PENDING back to none; R CMD
+#           check 0 errors, 0 warnings, 0 notes; ALL BATTERIES GREEN (10
+#           run, 2927 checks); GitHub 1a533d8 (package).
 # S370 EDIT (v0.9.243; Fix Slate 18): NEW SECTION G8 -- 58 sections -> 59.
 #           Five renders: ruling R22's one stop in jrecode(), jencode(),
 #           jrelabel(), jdeclare_missing() and jconvert() given nothing
@@ -587,7 +620,7 @@ caught(jsubset(d, TRUE))
 #   Caught: jsubset(): TRUE is a single value, not one TRUE or FALSE for
 #   every case.
 #   Compare a variable to a value, for example:
-#     jsubset(Age < 40)
+#     jsubset(community, Age < 40)
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -601,7 +634,7 @@ caught(jsubset(d, T))
 #   Caught: jsubset(): T is a single value (TRUE), not one TRUE or FALSE for
 #   every case.
 #   Compare a variable to a value, for example:
-#     jsubset(Age < 40)
+#     jsubset(community, Age < 40)
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -614,7 +647,7 @@ caught(jsubset(d, mean(Age, na.rm = TRUE) > 40))
 #   Caught: jsubset(): mean(Age, na.rm = TRUE) > 40 is a single value (TRUE),
 #   not one TRUE or FALSE for every case.
 #   Compare a variable to a value, for example:
-#     jsubset(Age < 40)
+#     jsubset(community, Age < 40)
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -627,7 +660,7 @@ caught(jsubset(d, Keep01 * 1))
 #   Caught: jsubset(): Keep01 * 1 is numeric, not one TRUE or FALSE for
 #   every case.
 #   Compare a variable to a value, for example:
-#     jsubset(Age < 40)
+#     jsubset(community, Age < 40)
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -655,7 +688,7 @@ caught(jsubset(d, keep3 == TRUE))
 #   It has 3 values for the 12 cases in the d data frame, not one TRUE or FALSE
 #   for every case.
 #   Build the filter from the data frame's own columns, for example:
-#     jsubset(Age < 40)
+#     jsubset(community, Age < 40)
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -672,7 +705,7 @@ jsubset()
 #   Caught: jsubset(): TRUE is a single value, not one TRUE or FALSE for
 #   every case.
 #   Compare a variable to a value, for example:
-#     jsubset(Age < 40)
+#     jsubset(community, Age < 40)
 #   Your earlier filter for the d data frame is unchanged.
 #   jsubset active for d: Age < 40
 
@@ -1401,8 +1434,8 @@ caught(jsubset(Gender = 1))
 # Expected:
 #   Caught: jsubset(): Gender = 1 uses a single =, which does not test
 #   equality in R.
-#   Use == (two equals signs):
-#     jsubset(Gender == 1)
+#   Use == (two equals signs), and name the data frame:
+#     jsubset(MyData, Gender == 1)
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -1695,8 +1728,8 @@ caught(jsubset(Gender = 1))
 # Expected:
 #   Caught: jsubset(): Gender = 1 uses a single =, which does not test
 #   equality in R.
-#   Use == (two equals signs):
-#     jsubset(Gender == 1)
+#   Use == (two equals signs), and name the data frame:
+#     jsubset(MyData, Gender == 1)
 options(.jst_default_data = .def_g4)
 rm(.def_g4)
 
@@ -1705,6 +1738,8 @@ rm(.def_g4)
 #     meets the stop for a condition with no data frame (no default is set
 #     here).
 #   - Render 2: unchanged: a named input on its own keeps the single-= stop.
+#     Since S371 (ruling R23) its line names a data frame, there being no
+#     default: MyData here, since d and e both hold Gender (G9 Render 5).
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # G5 -- a condition with no data frame in hand (S355) ----
@@ -1734,8 +1769,8 @@ caught(jcorr(.g5_Age))
 #   Or set a default first, then run the call:
 #     juse(MyData)
 #     jsubset(.g5_Age > 40)
-#   Caught: jcorr(): '.g5_Age' not found. Did you mean to use it as a
-#   variable name?
+#   Caught: jcorr(): '.g5_Age' not found.
+#   Did you mean to use it as a variable name?
 #   If so, name the data frame first:
 #     jcorr(MyData, .g5_Age)
 #   Or set a default first, then run the call:
@@ -1834,8 +1869,8 @@ caught(evalq(jplot(), .ws_g6))
 # keep the whole call.
 caught(evalq(jcorr(Score6, Group6, method = "spearman"), .ws_g6))
 # Expected:
-#   Caught: jcorr(): 'Score6' not found. Did you mean to use it as a
-#   variable name?
+#   Caught: jcorr(): 'Score6' not found.
+#   Did you mean to use it as a variable name?
 #   If so, name the data frame first:
 #     jcorr(g6, Score6, Group6, method = "spearman")
 #   Or set a default first, then run the call:
@@ -2172,6 +2207,260 @@ rm(.def_g8, .conv_g8, .ws_g8, g8, mk8)
 #     refusal and its two lines are as before (AF11, AF12).
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# G9 -- a line that would stop again, and the front doors' lines (S371) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.244 (Fix Slate 19; ruling R23, Jeff at S371, and the slate's leans,
+# "All yours including the ruling."). Ruling R22 says a remedy never leads
+# to another stop; the S371 audit ran every line the package's messages
+# offer, in the state the message was raised, and found lines that did.
+# Render 1, ruling R23: a call naming a variable and no data frame, which
+# also lacks an input it needs -- jrecode(Score9) has no map -- offered the
+# call with the data frame named, jrecode(g9, Score9), which stopped again
+# for the map; it now gets R22's one stop, saying what is missing. Render
+# 2: with nothing lacking but the data frame, the two routes stay, and the
+# default's route names the arguments after the variable, as these
+# functions require with no data frame (it gave jrecode(Score9, "1=2"),
+# which stopped on that rule); a name no data frame holds keeps the
+# not-found stop. Render 3: under a default, the named-arguments stop
+# checks the first name first, and gives the call with its map named.
+# Render 4: what was given as the data is no data frame -- a quoted name,
+# a value that names no variable, a single value, an expression -- and the
+# lines leave it out. Render 5: a condition typed with one = and no data
+# frame or default names the data frame. Render 6: the generic examples
+# and the status notes' lines are set on community. Render 7: the recode
+# family's map and labels stops, the example on a line of its own. Renders
+# 1, 2 and 4 run in .ws_g9, a stand-in for a console session whose
+# workspace holds one data frame. The assertion side is filter_check.R
+# section AG.
+.def_g9 <- getOption(".jst_default_data")
+.conv_g9 <- getOption(".jst_options_missing_convention")
+options(.jst_default_data = NULL, .jst_options_missing_convention = "none")
+g9 <- data.frame(Score9 = c(4, 7, 5, 8, 6, 9), Group9 = rep(1:2, 3),
+                 Name9 = c("a", "b", "c", "d", "e", "f"))
+.ws_g9 <- new.env(parent = baseenv())
+.ws_g9$g9 <- g9
+for (.f in c("jrecode", "jencode", "jrelabel", "jdeclare_missing", "jcorr",
+             "jdesc", "jplot", "jcomplete"))
+  assign(.f, get(.f), envir = .ws_g9)
+rm(.f)
+
+# Render 1: a variable named, the data frame not, and an input lacking.
+caught(evalq(jrecode(Score9), .ws_g9))
+caught(evalq(jrelabel(Score9), .ws_g9))
+caught(evalq(jdeclare_missing(Score9), .ws_g9))
+caught(evalq(jdeclare_missing(vars = "Score9", codes = -99), .ws_g9))
+caught(evalq(jcorr(Score9, method = "spearman"), .ws_g9))
+# Expected:
+#   Caught: jrecode(): no data frame and no map were named.
+#   Name a data frame, one of its variables and a map, for example:
+#     community$OwnsHome01 <- jrecode(community, OwnsHome, map = "1=1; 2=0")
+#   Caught: jrelabel(): no data frame and no labels were named.
+#   Name a data frame, one of its variables and a label, for example:
+#     community$Age <- jrelabel(community, Age, var.label = "Age in years")
+#   Caught: jdeclare_missing(): no data frame and no codes were named.
+#   Name a data frame, one or more of its variables and the codes, for example:
+#     jdeclare_missing(community, Age, codes = -99, convention = "spss")
+#   Caught: jdeclare_missing(): no data frame and no convention were named.
+#   Name a data frame, one or more of its variables, the codes and a convention,
+#   for example:
+#     jdeclare_missing(community, Age, codes = -99, convention = "spss")
+#   Caught: jcorr(): no data frame and no second variable were named.
+#   Name a data frame and two or more of its variables, for example:
+#     jcorr(community, Income, Age, WellbeingScore, method = "spearman")
+
+# Render 2: nothing lacking but the data frame; then a name no frame holds.
+caught(evalq(jrecode(Score9, "1=2; else=copy"), .ws_g9))
+caught(evalq(jrelabel(Score9, "1=One"), .ws_g9))
+caught(evalq(jrecode(Scorx), .ws_g9))
+# Expected:
+#   Caught: jrecode(): 'Score9' not found.
+#   Did you mean to use it as a variable name?
+#   If so, name the data frame first:
+#     jrecode(g9, Score9, "1=2; else=copy")
+#   Or set a default first, then run the call:
+#     juse(g9)
+#     jrecode(Score9, map = "1=2; else=copy")
+#   Caught: jrelabel(): 'Score9' not found.
+#   Did you mean to use it as a variable name?
+#   If so, name the data frame first:
+#     jrelabel(g9, Score9, "1=One")
+#   Or set a default first, then run the call:
+#     juse(g9)
+#     jrelabel(Score9, labels = "1=One")
+#   Caught: jrecode(): 'Scorx' not found.
+#   Did you mean to use it as a variable name?
+#   If so, name the data frame first:
+#     jrecode(MyData, Scorx)
+#   Or set a default first, then run the call:
+#     juse(MyData)
+#     jrecode(Scorx)
+
+# Render 3: under a default.
+juse(g9)
+caught(jrecode(Score9, "1=2; else=copy"))
+caught(jrecode(Score9, Group9, map = "1=2"))
+caught(jencode(Nam9, Name9, map = "a=1"))
+juse(NULL)
+# Expected:
+#   Default data frame set to: g9
+#   Caught: jrecode(): when the data argument is omitted, all subsequent
+#   arguments must be named.
+#   Name the map:
+#     jrecode(Score9, map = "1=2; else=copy")
+#   Caught: jrecode(): when the data argument is omitted, all subsequent
+#   arguments must be named.
+#   Caught: jencode(): Nam9 was not found in the g9 data frame.
+#   Check the spelling.
+#   g9 is the juse() default -- if you meant a different data frame, name it
+#   in the call.
+#   Default data frame cleared.
+
+# Render 4: no data frame given as the data.
+.ws_g9$nofr <- 5
+.ws_g9$mk9 <- function() g9
+caught(evalq(jdesc("g9"), .ws_g9))
+caught(evalq(jplot(1:3), .ws_g9))
+caught(evalq(jplot(1:3, Score9), .ws_g9))
+caught(evalq(jdesc(nofr, Score9), .ws_g9))
+caught(evalq(jcomplete(mk9()), .ws_g9))
+# Expected:
+#   Caught: jdesc(): "g9" is in quotes, and no variables were named.
+#   Name a data frame without quotes and one or more of its variables,
+#   for example:
+#     jdesc(community, Age, Income)
+#   Caught: jplot(): 1:3 is not a data frame, and no variables were named.
+#   Name a data frame and one or two of its variables, for example:
+#     jplot(community, Age)
+#   Caught: jplot(): 1:3 is not a data frame.
+#   Name the data frame first:
+#     jplot(g9, Score9)
+#   Or set a default first, then run the call:
+#     juse(g9)
+#     jplot(Score9)
+#   Caught: jdesc(): nofr is a single value, not a data frame.
+#   Name the data frame first:
+#     jdesc(g9, Score9)
+#   Caught: jcomplete(): no variables specified.
+#   Provide one or more variable names, for example:
+#     jcomplete(community, Age, Income)
+
+# Render 5: a condition typed with one =, no data frame and no default.
+caught(jsubset((Group9 = 1) & (Score9 < 6)))
+# Expected:
+#   Caught: jsubset(): (Group9 = 1) & (Score9 < 6) uses a single =, which does
+#   not test equality in R.
+#   Use == (two equals signs), and name the data frame:
+#     jsubset(g9, (Group9 == 1) & (Score9 < 6))
+
+# Render 6: the generic examples, and the status notes with nothing set.
+caught(jsubset(g9, Score9 + 1))
+caught(jsubset(g9, Score9 < 6 & AND))
+jsubset(g9, on)
+jcomplete(g9, on)
+# Expected:
+#   Caught: jsubset(): Score9 + 1 is numeric, not one TRUE or FALSE for
+#   every case.
+#   Compare a variable to a value, for example:
+#     jsubset(community, Age < 40)
+#   Caught: jsubset(): Score9 < 6 & AND uses AND, which R does not recognize.
+#   Use & (single ampersand):
+#     jsubset(community, Age < 40 & Volunteer == 1)
+#   No jsubset set for g9.
+#   To set one, give a condition, for example:
+#     jsubset(community, Age < 40)
+#   No jcomplete filter set for g9.
+#   To set one, name its variables, for example:
+#     jcomplete(community, Age, Income)
+
+# Render 7: the map and the labels.
+caught(jrecode(g9, Score9))
+caught(jrecode(g9, Score9, map = 1))
+caught(jencode(g9, Name9, map = 2))
+caught(jrecode(g9, Score9, map = "1=2; else=copy", labels = 1))
+caught(jrelabel(g9, Score9, labels = 1))
+caught(jdeclare_missing(g9, Score9, codes = -99, labels = 1,
+                        convention = "spss"))
+# Expected:
+#   Caught: jrecode(): no map specified.
+#   Provide a map in quotes, for example:
+#     community$OwnsHome01 <- jrecode(community, OwnsHome, map = "1=1; 2=0")
+#   Caught: jrecode(): the map must be one quoted string, for example:
+#     map = "1=1; 2=0"
+#   Caught: jencode(): the map must be one quoted string, for example:
+#     map = "Bail=1; Parole=2"
+#   Caught: jrecode(): the labels must be one quoted string, for example:
+#     labels = "1=Male; 0=Female"
+#   Caught: jrelabel(): the labels must be one quoted string, for example:
+#     labels = "1=Yes; 0=No"
+#   Caught: jdeclare_missing(): the labels must be one quoted string,
+#   for example:
+#     labels = "-99=Refused; -98=Don't know"
+options(.jst_default_data = .def_g9, .jst_options_missing_convention = .conv_g9)
+rm(.def_g9, .conv_g9, .ws_g9, g9)
+
+# Things to look at:
+#   - Render 1, ruling R23: each had given the not-found stop and its two
+#     routes, jrecode(g9, Score9) and juse(g9) with jrecode(Score9), and
+#     either, run, stopped again for the map (jdeclare_missing(vars = ...,
+#     codes = -99) for a convention; jcorr() for a second variable). The lead
+#     now says what is missing beside the data frame -- "no map", "no
+#     labels", "no codes", "no convention", "no second variable" -- and the
+#     example is the function's own, on community, as R22's stop gives it
+#     (G6 Render 3, G8 Render 1), jcorr()'s keeping method = (AG06, AG07).
+#   - jrelabel() asks for "a label": it takes labels = or var.label =, and
+#     the example gives a variable label. Does "and a label" read right
+#     beside "no labels were named"?
+#   - jdeclare_missing() given codes is asked for a convention only when no
+#     session convention is set and the variable declares nothing yet:
+#     under a convention, or on a variable already declaring missing values,
+#     it lacks only the data frame and keeps the two routes (AG07's
+#     controls).
+#   - Render 2: the first route keeps the call as typed with g9 put first --
+#     the map third, unnamed, where jrecode() takes it; the default's route
+#     now names map = and labels =, which jrecode() and jrelabel() require
+#     once the data frame is left out: it gave jrecode(Score9, "1=2;
+#     else=copy"), which stopped on that rule (AG02, AG03). Scorx, which no
+#     data frame holds, keeps "not found" and both routes, MyData named: the
+#     name may be a data frame's typed wrong, which R22's lead would not say
+#     (AG08).
+#   - "Did you mean to use it as a variable name?" is now a line of its
+#     own, one sentence a line, here and in G5, G6 and H4, re-pinned there
+#     (X03, Y24).
+#   - Render 3: the named-arguments stop had a line inline after "Use",
+#     and built it by position: jrecode(Score9, Group9, map = "1=2") was
+#     offered jrecode(Score9, map = Group9), its map dropped, and
+#     jencode(Nam9, Name9, map = "a=1") jencode(Nam9, map = Name9). Now the
+#     first name is checked first, so Nam9 gets the not-found sentence with
+#     the default hint; a variable of the default with ONE unnamed argument
+#     after it gets the call with that argument named, on a line of its
+#     own; with two unnamed, the sentence alone, since which is the map
+#     cannot be told (AG04, AG05).
+#   - Render 4: "g9" in quotes with no variable had been offered jdesc(g9),
+#     which stopped for want of variables; jplot(1:3) "needs a data frame"
+#     and jplot(MyData, 1:3), the value taken for a variable; nofr, a single
+#     value, "Score9 needs the data frame, not the single column nofr." and
+#     jdesc(MyData, nofr, Score9); jcomplete(mk9()) mydata <- mk9() and
+#     jcomplete(mydata), which stopped for want of variables. Each line now
+#     leaves out what is not a data frame and names g9, the data frame
+#     holding Score9, or gives the stop for what is missing (AG09-AG12).
+#   - Render 5: with no default, the line names the data frame holding
+#     Group9 and Score9 -- "and name the data frame" -- where it gave
+#     jsubset((Group9 == 1) & (Score9 < 6)), which stopped for want of one;
+#     MyData when two hold them, as E1 and G4 show; under a default, as
+#     before (AG13).
+#   - Render 6: the generic examples are set on community, never the
+#     call's frame (S338), where they named no data frame and stopped with
+#     no default; B1-B4, B6, B7 and I1 re-pinned the same way. The status
+#     notes had given "Use jsubset(g9, expression) to set one." and
+#     "Use jcomplete(g9, var1, var2, ...) to set one.", placeholders that do
+#     not run (AG14, AG17).
+#   - Render 7: jrecode() with no map had said the map "must be a single
+#     quoted string", as if one had been given wrongly; it now says none was
+#     given, with jrecode()'s own example. The quoted-string stops say "the
+#     map" and "the labels" and give the example on a line of its own, where
+#     each had "e.g." inline (jrelabel()'s without "labels ="). (AG15.)
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # PART H -- HOW A NAME IS READ: RULING R18'S NAMES SLATE (S356) ----
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # v0.9.229. Ruling R18 (Jeff, S355): "Name a variable without quotes, after
@@ -2308,8 +2597,8 @@ caught(jdesc(zz_hv, zz_hw))
 rm(zz_h, zz_hv, zz_hx)
 
 # Expected:
-#   Caught: jplot(): 'zz_hv' is not a data frame. Did you mean to use it as a
-#   variable name?
+#   Caught: jplot(): 'zz_hv' is not a data frame.
+#   Did you mean to use it as a variable name?
 #   If so, name the data frame first:
 #     jplot(zz_h, zz_hv)
 #   Or set a default first, then run the call:
@@ -2396,7 +2685,7 @@ caught(jsubset(d, keep5))
 #   It has 5 values for the 12 cases in the d data frame, not one TRUE or FALSE
 #   for every case.
 #   Build the filter from the data frame's own columns, for example:
-#     jsubset(Age < 40)
+#     jsubset(community, Age < 40)
 jcomplete(d, Age)
 caught(jdesc(d, Gender, subset = keep5 == TRUE))
 # Expected:
@@ -2413,7 +2702,7 @@ caught(jsubset(d, c(TRUE, FALSE)))
 #   Caught: jsubset(): c(TRUE, FALSE) has 2 values for 12 cases, not one TRUE or
 #   FALSE for every case.
 #   Build the filter from the data frame's own columns, for example:
-#     jsubset(Age < 40)
+#     jsubset(community, Age < 40)
 rm(keep5)
 
 # Things to look at:
@@ -2422,7 +2711,8 @@ rm(keep5)
 #     values for the 12 cases in the d data frame, not one TRUE or FALSE
 #     for every case." and jfreq()'s own fix line;
 #   - Render 2: "keep5 is not in ..." with no "In keep5," before it, and
-#     the own-columns fix with jsubset(Age < 40);
+#     the own-columns fix with jsubset(community, Age < 40) (S371: it was
+#     jsubset(Age < 40), which stopped with no default);
 #   - Render 3: "the 11 cases left after filtering";
 #   - Render 4: "c(TRUE, FALSE) has 2 values for 12 cases" -- "cases", and
 #     no object named.
