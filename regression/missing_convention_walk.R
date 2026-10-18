@@ -94,6 +94,20 @@
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S374 (v0.9.247; Fix Slate 21, the S372 item). SECTION 71
+#           RE-PINNED, one line: Render 3's second note (S319's) declares the
+#           D1 note's -99 beside its own 0, codes = c(-99, 0), so running
+#           both pairs in turn keeps both; its "Things to look at" bullet
+#           rewritten. On the PENDING line. A capture of every section of
+#           every walk on 0.9.246 and 0.9.247: here only Section 71 moved
+#           (a temporary path aside). harness.R verify: 121 of 122 Expected
+#           blocks found (Section 10's, as before), 74 of 74 sections in
+#           three orders and by prepare = TRUE. The assertion side is
+#           missing_convention_check.R N95j2 and N95j3.
+# LAST VERIFIED: v0.9.247, 2026-10-19 (S374) -- Section 71 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 3016 checks).
 # EDITED:   S373 (v0.9.246; Slate E5, declared missing values on text,
 #           rulings R26, R27 and R28). NEW PART W: SECTION 72, eight renders --
 #           a text variable's value declared quoted with no convention asked
@@ -7913,7 +7927,7 @@ w71q$QR <- jrecode(w71q, Q, map = ".a=0; 5=-99; else=copy")
 #   To keep those cases missing under SPSS convention, declare 0 on the
 #   recoded variable:
 #     w71q$QR <- jrecode(w71q, Q, map = ".a=0; 5=-99; else=copy")
-#     jdeclare_missing(w71q, QR, codes = c(0), modify = TRUE)
+#     jdeclare_missing(w71q, QR, codes = c(-99, 0), modify = TRUE)
 #
 #   Note: This call changes w71q only if you assign the result:
 #     w71q$<name> <- jrecode(...)
@@ -7975,8 +7989,10 @@ rm(.wd71, w71u, w71p, w71q, w71s, w71n, w71d)
 #     no convention =. Under to = "stata" or "sas" it is still left out: a
 #     text value cannot take a marker (the S351 rule).
 #   - RENDER 3: "declare it on the recoded variable", then the two lines --
-#     the S319 note below it offers its own pair for 0. Run both pairs in
-#     turn and the second replaces -99 with 0; each runs on its own.
+#     the S319 note below it offers its own pair for 0. Since S374 (the
+#     S372 item) that pair declares -99 as well, codes = c(-99, 0): run
+#     both pairs in turn and the second no longer drops the first's -99.
+#     Its sentence still says "declare 0" -- does it need to name -99 too?
 #   - RENDER 4: is "has no lettered markers to label" the right stop for a
 #     call that also gave -99, or should it say the -99 half could be
 #     declared by itself?

@@ -25,6 +25,23 @@
 #           call (Sections 27-29). Since S367 jload()'s warnings on an
 #           argument the format does not use (Section 30).
 # ORIGIN:   S229
+# EDITED:   S374 (v0.9.247; Fix Slate 21). SECTION 13 RE-PINNED AND
+#           EXTENDED: "Provide a name, for example:" (the audit's layout
+#           item retired the last inline "e.g."); x13.RData is made before
+#           it is asked for, since jload() now looks for an .RData file
+#           first, as for every other format; and one new block, filled by
+#           running (fill.R, "#@SKIP" ahead of it), an .RData file that does
+#           not exist: the file-not-found stop, where it was offered a
+#           load() line that failed. On the PENDING line. A capture of every
+#           section of every walk on 0.9.246 and 0.9.247: here only Section
+#           13 moved. harness.R verify: 109 of 110 Expected blocks found
+#           (Section 9's, as before), 30 of 30 sections in three orders and
+#           by prepare = TRUE. The assertion side is import_check.R T01 and
+#           missing_convention_check.R N86m-N86m3.
+# LAST VERIFIED: v0.9.247, 2026-10-19 (S374) -- Section 13 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 3016 checks).
 # EDITED:   S373 (v0.9.246; Slate E5, ruling R27). SECTION 16 RE-PINNED by
 #           hand from the capture: the blank footnote under both read-back
 #           tables names both routes, a line each -- jencode() to give the
@@ -1448,6 +1465,7 @@ rm(mk12, mkc12, lst12, d12a, d12b, d12c)
 writeLines(c("x", "1", "2"), "zz13.csv")
 writeLines(c("x", "1"), "2024zz13.csv")
 d13 <- data.frame(a = 1:3)
+save(d13, file = "x13.RData")   # S374: the redirect is for a file that exists
 p13 <- ""
 z13 <- 1:3
 .def13 <- getOption(".jst_default_data"); options(.jst_default_data = NULL)
@@ -1602,11 +1620,11 @@ try(jload("zz13.csv", name = "2b"))
 # Expected:
 #   Error : jload(): The filename '2024zz13.csv' starts with a number.
 #   R does not allow a data frame's name to start with a digit.
-#   Provide a name, e.g.:
+#   Provide a name, for example:
 #     jload("2024zz13.csv", name = "X2024zz13")
 #   Error : jload(): The name '2b' starts with a number.
 #   R does not allow a data frame's name to start with a digit.
-#   Provide a name, e.g.:
+#   Provide a name, for example:
 #     jload("zz13.csv", name = "X2b")
 
 cat("\n--- an .RData file ---\n")
@@ -1615,6 +1633,13 @@ try(jload("x13.RData"))
 #   Error : jload(): x13.RData is an .RData file, which jstats does not load.
 #   Load it with base R:
 #     load("x13.RData")
+
+cat("\n--- an .RData file that does not exist (S374) ---\n")
+try(jload("nofile13.RData"))
+# Expected:
+#   Error : jload(): File 'nofile13.RData' not found.
+#   Searched in: working directory
+#   Check that the filename and extension are correct.
 
 cat("\n--- an empty file name; a data frame given as an expression ---\n")
 try(jload(""))

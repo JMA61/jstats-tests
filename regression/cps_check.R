@@ -32,6 +32,22 @@
 #           blank footnote's two routes, a factor's one, and blanks declared
 #           missing as one row of the Missing block (N58d2, N58d3).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S374 EDIT (v0.9.247, 2026-10-19): Fix Slate 21 (the S373 item, Jeff's
+#           lean "all yours"). N58d5 and N58d6 NEW: under a variable that
+#           already declares values, jfreq()'s blank footnote names them
+#           beside the blank -- "To declare them missing as well, use
+#           jdeclare_missing() with:" and the codes on a line of their own,
+#           c("UNKNOWN", ""), a declared value's label kept with labels =;
+#           past a text variable's three, the jencode() line alone.
+#           256 -> 258.
+#           MUTATION MAP: the footnote's argument fixed at codes = ""
+#           N58d5 N58d6; the variable's labels ignored N58d6. The rest in
+#           missing_convention_check.R's S374 entry, all red. Sandbox: the
+#           five ways and entered dirty, green.
+#           LAST VERIFIED: v0.9.247, 2026-10-19 (S374) -- 258/258 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3016 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S373 EDIT (v0.9.246, 2026-10-18): Slate E5 (ruling R27). jfreq()'s blank
 #           footnote names both routes, a line each -- "To give them a code,
 #           use jencode()." and "To declare them missing, use
@@ -2423,6 +2439,29 @@ check("N58d2 a factor's footnote keeps the one jencode() line and does not offer
                     "It is counted as a valid value, not as missing.",
                     "To give it a code or make it missing, use jencode().")) &&
           !any(grepl("jdeclare_missing", o, fixed = TRUE)) })
+# S374 (v0.9.247; the S373 item, Jeff's lean "all yours"): a declaration
+# replaces a variable's values, so under a variable that already declares
+# values the declare route names them beside the blank -- codes = "" alone,
+# followed, replaced UNKNOWN. Past a text variable's three, the jencode()
+# line alone, as for a factor.
+check("N58d5 a variable declaring UNKNOWN: the footnote names it beside the blank, codes = c(\"UNKNOWN\", \"\"), on a line of its own (it said codes = \"\", which dropped UNKNOWN); followed, both are declared",
+      local({ x58 <- data.frame(M = c("a", "UNKNOWN", "", "  ", "b"), stringsAsFactors = FALSE)
+              x58 <- suppressMessages(jdeclare_missing(x58, M, codes = "UNKNOWN"))
+              o <- plines(jfreq(x58, M))
+              y58 <- suppressMessages(jdeclare_missing(x58, M, codes = c("UNKNOWN", "")))
+              k <- which(o == "To declare them missing as well, use jdeclare_missing() with:")
+              length(k) == 1L && identical(o[k + 1L], "  codes = c(\"UNKNOWN\", \"\")") &&
+                setequal(as.character(attr(y58$M, "na_values")), c("UNKNOWN", "")) }))
+check("N58d6 ... a label the variable gives a declared value is kept, with labels =; three declared, no room: the jencode() line alone",
+      local({ x58 <- data.frame(M = c("a", "REF", "", "b"), stringsAsFactors = FALSE)
+              x58 <- suppressMessages(jdeclare_missing(x58, M, codes = c(Refused = "REF")))
+              o <- plines(jfreq(x58, M))
+              z58 <- data.frame(M = c("a", "X", "Y", "Z", "", "b"), stringsAsFactors = FALSE)
+              z58 <- suppressMessages(jdeclare_missing(z58, M, codes = c("X", "Y", "Z")))
+              p <- plines(jfreq(z58, M))
+              any(o == "  codes = c(\"REF\", \"\"), labels = \"REF=Refused\"") &&
+                any(p == "To give it a code or make it missing, use jencode().") &&
+                !any(grepl("jdeclare_missing", p, fixed = TRUE)) }))
 # S373 (ruling R27): a variable whose blanks are declared shows them as one
 # Missing row, <blank>, the empty and the spaces cells counted together, and
 # no footnote (there is no blank among the valid values).

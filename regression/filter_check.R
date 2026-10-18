@@ -161,6 +161,27 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S374 EDIT (v0.9.247, 2026-10-19): Fix Slate 21. C18d and C33
+#           RE-PINNED: the clear-one-of-several stops give each way out on
+#           a line of its own (they sat inline after "e.g."). Z08 RE-PINNED:
+#           ruling R19's stop offers a single column in the data-first form,
+#           jdesc(d, Age, subset = zw == 1), and the two lines are RUN (it
+#           offered jdesc(d$Age, ...), which stopped next). AB04 RE-PINNED:
+#           y ~ . gets ruling R24's template before the data frame is looked
+#           for. AG15b NEW: the last inline "e.g." stops -- the parsers', the
+#           formula-order, vars = and jplot()'s result stops -- each give
+#           the example on a line of its own. AG15c NEW: the registrations'
+#           clear-one-of-several stop the same. 617 -> 619.
+#           MUTATION MAP: the dot stop removed AB04 (and models_check.R X);
+#           the data-first form removed Z08; the formula-order stop back
+#           inline AG15b; the map parser's empty stop back inline AG15b;
+#           the registrations' clear stop back inline AG15c (added for this
+#           mutant, which the first round left green). Sandbox: the five
+#           ways and entered dirty, green.
+#           LAST VERIFIED: v0.9.247, 2026-10-19 (S374) -- 619/619 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3016 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S371 EDIT (v0.9.244, 2026-10-18): Fix Slate 19 and ruling R23, from the
 #           S371 remedy-line audit (regression/remedy_audit.R). NEW SECTION
 #           AG, seventeen checks (AG01-AG17): under a juse() default the
@@ -1816,10 +1837,12 @@ check("C18c no default, nothing set: nothing to clear (bare and leading-comma)",
       has(grab(jsubset(NULL)), "No jsubset settings to clear.") &&
       has(grab(jsubset(, NULL)), "No jsubset settings to clear."))
 quiet(jsubset(d, Age < 40)); quiet(jsubset(e, Gender == 1))
-.c18d <- flat(grab(jsubset(NULL)))
-check("C18d no default, two frames: STOP naming both frames and both exits; nothing cleared",
+.c18d_raw <- grab(jsubset(NULL)); .c18d <- flat(.c18d_raw)
+# Re-pinned S374 (v0.9.247; the audit's layout item, Rules E and L): each
+# way out on a line of its own; it gave them inline after "e.g.".
+check("C18d no default, two frames: STOP naming both frames and both exits, each exit on a line of its own (re-pinned S374: they sat inline after \"e.g.\")",
       has(.c18d, "jsubset(): more than one data frame carries a jsubset setting: d, e.") &&
-      has(.c18d, "e.g. jsubset(d, NULL), or clear them all with jsubset(clear.all = TRUE).") &&
+      endsWith(.c18d_raw, "Name the one to clear, for example:\n  jsubset(d, NULL)\nOr clear them all:\n  jsubset(clear.all = TRUE)") &&
       !is.null(fs_of("d")) && !is.null(fs_of("e")))
 quiet(jsubset(clear.all = TRUE))
 quiet(juse(d)); quiet(jsubset(Age < 40)); quiet(jsubset(e, Gender == 1))
@@ -1885,10 +1908,10 @@ check("C32 no default, nothing set: nothing to clear (bare and leading-comma)",
       has(grab(jcomplete(NULL)), "No jcomplete settings to clear.") &&
       has(grab(jcomplete(, NULL)), "No jcomplete settings to clear."))
 quiet(jcomplete(d, Age)); quiet(jcomplete(e, Age))
-.c33 <- flat(grab(jcomplete(NULL)))
-check("C33 no default, two frames: STOP naming both frames and both exits; nothing cleared",
+.c33_raw <- grab(jcomplete(NULL)); .c33 <- flat(.c33_raw)
+check("C33 no default, two frames: STOP naming both frames and both exits, each exit on a line of its own (re-pinned S374); nothing cleared",
       has(.c33, "jcomplete(): more than one data frame carries a jcomplete setting: d, e.") &&
-      has(.c33, "e.g. jcomplete(d, NULL), or clear them all with jcomplete(clear.all = TRUE).") &&
+      endsWith(.c33_raw, "Name the one to clear, for example:\n  jcomplete(d, NULL)\nOr clear them all:\n  jcomplete(clear.all = TRUE)") &&
       !is.null(cs_of("d")) && !is.null(cs_of("e")))
 check("C34 a variable named off listed WITH others is a variable, not the command",
       has(flat(grab(jcomplete(d, off, Age))),
@@ -5176,11 +5199,20 @@ check("Z07 ... reached through $: under its last name; jfreq() and jscreen() the
               identical(.z_fix(a), c("mydata <- data.frame(zx, w = zl$w)", "jfreq(mydata, zx, subset = w == 1)")) &&
                 has(flat(b), "jscreen(): In subset = zl$w == 1, zl$w is a separate object in your workspace.") &&
                 !errs(jdesc(zx)) && !errs(jfreq(zx)) && !errs(jscreen(zx)) }))
-check("Z08 a column of a frame is analyzed in its frame: the frame's form, its name in the line",
+# Z08 re-pinned S374 (v0.9.247; the S371 R19 item, lean okayed S371): the
+# call is offered in the data-first form. jdesc(d$Age, subset = zw == 1),
+# offered as typed, stopped once zw was added, the single-column form
+# refusing a condition on another variable of its frame. The lines are
+# now RUN, on a copy of d.
+check("Z08 a column of a frame is analyzed in its frame: the frame's form, its name in the line, the call in the data-first form (re-pinned S374: it offered jdesc(d$Age, ...), which stopped next); the two lines run",
       local({ zw <- d$Keep01
               m <- grab(jdesc(d$Age, subset = zw == 1))
-              has(flat(m), .z_obj("jdesc", "zw", "subset = zw == 1")) &&
-                identical(.z_fix(m), c("d$zw <- zw", "jdesc(d$Age, subset = zw == 1)")) }))
+              fix <- .z_fix(m)
+              ok <- identical(fix, c("d$zw <- zw", "jdesc(d, Age, subset = zw == 1)"))
+              e <- new.env(parent = globalenv()); e$d <- d; e$zw <- zw
+              ran <- ok && !errs(for (f in fix) quiet(eval(parse(text = f)[[1L]], e))) &&
+                "zw" %in% names(e$d)
+              has(flat(m), .z_obj("jdesc", "zw", "subset = zw == 1")) && ok && ran }))
 rm(.z_fix, .z_obj)
 reset()
 
@@ -5356,12 +5388,15 @@ check("AB03 a call with no variable to match -- jscreen() -- in a workspace hold
         }, logical(1))
         all(one) && identical(.ab_lines(.ab_in(e2, quote(jt(Score ~ Group))))[1],
                               "jt(Score ~ Group, ab1)") }))
-check("AB04 MyData when no data frame, or two, hold the formula's variables; a hidden data frame and an object that is not a data frame are not counted; the dot of y ~ . is not a variable to match; outside a formula, the call's unnamed variables are matched",
+check("AB04 MyData when no data frame, or two, hold the formula's variables; a hidden data frame and an object that is not a data frame are not counted; y ~ . gets ruling R24's template first (re-pinned S374: it was matched without its dot); outside a formula, the call's unnamed variables are matched",
       local({ first <- function(e) .ab_lines(.ab_in(e, quote(jt(Score ~ Group))))[1]
         identical(.ab_lines(.ab_in(.ab_ws(ab1 = .ab1, ab5 = data.frame(Age = 1)),
                                    quote(jdesc(, Score))))[1], "jdesc(ab1, Score)") &&
-        identical(.ab_lines(.ab_in(.ab_ws(ab1 = .ab1, ab2 = data.frame(x = 1)),
-                                   quote(jlm(Score ~ .))))[1], "jlm(Score ~ ., ab1)") &&
+        # S374 (ruling R24): y ~ . gets the Rule AK template before the
+        # data frame is looked for; the line jlm(Score ~ ., ab1), which
+        # then stopped, is gone (models_check.R section X holds the stop).
+        startsWith(.ab_in(.ab_ws(ab1 = .ab1, ab2 = data.frame(x = 1)), quote(jlm(Score ~ .))),
+                   "jlm(): this formula is not a form jstats reads:\n  Score ~ .\n") &&
         identical(first(.ab_ws()), "jt(Score ~ Group, MyData)") &&
           identical(first(.ab_ws(ab1 = .ab1, ab3 = .ab1)), "jt(Score ~ Group, MyData)") &&
           identical(first(.ab_ws(ab4 = data.frame(Score = 1))), "jt(Score ~ Group, MyData)") &&
@@ -6265,6 +6300,55 @@ check("AG15 the recode family's quoted-string stops: one sentence, then the exam
           has(flat(.ag_in(e, quote(jdeclare_missing(ag1, Score, codes = -99, labels = 1, convention = "spss")))),
               "the labels must be one quoted string, for example:   labels = ") &&
           !any(has(c(m, .ag_in(e, quote(jrecode(ag1, Score, map = 1)))), "e.g.")) }))
+# S374 (v0.9.247; the audit's layout item, its REMAINING part; Rules E and
+# L): the last inline "e.g." stops -- the map and labels parsers' empty and
+# rule-format stops, the formula-order stops, vars = c(...)'s stop and
+# jplot()'s result stops -- each give the example on a line of its own.
+check("AG15b the parsers', the formula-order, vars = and jplot() result stops: no \"e.g.\", the example on a line of its own (pinned whole where short)",
+      local({ e <- .ag_ws(ag1 = .ag1); assign("jlm", jlm, envir = e)
+        ms <- list(
+          .ag_in(e, quote(jrecode(ag1, Score, map = "1=2; 3"))),
+          .ag_in(e, quote(jrecode(ag1, Score, map = " ; "))),
+          .ag_in(e, quote(jrelabel(ag1, Score, labels = "1"))),
+          .ag_in(e, quote(jrelabel(ag1, Score, labels = " ; "))),
+          .ag_in(e, quote(jencode(ag1, Name, map = "Bail"))),
+          .ag_in(e, quote(jlm(ag1, Score ~ Group))),
+          .ag_in(e, quote(jlm(, Score ~ Group))),
+          .ag_in(e, quote(jlm("Score ~ Group", ag1))),
+          .ag_in(e, quote(jlm(5, ag1))),
+          .ag_in(e, quote(jdeclare_missing(ag1, vars = 3, codes = -99, convention = "spss"))),
+          .ag_in(e, quote(jconvert(ag1, vars = 3, to = "stata"))),
+          grab(jplot(structure(list(), class = "jst_desc"))),
+          grab(jplot(structure(list(), class = "jst_freq"))))
+        ok <- all(vapply(ms, function(m) nzchar(m) && !grepl("e.g.", m, fixed = TRUE) &&
+                           grepl("example:\n  |first, then the data:\n  |Remove them:\n  ", m), logical(1)))
+        ok && grepl("for example:\n  map = \"1=0; 2,3=1\"", ms[[1]], fixed = TRUE) &&
+          grepl("Provide at least one rule, for example:\n  map = \"1=1; 2=0\"", ms[[2]], fixed = TRUE) &&
+          grepl("for example:\n  labels = \"1=Male; 0=Female\"", ms[[3]], fixed = TRUE) &&
+          grepl("Provide at least one label, for example:\n  labels = \"1=Male; 0=Female\"", ms[[4]], fixed = TRUE) &&
+          grepl("for example:\n  map = \"Bail=1; Remand,Parole=2\"", ms[[5]], fixed = TRUE) &&
+          identical(ms[[6]], "jlm(): The formula goes first, then the data:\n  jlm(Score ~ Group, ag1)") &&
+          identical(ms[[7]], paste0("jlm(): The formula goes first, for example:\n  jlm(Score ~ Group, MyData)\n",
+                                    "With a juse() default set, no comma is needed:\n  jlm(Score ~ Group)")) &&
+          identical(ms[[8]], "jlm(): The formula should not be in quotes.\nRemove them:\n  jlm(Score ~ Group, MyData)") &&
+          identical(ms[[9]], "jlm(): The first input must be a formula, for example:\n  jlm(DV ~ IV, MyData)") &&
+          endsWith(ms[[10]], "for example:\n  vars = c(\"Age\", \"Income\")") &&
+          endsWith(ms[[11]], "for example:\n  vars = c(\"Age\", \"Income\")") &&
+          grepl("is not supported.\nCall jplot() with the data frame instead, for example:\n  jplot(community, Age)", ms[[12]], fixed = TRUE) &&
+          grepl("is not supported.\nCall jplot() with the data frame instead, for example:\n  jplot(community, Region)", ms[[13]], fixed = TRUE) }))
+check("AG15c the registrations' clear-one-of-several stop: each way out on a line of its own (S374: they sat inline after \"e.g.\")",
+      local({ old <- getOption(".jst_default_data"); options(.jst_default_data = NULL)
+              assign(".ag74a", data.frame(a = 1:4), envir = globalenv())
+              assign(".ag74b", data.frame(a = 1:4), envir = globalenv())
+              on.exit({ invisible(utils::capture.output(suppressMessages({
+                          jnumeric(.ag74a, NULL); jnumeric(.ag74b, NULL) })))
+                        rm(".ag74a", ".ag74b", envir = globalenv())
+                        options(.jst_default_data = old) }, add = TRUE)
+              invisible(utils::capture.output(suppressMessages(
+                evalq({ jnumeric(.ag74a, a); jnumeric(.ag74b, a) }, globalenv()))))
+              m <- grab(evalq(jnumeric(NULL), globalenv()))
+              grepl("Name the one to clear, for example:\n  jnumeric\\(\\.ag74[ab], NULL\\)\nOr clear them all:\n  jnumeric\\(clear.all = TRUE\\)$", m) &&
+                !grepl("e.g.", m, fixed = TRUE) }))
 check("AG16 every example ruling R23's stops give runs as printed, with no convention set and under spss, stata and sas -- each taken from its stop",
       local({ e <- .ag_ws(ag1 = .ag1)
         ms <- c(.ag_in(e, quote(jrecode(Score))), .ag_in(e, quote(jdeclare_missing(Score))),

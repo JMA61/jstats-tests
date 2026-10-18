@@ -48,8 +48,29 @@
 #           variable in jplot() -- one effect plot at its categories, the
 #           fit and probability plots' focal variable, the equation note --
 #           and the fit equation and ROC axis in ASCII.
+#           Since S374 (v0.9.247, Section 27): y ~ . refused with voice Rule
+#           AK's template (ruling R24) in jlm(), jaov(), jlogistic(), jt()
+#           and jcrosstab().
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
+# S374 EDIT (v0.9.247; Fix Slate 21): SECTION 27 ADDED, four renders --
+#           26 sections -> 27 -- filled by running (fill.R, warnings shown at
+#           once so an earlier section's pending warning stays there): the
+#           dot refused with the Rule AK template (ruling R24) -- jlm() as
+#           ruled; jaov(), jt(), jlogistic() and jcrosstab() each with its
+#           sentence; a dot beside named terms and on the left; no data frame
+#           named. On the PENDING line (the template is ruled; the
+#           sentences for jt() and jcrosstab() and the left-side form are
+#           Claude's). A capture of every section of every walk on 0.9.246
+#           and 0.9.247: here only Section 26's trailing blank (no longer
+#           the last section). harness.R derive: Section 27 needs no other;
+#           verify: 65 of 66 Expected blocks found (Section 1's, as
+#           before), 27 of 27 sections in three orders and by prepare =
+#           TRUE. The human half of models_check.R section X.
+# LAST VERIFIED: v0.9.247, 2026-10-19 (S374) -- Section 27 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 3016 checks).
 # S360 EDIT (v0.9.233; Fix Slate 11): SECTION 26 ADDED, five renders --
 #           25 sections -> 26 -- filled by running (fill.R): a dummy-coded
 #           variable as ONE effect plot, its categories along the axis
@@ -2748,6 +2769,90 @@ rm(shown26, d26, z26, r26a, r26b, r26c, r26d, r26e, p26a, p26b, p26c, p26d,
 #     51.92)";
 #   - RENDER 5: the equation reads "y = 40.08 - 2.01..." with a plain
 #     hyphen, and the ROC axis "False Positive Rate (1 - Specificity)".
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 27 -- Fix Slate 21: the dot refused, ruling R24 (S374) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.247. Ruling R24 (Jeff, S371: "I'm leaning toward refusing the dot";
+# on the template, "That looks good."). y ~ . printed its title and
+# stopped: "jlm(): . was not found in the wb data frame." / "Check the
+# spelling." Voice Rule AK's template now, in every formula function: the
+# fixed first line, the formula as typed on a line of its own, one sentence
+# on what jstats takes -- the only line that changes from case to case --
+# and the function's own example on community, which runs. It comes before
+# the title, and before the data frame is looked for. jt() and jcrosstab()
+# had the same ". was not found", so they take the template too (a defect
+# on the slate's surface; flagged at the S374 delivery). The assertion side
+# is models_check.R section X; filter_check.R AB04 (re-pinned).
+
+# Render 1 -- jlm(), the ruling's own case.
+try(jlm(WellbeingScore ~ ., data = community))
+# Expected:
+#   Error : jlm(): this formula is not a form jstats reads:
+#     WellbeingScore ~ .
+#   Name each predictor in the formula, for example:
+#     jlm(WellbeingScore ~ Age + Income, data = community)
+
+# Render 2 -- jaov() and jt() name the grouping variable; jlogistic() each
+# predictor; jcrosstab() each variable.
+try(jaov(WellbeingScore ~ ., data = community))
+try(jt(WellbeingScore ~ ., data = community))
+try(jlogistic(Volunteer ~ ., data = community))
+try(jcrosstab(Education ~ ., data = community))
+# Expected:
+#   Error : jaov(): this formula is not a form jstats reads:
+#     WellbeingScore ~ .
+#   Name the grouping variable in the formula, for example:
+#     jaov(WellbeingScore ~ Region, data = community)
+#   Error : jt(): this formula is not a form jstats reads:
+#     WellbeingScore ~ .
+#   Name the grouping variable in the formula, for example:
+#     jt(WellbeingScore ~ Volunteer, data = community)
+#   Error : jlogistic(): this formula is not a form jstats reads:
+#     Volunteer ~ .
+#   Name each predictor in the formula, for example:
+#     jlogistic(Volunteer ~ Income + Age, data = community)
+#   Error : jcrosstab(): this formula is not a form jstats reads:
+#     Education ~ .
+#   Name each variable in the formula, for example:
+#     jcrosstab(Education ~ Volunteer, data = community)
+
+# Render 3 -- a dot beside named terms, and a dot on the left.
+try(jlm(WellbeingScore ~ Age + ., data = community))
+try(jlm(. ~ Age, data = community))
+# Expected:
+#   Error : jlm(): this formula is not a form jstats reads:
+#     WellbeingScore ~ Age + .
+#   Name each predictor in the formula, for example:
+#     jlm(WellbeingScore ~ Age + Income, data = community)
+#   Error : jlm(): this formula is not a form jstats reads:
+#     . ~ Age
+#   Name each variable in the formula, for example:
+#     jlm(WellbeingScore ~ Age + Income, data = community)
+
+# Render 4 -- no data frame named and no default: the template first. The
+# no-data-frame stop had offered jlm(WellbeingScore ~ ., MyData), a line
+# that then stopped on the dot.
+.def27 <- getOption(".jst_default_data"); options(.jst_default_data = NULL)
+try(jlm(WellbeingScore ~ .))
+# Expected:
+#   Error : jlm(): this formula is not a form jstats reads:
+#     WellbeingScore ~ .
+#   Name each predictor in the formula, for example:
+#     jlm(WellbeingScore ~ Age + Income, data = community)
+options(.jst_default_data = .def27); rm(.def27)
+
+# Things to look at:
+#   - RENDER 1: four lines, no title above them; the example runs as
+#     printed;
+#   - RENDER 2: the third line is the only one that changes -- "the
+#     grouping variable" for jaov() and jt(), "each predictor" for
+#     jlogistic(), "each variable" for jcrosstab(), which has no outcome
+#     or predictors in its formula. Is "each variable" right there?
+#   - RENDER 3: the formula as typed, Age kept; a dot on the left says
+#     "each variable", since what it stands for there is the outcome;
+#   - RENDER 4: the template, not the no-data-frame stop.
+
 
 # --- Restore session state ---------------------------------------------------
 

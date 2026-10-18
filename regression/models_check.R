@@ -81,6 +81,26 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S374 EDIT (v0.9.247, 2026-10-19): Fix Slate 21. NEW SECTION X, eleven
+#           checks: y ~ . refused with voice Rule AK's template (ruling R24)
+#           in jlm(), jaov(), jlogistic(), jt() and jcrosstab(), before the
+#           title and before the data frame is looked for, each example run
+#           (X01-X06); jcorr()'s warning naming the method (X07); the
+#           dichotomy note's jdummy() line offered only where jdummy() takes
+#           the variable (X08-X11). T01 and T06 RE-PINNED: a term refused
+#           whatever it reads -- factor(w); a computed term in jplot() --
+#           gets that refusal ahead of ruling R19's stop; a fetched object is
+#           still named for what it is. 484 -> 495.
+#           MUTATION MAP: the dot stop removed X01-X05; jaov()'s sentence
+#           "each predictor" X02; the Pearson clause for every method X07;
+#           the term check off T01; its categorical test off T01; the fetch
+#           skip off T06; the computed-term check before R19 removed T06;
+#           the jdummy() line always offered X09-X11; its two-category test
+#           removed X10. Sandbox: the five ways and entered dirty, green.
+#           LAST VERIFIED: v0.9.247, 2026-10-19 (S374) -- 495/495 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3016 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S360 EDIT (v0.9.233, 2026-10-16): Fix Slate 11. NEW SECTION W, fifteen
 #           checks (W01-W15): a dummy-coded variable is ONE variable in
 #           jplot() (Jeff, S360: "okay on your default"; "fix in this
@@ -4711,11 +4731,18 @@ rm(.s_d, .s_pin)
   lns <- strsplit(txt, "\n", fixed = TRUE)[[1]]
   trimws(lns[grepl("^  ", lns)])
 }
-check("T01 a one-per-case object read by any function of a term stops, the term and the object named: I(a2) alone (the ruling's own example), log(), factor() and a function of the user's -- each was computed as lm() computes it",
+# T01 re-pinned S374 (v0.9.247; the S371 R19 item, lean okayed S371): a
+# term the function refuses whatever it reads -- factor(w), a categorical
+# variable -- gets that refusal first, since adding w, as the R19 lines
+# said, only reached it next.
+check("T01 a one-per-case object read by any function of a term stops, the term and the object named: I(a2) alone (the ruling's own example), log() and a function of the user's -- each was computed as lm() computes it; factor(w) gets its own refusal first (S374)",
       local({ a2 <- d$x1^2; w <- abs(d$x2) + 1; f <- function(x) x * 2
+              fw <- grab(jlm(y ~ factor(w), data = d))
               .t_has(grab(jlm(y ~ I(a2), data = d)), .t_obj("jlm", "a2", "I(a2)")) &&
                 .t_has(grab(jlm(y ~ log(w), data = d)), .t_obj("jlm", "w", "log(w)")) &&
-                .t_has(grab(jlm(y ~ factor(w), data = d)), .t_obj("jlm", "w", "factor(w)")) &&
+                identical(fw, paste0("jlm(): The formula term factor(w) produces a categorical variable,\n",
+                                     "not a numeric one.\n",
+                                     "Create it as a new column first, then use that column in the formula.")) &&
                 .t_has(grab(jlm(y ~ x1 + f(w), data = d)), .t_obj("jlm", "w", "f(w)")) }))
 check("T02 ... with the line that adds it and the call as typed; the two lines, run, fit as lm() fits the same values",
       local({ a2 <- d$x1^2
@@ -4751,7 +4778,10 @@ check("T05 jt(), jaov() and jlogistic() the same, each naming itself",
               .t_has(grab(jt(I(y * w) ~ lg, data = d)), .t_obj("jt", "w", "I(y * w)")) &&
                 .t_has(grab(jaov(I(y + w) ~ g, data = d)), .t_obj("jaov", "w", "I(y + w)")) &&
                 .t_has(grab(jlogistic(yb ~ I(x1 * w), data = d)), .t_obj("jlogistic", "w", "I(x1 * w)")) }))
-check("T06 jcrosstab() and jplot()'s formula path: the same stop ahead of their refusal of a computed term (which gave a fetched object a false reason)",
+# T06 re-pinned S374: a computed term is refused first in jplot() and
+# jcrosstab() (the add-it line kept a term they refuse); a fetched object
+# is still named for what it is ahead of the refusal of any other term.
+check("T06 jcrosstab() and jplot()'s formula path: a fetched object gets the R19 stop ahead of their refusal of a computed term (which gave it a false reason); a computed term reading a workspace object gets the refusal first (S374)",
       local({ assign("zz_t_G", factor(rep(c("p", "q"), 60)), envir = globalenv())
               on.exit(rm("zz_t_G", envir = globalenv()), add = TRUE)
               w <- d$x2
@@ -4759,8 +4789,8 @@ check("T06 jcrosstab() and jplot()'s formula path: the same stop ahead of their 
               b <- grab(jplot(y ~ I(x1 > w), d))
               .t_has(a, "jcrosstab(): .GlobalEnv$zz_t_G is not in the d data frame") &&
                 identical(.t_fix(a), c("d$zz_t_G <- .GlobalEnv$zz_t_G", "jcrosstab(g ~ zz_t_G, data = d)")) &&
-                .t_has(b, .t_obj("jplot", "w", "I(x1 > w)")) &&
-                !.t_has(a, "applies a function") && !.t_has(b, "applies a function") }))
+                .t_has(b, "jplot(): The formula applies a function to a variable: I(x1 > w).") &&
+                !.t_has(b, "separate object") && !.t_has(a, "applies a function") }))
 check("T07 a vector written in the formula and a call the check does not run are not objects: I(x1 * 1:120) and I(x1 + rnorm(120)) fit as lm() fits them",
       { m <- quiet(jlm(y ~ I(x1 * 1:120), data = d))
         set.seed(357); r <- quiet(jlm(y ~ I(x1 + rnorm(120)), data = d))
@@ -5328,6 +5358,116 @@ check("W15 the plot labels a category as the coefficient table does when a filte
               lv <- levels(.u_plots(jplot(m, which = "effects"))$effect_g$layers[[1L]]$data$x)
               length(h) == 1L && identical(lv, c(ref, rows)) && identical(lv, c("1: a", "2: b", "3: d")) }))
 rm(.w_d, .w_l, .w_g4, .u_both, .u_warns, .u_plots, .u_line, .u_msg)
+
+# =============================================================================
+# X -- FIX SLATE 21: THE DOT REFUSED (RULING R24, VOICE RULE AK); jcorr()'S
+#      RANK-METHOD WARNING; THE DICHOTOMY NOTE'S jdummy() LINE (S374, v0.9.247)
+# =============================================================================
+# y ~ . is refused in every formula function -- jlm(), jaov(), jlogistic()
+# as ruled, jt() and jcrosstab() with them (the same false ". was not
+# found") -- with the Rule AK template: a fixed first line, the formula as
+# typed on a line of its own, one sentence on what jstats takes, and the
+# function's own example on community, which runs. Before the title, and
+# before the data frame is looked for, so the no-data-frame stop no longer
+# offers jlm(Score ~ ., ab1), a line that stopped here next. jcorr()'s
+# seems-categorical warning names the method in use (it said "Pearson"
+# under spearman and kendall). The dichotomy note's jdummy() line is offered
+# only where jdummy() takes the variable as it stands: codes -1 and 1 both
+# give x_1 (jdummy() stops), and under subset = the note had counted the
+# filtered cases only. Fixtures dotted; working objects in local().
+# =============================================================================
+.x_dot <- function(fn, typed, sentence, example) paste0(
+  fn, "(): this formula is not a form jstats reads:\n",
+  "  ", typed, "\n", sentence, "\n", "  ", example)
+.x_ex <- c(jlm = "jlm(WellbeingScore ~ Age + Income, data = community)",
+           jaov = "jaov(WellbeingScore ~ Region, data = community)",
+           jlogistic = "jlogistic(Volunteer ~ Income + Age, data = community)",
+           jt = "jt(WellbeingScore ~ Volunteer, data = community)",
+           jcrosstab = "jcrosstab(Education ~ Volunteer, data = community)")
+check("X01 jlm(y ~ ., data = d): the Rule AK template, pinned whole (it printed its title and stopped: \". was not found in the d data frame.\")",
+      identical(grab(jlm(y ~ ., data = d)),
+                .x_dot("jlm", "y ~ .", "Name each predictor in the formula, for example:", .x_ex[["jlm"]])))
+check("X02 ... jaov() and jt() name the grouping variable, jlogistic() each predictor, jcrosstab() each variable; each its own example",
+      identical(grab(jaov(y ~ ., data = d)),
+                .x_dot("jaov", "y ~ .", "Name the grouping variable in the formula, for example:", .x_ex[["jaov"]])) &&
+        identical(grab(jt(y ~ ., data = d)),
+                  .x_dot("jt", "y ~ .", "Name the grouping variable in the formula, for example:", .x_ex[["jt"]])) &&
+        identical(grab(jlogistic(yb ~ ., data = d)),
+                  .x_dot("jlogistic", "yb ~ .", "Name each predictor in the formula, for example:", .x_ex[["jlogistic"]])) &&
+        identical(grab(jcrosstab(g ~ ., data = d)),
+                  .x_dot("jcrosstab", "g ~ .", "Name each variable in the formula, for example:", .x_ex[["jcrosstab"]])))
+check("X03 ... before the title: nothing printed (the title had printed first)",
+      all(vapply(list(quote(jlm(y ~ ., data = d)), quote(jaov(y ~ ., data = d)),
+                      quote(jt(y ~ ., data = d)), quote(jlogistic(yb ~ ., data = d)),
+                      quote(jcrosstab(g ~ ., data = d))), function(cl) {
+        out <- capture.output(try(eval(cl), silent = TRUE))
+        length(out) == 0L
+      }, logical(1))))
+check("X04 ... a dot beside named terms and a dot on the left are refused too: the formula as typed, the sentence for the side the dot is on",
+      identical(grab(jlm(y ~ x1 + ., data = d)),
+                .x_dot("jlm", "y ~ x1 + .", "Name each predictor in the formula, for example:", .x_ex[["jlm"]])) &&
+        identical(grab(jlm(. ~ x1, data = d)),
+                  .x_dot("jlm", ". ~ x1", "Name each variable in the formula, for example:", .x_ex[["jlm"]])))
+check("X05 ... with no data frame and no default: the template, not the no-data-frame stop (whose line jlm(y ~ ., MyData) stopped here next)",
+      local({ old <- getOption(".jst_default_data"); options(.jst_default_data = NULL)
+              on.exit(options(.jst_default_data = old), add = TRUE)
+              identical(grab(jlm(y ~ .)),
+                        .x_dot("jlm", "y ~ .", "Name each predictor in the formula, for example:", .x_ex[["jlm"]])) }))
+check("X06 ... every example line runs as printed, on community, with no setting made",
+      all(vapply(.x_ex, function(ex) {
+        r <- tryCatch(quiet(eval(parse(text = ex)[[1L]], globalenv())), error = function(e) NULL)
+        !is.null(r)
+      }, logical(1))))
+.x_d <- d
+.x_d$m1 <- rep(c(-1, 1), length.out = nrow(.x_d))
+.x_d$c5 <- rep(c(5, 10), length.out = nrow(.x_d))
+.x_d$c3 <- rep(c(5, 10, 15), length.out = nrow(.x_d))
+.x_d$q4 <- rep(1:4, length.out = nrow(.x_d))
+.x_note <- function(expr) {
+  m <- character(0)
+  zz <- textConnection(".junk", "w", local = TRUE); sink(zz)
+  on.exit({ sink(); close(zz) }, add = TRUE)
+  withCallingHandlers(tryCatch(expr, error = function(e) NULL),
+                      message = function(x) {
+                        m <<- c(m, conditionMessage(x)); invokeRestart("muffleMessage") },
+                      warning = function(x) invokeRestart("muffleWarning"))
+  paste(m[grepl("dichotomy", m, fixed = TRUE)], collapse = "")
+}
+check("X07 jcorr()'s seems-categorical warning names the method in use: Spearman and Kendall say ordinal or interval data; Pearson keeps its sentence (it said \"Pearson correlations assume continuous/interval data.\" under all three)",
+      local({ ws <- vapply(c("spearman", "kendall", "pearson"), function(m) {
+                w <- character(0)
+                withCallingHandlers(
+                  { zz <- textConnection(".junk", "w", local = TRUE); sink(zz)
+                    on.exit({ sink(); close(zz) }, add = TRUE)
+                    suppressMessages(jcorr(.x_d, y, q4, method = m)) },
+                  warning = function(x) { w <<- c(w, conditionMessage(x)); invokeRestart("muffleWarning") })
+                flat(paste(w, collapse = " "))
+              }, character(1))
+              identical(ws[["spearman"]], "q4 seems categorical. Spearman correlations assume ordinal or interval data.") &&
+                identical(ws[["kendall"]], "q4 seems categorical. Kendall correlations assume ordinal or interval data.") &&
+                identical(ws[["pearson"]], "q4 seems categorical. Pearson correlations assume continuous/interval data.") }))
+check("X08 the dichotomy note on codes 5 and 10: the jdummy() line, and run, it registers the variable as a dummy of two categories",
+      local({ n <- .x_note(jlm(y ~ c5, data = .x_d))
+              ok <- grepl("registering c5 as a dummy can help interpret the intercept:\n  jdummy(.x_d, c5)\nOr make it a 0/1 variable in the data frame.", n, fixed = TRUE)
+              r <- tryCatch(quiet(eval(parse(text = "jdummy(.x_d, c5)")[[1L]], globalenv())), error = function(e) NULL)
+              reg <- getOption(".jst_dummy")[[".x_d"]]
+              quiet(jdummy(.x_d, NULL))
+              ok && !is.null(reg) }))
+check("X09 ... on codes -1 and 1, which jdummy() refuses ('-1' and '1' both produce 'm1_1'): no line, the state to reach (the line stopped)",
+      local({ n <- .x_note(jlm(y ~ m1, data = .x_d))
+              identical(trimws(gsub("\n", " ", n)), paste0(
+                "Note: m1 is a dichotomy with non-0/1 codes. The model runs correctly, but ",
+                "making m1 a 0/1 variable in the data frame can help interpret the intercept.")) &&
+                grepl("both produce", grab(jdummy(.x_d, m1)), fixed = TRUE) }))
+check("X10 ... under subset = leaving two of a variable's three codes: no line, since jdummy() reads the variable unfiltered (the line registered three categories)",
+      local({ n <- .x_note(jlm(y ~ c3, data = .x_d, subset = c3 != 15))
+              grepl("making c3 a 0/1 variable in the data frame can help interpret", gsub("\n", " ", n), fixed = TRUE) &&
+                !grepl("jdummy(", n, fixed = TRUE) }))
+check("X11 ... jlogistic() the same",
+      grepl("making m1 a 0/1 variable", gsub("\n", " ", .x_note(jlogistic(yb ~ m1, data = .x_d))), fixed = TRUE) &&
+        grepl("  jdummy(.x_d, c5)", .x_note(jlogistic(yb ~ c5, data = .x_d)), fixed = TRUE))
+quiet(jdummy(.x_d, NULL))
+rm(.x_dot, .x_ex, .x_d, .x_note)
 
 # --- Verdict -----------------------------------------------------------------
 

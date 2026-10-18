@@ -239,6 +239,11 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
+# LAST VERIFIED: v0.9.247, 2026-10-19 (S374) -- 155/155 on the WORKSTATION
+#           through receive_all() ("ALL BATTERIES GREEN (10 run, 3016
+#           checks)"; R CMD check 0 errors, 0 warnings, 0 notes). T01
+#           re-pinned: "Provide a name, for example:" (Fix Slate 21's layout
+#           item); mutant: the stop back to "e.g." T01, red.
 # LAST VERIFIED: v0.9.246, 2026-10-18 (S373) -- 155/155 on the WORKSTATION
 #           through receive_all() ("ALL BATTERIES GREEN (10 run, 2993
 #           checks)"; R CMD check 0 errors, 0 warnings, 0 notes); GitHub
@@ -1379,7 +1384,9 @@ check("T01 a file name starting with a digit is offered the name the cleaner giv
         m2 <- .fl(grab(jload(.ix("2024 wave.csv"))))
         m3 <- .fl(grab(jload(.ix("2024.backup.csv"))))
         m4 <- .fl(grab(jload(.ix("2024.csv"), name = "2b")))
-        grepl("starts with a number. R does not allow a data frame's name to start with a digit. Provide a name, e.g.: jload(\"<DIR>/2024.csv\", name = \"X2024\")", m1, fixed = TRUE) &&
+        # Re-pinned S374 (v0.9.247): "Provide a name, for example:" -- the
+        # audit's layout item retired the last inline "e.g." stops.
+        grepl("starts with a number. R does not allow a data frame's name to start with a digit. Provide a name, for example: jload(\"<DIR>/2024.csv\", name = \"X2024\")", m1, fixed = TRUE) &&
           grepl("jload(\"<DIR>/2024 wave.csv\", name = \"X2024_wave\")", m2, fixed = TRUE) &&
           grepl("jload(\"<DIR>/2024.backup.csv\", name = \"X2024_backup\")", m3, fixed = TRUE) &&
           grepl("The name '2b' starts with a number.", m4, fixed = TRUE) &&

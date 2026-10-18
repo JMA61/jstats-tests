@@ -10,6 +10,36 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S374 EDIT (v0.9.247, 2026-10-19): Fix Slate 21. N86m now makes
+#           x86.RData before asking for it, since jload() looks for an
+#           .RData file first; N86m2 NEW: one that does not exist gets the
+#           file-not-found stop, bare and with a folder, and the line for one
+#           that exists runs; N86m3 NEW: one in the data.dir folder is named
+#           by its path there (relative, so a temp path cannot wrap it,
+#           N88s). N87bb-N87bd NEW (the S373 item): the load scan's line on
+#           a numeric variable names the codes it already declares and runs;
+#           the placeholder line keeps a declared code's label; with no room
+#           left, the fact and the way out. N95j2 NEW (the S372 item): when
+#           both notes print, jrecode()'s second declare pair names the
+#           first's code; N95j3 the control. 900 -> 907.
+#           FIRST WORKSTATION RUNS (S374): N86m2 red twice on Windows, the
+#           check's fault: normalizePath() completes a missing file's path
+#           there, and the long path then wraps onto a line of its own after
+#           "found:". The check now reads the message flattened.
+#           MUTATION MAP (Fix Slate 21's twenty-three one-change mutants,
+#           run detached, each against the battery that owns its surface;
+#           all red): the .RData existence check removed N86m2 N86m3; the
+#           data.dir path dropped N86m3; jrecode()'s first-note codes not
+#           carried N95j2; the scan's declared codes left out N87bb N87bc;
+#           the no-room sentence removed N87bd. The others are in the
+#           models_check.R, filter_check.R, cps_check.R, format_check.R and
+#           import_check.R entries. Sandbox: plain, under the RStudio
+#           stand-in, each with a Windows-length temp path, interactive,
+#           and entered dirty -- 3016 every way.
+#           LAST VERIFIED: v0.9.247, 2026-10-19 (S374) -- 907/907 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3016 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S373 EDIT (v0.9.246, 2026-10-18): NEW N96 section, forty checks
 #           (N96a-an), Slate E5: declared missing values on text. Ruling
 #           R26: jdeclare_missing() declares quoted values on a text
@@ -8120,11 +8150,41 @@ check("N86l jcopy() to a name starting with a digit says the same of a data fram
 # Re-pinned S357 (the S219 item's finding 6): the typed-extension redirect
 # takes the bare-name redirect's voice -- the fact, then the base R line on
 # its own -- and says nothing of how many objects the file holds.
+# S374 (v0.9.247; the S371 item): the file is looked for first, as for
+# every other format. N86m now makes x86.RData before asking for it; a
+# file that does not exist gets the file-not-found stop (it was offered a
+# load() line that failed with "cannot open the connection"); one found in
+# the data.dir folder is named by its path there; the line runs.
+save(d86, file = "x86.RData")
 check("N86m an .RData file name: the bare-name redirect's voice, the base R line on its own",
       identical(grab(jload("x86.RData")),
                 paste0("jload(): x86.RData is an .RData file, which jstats does not load.\n",
                        "Load it with base R:\n",
                        "  load(\"x86.RData\")")))
+check("N86m2 ... an .RData file that does not exist: the file-not-found stop, bare and with a folder, no load() line (S374); the line for one that exists runs",
+      local({ a <- grab(jload("nofile86.RData")); b <- grab(jload("sub86/nofile86.rda"))
+              e <- new.env(parent = globalenv())
+              ln <- sub("^  ", "", tail(strsplit(grab(jload("x86.RData")), "\n", fixed = TRUE)[[1]], 1L))
+              ran <- !inherits(tryCatch(eval(parse(text = ln)[[1L]], e), error = function(err) err), "error")
+              startsWith(a, "jload(): File 'nofile86.RData' not found.\nSearched in: working directory") &&
+                # The path as the stop normalizes it: relative here, absolute on
+                # Windows, where normalizePath() completes a missing file's path
+                # and the long path wraps onto a line of its own after "found:"
+                # (the workstation's first two runs of this check, S374).
+                startsWith(.fl(b), "jload(): File not found: ") && endsWith(.fl(b), "sub86/nofile86.rda") &&
+                !grepl("  load(", paste(a, b), fixed = TRUE) && ran && exists("d86", envir = e, inherits = FALSE) }))
+check("N86m3 ... one found in the data.dir folder: the line names its path there, and runs from the working directory",
+      local({ dd <- "dd86"; dir.create(dd, showWarnings = FALSE)   # relative: a temp path's length would make the line wrap (N88s)
+              save(d86, file = file.path(dd, "y86.RData"))
+              old <- getOption(".jst_options_data_dir")
+              options(.jst_options_data_dir = dd)
+              on.exit(options(.jst_options_data_dir = old), add = TRUE)
+              m <- grab(jload("y86.RData"))
+              ln <- sub("^  ", "", tail(strsplit(m, "\n", fixed = TRUE)[[1]], 1L))
+              e <- new.env(parent = globalenv())
+              ran <- !inherits(tryCatch(eval(parse(text = ln)[[1L]], e), error = function(err) err), "error")
+              identical(ln, "load(\"dd86/y86.RData\")") &&
+                ran && exists("d86", envir = e, inherits = FALSE) }))
 
 # --- B: a path typed with single backslashes ------------------------------------
 m86n <- grab(jload("V:\temp\new.csv"))
@@ -8802,6 +8862,45 @@ check("N87y ... and two codes take \"these codes\"",
                       file.path(.td87, "pq87.rds"))
         m <- local(.conv87(NULL, printed(jload(file.path(.td87, "pq87.rds")))))
         grepl("so these codes cannot be declared yet.", .fl(m), fixed = TRUE) }))
+# S374 (v0.9.247; the S373 item, Jeff's lean "all yours"): a declaration
+# replaces a variable's codes, so on a variable that already declares codes
+# the scan's line names those too -- offered codes = -98 alone, a file
+# declaring -99 lost it, counted as valid. Run, the line keeps both.
+saveRDS(data.frame(Age = haven::labelled_spss(c(34, -99, 41, -98, 55, 61, -98),
+                                              labels = c(Refused = -99, "Not stated" = -98),
+                                              na_values = -99)),
+        file.path(.td87, "pn87.rds"))
+m87bb <- local(.conv87(NULL, printed(jload(file.path(.td87, "pn87.rds")))))
+check("N87bb a variable declaring -99 and labelling -98 \"Not stated\": the line names both codes, with the ones it already declares (it offered codes = -98, which dropped -99); run, both are declared, the labels kept",
+      local({ e <- .run87(m87bb, "pn87", readRDS(file.path(.td87, "pn87.rds")),
+                          k = which(startsWith(.lines87(m87bb), "jdeclare_missing(")))
+        grepl(paste0("To declare one variable's codes as missing, with the ones it already declares: ",
+                     "jdeclare_missing(pn87, Age, codes = c(-99, -98), modify = TRUE)"), .fl(m87bb), fixed = TRUE) &&
+          grepl("\n  jdeclare_missing(pn87, Age, codes = c(-99, -98), modify = TRUE)\n", paste0(m87bb, "\n"), fixed = TRUE) &&
+          !grepl("Choose one", m87bb, fixed = TRUE) &&
+          !is.null(e) && setequal(attr(e$pn87$Age, "na_values"), c(-99, -98)) &&
+          setequal(names(labelled::val_labels(e$pn87$Age)), c("Refused", "Not stated")) }))
+saveRDS(data.frame(Age = haven::labelled_spss(c(34, -99, 41, 999, 55, 61, 999),
+                                              labels = c(Refused = -99), na_values = -99)),
+        file.path(.td87, "pr87.rds"))
+m87bc <- local(.conv87(NULL, printed(jload(file.path(.td87, "pr87.rds")))))
+check("N87bc ... a suspected code beside a declared one: both lines name the declared code, the placeholder line keeping its label; each runs",
+      local({ ln <- .lines87(m87bc)
+        e1 <- .run87(m87bc, "pr87", readRDS(file.path(.td87, "pr87.rds")), k = 1L)
+        e2 <- .run87(m87bc, "pr87", readRDS(file.path(.td87, "pr87.rds")), k = 2L)
+        identical(ln, c("jdeclare_missing(pr87, Age, codes = c(-99, 999), modify = TRUE)",
+                        "jdeclare_missing(pr87, Age, codes = c(\"Refused\" = -99, \"label1\" = 999), modify = TRUE)")) &&
+          !is.null(e1) && setequal(attr(e1$pr87$Age, "na_values"), c(-99, 999)) &&
+          !is.null(e2) && setequal(names(labelled::val_labels(e2$pr87$Age)), c("Refused", "label1")) }))
+saveRDS(data.frame(Age = haven::labelled_spss(c(34, -99, 41, -98, -97, 999, 999),
+                                              na_values = c(-99, -98, -97))),
+        file.path(.td87, "pt87.rds"))
+m87bd <- local(.conv87(NULL, printed(jload(file.path(.td87, "pt87.rds")))))
+check("N87bd ... a variable already declaring three codes: no line, the fact and the way out (a fourth code would have stopped the line)",
+      grepl(paste0("\nAge already declares 3 missing values, the most SPSS-style missing\n",
+                   "values allow.\nTo declare more, use a range or Stata-style missing values.\n"),
+            paste0(m87bd, "\n"), fixed = TRUE) &&
+        !any(startsWith(.lines87(m87bd), "jdeclare_missing(")))
 
 # --- D: the NA rule's "Declare -98" ---------------------------------------------
 d87 <- data.frame(Q = haven::labelled_spss(c(1, 2, -7, NA, 2), labels = c(Refused = -7),
@@ -10914,6 +11013,36 @@ check("N95j control: a source whose marker survives gets ruling R8's marker line
       local({ m <- .conv95("spss", grab(jrecode(.Q95, Q, map = "5=-99; else=copy")))
               grepl("map it to a Stata-style marker the recoded variable does not use:", .fl(m), fixed = TRUE) &&
                 grepl("map = \"5=.b; else=copy\", convention = \"stata\")", m, fixed = TRUE) }))
+
+# S374 (v0.9.247; the S372 item, Jeff's lean "all yours"): when both notes
+# print, the S319 note's pair names the D1 note's code too -- each pair
+# rebuilds the recoded variable and a declaration replaces its codes, so
+# running both in turn left 0 alone declared.
+check("N95j2 \".a=0; 5=-99; else=copy\": the second note's pair declares the first note's -99 beside its own 0; run alone, the recoded variable declares both (it declared 0 alone), under spss and under stata",
+      local({ ok <- TRUE
+              for (cv in c("spss", "stata")) {
+                m <- .conv95(cv, grab(jrecode(.Q95, Q, map = ".a=0; 5=-99; else=copy")))
+                parts <- strsplit(m, "\n\n", fixed = TRUE)[[1]]
+                rel <- grep("is a declared missing value on Q", parts, value = TRUE, fixed = TRUE)
+                d1  <- grep("looks like a coded missing value", parts, value = TRUE, fixed = TRUE)
+                cl  <- .r5_calls(strsplit(rel, "\n", fixed = TRUE)[[1]], shape = "^  jdeclare_missing\\(")
+                cl1 <- .r5_calls(strsplit(d1, "\n", fixed = TRUE)[[1]], shape = "^  jdeclare_missing\\(")
+                e <- new.env(parent = globalenv()); e$.Q95 <- .Q95
+                ran <- .conv95(cv, .run95(rel, e, "^  (\\.Q95\\$QR <- jrecode|jdeclare_missing)\\("))
+                x <- e$.Q95$QR
+                both <- if (cv == "spss") setequal(as.numeric(attr(x, "na_values")), c(-99, 0))
+                        else length(unique(stats::na.omit(haven::na_tag(unclass(x))))) == 2L
+                ok <- ok && length(cl) == 1L && length(cl1) == 1L &&
+                  identical(.r5_flat(cl1[1]), "jdeclare_missing(.Q95, QR, codes = c(-99), modify = TRUE)") &&
+                  identical(.r5_flat(cl[1]), "jdeclare_missing(.Q95, QR, codes = c(-99, 0), modify = TRUE)") &&
+                  ran && both
+              }
+              ok }))
+check("N95j3 control: the S319 note alone (no D1 note) names its own code and the declared ones, as before",
+      local({ m <- .conv95("spss", grab(jrecode(.Q95, Q, map = ".a=0; else=copy")))
+              cl <- .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]], shape = "^  jdeclare_missing\\(")
+              !grepl("looks like a coded missing value", m, fixed = TRUE) && length(cl) == 1L &&
+                identical(.r5_flat(cl[1]), "jdeclare_missing(.Q95, QR, codes = c(0), modify = TRUE)") }))
 
 # --- F: jdeclare_missing()'s mixed codes ------------------------------------------
 check("N95k on a Stata-form variable the split's lines print haven::tagged_na(), never bare, and both run in sequence",

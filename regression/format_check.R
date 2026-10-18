@@ -109,6 +109,18 @@
 #           from its values (jlogistic's fit tables, jalpha, jdesc's Mean
 #           and SD, the VIF tables, jscreen's stats columns) and to jt's
 #           Cohen's d line, which had the eta-squared defect.
+# S374 EDIT (v0.9.247, 2026-10-19): Fix Slate 21 (the S371 item, the
+#           S343 rule). AA10b NEW: jscreen() given an expression as the data
+#           opens each block of date lines -- the footnote's and the
+#           two-digit-year note's -- on "mydata <- mk()", and both blocks
+#           run (the lines named a mydata nothing made). 323 -> 324.
+#           MUTATION MAP: the "mydata <- mk()" line left out AA10b; the
+#           expression pasted where mydata goes AA10 AA10b. Sandbox: the
+#           five ways and entered dirty, green.
+#           LAST VERIFIED: v0.9.247, 2026-10-19 (S374) -- 324/324 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3016 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S361 EDIT (v0.9.234, 2026-10-16): SECTION AA ADDED, AA01-AA13 (13
 #           checks): jscreen()'s dates stored as text (the S222 item's E3,
 #           on its lean): "date (unparsed)" in the Sub-class column and the
@@ -4364,6 +4376,23 @@ check("AA10 the vector path names the column's data frame; an expression given a
         a <- both_out(jscreen(aa_d$Sas)); b <- both_out(jscreen(mk()))
         "  aa_d$Sas <- as.Date(aa_d$Sas, format = \"%d%b%Y\")" %in% a &&
           "  mydata$Sas <- as.Date(mydata$Sas, format = \"%d%b%Y\")" %in% b })
+# S374 (v0.9.247; the S371 item, the S343 rule): an expression given as
+# the data names mydata, and each block of lines opens on the line that
+# makes it -- the footnote's and the two-digit-year note's alike. It named
+# a mydata nothing made. Run, the lines convert the column.
+check("AA10b ... and each block opens on \"mydata <- mk()\": the footnote's lines and the year note's, which run",
+      local({ mk <- function() aa_d[c("Sas", "Admit")]
+              assign("mk", mk, envir = globalenv()); on.exit(rm("mk", envir = globalenv()), add = TRUE)
+              b <- both_out(jscreen(mk()))
+              k <- which(b == "date (unparsed): text in a date format, which as.Date() makes a date:")
+              m <- which(b == "  mydata <- mk()")
+              e <- new.env(parent = globalenv())
+              run <- function(ls) !inherits(tryCatch({ for (l in ls) eval(parse(text = trimws(l)), e); TRUE },
+                                                    error = function(err) err), "error")
+              length(k) == 1L && length(m) == 2L && m[1L] == k + 1L &&
+                startsWith(b[m[2L] + 1L], "  range(as.Date(mydata$Admit") &&
+                run(b[(k + 1L):(k + 3L)]) && inherits(e$mydata$Sas, "Date") &&
+                run(b[m[2L] + 0:1]) }))
 check("AA11 the month-name forms: 1 April 2015 and April 1, 2015",
       { d <- data.frame(a = c("1 April 2015", "12 May 2016"), b = c("April 1, 2015", "May 12, 2016"))
         v <- both_out(jscreen(d))
