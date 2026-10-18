@@ -28,8 +28,32 @@
 #           setting echo -- the first thing here that is not a table: a
 #           setting call prints what it touched, a level call the full
 #           panel, a setting name in first position is a query; and since
-#           S349 jplot()'s one-line N statement (N61).
+#           S349 jplot()'s one-line N statement (N61); and since S373 the
+#           blank footnote's two routes, a factor's one, and blanks declared
+#           missing as one row of the Missing block (N58d2, N58d3).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S373 EDIT (v0.9.246, 2026-10-18): Slate E5 (ruling R27). jfreq()'s blank
+#           footnote names both routes, a line each -- "To give them a code,
+#           use jencode()." and "To declare them missing, use
+#           jdeclare_missing() with codes = \"\"." -- so N58a, N58b and N58d
+#           are RE-PINNED; NEW N58d2 (a factor's blank level keeps the one
+#           jencode() line, since a factor takes no declared values) and
+#           N58d3 (blanks declared with codes = "": one <blank> row in the
+#           Missing block counting the empty and the whitespace cells, and
+#           no footnote). TWO HUNDRED AND FIFTY-SIX checks. On the 0.9.245
+#           master four red: the three re-pins and N58d3 (N58d2, a control,
+#           passes there by construction).
+#           MUTATION MAP: jdeclare_missing() offered for a factor too N58d2;
+#           the old one-line footnote N58a b d; the blank mask without
+#           blanks N58d3; jfreq()'s Missing count by exact match N58d3; the
+#           masking pass by exact match N58d3; the rest in
+#           missing_convention_check.R's S373 entry, all red. Sandbox: the
+#           five ways and entered dirty, plain and under the stand-in,
+#           green.
+#           LAST VERIFIED: v0.9.246, 2026-10-18 (S373) -- 256/256 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run, 2993 checks)"; R CMD
+#           check 0 errors, 0 warnings, 0 notes), matching the sandbox;
+#           GitHub 9d5825f (package).
 # S359 EDIT (v0.9.232, 2026-10-16): GUARD 5 (the S345 item, Scripts Slate
 #           B): the values of the workspace's objects on entry, put back at
 #           the foot when a run changed them, and named ("Put back as they
@@ -2352,7 +2376,7 @@ b58 <- data.frame(
   stringsAsFactors = FALSE)
 .v58a <- plines(jfreq(b58, Source))
 check("N58a jfreq(): one <blank> row for the empty and the whitespace cells, first among the valid rows; the table and its footnote pinned whole",
-      identical(.v58a[3:22],
+      identical(.v58a[3:23],
         c("12 Cases in the 1 Variable Pool", "", "Source", "",
           "             Freq  Total %  Valid %  Cum. %",
           "-----------  ----  -------  -------  ------",
@@ -2368,10 +2392,12 @@ check("N58a jfreq(): one <blank> row for the empty and the whitespace cells, fir
           "Total         12    100.00",
           "<blank>: 4 cells with no text (2 empty, 2 holding only spaces or tabs).",
           "They are counted as valid values, not as missing.",
-          "To give them a code or make them missing, use jencode().",
+          # S373 (Slate E5, ruling R27): both routes, a line each.
+          "To give them a code, use jencode().",
+          "To declare them missing, use jdeclare_missing() with codes = \"\".",
           "")))
 check("N58b ... the footnote sits against the Total row, and the output ends on one blank line",
-      length(.v58a) == 22L && nzchar(.v58a[21]) && !nzchar(.v58a[22]))
+      length(.v58a) == 23L && nzchar(.v58a[22]) && !nzchar(.v58a[23]))
 check("N58c the blank cells are in the valid base, and the return value counts them",
       { r <- NULL; invisible(plines(r <- jfreq(b58, Source)))
         f <- r$frequencies$Source
@@ -2383,10 +2409,29 @@ check("N58d the footnote's first line by kind: empty cells only; whitespace only
         a <- e(c("a", "", "", "b")); w <- e(c("a", " ", "\t", "b")); o <- e(c("a", "", "b"))
         any(a == "<blank>: 2 cells with no text.") &&
           any(w == "<blank>: 2 cells holding only spaces or tabs.") &&
-          identical(o[length(o) - 3:1],
+          identical(o[length(o) - 4:1],
                     c("<blank>: 1 cell with no text.",
                       "It is counted as a valid value, not as missing.",
-                      "To give it a code or make it missing, use jencode().")) })
+                      "To give it a code, use jencode().",
+                      "To declare it missing, use jdeclare_missing() with codes = \"\".")) })
+# S373 (Slate E5): a factor's blank level keeps the one jencode() line --
+# jdeclare_missing() refuses a factor, so the footnote does not offer it.
+check("N58d2 a factor's footnote keeps the one jencode() line and does not offer jdeclare_missing()",
+      { o <- plines(jfreq(data.frame(S = factor(c("a", "", "b"))), S))
+        identical(o[length(o) - 3:1],
+                  c("<blank>: 1 cell with no text.",
+                    "It is counted as a valid value, not as missing.",
+                    "To give it a code or make it missing, use jencode().")) &&
+          !any(grepl("jdeclare_missing", o, fixed = TRUE)) })
+# S373 (ruling R27): a variable whose blanks are declared shows them as one
+# Missing row, <blank>, the empty and the spaces cells counted together, and
+# no footnote (there is no blank among the valid values).
+check("N58d3 blanks declared with codes = \"\": one <blank> row in the Missing block counting the empty and the whitespace cells, no footnote",
+      { b <- suppressMessages(jdeclare_missing(b58, Source, codes = ""))
+        v <- plines(jfreq(b, Source))
+        any(v == "<blank> (no label)    4     33.33       --      --") &&
+          any(v == "Total valid           7     58.33   100.00") &&
+          !any(grepl("cells with no text", v, fixed = TRUE)) })
 check("N58e a text variable with no blank cell: no <blank> row, no footnote, and blank is 0 in the return",
       { r <- NULL
         v <- plines(r <- jfreq(data.frame(S = c("a", "b", NA), stringsAsFactors = FALSE), S))

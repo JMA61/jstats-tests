@@ -220,6 +220,20 @@
 #           edited master (text_columns_data built from its generator);
 #           the old-vs-new diff is those two tails and nothing else, and
 #           both pairs were paste-run on the built fixture.
+# EDITED:   S373 (v0.9.246; Slate E5). NEW SECTION 18, filled by running
+#           (fill.R): jencode()'s automatic mode on a variable whose blank
+#           cells are declared missing (ruling R27) -- the blanks named
+#           <blank> among the declared values, blank=missing in the map that
+#           keeps them declared, no plain-blank note. SECTION 5 RE-PINNED by
+#           hand from the capture: the -99 nudge names "Not stated" with
+#           "Refused" (ruling R28 added it to the word list), its prose
+#           rewritten. Both on the PENDING line. The assertion side is
+#           jencode_check.R N51 (N27 re-pinned).
+#           LAST VERIFIED v0.9.246, 2026-10-18 (S373) -- Sections 5 and 18
+#           WALKED on the WORKSTATION through receive_all() ("walked, all
+#           okay"); PENDING back to none; GitHub 9d5825f (package). Sandbox:
+#           harness.R verify, 18 of 18 sections in three orders and by
+#           prepare = TRUE; 32 of 32 Expected blocks.
 # EDITED:   S292 (v0.9.165). THE S287 DOUBLE-WRAP FIX. Section 4's strict-default Expected
 #           was prose ("the error NAMES the missing words") and could not
 #           see the defect; it is now a MECHANICAL capture of the fixed
@@ -608,9 +622,10 @@ tdat$Age <- jencode(tdat, AgeText)
 
 # AgeAtRelease is the poisoned column: ages + "-99" + "Refused" +
 # "Not stated" + blanks. map = "else=NA" is the one-line repair -- and the
-# swept word "Refused" is the EVIDENCE that licenses the -99 nudge (S238):
-# -99 sits inside the plausible-age range, so the magnitude heuristic
-# alone would stay silent.
+# swept words are the EVIDENCE that licenses the -99 nudge (S238): "Refused",
+# and since S373 "Not stated" (ruling R28 added it to the word list, so the
+# note names both). -99 sits inside the plausible-age range, so the
+# magnitude heuristic alone would stay silent.
 
 tdat$AgeRel <- jencode(tdat, AgeAtRelease, map = "else=NA")
 
@@ -619,7 +634,7 @@ tdat$AgeRel <- jencode(tdat, AgeAtRelease, map = "else=NA")
 #   value ("71" -> 71, never renumbered).
 #
 #   Note: -99 in 'AgeAtRelease' looks like a coded missing value; the column
-#   also contained the word "Refused".
+#   also contained the words "Not stated" and "Refused".
 #   No missing-value convention is selected, so the value cannot be
 #   declared yet.
 #   Choose one for this session:
@@ -1658,6 +1673,63 @@ rm(r17d)
 #   - RENDER 2: "Stata is not in quotes.", what convention = takes, and the
 #     call with "stata" in quotes, spelled as the function takes it;
 #   - RENDER 3: the 9 row reads "9: Refused; not asked".
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 18 -- blank cells declared missing (S373) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S373 (v0.9.246; Slate E5, ruling R27). jdeclare_missing(codes = "")
+# declares a text variable's blank cells missing. Automatic mode leaves a
+# declared value missing and gives the map that keeps it declared; the blank
+# cells are now among those values -- <blank> in the note, blank=missing in
+# the map -- where they had the plain-blank note ("blank cells ... were left
+# missing", with blank=0 to make them a category). With no convention
+# selected the menu comes first (Section 13's form). Inline fixture; the
+# assertion side is jencode_check.R N51.
+
+b18 <- data.frame(Src = c("Adult", "", "Juvenile", "  ", "UNK", "Adult"),
+                  stringsAsFactors = FALSE)
+b18 <- jdeclare_missing(b18, Src, codes = c("UNK", ""), missing.notice = FALSE)
+b18$SrcN <- jencode(b18, Src)
+# Expected:
+#   Note: 'Src' was encoded alphabetically:
+#     "Adult"    -> 1
+#     "Juvenile" -> 2
+#   If these categories have a natural order (like Low/Medium/High), rerun with
+#   a map to choose the numbers:
+#     b18$SrcR <- jencode(b18, Src,
+#         map = "Adult=1; Juvenile=2; blank=NA; UNK=NA")
+#
+#   Note: 3 cells in 'Src' holding a declared missing value (<blank>, "UNK")
+#   were left missing (NA).
+#   No missing-value convention is selected, so the values cannot be
+#   declared yet.
+#   Choose one for this session:
+#     joptions(missing.convention = "stata")
+#         Lowercase markers behave as true NAs in base R.
+#         Recommended if you also run base R or AI-generated code.
+#     joptions(missing.convention = "spss")
+#         Codes stay visible numbers; jstats treats them as missing.
+#         Base R does not.
+#     joptions(missing.convention = "sas")
+#         Like Stata, with uppercase markers (.A-.Z).
+#   To make the choice permanent, put the same line in your .Rprofile.
+#   Then, to keep them declared, as one missing value, rerun with a map sending
+#   those values to missing:
+#     b18$SrcR <- jencode(b18, Src,
+#         map = "Adult=1; Juvenile=2; blank=missing; UNK=missing")
+#
+#   Note: This call changes b18 only if you assign the result:
+#     b18$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+rm(b18)
+
+# Things to look at:
+#   - the declared values named together, <blank> beside "UNK";
+#   - the map that keeps them declared sends blank and UNK to missing, as one
+#     missing value (the note says so), and the numbering's map sends both to
+#     NA;
+#   - no note about blank cells of their own.
 
 
 # --- Restore session state ---------------------------------------------------

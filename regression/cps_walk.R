@@ -11,6 +11,20 @@
 #           jfreq(), jscreen() and a group function (Part K); since S349 a
 #           plot's one-line N statement (Part M).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S373 EDIT (v0.9.246): SLATE E5, ruling R27. K3 RE-PINNED by hand from
+#           the capture: the blank footnote's way out is two lines, one per
+#           route -- jencode() to give the cells a code, jdeclare_missing()
+#           with codes = "" to declare them missing -- where one line named
+#           jencode() for both; its "Things to look at" counts four lines. On
+#           the PENDING line (the wording is Claude's). A capture of every
+#           section on 0.9.245 and the build moves only K3 here. The
+#           assertion side is cps_check.R N58a, N58b, N58d (re-pinned), N58d2
+#           and N58d3.
+# LAST VERIFIED: v0.9.246, 2026-10-18 (S373) -- K3 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; GitHub 9d5825f (package). Sandbox: every
+#           section through rewalk() as in a straight run, in three orders
+#           and by prepare = TRUE (harness.R verify).
 # S349 EDIT (v0.9.222): FIX SLATE 7, SECOND HALF. PART M ADDED, three
 #           sections, each Expected FILLED BY RUNNING the file (fill.R): M1
 #           jplot()'s N line under a jsubset() -- the S316 case, a grouped
@@ -2418,15 +2432,18 @@ jfreq(tx, Source)
 #   Total         12    100.00
 #   <blank>: 4 cells with no text (2 empty, 2 holding only spaces or tabs).
 #   They are counted as valid values, not as missing.
-#   To give them a code or make them missing, use jencode().
+#   To give them a code, use jencode().
+#   To declare them missing, use jdeclare_missing() with codes = "".
 #
 # Things to look at:
 #   - ONE <blank> row for all four cells. Until 0.9.214 the table had three
 #     rows with nothing, or nothing visible, in the label column: the empty
 #     cells, the spaces and the tab each counted apart.
 #   - <blank> is a Valid row, first among them, and the percentages count
-#     it. The three lines under the table say that in words, say what the
-#     cells hold, and name the function that changes it.
+#     it. The four lines under the table say that in words, say what the
+#     cells hold, and name the two ways to change it, a line each (since
+#     S373, ruling R27): jencode() to give them a code, jdeclare_missing()
+#     with codes = "" to declare them missing.
 #   - The footnote sits directly under the table, before the closing blank
 #     line: it is the table's own footnote, not a note about the call.
 #   - Is "<blank>" the right label? It is the one word of this output that

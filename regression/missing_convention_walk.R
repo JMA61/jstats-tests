@@ -84,11 +84,53 @@
 #           ruling R17: a label written in quotes in a labels string, a
 #           semicolon inside it part of the label, and the offered line
 #           that quotes such a label.
+#           PART W (S373) adds declared missing values on TEXT (Slate E5;
+#           rulings R26, R27, R28): jdeclare_missing() on a text variable,
+#           its refusals and its notes; the blank cells declared; the .sav
+#           refusal of a long value; the load scan and jconvert()'s list on
+#           a text variable.
 # ORIGIN:   S226 (SAS-convention foundation, v0.9.123) + S227 (E17 jload
 #           messaging redesign, v0.9.124). Written S228, superseding the two
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S373 (v0.9.246; Slate E5, declared missing values on text,
+#           rulings R26, R27 and R28). NEW PART W: SECTION 72, eight renders --
+#           a text variable's value declared quoted with no convention asked
+#           for, and the note on a value differing only in letter case, which
+#           treats it as a suspected missing value and gives the line that
+#           declares it with the declared values (Jeff, S373), or past three
+#           values offers jencode(); the
+#           blank cells declared with codes = "" and jfreq()'s Missing block;
+#           the note under a stata setting; the refusals with their lines
+#           (numbers, convention = "stata", a range, a value without quotes);
+#           a text and a number variable in one call, both ways; four values;
+#           the smaller refusals with no line; a drop notice naming <blank>
+#           -- and SECTION 73 (NEEDS 72, derived by harness.R), four
+#           renders: jsave()'s .sav refusal of a value over 8 bytes, jload()'s
+#           scan of a text variable, jconvert()'s list, and the scan on a file
+#           that declares values: a value differing from one only in letter
+#           case reported as suspected, its line naming the declared values
+#           too, run (Jeff, S373). SECTION 71 Render 2
+#           RE-PINNED: Mode back in jconvert()'s Pattern A list, quoted, its
+#           prose and its "Things to look at" rewritten. Every Expected
+#           FILLED BY RUNNING the file (fill.R; #@SKIP ahead of Render 2,
+#           after Render 1's typed blocks). All three on the PENDING line:
+#           wording and design Claude chose on the slate Jeff approved. A
+#           capture of every section of every walk on 0.9.245 and the build
+#           moves only 71 here, cps_walk.R K3, jencode_walk.R Section 5 and
+#           modify_form_walk.R Section 16 (the blank footnote's two routes;
+#           the nudge's two words). harness.R verify: 74 of 74 sections in
+#           three orders and by prepare = TRUE; Expected blocks 121 of 122
+#           (Section 10's, as before). The assertion side is
+#           missing_convention_check.R N96 (N95e re-pinned).
+# LAST VERIFIED: v0.9.246, 2026-10-18 (S373) -- Sections 71, 72 and 73
+#           WALKED on the WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 2993 checks); GitHub 9d5825f (package).
+#           Sandbox: harness.R verify, 74 of 74 sections in three orders
+#           and by prepare = TRUE; 121 of 122 Expected blocks (Section 10's,
+#           as before).
 # EDITED:   S372 (v0.9.245; Fix Slate 20, the missing-value lines from the
 #           S371 remedy-line audit). NEW PART V, SECTION 71, five renders,
 #           every pinned Expected FILLED BY RUNNING the file (fill.R; the
@@ -7829,21 +7871,25 @@ jsave(w71u, "w71u.sav", preserve.declarations = FALSE)
 #   had reported it as plain NA while it stayed in the cell.
 
 # Render 2 -- jconvert(): a text variable whose label suggests missingness
-# beside a number variable whose label does. Only Rating is listed: the
-# line offered for Mode, codes = X, stopped (jdeclare_missing() declares
-# missing values on number variables only).
+# beside a number variable whose label does. Both are listed (since S373,
+# Slate E5): Mode's value is quoted, and its line declares it with no
+# convention =, since a text variable's missing values are SPSS-style under
+# every setting. At S372 Mode was left out, the line offered for it, codes =
+# X, having stopped; jdeclare_missing() then took numbers only.
 w71p <- data.frame(
   Mode   = haven::labelled(c("web", "X", "phone", "web"), labels = c(Refused = "X")),
   Rating = haven::labelled(c(1, -99, 2, 3), labels = c(Refused = -99)))
 jconvert(w71p, to = "spss")
 # Expected:
 #   Skipped (value labels suggest missingness but not formally declared):
+#     Mode: "X" ["Refused"]
 #     Rating: -99 ["Refused"]
 #
-#   To declare it as missing:
+#   To declare them as missing:
+#     jdeclare_missing(w71p, Mode, codes = "X", modify = TRUE)
 #     jdeclare_missing(w71p, Rating, codes = -99, convention = "spss",
 #         modify = TRUE)
-#   To leave it as ordinary data, no action is needed.
+#   To leave them as ordinary data, no action is needed.
 
 # Render 3 -- jrecode(): the map sends Q's one marker to a number and a value
 # to -99, which looks like a coded missing value. The map left Q's recoded
@@ -7924,10 +7970,10 @@ options(.jst_options_missing_convention = NULL)
 rm(.wd71, w71u, w71p, w71q, w71s, w71n, w71d)
 
 # Things to look at:
-#   - RENDER 2: Mode is left out without a word. The alternative was a line
-#     saying Mode is text and cannot be declared, pointing to jencode();
-#     the S351 rule had already left a text variable out of the list under
-#     to = "stata" and "sas", for the same reason, and this extends it.
+#   - RENDER 2 (re-pinned S373): Mode is back in the list, its value in
+#     quotes as the load scan shows a text value, and its line quoted with
+#     no convention =. Under to = "stata" or "sas" it is still left out: a
+#     text value cannot take a marker (the S351 rule).
 #   - RENDER 3: "declare it on the recoded variable", then the two lines --
 #     the S319 note below it offers its own pair for 0. Run both pairs in
 #     turn and the second replaces -99 with 0; each runs on its own.
@@ -7936,6 +7982,382 @@ rm(.wd71, w71u, w71p, w71q, w71s, w71n, w71d)
 #     declared by itself?
 #   - RENDER 5: "codes = c(-99, -98), labels = \"-99=Refused\"" -- codes =
 #     cannot name some codes and not others, so the names move to labels =.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART W (S373) -- DECLARED MISSING VALUES ON TEXT (Slate E5; rulings R26,
+# R27 and R28, Jeff, S372)
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# A text variable's missing values are its values themselves, in quotes --
+# what SPSS's MISSING VALUES gives a string variable. jdeclare_missing()
+# declares them SPSS-style under every setting and with none selected, so it
+# asks for no convention. codes = "" declares the blank cells. Section 72 is
+# declaring; Section 73 is saving, loading and converting.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 72 -- declaring missing values on a text variable ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+options(.jst_options_missing_convention = NULL)
+
+# Render 1 -- a text variable's value, quoted. No convention is selected and
+# none is asked for. "Unknown" differs from the declared "UNKNOWN" only in
+# letter case, so it is not declared (codes match as stored, as in SPSS).
+# The note says so and treats it as a suspected missing value (Jeff, S373):
+# the line declares it with UNKNOWN, labelled as UNKNOWN is.
+w72 <- data.frame(Marital = c("Married", "UNKNOWN", "Unknown", "UNKNOWN",
+                              "Refused to provide information", "", "  ",
+                              "Single"), stringsAsFactors = FALSE)
+w72 <- jdeclare_missing(w72, Marital, codes = c(Unknown = "UNKNOWN"))
+# Expected:
+#   Declared SPSS-style missing values on Marital:
+#     UNKNOWN ["Unknown"]
+#
+#   Note: Marital also holds a value that differs from a declared value only in
+#   letter case or outer spaces:
+#     "Unknown" (1)
+#   It is not declared, so it counts as valid data.
+#   If it also marks missing data, declare it too:
+#     jdeclare_missing(w72, Marital,
+#         codes = c(Unknown = "UNKNOWN", Unknown = "Unknown"), modify = TRUE)
+#
+#   This call changes w72 only if you assign the result:
+#     w72 <- jdeclare_missing(w72, Marital, ...)
+#
+#   To change w72 directly, rerun with modify = TRUE:
+#     jdeclare_missing(w72, Marital, ..., modify = TRUE)
+
+# Render 2 -- the blank cells declared too: codes = "" covers the empty cell
+# and the cell of spaces, shown as <blank>. UNKNOWN is named bare here, so it
+# keeps its label. The note's line names all three values; the blank has no
+# label and the others do, so the labels go in labels =. jfreq() then shows
+# both declared values in the Missing block, the two blank cells as one row.
+w72 <- jdeclare_missing(w72, Marital, codes = c("UNKNOWN", ""))
+# Expected:
+#   Declared SPSS-style missing values on Marital:
+#     <blank> (no label)
+#     UNKNOWN ["Unknown"]
+#
+#   Note: Marital also holds a value that differs from a declared value only in
+#   letter case or outer spaces:
+#     "Unknown" (1)
+#   It is not declared, so it counts as valid data.
+#   If it also marks missing data, declare it too:
+#     jdeclare_missing(w72, Marital, codes = c("UNKNOWN", "", "Unknown"),
+#         labels = "UNKNOWN=Unknown; Unknown=Unknown", modify = TRUE)
+#
+#   This call changes w72 only if you assign the result:
+#     w72 <- jdeclare_missing(w72, Marital, ...)
+#
+#   To change w72 directly, rerun with modify = TRUE:
+#     jdeclare_missing(w72, Marital, ..., modify = TRUE)
+jfreq(w72, Marital)
+# Expected:
+#   Frequencies
+#
+#   8 Cases in the 1 Variable Pool
+#
+#   Marital
+#
+#                                   Freq  Total %  Valid %  Cum. %
+#   ------------------------------  ----  -------  -------  ------
+#   Valid
+#   Married                           1     12.50    25.00   25.00
+#   Refused to provide information    1     12.50    25.00   50.00
+#   Single                            1     12.50    25.00   75.00
+#   Unknown                           1     12.50    25.00  100.00
+#   Total valid                       4     50.00   100.00
+#
+#   Missing
+#   <blank> (no label)                2     25.00       --      --
+#   UNKNOWN ["Unknown"]               2     25.00       --      --
+#   Total missing                     4     50.00
+#
+#   Total                             8    100.00
+
+# Render 3 -- under a stata setting the declaration is still SPSS-style, and
+# a note says why. With three values declared, "Unknown" would be a fourth,
+# so the note offers jencode() in place of a line.
+joptions(missing.convention = "stata", quiet = TRUE)
+w72b <- jdeclare_missing(w72, Marital,
+                         codes = c("UNKNOWN", "", "Refused to provide information"))
+# Expected:
+#   Declared SPSS-style missing values on Marital:
+#     <blank> (no label)
+#     Refused to provide information (no label)
+#     UNKNOWN ["Unknown"]
+#
+#   Note: Marital is a text variable, so its missing values are
+#   declared SPSS-style.
+#   Stata-style missing values exist only on numeric variables.
+#
+#   Note: Marital also holds a value that differs from a declared value only in
+#   letter case or outer spaces:
+#     "Unknown" (1)
+#   It is not declared, so it counts as valid data.
+#   A text variable can have at most 3 declared missing values, so it cannot be
+#   declared too.
+#   To make it missing as well, encode Marital with jencode(), whose map can
+#   send each value to missing.
+#
+#   This call changes w72 only if you assign the result:
+#     w72 <- jdeclare_missing(w72, Marital, ...)
+#
+#   To change w72 directly, rerun with modify = TRUE:
+#     jdeclare_missing(w72, Marital, ..., modify = TRUE)
+options(.jst_options_missing_convention = NULL)
+
+# Render 4 -- the refusals, each with the call to run: numbers given for a
+# text variable, convention = "stata", a range, a value typed without its
+# quotes (ruling R18's pointer).
+try(jdeclare_missing(w72, Marital, codes = c(Refused = -99)))
+# Expected:
+#   Error : jdeclare_missing(): Marital is a text variable, so its codes go
+#   in quotes:
+#     jdeclare_missing(w72, Marital, codes = c(Refused = "-99"))
+try(jdeclare_missing(w72, Marital, codes = "UNKNOWN", convention = "stata"))
+# Expected:
+#   Error : jdeclare_missing(): Marital is a text variable, and Stata-style
+#   missing values exist only for numbers.
+#   Its missing values are declared SPSS-style; drop convention = "stata":
+#     jdeclare_missing(w72, Marital, codes = "UNKNOWN")
+try(jdeclare_missing(w72, Marital, codes = "UNKNOWN", range = c(-99, -90)))
+# Expected:
+#   Error : jdeclare_missing(): Marital is a text variable, and a missing-value
+#   range exists only for numbers.
+#   Declare its values without range =:
+#     jdeclare_missing(w72, Marital, codes = "UNKNOWN")
+try(jdeclare_missing(w72, Marital, codes = UNKNOWN))
+# Expected:
+#   Error : jdeclare_missing(): UNKNOWN is not in quotes.
+#   A text variable's value goes in quotes:
+#     jdeclare_missing(w72, Marital, codes = "UNKNOWN")
+
+# Render 5 -- a text and a number variable in one call. Given numbers, the
+# text variable is refused, with its call, the codes quoted. Given words, the
+# number variable is refused, with the call on the text variable.
+w72n <- data.frame(Marital = c("Married", "UNKNOWN", "Single"),
+                   Age = c(34, -99, 61), stringsAsFactors = FALSE)
+try(jdeclare_missing(w72n, Marital, Age, codes = -99, convention = "spss"))
+# Expected:
+#   Error : jdeclare_missing(): cannot declare on 1 of 2 variables; no variable
+#   was changed:
+#     Marital:
+#       Marital is a text variable, so its codes go in quotes:
+#         jdeclare_missing(w72n, Marital, codes = "-99")
+try(jdeclare_missing(w72n, Marital, Age, codes = "UNKNOWN"))
+# Expected:
+#   Error : jdeclare_missing(): the codes are text, and Age is not a
+#   text variable.
+#   To declare them on the text variable, run:
+#     jdeclare_missing(w72n, Marital, codes = "UNKNOWN")
+
+# Render 6 -- four values: one more than a text variable takes.
+try(jdeclare_missing(w72, Marital,
+                     codes = c("UNKNOWN", "Unknown", "", "Not stated")))
+# Expected:
+#   Error : jdeclare_missing(): a text variable can have at most 3 declared
+#   missing values (the SPSS limit); the call names 4.
+#   To make more of its values missing, encode it with jencode(), whose map can
+#   send each one to missing.
+
+# Render 7 -- the codes' smaller refusals, none with a line: a label naming
+# no code, one value given twice ("" and "  " are both the blank), NA, some
+# codes named and others not, and no values at all.
+try(jdeclare_missing(w72, Marital, codes = "UNKNOWN", labels = "REF=Refused"))
+# Expected:
+#   Error : jdeclare_missing(): labels names a value that is not among the
+#   codes: REF=Refused.
+#   Label only the codes, or leave codes out and let labels = name the values.
+try(jdeclare_missing(w72, Marital, codes = c("", "  ")))
+# Expected:
+#   Error : jdeclare_missing(): the codes name the same value more than
+#   once: <blank>.
+try(jdeclare_missing(w72, Marital, codes = NA_character_))
+# Expected:
+#   Error : jdeclare_missing(): `codes` holds NA.
+#   Name the values to declare in quotes; for blank cells, codes = "".
+try(jdeclare_missing(w72, Marital, codes = c(Unknown = "UNKNOWN", "")))
+# Expected:
+#   Error : jdeclare_missing(): `codes` names some of its codes and not others.
+#   Name every code, as in codes = c(Refused = "REF", Unknown = "UNK"), or name
+#   none and give the labels with labels =.
+try(jdeclare_missing(w72, Marital))
+# Expected:
+#   Error : jdeclare_missing(): provide the values to declare, for example
+#   codes = "UNKNOWN" or labels = "REF=Refused".
+
+# Render 8 -- a second call replaces the first: the blank dropped, named as
+# <blank>.
+w72d <- jdeclare_missing(w72, Marital, codes = "UNKNOWN")
+# Expected:
+#   Declared SPSS-style missing values on Marital:
+#     UNKNOWN ["Unknown"]
+#
+#   Note: jdeclare_missing replaced the existing declared missing values for
+#   Marital. Previously declared codes dropped: <blank>.
+#
+#   Note: Marital also holds a value that differs from a declared value only in
+#   letter case or outer spaces:
+#     "Unknown" (1)
+#   It is not declared, so it counts as valid data.
+#   If it also marks missing data, declare it too:
+#     jdeclare_missing(w72, Marital,
+#         codes = c(Unknown = "UNKNOWN", Unknown = "Unknown"), modify = TRUE)
+#
+#   This call changes w72 only if you assign the result:
+#     w72 <- jdeclare_missing(w72, Marital, ...)
+#
+#   To change w72 directly, rerun with modify = TRUE:
+#     jdeclare_missing(w72, Marital, ..., modify = TRUE)
+rm(w72n, w72d)
+
+# Things to look at:
+#   - RENDER 1: the note on "Unknown" -- its value in quotes (outer spaces
+#     would show), the count in parentheses as the load scan gives one,
+#     "It is not declared, so it counts as valid data.", then "If it also
+#     marks missing data, declare it too:" and the line, which names UNKNOWN
+#     as well (a declaration replaces a variable's values) and gives
+#     "Unknown" UNKNOWN's label.
+#   - RENDER 2: <blank> in the confirmation and in jfreq()'s Missing block;
+#     the empty cell and the cell of spaces are one row of 2. The note's
+#     line: codes = c("UNKNOWN", "", "Unknown") with labels = for the two
+#     labelled ones.
+#   - RENDER 3: the note's two sentences; then, with no room for a fourth
+#     value, the two lines that offer jencode().
+#   - RENDER 4: each line runs. "Marital is a text variable, so its codes go
+#     in quotes:" -- the numbers come back as "-99", the label kept.
+#   - RENDER 6: the way out offered is jencode(), whose map can send more
+#     than three values to missing.
+#   - RENDER 7: the wording of each; the numeric twins say the same where
+#     they exist ("names some of its codes and not others").
+#   - RENDER 8: "Previously declared codes dropped: <blank>."
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 73 -- saving, loading and converting a text variable's values ----
+# NEEDS: 72
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+.wd73 <- getwd(); setwd(tempdir())
+options(.jst_options_missing_convention = NULL)
+
+# Render 1 -- an SPSS file keeps 8 characters of a text variable's declared
+# missing value, so jsave() refuses a longer one before writing: the long
+# cells would read back as data.
+try(jsave(w72b, "w72b.sav"))
+# Expected:
+#   Error : jsave(): SPSS format (.sav) keeps only 8 characters (8 bytes) of a
+#   text variable's declared missing value, so a longer one would read back as
+#   ordinary data.
+#
+#   This variable in w72b declares a longer value:
+#     Marital: "Refused to provide information"
+#
+#   To save in R format (.rds) instead, keeping it:
+#     jsave(w72b, "w72b.rds")
+#   To save as SPSS format (.sav) with every declared missing value as plain NA:
+#     jsave(w72b, "w72b.sav", preserve.declarations = FALSE)
+#   To make Marital numbers first, whose missing values SPSS format keeps in
+#   full, use jencode().
+#   Or shorten the value in the data to 8 characters or fewer, and declare the
+#   shorter one.
+
+# Render 2 -- jload()'s scan reports a text variable's values: Mode's "X" by
+# its label, Marital's by their own wording (the word list, which ruling R28
+# extended to "Not stated" and "UNKNOWN"). The line declares Mode's value,
+# quoted, with no menu first.
+w73 <- data.frame(
+  Mode    = haven::labelled(c("X", "A", "B", "X", "A"),
+                            labels = c(Refused = "X", Phone = "A")),
+  Marital = c("Married", "UNKNOWN", "Unknown", "Not stated", "UNKNOWN"),
+  stringsAsFactors = FALSE)
+haven::write_sav(w73, "w73.sav")
+jload("w73.sav", name = "w73", overwrite = TRUE)
+# Expected:
+#   Loaded w73 (SPSS format; 5 cases, 2 variables)
+#
+#   Missing-value codes detected:
+#     Mode:     "X" ["Refused"] (2)                             [label-only -- not formally declared]
+#     Marital:  "Not stated" (1), "UNKNOWN" (2), "Unknown" (1)  [suspected -- not formally defined]
+#
+#   [label-only -- not formally declared]:
+#     not automatically treated as NA, but the value labels suggest they mark
+#     missing values.
+#     Declare them as missing if they are; leave as-is if real.
+#   [suspected -- not formally defined]:
+#     not automatically treated as NA.
+#     Declare them as missing if they are; leave as-is if real.
+#
+#   To declare one variable's values as missing:
+#     jdeclare_missing(w73, Mode, codes = c(Refused = "X"), modify = TRUE)
+
+# Render 3 -- jconvert(to = "spss"): Mode in the Pattern A list again, its
+# line quoted.
+jconvert(w73, to = "spss")
+# Expected:
+#   Skipped (value labels suggest missingness but not formally declared):
+#     Mode: "X" ["Refused"]
+#
+#   To declare it as missing:
+#     jdeclare_missing(w73, Mode, codes = "X", modify = TRUE)
+#   To leave it as ordinary data, no action is needed.
+
+# Render 4 -- a file that declares UNKNOWN and REF and also holds "ref": the
+# scan reports "ref" as suspected, since it differs from REF only in letter
+# case (Jeff, S373), and its line declares it with the two values the file
+# declares, which a line naming "ref" alone would drop. The line run.
+u73 <- data.frame(Marital = haven::labelled_spss(
+  c("Married", "UNKNOWN", "REF", "ref", "ref", "Single"),
+  labels = c(Unknown = "UNKNOWN", Refused = "REF"),
+  na_values = c("UNKNOWN", "REF")), stringsAsFactors = FALSE)
+haven::write_sav(u73, "u73.sav")
+options(.jst_missing_notice_shown = NULL)   # the first-showing form
+jload("u73.sav", name = "u73", overwrite = TRUE)
+# Expected:
+#   Loaded u73 (SPSS format; 6 cases, 1 variable)
+#
+#   1 variable has SPSS-style missing values:
+#     Marital: REF ["Refused"], UNKNOWN ["Unknown"]
+#   jstats analyses treat these codes as missing. Base R functions do not.
+#   To make them missing in base R as well, convert:
+#     jconvert(u73, to = "baseR", modify = TRUE)
+#
+#   Suspected missing-value codes detected:
+#     Marital:  "ref" (2)
+#
+#   These codes are not formally defined, so they are not treated as missing.
+#   Declare them as missing if they are; leave as-is if real.
+#
+#   To declare one variable's values as missing, with the ones it
+#   already declares:
+#     jdeclare_missing(u73, Marital,
+#         codes = c(Unknown = "UNKNOWN", Refused = "REF", Refused = "ref"),
+#         modify = TRUE)
+jdeclare_missing(u73, Marital,
+                 codes = c(Unknown = "UNKNOWN", Refused = "REF", Refused = "ref"),
+                 modify = TRUE)
+# Expected:
+#   Declared SPSS-style missing values on Marital in u73:
+#     REF ["Refused"]
+#     UNKNOWN ["Unknown"]
+#     ref ["Refused"]
+#
+#   To keep it across sessions, save the data frame:
+#     jsave(u73, "u73.rds")
+setwd(.wd73)
+unlink(file.path(tempdir(), c("w73.sav", "u73.sav")))
+options(.jst_options_missing_convention = NULL)
+rm(.wd73, w72, w72b, w73, u73)
+
+# Things to look at:
+#   - RENDER 1: the four ways out -- R format (.rds), the save with every
+#     declared missing value plain NA, jencode() (numbers, whose missing
+#     values SPSS format keeps in full), and a shorter value.
+#   - RENDER 2: the text values quoted in the rows ("X" ["Refused"], "Not
+#     stated" (1)), as the line takes them.
+#   - RENDER 3: the same quoted value in jconvert()'s list.
+#   - RENDER 4: "ref" among the suspected values, though no word list holds
+#     it; the intro "with the ones it already declares"; the line naming
+#     UNKNOWN and REF with "ref", which takes REF's label; and, run, all
+#     three declared and nothing dropped.
 
 # --- Restore session state ---------------------------------------------------
 # Moved here from mid-file at S248, so it runs after every part rather

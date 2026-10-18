@@ -24,7 +24,30 @@
 #           Since S355 (N49): the NA rule's note on a variable a map made
 #           Stata-style or SAS-style, and the parse layer phrased by the
 #           setting.
+#           Since S373 (N51): automatic mode on a variable whose blank
+#           cells are declared missing.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S373 EDIT (v0.9.246, 2026-10-18): NEW N51 checks, four (N51a-d), Slate
+#           E5 (ruling R27): jencode()'s automatic mode on a variable whose
+#           blank cells are declared missing (codes = "") names them
+#           <blank> among the declared values, gives no plain-blank note,
+#           sends blank with the other declared values to missing in the
+#           map that keeps them declared, and that map runs under spss with
+#           the empty and the spaces cells declared; the same variable
+#           undeclared keeps the plain-blank note and its blank=0 map (N51d,
+#           a control). RE-PINNED: N27 (ruling R28 put "Not stated" in the
+#           word list, so the nudge names two words), N43e (numbers for a
+#           text variable: the call with the codes quoted, lean 1), N43h
+#           (the factor guard: "numeric and text variables only"). ONE
+#           HUNDRED AND THIRTY-TWO checks. On the 0.9.245 master: the three
+#           re-pins red, and the battery stops at N51's fixture, which the
+#           old jdeclare_missing() refuses. The mutation map is in
+#           missing_convention_check.R's S373 entry. Sandbox: the five ways
+#           and entered dirty, plain and under the stand-in, green.
+#           LAST VERIFIED: v0.9.246, 2026-10-18 (S373) -- 132/132 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run, 2993 checks)"; R CMD
+#           check 0 errors, 0 warnings, 0 notes), matching the sandbox;
+#           GitHub 9d5825f (package).
 # S372 EDIT (v0.9.245, 2026-10-18): NEW N44k, and N44c, N44c2, N44d AND
 #           N47i RE-PINNED for Fix Slate 20 (the S371 remedy-line audit):
 #           with no convention selected, automatic mode's note on a declared
@@ -778,8 +801,10 @@ check("N26 face-value repair note counts the kept cells (70 values)",
 check("N27 word-evidence -99 nudge fires and CITES its evidence (S238)",
       grepl("-99 in 'AgeAtRelease' looks like a coded missing value",
             flat(g_rep), fixed = TRUE) &&
-      grepl("the column also contained the word \"Refused\"", flat(g_rep),
-            fixed = TRUE) &&
+      # S373 (ruling R28): "Not stated" joined the word list, so the nudge
+      # cites both words the column holds.
+      grepl("the column also contained the words \"Not stated\" and \"Refused\"",
+            flat(g_rep), fixed = TRUE) &&
       # S345: with no convention selected the remedy follows the menu
       # ("Then declare"); N47k-m hold both forms.
       grepl("\nThen declare -99 with jdeclare_missing()", g_rep, fixed = TRUE))
@@ -1033,18 +1058,28 @@ check("N43c jrelabel(): a text variable is sent to jencode()",
       grepl(.remedy, .g43$jrelabel_txt, fixed = TRUE))
 check("N43d jrelabel(): a factor is sent to jencode()",
       grepl(.remedy, .g43$jrelabel_fac, fixed = TRUE))
-check("N43e jdeclare_missing(): a text variable is sent to jencode()",
-      grepl(.remedy, .g43$jdeclare_txt, fixed = TRUE))
+# S373 (Slate E5, ruling R26's lean 1): jdeclare_missing() declares on a
+# text variable, so numbers given for one are refused with the call to
+# run, the codes quoted -- no longer sent to jencode().
+check("N43e jdeclare_missing(): numbers for a text variable get the call with the codes quoted (pinned whole), and it runs",
+      identical(.g43$jdeclare_txt, paste0(
+        "jdeclare_missing(): Txt is a text variable, so its codes go\n",
+        "in quotes:\n",
+        "  jdeclare_missing(.r1, Txt, codes = \"-99\")")) &&
+        identical(attr(suppressMessages(jdeclare_missing(.r1, Txt, codes = "-99"))$Txt,
+                       "na_values"), "-99"))
 check("N43f jdeclare_missing(): a factor is sent to jencode()",
       grepl(.remedy, .g43$jdeclare_fac, fixed = TRUE))
 # N43h (S310 mv): the two jdeclare_missing() guards use the house generic
 # "missing values", not "missing-value codes" -- [MISSING-VALUE-TERMS]
 # reserves that term for the .xpt messages.
-check("N43h jdeclare_missing() guards say \"missing values can only be declared\"",
-      all(vapply(.g43[c("jdeclare_txt", "jdeclare_fac")], function(g)
-        grepl("missing values can only be declared on numeric variables",
-              flat(g), fixed = TRUE) &&
-        !grepl("missing-value codes", flat(g), fixed = TRUE), logical(1))))
+# S373: the factor guard names both kinds of variable that take a
+# declaration (Slate E5); neither guard says "missing-value codes".
+check("N43h jdeclare_missing()'s factor guard says \"can be declared on numeric and text variables only\"; neither guard says \"missing-value codes\"",
+      grepl("missing values can be declared on numeric and text variables only",
+            flat(.g43$jdeclare_fac), fixed = TRUE) &&
+        all(vapply(.g43[c("jdeclare_txt", "jdeclare_fac")], function(g)
+          !grepl("missing-value codes", flat(g), fixed = TRUE), logical(1))))
 check("N43g no site still offers the base-R conversion",
       !any(grepl("as.numeric(", unlist(.g43), fixed = TRUE)) &&
       !any(grepl("as.character(", unlist(.g43), fixed = TRUE)))
@@ -1855,6 +1890,49 @@ check("N50d a quoted label holding a semicolon in jencode(labels =), either mark
               identical(names(labelled::val_labels(a)), c("Yes", "No", "Refused; not asked")) &&
                 identical(names(labelled::val_labels(b)), c("Yes", "Said \"no\"", "Refused; not asked")) }))
 rm(.e50)
+
+# =============================================================================
+# N51 (S373) -- A DECLARED BLANK IN AUTOMATIC MODE (Slate E5, ruling R27).
+# jdeclare_missing(codes = "") declares a text variable's blank cells
+# missing. jencode()'s automatic mode leaves a declared value missing and
+# offers the map that keeps it declared; a declared blank is now one of
+# those values -- named <blank> among them, offered back as blank=missing --
+# where its cells had the plain-blank note ("blank cells ... left missing",
+# blank=0 to keep them). An undeclared blank keeps that note (N47).
+# =============================================================================
+.e51 <- data.frame(S = c("a", "", "b", "  ", "UNK", "a"), stringsAsFactors = FALSE)
+.e51 <- suppressMessages(jdeclare_missing(.e51, S, codes = c("UNK", "")))
+.g51 <- local({ old <- getOption(".jst_options_missing_convention")
+                options(.jst_options_missing_convention = "spss")
+                on.exit(options(.jst_options_missing_convention = old))
+                grab(jencode(.e51, S)) })
+check("N51a the declared blank is named among the declared values, and no plain-blank note is given",
+      grepl("Note: 3 cells in 'S' holding a declared missing value (<blank>, \"UNK\") were left missing (NA).",
+            flat(.g51), fixed = TRUE) &&
+        !grepl("blank cells in 'S' were left missing", flat(.g51), fixed = TRUE) &&
+        !grepl("blank=0", .g51, fixed = TRUE))
+check("N51b the map that keeps them declared sends blank and UNK to missing; the numbering's map sends both to NA",
+      grepl("map = \"a=1; b=2; blank=missing; UNK=missing\"", flat(.g51), fixed = TRUE) ||
+        grepl("map = \"a=1; b=2; UNK=missing; blank=missing\"", flat(.g51), fixed = TRUE))
+check("N51c ... and it runs under spss: the empty and the spaces cells come back declared, with UNK",
+      local({ old <- getOption(".jst_options_missing_convention")
+              options(.jst_options_missing_convention = "spss")
+              on.exit(options(.jst_options_missing_convention = old))
+              ln <- unlist(.offered(.g51))
+              ln <- ln[grepl("missing\"", ln, fixed = TRUE)]
+              e  <- new.env(parent = globalenv()); e$.e51 <- .e51
+              r  <- suppressMessages(eval(parse(text = sub("^\\s*[^<]*<- ", "", ln[1])), e))
+              # The missing token makes one code under spss (the note says
+              # "as one missing value"): the empty, the spaces and the UNK
+              # cells all hold it, declared.
+              x  <- as.numeric(unclass(r))
+              length(ln) == 1L && identical(x[c(1, 3, 6)], c(1, 2, 1)) &&
+                all(x[c(2, 4, 5)] %in% as.numeric(attr(r, "na_values"))) &&
+                length(attr(r, "na_values")) >= 1L }))
+check("N51d control: the same variable undeclared keeps the plain-blank note and its blank=0 map",
+      grepl("blank=0", grab(jencode(data.frame(S = c("a", "", "b"), stringsAsFactors = FALSE), S)),
+            fixed = TRUE))
+rm(.e51, .g51)
 
 # --- Restore session state ---------------------------------------------------
 # Placed ABOVE the verdict so a failing run still leaves the session clean.

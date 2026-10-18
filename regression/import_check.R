@@ -56,10 +56,17 @@
 #           file; and where the session cannot ask, a file that exists stops
 #           with one sentence a line and the path on a line of its own (U05
 #           re-pinned).
+#           Since v0.9.246 (section W; Slate E5, the S372 item): jload()'s
+#           scan of a CSV file's text column -- the values that read as
+#           missing reported and quoted, the jdeclare_missing() line quoted
+#           with no menu, running under no convention and under stata, a
+#           blank cell not reported, and no block for a column holding no
+#           such word.
 # ORIGIN:   S362 (v0.9.235). The tenth battery. Section R added S362, the
 #           second build (v0.9.236). Section S added S365 (v0.9.237).
 #           Section T added S366 (v0.9.238). Section U added S367
 #           (v0.9.239). Section V added, U05 re-pinned, S368 (v0.9.240).
+#           Section W added S373 (v0.9.246).
 # FIXTURES: written by this file into a folder of R's temporary folder,
 #           except one that R cannot write: datasets/import_guess_text.xlsx
 #           (section G). writexl gives every cell of a column one type, and
@@ -215,6 +222,12 @@
 #           V09, its headings the file-alone stop's V08, its example file
 #           another V08 V09; the no-filename example naming MyData V07 V09,
 #           an expression pasted where mydata goes V07.
+#           Section W (v0.9.246, S373; of Slate E5's forty-four one-change
+#           mutants, run detached, the three that reach this battery, each
+#           red here and in missing_convention_check.R): "not stated" out of
+#           the word list W01 W02; the scan skipping a text variable W01
+#           W02; its line's values unquoted W01 W02. The full map is in
+#           missing_convention_check.R's S373 entry.
 # FIRST WORKSTATION RUN (S362, the first delivery): 81/83. F03 -- the
 #           title note's line, run as offered, met jload()'s overwrite
 #           question: the workstation runs the batteries in an interactive
@@ -226,7 +239,13 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
-# LAST VERIFIED: v0.9.240, 2026-10-17 (S368) -- 152/152 on the WORKSTATION
+# LAST VERIFIED: v0.9.246, 2026-10-18 (S373) -- 155/155 on the WORKSTATION
+#           through receive_all() ("ALL BATTERIES GREEN (10 run, 2993
+#           checks)"; R CMD check 0 errors, 0 warnings, 0 notes); GitHub
+#           9d5825f (package). Builds S369-S372 left this file unchanged
+#           and ran it green through receive_all(), last at v0.9.245
+#           (152/152).
+# EARLIER:  v0.9.240, 2026-10-17 (S368) -- 152/152 on the WORKSTATION
 #           through receive_all() ("ALL BATTERIES GREEN (10 run, 2871
 #           checks)"; R CMD check 0 errors, 0 warnings, 0 notes); GitHub
 #           d62f372 (package). Section V reads a stand-in workspace and
@@ -244,7 +263,13 @@
 #           9ab5efa (package). S29 passes there as asked (interactive()
 #           TRUE); section T asks its question of a copy of jload(), so it
 #           runs there as in the sandbox.
-# SANDBOX:  v0.9.240, 2026-10-17 (S368) -- 152/152, run_all.R 2871
+# SANDBOX:  v0.9.246, 2026-10-18 (S373) -- 155/155, run_all.R 2993
+#           across ten, plain and under the RStudio-handler stand-in, each
+#           again with a 59-character temp path, once with interactive()
+#           TRUE, and entered dirty (as missing_convention_check.R's S373
+#           entry lists), plain and under the stand-in: green, nothing
+#           changed. On v0.9.245 W01 and W02 red (W03, a control, passes).
+# EARLIER:  v0.9.240, 2026-10-17 (S368) -- 152/152, run_all.R 2871
 #           across ten, plain and under the RStudio-handler stand-in, each
 #           again with a 36-character temp path, once with interactive()
 #           TRUE, and entered dirty (joutput("full") with diagnostics, width
@@ -1739,6 +1764,58 @@ check("V09 ... both routes run as printed, each saving the data frame named; wit
                         finally = options(.jst_default_data = old))
           ok1 && ok2 && startsWith(m, "jsave(): Provide a filename with extension, for example:\n  jsave(d1, \"mydata.sav\")\n") },
           finally = options(.jst_options_data_dir = dd)) }))
+
+# --- W: a CSV file's text values that read as missing (v0.9.246) ------------
+
+# v0.9.246 (S373; Slate E5, the S372 item, lean 5). jload()'s scan of
+# suspected missing-value codes skipped every text variable, so a CSV file's
+# "UNKNOWN" and "Not stated" loaded as ordinary categories with no hint. A
+# text variable's values are now reported when they read as missing by the
+# word list (ruling R28 added "not stated", "unknown" and three more), each
+# value quoted as the declaration takes it, with a quoted jdeclare_missing()
+# line -- a text variable's missing values are SPSS-style under every
+# setting, so no choose-first menu (ruling R26). A blank cell is not
+# reported: it is a value of its own, counted valid (Cross-cutting 7).
+# missing_convention_check.R N96y-aa hold the .sav cases (a value's label,
+# a declared value left out, more than three).
+.ix_w("W01.csv", c("Marital,Age", "Married,34", "UNKNOWN,51", "Not stated,22",
+                   ",40", "UNKNOWN,29", "Single,61"))
+check("W01 a CSV file's text column: its values that read as missing reported, quoted, the line quoted, no menu, and the blank cell not reported (pinned)",
+      local({ old <- getOption(".jst_options_missing_convention")
+        options(.jst_options_missing_convention = NULL)
+        on.exit(options(.jst_options_missing_convention = old))
+        p <- run(jload(.ix("W01.csv"), name = "W01"))$txt
+        grepl(paste0(
+          "Suspected missing-value codes detected:\n",
+          "  Marital:  \"Not stated\" (1), \"UNKNOWN\" (2)\n\n",
+          "These codes are not formally defined, so they are not treated as missing.\n",
+          "Declare them as missing if they are; leave as-is if real.\n\n",
+          "To declare one variable's values as missing:\n",
+          "  jdeclare_missing(W01, Marital, codes = c(\"Not stated\", \"UNKNOWN\"),\n",
+          "      modify = TRUE)\n"), p, fixed = TRUE) &&
+          !grepl("convention is selected", p, fixed = TRUE) &&
+          !grepl("\"\" (1)", p, fixed = TRUE) }))
+check("W02 ... the line runs as printed, under no convention and under stata: both values declared, every cell as it was",
+      local({ old <- getOption(".jst_options_missing_convention")
+        on.exit(options(.jst_options_missing_convention = old))
+        ok <- TRUE
+        for (cv in list(NULL, "stata")) {
+          options(.jst_options_missing_convention = cv)
+          e <- new.env(parent = globalenv())
+          p <- run(eval(quote(jload(.ix("W01.csv"), name = "W01")), e))$txt
+          cl <- .calls(p)
+          suppressMessages(utils::capture.output(eval(cl[[1L]], e)))
+          ok <- ok && length(cl) == 2L &&
+            identical(sort(attr(e$W01$Marital, "na_values")), c("Not stated", "UNKNOWN")) &&
+            identical(as.vector(unclass(e$W01$Marital))[c(1, 4, 6)], c("Married", "", "Single"))
+        }
+        ok }))
+.ix_w("W03.csv", c("Group,Age", "Adult,34", "Juvenile,51", ",22", "Adult,40"))
+check("W03 control: a text column holding no such word gives no scan block",
+      !grepl("missing-value codes detected", run(jload(.ix("W03.csv"), name = "W03"))$txt,
+             fixed = TRUE))
+if (exists("W01")) rm(W01)
+if (exists("W03")) rm(W03)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 

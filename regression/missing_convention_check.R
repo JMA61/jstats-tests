@@ -10,6 +10,114 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S373 EDIT (v0.9.246, 2026-10-18): NEW N96 section, forty checks
+#           (N96a-an), Slate E5: declared missing values on text. Ruling
+#           R26: jdeclare_missing() declares quoted values on a text
+#           variable SPSS-style under every setting and with none selected,
+#           with no menu, and a note under a stata or a sas setting
+#           (N96a-c); convention = "stata" or "sas" and a range refused,
+#           each with the call without it (N96d e); numbers refused with
+#           the call quoted (lean 1; N96f-h); exact matching, and a note
+#           naming the values that differ only in letter case or outer
+#           spaces, with counts (lean 2; N96j); labels both ways, a value
+#           holding = or ; quoted (lean 3; N96k); a value typed without its
+#           quotes given ruling R18's pointer (a rider, from the reflex
+#           probe; N96m). Ruling R27: codes = "" declares every blank cell
+#           -- the masks, jfreq()'s <blank> row, the Case Processing detail,
+#           jconvert(to = "baseR"), preserve.declarations = FALSE, a .sav
+#           round trip, jsave()'s CSV note and the drop notice (N96n q-u ac
+#           ad). Ruling R28: the five new words (N96v). The S372 items:
+#           jsave() to .sav refuses a declared text value over 8 bytes
+#           before writing (N96w x); jload()'s scan reports a text variable
+#           again, its line quoted, no menu (N96y-aa; a CSV file in
+#           import_check.R W); jconvert()'s Pattern A reports one again
+#           under "spss" and "baseR" (N95e re-pinned) and still not under
+#           "stata" or "sas" (N96ab); the full level's equivalent call gone
+#           (Jeff: "Ok to your lean."; N81am and N95o re-pinned). SECOND
+#           DELIVERY, from Jeff's walk of Section 72 ("why not just treat
+#           this just like we would another suspected UDM?"; "Okay on all
+#           three."): the note on a value differing from a declared one only
+#           in case or outer spaces gives the line that declares it with the
+#           declared values, the new value taking the label of the one it
+#           matches, or past three values offers jencode() (N96a and N96j
+#           re-pinned; N96ae-ah); the load scan reports such a value beside a
+#           variable's declared values as suspected, and its line on a text
+#           variable names the declared values too, where a line naming the
+#           new ones alone dropped them (N96ai-al; checking found it);
+#           .jst_text_value_rule() (N96am). One builder,
+#           .jst_text_declare_args(). Every offered line RUN, each in an
+#           environment of its own. NINE HUNDRED checks. On
+#           the 0.9.245 master: nineteen red (N81am, N95e, N95o, N96a-p), and
+#           the battery stops at N96q's fixture, a blank declared on text,
+#           which the old jdeclare_missing() refuses. On the first delivery
+#           twelve red: N96a, N96j and N96ae-an.
+#           MUTATION MAP (S373; forty-four one-change mutants of the new
+#           code, run detached, through this battery and whichever of
+#           jencode_check.R, cps_check.R and import_check.R a mutant
+#           reaches, all red): the blank mask without blanks N96q-u ac (cps
+#           N58d3); the <blank> row label N96n r s u ad; "not stated" out
+#           of the word list N96v y (jencode N27, import W01 W02);
+#           "unknown" out N96v y aa; the text route only when a code is
+#           text N96e-g l (jencode N43e); the convention refusal N96d f;
+#           the range refusal N96e; the numbers line unquoted N96f (jencode
+#           N43e); the near-miss note N96a j; the setting note N96c; a
+#           fourth value kept N96g l; a value twice kept N96l; a label
+#           naming no code kept N96g l; the bare pointer N96m, checked
+#           ahead of the codes N96m; the mixed refusal naming every
+#           variable N96i; the numeric path's old message N96h; the 8-byte
+#           test at 8 N96x, by characters N96x, the refusal off N96w x; the
+#           scan skipping text N96y-aa (import W01 W02), by label N96y z,
+#           declared values not excluded N96y, its line unquoted N96y-aa
+#           (import W01 W02), no cap at three N96aa; Pattern A's text under
+#           every target N86ax N96ab, under none N95e, unquoted N86ay N95e;
+#           the labels not merged N96b f k n; the blank keyword N96k, a
+#           quoted value at a rule's start N96k; exact matching kept in
+#           preserve.declarations = FALSE N96t, jconvert(to = "baseR")
+#           N96t, the CPS rows N96s, jfreq()'s Missing count N96r (cps
+#           N58d3), the masking pass N96r s (cps N58d3); the CSV note's
+#           <blank> N96ac; the minimal drop notice's N96ad; the equivalent
+#           call back N81am N95o; the shape checks after the numbers
+#           refusal N96f g; the quoted line past three codes N96h; and, in
+#           the other batteries, jfreq()'s footnote offering
+#           jdeclare_missing() for a factor (cps N58d2), the old one-line
+#           footnote (cps N58a b d), jencode()'s declared blank (jencode
+#           N51a-c). No survivor.
+#           SECOND ROUND (twenty-four one-change mutants of the second
+#           delivery's code, run detached, all red): the new value's
+#           twin label off N96ae af ai-ak; the declared values left out of
+#           the line N96a j ae-al; a mixed set named N96af al, its labels =
+#           dropped N96af al; the note's line off N96a j ae af ah, given for
+#           an expression too N96ah, without modify = TRUE N96a j ae af ah,
+#           its name always in backticks N96a j ae af ah; the cap sentence
+#           off N96ag; the scan's near misses unreported N96ai-ak; room
+#           counted without the declared values N96ak; the old line naming
+#           the new values alone N96ai-al; "with the ones it already
+#           declares" dropped N96ai ak; the three-declared sentence silent
+#           N96ak; the placeholder line off N96al (import W01 W02); "most
+#           frequent" and "two most frequent" swapped N96ak;
+#           .jst_text_value_rule()'s blank, semicolon, outer-space and word
+#           cases N96am. FOUR SURVIVED the first pass, read before recorded,
+#           each given a check and run again, red: the builder's own cap
+#           (both callers stop short of four first, so only the builder
+#           called alone reaches it) N96am; placeholders given to every new
+#           value, the twin matched without trimming and a value's own label
+#           ignored N96an.
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): run_all.R
+#           2993 across ten, plain and under the RStudio-handler stand-in,
+#           each again with a 59-character temp path, once with
+#           interactive() TRUE: all green; R CMD check --no-manual on the
+#           built package, Status OK. Entered dirty as at S372, with
+#           objects also named M, R, Marital, Src, W01, W03, held, UNKNOWN,
+#           a, b, p, cl, ok, cv, to, Decl, v96, s96, t96r, b18, w72, r17d,
+#           tx, u96, u96b, u96c, u96d, lst and d, plain and under the
+#           stand-in: green, nothing added,
+#           nothing lost, no value changed; the first dirty run found N96r
+#           reading jfreq()'s table with the color option on, now read with
+#           the color stripped.
+#           LAST VERIFIED: v0.9.246, 2026-10-18 (S373) -- 900/900 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run, 2993 checks)"; R CMD
+#           check 0 errors, 0 warnings, 0 notes), matching the sandbox;
+#           GitHub 9d5825f (package).
 # S372 EDIT (v0.9.245, 2026-10-18): NEW N95 section, sixteen checks
 #           (N95a-p), Fix Slate 20: the missing-value lines from the S371
 #           remedy-line audit, each a line a message offered that stopped
@@ -7021,11 +7129,12 @@ check("N81al the nothing-to-name note's line assigns to a new name as well",
 options(.jst_output_level = "full")
 p81am <- printed(jdeclare_missing(mk81(), V, codes = -99))
 options(.jst_output_level = .lvl81)
-# S372: haven::tagged_na() (Fix Slate 20): bare, the line ran only where
-# haven was attached.
-check("N81am at the full level the equivalent call assigns to a new name too",
-      "  mydata <- jdeclare_missing(mk81(), V, codes = c(haven::tagged_na(\"a\")))" %in%
-        .l81(p81am) &&
+# S373 (Slate E5, the S372 item): the full level's "Equivalent Stata-style
+# call for future use" is gone -- it labelled markers the call's data did
+# not carry, so it stopped when run on them -- and no line assigns to mk81().
+check("N81am at the full level no equivalent call is printed, and no line assigns to the expression",
+      !any(grepl("Equivalent", .l81(p81am), fixed = TRUE)) &&
+        !any(grepl("tagged_na", .l81(p81am), fixed = TRUE)) &&
         !any(grepl("mk81() <-", .l81(p81am), fixed = TRUE)))
 options(.jst_options_missing_convention = "spss")
 
@@ -10715,20 +10824,24 @@ check("N95d an analysis still shows the unlabelled marker in the Missing block a
               grepl("\nMissing\n.a (no label) ", m, fixed = TRUE) &&
                 grepl("Total valid      3 ", m, fixed = TRUE) }))
 
-# --- B: a text variable leaves jconvert()'s Pattern A report ----------------------
+# --- B: a text variable in jconvert()'s Pattern A report ---------------------------
+# S373 (Slate E5, the S372 item, lean 6): back in under "spss" and "baseR",
+# its values quoted, no convention =; N96ab holds "stata" and "sas" out.
 .P95 <- data.frame(
   S = haven::labelled(c("web", "X", "phone", "web"), labels = c(Refused = "X")),
   N = haven::labelled(c(1, -99, 2, 3), labels = c(Refused = -99)))
-check("N95e to = \"spss\" and \"baseR\": a text variable whose label suggests missingness is not reported; the numeric beside it is, and its line runs under every convention state",
+check("N95e to = \"spss\" and \"baseR\": a text variable whose label suggests missingness is reported, its value quoted and its line quoted with no convention =; the numeric beside it too; both lines run under every convention state",
       local({ ok <- TRUE
               for (to in c("spss", "baseR")) for (cv in list(NULL, "spss", "stata", "sas")) {
                 m <- .conv95(cv, grab(jconvert(.P95, to = to)))
                 e <- new.env(parent = globalenv()); e$.P95 <- .P95
-                ok <- ok && !grepl("S:", m, fixed = TRUE) && !grepl("codes = X", m, fixed = TRUE) &&
+                ok <- ok && grepl("  S: \"X\" [\"Refused\"]", m, fixed = TRUE) &&
+                  grepl("  jdeclare_missing(.P95, S, codes = \"X\", modify = TRUE)", m, fixed = TRUE) &&
                   grepl("  N: -99 [\"Refused\"]", m, fixed = TRUE) &&
                   .conv95(cv, .run95(m, e, "^  jdeclare_missing\\(")) &&
                   (identical(as.numeric(attr(e$.P95$N, "na_values")), -99) ||
-                     !is.na(haven::na_tag(unclass(e$.P95$N))[2]))
+                     !is.na(haven::na_tag(unclass(e$.P95$N))[2])) &&
+                  identical(attr(e$.P95$S, "na_values"), "X")
               }
               ok }))
 
@@ -10858,26 +10971,618 @@ check("N95n one marker on an SPSS variable declaring two codes: the line names b
                 identical(sort(as.numeric(attr(rb$X, "na_values"))), c(-99, -98)) &&
                 !grepl("dropped", paste(ga, gb), fixed = TRUE) &&
                 grepl("To label the declared numeric codes, name them directly:", a, fixed = TRUE) }))
-check("N95o the full level's equivalent call prints haven::tagged_na() and runs",
+# S373 (Slate E5; Jeff: "Ok to your lean."): the equivalent call is gone.
+# Run on the data the call was given it stopped ("V has no lettered markers
+# to label"); every line the full level prints now runs.
+check("N95o the full level prints no equivalent call, and every line it prints that has a call's shape runs",
       local({ d <- data.frame(V = c(1, 2, -99, 3))
               options(.jst_output_level = "full"); on.exit(options(.jst_output_level = .lv95))
               p <- .conv95("stata", printed(jdeclare_missing(d, V, codes = -99)))
-              cl <- .r5_calls(strsplit(p, "\n", fixed = TRUE)[[1]], shape = "^  d <- jdeclare_missing\\(")
-              cl <- cl[grepl("tagged_na", cl, fixed = TRUE)]
               e <- new.env(parent = globalenv()); e$d <- d
-              # The line labels markers the data already carry ("for future
-              # use"), so it is run on the variable as the call left it.
-              e$d <- .conv95("stata", suppressMessages(jdeclare_missing(d, V, codes = -99)))
-              length(cl) == 1L && grepl("codes = c(haven::tagged_na(\"a\"))", cl[1], fixed = TRUE) &&
-                !grepl("[^:]tagged_na\\(", gsub("haven::tagged_na", "", p)) &&
-                .conv95(NULL, { suppressMessages(eval(parse(text = cl[1]), e)); TRUE }) &&
-                identical(haven::na_tag(e$d$V)[3], "a") }))
+              !grepl("Equivalent", p, fixed = TRUE) && !grepl("tagged_na", p, fixed = TRUE) &&
+                grepl("Declared and converted to Stata-style missing values on V:", p, fixed = TRUE) &&
+                grepl("  d <- jdeclare_missing(d, V, ...)", p, fixed = TRUE) }))
 
 setwd(.wd95)
 unlink(.td95, recursive = TRUE)
 options(.jst_options_missing_convention = .cv95, .jst_output_level = .lv95,
         .jst_missing_notice_shown = .ns95)
 rm(.wd95, .td95, .cv95, .lv95, .ns95, .run95, .conv95, .U95, .P95, .R95, .Q95, .S95)
+
+# =============================================================================
+# N96 (S373) -- SLATE E5: DECLARED MISSING VALUES ON TEXT. Rulings R26, R27
+# and R28 (Jeff, S372) and the three (S372) items they carry. (A) R26:
+# jdeclare_missing() declares on a text variable, quoted codes, SPSS-style
+# under every setting and with none selected, no choose-first menu; a note
+# under a stata or sas setting; convention = "stata" / "sas" and a range
+# refused with the call to run; numbers refused with the call, quoted (lean
+# 1); exact matching and the note on values differing only in case or outer
+# spaces (lean 2); labels both ways, a value holding = or ; quoted (lean 3);
+# a value typed without quotes gets ruling R18's pointer. (B) R27: codes = ""
+# declares every blank cell, empty or spaces only -- one <blank> row in the
+# Missing block -- and every reader of a declared string covers both kinds.
+# (C) R28: the word list gains five terms. (D) jsave() to .sav refuses a
+# declared text value over 8 bytes (the .sav keeps 8). (E) the load scan
+# reports a text variable's values by label and by wording; jconvert()'s
+# Pattern A takes text back under "spss" and "baseR" (N95e re-pinned).
+# Every offered line RUN. Fixtures dotted, in a folder of their own;
+# working objects in local().
+# =============================================================================
+.wd96 <- getwd()
+.td96 <- file.path(tempdir(), "jstats n96")
+unlink(.td96, recursive = TRUE); dir.create(.td96); setwd(.td96)
+.cv96 <- getOption(".jst_options_missing_convention")
+.ns96 <- getOption(".jst_missing_notice_shown")
+options(.jst_options_missing_convention = NULL)
+.run96 <- function(msg, env, shape = "^  jdeclare_missing\\(") {
+  cl <- .r5_calls(strsplit(msg, "\n", fixed = TRUE)[[1]], shape = shape)
+  if (length(cl) == 0L) return(FALSE)
+  tryCatch({
+    withCallingHandlers({
+      suppressMessages(utils::capture.output(
+        for (b in cl) eval(parse(text = b), env)))
+      TRUE
+    }, warning = function(w) stop("warning: ", conditionMessage(w)))
+  }, error = function(e) { cat("        [run96] ", conditionMessage(e), "\n", sep = ""); FALSE })
+}
+# .r96(): the first offered call of msg evaluated in env, its value returned
+# (a line without modify = TRUE changes nothing in env; its value is the
+# data frame it declares on).
+.r96 <- function(msg, env, shape = "^  jdeclare_missing\\(") {
+  cl <- .r5_calls(strsplit(msg, "\n", fixed = TRUE)[[1]], shape = shape)
+  suppressMessages(utils::capture.output(v <- eval(parse(text = cl[1]), env)))
+  v
+}
+.conv96 <- function(cv, expr) {
+  old <- getOption(".jst_options_missing_convention")
+  options(.jst_options_missing_convention = cv)
+  on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+  force(expr)
+}
+.T96 <- data.frame(M = c("Married", "UNKNOWN", "Unknown", "UNKNOWN",
+                         "Refused to provide information", "", "  ", NA),
+                   R = c(1, 2, -99, 3, 4, 5, 6, NA), stringsAsFactors = FALSE)
+.reminder96 <- paste0(
+  "This call changes .T96 only if you assign the result:\n",
+  "  .T96 <- jdeclare_missing(.T96, M, ...)\n\n",
+  "To change .T96 directly, rerun with modify = TRUE:\n",
+  "  jdeclare_missing(.T96, M, ..., modify = TRUE)")
+
+# --- A: R26, declaring on a text variable -------------------------------------
+check("N96a no convention selected: the declaration is SPSS-style with no menu, and the note names the value that differs only in case, with the line that declares it too (pinned whole)",
+      identical(printed(jdeclare_missing(.T96, M, codes = "UNKNOWN")), paste0(
+        "Declared SPSS-style missing values on M:\n",
+        "  UNKNOWN (no label)\n\n",
+        "Note: M also holds a value that differs from a declared value only in letter\n",
+        "case or outer spaces:\n",
+        "  \"Unknown\" (1)\n",
+        "It is not declared, so it counts as valid data.\n",
+        "If it also marks missing data, declare it too:\n",
+        "  jdeclare_missing(.T96, M, codes = c(\"UNKNOWN\", \"Unknown\"), modify = TRUE)\n\n",
+        .reminder96)) &&
+        !grepl("convention is selected", grab(jdeclare_missing(.T96, M, codes = "UNKNOWN")), fixed = TRUE))
+check("N96b the column: character-backed haven_labelled_spss, the string declared, every cell as it was, the variable label kept",
+      local({ d <- .T96; attr(d$M, "label") <- "Marital status"
+              r <- suppressMessages(jdeclare_missing(d, M, codes = c(Unknown = "UNKNOWN")))$M
+              inherits(r, "haven_labelled_spss") && is.character(unclass(r)) &&
+                identical(attr(r, "na_values"), "UNKNOWN") &&
+                identical(labelled::val_labels(r), c(Unknown = "UNKNOWN")) &&
+                identical(as.vector(unclass(r)), .T96$M) &&
+                identical(attr(r, "label", exact = TRUE), "Marital status") }))
+check("N96c under a stata and a sas setting: still SPSS-style, with a note naming the setting's style; under spss, no note",
+      local({ st <- .conv96("stata", printed(jdeclare_missing(.T96, M, codes = "UNKNOWN")))
+              sa <- .conv96("sas", printed(jdeclare_missing(.T96, M, codes = "UNKNOWN")))
+              sp <- .conv96("spss", printed(jdeclare_missing(.T96, M, codes = "UNKNOWN")))
+              note <- function(s) paste0(
+                "\n\nNote: M is a text variable, so its missing values are declared SPSS-style.\n",
+                s, " missing values exist only on numeric variables.\n\n")
+              startsWith(st, "Declared SPSS-style missing values on M:") &&
+                grepl(note("Stata-style"), st, fixed = TRUE) &&
+                grepl(note("SAS-style"), sa, fixed = TRUE) &&
+                !grepl("Note: M is a text variable", sp, fixed = TRUE) &&
+                identical(attr(.conv96("sas", suppressMessages(jdeclare_missing(.T96, M, codes = "UNKNOWN")))$M,
+                               "na_values"), "UNKNOWN") }))
+check("N96d convention = \"stata\" or \"sas\" refused with the call without it (pinned whole), and the line runs; convention = \"SPSS\" passes with no note",
+      local({ a <- grab(jdeclare_missing(.T96, M, codes = "UNKNOWN", convention = "stata"))
+              b <- grab(jdeclare_missing(.T96, M, codes = "UNKNOWN", convention = "SAS", modify = TRUE))
+              e <- new.env(parent = globalenv()); e$.T96 <- .T96
+              identical(a, paste0(
+                "jdeclare_missing(): M is a text variable, and Stata-style missing\n",
+                "values exist only for numbers.\n",
+                "Its missing values are declared SPSS-style; drop convention = \"stata\":\n",
+                "  jdeclare_missing(.T96, M, codes = \"UNKNOWN\")")) &&
+                identical(b, paste0(
+                  "jdeclare_missing(): M is a text variable, and SAS-style missing\n",
+                  "values exist only for numbers.\n",
+                  "Its missing values are declared SPSS-style; drop convention = \"sas\":\n",
+                  "  jdeclare_missing(.T96, M, codes = \"UNKNOWN\", modify = TRUE)")) &&
+                .run96(b, e) && identical(attr(e$.T96$M, "na_values"), "UNKNOWN") &&
+                !grepl("Note: M is a text", printed(jdeclare_missing(.T96, M, codes = "UNKNOWN",
+                                                                     convention = "SPSS")), fixed = TRUE) }))
+check("N96e a range refused: with codes, the call without it (pinned whole), which runs; a range alone, no line",
+      local({ a <- grab(jdeclare_missing(.T96, M, codes = "UNKNOWN", range = c(-99, -90)))
+              b <- grab(jdeclare_missing(.T96, M, range = c(-99, -90)))
+              e <- new.env(parent = globalenv()); e$.T96 <- .T96
+              identical(a, paste0(
+                "jdeclare_missing(): M is a text variable, and a missing-value range\n",
+                "exists only for numbers.\n",
+                "Declare its values without range =:\n",
+                "  jdeclare_missing(.T96, M, codes = \"UNKNOWN\")")) &&
+                identical(b, paste0(
+                  "jdeclare_missing(): M is a text variable, and a missing-value range\n",
+                  "exists only for numbers.\n",
+                  "Name its values with codes =, for example codes = \"UNKNOWN\".")) &&
+                .run96(a, e) }))
+check("N96f numbers for a text variable (lean 1): the call with the codes quoted, names and labels kept (pinned whole); it runs and declares the strings",
+      local({ a <- grab(jdeclare_missing(.T96, M, codes = c(Refused = -99)))
+              b <- grab(jdeclare_missing(.T96, M, codes = -99, labels = "-99=Refused",
+                                         convention = "stata"))
+              e <- new.env(parent = globalenv()); e$.T96 <- .T96
+              identical(a, paste0(
+                "jdeclare_missing(): M is a text variable, so its codes go in quotes:\n",
+                "  jdeclare_missing(.T96, M, codes = c(Refused = \"-99\"))")) &&
+                grepl("drop convention = \"stata\":\n  jdeclare_missing(.T96, M, codes = \"-99\", labels = \"-99=Refused\")",
+                      b, fixed = TRUE) &&
+                identical(attr(.r96(a, e)$M, "na_values"), "-99") &&
+                identical(labelled::val_labels(.r96(a, e)$M), c(Refused = "-99")) }))
+check("N96g ... the numbers line is checked as text first: partial names, a fourth code and a label naming no code each get their own stop, never a line that stops",
+      grepl("names some of its codes and not others",
+            grab(jdeclare_missing(.T96, M, codes = c(Refused = -99, -98))), fixed = TRUE) &&
+        grepl("at most 3 declared missing values (the SPSS limit); the call names 4.",
+              .fl(grab(jdeclare_missing(.T96, M, codes = c(-99, -98, -97, -96)))), fixed = TRUE) &&
+        grepl("not among the\ncodes: -98=Refused.",
+              grab(jdeclare_missing(.T96, M, codes = -99, labels = "-98=Refused")), fixed = TRUE))
+check("N96h text and numeric variables, numbers given: the text variable refused in the bulk form with its quoted line (pinned whole), nothing changed; past three codes, no line",
+      local({ a <- grab(r <- jdeclare_missing(.T96, M, R, codes = -99, convention = "spss"))
+              b <- grab(jdeclare_missing(.T96, M, R, codes = c(-99, -98, -97, -96),
+                                         convention = "stata"))
+              identical(a, paste0(
+                "jdeclare_missing(): cannot declare on 1 of 2 variables; no variable\n",
+                "was changed:\n",
+                "  M:\n",
+                "    M is a text variable, so its codes go in quotes:\n",
+                "      jdeclare_missing(.T96, M, codes = \"-99\")")) &&
+                endsWith(b, "    M is a text variable, so its codes go in quotes.") &&
+                !exists("r", inherits = FALSE) }))
+check("N96i text and numeric variables, words given: the numeric one refused, the call on the text variable offered (pinned whole), which runs",
+      local({ a <- grab(jdeclare_missing(.T96, vars = c("M", "R"), codes = c("UNKNOWN", "")))
+              e <- new.env(parent = globalenv()); e$.T96 <- .T96
+              identical(a, paste0(
+                "jdeclare_missing(): the codes are text, and R is not a\n",
+                "text variable.\n",
+                "To declare them on the text variable, run:\n",
+                "  jdeclare_missing(.T96, M, codes = c(\"UNKNOWN\", \"\"))")) &&
+                identical(attr(.r96(a, e)$M, "na_values"), c("UNKNOWN", "")) }))
+check("N96j exact matching (lean 2): a value given in the wrong case declares nothing, marked not present, and the note lists the values it missed, most cases first, with the line (pinned whole)",
+      identical(printed(jdeclare_missing(.T96, M, codes = "unknown")), paste0(
+        "Declared SPSS-style missing values on M:\n",
+        "  unknown (no label; not present in the data)\n\n",
+        "Note: M also holds values that differ from a declared value only in letter\n",
+        "case or outer spaces:\n",
+        "  \"UNKNOWN\" (2)\n",
+        "  \"Unknown\" (1)\n",
+        "They are not declared, so they count as valid data.\n",
+        "If they also mark missing data, declare them too:\n",
+        "  jdeclare_missing(.T96, M, codes = c(\"unknown\", \"UNKNOWN\", \"Unknown\"),\n",
+        "      modify = TRUE)\n\n",
+        .reminder96)))
+check("N96k labels both ways (lean 3): codes = c(Refused = ...) and labels = \"...=Refused\" give the same variable; a quoted value holds = and ;, and blank names the blank cells",
+      local({ a <- suppressMessages(jdeclare_missing(.T96, M,
+                     codes = c(Refused = "Refused to provide information")))$M
+              b <- suppressMessages(jdeclare_missing(.T96, M,
+                     labels = "\"Refused to provide information\"=Refused"))$M
+              c3 <- suppressMessages(jdeclare_missing(.T96, M,
+                     labels = "'a=b;c'=Odd; blank=\"No answer; none\""))$M
+              identical(a, b) &&
+                identical(sort(attr(c3, "na_values")), c("", "a=b;c")) &&
+                identical(labelled::val_labels(c3)[["No answer; none"]], "") }))
+check("N96l the codes' other refusals: a label naming no code, the same value twice (\"\" and \"  \" are one), a fourth value, NA, a TRUE",
+      grepl("labels names a value that is not among the\ncodes: REF=Refused.",
+            grab(jdeclare_missing(.T96, M, codes = "UNKNOWN", labels = "REF=Refused")), fixed = TRUE) &&
+        grepl("the same value more than\nonce: <blank>.",
+              grab(jdeclare_missing(.T96, M, codes = c("", "  "))), fixed = TRUE) &&
+        grepl("at most 3 declared missing values",
+              .fl(grab(jdeclare_missing(.T96, M, codes = c("a", "b", "c", "d")))), fixed = TRUE) &&
+        grepl("`codes` holds NA.",
+              grab(jdeclare_missing(.T96, M, codes = NA_character_)), fixed = TRUE) &&
+        grepl("must be quoted text",
+              grab(jdeclare_missing(.T96, M, codes = TRUE)), fixed = TRUE))
+check("N96m a value typed without quotes: ruling R18's pointer, the call with it quoted (pinned whole), which runs; a name holding a value passes; a call whose quoted form would stop gets that stop instead",
+      local({ # The calls run where no object named UNKNOWN can be seen --
+              # the workspace's included -- since a name holding a value is
+              # read as one (ruling R18).
+              eb <- new.env(parent = baseenv())
+              eb$jdeclare_missing <- jdeclare_missing; eb$.T96 <- .T96
+              a <- grab(eval(quote(jdeclare_missing(.T96, M, codes = c(UNKNOWN, ""),
+                                                    modify = TRUE)), eb))
+              e <- new.env(parent = globalenv()); e$.T96 <- .T96
+              held <- "UNKNOWN"
+              b <- grab(eval(quote(jdeclare_missing(.T96, M, codes = c(Unknown = UNKNOWN, ""))), eb))
+              cc <- grab(eval(quote(jdeclare_missing(.T96, M, codes = UNKNOWN,
+                                                     convention = "stata")), eb))
+              startsWith(b, "jdeclare_missing(): `codes` names some of its codes and not others.") &&
+                endsWith(cc, "  jdeclare_missing(.T96, M, codes = \"UNKNOWN\")") &&
+                identical(a, paste0(
+                "jdeclare_missing(): UNKNOWN is not in quotes.\n",
+                "A text variable's value goes in quotes:\n",
+                "  jdeclare_missing(.T96, M, codes = c(\"UNKNOWN\", \"\"), modify = TRUE)")) &&
+                .run96(a, e) && identical(attr(e$.T96$M, "na_values"), c("UNKNOWN", "")) &&
+                identical(attr(suppressMessages(jdeclare_missing(.T96, M, codes = held))$M,
+                               "na_values"), "UNKNOWN") }))
+check("N96n a second call replaces: the drop notice names what went, a blank as <blank>; a value given bare keeps its label",
+      local({ d <- suppressMessages(jdeclare_missing(.T96, M, codes = c("UNKNOWN", ""),
+                                                     labels = "UNKNOWN=Not known"))
+              p <- printed(r <- jdeclare_missing(d, M, codes = c("UNKNOWN", "Married")))
+              grepl("Note: jdeclare_missing replaced the existing declared missing values for M.\nPreviously declared codes dropped: <blank>.",
+                    p, fixed = TRUE) &&
+                grepl("  UNKNOWN [\"Not known\"]\n", p, fixed = TRUE) &&
+                identical(sort(attr(r$M, "na_values")), c("Married", "UNKNOWN")) }))
+check("N96o modify = TRUE writes back, and under a juse() default the variable alone is enough",
+      local({ e <- new.env(parent = globalenv()); e$d96 <- .T96
+              suppressMessages(eval(quote(jdeclare_missing(d96, M, codes = "UNKNOWN", modify = TRUE)), e))
+              ok1 <- identical(attr(e$d96$M, "na_values"), "UNKNOWN")
+              .d96g <- .T96
+              suppressMessages(juse(.d96g)); on.exit(suppressMessages(juse(NULL)))
+              suppressMessages(jdeclare_missing(M, codes = "", modify = TRUE))
+              ok1 && identical(attr(.d96g$M, "na_values"), "") }))
+check("N96p two text variables: one block naming both (pinned whole)",
+      local({ .d2 <- data.frame(A = c("x", "UNKNOWN"), B = c("UNKNOWN", "y"))
+              identical(printed(jdeclare_missing(.d2, A, B, codes = "UNKNOWN")), paste0(
+                "Declared SPSS-style missing values on 2 variables:\n",
+                "  A, B\n",
+                "  UNKNOWN (no label)\n\n",
+                "This call changes .d2 only if you assign the result:\n",
+                "  .d2 <- jdeclare_missing(.d2, A, B, ...)\n\n",
+                "To change .d2 directly, rerun with modify = TRUE:\n",
+                "  jdeclare_missing(.d2, A, B, ..., modify = TRUE)")) }))
+
+# --- B: R27, codes = "" ------------------------------------------------------------
+.D96 <- suppressMessages(jdeclare_missing(.T96, M, codes = c("UNKNOWN", "")))
+check("N96q the masks: a declared blank covers the empty, the spaces and the tab cells; any other value only its exact cells",
+      identical(jstats:::.jst_text_codes_mask(c("", "  ", "\t", "a", NA, " a"), ""),
+                c(TRUE, TRUE, TRUE, FALSE, FALSE, FALSE)) &&
+        identical(jstats:::.jst_text_codes_mask(c("a", " a", "A", NA), "a"),
+                  c(TRUE, FALSE, FALSE, FALSE)))
+check("N96r jfreq(): one <blank> row in the Missing block counting both kinds, before UNKNOWN; the valid base without them; no blank footnote (pinned whole)",
+      identical(.strip_ansi(printed(jfreq(.D96, M))), paste0(
+        "Frequencies\n\n8 Cases in the 1 Variable Pool\n\nM\n\n",
+        "                                Freq  Total %  Valid %  Cum. %\n",
+        "------------------------------  ----  -------  -------  ------\n",
+        "Valid\n",
+        "Married                           1     12.50    33.33   33.33\n",
+        "Refused to provide information    1     12.50    33.33   66.67\n",
+        "Unknown                           1     12.50    33.33  100.00\n",
+        "Total valid                       3     37.50   100.00\n\n",
+        "Missing\n",
+        "<blank> (no label)                2     25.00       --      --\n",
+        "UNKNOWN (no label)                2     25.00       --      --\n",
+        "System/NA                         1     12.50       --      --\n",
+        "Total missing                     5     62.50\n\n",
+        "Total                             8    100.00\n")))
+check("N96s the Case Processing detail counts the declared blank as one row of both kinds",
+      local({ old <- getOption(".jst_output_level"); options(.jst_output_level = "full")
+              on.exit(options(.jst_output_level = old))
+              p <- printed(jcrosstab(M ~ R, .D96))
+              grepl("      <blank> (no label)     2    25.0\n", p, fixed = TRUE) &&
+                grepl("    Auto-listwise         5          3\n", p, fixed = TRUE) }))
+check("N96t jconvert(to = \"baseR\") and preserve.declarations = FALSE make every declared cell NA, the spaces cell too",
+      local({ r <- suppressMessages(jconvert(.D96, to = "baseR"))
+              jsave(.D96, "t96.rds", preserve.declarations = FALSE, overwrite = TRUE)
+              s <- readRDS("t96.rds")
+              exp <- c("Married", NA, "Unknown", NA, "Refused to provide information", NA, NA, NA)
+              identical(as.vector(unclass(r$M)), exp) && is.null(attr(r$M, "na_values")) &&
+                identical(as.vector(unclass(s$M)), exp) }))
+check("N96u a .sav round trip keeps both declarations, and the cell of spaces reads back missing",
+      local({ suppressMessages(jsave(.D96, "t96.sav", overwrite = TRUE))
+              invisible(grab(jload("t96.sav", name = "t96r", overwrite = TRUE)))
+              r <- t96r
+              # 3, not 2: the NA cell comes back an empty string, as a text
+              # NA does from every .sav (ruling R13; jsave() says so), and is
+              # a blank the declaration covers.
+              ok <- identical(sort(attr(r$M, "na_values")), c("", "UNKNOWN")) &&
+                grepl("<blank> (no label)                3     37.50", printed(jfreq(r, M)), fixed = TRUE)
+              ok }))
+
+check("N96ac jsave()'s CSV note names the declared blank as <blank>, beside the other declared value",
+      grepl("M's declared missing values <blank> and \"UNKNOWN\" are written as ordinary values",
+            .fl(grab(jsave(.D96, "ac96.csv", overwrite = TRUE))), fixed = TRUE))
+check("N96ad at the minimal level the drop notice names a dropped blank as <blank>",
+      local({ old <- getOption(".jst_output_level"); options(.jst_output_level = "minimal")
+              on.exit(options(.jst_output_level = old))
+              grepl("Dropped: <blank>.", printed(jdeclare_missing(.D96, M, codes = "UNKNOWN")),
+                    fixed = TRUE) }))
+
+# --- C: R28, the word list -----------------------------------------------------------
+check("N96v the word list gains not stated, not known, not recorded, withheld, unknown; whole values only, case and outer spaces ignored",
+      all(vapply(c("Not stated", "NOT KNOWN", " not recorded ", "Withheld", "Unknown"),
+                 jstats:::.jst_label_suggests_missing, logical(1))) &&
+        !jstats:::.jst_label_suggests_missing("Refused to provide information") &&
+        !jstats:::.jst_label_suggests_missing("Unknown offender"))
+
+# --- D: jsave() to .sav, a declared text value over 8 bytes ------------------------
+.L96 <- data.frame(M = haven::labelled_spss(
+  c("Married", "UNKNOWN", "Refused to provide information", "x"),
+  na_values = c("UNKNOWN", "Refused to provide information")),
+  stringsAsFactors = FALSE)
+check("N96w the refusal names the variable and the value, then the four ways out (pinned whole); nothing is written",
+      local({ m <- grab(jsave(.L96, "l96.sav"))
+              identical(m, paste0(
+                "jsave(): SPSS format (.sav) keeps only 8 characters (8 bytes) of a\n",
+                "text variable's declared missing value, so a longer one would read back as\n",
+                "ordinary data.\n\n",
+                "This variable in .L96 declares a longer value:\n",
+                "  M: \"Refused to provide information\"\n\n",
+                "To save in R format (.rds) instead, keeping it:\n",
+                "  jsave(.L96, \".L96.rds\")\n",
+                "To save as SPSS format (.sav) with every declared missing value as plain NA:\n",
+                "  jsave(.L96, \"l96.sav\", preserve.declarations = FALSE)\n",
+                "To make M numbers first, whose missing values SPSS format keeps in full,\n",
+                "use jencode().\n",
+                "Or shorten the value in the data to 8 characters or fewer, and declare the\n",
+                "shorter one.")) && !file.exists("l96.sav") }))
+check("N96x ... the preserve.declarations = FALSE line runs and saves; a value of exactly 8 bytes saves and reads back declared; one of 8 characters and 9 bytes is refused",
+      local({ m <- grab(jsave(.L96, "l96.sav"))
+              e <- new.env(parent = globalenv()); e$.L96 <- .L96
+              ran <- .run96(m, e, "^  jsave\\(.*preserve")
+              d8 <- data.frame(M = haven::labelled_spss(c("ABCDEFGH", "a"), na_values = "ABCDEFGH"))
+              suppressMessages(jsave(d8, "e96.sav", overwrite = TRUE))
+              back <- haven::read_sav("e96.sav", user_na = TRUE)
+              d9 <- data.frame(M = haven::labelled_spss(c("D\u00e9sol\u00e9!!", "a"),
+                                                        na_values = "D\u00e9sol\u00e9!!"))
+              ran && file.exists("l96.sav") &&
+                identical(attr(back$M, "na_values"), "ABCDEFGH") &&
+                grepl("declares a longer value", grab(jsave(d9, "n96.sav")), fixed = TRUE) }))
+
+# --- E: the load scan and Pattern A ----------------------------------------------
+.S96 <- data.frame(
+  Mode    = haven::labelled(c("X", "A", "B", "X", "A"), labels = c(Refused = "X", Phone = "A")),
+  Marital = c("Married", "UNKNOWN", "Unknown", "Not stated", "UNKNOWN"),
+  Decl    = haven::labelled_spss(c("a", "Refused", "b", "", "a"), na_values = "Refused"),
+  stringsAsFactors = FALSE)
+haven::write_sav(.S96, "s96.sav")
+check("N96y the load scan reports a text variable by its labels (label-only) and by its wording (suspected), values quoted; a declared value and a blank are not reported; the line is quoted, with no menu (pinned)",
+      local({ p <- printed(jload("s96.sav", name = "s96", overwrite = TRUE))
+              grepl(paste0(
+                "Missing-value codes detected:\n",
+                "  Mode:     \"X\" [\"Refused\"] (2)                             [label-only -- not formally declared]\n",
+                "  Marital:  \"Not stated\" (1), \"UNKNOWN\" (2), \"Unknown\" (1)  [suspected -- not formally defined]\n"),
+                p, fixed = TRUE) &&
+                !grepl("Decl:", p, fixed = TRUE) &&
+                grepl("To declare one variable's values as missing:\n  jdeclare_missing(s96, Mode, codes = c(Refused = \"X\"), modify = TRUE)",
+                      p, fixed = TRUE) &&
+                !grepl("convention is selected", p, fixed = TRUE) }))
+check("N96z ... the line runs, under no convention and under stata",
+      local({ p <- printed(jload("s96.sav", name = "s96", overwrite = TRUE))
+              ok <- TRUE
+              for (cv in list(NULL, "stata")) {
+                e <- new.env(parent = globalenv()); e$s96 <- s96
+                ok <- ok && .conv96(cv, .run96(p, e)) && identical(attr(e$s96$Mode, "na_values"), "X")
+              }
+              ok }))
+check("N96aa ... a text variable with more than three such values: the three most frequent, said so, and the line runs",
+      local({ d <- data.frame(V = c(rep("UNKNOWN", 4), rep("Refused", 3), rep("N/A", 2), "Unknown", "x"),
+                              stringsAsFactors = FALSE)
+              haven::write_sav(d, "v96.sav")
+              p <- printed(jload("v96.sav", name = "v96", overwrite = TRUE))
+              e <- new.env(parent = globalenv()); e$v96 <- v96
+              grepl("To declare the three most frequent of one variable's values as missing (a\ntext variable takes at most three):\n  jdeclare_missing(v96, V, codes = c(\"N/A\", \"Refused\", \"UNKNOWN\"),\n      modify = TRUE)",
+                    p, fixed = TRUE) && .run96(p, e) &&
+                identical(sort(attr(e$v96$V, "na_values")), c("N/A", "Refused", "UNKNOWN")) }))
+check("N96ab jconvert(to = \"stata\" or \"sas\"): a text variable is still left out of Pattern A (its values cannot take a marker)",
+      local({ ok <- TRUE
+              for (to in c("stata", "sas")) {
+                m <- grab(jconvert(.S96[, c("Mode", "Marital")], to = to))
+                ok <- ok && !grepl("Mode:", m, fixed = TRUE)
+              }
+              ok }))
+
+# --- F: a value that differs only in case, treated as suspected (S373) -------
+# Jeff, S373 ("Okay on all three"): jdeclare_missing()'s note offers the
+# line that declares such a value with the values declared -- a declaration
+# replaces a variable's values -- and the load scan reports one beside a
+# variable's declared values as suspected, its line naming the declared
+# values too. One builder, .jst_text_declare_args(). .nb96(): the note's
+# block of a printed output, so the tail's "..." lines are not run.
+.nb96 <- function(p) {
+  b <- strsplit(p, "\n\n", fixed = TRUE)[[1]]
+  paste(b[grepl("also holds", b, fixed = TRUE)], collapse = "\n")
+}
+check("N96ae the note's line on a labelled value: the new value takes the label of the value it differs from (pinned whole); run, the variable declares both, each labelled Unknown",
+      local({ p <- printed(jdeclare_missing(.T96, M, codes = c(Unknown = "UNKNOWN")))
+              e <- new.env(parent = globalenv()); e$.T96 <- .T96
+              ran <- .run96(.nb96(p), e)
+              lab <- attr(e$.T96$M, "labels")
+              identical(p, paste0(
+                "Declared SPSS-style missing values on M:\n",
+                "  UNKNOWN [\"Unknown\"]\n\n",
+                "Note: M also holds a value that differs from a declared value only in letter\n",
+                "case or outer spaces:\n",
+                "  \"Unknown\" (1)\n",
+                "It is not declared, so it counts as valid data.\n",
+                "If it also marks missing data, declare it too:\n",
+                "  jdeclare_missing(.T96, M,\n",
+                "      codes = c(Unknown = \"UNKNOWN\", Unknown = \"Unknown\"), modify = TRUE)\n\n",
+                .reminder96)) && ran &&
+                setequal(attr(e$.T96$M, "na_values"), c("UNKNOWN", "Unknown")) &&
+                identical(unname(names(lab)[match(c("UNKNOWN", "Unknown"), lab)]),
+                          c("Unknown", "Unknown")) }))
+check("N96af ... some values labelled and some not: bare codes with labels = for the labelled (pinned whole); run, the blank stays declared, both labels set",
+      local({ d <- suppressMessages(jdeclare_missing(.T96, M, codes = c(Unknown = "UNKNOWN")))
+              p <- printed(jdeclare_missing(d, M, codes = c("UNKNOWN", "")))
+              e <- new.env(parent = globalenv()); e$d <- d
+              ran <- .run96(.nb96(p), e)
+              lab <- attr(e$d$M, "labels")
+              grepl(paste0(
+                "It is not declared, so it counts as valid data.\n",
+                "If it also marks missing data, declare it too:\n",
+                "  jdeclare_missing(d, M, codes = c(\"UNKNOWN\", \"\", \"Unknown\"),\n",
+                "      labels = \"UNKNOWN=Unknown; Unknown=Unknown\", modify = TRUE)\n\n"),
+                p, fixed = TRUE) && ran &&
+                setequal(attr(e$d$M, "na_values"), c("UNKNOWN", "", "Unknown")) &&
+                identical(unname(names(lab)[match(c("UNKNOWN", "Unknown"), lab)]),
+                          c("Unknown", "Unknown")) &&
+                sum(is.na(e$d$M) | e$d$M %in% c("", "  ", "UNKNOWN", "Unknown")) == 6L }))
+check("N96ag ... past a text variable's three values: no line, and the way to make it missing (pinned whole)",
+      identical(printed(jdeclare_missing(.T96, M,
+                  codes = c("UNKNOWN", "Refused to provide information", ""))), paste0(
+        "Declared SPSS-style missing values on M:\n",
+        "  <blank> (no label)\n",
+        "  Refused to provide information (no label)\n",
+        "  UNKNOWN (no label)\n\n",
+        "Note: M also holds a value that differs from a declared value only in letter\n",
+        "case or outer spaces:\n",
+        "  \"Unknown\" (1)\n",
+        "It is not declared, so it counts as valid data.\n",
+        "A text variable can have at most 3 declared missing values, so it cannot be\n",
+        "declared too.\n",
+        "To make it missing as well, encode M with jencode(), whose map can send each\n",
+        "value to missing.\n\n",
+        .reminder96)))
+check("N96ah ... the data as given: an expression gets no line; a place the assignment form, which runs; under a juse() default the line names the frame and runs",
+      local({ d <- data.frame(M = c("UNKNOWN", "Unknown", "REF"), stringsAsFactors = FALSE)
+              p1 <- printed(jdeclare_missing(d[1:3, , drop = FALSE], M, codes = "UNKNOWN"))
+              lst <- list(d = d)
+              p2 <- printed(jdeclare_missing(lst$d, M, codes = "UNKNOWN"))
+              e2 <- new.env(parent = globalenv()); e2$lst <- lst
+              ran2 <- .run96(.nb96(p2), e2, "^  lst\\$d <- jdeclare_missing\\(")
+              .d96h <- d
+              suppressMessages(juse(.d96h)); on.exit(suppressMessages(juse(NULL)))
+              p3 <- printed(jdeclare_missing(M, codes = "UNKNOWN"))
+              e3 <- new.env(parent = globalenv()); e3$.d96h <- d
+              ran3 <- .run96(.nb96(p3), e3)
+              grepl("also holds", p1, fixed = TRUE) &&
+                !grepl("declare it too", p1, fixed = TRUE) &&
+                grepl("  lst$d <- jdeclare_missing(lst$d, M,", p2, fixed = TRUE) && ran2 &&
+                setequal(attr(e2$lst$d$M, "na_values"), c("UNKNOWN", "Unknown")) &&
+                grepl("  jdeclare_missing(.d96h, M, codes = c(\"UNKNOWN\", \"Unknown\"),",
+                      p3, fixed = TRUE) && ran3 &&
+                setequal(attr(e3$.d96h$M, "na_values"), c("UNKNOWN", "Unknown")) }))
+.mk96 <- function(x, labs, na) {
+  data.frame(Marital = haven::labelled_spss(x, labels = labs, na_values = na),
+             stringsAsFactors = FALSE)
+}
+haven::write_sav(.mk96(c("Married", "UNKNOWN", "REF", "ref", "ref", "Single"),
+                       c(Unknown = "UNKNOWN", Refused = "REF"), c("UNKNOWN", "REF")),
+                 "u96.sav")
+check("N96ai the load scan reports a value that differs from a declared one only in case as suspected, and its line names the declared values too (pinned)",
+      grepl(paste0(
+        "Suspected missing-value codes detected:\n",
+        "  Marital:  \"ref\" (2)\n\n",
+        "These codes are not formally defined, so they are not treated as missing.\n",
+        "Declare them as missing if they are; leave as-is if real.\n\n",
+        "To declare one variable's values as missing, with the ones it\n",
+        "already declares:\n",
+        "  jdeclare_missing(u96, Marital,\n",
+        "      codes = c(Unknown = \"UNKNOWN\", Refused = \"REF\", Refused = \"ref\"),\n",
+        "      modify = TRUE)"),
+        printed(jload("u96.sav", name = "u96", overwrite = TRUE)), fixed = TRUE))
+check("N96aj ... the line runs, nothing dropped: the three declared, each labelled; before S373 a line naming the new value alone dropped the others",
+      local({ p <- printed(jload("u96.sav", name = "u96", overwrite = TRUE))
+              e <- new.env(parent = globalenv()); e$u96 <- u96
+              m <- NULL
+              ran <- tryCatch({
+                cl <- .r5_calls(strsplit(p, "\n", fixed = TRUE)[[1]], "^  jdeclare_missing\\(")
+                m <- printed(eval(parse(text = cl[1]), e)); TRUE },
+                error = function(err) FALSE)
+              lab <- attr(e$u96$Marital, "labels")
+              ran && !grepl("dropped", m, fixed = TRUE) &&
+                setequal(attr(e$u96$Marital, "na_values"), c("UNKNOWN", "REF", "ref")) &&
+                identical(unname(names(lab)[match(c("UNKNOWN", "REF", "ref"), lab)]),
+                          c("Unknown", "Refused", "Refused")) }))
+check("N96ak ... room for one more: the most frequent, said so, with the declared values, and it runs; three declared: no line, and the way to make more missing",
+      local({ haven::write_sav(.mk96(c("Married", "UNKNOWN", "Unknown", "REF", "ref", "ref", "Single"),
+                                     c(Unknown = "UNKNOWN", Refused = "REF"), c("UNKNOWN", "REF")),
+                               "u96b.sav")
+              p1 <- printed(jload("u96b.sav", name = "u96b", overwrite = TRUE))
+              e <- new.env(parent = globalenv()); e$u96b <- u96b
+              ran <- .run96(p1, e)
+              haven::write_sav(.mk96(c("Married", "UNKNOWN", "REF", "DK", "Not stated", "Single"),
+                                     c(Unknown = "UNKNOWN", Refused = "REF"), c("UNKNOWN", "REF", "DK")),
+                               "u96c.sav")
+              p2 <- printed(jload("u96c.sav", name = "u96c", overwrite = TRUE))
+              grepl(paste0("To declare the most frequent of one variable's values as missing, with the\n",
+                           "ones it already declares (a text variable takes at most three):\n",
+                           "  jdeclare_missing(u96b, Marital,\n",
+                           "      codes = c(Unknown = \"UNKNOWN\", Refused = \"REF\", Refused = \"ref\"),"),
+                    p1, fixed = TRUE) && ran &&
+                setequal(attr(e$u96b$Marital, "na_values"), c("UNKNOWN", "REF", "ref")) &&
+                grepl(paste0("Marital already declares 3 missing values, the most a text\n",
+                             "variable can have.\n",
+                             "To make more of its values missing, encode it with jencode(), whose map can\n",
+                             "send each one to missing."), p2, fixed = TRUE) &&
+                !grepl("jdeclare_missing(", p2, fixed = TRUE) }))
+check("N96al ... a declared value with no label beside a suspected one: bare codes, and the placeholder line with labels =; both run, the declared value kept",
+      local({ haven::write_sav(data.frame(Marital = haven::labelled_spss(
+                                 c("Married", "UNKNOWN", "Not stated", "Single"),
+                                 labels = c(Married = "Married"), na_values = "UNKNOWN"),
+                                 stringsAsFactors = FALSE), "u96d.sav")
+              p <- printed(jload("u96d.sav", name = "u96d", overwrite = TRUE))
+              cl <- .r5_calls(strsplit(p, "\n", fixed = TRUE)[[1]], "^  jdeclare_missing\\(")
+              e1 <- new.env(parent = globalenv()); e1$u96d <- u96d
+              e2 <- new.env(parent = globalenv()); e2$u96d <- u96d
+              suppressMessages(utils::capture.output(eval(parse(text = cl[1]), e1),
+                                                     eval(parse(text = cl[2]), e2)))
+              lab2 <- attr(e2$u96d$Marital, "labels")
+              length(cl) == 2L &&
+                grepl("codes = c(\"UNKNOWN\", \"Not stated\"),\n      modify = TRUE)", p, fixed = TRUE) &&
+                grepl("labels = \"Not stated=label1\", modify = TRUE)", p, fixed = TRUE) &&
+                setequal(attr(e1$u96d$Marital, "na_values"), c("UNKNOWN", "Not stated")) &&
+                setequal(attr(e2$u96d$Marital, "na_values"), c("UNKNOWN", "Not stated")) &&
+                identical(unname(names(lab2)[match("Not stated", lab2)]), "label1") }))
+check("N96am .jst_text_value_rule(): a value holding ; or =, opening with a mark, with outer spaces or spelled blank is quoted in the mark it lacks; a blank is blank; the labels string parses back to the values. .jst_text_declare_args() gives no argument past three values",
+      local({ v <- c("", "REF", "A;B", "x=y", " pad", "Blank", "say \"no\"")
+              r <- vapply(v, .jst_text_value_rule, character(1), USE.NAMES = FALSE)
+              s <- eval(parse(text = paste0("\"",
+                     paste0(r, "=L", seq_along(r), collapse = "; "), "\"")))
+              back <- .jst_parse_text_labels(s)
+              col3 <- haven::labelled_spss(c("A", "B", "C", "x"), na_values = c("A", "B", "C"))
+              a4 <- .jst_text_declare_args(col3, "x")
+              a3 <- .jst_text_declare_args(col3[1:3], character(0))
+              identical(r[1:2], c("blank", "REF")) &&
+                identical(unname(back), v) && identical(names(back), paste0("L", seq_along(v))) &&
+                is.null(a4$arg) && identical(a4$n, 4L) &&
+                identical(a3$arg, "codes = c(\"A\", \"B\", \"C\")") }))
+check("N96an the labels the line gives: a value with outer spaces takes its twin's label; a value with a label of its own keeps it; the scan's placeholders go only to the values with none; each line runs",
+      local({ d1 <- data.frame(M = c("UNKNOWN", " unknown ", "x"), stringsAsFactors = FALSE)
+              p1 <- printed(jdeclare_missing(d1, M, codes = c(Unknown = "UNKNOWN")))
+              d2 <- data.frame(M = haven::labelled(c("UNKNOWN", "Unknown", "x"),
+                                 labels = c(Unknown = "UNKNOWN", "Not known" = "Unknown")),
+                               stringsAsFactors = FALSE)
+              p2 <- printed(jdeclare_missing(d2, M, codes = "UNKNOWN"))
+              e2 <- new.env(parent = globalenv()); e2$d2 <- d2
+              ran2 <- .run96(.nb96(p2), e2)
+              haven::write_sav(.mk96(c("Married", "UNKNOWN", "Unknown", "Not stated", "Single"),
+                                     c(Unknown = "UNKNOWN"), "UNKNOWN"), "u96e.sav")
+              p3 <- printed(jload("u96e.sav", name = "u96e", overwrite = TRUE))
+              cl <- .r5_calls(strsplit(p3, "\n", fixed = TRUE)[[1]], "^  jdeclare_missing\\(")
+              e3 <- new.env(parent = globalenv()); e3$u96e <- u96e
+              suppressMessages(utils::capture.output(eval(parse(text = cl[2]), e3)))
+              lab3 <- attr(e3$u96e$Marital, "labels")
+              grepl("codes = c(Unknown = \"UNKNOWN\", Unknown = \" unknown \"), modify = TRUE)",
+                    .fl(p1), fixed = TRUE) &&
+                grepl("codes = c(Unknown = \"UNKNOWN\", \"Not known\" = \"Unknown\"), modify = TRUE)",
+                      .fl(p2), fixed = TRUE) && ran2 &&
+                identical(unname(names(attr(e2$d2$M, "labels"))[match("Unknown", attr(e2$d2$M, "labels"))]),
+                          "Not known") &&
+                length(cl) == 2L &&
+                grepl("codes = c(Unknown = \"UNKNOWN\", label1 = \"Not stated\", Unknown = \"Unknown\"), modify = TRUE)",
+                      .fl(p3), fixed = TRUE) &&
+                identical(unname(names(lab3)[match(c("UNKNOWN", "Unknown", "Not stated"), lab3)]),
+                          c("Unknown", "Unknown", "label1")) }))
+rm(.nb96, .mk96)
+if (exists("u96", inherits = FALSE)) rm(u96)
+if (exists("u96b", inherits = FALSE)) rm(u96b)
+if (exists("u96c", inherits = FALSE)) rm(u96c)
+if (exists("u96d", inherits = FALSE)) rm(u96d)
+if (exists("u96e", inherits = FALSE)) rm(u96e)
+
+setwd(.wd96)
+unlink(.td96, recursive = TRUE)
+options(.jst_options_missing_convention = .cv96, .jst_missing_notice_shown = .ns96)
+rm(.wd96, .td96, .cv96, .ns96, .run96, .r96, .conv96, .T96, .D96, .L96, .S96, .reminder96)
+if (exists("t96r", inherits = FALSE)) rm(t96r)
+if (exists("s96", inherits = FALSE)) rm(s96)
+if (exists("v96", inherits = FALSE)) rm(v96)
 
 # N88s (S353) -- RULING R5 OVER EVERY CONDITION THE BATTERY TOOK. Each call a
 # message printed at the pinned width (an indented line with the shape of a

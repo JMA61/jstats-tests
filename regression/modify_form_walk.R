@@ -25,6 +25,13 @@
 #           call (Sections 27-29). Since S367 jload()'s warnings on an
 #           argument the format does not use (Section 30).
 # ORIGIN:   S229
+# EDITED:   S373 (v0.9.246; Slate E5, ruling R27). SECTION 16 RE-PINNED by
+#           hand from the capture: the blank footnote under both read-back
+#           tables names both routes, a line each -- jencode() to give the
+#           cells a code, jdeclare_missing() with codes = "" to declare them
+#           missing. On the PENDING line (the wording is Claude's). A capture
+#           of every section on 0.9.245 and the build moves only 16 here
+#           (its other differences are temporary paths).
 # EDITED:   S372 (v0.9.245; Fix Slate 20). SECTION 9's prose Expected
 #           rewritten by hand, its second show() title with it: codes that
 #           mix a marker and a number on spss_df's SPSS-declared Income now
@@ -392,6 +399,10 @@
 #           updated in Sections 6 and 7 (the same line, a temporary path).
 #           harness.R derive: no section needs another it does not name.
 #           The assertion side is missing_convention_check.R N94.
+# LAST VERIFIED: v0.9.246, 2026-10-18 (S373) -- Section 16 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 2993 checks); GitHub 9d5825f (package).
 # LAST VERIFIED: v0.9.245, 2026-10-18 (S372) -- Section 9 WALKED on the
 #           WORKSTATION by Jeff through receive_all() ("walked, all okay");
 #           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
@@ -2052,7 +2063,8 @@ jfreq(b16, Source)
 #   Total      4    100.00
 #   <blank>: 2 cells with no text.
 #   They are counted as valid values, not as missing.
-#   To give them a code or make them missing, use jencode().
+#   To give them a code, use jencode().
+#   To declare them missing, use jdeclare_missing() with codes = "".
 
 cat("\n--- a CSV file of one column, saved and read back ---\n")
 jsave(v16, "v16.csv", overwrite = TRUE)
@@ -2076,7 +2088,8 @@ jfreq(c16, Source)
 #   Total      8    100.00
 #   <blank>: 2 cells with no text.
 #   They are counted as valid values, not as missing.
-#   To give them a code or make them missing, use jencode().
+#   To give them a code, use jencode().
+#   To declare them missing, use jdeclare_missing() with codes = "".
 
 setwd(.wd16)
 rm(.wd16, tx16, fc16, v16, b16, c16)
