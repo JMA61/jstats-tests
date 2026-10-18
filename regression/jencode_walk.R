@@ -178,6 +178,19 @@
 #           bare f(NULL) would have resolved to tdat rather than clearing
 #           every frame -- the clear.all forms keep the preamble meaning
 #           what it says. Confirmed in the walk below.
+# S372 EDIT (v0.9.245; Fix Slate 20): SECTION 9 RE-PINNED from captures
+#           of every section on 0.9.244 and 0.9.245 (repin.py): Render 1's
+#           note on the declared strings now leads with the choose-first
+#           menu -- no convention is selected there, and its map's word
+#           missing stopped at the gate when run -- then "Then, to keep them
+#           declared, ...". On the PENDING line (Claude's call under a lean
+#           Jeff okayed at S371). The assertion side is jencode_check.R
+#           N44c-N44d, N44k, N47i. No other section moved.
+#           LAST VERIFIED v0.9.245, 2026-10-18 (S372) -- Section 9 WALKED on
+#           the WORKSTATION through receive_all() ("walked, all okay");
+#           PENDING back to none; GitHub 03a9ff8 (package). Sandbox:
+#           harness.R verify, 17 of 17 sections in three orders and by
+#           prepare = TRUE; 31 of 31 Expected blocks.
 # LAST VERIFIED: v0.9.211, 2026-10-05 (S337) -- Sections 2, 5 and 7 WALKED
 #           on the WORKSTATION through rewalk(), each matching its
 #           re-pinned Expected; the rest untouched (no package change).
@@ -883,8 +896,20 @@ ms9$MaritalR <- jencode(ms9, Marital)
 #
 #   Note: 3 cells in 'Marital' holding a declared missing value ("REF",
 #   "UNKNOWN") were left missing (NA).
-#   To keep them declared, as one missing value, rerun with a map sending those
-#   values to missing:
+#   No missing-value convention is selected, so the values cannot be
+#   declared yet.
+#   Choose one for this session:
+#     joptions(missing.convention = "stata")
+#         Lowercase markers behave as true NAs in base R.
+#         Recommended if you also run base R or AI-generated code.
+#     joptions(missing.convention = "spss")
+#         Codes stay visible numbers; jstats treats them as missing.
+#         Base R does not.
+#     joptions(missing.convention = "sas")
+#         Like Stata, with uppercase markers (.A-.Z).
+#   To make the choice permanent, put the same line in your .Rprofile.
+#   Then, to keep them declared, as one missing value, rerun with a map sending
+#   those values to missing:
 #     ms9$MaritalR <- jencode(ms9, Marital,
 #         map = "Married=1; Single=2; REF=missing; UNKNOWN=missing")
 #
@@ -898,6 +923,12 @@ ms9$MaritalR <- jencode(ms9, Marital)
 # and stopped when pasted ("contains words not in the map: "REF" and
 # "UNKNOWN""): in map mode a declared string is a word like any other. The
 # map now sends each to NA, which is what automatic mode did with them.
+# RE-PINNED S372 (v0.9.245; Fix Slate 20, the S371 remedy-line audit): the
+# second note. No convention is selected here, and its map's word missing
+# stopped at the choose-first gate when run ("no missing-value convention
+# is selected, so the 'missing' target cannot be applied"), so the menu now
+# comes first, then "Then, to keep them declared, ...", as the load scan
+# has given it since ruling R15. Render 2 sets spss first, as before.
 
 jfreq(ms9, MaritalR)
 

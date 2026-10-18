@@ -10,6 +10,59 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S372 EDIT (v0.9.245, 2026-10-18): NEW N95 section, sixteen checks
+#           (N95a-p), Fix Slate 20: the missing-value lines from the S371
+#           remedy-line audit, each a line a message offered that stopped
+#           when run. (A) an unlabelled Stata-style marker made plain NA by
+#           jsave(preserve.declarations = FALSE), jload() likewise and
+#           jconvert(to = "baseR") (.jst_zap_tags(); the .sav and .xpt
+#           refusals' line repeated them); (B) a text variable out of
+#           jconvert()'s Pattern A report under every target; (C) the
+#           release note's pair under every convention state, and a stray
+#           on a column declaring codes of its own; (E) jrecode()'s D1 note
+#           with no token where the map leaves the recoded variable no
+#           marker; (F) jdeclare_missing()'s mixed codes: haven::tagged_na()
+#           in the split, sign-off 3 where no target carries a marker, its
+#           line naming every code the variable declares, a code given
+#           twice named once, and the full level's equivalent call. (D),
+#           jencode()'s note, is jencode_check.R N44k. Every offered line
+#           RUN. RE-PINNED: N72x (the declare pair, no token map), N81am
+#           (haven::), N86ay (reversed: no Pattern A report for a text
+#           variable under to = "spss" either). EIGHT HUNDRED AND SIXTY
+#           checks. On the 0.9.244 master 18 red: the three re-pins and
+#           fifteen of N95 (N95d, N95i and N95j, controls, pass).
+#           MUTATION MAP (S372; seventeen one-change mutants, through this
+#           battery and jencode_check.R, all red): the plain-double branch
+#           of .jst_zap_tags() N95a b c; .jst_handle_udms() back to
+#           zap_missing() N95a b; jconvert()'s back N95c; the S351 text rule
+#           back N86ay N95e; the release note's convention = "spss" dropped
+#           N95f; its own codes dropped N95g; jencode()'s menu dropped
+#           (jencode_check.R N44c c2 d k, N47i); the D1 token route kept
+#           N72x N95h; sign-off 4 everywhere N95l m; the split's haven::
+#           N95k; the equivalent call's haven:: N81am N95o; the variable's
+#           other codes dropped N95l n; every code named, labels or not
+#           N95n; the label lead N95l; the closing sentence N95l; a code
+#           given twice kept twice N95p; "Then, to keep" (jencode_check.R
+#           N44c c2 d, N47i). The pipeline mask's zap was changed and put
+#           back in the build: nothing can tell it apart (a plain double's
+#           tagged cells are NA to every count, and with no labels
+#           as_factor() has nothing to revive).
+#           Sandbox (R 4.3.3, UTF-8 locale, pkgload::load_all): run_all.R
+#           2944 across ten, plain and under the RStudio-handler stand-in,
+#           each again with a 56-character temp path, once with
+#           interactive() TRUE: all green; R CMD check --no-manual on the
+#           built package, Status OK. Entered dirty (joutput("full") with
+#           diagnostics, width 90, a stata convention, the color option, a
+#           juse() default, and objects named Score, Group, Age, Gender,
+#           Name, d, e, s, x, X, Q, S, N, B, V, rn, dsp, m, r, Mode, Rating,
+#           Income, Education, MS, M1, e44, ld86, g), plain and under the
+#           stand-in: green, nothing added, nothing lost, no value changed;
+#           the first dirty run found N95 leaving the load narrative's
+#           shown-once option set, now put back.
+#           LAST VERIFIED: v0.9.245, 2026-10-18 (S372) -- 860/860 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run, 2944 checks)"; R CMD
+#           check 0 errors, 0 warnings, 0 notes), matching the sandbox;
+#           GitHub 03a9ff8 (package).
 # S370 EDIT (v0.9.243, 2026-10-18): N81ai AND N81aj RE-PINNED for Fix
 #           Slate 18: jdeclare_missing() given a data frame and no variables
 #           gives a line on community on a line of its own, "for example:
@@ -5689,10 +5742,17 @@ check("N72w a marker no cell carries draws the absent-values advisory (full tier
 options(.jst_options_missing_convention = "spss")
 m72x <- .fl(grab(jrecode(stx72, Q, map = ".a=-99; else=copy")))
 options(.jst_options_missing_convention = NULL)
-check("N72x D1: a marker old value whose code the column also holds as data -- the note names .a and renders the token map",
+# S372 (Fix Slate 20; the S371 remedy-line audit): the token map
+# ".a=missing; else=copy" stopped under spss ("'missing' is ambiguous": the
+# source is Stata-form). The map leaves the recoded variable no marker, so
+# the note offers the declare pair alone (N95h runs it in every state).
+check("N72x D1: a marker old value whose code the column also holds as data -- the note names .a and offers the declare pair, no token map",
       grepl("Note: .a was recoded to -99, which looks like a coded missing value.",
             m72x, fixed = TRUE) &&
-        grepl('stx72$QR <- jrecode(stx72, Q, map = ".a=missing; else=copy")', m72x,
+        grepl("To make the value missing under SPSS convention, declare it on the recoded variable:",
+              .fl(m72x), fixed = TRUE) &&
+        !grepl("=missing", m72x, fixed = TRUE) &&
+        grepl('stx72$QR <- jrecode(stx72, Q, map = ".a=-99; else=copy")', m72x,
               fixed = TRUE) &&
         grepl("jdeclare_missing(stx72, QR, codes = c(-99), modify = TRUE)", m72x,
               fixed = TRUE))
@@ -6961,8 +7021,10 @@ check("N81al the nothing-to-name note's line assigns to a new name as well",
 options(.jst_output_level = "full")
 p81am <- printed(jdeclare_missing(mk81(), V, codes = -99))
 options(.jst_output_level = .lvl81)
+# S372: haven::tagged_na() (Fix Slate 20): bare, the line ran only where
+# haven was attached.
 check("N81am at the full level the equivalent call assigns to a new name too",
-      "  mydata <- jdeclare_missing(mk81(), V, codes = c(tagged_na(\"a\")))" %in%
+      "  mydata <- jdeclare_missing(mk81(), V, codes = c(haven::tagged_na(\"a\")))" %in%
         .l81(p81am) &&
         !any(grepl("mk81() <-", .l81(p81am), fixed = TRUE)))
 options(.jst_options_missing_convention = "spss")
@@ -8251,11 +8313,16 @@ check("N86ax jconvert(to = \"stata\") after the first line: no label report on t
               !grepl("Skipped (value labels suggest", m, fixed = TRUE) &&
                 grepl("Converted to Stata-style missing values in 2 variables:", m,
                       fixed = TRUE) }))
-check("N86ay ... under to = \"spss\" a text variable's label is still reported",
+# S372 (Fix Slate 20; the S371 remedy-line audit): reversed. Its line,
+# jdeclare_missing(ld86, S, codes = X, ...), stopped -- R's "object 'X' not
+# found", or quoted "Invalid code 'X'": jdeclare_missing() declares on
+# numeric variables only -- so the S351 rule above now holds under every
+# target (N95e).
+check("N86ay ... and under to = \"spss\": no label report on the text variable, and no line naming it",
       local({ ld86 <- ds86
               invisible(grab(jconvert(ld86, vars = "S", to = "baseR", modify = TRUE)))
-              grepl("S: X [\"Refused\"]", grab(jconvert(ld86, to = "spss", vars = "S")),
-                    fixed = TRUE) }))
+              m <- grab(jconvert(ld86, to = "spss", vars = "S"))
+              !grepl("S: X", m, fixed = TRUE) && !grepl("codes = X", m, fixed = TRUE) }))
 
 # --- F: the narrative's layout --------------------------------------------------
 w86 <- data.frame(A = ds86$A)
@@ -10555,6 +10622,262 @@ unlink(.td94, recursive = TRUE)
 options(.jst_options_missing_convention = .cv94, .jst_options_missing_convention_codes = .cc94,
         .jst_missing_notice_shown = .ns94)
 rm(.wd94, .td94, .cv94, .cc94, .ns94, .S94, .ages94, .csv94, .D94, .ex94)
+
+# =============================================================================
+# N95 (S372) -- FIX SLATE 20: THE MISSING-VALUE LINES. Five items from the
+# S371 remedy-line audit, each a line a message offered that stopped when
+# run, with two defects found building them. (A) jsave(preserve.declarations
+# = FALSE) left an UNLABELLED Stata-style marker in place -- haven's
+# zap_missing() returns a plain double unchanged -- so the .sav and .xpt
+# refusals' own line repeated them; jload(preserve.declarations = FALSE) and
+# jconvert(to = "baseR") left it too (.jst_zap_tags()). (B) jconvert()'s
+# Pattern A report offered codes = X for a text code; jdeclare_missing()
+# declares on numeric variables only, so a text variable leaves the report
+# under every target. (C) jsave()'s release note offered a declaration that
+# stopped with no convention selected, and under stata or sas made the code
+# a marker the .sav save then refused: convention = "spss" rides; and on a
+# column declaring a code of its own it named the stray alone, dropping the
+# rest. (D) jencode()'s note on a declared string offered a missing-token
+# map that stopped with no convention selected: the menu leads. (E) jrecode()'s
+# D1 note offered the missing token where the source carries markers and the
+# map leaves the recoded variable none: the declare pair alone. (F)
+# jdeclare_missing()'s mixed-codes split printed tagged_na() without haven::,
+# and on a variable carrying no marker both of its lines stopped: sign-off
+# 3's message there, whose line now names every code the variable declares.
+# Every offered line RUN, under the convention states that matter. Fixtures
+# dotted, in a folder of their own; working objects in local().
+# =============================================================================
+.wd95 <- getwd()
+.td95 <- file.path(tempdir(), "jstats n95")
+unlink(.td95, recursive = TRUE); dir.create(.td95); setwd(.td95)
+.cv95 <- getOption(".jst_options_missing_convention")
+.lv95 <- getOption(".jst_output_level")
+.ns95 <- getOption(".jst_missing_notice_shown")   # N95b's load shows the narrative
+options(.jst_options_missing_convention = NULL)
+# .run95(): run, in env, every indented call of msg whose first line matches
+# shape (a call laid out over lines kept whole), in order; TRUE when each ran
+# with no error and no warning. pre: code run in env first (a menu line).
+.run95 <- function(msg, env, shape, pre = NULL) {
+  cl <- .r5_calls(strsplit(msg, "\n", fixed = TRUE)[[1]], shape = shape)
+  if (length(cl) == 0L) return(FALSE)
+  tryCatch({
+    withCallingHandlers({
+      if (!is.null(pre)) eval(parse(text = pre), env)
+      suppressMessages(utils::capture.output(
+        for (b in cl) eval(parse(text = b), env)))
+      TRUE
+    }, warning = function(w) stop("warning: ", conditionMessage(w)))
+  }, error = function(e) { cat("        [run95] ", conditionMessage(e), "\n", sep = ""); FALSE })
+}
+.conv95 <- function(cv, expr) {
+  old <- getOption(".jst_options_missing_convention")
+  options(.jst_options_missing_convention = cv)
+  on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+  force(expr)
+}
+.U95 <- data.frame(id = 1:4, x = c(1, 2, haven::tagged_na("a"), 4))
+
+# --- A: an unlabelled Stata-style marker made plain NA ----------------------------
+check("N95a .sav and .xpt: the refusal's preserve.declarations = FALSE line runs and saves, the marker plain NA in the file, the note counting it (it repeated the refusal)",
+      local({ d <- .U95
+              a <- grab(jsave(d, "a95.sav")); b <- grab(jsave(d, "a95.xpt"))
+              e <- new.env(parent = globalenv()); e$d <- d
+              ra <- .run95(a, e, "^  jsave\\("); rb <- .run95(b, e, "^  jsave\\(")
+              sv <- haven::read_sav("a95.sav", user_na = TRUE)
+              xp <- haven::read_xpt("a95.xpt")
+              ra && rb && identical(as.numeric(sv$x), c(1, 2, NA, 4)) &&
+                is.null(attr(sv$x, "na_values")) && all(is.na(haven::na_tag(sv$x))) &&
+                identical(as.numeric(xp$x), c(1, 2, NA, 4)) &&
+                startsWith(.fl(grab(jsave(d, "c95.sav", preserve.declarations = FALSE))),
+                           "Note: 1 cell holding a declared missing value was blanked (preserve.declarations = FALSE). Saved d to ") &&
+                identical(haven::na_tag(d$x)[3], "a") }))
+check("N95b jload(preserve.declarations = FALSE) of a .dta holding an unlabelled marker: the loaded variable holds none; a labelled one as before",
+      local({ haven::write_dta(data.frame(x = c(1, haven::tagged_na("b"), 3),
+                                          y = haven::labelled(c(1, haven::tagged_na("a"), 2),
+                                                              labels = c(Refused = haven::tagged_na("a")))),
+                               "b95.dta")
+              invisible(grab(jload("b95.dta", name = "b95", overwrite = TRUE,
+                                   preserve.declarations = FALSE)))
+              r <- b95
+              identical(as.numeric(r$x), c(1, NA, 3)) && all(is.na(haven::na_tag(r$x))) &&
+                all(is.na(haven::na_tag(unclass(r$y)))) && is.na(unclass(r$y)[2]) }))
+check("N95c jconvert(to = \"baseR\"): an unlabelled marker plain NA in the result, as a labelled one (it reported \"Stripped\" over a marker still in the cell)",
+      local({ d <- .U95
+              d$y <- haven::labelled(c(1, haven::tagged_na("a"), 2, 3),
+                                     labels = c(Refused = haven::tagged_na("a")))
+              m <- grab(r <- jconvert(d, to = "baseR"))
+              grepl("Stripped the missing-value declarations from 2 variables:", m, fixed = TRUE) &&
+                all(is.na(haven::na_tag(r$x))) && all(is.na(haven::na_tag(unclass(r$y)))) &&
+                identical(sum(is.na(r$x)), 1L) && identical(haven::na_tag(d$x)[3], "a") }))
+check("N95d an analysis still shows the unlabelled marker in the Missing block and counts it missing",
+      local({ d <- .U95
+              m <- printed(jfreq(d, x))
+              grepl("\nMissing\n.a (no label) ", m, fixed = TRUE) &&
+                grepl("Total valid      3 ", m, fixed = TRUE) }))
+
+# --- B: a text variable leaves jconvert()'s Pattern A report ----------------------
+.P95 <- data.frame(
+  S = haven::labelled(c("web", "X", "phone", "web"), labels = c(Refused = "X")),
+  N = haven::labelled(c(1, -99, 2, 3), labels = c(Refused = -99)))
+check("N95e to = \"spss\" and \"baseR\": a text variable whose label suggests missingness is not reported; the numeric beside it is, and its line runs under every convention state",
+      local({ ok <- TRUE
+              for (to in c("spss", "baseR")) for (cv in list(NULL, "spss", "stata", "sas")) {
+                m <- .conv95(cv, grab(jconvert(.P95, to = to)))
+                e <- new.env(parent = globalenv()); e$.P95 <- .P95
+                ok <- ok && !grepl("S:", m, fixed = TRUE) && !grepl("codes = X", m, fixed = TRUE) &&
+                  grepl("  N: -99 [\"Refused\"]", m, fixed = TRUE) &&
+                  .conv95(cv, .run95(m, e, "^  jdeclare_missing\\(")) &&
+                  (identical(as.numeric(attr(e$.P95$N, "na_values")), -99) ||
+                     !is.na(haven::na_tag(unclass(e$.P95$N))[2]))
+              }
+              ok }))
+
+# --- C: jsave()'s release note ----------------------------------------------------
+.R95 <- function() data.frame(
+  A = haven::labelled_spss(c(1, 2, -99, 3), labels = c(Refused = -99), na_values = -99),
+  B = c(4, -99, 5, 6))
+check("N95f the release note's pair runs in sequence under every convention state, the file declaring B's -99; convention = \"spss\" in the line unless the setting is spss",
+      local({ ok <- TRUE
+              for (cv in list(NULL, "spss", "stata", "sas")) {
+                rn <- .R95()
+                m <- .conv95(cv, grab(jsave(rn, "f95.sav", overwrite = TRUE)))
+                e <- new.env(parent = globalenv()); e$rn <- rn
+                ran <- .conv95(cv, .run95(m, e, "^  (jdeclare_missing|jsave)\\("))
+                sv <- haven::read_sav("f95.sav", user_na = TRUE)
+                carg <- grepl("codes = -99, convention = \"spss\", modify = TRUE)", m, fixed = TRUE)
+                ok <- ok && grepl("To declare it and save again, run both:", m, fixed = TRUE) &&
+                  ran && identical(as.numeric(attr(sv$B, "na_values")), -99) &&
+                  identical(carg, !identical(cv, "spss"))
+              }
+              ok }))
+check("N95g a stray on a column declaring a code of its own: the line names both, and run, the column keeps both, with no drop notice",
+      local({ rn <- .R95()
+              rn$B <- haven::labelled_spss(c(4, -99, -98, 6), labels = c(DK = -98), na_values = -98)
+              m <- .conv95("spss", grab(jsave(rn, "g95.sav", overwrite = TRUE)))
+              e <- new.env(parent = globalenv()); e$rn <- rn
+              cl <- .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]], shape = "^  jdeclare_missing\\(")
+              d2 <- .conv95("spss", grab(eval(parse(text = cl[1]), e)))
+              length(cl) == 1L &&
+                identical(.r5_flat(cl[1]), "jdeclare_missing(rn, B, codes = c(-98, -99), modify = TRUE)") &&
+                identical(sort(as.numeric(attr(e$rn$B, "na_values"))), c(-99, -98)) &&
+                !grepl("dropped", d2, fixed = TRUE) }))
+
+# --- D: jencode()'s note on a declared string: jencode_check.R N44c-N44k ----------
+
+# --- E: jrecode()'s D1 note where the map leaves the recoded variable no marker ---
+.Q95 <- data.frame(Q = haven::labelled(c(1, 2, 5, 5, haven::tagged_na("a"), 3),
+                                       labels = c(DK = haven::tagged_na("a"))))
+check("N95h a marker sent to a number or to NA, the recoded value flagged: no missing token offered; the declare pair runs under every convention state (none after the menu's first line), the recoded variable declaring it",
+      local({ ok <- TRUE
+              for (map in c(".a=0; 5=-99; else=copy", ".a=NA; 5=-99; else=copy")) {
+                for (cv in list(NULL, "spss", "stata", "sas")) {
+                  m <- .conv95(cv, grab(jrecode(.Q95, Q, map = map)))
+                  # The D1 note alone: under .a=0 a second note (S319) offers
+                  # a pair of its own, run on its own by the user.
+                  m <- grep("looks like a coded missing value",
+                            strsplit(m, "\n\n", fixed = TRUE)[[1]], value = TRUE, fixed = TRUE)
+                  e <- new.env(parent = globalenv()); e$.Q95 <- .Q95
+                  pre <- if (is.null(cv)) "joptions(missing.convention = \"stata\", quiet = TRUE)"
+                  ran <- .conv95(cv, .run95(m, e, "^  (\\.Q95\\$QR <- jrecode|jdeclare_missing)\\(", pre = pre))
+                  x <- e$.Q95$QR
+                  decl <- identical(as.numeric(attr(x, "na_values")), -99) ||
+                    sum(!is.na(haven::na_tag(unclass(x)))) >= 2L
+                  ok <- ok && !grepl("=missing", m, fixed = TRUE) &&
+                    grepl("declare it on the recoded variable:", .fl(m), fixed = TRUE) &&
+                    ran && decl
+                }
+              }
+              ok }))
+check("N95i control: a source carrying no marker keeps \"map it directly\", and the token map runs under a convention",
+      local({ d <- data.frame(Q = c(1, 2, 5, 5, 3))
+              m <- .conv95("spss", grab(jrecode(d, Q, map = "5=-99; else=copy")))
+              e <- new.env(parent = globalenv()); e$d <- d
+              cl <- .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]], shape = "^  d\\$QR <- ")
+              grepl("map it directly:", m, fixed = TRUE) &&
+                identical(.r5_flat(cl[1]), "d$QR <- jrecode(d, Q, map = \"5=missing; else=copy\")") &&
+                .conv95("spss", { suppressMessages(eval(parse(text = cl[1]), e)); TRUE }) &&
+                identical(as.numeric(attr(e$d$QR, "na_values")), -99) }))
+check("N95j control: a source whose marker survives gets ruling R8's marker line, as before",
+      local({ m <- .conv95("spss", grab(jrecode(.Q95, Q, map = "5=-99; else=copy")))
+              grepl("map it to a Stata-style marker the recoded variable does not use:", .fl(m), fixed = TRUE) &&
+                grepl("map = \"5=.b; else=copy\", convention = \"stata\")", m, fixed = TRUE) }))
+
+# --- F: jdeclare_missing()'s mixed codes ------------------------------------------
+check("N95k on a Stata-form variable the split's lines print haven::tagged_na(), never bare, and both run in sequence",
+      local({ d <- data.frame(X = c(1, 2, -99, haven::tagged_na("b"), 3))
+              m <- grab(jdeclare_missing(d, X, codes = c(-99, ".b"), convention = "stata"))
+              e <- new.env(parent = globalenv()); e$d <- d
+              grepl("For your input, that would be:", m, fixed = TRUE) &&
+                grepl("codes = haven::tagged_na(\"b\")", .fl(m), fixed = TRUE) &&
+                !grepl("[^:]tagged_na\\(", gsub("haven::tagged_na", "", m)) &&
+                .run95(m, e, "^  jdeclare_missing\\(") &&
+                identical(sort(haven::na_tag(e$d$X)[!is.na(haven::na_tag(e$d$X))]), c("a", "b")) }))
+.S95 <- function() data.frame(X = haven::labelled_spss(c(1, 2, -99, -98, -97, 3),
+                                                     labels = c(Refused = -99), na_values = c(-99, -98)))
+check("N95l on an SPSS-declared variable: sign-off 3's advice, not the split -- the typed number, the code the marker takes and the variable's other code in one line, which runs and drops nothing; the jconvert() line runs",
+      local({ dsp <- .S95()
+              m <- grab(jdeclare_missing(dsp, X, codes = c(-97, ".a")))
+              e <- new.env(parent = globalenv()); e$dsp <- dsp
+              cl <- .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]], shape = "^  jdeclare_missing\\(")
+              d2 <- grab(r <- eval(parse(text = cl[1]), e))
+              e2 <- new.env(parent = globalenv()); e2$dsp <- dsp
+              !grepl("For your input", m, fixed = TRUE) &&
+                grepl("but X carries SPSS-style missing values (na_values: -99, -98).", .fl(m), fixed = TRUE) &&
+                grepl("To declare the codes as SPSS-style missing values, name them directly:", m, fixed = TRUE) &&
+                identical(.r5_flat(cl[1]), "jdeclare_missing(dsp, X, codes = c(-97, -99, -98))") &&
+                grepl("X's declared missing value -99 takes the place of '.a'.", .fl(m), fixed = TRUE) &&
+                identical(sort(as.numeric(attr(r$X, "na_values"))), c(-99, -98, -97)) &&
+                !grepl("dropped", d2, fixed = TRUE) &&
+                .run95(m, e2, "^  jconvert\\(") }))
+check("N95p a typed number the marker also takes is named once, and the line runs",
+      local({ dsp <- .S95()
+              m <- grab(jdeclare_missing(dsp, X, codes = c(-99, ".a")))
+              cl <- .r5_calls(strsplit(m, "\n", fixed = TRUE)[[1]], shape = "^  jdeclare_missing\\(")
+              e <- new.env(parent = globalenv()); e$dsp <- dsp
+              g <- grab(r <- eval(parse(text = cl[1]), e))
+              identical(.r5_flat(cl[1]), "jdeclare_missing(dsp, X, codes = c(-99, -98))") &&
+                identical(sort(as.numeric(attr(r$X, "na_values"))), c(-99, -98)) &&
+                !grepl("dropped", g, fixed = TRUE) }))
+check("N95m on a variable declaring nothing: sign-off 3's \"no lettered markers to label\", not the split",
+      local({ d <- data.frame(X = c(1, 2, -99, -98, 3))
+              m <- grab(jdeclare_missing(d, X, codes = c(-99, ".b")))
+              !grepl("For your input", m, fixed = TRUE) &&
+                startsWith(m, "jdeclare_missing(): X has no lettered markers to label.") }))
+check("N95n one marker on an SPSS variable declaring two codes: the line names both and drops nothing; named, an unlabelled kept code moves the names to labels =",
+      local({ dsp <- .S95()
+              a <- grab(jdeclare_missing(dsp, X, codes = ".a"))
+              b <- grab(jdeclare_missing(dsp, X, codes = c(Refused = ".a")))
+              ca <- .r5_calls(strsplit(a, "\n", fixed = TRUE)[[1]], shape = "^  jdeclare_missing\\(")
+              cb <- .r5_calls(strsplit(b, "\n", fixed = TRUE)[[1]], shape = "^  jdeclare_missing\\(")
+              e <- new.env(parent = globalenv()); e$dsp <- dsp
+              ga <- grab(ra <- eval(parse(text = ca[1]), e))
+              gb <- grab(rb <- eval(parse(text = cb[1]), e))
+              identical(.r5_flat(ca[1]), "jdeclare_missing(dsp, X, codes = c(-99, -98))") &&
+                identical(.r5_flat(cb[1]), "jdeclare_missing(dsp, X, codes = c(-99, -98), labels = \"-99=Refused\")") &&
+                identical(sort(as.numeric(attr(ra$X, "na_values"))), c(-99, -98)) &&
+                identical(sort(as.numeric(attr(rb$X, "na_values"))), c(-99, -98)) &&
+                !grepl("dropped", paste(ga, gb), fixed = TRUE) &&
+                grepl("To label the declared numeric codes, name them directly:", a, fixed = TRUE) }))
+check("N95o the full level's equivalent call prints haven::tagged_na() and runs",
+      local({ d <- data.frame(V = c(1, 2, -99, 3))
+              options(.jst_output_level = "full"); on.exit(options(.jst_output_level = .lv95))
+              p <- .conv95("stata", printed(jdeclare_missing(d, V, codes = -99)))
+              cl <- .r5_calls(strsplit(p, "\n", fixed = TRUE)[[1]], shape = "^  d <- jdeclare_missing\\(")
+              cl <- cl[grepl("tagged_na", cl, fixed = TRUE)]
+              e <- new.env(parent = globalenv()); e$d <- d
+              # The line labels markers the data already carry ("for future
+              # use"), so it is run on the variable as the call left it.
+              e$d <- .conv95("stata", suppressMessages(jdeclare_missing(d, V, codes = -99)))
+              length(cl) == 1L && grepl("codes = c(haven::tagged_na(\"a\"))", cl[1], fixed = TRUE) &&
+                !grepl("[^:]tagged_na\\(", gsub("haven::tagged_na", "", p)) &&
+                .conv95(NULL, { suppressMessages(eval(parse(text = cl[1]), e)); TRUE }) &&
+                identical(haven::na_tag(e$d$V)[3], "a") }))
+
+setwd(.wd95)
+unlink(.td95, recursive = TRUE)
+options(.jst_options_missing_convention = .cv95, .jst_output_level = .lv95,
+        .jst_missing_notice_shown = .ns95)
+rm(.wd95, .td95, .cv95, .lv95, .ns95, .run95, .conv95, .U95, .P95, .R95, .Q95, .S95)
 
 # N88s (S353) -- RULING R5 OVER EVERY CONDITION THE BATTERY TOOK. Each call a
 # message printed at the pinned width (an indented line with the shape of a

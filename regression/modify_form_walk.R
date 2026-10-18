@@ -25,6 +25,16 @@
 #           call (Sections 27-29). Since S367 jload()'s warnings on an
 #           argument the format does not use (Section 30).
 # ORIGIN:   S229
+# EDITED:   S372 (v0.9.245; Fix Slate 20). SECTION 9's prose Expected
+#           rewritten by hand, its second show() title with it: codes that
+#           mix a marker and a number on spss_df's SPSS-declared Income now
+#           get the single-marker stop's advice, not the two-line split
+#           (both its lines stopped when run), and that advice's line names
+#           every code Income declares (it named -99 alone, which run
+#           dropped -98). On the PENDING line. A capture of every section on
+#           0.9.244 and 0.9.245 moves Section 9 here and, in a temporary
+#           path alone, 6, 7, 15, 16, 20, 21, 25 and 26. The assertion side
+#           is missing_convention_check.R N95l and N95n.
 # EDITED:   S370 (v0.9.243; Fix Slate 18). SECTION 12 RE-PINNED from the
 #           captures of every section on 0.9.242 and 0.9.243 (repin.py):
 #           jdeclare_missing() given a data frame and no variables says
@@ -382,6 +392,10 @@
 #           updated in Sections 6 and 7 (the same line, a temporary path).
 #           harness.R derive: no section needs another it does not name.
 #           The assertion side is missing_convention_check.R N94.
+# LAST VERIFIED: v0.9.245, 2026-10-18 (S372) -- Section 9 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 2944 checks); GitHub 03a9ff8 (package).
 # LAST VERIFIED: v0.9.243, 2026-10-18 (S370) -- Section 12 WALKED on the
 #           WORKSTATION by Jeff through receive_all() ("walked, all okay");
 #           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
@@ -1083,7 +1097,7 @@ joptions(missing.convention = "spss")
 show("jdeclare_missing: Stata token against an SPSS-declared column",
      jdeclare_missing(spss_df, Income, codes = c(Refused = haven::tagged_na("a"))))
 
-show("jdeclare_missing: codes mixes tagged and numeric (two suggested calls)",
+show("jdeclare_missing: codes mixes tagged and numeric on an SPSS-declared column",
      jdeclare_missing(spss_df, Income,
                   codes = c(Refused = haven::tagged_na("a"), DK = -98)))
 
@@ -1101,8 +1115,22 @@ show("jrecode: map uses a Stata marker under SPSS convention",
 
 # Expected:
 #   - error 1 ends with:  jconvert(spss_df, to = "stata", modify = TRUE)
-#   - error 2 shows TWO jdeclare_missing lines, both with modify = TRUE, read as
-#     "run this, then run that" -- they now compose, as in Section 7
+#     Since v0.9.245 (S372) its jdeclare_missing() line names BOTH of
+#     Income's codes -- c(Refused = -99, `Don't know` = -98), the second
+#     with the label it has -- where it named -99 alone, which run dropped
+#     -98 (jdeclare_missing() replaces a variable's codes); the sentence
+#     under it reads "Income's declared missing value -99 takes the place
+#     of '.a'."
+#   - error 2, since v0.9.245 (S372; Fix Slate 20, the S371 remedy-line
+#     audit), is error 1's message, not the two-line split: Income carries
+#     SPSS-style declarations and no marker, so the split's first line (a
+#     marker to label) and its second (convention = "stata" on an SPSS
+#     variable) both stopped when run. Its line declares the codes as
+#     SPSS-style missing values -- c(Refused = -99, DK = -98), the marker
+#     replaced by the code it pairs with -- under "To declare the codes as
+#     SPSS-style missing values, name them directly:", then the jconvert()
+#     line. The split is still given where the variable carries markers
+#     (missing_convention_walk.R Section 71).
 #   - error 3's jrecode( recipe line is UNCHANGED (jrecode returns a vector
 #     and is outside the modify family); only its jdeclare_missing follow-up line
 #     gained modify = TRUE

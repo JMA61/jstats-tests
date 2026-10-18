@@ -89,6 +89,31 @@
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S372 (v0.9.245; Fix Slate 20, the missing-value lines from the
+#           S371 remedy-line audit). NEW PART V, SECTION 71, five renders,
+#           every pinned Expected FILLED BY RUNNING the file (fill.R; the
+#           save that prints a temporary path pinned in prose): the .sav
+#           refusal's preserve.declarations = FALSE line, run, on a marker
+#           with no label; jconvert()'s Pattern A list without a text
+#           variable; jrecode()'s D1 note giving the declare pair alone
+#           where the map leaves the recoded variable no marker; the mixed
+#           codes split with haven::tagged_na(), and on a variable carrying
+#           no marker the stop the marker alone gets; one marker on an
+#           SPSS variable of two codes, the line naming both. SECTION 30's
+#           prose pin of the release note rewritten by hand: its
+#           declaration carries convention = "spss". Both on the PENDING
+#           line: wording and design Claude chose on a slate Jeff approved.
+#           A capture of every section of every walk on 0.9.244 and 0.9.245
+#           moves only 30 here (and 11, 12, 17 in a temporary path alone),
+#           jencode_walk.R Section 9 and modify_form_walk.R Section 9. The
+#           assertion side is missing_convention_check.R N95a-p.
+# LAST VERIFIED: v0.9.245, 2026-10-18 (S372) -- Sections 30 and 71 WALKED
+#           on the WORKSTATION by Jeff through receive_all() ("walked, all
+#           okay"); PENDING back to none; R CMD check 0 errors, 0 warnings,
+#           0 notes; ALL BATTERIES GREEN (10 run, 2944 checks); GitHub 03a9ff8 (package).
+#           Sandbox: harness.R verify, 72 of 72 sections in three orders
+#           and by prepare = TRUE; 99 of 100 Expected blocks (Section 10's,
+#           as before); derive: Section 71 needs no other.
 # EDITED:   S359 (v0.9.232; Fix Slate 10). SECTION 30's prose pin of
 #           jsave()'s CSV note rewritten by hand to the note as it now
 #           prints -- no labels line, since wv has none; Income and its code
@@ -3566,9 +3591,15 @@ jsave(wv, file.path(tempdir(), "wv.csv"), overwrite = TRUE)
 #    It was written to the file as an ordinary value, so other software will read
 #    it as valid data.
 #    To declare it and save again, run both:
-#      jdeclare_missing(wv, Education, codes = -99, modify = TRUE)
+#      jdeclare_missing(wv, Education, codes = -99, convention = "spss",
+#          modify = TRUE)
 #      jsave(wv, "<normalized path>/wv.sav", overwrite = TRUE)"
-# then the Saved confirmation. The resave line's path is the NORMALIZED
+# then the Saved confirmation. RE-PINNED S372 (v0.9.245; Fix Slate 20, the
+# S371 remedy-line audit): the declaration carries convention = "spss",
+# the form wv's other column uses, unless the setting is already spss. Read
+# from the setting alone it stopped at the choose-first gate (no
+# convention is selected at this point of the walk), and under stata or
+# sas it made -99 a marker that the .sav save beside it then refused. The resave line's path is the NORMALIZED
 # forward-slash form -- the same string the Saved line prints -- never
 # the raw file argument (the first workstation walk caught the raw
 # Windows echo as a parse error on paste; fixed same-session). With one
@@ -7754,6 +7785,157 @@ rm(.wd70, w70, w70b, community_excel)
 #   - RENDER 3: before this build only Education and Smoker would have been
 #     reported (a -99 beside an income of thousands is not out of place).
 
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART V -- Fix Slate 20: lines that stopped when run (S372) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.245. The S371 remedy-line audit ran every line a message offers in
+# the state the message was raised in; five on this walk's surface stopped.
+# Each now runs, by Claude's call or a lean Jeff okayed at S371, and these
+# renders show the messages that changed. jencode()'s note on a declared
+# string, the menu now first, is jencode_walk.R Section 9; Section 30 above
+# shows jsave()'s note with convention = "spss" in its line; and
+# modify_form_walk.R Section 9 the mixed codes on an SPSS-declared variable.
+# The assertion side is missing_convention_check.R N95a-o.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 71 -- lines that stopped when run, now lines that run ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+.wd71 <- getwd(); setwd(tempdir())
+options(.jst_options_missing_convention = NULL)
+
+# Render 1 -- a Stata file's missing value with no label loads as a plain
+# number column holding a marker. Saving it to .sav is refused, and the
+# refusal's second line, run, used to give the same refusal again.
+w71u <- data.frame(id = 1:4, x = c(1, 2, haven::tagged_na("a"), 4))
+try(jsave(w71u, "w71u.sav"))
+# Expected:
+#   Error : jsave(): 1 variable carries Stata-style missing values, incompatible
+#   with the .sav format:
+#     x
+#
+#   Before saving to SPSS format, convert to SPSS-style missing values with:
+#     jconvert(w71u, to = "spss", modify = TRUE)
+#   Or save every declared missing value as plain NA instead:
+#     jsave(w71u, "w71u.sav", preserve.declarations = FALSE)
+jsave(w71u, "w71u.sav", preserve.declarations = FALSE)
+# Expected (prose: the Saved line holds a temporary path):
+#   "Note: 1 cell holding a declared missing value was blanked
+#    (preserve.declarations = FALSE)."
+#   then "Saved w71u to <normalized path>/w71u.sav" and "(SPSS format; 4
+#   cases, 2 variables)". jconvert(w71u, to = "baseR") and
+#   jload(..., preserve.declarations = FALSE) blank such a marker too; each
+#   had reported it as plain NA while it stayed in the cell.
+
+# Render 2 -- jconvert(): a text variable whose label suggests missingness
+# beside a number variable whose label does. Only Rating is listed: the
+# line offered for Mode, codes = X, stopped (jdeclare_missing() declares
+# missing values on number variables only).
+w71p <- data.frame(
+  Mode   = haven::labelled(c("web", "X", "phone", "web"), labels = c(Refused = "X")),
+  Rating = haven::labelled(c(1, -99, 2, 3), labels = c(Refused = -99)))
+jconvert(w71p, to = "spss")
+# Expected:
+#   Skipped (value labels suggest missingness but not formally declared):
+#     Rating: -99 ["Refused"]
+#
+#   To declare it as missing:
+#     jdeclare_missing(w71p, Rating, codes = -99, convention = "spss",
+#         modify = TRUE)
+#   To leave it as ordinary data, no action is needed.
+
+# Render 3 -- jrecode(): the map sends Q's one marker to a number and a value
+# to -99, which looks like a coded missing value. The map left Q's recoded
+# variable no marker, and the word missing, read against Q's own form,
+# stopped under spss ("'missing' is ambiguous") and, under stata, took .a,
+# the kind of missing data Q's "DK" had been. The note gives the declare pair
+# alone.
+w71q <- data.frame(Q = haven::labelled(c(1, 2, 5, 5, haven::tagged_na("a"), 3),
+                                       labels = c(DK = haven::tagged_na("a"))))
+joptions(missing.convention = "spss", quiet = TRUE)
+w71q$QR <- jrecode(w71q, Q, map = ".a=0; 5=-99; else=copy")
+# Expected:
+#   Note: 5 was recoded to -99, which looks like a coded missing value.
+#   To make the value missing under SPSS convention, declare it on the
+#   recoded variable:
+#     w71q$QR <- jrecode(w71q, Q, map = ".a=0; 5=-99; else=copy")
+#     jdeclare_missing(w71q, QR, codes = c(-99), modify = TRUE)
+#
+#   Note: .a ["DK"] is a declared missing value on Q, but its new code, 0, is
+#   not declared, so those cases now count as data.
+#   To keep those cases missing under SPSS convention, declare 0 on the
+#   recoded variable:
+#     w71q$QR <- jrecode(w71q, Q, map = ".a=0; 5=-99; else=copy")
+#     jdeclare_missing(w71q, QR, codes = c(0), modify = TRUE)
+#
+#   Note: This call changes w71q only if you assign the result:
+#     w71q$<name> <- jrecode(...)
+#   To check the recode landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 4 -- jdeclare_missing(): codes that mix a marker and a number. On a
+# variable holding markers, the two calls, haven::tagged_na() written out
+# (bare, it runs only where haven is attached). On a variable declaring
+# nothing, the stop the marker alone gets -- the split's first line, run,
+# stopped on it.
+options(.jst_options_missing_convention = NULL)
+w71s <- data.frame(X = c(1, 2, -99, haven::tagged_na("b"), 3))
+try(jdeclare_missing(w71s, X, codes = c(-99, ".b"), convention = "stata"))
+# Expected:
+#   Error : jdeclare_missing(): codes for X mixes Stata-style missing values and
+#   SPSS-style numeric codes.
+#   The two operations are different -- labeling existing Stata-style
+#   missing-value cells (token input) and converting numeric cells to
+#   Stata-style missing values (numeric input) -- and must be issued as
+#   separate calls.
+#   For your input, that would be:
+#     jdeclare_missing(w71s, X, codes = haven::tagged_na("b"),
+#         convention = "stata", modify = TRUE)
+#     jdeclare_missing(w71s, X, codes = -99, convention = "stata",
+#         modify = TRUE)
+w71n <- data.frame(X = c(1, 2, -99, -98, 3))
+try(jdeclare_missing(w71n, X, codes = c(-99, ".b")))
+# Expected:
+#   Error : jdeclare_missing(): X has no lettered markers to label.
+#   To turn numeric codes into Stata-style missing values, use jrecode() (for
+#   example map = "-99=.a", convention = "stata"); or declare the numbers
+#   directly with codes = c(-99), convention = "stata".
+
+# Render 5 -- one marker given for an SPSS-declared variable with two codes.
+# The line used to name only the code the marker takes, c(Refused = -99),
+# and run, it dropped -98. It names both; -98 has no label, so the label
+# moves to labels =.
+w71d <- data.frame(X = haven::labelled_spss(c(1, 2, -99, -98, 3), na_values = c(-99, -98)))
+try(jdeclare_missing(w71d, X, codes = c(Refused = ".a")))
+# Expected:
+#   Error : jdeclare_missing(): codes for X contains '.a', a missing-value
+#   marker, but X carries SPSS-style missing values (na_values: -99, -98).
+#   To label the declared numeric codes, name them directly:
+#     jdeclare_missing(w71d, X, codes = c(-99, -98), labels = "-99=Refused")
+#
+#   X's declared missing value -99 takes the place of '.a'.
+#
+#   To use Stata-style markers instead, convert the column first:
+#     jconvert(w71d, to = "stata", modify = TRUE)
+setwd(.wd71)
+unlink(file.path(tempdir(), "w71u.sav"))
+options(.jst_options_missing_convention = NULL)
+rm(.wd71, w71u, w71p, w71q, w71s, w71n, w71d)
+
+# Things to look at:
+#   - RENDER 2: Mode is left out without a word. The alternative was a line
+#     saying Mode is text and cannot be declared, pointing to jencode();
+#     the S351 rule had already left a text variable out of the list under
+#     to = "stata" and "sas", for the same reason, and this extends it.
+#   - RENDER 3: "declare it on the recoded variable", then the two lines --
+#     the S319 note below it offers its own pair for 0. Run both pairs in
+#     turn and the second replaces -99 with 0; each runs on its own.
+#   - RENDER 4: is "has no lettered markers to label" the right stop for a
+#     call that also gave -99, or should it say the -99 half could be
+#     declared by itself?
+#   - RENDER 5: "codes = c(-99, -98), labels = \"-99=Refused\"" -- codes =
+#     cannot name some codes and not others, so the names move to labels =.
 
 # --- Restore session state ---------------------------------------------------
 # Moved here from mid-file at S248, so it runs after every part rather

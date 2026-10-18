@@ -25,6 +25,23 @@
 #           Stata-style or SAS-style, and the parse layer phrased by the
 #           setting.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S372 EDIT (v0.9.245, 2026-10-18): NEW N44k, and N44c, N44c2, N44d AND
+#           N47i RE-PINNED for Fix Slate 20 (the S371 remedy-line audit):
+#           with no convention selected, automatic mode's note on a declared
+#           string offered a missing-token map that stopped at the
+#           choose-first gate; the menu now leads ("No missing-value
+#           convention is selected, so the values cannot be declared yet."),
+#           then "Then, to keep ...". N44k runs each of the menu's three
+#           joptions() lines and then the map, the declared cells missing in
+#           that convention's form, and finds no menu under a set
+#           convention. ONE HUNDRED AND TWENTY-EIGHT checks. Red on the
+#           0.9.244 master: the five. The mutation map is in
+#           missing_convention_check.R's S372 entry. Sandbox: the five ways
+#           and entered dirty, plain and under the stand-in, green.
+#           LAST VERIFIED: v0.9.245, 2026-10-18 (S372) -- 128/128 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run, 2944 checks)"; R CMD
+#           check 0 errors, 0 warnings, 0 notes), matching the sandbox;
+#           GitHub 03a9ff8 (package).
 # S359 EDIT (v0.9.232, 2026-10-16): GUARD 5 (the S345 item, Scripts Slate
 #           B): the values of the workspace's objects on entry, put back at
 #           the foot when a run changed them, and named ("Put back as they
@@ -1066,12 +1083,27 @@ check("N44b ... the listing leaves the declared strings out, and the suggested m
               .g44, fixed = TRUE) &&
         { e <- new.env(parent = globalenv()); assign("e44", e44, envir = e)
           .runs(.offered(.g44)[[1]], e) && .same(get("e44", envir = e)$MSR, .r44) })
-check("N44c ... and the note says how many cells, which values, that the two strings will share one missing value, and gives the map that keeps them declared (pinned whole)",
+# S372: with no convention selected the map's missing token stops at the
+# choose-first gate, so the menu now leads, then "Then, to keep ..." (Fix
+# Slate 20; ruling R15's form). Re-pinned whole.
+check("N44c ... and the note says how many cells, which values, that the two strings will share one missing value, and gives the map that keeps them declared, the choose-first menu first (pinned whole)",
       grepl(paste0(
         "\n\nNote: 3 cells in 'MS' holding a declared missing value (\"REF\", \"UNKNOWN\")\n",
         "were left missing (NA).\n",
-        "To keep them declared, as one missing value, rerun with a map sending those\n",
-        "values to missing:\n",
+        "No missing-value convention is selected, so the values cannot be\n",
+        "declared yet.\n",
+        "Choose one for this session:\n",
+        "  joptions(missing.convention = \"stata\")\n",
+        "      Lowercase markers behave as true NAs in base R.\n",
+        "      Recommended if you also run base R or AI-generated code.\n",
+        "  joptions(missing.convention = \"spss\")\n",
+        "      Codes stay visible numbers; jstats treats them as missing.\n",
+        "      Base R does not.\n",
+        "  joptions(missing.convention = \"sas\")\n",
+        "      Like Stata, with uppercase markers (.A-.Z).\n",
+        "To make the choice permanent, put the same line in your .Rprofile.\n",
+        "Then, to keep them declared, as one missing value, rerun with a map sending\n",
+        "those values to missing:\n",
         "  e44$MSR <- jencode(e44, MS,\n",
         "      map = \"Married=1; Single=2; REF=missing; UNKNOWN=missing\")\n\n",
         "Note: This call changes e44 only if you assign the result:"),
@@ -1080,14 +1112,28 @@ check("N44c2 one declared string in several cells: the cells are plural, the val
       { e <- e44; e$M2 <- haven::labelled_spss(
           c("UNKNOWN", "UNKNOWN", rep(c("Married", "Single"), 4)), na_values = "UNKNOWN")
         g <- flat(grab(jencode(e, M2)))
-        grepl("Note: 2 cells in 'M2' holding a declared missing value (\"UNKNOWN\") were left missing (NA). To keep them as declared missing values, rerun with a map sending that value to missing:",
-              g, fixed = TRUE) })
+        grepl("Note: 2 cells in 'M2' holding a declared missing value (\"UNKNOWN\") were left missing (NA). No missing-value convention is selected, so the value cannot be declared yet.",
+              g, fixed = TRUE) &&
+          grepl("Then, to keep them as declared missing values, rerun with a map sending that value to missing:",
+                g, fixed = TRUE) })
 check("N44d one cell, one value: the singular throughout",
       grepl(paste0(
         "Note: 1 cell in 'M1' holding a declared missing value (\"UNKNOWN\") was left\n",
         "missing (NA).\n",
-        "To keep it as a declared missing value, rerun with a map sending that value\n",
-        "to missing:\n",
+        "No missing-value convention is selected, so the value cannot be\n",
+        "declared yet.\n",
+        "Choose one for this session:\n",
+        "  joptions(missing.convention = \"stata\")\n",
+        "      Lowercase markers behave as true NAs in base R.\n",
+        "      Recommended if you also run base R or AI-generated code.\n",
+        "  joptions(missing.convention = \"spss\")\n",
+        "      Codes stay visible numbers; jstats treats them as missing.\n",
+        "      Base R does not.\n",
+        "  joptions(missing.convention = \"sas\")\n",
+        "      Like Stata, with uppercase markers (.A-.Z).\n",
+        "To make the choice permanent, put the same line in your .Rprofile.\n",
+        "Then, to keep it as a declared missing value, rerun with a map sending that\n",
+        "value to missing:\n",
         "  e44$M1R <- jencode(e44, M1, map = \"Married=1; Single=2; UNKNOWN=missing\")\n"),
         grab(jencode(e44, M1)), fixed = TRUE))
 check("N44e the map the note offers runs, and the cells come back declared missing under the convention in force",
@@ -1131,6 +1177,39 @@ check("N44j the new notes hold the pinned width and break nowhere early",
         ln <- ln[nzchar(ln) & !grepl("^\\s{2}", ln)]
         !any(nchar(ln) > .pin_width) &&
           length(unlist(lapply(s, pbreaks, width = .pin_width))) == 0L })
+# S372 (Fix Slate 20; the S371 remedy-line audit): with no convention
+# selected the note's map stopped at the choose-first gate ("no
+# missing-value convention is selected, so the 'missing' target cannot be
+# applied"). The menu now leads; each of its three joptions() lines, run
+# first, lets the map run, and the cells come back declared missing in that
+# convention's form. With a convention selected, no menu.
+check("N44k no convention selected: each menu line, run first, lets the note's map run, the declared cells missing in that form; with a convention set, no menu",
+      local({
+        o  <- .offered(.g44)
+        jo <- regmatches(.g44, gregexpr("joptions\\(missing\\.convention = \"[a-z]+\"\\)", .g44))[[1]]
+        ok <- length(jo) == 3L && length(o) == 2L
+        # .conv47() is defined further down the file (N47); its body here.
+        .conv47 <- function(cv, expr) {
+          old <- getOption(".jst_options_missing_convention")
+          options(.jst_options_missing_convention = cv)
+          on.exit(options(.jst_options_missing_convention = old), add = TRUE)
+          force(expr)
+        }
+        for (j in jo) {
+          e <- new.env(parent = globalenv()); assign("e44", e44, envir = e)
+          ok <- ok && .conv47(NULL, {
+            eval(parse(text = paste0(substr(j, 1L, nchar(j) - 1L), ", quiet = TRUE)")))
+            r <- .runs(o[[2]], e)
+            x <- get("e44", envir = e)$MSR
+            cv <- getOption(".jst_options_missing_convention")
+            r && (if (identical(cv, "spss")) identical(attr(x, "na_values"), -99)
+                  else sum(!is.na(haven::na_tag(unclass(x)))) == 3L)
+          })
+        }
+        g2 <- .conv47("stata", grab(jencode(e44, MS)))
+        ok && is.null(getOption(".jst_options_missing_convention")) &&
+          !grepl("No missing-value convention is selected", g2, fixed = TRUE) &&
+          grepl("To keep them declared, as one missing value, rerun", flat(g2), fixed = TRUE) }))
 rm(e44, .g44, .r44)
 
 # --- N45a-N45j: the automatic suggestions on words a map must quote (S343) ---
@@ -1472,8 +1551,20 @@ check("N47i declared missing strings AND blank cells: three offered calls, each 
         "      map = \"Married=1; Single=2; REF=NA; UNKNOWN=NA; blank=NA\")\n\n",
         "Note: 2 cells in 'MS' holding a declared missing value (\"REF\", \"UNKNOWN\")\n",
         "were left missing (NA).\n",
-        "To keep them declared, as one missing value, rerun with a map sending those\n",
-        "values to missing:\n",
+        "No missing-value convention is selected, so the values cannot be\n",
+        "declared yet.\n",
+        "Choose one for this session:\n",
+        "  joptions(missing.convention = \"stata\")\n",
+        "      Lowercase markers behave as true NAs in base R.\n",
+        "      Recommended if you also run base R or AI-generated code.\n",
+        "  joptions(missing.convention = \"spss\")\n",
+        "      Codes stay visible numbers; jstats treats them as missing.\n",
+        "      Base R does not.\n",
+        "  joptions(missing.convention = \"sas\")\n",
+        "      Like Stata, with uppercase markers (.A-.Z).\n",
+        "To make the choice permanent, put the same line in your .Rprofile.\n",
+        "Then, to keep them declared, as one missing value, rerun with a map sending\n",
+        "those values to missing:\n",
         "  m47$MSR <- jencode(m47, MS,\n",
         "      map = \"Married=1; Single=2; REF=missing; UNKNOWN=missing; blank=NA\")\n\n",
         "Note: 2 blank cells in 'MS' were left missing (NA).\n",
