@@ -161,6 +161,14 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S375 EDIT (v0.9.248, 2026-10-19): Scripts Slate C. N41's block, which
+#           assigned its working objects at the top level, now in local(),
+#           as a check's working objects go since S355. 619 checks,
+#           unchanged. Sandbox: the five ways and entered dirty, green.
+#           LAST VERIFIED: v0.9.248, 2026-10-19 (S375) -- 619/619 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3035 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S374 EDIT (v0.9.247, 2026-10-19): Fix Slate 21. C18d and C33
 #           RE-PINNED: the clear-one-of-several stops give each way out on
 #           a line of its own (they sat inline after "e.g."). Z08 RE-PINNED:
@@ -3384,7 +3392,7 @@ check("N40 ... with an earlier filter in place: reported unchanged, and kept",
 quiet(jsubset(nf, NULL))
 n_l <- list(per = n_per)
 check("N41 an object reached through $ is added under its last name, the condition naming that column; the lines run, and the filter is set",
-      { g <- grab(jsubset(nf, Age >= n_l$per))
+      local({ g <- grab(jsubset(nf, Age >= n_l$per))
         lns <- strsplit(g, "\n", fixed = TRUE)[[1]]
         fix <- trimws(lns[grepl("^  ", lns)])
         ok <- length(fix) == 2L &&
@@ -3393,7 +3401,7 @@ check("N41 an object reached through $ is added under its last name, the conditi
         set <- identical(fs_of("nf")$expr_str, "Age >= per")
         quiet(jsubset(nf, NULL)); nf$per <- NULL
         has(flat(g), "In Age >= n_l$per, n_l$per is not in the nf data frame; it is a separate object in your workspace.") &&
-          has(g, "Add it to the data frame first, then name the column:") && ok && set })
+          has(g, "Add it to the data frame first, then name the column:") && ok && set }))
 n_v5 <- c(30, 40, 50, 60, 70); n_k11 <- rep(c(TRUE, FALSE), 6)[-1]
 check("N42 controls behind an active jcomplete(): a filter on the frame's own variables is set and runs; a vector of any other length takes the recycling form, opening as R19's does -- one value per case jcomplete() LEAVES included",
       { ok1 <- has(grab(jsubset(nf, Gender == 1)), "jsubset activated for nf") &&

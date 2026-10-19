@@ -10,6 +10,19 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S375 EDIT (v0.9.248, 2026-10-19): Scripts Slate C. The blocks of N58b,
+#           N58c, N70c and N72c, which assigned working objects at the top
+#           level, now in local(), as a check's working objects go since
+#           S355. N96o and N96ah hand back the juse() default they found
+#           (they ran juse(NULL) on exit, so a dirty entry left the user's
+#           default cleared -- on 0.9.247 as well; the S337 rule this file
+#           states at N89). 907 checks, unchanged. Sandbox: the five ways
+#           and entered dirty, plain and under the stand-in, green, the
+#           juse() default now handed back.
+#           LAST VERIFIED: v0.9.248, 2026-10-19 (S375) -- 907/907 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3035 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S374 EDIT (v0.9.247, 2026-10-19): Fix Slate 21. N86m now makes
 #           x86.RData before asking for it, since jload() looks for an
 #           .RData file first; N86m2 NEW: one that does not exist gets the
@@ -3754,10 +3767,10 @@ check("N58a no wrapped tail falls below the min_tail floor",
 # ALONE; the old bare test dragged it back to 20 characters, emptying the
 # line above. This is the assertion that would have caught a silent revert.
 check("N58b a multi-word tail between floor and min_last survives",
-      {
+      local({
         t <- .tail58(.s58_two, 50L)
         nchar(t) < 20L && .nwords58(t) >= 2L
-      })
+      }))
 
 # N58c -- THE RETAINED GUARANTEE. A SINGLE-word tail under min_last is still
 # pulled back, exactly as before S257. The new condition is strictly weaker
@@ -3765,10 +3778,10 @@ check("N58b a multi-word tail between floor and min_last survives",
 # S257 corpus measurement bears it out: one-word tail counts are identical to
 # the old condition at 90 / 76 / 64 / 50, not merely close.
 check("N58c a single-word tail under min_last is still pulled back",
-      {
+      local({
         t <- .tail58(.s58_one, 50L)
         !(.nwords58(t) == 1L && nchar(t) < 20L)
-      })
+      }))
 
 # =============================================================================
 # N59 -- TWO PROPERTIES THE SUITE WAS BLIND TO (S267). Both were shipped in
@@ -5243,11 +5256,11 @@ check("N70b the report lists the label-only marker beside the others",
                    '.c ["Refused"] -> -97'), m70a, fixed = TRUE))
 
 check("N70c round trip: stata -> spss -> stata returns .c \"Refused\"",
-      {
+      local({
         rt <- suppressMessages(jconvert(r70a, to = "stata"))
         identical(haven::na_tag(labelled::val_labels(rt$q)[["Refused"]]),
                   "c")
-      })
+      }))
 
 m70d <- .fl(grab(jconvert(fE70, to = "spss")))
 check("N70d a column whose only marker is a label: declared, reported, noted",
@@ -5628,12 +5641,12 @@ check("N72b the report ends its entry with the range, and the range NOTE names S
                      "as a missing-value range."), m72a, fixed = TRUE))
 
 check("N72c the return trip gives .a-.e back in order, labels intact",
-      {
+      local({
         rt <- suppressMessages(jconvert(r72a, to = "stata"))
         !is.null(r72a) &&
           identical(.cl72(rt$q), c("1", "2", ".a", ".b", ".c", ".d", ".e")) &&
           identical(haven::na_tag(labelled::val_labels(rt$q)[["Lost"]]), "e")
-      })
+      }))
 
 m72d <- .fl(grab(jconvert(f72_m, to = "spss")))
 check("N72d mnemonic .d .n .r .s: letter order, the range note AND the return-trip note",
@@ -11351,7 +11364,8 @@ check("N96o modify = TRUE writes back, and under a juse() default the variable a
               suppressMessages(eval(quote(jdeclare_missing(d96, M, codes = "UNKNOWN", modify = TRUE)), e))
               ok1 <- identical(attr(e$d96$M, "na_values"), "UNKNOWN")
               .d96g <- .T96
-              suppressMessages(juse(.d96g)); on.exit(suppressMessages(juse(NULL)))
+              def96 <- getOption(".jst_default_data")   # handed back, never juse(NULL)
+              suppressMessages(juse(.d96g)); on.exit(options(.jst_default_data = def96))
               suppressMessages(jdeclare_missing(M, codes = "", modify = TRUE))
               ok1 && identical(attr(.d96g$M, "na_values"), "") }))
 check("N96p two text variables: one block naming both (pinned whole)",
@@ -11575,7 +11589,8 @@ check("N96ah ... the data as given: an expression gets no line; a place the assi
               e2 <- new.env(parent = globalenv()); e2$lst <- lst
               ran2 <- .run96(.nb96(p2), e2, "^  lst\\$d <- jdeclare_missing\\(")
               .d96h <- d
-              suppressMessages(juse(.d96h)); on.exit(suppressMessages(juse(NULL)))
+              def96 <- getOption(".jst_default_data")   # handed back, never juse(NULL)
+              suppressMessages(juse(.d96h)); on.exit(options(.jst_default_data = def96))
               p3 <- printed(jdeclare_missing(M, codes = "UNKNOWN"))
               e3 <- new.env(parent = globalenv()); e3$.d96h <- d
               ran3 <- .run96(.nb96(p3), e3)

@@ -73,8 +73,42 @@
 #           outcome took the group; a paired t-test under the diagnostics
 #           setting; a box plot's groups labeled as the descriptives label
 #           them (Section 32).
+#           Since S375 (v0.9.248) the Cramer's V line under a chi-square
+#           table, and jcrosstab()'s stop for a variable of more than 20
+#           values (Section 35).
 #           format_check.R asserts the same surface; this file shows it.
 # ORIGIN:   S326 (v0.9.202): the number-format bundle.
+# S375 EDIT (v0.9.248; Capability Slate C2): SECTION 35 ADDED, three renders --
+#           34 sections -> 35 -- filled by running (fill.R): Cramer's V under a
+#           5 x 4 table and on the result; jcrosstab()'s stop past 20 values,
+#           for one variable and for two; the call it offers, run. RE-PINNED by
+#           running, each section read whole and given an "(S375)" bullet:
+#           Sections 1, 12, 13, 23, 27 and 28 (diagnostics = TRUE now draws the
+#           Q-Q plot, and "(Diagnostic plot produced: Normal Q-Q)" closes each
+#           jt() and jaov() output that asks); 7 (the Gelman column and Exp(b);
+#           the logistic plot list); 15, 17 and 21 (the Cramer's V line); 31
+#           (the panel's model.layout row and the Q-Q line; Render 4's refused
+#           name is now "vif", since "qq" became one of jaov()'s); and 32 (both
+#           paired tests draw the Q-Q plot of the differences). All thirteen on
+#           the PENDING line: the Q-Q line's place, the Cramer's V line and the
+#           Gelman column's place are Claude's calls. A capture of every
+#           section of every walk on 0.9.247 and 0.9.248: here the twelve
+#           re-pinned. harness.R derive: Section 35 needs no other; verify: 54
+#           of 54 Expected blocks, 35 of 35 sections in three orders and by
+#           prepare = TRUE. The human half of format_check.R's re-pins and
+#           models_check.R Y16-Y17.
+# LAST VERIFIED: v0.9.248, 2026-10-19 (S375) -- Sections 1, 7, 12, 13, 15, 17,
+#           21, 23, 27, 28, 31, 32 and 35 WALKED on the WORKSTATION by Jeff
+#           through receive_all() ("walked, all okay"); PENDING back to none; R
+#           CMD check 0 errors, 0 warnings, 0 notes; ALL BATTERIES GREEN (10
+#           run, 3035 checks).
+# S375 SECOND DELIVERY (v0.9.248, the same day): Section 7's plot list
+#           RE-PINNED MECHANICALLY under Jeff's ruling on his walk -- "(use the
+#           arrow buttons in RStudio's Plots pane to navigate):" on a line of
+#           its own -- and kept off the PENDING line (models_walk.R Section 19
+#           shows the form); the block found as a run in a fill of the section
+#           on the new build. harness.R verify: 54 of 54 Expected blocks, 35 of
+#           35 sections in three orders and by prepare = TRUE.
 # S329 EDIT (v0.9.205): THE CROSSTAB BUILD. Sections 15 and 17
 #           RE-CAPTURED (Section 15 gains a third call, with expected =
 #           TRUE) and their bullets rewritten; Section 21 NEW (single-line
@@ -396,6 +430,8 @@ jaov(y ~ g, data = f_aov, full = TRUE, diagnostics = TRUE)
 #   c-a              -2.000         -5.224         1.224         .246
 #   c-b              -1.000         -4.224         2.224         .674
 #
+#   (Diagnostic plot produced: Normal Q-Q)
+#
 # Things to look at:
 #   - Every statistic carries three places: Levene's F 0.000, the means
 #     16.000 / 15.000 / 14.000, Sum of Squares 8.000 / 24.000 / 32.000,
@@ -410,6 +446,10 @@ jaov(y ~ g, data = f_aov, full = TRUE, diagnostics = TRUE)
 #     "p (adjusted)". The label columns (Group, Source, Comparison) stay
 #     flush left.
 #   - The Residual and Total rows end at their last value.
+#   - (S375) The output ends on "(Diagnostic plot produced: Normal Q-Q)", one blank line
+#     under the Tukey table: diagnostics = TRUE now draws the normal Q-Q
+#     plot of the residuals beside Levene's table, in the words of jlm()'s
+#     one-plot line. The plot is in the Plots pane.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -671,10 +711,10 @@ jlogistic(yb ~ x1 + x2, data = f_log, classification = TRUE,
 #   Analysis N: 103
 #
 #   Coefficients
-#                   b      SE    Wald  df    p   Exp(B)
-#   -----------  ------  -----  -----  --  ----  ------
-#   (Intercept)  -0.666  0.529  1.588   1  .208   0.514
-#   CommuteTime   0.018  0.016  1.355   1  .244   1.019
+#                   b      SE    Wald  df    p   Gelman β  Exp(b)
+#   -----------  ------  -----  -----  --  ----  --------  ------
+#   (Intercept)  -0.666  0.529  1.588   1  .208             0.514
+#   CommuteTime   0.018  0.016  1.355   1  .244    0.469    1.019
 #
 #   Outcome: Volunteer
 #
@@ -697,11 +737,11 @@ jlogistic(yb ~ x1 + x2, data = f_log, classification = TRUE,
 #   Analysis N: 48
 #
 #   Coefficients
-#                   b      SE    Wald   df    p    Exp(B)
-#   -----------  ------  -----  ------  --  -----  ------
-#   (Intercept)  -1.099  0.333  10.863   1  <.001   0.333
-#   x1            0.000  0.149   0.000   1  1.000   1.000
-#   x2            0.000  0.149   0.000   1  1.000   1.000
+#                   b      SE    Wald   df    p    Gelman β  Exp(b)
+#   -----------  ------  -----  ------  --  -----  --------  ------
+#   (Intercept)  -1.099  0.333  10.863   1  <.001             0.333
+#   x1            0.000  0.149   0.000   1  1.000    0.000    1.000
+#   x2            0.000  0.149   0.000   1  1.000    0.000    1.000
 #
 #   Outcome: yb
 #
@@ -728,6 +768,12 @@ jlogistic(yb ~ x1 + x2, data = f_log, classification = TRUE,
 #   x1        1.000
 #   x2        1.000
 #
+#   3 diagnostic plots produced
+#   (use the arrow buttons in RStudio's Plots pane to navigate):
+#     1. Binned Residuals
+#     2. Cook's Distance
+#     3. Residuals vs Leverage
+#
 #   Dependent Variable Encoding
 #     Modeled (1):   1
 #     Reference (0): 0
@@ -743,6 +789,12 @@ jlogistic(yb ~ x1 + x2, data = f_log, classification = TRUE,
 #     disagreed inside this one output.
 #   - Each output ends on a blank line (S327): the second call's title
 #     no longer sits directly under "Reference (0): No".
+#   - (S375) Both coefficient tables have the Gelman beta column between p
+#     and Exp(b), its intercept cell blank, block-centered as the other
+#     columns are; the header reads Exp(b) (it read Exp(B)). The second
+#     call's diagnostics = TRUE now brings, under the VIF table, the plot
+#     list in jlm()'s form: three plots, Binned Residuals, Cook's Distance
+#     and Residuals vs Leverage.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -982,6 +1034,8 @@ jt(Flourishing ~ Medication, data = cl, full = TRUE, diagnostics = TRUE)
 #
 #   Cohen's d: 0.573
 #
+#   (Diagnostic plot produced: Normal Q-Q)
+#
 # Things to look at:
 #   - Levene's table: F, df1, df2 and p each under a centered header;
 #     the df2 of 63 has one spare space under "df2" and takes the right
@@ -989,6 +1043,8 @@ jt(Flourishing ~ Medication, data = cl, full = TRUE, diagnostics = TRUE)
 #   - Group Descriptives: N over 39 and 26, Mean and SD over their values.
 #   - The test table: the df of 63 fills its column; the Mean Difference
 #     and both CI bounds sit under the middle of their headers.
+#   - (S375) Under Cohen's d, one blank line and "(Diagnostic plot produced: Normal Q-Q)":
+#     diagnostics = TRUE draws the Q-Q plot beside Levene's table.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -1045,6 +1101,8 @@ jaov(Stress ~ Condition, data = cl, full = TRUE, diagnostics = TRUE)
 #   Support group-CBT               -0.088         -7.183         7.007         1.000
 #   Support group-Mindfulness       -1.683         -8.486         5.119          .914
 #
+#   (Diagnostic plot produced: Normal Q-Q)
+#
 # Things to look at:
 #   - The ANOVA table: F and p under centered headers; 33.904, 3527.914
 #     and 3561.818 lined up on the decimal point under "Sum of Squares".
@@ -1052,6 +1110,7 @@ jaov(Stress ~ Condition, data = cl, full = TRUE, diagnostics = TRUE)
 #     one character further left than the rest; the differences and CI
 #     bounds lined up on their decimal points under centered headers.
 #   - The Case Processing block above the tables is unchanged.
+#   - (S375) Under the Tukey table, one blank line and "(Diagnostic plot produced: Normal Q-Q)".
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -1144,6 +1203,8 @@ jcrosstab(r ~ k, data = f_x496, chisq = TRUE, expected = TRUE)
 #   Pearson                   0.376     1  .540  100
 #   Continuity Correction     0.101     1  .750  100
 #
+#   Phi (Cramer's V): 0.061
+#
 #   Note: 1 cell has an expected frequency less than 5 (minimum = 4.96).
 #   Chi-square results may not be reliable.
 #   To see the expected frequencies, add expected = TRUE.
@@ -1168,6 +1229,8 @@ jcrosstab(r ~ k, data = f_x496, chisq = TRUE, expected = TRUE)
 #   ---------------------  ----------  --  ----  ----
 #   Pearson                   5.848     1  .016  1000
 #   Continuity Correction     4.737     1  .030  1000
+#
+#   Phi (Cramer's V): 0.076
 #
 #   Note: 1 cell has an expected frequency less than 5 (minimum = 4.99).
 #   Chi-square results may not be reliable.
@@ -1196,6 +1259,8 @@ jcrosstab(r ~ k, data = f_x496, chisq = TRUE, expected = TRUE)
 #   Pearson                   0.376     1  .540  100
 #   Continuity Correction     0.101     1  .750  100
 #
+#   Phi (Cramer's V): 0.061
+#
 #   Note: 1 cell has an expected frequency less than 5 (minimum = 4.96).
 #   Chi-square results may not be reliable.
 #
@@ -1213,6 +1278,10 @@ jcrosstab(r ~ k, data = f_x496, chisq = TRUE, expected = TRUE)
 #   - Each table: a blank line between the two categories and before
 #     Total, and the columns four spaces apart. Sections 17 and 21
 #     show both at other sizes.
+#   - (S375) Under each chi-square table, one blank line and the strength
+#     of the association, "Phi (Cramer's V): 0.061" (each table here is
+#     2 x 2, where phi and Cramer's V are one number); then one blank line
+#     and the note.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -1318,6 +1387,8 @@ jcrosstab(Volunteer ~ OwnsHome, data = cm, chisq = TRUE,
 #   ----------  --  ----  --
 #      0.710     3  .871  70
 #
+#   Cramer's V: 0.101
+#
 #   Note: 1 cell has an expected frequency less than 5 (minimum = 4.20).
 #   Chi-square results may not be reliable.
 #
@@ -1344,6 +1415,8 @@ jcrosstab(Volunteer ~ OwnsHome, data = cm, chisq = TRUE,
 #   Pearson                   5.946     1  .015  103
 #   Continuity Correction     5.020     1  .025  103
 #
+#   Phi (Cramer's V): 0.240
+#
 # Things to look at:
 #   - In each cell the count's ones digit sits over the ones digit of
 #     the expected count and of the percentage: 13 over 12.60 over
@@ -1367,6 +1440,11 @@ jcrosstab(Volunteer ~ OwnsHome, data = cm, chisq = TRUE,
 #     share a right edge in every column.
 #   - The first call's note has no pointer line (expected = TRUE is in
 #     the call) and ends on ONE blank line.
+#   - (S375) Under each chi-square table, one blank line and the strength
+#     of the association: "Cramer's V: 0.101" under the 2 x 4 table,
+#     "Phi (Cramer's V): 0.240" under the 2 x 2, where the two are one
+#     number. In the first output the note follows it, a blank line
+#     between.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -1654,6 +1732,7 @@ joutput(NULL)
 #     variable.id: LEGEND
 #     value.id: BOTH
 #     ref.categories: ON
+#     model.layout: COEFFICIENTS
 #     missing.notice: ON
 #     digits: 3
 #
@@ -1683,6 +1762,8 @@ joutput(NULL)
 #   Pearson                   0.376     1  .540  100
 #   Continuity Correction     0.101     1  .750  100
 #
+#   Phi (Cramer's V): 0.061
+#
 #   Note: 1 cell has an expected frequency less than 5 (minimum = 4.96).
 #   Chi-square results may not be reliable.
 #   To see the expected frequencies, add expected = TRUE.
@@ -1707,6 +1788,9 @@ joutput(NULL)
 #     way.
 #   - The Case Processing block in the third output belongs to the
 #     "full" level, not to this build.
+#   - (S375) In the third output "Phi (Cramer's V): 0.061" sits between the
+#     chi-square table and the expected-frequency note, one blank line on
+#     either side.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -1845,6 +1929,8 @@ jaov(y ~ g, data = f_gh, welch = TRUE, posthoc = TRUE)
 #   c-a              6.000           0.841        11.159         .022
 #   c-b              4.000          -0.894         8.894         .119
 #
+#   (Diagnostic plot produced: Normal Q-Q)
+#
 #   Welch's One-Way ANOVA
 #
 #   Analysis N: 18
@@ -1894,6 +1980,9 @@ jaov(y ~ g, data = f_gh, welch = TRUE, posthoc = TRUE)
 #     pooled variance that group b inflates.
 #   - These Games-Howell numbers are the ones rstatix's
 #     games_howell_test() gives for the same data (format_check.R U01).
+#   - (S375) The first output, which asks diagnostics = TRUE, ends on
+#     "(Diagnostic plot produced: Normal Q-Q)" under the Tukey table; the second
+#     asks for none and draws none.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -2178,6 +2267,8 @@ jaov(y ~ g, data = f_in, diagnostics = TRUE)
 #   Total     85      231.913
 #
 #   Eta-squared: 0.241
+#
+#   (Diagnostic plot produced: Normal Q-Q)
 
 # Render 2 -- between the guidelines: sizes 1.5 apart, SDs 2.1 apart.
 f_mid <- groups(n = c(30, 24, 20), sd = c(1, 1, 2.1), mean = c(5, 6, 7))
@@ -2216,6 +2307,8 @@ jaov(y ~ g, data = f_mid, diagnostics = TRUE)
 #   Total     73      184.440
 #
 #   Eta-squared: 0.264
+#
+#   (Diagnostic plot produced: Normal Q-Q)
 
 # Render 3 -- beyond every guideline: sizes 2 apart, SDs 2.6 apart.
 f_out <- groups(n = c(40, 20, 20), sd = c(1, 1, 2.6), mean = c(5, 6, 7))
@@ -2256,6 +2349,8 @@ rm(groups, f_in, f_mid, f_out)
 #
 #   Eta-squared: 0.228
 #
+#   (Diagnostic plot produced: Normal Q-Q)
+#
 # Things to look at:
 #   - All three notes open the same way: the test is significant, then
 #     the two ratios, read from the Group Descriptives table below (30
@@ -2274,6 +2369,9 @@ rm(groups, f_in, f_mid, f_out)
 #   - One blank line above the note and one below it, as in Section 23.
 #   - Each call asks for the test with diagnostics = TRUE. levene = TRUE,
 #     the argument until this build, is gone (Section 31).
+#   - (S375) diagnostics = TRUE now draws the Q-Q plot as well, so each
+#     output ends on "(Diagnostic plot produced: Normal Q-Q)", one blank line
+#     under Eta-squared.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -2323,6 +2421,8 @@ jt(y ~ g, data = t_in, diagnostics = TRUE)
 #   -2.946  78  .004       -1.000         -1.676        -0.324
 #
 #   Cohen's d: -0.659
+#
+#   (Diagnostic plot produced: Normal Q-Q)
 
 # Render 2 -- nearly the same size, SDs 2.4 apart.
 t_mid <- groups(n = c(42, 40), sd = c(1, 2.4), mean = c(5, 6))
@@ -2357,6 +2457,8 @@ jt(y ~ g, data = t_mid, diagnostics = TRUE)
 #   -2.484  80  .015       -1.000         -1.801        -0.199
 #
 #   Cohen's d: -0.549
+#
+#   (Diagnostic plot produced: Normal Q-Q)
 
 # Render 3 -- sizes 2 apart, SDs 2.6 apart; then the same call with
 # welch = TRUE; then the first call again at the minimal level.
@@ -2399,6 +2501,8 @@ rm(groups, t_in, t_mid, t_out)
 #
 #   Cohen's d: -0.589
 #
+#   (Diagnostic plot produced: Normal Q-Q)
+#
 #   Welch's Independent Samples T-Test
 #
 #   Analysis N: 60
@@ -2421,6 +2525,8 @@ rm(groups, t_in, t_mid, t_out)
 #
 #   Cohen's d: -0.589
 #
+#   (Diagnostic plot produced: Normal Q-Q)
+#
 #   Independent Samples T-Test
 #
 #   Analysis N: 60
@@ -2441,6 +2547,8 @@ rm(groups, t_in, t_mid, t_out)
 #   ------  --  ----  ---------------
 #   -2.149  58  .036       -1.000
 #
+#   (Diagnostic plot produced: Normal Q-Q)
+#
 # Things to look at:
 #   - RENDER 1: "The groups are the same size, and the larger SD is 1.9
 #     times the smaller.", and the verdict names Student's t-test.
@@ -2456,6 +2564,10 @@ rm(groups, t_in, t_mid, t_out)
 #   - Third output, at the minimal level: the table and no note. A
 #     diagnostic's brief interpretation prints at the standard and full
 #     levels only.
+#   - (S375) Every output here ends on "(Diagnostic plot produced: Normal Q-Q)": the
+#     plot comes with diagnostics = TRUE at every level, Welch's test
+#     included (its residuals standardized within each group, the pooled
+#     SD being the one Welch's test does not assume).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -2842,6 +2954,7 @@ jaov(y ~ g, data = f_gh)
 #     variable.id: LEGEND
 #     value.id: BOTH
 #     ref.categories: ON
+#     model.layout: COEFFICIENTS
 #     missing.notice: ON
 #     digits: 3
 #
@@ -2929,6 +3042,8 @@ joutput("standard")
 #   c-a              6.000           0.841        11.159         .022
 #   c-b              4.000          -0.894         8.894         .119
 #
+#   (Diagnostic plot produced: Normal Q-Q)
+#
 #   Output Settings
 #   Level: standard
 #     effect.size: ON
@@ -2942,6 +3057,7 @@ joutput("standard")
 #     variable.id: NAMES
 #     value.id: BOTH
 #     ref.categories: ON
+#     model.layout: COEFFICIENTS
 #     missing.notice: ON
 #     digits: 3
 
@@ -3003,7 +3119,7 @@ joutput(NULL)
 # Render 4 -- what is refused, and a setting of two names.
 shown <- function(expr) tryCatch(expr, error = function(e)
   cat("Error: ", conditionMessage(e), "\n\n", sep = ""))
-shown(jaov(y ~ g, data = f_gh, diagnostics = "qq"))
+shown(jaov(y ~ g, data = f_gh, diagnostics = "vif"))
 shown(jaov(y ~ g, data = f_gh, levene = TRUE))
 shown(joutput(diagnostics = "leven"))
 shown(joutput(diagnostics = "levene + vif"))
@@ -3012,14 +3128,14 @@ joutput(NULL, quiet = TRUE)
 rm(shown, f_gh)
 
 # Expected:
-#   Error: jaov(): "qq" is not a diagnostic of jaov().
-#   `diagnostics` must be TRUE, FALSE, or "levene".
+#   Error: jaov(): "vif" is not a diagnostic of jaov().
+#   `diagnostics` must be TRUE, FALSE, or one or more of "levene" and "qq".
 #
 #   Error: jaov(): 'levene' is not valid. Did you mean `diagnostics`?
 #
 #   Error: joutput(): "leven" is not a diagnostic.
-#   `diagnostics` must be TRUE, FALSE, or one or more of "levene", "vif",
-#   "residuals", "qq", "scale", "cooks", and "leverage".
+#   `diagnostics` must be TRUE, FALSE, or one or more of "levene", "qq", "vif",
+#   "residuals", "scale", "cooks", "leverage", and "binned".
 #
 #   Error: joutput(): "levene + vif" is not a diagnostic.
 #   To ask for more than one, combine them with c():
@@ -3033,9 +3149,12 @@ rm(shown, f_gh)
 #   - RENDER 1: the panel has ONE row for this, "diagnostics: OFF", at
 #     the full level (the levene row is gone). The ANOVA under it has the
 #     full level's Case Processing block and post-hoc table and NO
-#     Levene's table.
+#     Levene's table. (S375) The panel has a row more,
+#     "model.layout: COEFFICIENTS", under ref.categories: the order of
+#     jlm()'s and jlogistic()'s output (models_walk.R Section 28).
 #   - RENDER 2: the echo reads "diagnostics: ON"; the ANOVA now has
-#     Levene's table and its note. The level call after it shows
+#     Levene's table and its note, and (S375) ends on
+#     "(Diagnostic plot produced: Normal Q-Q)". The level call after it shows
 #     "diagnostics: ON" still: a level call does not change the setting.
 #   - RENDER 3: diagnostics = FALSE in the call wins over the setting.
 #     The echo for one name reads "diagnostics: VIF", and jaov() under
@@ -3064,7 +3183,8 @@ rm(shown, f_gh)
 #     group the filters left: the line above it says so.
 #   - A paired t-test has no Levene's test, and under
 #     joutput(diagnostics = TRUE) every paired jt() said so. It says so
-#     only when the call asks.
+#     only when the call asks. Since S375 its diagnostics include the
+#     normal Q-Q plot of the paired differences, so both calls draw it.
 #   - jplot() of a jt() or jaov() result labeled its boxes 1, 2, 3, where
 #     the Group Descriptives of the same result read "1: Control". LOOK AT
 #     THE PLOTS PANE after Render 3.
@@ -3167,6 +3287,8 @@ joutput(NULL, quiet = TRUE)
 #
 #   Cohen's dz (paired): -1.633
 #
+#   (Diagnostic plot produced: Normal Q-Q)
+#
 #   Paired Samples T-Test
 #
 #   Analysis N: 10
@@ -3185,6 +3307,8 @@ joutput(NULL, quiet = TRUE)
 #   -3.651   4  .022       -2.000         -3.521        -0.479
 #
 #   Cohen's dz (paired): -1.633
+#
+#   (Diagnostic plot produced: Normal Q-Q)
 
 # Render 3 -- jplot() of a jaov() result, the groups labelled: the box
 # plot in the Plots pane.
@@ -3226,7 +3350,9 @@ rm(shown32, f32, f32m, f32p, f32b, r32)
 #     missing 'y' are not counted." and points at no filter.
 #   - RENDER 2: the first paired test says nothing of Levene's test (the
 #     setting is the session's); the second, which asks in the call, has
-#     the note under its N line.
+#     the note under its N line. (S375) Both end on
+#     "(Diagnostic plot produced: Normal Q-Q)": the plot of the five paired
+#     differences, the one sample a paired test assumes normal.
 #   - RENDER 3: the boxes in the Plots pane read "1: Control", "2: CBT"
 #     and "3: Mindfulness", as the Group Descriptives above them do.
 
@@ -3502,6 +3628,160 @@ rm(f34)
 #     the most correct. I think we should reword or users will interpret
 #     this as a defect." -> both Welch notes reworded, the wording
 #     approved by Jeff, v0.9.203 (Section 4).
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 35 -- jcrosstab: Cramer's V, and a variable with more than 20 values (S375) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Capability Slate C2 (v0.9.248), two items on jcrosstab().
+#   - With chisq = TRUE the chi-square table is followed by the strength of
+#     the association: Cramer's V, the square root of chi-square / (N x
+#     (k - 1)), k the smaller of the table's two dimensions. In a 2 x 2
+#     table it is phi without its sign, and the line says so: "Phi
+#     (Cramer's V):". The value is on the result as cramers_v, and tidy()
+#     has a column for it. Sections 15, 17 and 21 show the line under
+#     their tables.
+#   - A variable measured on a scale and cross-tabulated by mistake printed
+#     one row or column for each value. Past 20 values the call stops,
+#     naming the variable and its count -- both, in one stop, when both are
+#     over -- with the call that tabulates every value anyway, categorical
+#     = naming it.
+# The assertion side is models_check.R Y16-Y17.
+
+# Render 1 -- a 5 x 4 table with the test; the value on the result.
+r35 <- jcrosstab(Education ~ Region, data = cm, row.pct = FALSE, chisq = TRUE)
+print(r35$cramers_v)
+rm(r35)
+# Expected:
+#   Cross-Tabulation
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --        103
+#       Auto-listwise         6         97
+#       Analysis N           --         97
+#
+#   Missing data   From 103   %
+#       Education
+#         Missing      6     5.8
+#   --------------------------------------
+#
+#   Crosstab: Education by Region
+#   Education                1: North  2: South  3: East  4: West  Total
+#   -----------------------  --------  --------  -------  -------  -----
+#   1: Some high school          4         6         7        6      23
+#   2: High school graduate      7         2         6        3      18
+#   3: Some college              4         8         8        5      25
+#   4: Bachelor's degree         6         2         2        3      13
+#   5: Graduate degree           5         1         6        6      18
+#   Total                       26        19        29       23      97
+#
+#   Chi-Square Test of Independence
+#   Chi-Square  df    p    N
+#   ----------  --  ----  --
+#     12.080    12  .439  97
+#
+#   Cramer's V: 0.204
+#
+#   Note: 12 cells have expected frequencies less than 5 (minimum = 2.55).
+#   Chi-square results may not be reliable.
+#   To see the expected frequencies, add expected = TRUE.
+#
+#   [1] 0.2037467
+
+# Render 2 -- one variable over 20 values; two, the same count and
+# different counts.
+try(jcrosstab(Volunteer ~ Age, data = cm))
+try(jcrosstab(WellbeingScore ~ Age, data = cm))
+try(jcrosstab(CommuteTime ~ Age, data = cm))
+# Expected:
+#   Cross-Tabulation
+#
+#   Analysis N: 103
+#
+#   Error : jcrosstab(): Age has 41 different values, more than the 20 a
+#   cross-tabulation shows.
+#   To tabulate every value anyway, name it in categorical =:
+#     jcrosstab(Volunteer ~ Age, data = cm, categorical = "Age")
+#   Cross-Tabulation
+#
+#   Analysis N: 103
+#
+#   Error : jcrosstab(): WellbeingScore and Age have 41 different values each,
+#   more than the 20 a cross-tabulation shows.
+#   To tabulate every value anyway, name them in categorical =:
+#     jcrosstab(WellbeingScore ~ Age, data = cm,
+#         categorical = c("WellbeingScore", "Age"))
+#   Cross-Tabulation
+#
+#   Analysis N: 103
+#
+#   Error : jcrosstab(): CommuteTime and Age have 42 and 41 different values,
+#   more than the 20 a cross-tabulation shows.
+#   To tabulate every value anyway, name them in categorical =:
+#     jcrosstab(CommuteTime ~ Age, data = cm,
+#         categorical = c("CommuteTime", "Age"))
+
+# Render 3 -- 21 values: the stop, then the call it offers, run.
+try(jcrosstab(SocialSupport ~ SoughtHelp, data = cl, row.pct = FALSE))
+jcrosstab(SocialSupport ~ SoughtHelp, data = cl, row.pct = FALSE,
+    categorical = "SocialSupport")
+# Expected:
+#   Cross-Tabulation
+#
+#   Analysis N: 70
+#
+#   Error : jcrosstab(): SocialSupport has 21 different values, more than the 20
+#   a cross-tabulation shows.
+#   To tabulate every value anyway, name it in categorical =:
+#     jcrosstab(SocialSupport ~ SoughtHelp, data = cl, row.pct = FALSE,
+#         categorical = "SocialSupport")
+#   Cross-Tabulation
+#
+#   Analysis N: 70
+#
+#   Crosstab: SocialSupport by SoughtHelp
+#   SocialSupport    0: No    1: Yes    Total
+#   -------------    -----    ------    -----
+#   2                   1        0         1
+#   3                   1        0         1
+#   5                   1        2         3
+#   6                   1        1         2
+#   7                   1        0         1
+#   8                   4        0         4
+#   9                   2        0         2
+#   10                  2        0         2
+#   11                  1        2         3
+#   12                  4        0         4
+#   13                  3        2         5
+#   14                  3        3         6
+#   15                  4        0         4
+#   16                  7        2         9
+#   17                  3        2         5
+#   18                  2        2         4
+#   19                  4        2         6
+#   20                  3        1         4
+#   21                  2        0         2
+#   23                  0        1         1
+#   24                  0        1         1
+#   Total              49       21        70
+
+# Things to look at:
+#   - RENDER 1: "Cramer's V: 0.204", one blank line under the chi-square
+#     table and one above the note: chi-square 12.080 over 97 x (4 - 1) is
+#     0.0415, whose square root is 0.204. The value on the result is the
+#     same number, unrounded.
+#   - RENDER 2: each stop under the title and the Analysis N line, where
+#     the one-category stops come (Section 32): the variable and its count,
+#     "more than the 20 a cross-tabulation shows", and the call with
+#     categorical = naming it. Two variables over: ONE stop naming both,
+#     "41 different values each" when the counts are the same, "42 and 41"
+#     when they differ, and categorical = c(...) naming both, the long call
+#     broken after a comma, the rest four spaces in (ruling R5).
+#   - RENDER 3: SocialSupport has 21 values in clinic, one over the line.
+#     The stop's call keeps row.pct = FALSE as typed and runs as printed:
+#     the table under it, one row per value.
+#   - 20 is the lean Jeff okayed at S375: a five-point Likert item or a 0-10
+#     rating (11 values) still tabulates; a scale score or an age stops.
 
 
 # --- Restore -----------------------------------------------------------------

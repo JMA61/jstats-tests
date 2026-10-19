@@ -51,8 +51,55 @@
 #           Since S374 (v0.9.247, Section 27): y ~ . refused with voice Rule
 #           AK's template (ruling R24) in jlm(), jaov(), jlogistic(), jt()
 #           and jcrosstab().
+#           Since S375 (v0.9.248, Sections 28-29): jlogistic()'s Gelman
+#           column (std = "gelman", "product", "none"; "regular" refused;
+#           jlm()'s notes) and the Exp(b) header; the GVIF row in the VIF
+#           table; model.layout; jplot()'s Q-Q plot from a jt() or jaov()
+#           result and the line it prints; jdummy()'s whole-number stop.
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
+# S375 EDIT (v0.9.248; Capability Slate C2): SECTIONS 28 AND 29 ADDED -- 27
+#           sections -> 29 -- filled by running (fill.R): jlogistic()'s
+#           standardized column (the default Gelman column, std = "product" and
+#           "none", the hand-product note, std = "regular" refused); the GVIF
+#           row in jlm()'s and jlogistic()'s VIF table, its two lines and the
+#           set's line of interpretation; model.layout = "fit" per call and in
+#           joutput(); jplot()'s Q-Q plot from a jt() or jaov() result and the
+#           line it now prints; jdummy()'s stop on values that are not whole
+#           numbers. RE-PINNED, each block filled by running and cut back to
+#           the part of the output it showed (fill.R captures a section's whole
+#           output): Section 6 (the interaction table's Gelman column and
+#           legend; its title, comment and bullets rewritten), Section 17
+#           (Render 2's table), Section 19 (Render 4: the Gelman column, the
+#           plot list under the VIF table, the stop's longer list; its comment
+#           and bullet rewritten) and Section 25 (Render 2's Exp(b) header; one
+#           bullet). All six on the PENDING line: the column's place, the plot
+#           list's place and the new sections are Claude's calls. A capture of
+#           every section of every walk on 0.9.247 and 0.9.248: here Sections
+#           6, 17, 19 and 25. harness.R derive: Sections 28 and 29 need no
+#           other section; verify: 72 of 73 Expected blocks found (Section 1's,
+#           as before), 29 of 29 sections in three orders and by prepare =
+#           TRUE. The human half of models_check.R section Y.
+# LAST VERIFIED: v0.9.248, 2026-10-19 (S375) -- Sections 6, 17, 19, 25, 28 and
+#           29 WALKED on the WORKSTATION by Jeff through receive_all()
+#           ("walked, all okay"); R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 3035 checks).
+# S375 SECOND DELIVERY (v0.9.248, the same day): Jeff's ruling on his walk --
+#           the plot list's "(use the arrow buttons in RStudio's Plots pane to
+#           navigate):" on a line of its own under "N diagnostic plots
+#           produced" (it had wrapped mid-phrase), in jlm(), jlogistic() and
+#           both jplot() lists. Seven blocks RE-PINNED, each the two lines
+#           alone, and each found as a run in a fill of its section on the new
+#           build: Section 19 on the PENDING line, showing the form in jlm()'s
+#           and jlogistic()'s lists; Sections 22, 25 and 29 RE-PINNED
+#           MECHANICALLY under that ruling and kept off it. Four bullets that
+#           quote the line rewritten (Sections 19, 22, 29). harness.R verify:
+#           72 of 73 Expected blocks found (Section 1's, as before), 29 of 29
+#           sections in three orders and by prepare = TRUE.
+# LAST VERIFIED: v0.9.248, 2026-10-19 (S375, second delivery) -- Section 19
+#           WALKED on the WORKSTATION by Jeff through receive_all() ("walked,
+#           all okay"); PENDING back to none; R CMD check 0 errors, 0 warnings,
+#           0 notes; ALL BATTERIES GREEN (10 run, 3035 checks).
 # S374 EDIT (v0.9.247; Fix Slate 21): SECTION 27 ADDED, four renders --
 #           26 sections -> 27 -- filled by running (fill.R, warnings shown at
 #           once so an earlier section's pending warning stays there): the
@@ -582,35 +629,54 @@ jlm(Flourishing ~ SocialSupport * Condition, data = d, std = "gelman")
 #     average support (14.637 for CBT), not the b's 27.788 at zero support.
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-# SECTION 6 -- jlogistic: the same grouping, no standardized column ----
+# SECTION 6 -- jlogistic: the same grouping, and its Gelman beta (S375) ----
 # NEEDS: 3
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # jlogistic shares the coefficient-table code, so its interaction rows group
-# and read the same way. It has no beta column, so there is no legend.
+# and read the same way. Since S375 (v0.9.248, Capability Slate C2) it has a
+# Gelman beta column, the default std = "gelman", from the same refit
+# jlm()'s Gelman column uses -- so an interaction brings the same legend,
+# pointing to ?jlogistic. Until S375 it had no standardized column and no
+# legend.
 
 jlogistic(SoughtHelp ~ SocialSupport * Condition, data = d)
 jdummy(d, Condition, remove = TRUE)
 
 # Expected:
 #   Coefficients
-#                                                    b      SE    Wald  df    p   Exp(B)
-#   --------------------------------------------  ------  -----  -----  --  ----  ------
-#   (Intercept)                                    0.917  1.608  0.325   1  .569   2.501
-#   SocialSupport                                 -0.131  0.110  1.416   1  .234   0.877
+#                                                    b      SE    Wald  df    p   Gelman β  Exp(b)
+#   --------------------------------------------  ------  -----  -----  --  ----  --------  ------
+#   (Intercept)                                    0.917  1.608  0.325   1  .569             2.501
+#   SocialSupport                                 -0.131  0.110  1.416   1  .234    1.040    0.877
 #   Condition (ref = 1: Control)
-#     2: CBT                                      -4.839  3.500  1.911   1  .167   0.008
-#     3: Mindfulness                              -7.105  3.801  3.493   1  .062   0.001
-#     4: Support group                            -2.406  2.034  1.399   1  .237   0.090
+#     2: CBT                                      -4.839  3.500  1.911   1  .167    0.002    0.008
+#     3: Mindfulness                              -7.105  3.801  3.493   1  .062   -0.786    0.001
+#     4: Support group                            -2.406  2.034  1.399   1  .237    0.330    0.090
 #   SocialSupport * Condition (ref = 1: Control)
-#     2: CBT                                       0.345  0.222  2.421   1  .120   1.412
-#     3: Mindfulness                               0.450  0.232  3.750   1  .053   1.568
-#     4: Support group                             0.195  0.142  1.876   1  .171   1.215
+#     2: CBT                                       0.345  0.222  2.421   1  .120    3.403    1.412
+#     3: Mindfulness                               0.450  0.232  3.750   1  .053    4.442    1.568
+#     4: Support group                             0.195  0.142  1.876   1  .171    1.923    1.215
+#
+#   In a model with an interaction, Gelman β comes from centered predictors: a
+#   Gelman β can have the opposite sign from its b, and other software may
+#   report different Gelman β values.
+#   See ?jlogistic.
 #
 #   Outcome: SoughtHelp
 #
 # Things to look at:
-#   - The blank line and the Outcome line follow the table directly: no
-#     legend here.
+#   - The Gelman beta column sits between p and Exp(b), as the beta column
+#     sits between t and p in jlm(): the statistics of the fit first, then
+#     the standardized one, then the odds ratio. The intercept row's cell is
+#     blank.
+#   - The headers read b and Exp(b), lower case, as jlm()'s b does (they
+#     read Exp(B) until S375).
+#   - Under the table, one blank line and the interaction legend, word for
+#     word jlm()'s with ?jlogistic in place of ?jlm; then the blank line and
+#     the Outcome line.
+#   - The Condition rows' Gelman betas are their log-odds differences at
+#     average support, as in jlm() (Section 5), so CBT's 0.002 is near zero
+#     while its b, at zero support, is -4.839.
 #   - "jdummy ... removed" prints after the model: the section's clean-up.
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -1173,11 +1239,11 @@ juse(NULL)
 #   --------------------------------------
 #
 #   Coefficients
-#                   b      SE    Wald  df    p   Exp(B)
-#   -----------  ------  -----  -----  --  ----  ------
-#   (Intercept)  -1.727  0.925  3.489   1  .062   0.178
-#   Stress        0.039  0.038  1.052   1  .305   1.039
-#   Condition     0.084  0.233  0.131   1  .718   1.088
+#                   b      SE    Wald  df    p   Gelman β  Exp(b)
+#   -----------  ------  -----  -----  --  ----  --------  ------
+#   (Intercept)  -1.727  0.925  3.489   1  .062             0.178
+#   Stress        0.039  0.038  1.052   1  .305    0.572    1.039
+#   Condition     0.084  0.233  0.131   1  .718    0.201    1.088
 #
 #   Outcome: SoughtHelp
 #
@@ -1554,8 +1620,8 @@ jlm(Flourishing ~ Stress + SocialSupport, data = d, diagnostics = TRUE)
 #   Stress         1.051
 #   SocialSupport  1.051
 #
-#   5 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane
-#   to navigate):
+#   5 diagnostic plots produced
+#   (use the arrow buttons in RStudio's Plots pane to navigate):
 #     1. Residuals vs Fitted
 #     2. Normal Q-Q
 #     3. Scale-Location
@@ -1656,8 +1722,8 @@ joutput(NULL, quiet = TRUE)
 #   SocialSupport            6.219
 #   Stress * SocialSupport  11.358
 
-# Render 4 -- jlogistic(), whose one diagnostic is the VIF table; and two
-# names that are refused.
+# Render 4 -- jlogistic(diagnostics = TRUE): the VIF table and, since S375,
+# three plots; and two names that are refused.
 jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d, diagnostics = TRUE)
 tryCatch(jlm(Flourishing ~ Stress + SocialSupport, data = d,
              diagnostics = c("vif", "qqplot")),
@@ -1680,11 +1746,11 @@ tryCatch(jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d,
 #   --------------------------------------
 #
 #   Coefficients
-#                     b      SE    Wald  df    p   Exp(B)
-#   -------------  ------  -----  -----  --  ----  ------
-#   (Intercept)    -2.256  1.206  3.500   1  .061   0.105
-#   Stress          0.045  0.039  1.332   1  .248   1.046
-#   SocialSupport   0.046  0.060  0.585   1  .444   1.047
+#                     b      SE    Wald  df    p   Gelman β  Exp(b)
+#   -------------  ------  -----  -----  --  ----  --------  ------
+#   (Intercept)    -2.256  1.206  3.500   1  .061             0.105
+#   Stress          0.045  0.039  1.332   1  .248    0.663    1.046
+#   SocialSupport   0.046  0.060  0.585   1  .444    0.444    1.047
 #
 #   Outcome: SoughtHelp
 #
@@ -1704,6 +1770,12 @@ tryCatch(jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d,
 #   Stress         1.051
 #   SocialSupport  1.051
 #
+#   3 diagnostic plots produced
+#   (use the arrow buttons in RStudio's Plots pane to navigate):
+#     1. Binned Residuals
+#     2. Cook's Distance
+#     3. Residuals vs Leverage
+#
 #   Dependent Variable Encoding
 #     Modeled (1):   Yes
 #     Reference (0): No
@@ -1713,26 +1785,31 @@ tryCatch(jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d,
 #   "qq", "scale", "cooks", and "leverage".
 #
 #   Error: jlogistic(): "qq" is not a diagnostic of jlogistic().
-#   `diagnostics` must be TRUE, FALSE, or "vif".
+#   `diagnostics` must be TRUE, FALSE, or one or more of "vif", "binned",
+#   "cooks", and "leverage".
 #
 # Things to look at:
 #   - RENDER 1: the coefficient table has its two interval columns, and
 #     the output ends at the Sum of Squares block. No VIF table, no line
 #     about plots, and nothing drawn in the Plots pane.
-#   - RENDER 2: no interval columns (the call did not ask for them); the
-#     VIF table, then "5 diagnostic plots produced (use the arrow buttons
-#     ...)" and the five names (S347: jplot()'s line for jlogistic(), word
-#     for word). Five plots are in the Plots pane.
+#   - RENDER 2: no interval columns (the call did not ask for them); the VIF
+#     table, then "5 diagnostic plots produced", "(use the arrow buttons
+#     ...)" on the line under it, and the five names (S347: jplot()'s line
+#     for jlogistic(), word for word; the parenthesis on a line of its own
+#     since S375, Jeff's ruling). Five plots are in the Plots pane.
 #   - RENDER 3, first output: the VIF table, the two lines under the VIF
 #     of 11.358, and "(Diagnostic plot produced: Normal Q-Q)": one plot.
 #   - Second output, at the minimal level: the VIF table and no lines
 #     under it. A diagnostic's brief interpretation prints at the
 #     standard and full levels only, as the Levene note does.
-#   - RENDER 4: jlogistic()'s VIF table sits where it always has, above
-#     the Dependent Variable Encoding block, and no plot is drawn. Then
-#     the two stops: a name that is no diagnostic of jlm() (it was
-#     ignored: the table printed, no plot, and nothing was said), and a
-#     jlm() name given to jlogistic().
+#   - RENDER 4: jlogistic()'s VIF table sits where it always has, above the
+#     Dependent Variable Encoding block; under it, since S375, the plot list
+#     in jlm()'s form -- "3 diagnostic plots produced", "(use the arrow
+#     buttons ...)" under it, and Binned Residuals, Cook's Distance and
+#     Residuals vs Leverage -- with three plots in the Plots pane. Then the
+#     two stops: a name that is no diagnostic of jlm() (it was ignored: the
+#     table printed, no plot, and nothing was said), and a jlm() name given
+#     to jlogistic(), whose stop now lists its four.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -2116,8 +2193,8 @@ jlm(y ~ x, data = m22, diagnostics = TRUE, numeric = "x")
 #     Residual:   0.979
 #     Total:      2.249
 #
-#   5 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane
-#   to navigate):
+#   5 diagnostic plots produced
+#   (use the arrow buttons in RStudio's Plots pane to navigate):
 #     1. Residuals vs Fitted
 #     2. Normal Q-Q
 #     3. Scale-Location
@@ -2166,12 +2243,13 @@ jplot(r22, which = "effects")
 rm(m22, q22, r22)
 
 # Things to look at:
-#   - RENDER 1: "5 diagnostic plots produced (use the arrow buttons in
-#     RStudio's Plots pane to navigate):" over the five names, "1." to
-#     "5." -- jplot()'s form for jlogistic(). Then a blank line and the
-#     note: the three plots with a trend line named, and the count of
-#     the smoother's problems. No "Warning:" line anywhere. In the pane,
-#     the trend lines of those three plots are the ones to distrust.
+#   - RENDER 1: "5 diagnostic plots produced" and, on the line under it,
+#     "(use the arrow buttons in RStudio's Plots pane to navigate):" (a line
+#     of its own since S375; it had wrapped mid-phrase), over the five
+#     names, "1." to "5." -- jplot()'s form for jlogistic(). Then a blank
+#     line and the note: the three plots with a trend line named, and the
+#     count of the smoother's problems. No "Warning:" line anywhere. In the
+#     pane, the trend lines of those three plots are the ones to distrust.
 #   - RENDER 2: the fit plot (the first of the two drawn) is a curve
 #     through the points; its subtitle is the equation, "yc = ... +
 #     ...·I(xc^2)", with no backticks and no "(line shown at ...)" line.
@@ -2419,7 +2497,7 @@ jlogistic(Y ~ 1, data = y25)
 #   Analysis N: 60
 #
 #   Coefficients
-#                   b      SE    Wald  df    p   Exp(B)
+#                   b      SE    Wald  df    p   Exp(b)
 #   -----------  ------  -----  -----  --  ----  ------
 #   (Intercept)  -0.547  0.268  4.162   1  .041   0.579
 #
@@ -2461,8 +2539,8 @@ jlm(X ~ 1, data = y25, diagnostics = TRUE)
 #     Residual:   7331.408
 #     Total:      7331.409
 #
-#   2 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane
-#   to navigate):
+#   2 diagnostic plots produced
+#   (use the arrow buttons in RStudio's Plots pane to navigate):
 #     1. Normal Q-Q
 #     2. Cook's Distance
 #
@@ -2569,8 +2647,8 @@ jlm(y ~ x + g, data = z25, diagnostics = c("residuals", "scale", "leverage"))
 #     Residual:   33.486
 #     Total:      34.141
 #
-#   3 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane
-#   to navigate):
+#   3 diagnostic plots produced
+#   (use the arrow buttons in RStudio's Plots pane to navigate):
 #     1. Residuals vs Fitted
 #     2. Scale-Location
 #     3. Residuals vs Leverage
@@ -2583,8 +2661,8 @@ c25$yb <- c(0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0)
 r25g <- jlogistic(yb ~ x + z, data = c25)
 p25g <- jplot(r25g, which = c("calibration", "cooks"))
 # Expected:
-#   2 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane
-#   to navigate):
+#   2 diagnostic plots produced
+#   (use the arrow buttons in RStudio's Plots pane to navigate):
 #     1. Calibration Plot
 #     2. Cook's Distance
 grDevices::dev.off()
@@ -2596,7 +2674,8 @@ rm(.warn25, y25, c25, q25, z25, r25a, r25b, r25c, r25d, r25e, r25f,
 #   - RENDER 1: one row, (Intercept), with b, SE, t and p and no beta
 #     column; "F-statistic: none (the model has no predictors to test)";
 #     R-squared and Adjusted R-squared 0.000; Regression SS 0.000;
-#   - RENDER 2: one row, B -0.547 and Exp(B) 0.579 (22/38); under "Omnibus
+#   - RENDER 2: one row, b -0.547 and Exp(b) 0.579 (22/38), and no Gelman
+#     beta column; under "Omnibus
 #     Test of Model Coefficients" the line "None: the model has no
 #     predictors to test." where the table was; both pseudo R-squared 0.000;
 #   - RENDER 3: "2 diagnostic plots produced", Normal Q-Q and Cook's
@@ -2852,6 +2931,631 @@ options(.jst_default_data = .def27); rm(.def27)
 #   - RENDER 3: the formula as typed, Age kept; a dot on the left says
 #     "each variable", since what it stands for there is the outcome;
 #   - RENDER 4: the template, not the no-data-frame stop.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 28 -- jlogistic's standardized column (S375) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Capability Slate C2 (v0.9.248). jlogistic() had no standardized column;
+# Jeff prefers to show one. It is built as jlm()'s Gelman column is:
+# Gelman's (2008) refit -- each continuous predictor centered and divided
+# by two SDs, each 0/1 column centered, a power or product recomputed from
+# the rescaled inputs, the outcome untouched -- on the log-odds scale. The
+# column is headed "Gelman β", as jlm()'s, and sits between p and Exp(b);
+# the odds-ratio header reads Exp(b), lower case as jlm()'s b is (the two
+# leans the item recorded, okayed at S375). std = "product" gives the
+# product-first column and std = "none" leaves it out; std = "regular",
+# jlm()'s third choice, has no logistic form and is refused. The notes
+# under the table are jlm()'s, pointing to ?jlogistic. Section 6 shows the
+# column under an interaction. The assertion side is models_check.R
+# Y12-Y15.
+
+# Render 1 -- the default column, a 0/1 predictor among the continuous
+# ones; then a four-category predictor dummy-coded in the call.
+jlogistic(SoughtHelp ~ Stress + SocialSupport + PriorTherapy, data = d)
+jlogistic(SoughtHelp ~ Stress + Condition, data = d, categorical = "Condition")
+# Expected:
+#   Logistic Regression
+#   Note: PriorTherapy is a 1/2 dichotomy. The model runs correctly, but
+#   registering PriorTherapy as a dummy can help interpret the intercept:
+#     jdummy(d, PriorTherapy)
+#   Or make it a 0/1 variable in the data frame.
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   Coefficients
+#                        b      SE    Wald  df    p   Gelman β  Exp(b)
+#   ----------------  ------  -----  -----  --  ----  --------  ------
+#   (Intercept)       -4.534  1.755  6.673   1  .010             0.011
+#   Stress             0.068  0.042  2.659   1  .103    1.014    1.071
+#   SocialSupport      0.057  0.062  0.839   1  .360    0.557    1.059
+#   PriorTherapy (2)   1.189  0.605  3.864   1  .049    1.189    3.284
+#
+#   Outcome: SoughtHelp
+#
+#   Omnibus Test of Model Coefficients
+#   Chi-Square  df    p
+#   ----------  --  ----
+#      5.717     3  .126
+#
+#   Model Summary
+#   -2 Log Likelihood  Cox & Snell R²  Nagelkerke R²    AIC
+#   -----------------  --------------  -------------  ------
+#         73.515            0.083          0.119      81.515
+#
+#   Dependent Variable Encoding
+#     Modeled (1):   Yes
+#     Reference (0): No
+#
+#   Logistic Regression
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   Coefficients
+#                                    b      SE    Wald  df    p   Gelman β  Exp(b)
+#   ----------------------------  ------  -----  -----  --  ----  --------  ------
+#   (Intercept)                   -1.642  0.834  3.871   1  .049             0.194
+#   Stress                         0.042  0.038  1.223   1  .269    0.623    1.043
+#   Condition (ref = 1: Control)
+#     2: CBT                       0.206  0.810  0.065   1  .799    0.206    1.229
+#     3: Mindfulness              -0.446  0.841  0.281   1  .596   -0.446    0.640
+#     4: Support group             0.400  0.716  0.312   1  .576    0.400    1.492
+#
+#   Outcome: SoughtHelp
+#
+#   Omnibus Test of Model Coefficients
+#   Chi-Square  df    p
+#   ----------  --  ----
+#      2.257     4  .689
+#
+#   Model Summary
+#   -2 Log Likelihood  Cox & Snell R²  Nagelkerke R²    AIC
+#   -----------------  --------------  -------------  ------
+#         76.975            0.034          0.048      86.975
+#
+#   Dependent Variable Encoding
+#     Modeled (1):   Yes
+#     Reference (0): No
+
+# Render 2 -- std = "product" under an interaction; std = "none".
+jlogistic(SoughtHelp ~ Stress * SocialSupport, data = d, std = "product")
+jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d, std = "none")
+# Expected:
+#   Logistic Regression
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   Coefficients
+#                              b      SE    Wald  df    p   Product β  Exp(b)
+#   ----------------------  ------  -----  -----  --  ----  ---------  ------
+#   (Intercept)             -3.681  2.296  2.571   1  .109              0.025
+#   Stress                   0.124  0.115  1.172   1  .279     1.841    1.132
+#   SocialSupport            0.147  0.147  0.990   1  .320     1.426    1.158
+#   Stress * SocialSupport  -0.006  0.008  0.562   1  .453    -1.394    0.994
+#
+#   Product β treats each interaction as an ordinary predictor, as some other
+#   software does.
+#   See ?jlogistic.
+#
+#   Outcome: SoughtHelp
+#
+#   Omnibus Test of Model Coefficients
+#   Chi-Square  df    p
+#   ----------  --  ----
+#      2.217     3  .529
+#
+#   Model Summary
+#   -2 Log Likelihood  Cox & Snell R²  Nagelkerke R²    AIC
+#   -----------------  --------------  -------------  ------
+#         77.015            0.033          0.047      85.015
+#
+#   Dependent Variable Encoding
+#     Modeled (1):   Yes
+#     Reference (0): No
+#
+#   Logistic Regression
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   Coefficients
+#                     b      SE    Wald  df    p   Exp(b)
+#   -------------  ------  -----  -----  --  ----  ------
+#   (Intercept)    -2.256  1.206  3.500   1  .061   0.105
+#   Stress          0.045  0.039  1.332   1  .248   1.046
+#   SocialSupport   0.046  0.060  0.585   1  .444   1.047
+#
+#   Outcome: SoughtHelp
+#
+#   Omnibus Test of Model Coefficients
+#   Chi-Square  df    p
+#   ----------  --  ----
+#      1.641     2  .440
+#
+#   Model Summary
+#   -2 Log Likelihood  Cox & Snell R²  Nagelkerke R²    AIC
+#   -----------------  --------------  -------------  ------
+#         77.591            0.025          0.035      83.591
+#
+#   Dependent Variable Encoding
+#     Modeled (1):   Yes
+#     Reference (0): No
+
+# Render 3 -- a product computed by hand; then std = "regular", refused.
+d$StressSupport <- d$Stress * d$SocialSupport
+jlogistic(SoughtHelp ~ Stress + SocialSupport + StressSupport, data = d)
+d$StressSupport <- NULL
+try(jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d, std = "regular"))
+# Expected:
+#   Logistic Regression
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   Coefficients
+#                     b      SE    Wald  df    p   Gelman β  Exp(b)
+#   -------------  ------  -----  -----  --  ----  --------  ------
+#   (Intercept)    -3.681  2.296  2.571   1  .109             0.025
+#   Stress          0.124  0.115  1.172   1  .279    1.841    1.132
+#   SocialSupport   0.147  0.147  0.990   1  .320    1.426    1.158
+#   StressSupport  -0.006  0.008  0.562   1  .453   -1.394    0.994
+#
+#   StressSupport is Stress * SocialSupport entered as its own variable, so
+#   Gelman β treats it as an ordinary predictor, not as an interaction.
+#   See ?jlogistic.
+#
+#   Outcome: SoughtHelp
+#
+#   Omnibus Test of Model Coefficients
+#   Chi-Square  df    p
+#   ----------  --  ----
+#      2.217     3  .529
+#
+#   Model Summary
+#   -2 Log Likelihood  Cox & Snell R²  Nagelkerke R²    AIC
+#   -----------------  --------------  -------------  ------
+#         77.015            0.033          0.047      85.015
+#
+#   Dependent Variable Encoding
+#     Modeled (1):   Yes
+#     Reference (0): No
+#
+#   Error : jlogistic(): std = "regular" is not available in a logistic
+#   regression: its outcome has no standard deviation to standardize by.
+#   Use std = "gelman" (the default), "product" or "none".
+
+# Things to look at:
+#   - RENDER 1: "Gelman β" between p and Exp(b), its intercept cell blank.
+#     PriorTherapy is a 1/2 dichotomy (its row "PriorTherapy (2)"), and a
+#     two-valued predictor is centered, not scaled, so its Gelman beta is
+#     its b, 1.189; Stress's and SocialSupport's are their b times two SDs.
+#     Is the column's place, after p and before the odds ratio, right for a
+#     reader of SPSS's table, which has no such column?
+#   - The second output: Condition's three rows grouped under its header
+#     with the reference, each with a Gelman beta, as in jlm() (Section 5).
+#   - No note under either table: neither model has a power or a product.
+#   - RENDER 2: "Product β" in the same place, then the interaction note in
+#     its product-first words; the second output has no standardized column
+#     at all, b, SE, Wald, df, p and Exp(b) only.
+#   - RENDER 3: the note naming StressSupport as the product of two other
+#     predictors, as jlm()'s does, ending "See ?jlogistic."; then the stop
+#     for std = "regular", saying why and naming the two that are taken.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 29 -- the GVIF row, model.layout, jplot()'s Q-Q plot, jdummy() (S375) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Capability Slate C2 (v0.9.248), four items.
+#   - The VIF table gave each dummy column a VIF of its own, which changes
+#     with the reference category; car::vif() gives the set one generalized
+#     VIF (Fox and Monette, 1992). A multi-category predictor -- and an
+#     interaction's columns built on one -- now gets ONE row: its GVIF, Df
+#     and GVIF^(1/(2*Df)), as car prints them, beside the other predictors'
+#     VIF on 1 Df. Two lines under the table say what the rows are, and a
+#     set whose GVIF^(1/(2*Df)) squared passes 10 gets the line of
+#     interpretation. A table with no such set is as it was. jlm()'s
+#     numbers are car's; jlogistic()'s come from the predictors'
+#     correlations, as its VIF does.
+#   - model.layout = "fit", in the call or in joutput(), prints the fit
+#     block -- jlm()'s R-squared lines and F test, jlogistic()'s Omnibus
+#     Test and Model Summary -- above the Coefficients table.
+#     "coefficients", the default, keeps the order.
+#   - jplot(which = "qq") on a jt() or jaov() result draws the normal Q-Q
+#     plot of the residuals (ruling R14, part 2), which the result now
+#     holds; the default stays the box plot. LOOK AT THE PLOTS PANE after
+#     Render 4.
+#   - jdummy() refuses a variable whose values are not whole numbers.
+# The assertion side is models_check.R Y03-Y11 and Y18.
+
+# Render 1 -- a four-category predictor in jlm()'s VIF table; the same
+# predictor in an interaction in jlogistic().
+jlm(Flourishing ~ Stress + SocialSupport + Condition, data = d,
+    categorical = "Condition", diagnostics = "vif")
+jlogistic(SoughtHelp ~ Stress * Condition, data = d,
+          categorical = "Condition", diagnostics = "vif")
+# Expected:
+#   Linear Regression
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   Coefficients
+#                                    b      SE      t       β      p
+#   ----------------------------  ------  -----  ------  ------  -----
+#   (Intercept)                   34.038  6.849   4.970          <.001
+#   Stress                        -0.437  0.202  -2.161  -0.227   .035
+#   SocialSupport                  1.002  0.315   3.181   0.342   .002
+#   Condition (ref = 1: Control)
+#     2: CBT                      14.362  4.251   3.379           .001
+#     3: Mindfulness              14.049  4.077   3.446           .001
+#     4: Support group             6.502  3.888   1.672           .100
+#
+#   Outcome: Flourishing
+#
+#   R-squared: 0.384    Adjusted R-squared: 0.332
+#   Residual Standard Error: 11.658
+#
+#   F-statistic: 7.470 on 5 and 60 DF, p-value: <.001
+#   Sum of Squares:
+#     Regression: 5076.026
+#     Residual:   8154.459
+#     Total:      13230.485
+#
+#   VIF (Variance Inflation Factors)
+#   Variable        GVIF  Df  GVIF^(1/(2*Df))
+#   -------------  -----  --  ---------------
+#   Stress         1.074   1       1.036
+#   SocialSupport  1.124   1       1.060
+#   Condition      1.079   3       1.013
+#
+#   A row with Df above 1 is a set of dummy variables, with one generalized VIF
+#   (GVIF) for the set.
+#   GVIF^(1/(2*Df)) squared is on the scale of an ordinary VIF.
+#
+#   Logistic Regression
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   Coefficients
+#                                             b      SE    Wald  df    p   Gelman β  Exp(b)
+#   -------------------------------------  ------  -----  -----  --  ----  --------  ------
+#   (Intercept)                            -2.623  1.417  3.425   1  .064             0.073
+#   Stress                                  0.099  0.075  1.761   1  .185    0.589    1.104
+#   Condition (ref = 1: Control)
+#     2: CBT                                1.439  2.082  0.478   1  .489    0.320    4.217
+#     3: Mindfulness                        0.355  2.297  0.024   1  .877   -0.352    1.426
+#     4: Support group                      2.200  1.762  1.559   1  .212    0.489    9.028
+#   Stress * Condition (ref = 1: Control)
+#     2: CBT                               -0.074  0.120  0.377   1  .539   -1.091    0.929
+#     3: Mindfulness                       -0.047  0.122  0.145   1  .703   -0.689    0.955
+#     4: Support group                     -0.113  0.099  1.286   1  .257   -1.669    0.893
+#
+#   In a model with an interaction, Gelman β comes from centered predictors: a
+#   Gelman β can have the opposite sign from its b, and other software may
+#   report different Gelman β values.
+#   See ?jlogistic.
+#
+#   Outcome: SoughtHelp
+#
+#   Omnibus Test of Model Coefficients
+#   Chi-Square  df    p
+#   ----------  --  ----
+#      3.690     7  .815
+#
+#   Model Summary
+#   -2 Log Likelihood  Cox & Snell R²  Nagelkerke R²    AIC
+#   -----------------  --------------  -------------  ------
+#         75.541            0.054          0.078      91.541
+#
+#   VIF (Variance Inflation Factors)
+#   Variable              GVIF   Df  GVIF^(1/(2*Df))
+#   ------------------  -------  --  ---------------
+#   Stress                2.627   1       1.621
+#   Condition           180.524   3       2.377
+#   Stress * Condition  233.737   3       2.482
+#
+#   A row with Df above 1 is a set of dummy variables, with one generalized VIF
+#   (GVIF) for the set.
+#   GVIF^(1/(2*Df)) squared is on the scale of an ordinary VIF.
+#
+#   Dependent Variable Encoding
+#     Modeled (1):   Yes
+#     Reference (0): No
+
+# Render 2 -- a set of dummy variables that another predictor nearly
+# reproduces: the line of interpretation.
+set.seed(29)
+d29 <- d
+d29$Z <- (d29$Condition == 2) + 2 * (d29$Condition == 3) +
+  stats::rnorm(nrow(d29), 0, 0.02)
+jlm(Flourishing ~ Z + Condition, data = d29, categorical = "Condition",
+    diagnostics = "vif")
+rm(d29)
+# Expected:
+#   Linear Regression
+#
+#   Analysis N: 70
+#
+#   Coefficients
+#                                     b        SE       t       β       p
+#   ----------------------------  --------  -------  ------  -------  -----
+#   (Intercept)                     40.975    3.009  13.616           <.001
+#   Z                             -165.107   78.529  -2.102  -10.064   .039
+#   Condition (ref = 1: Control)
+#     2: CBT                       180.019   79.075   2.277            .026
+#     3: Mindfulness               344.917  157.810   2.186            .032
+#     4: Support group               6.428    4.100   1.568            .122
+#
+#   Outcome: Flourishing
+#
+#   R-squared: 0.227    Adjusted R-squared: 0.179
+#   Residual Standard Error: 12.560
+#
+#   F-statistic: 4.771 on 4 and 65 DF, p-value: .002
+#   Sum of Squares:
+#     Regression: 3010.774
+#     Residual:   10254.026
+#     Total:      13264.800
+#
+#   VIF (Variance Inflation Factors)
+#   Variable     GVIF    Df  GVIF^(1/(2*Df))
+#   ---------  --------  --  ---------------
+#   Z          1926.662   1       43.894
+#   Condition  1926.662   3        3.528
+#
+#   A row with Df above 1 is a set of dummy variables, with one generalized VIF
+#   (GVIF) for the set.
+#   GVIF^(1/(2*Df)) squared is on the scale of an ordinary VIF.
+#
+#   Z (VIF = 1926.7): standard error inflated by a factor of 43.9.
+#     If you need to interpret this coefficient specifically, consider whether
+#     the collinearity is a concern for your research question.
+#   Condition (GVIF = 1926.7 on 3 df): standard errors inflated by a factor of
+#   about 3.5.
+#     If you need to interpret these coefficients specifically, consider whether
+#     the collinearity is a concern for your research question.
+
+# Render 3 -- model.layout = "fit" in each call; then in joutput(), and
+# the level call that puts the default back.
+jlm(Flourishing ~ Stress + SocialSupport, data = d, model.layout = "fit")
+jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d, model.layout = "fit")
+joutput(model.layout = "fit")
+jlm(Flourishing ~ Stress, data = d)
+joutput("standard")
+joutput(NULL, quiet = TRUE)
+# Expected:
+#   Linear Regression
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   R-squared: 0.212    Adjusted R-squared: 0.187
+#   Residual Standard Error: 12.863
+#
+#   F-statistic: 8.480 on 2 and 63 DF, p-value: <.001
+#   Sum of Squares:
+#     Regression: 2806.260
+#     Residual:   10424.225
+#     Total:      13230.485
+#
+#   Coefficients
+#                     b      SE      t       β      p
+#   -------------  ------  -----  ------  ------  -----
+#   (Intercept)    41.495  6.575   6.311          <.001
+#   Stress         -0.436  0.221  -1.974  -0.226   .053
+#   SocialSupport   1.039  0.336   3.090   0.354   .003
+#
+#   Outcome: Flourishing
+#
+#   Logistic Regression
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   Omnibus Test of Model Coefficients
+#   Chi-Square  df    p
+#   ----------  --  ----
+#      1.641     2  .440
+#
+#   Model Summary
+#   -2 Log Likelihood  Cox & Snell R²  Nagelkerke R²    AIC
+#   -----------------  --------------  -------------  ------
+#         77.591            0.025          0.035      83.591
+#
+#   Coefficients
+#                     b      SE    Wald  df    p   Gelman β  Exp(b)
+#   -------------  ------  -----  -----  --  ----  --------  ------
+#   (Intercept)    -2.256  1.206  3.500   1  .061             0.105
+#   Stress          0.045  0.039  1.332   1  .248    0.663    1.046
+#   SocialSupport   0.046  0.060  0.585   1  .444    0.444    1.047
+#
+#   Outcome: SoughtHelp
+#
+#   Dependent Variable Encoding
+#     Modeled (1):   Yes
+#     Reference (0): No
+#
+#   Output Settings
+#     model.layout: FIT (override)
+#   Run joutput() to see all settings.
+#
+#   Linear Regression
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         4         66
+#       Analysis N           --         66
+#
+#   Missing data   From 70   %
+#       Stress
+#         Missing     4     5.7
+#   --------------------------------------
+#
+#   R-squared: 0.093    Adjusted R-squared: 0.079
+#   Residual Standard Error: 13.695
+#
+#   F-statistic: 6.540 on 1 and 64 DF, p-value: .013
+#   Sum of Squares:
+#     Regression: 1226.581
+#     Residual:   12003.903
+#     Total:      13230.485
+#
+#   Coefficients
+#                   b      SE      t       β      p
+#   -----------  ------  -----  ------  ------  -----
+#   (Intercept)  58.424  3.870  15.096          <.001
+#   Stress       -0.587  0.229  -2.557  -0.304   .013
+#
+#   Outcome: Flourishing
+#
+#   Output Settings
+#   Level: standard
+#     effect.size: ON
+#     regression.ci: OFF
+#     means.ci: ON
+#     posthoc: OFF
+#     diagnostics: OFF
+#     case.processing: AUTO
+#     case.processing.detail: TOTALS
+#     case.processing.filter: AUTO
+#     variable.id: NAMES
+#     value.id: BOTH
+#     ref.categories: ON
+#     model.layout: COEFFICIENTS
+#     missing.notice: ON
+#     digits: 3
+
+# Render 4 -- the Q-Q plot from a jaov() and a jt() result, and both of
+# jaov()'s plots; then jdummy() and categorical = on a variable that is
+# not categorical.
+invisible(utils::capture.output(r29a <- jaov(Stress ~ Condition, data = d)))
+invisible(utils::capture.output(r29b <- jt(Flourishing ~ SoughtHelp, data = d)))
+p29a <- jplot(r29a, which = "qq")
+p29b <- jplot(r29b, which = "qq")
+p29c <- jplot(r29a, which = "all")
+try(jdummy(d, SleepHours))
+try(jlm(Flourishing ~ SleepHours, data = d, categorical = "SleepHours"))
+rm(r29a, r29b, p29a, p29b, p29c)
+# Expected:
+#   (Diagnostic plot produced: Normal Q-Q)
+#
+#   (Diagnostic plot produced: Normal Q-Q)
+#
+#   2 plots produced
+#   (use the arrow buttons in RStudio's Plots pane to navigate):
+#     1. Box Plot
+#     2. Normal Q-Q
+#
+#   Error : jdummy(): SleepHours has values that are not whole numbers (4.8,
+#   5.1, 5.2, ...), so it cannot be dummy-coded.
+#   Dummy coding makes one indicator for each category. If these values are
+#   categories, recode them to whole-number codes first with jrecode().
+#   Linear Regression
+#   Error : jlm(): SleepHours has values that are not whole numbers (4.8, 5.1,
+#   5.2, ...), so it cannot be dummy-coded.
+#   Dummy coding makes one indicator for each category. If these values are
+#   categories, recode them to whole-number codes first with jrecode().
+
+# Things to look at:
+#   - RENDER 1, jlm(): the VIF table has three columns now -- GVIF, Df and
+#     GVIF^(1/(2*Df)) -- and Condition is ONE row on 3 Df. Stress's and
+#     SocialSupport's GVIF on 1 Df is their ordinary VIF, the last column
+#     its square root. Two lines under the table say what a row with Df
+#     above 1 is.
+#   - jlogistic(): the interaction's three columns are one row, "Stress *
+#     Condition" on 3 Df, under Condition's. GVIFs of 180.5 and 233.7 are
+#     the size an interaction's columns usually have beside their own
+#     variable's: on the VIF scale (the last column squared) 5.6 and 6.2, so
+#     no line of interpretation. The table sits where jlogistic()'s VIF table
+#     always has, above the Dependent Variable Encoding block.
+#   - RENDER 2: Z nearly reproduces Condition's dummy variables. Two lines
+#     of interpretation under the table, Z's in the ordinary form ("VIF =
+#     ...") and Condition's in the set's ("GVIF = ... on 3 df"). In a model
+#     of two terms their GVIFs are one number.
+#   - RENDER 3: in each model the fit block comes first, then one blank
+#     line and the Coefficients table with the Outcome line under it, as
+#     always; jlogistic()'s Dependent Variable Encoding stays last. The
+#     joutput() echo reads "model.layout: FIT (override)", the jlm() under
+#     it takes the order from the setting, and the level call's panel reads
+#     "model.layout: COEFFICIENTS" again: a level call puts it back.
+#   - RENDER 4: one Q-Q plot from each of the first two calls, then the box
+#     plot and the Q-Q plot from the third. jplot() says what it drew, in
+#     its words for a model: "(Diagnostic plot produced: Normal Q-Q)" for
+#     each of the first two, then "2 plots produced", "(use the arrow
+#     buttons ...)" under it and the two names, the box plot being behind
+#     the Q-Q plot in the pane; one blank line after each. The box plot
+#     alone, jplot()'s default here, still prints nothing (format_walk.R
+#     Section 32).
+#   - The jdummy() stop names SleepHours, its first values that are not
+#     whole, and what to do; jlm(categorical = ) gives the same stop under
+#     its title. Nothing is registered.
 
 
 # --- Restore session state ---------------------------------------------------

@@ -109,6 +109,20 @@
 #           from its values (jlogistic's fit tables, jalpha, jdesc's Mean
 #           and SD, the VIF tables, jscreen's stats columns) and to jt's
 #           Cohen's d line, which had the eta-squared defect.
+# S375 EDIT (v0.9.248, 2026-10-19): Capability Slate C2 and Scripts Slate C.
+#           RE-PINNED: O03 and O04 (jlogistic's coefficient table gains the
+#           Gelman column between p and Exp(b), and the header reads
+#           Exp(b)); R18 (the adjusted-residuals note's blank line now sits
+#           under the Phi line, which follows the chi-square table); X15
+#           (jt()'s and jaov()'s diagnostics stop lists "levene" and "qq").
+#           X12's block, which assigned a, b and c at the top level, now in
+#           local() (Scripts Slate C). 324 checks, unchanged in number. The
+#           new behavior's own checks are models_check.R section Y. Sandbox:
+#           the five ways and entered dirty, green.
+#           LAST VERIFIED: v0.9.248, 2026-10-19 (S375) -- 324/324 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3035 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S374 EDIT (v0.9.247, 2026-10-19): Fix Slate 21 (the S371 item, the
 #           S343 rule). AA10b NEW: jscreen() given an expression as the data
 #           opens each block of date lines -- the footnote's and the
@@ -2524,8 +2538,8 @@ check("O02 ... 28.355 over -0.878 over 0.367 under the middle of \"95% CI Lower\
       any(.o_lm == "(Intercept)    41.495  6.575   6.311          <.001     28.355        54.634") &&
         any(.o_lm == "Stress         -0.436  0.221  -1.974  -0.226   .053     -0.878         0.005") &&
         any(.o_lm == "SocialSupport   1.039  0.336   3.090   0.354   .003      0.367         1.711"))
-check("O03 jlogistic's coefficient table: the same form, with and without its CI columns",
-      coef_ok(.o_lg, 9L) && coef_ok(.o_lg0, 7L))
+check("O03 jlogistic's coefficient table: the same form, with and without its CI columns (its Gelman column since S375)",
+      coef_ok(.o_lg, 10L) && coef_ok(.o_lg0, 8L))
 .o_big <- raw_out(jlm(y ~ x1 + x2, data = f_big, ci = TRUE))
 .o_non <- raw_out(jlm(y ~ x1 + x2, data = f_big, std = "none"))
 .o_or  <- raw_out(jlogistic(yb ~ x1 + x2, data = f_or, ci = TRUE))
@@ -2543,13 +2557,13 @@ check("O03d a header WIDER than its values: under std = \"gelman\" the standardi
         any(.o_gel == "Stress         -0.436  0.221  -1.974   -6.459    .053") &&
         any(.o_gel == "SocialSupport   1.039  0.336   3.090   10.108    .003"))
 check("O03c ... and in jlogistic: an upper bound of 5.330 under 117.535 (f_or)",
-      coef_ok(.o_or, 9L) &&
-        any(.o_or == "x1            2.531  0.795  10.144   1   .001  12.567      3.823        117.535") &&
-        any(.o_or == "x2           -0.232  0.358   0.421   1   .516   0.793      0.328          1.555"))
+      coef_ok(.o_or, 10L) &&
+        any(.o_or == "x1            2.531  0.795  10.144   1   .001   11.439   12.567      3.823        117.535") &&
+        any(.o_or == "x2           -0.232  0.358   0.421   1   .516   -1.050    0.793      0.328          1.555"))
 check("O04 ... its df column and the Omnibus table's follow one rule: 1 and 2 both under the f of \"df\"",
       identical(run_at(.o_lg0, "Coefficients", 4L)[c(2L, 4L)],
-                c("                  b      SE    Wald  df    p   Exp(B)",
-                  "(Intercept)    -2.256  1.206  3.500   1  .061   0.105")) &&
+                c("                  b      SE    Wald  df    p   Gelman \u03b2  Exp(b)",
+                  "(Intercept)    -2.256  1.206  3.500   1  .061             0.105")) &&
         identical(run_at(.o_lg0, "Omnibus Test of Model Coefficients", 4L)[-1L],
                   c("Chi-Square  df    p", "----------  --  ----",
                     "   1.641     2  .440")))
@@ -3068,9 +3082,9 @@ check("R17 the pointer line prints only when the expected frequencies are NOT sh
                            residuals = "adjusted"))
 .r_f3 <- .r_full(jcrosstab(Volunteer ~ OwnsHome, cm_f,
                            residuals = "adjusted"))
-check("R18 the adjusted-residuals note has ONE blank line above it: under the chi-square table (it sat directly beneath), under the expected-frequency note, and under the crosstab when no test is asked for",
+check("R18 the adjusted-residuals note has ONE blank line above it: under the chi-square test (it sat directly beneath; since S375 under its Phi line), under the expected-frequency note, and under the crosstab when no test is asked for",
       identical(above(.r_f1, .r_adj),
-                c("Continuity Correction     5.020     1  .025  103", "")) &&
+                c("Phi (Cramer's V): 0.240", "")) &&
         identical(above(.r_f2, .r_adj), c(.r_ptr, "")) &&
         identical(above(.r_f3, .r_adj),
                   c("Total           48          55          103", "")))
@@ -4039,7 +4053,7 @@ check("X11 diagnostics = TRUE and diagnostics = \"levene\" print it at any level
         !.x_has(jaov(y ~ g, data = f_x3, diagnostics = FALSE)) &&
         !.x_has(jaov(y ~ g, data = f_x3)) && !.x_has(jt(y ~ g, data = f_y3)))
 check("X12 joutput(diagnostics = ) sets it for every call: TRUE, or a set naming \"levene\"; a set naming only the models' diagnostics leaves these two alone; the call's own FALSE wins",
-      { quiet(joutput(diagnostics = TRUE))
+      local({ quiet(joutput(diagnostics = TRUE))
         a <- .x_has(jaov(y ~ g, data = f_x3)) && .x_has(jt(y ~ g, data = f_y3)) &&
              !.x_has(jaov(y ~ g, data = f_x3, diagnostics = FALSE))
         quiet(joutput(diagnostics = c("vif", "levene")))
@@ -4047,7 +4061,7 @@ check("X12 joutput(diagnostics = ) sets it for every call: TRUE, or a set naming
         quiet(joutput(diagnostics = c("vif", "qq")))
         c <- !.x_has(jaov(y ~ g, data = f_x3)) && .x_has(jaov(y ~ g, data = f_x3, diagnostics = TRUE))
         quiet(joutput(NULL))
-        a && b && c && !.x_has(jaov(y ~ g, data = f_x3)) })
+        a && b && c && !.x_has(jaov(y ~ g, data = f_x3)) }))
 check("X13 a level call leaves the setting as it was, in both directions",
       { quiet(joutput(diagnostics = TRUE)); quiet(joutput("minimal")); quiet(joutput("full"))
         a <- .x_has(jt(y ~ g, data = f_y3))
@@ -4065,12 +4079,12 @@ check("X14 levene = is refused with the name that replaced it, before any output
 check("X15 a name that is not one of the function's diagnostics stops, pinned whole: another function's, a misspelling, a number",
       identical(.u_stop(jaov(y ~ g, data = f_x3, diagnostics = "vif")),
                 paste0("jaov(): \"vif\" is not a diagnostic of jaov().\n",
-                       "`diagnostics` must be TRUE, FALSE, or \"levene\".")) &&
+                       "`diagnostics` must be TRUE, FALSE, or one or more of \"levene\" and \"qq\".")) &&
         identical(.u_stop(jt(y ~ g, data = f_y3, diagnostics = "leven")),
                   paste0("jt(): \"leven\" is not a diagnostic of jt().\n",
-                         "`diagnostics` must be TRUE, FALSE, or \"levene\".")) &&
+                         "`diagnostics` must be TRUE, FALSE, or one or more of \"levene\" and \"qq\".")) &&
         identical(.u_stop(jt(y ~ g, data = f_y3, diagnostics = 1)),
-                  "jt(): `diagnostics` must be TRUE, FALSE, or \"levene\"."))
+                  "jt(): `diagnostics` must be TRUE, FALSE, or one or more of\n\"levene\" and \"qq\"."))
 check("X16 control: a paired test has no Levene's test and says so when diagnostics are asked for, as it did",
       { d <- data.frame(g = factor(rep(c("pre", "post"), each = 5), levels = c("pre", "post")),
                         y = c(4.5, 5.5, 6.5, 5.5, 4.5,  5.5, 9.5, 8.5, 6.5, 6.5))

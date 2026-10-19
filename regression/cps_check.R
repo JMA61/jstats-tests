@@ -32,6 +32,16 @@
 #           blank footnote's two routes, a factor's one, and blanks declared
 #           missing as one row of the Missing block (N58d2, N58d3).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S375 EDIT (v0.9.248, 2026-10-19): Capability Slate C2. RE-PINNED: N56j,
+#           N56k and N56l (the full panel has fourteen settings,
+#           model.layout under ref.categories: 17 lines); .all59 and N59i
+#           (joutput()'s diagnostics stop lists the sets' union, "qq" and
+#           "binned" included). 258 checks, unchanged in number. Sandbox:
+#           the five ways and entered dirty, green.
+#           LAST VERIFIED: v0.9.248, 2026-10-19 (S375) -- 258/258 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3035 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S374 EDIT (v0.9.247, 2026-10-19): Fix Slate 21 (the S373 item, Jeff's
 #           lean "all yours"). N58d5 and N58d6 NEW: under a variable that
 #           already declares values, jfreq()'s blank footnote names them
@@ -2188,17 +2198,17 @@ reset()
 .v56j <- plines(joutput("full"))
 # Thirteen settings since S346: levene left the panel when Levene's test
 # became one of the diagnostics.
-check("N56j a LEVEL call keeps the full panel: the Level line, thirteen settings, no pointer",
-      identical(length(.v56j), 16L) && identical(.v56j[1:2], c("Output Settings", "Level: full")) &&
-      !any(.v56j == .ptr56) && identical(.v56j[16], ""))
+check("N56j a LEVEL call keeps the full panel: the Level line, fourteen settings (model.layout since S375), no pointer",
+      identical(length(.v56j), 17L) && identical(.v56j[1:2], c("Output Settings", "Level: full")) &&
+      !any(.v56j == .ptr56) && identical(.v56j[17], ""))
 .v56k <- plines(joutput("standard", regression.ci = TRUE))
 check("N56k ... with a setting in the same call too",
-      identical(length(.v56k), 16L) && identical(.v56k[2], "Level: standard") &&
+      identical(length(.v56k), 17L) && identical(.v56k[2], "Level: standard") &&
       any(.v56k == "  regression.ci: ON (override)") && !any(.v56k == .ptr56))
 reset()
 .v56l <- plines(joutput(quiet = TRUE))
 check("N56l a bare joutput() is the full panel, with no pointer, whatever quiet says",
-      identical(length(.v56l), 16L) && identical(.v56l[2], "Level: standard") &&
+      identical(length(.v56l), 17L) && identical(.v56l[2], "Level: standard") &&
       !any(.v56l == .ptr56))
 quiet(joutput(regression.ci = TRUE, quiet = TRUE))
 .o56 <- list(getOption(".jst_output_level"), getOption(".jst_output_toggles"))
@@ -2630,8 +2640,10 @@ check("N59h the panel has no levene line, and \"levene\" is no longer a setting 
       !any(grepl("levene", plines(joutput()), fixed = TRUE)) &&
         identical(.e59(joutput("levene")),
                   "joutput(): `level` must be \"minimal\", \"standard\", or \"full\"."))
-.all59 <- paste0("`diagnostics` must be TRUE, FALSE, or one or more of \"levene\", \"vif\",\n",
-                 "\"residuals\", \"qq\", \"scale\", \"cooks\", and \"leverage\".")
+# Since S375 the sets hold "qq" for jt() and jaov() and "binned" for
+# jlogistic(); the global list is their union, in the sets' order.
+.all59 <- paste0("`diagnostics` must be TRUE, FALSE, or one or more of \"levene\", \"qq\", \"vif\",\n",
+                 "\"residuals\", \"scale\", \"cooks\", \"leverage\", and \"binned\".")
 check("N59i a name that is no diagnostic stops, pinned whole, and stores nothing; so does a value that is neither TRUE, FALSE nor names",
       identical(.e59(joutput(diagnostics = "qqq")),
                 paste0("joutput(): \"qqq\" is not a diagnostic.\n", .all59)) &&
@@ -2639,7 +2651,8 @@ check("N59i a name that is no diagnostic stops, pinned whole, and stores nothing
                   paste0("joutput(): \"leven\" is not a diagnostic.\n", .all59)) &&
         identical(.e59(joutput(diagnostics = 1)),
                   paste0("joutput(): `diagnostics` must be TRUE, FALSE, or one or more of\n",
-                         "\"levene\", \"vif\", \"residuals\", \"qq\", \"scale\", \"cooks\", and \"leverage\".")) &&
+                         "\"levene\", \"qq\", \"vif\", \"residuals\", \"scale\", \"cooks\", \"leverage\",\n",
+                         "and \"binned\".")) &&
         !is.na(.e59(joutput(diagnostics = NA))) &&
         !is.na(.e59(joutput(diagnostics = character(0)))) &&
         is.null(getOption(".jst_output_toggles")))

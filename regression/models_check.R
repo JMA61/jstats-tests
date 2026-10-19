@@ -81,6 +81,70 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S375 EDIT (v0.9.248, 2026-10-19): Capability Slate C2 and Scripts Slate C.
+#           NEW SECTION Y, nineteen checks: jt() and jaov() return the
+#           Levene's test they print, its verdict NA where no note prints
+#           (Y01-Y02), and their standardized residuals (Y03); "qq" in their
+#           diagnostics, the plot line and jplot(which = "qq") (Y04, Y05);
+#           jlogistic()'s diagnostics gain the binned, Cook's and leverage
+#           plots (Y06); the GVIF row, car::vif()'s numbers, its two lines
+#           and the set's line of interpretation, in jlm() and jlogistic()
+#           (Y07-Y09); model.layout per call and in joutput() (Y10-Y11);
+#           jlogistic()'s Gelman column, std = "product" and "none",
+#           "regular" refused, the hand-product note (Y12-Y15);
+#           jcrosstab()'s Cramer's V and its stop past 20 values, with
+#           categorical = (Y16-Y17); jdummy()'s whole-number stop (Y18); the
+#           line jplot() prints under a comparison's plots (Y19). RE-PINNED:
+#           G12 (jlogistic's interaction legend, which it now has), O01 and
+#           O02 (the sets' new members), O06 and O08 (the stops' longer
+#           lists), O09's name. SCRIPTS SLATE C: P31's block and sixteen
+#           other blocks that assigned a working object at the top level --
+#           c, t, n and other base names among them -- now in local(), as a
+#           check's working objects go since S355. 495 -> 514.
+#           MUTATION MAP: the levene element not returned Y01 Y02; the
+#           verdict always "acceptable" Y01 Y02; the verdict NA at minimal
+#           Y02; Welch's residuals pooled Y03; residuals without names Y03;
+#           "qq" out of jt()'s set O01 Y04; the plot line without its blank
+#           Y04; jplot.jst_anova() without "qq" Y05; "binned" out of
+#           jlogistic()'s set O01 O06 O08 Y06; the logistic helper printing
+#           its own list Y06; the GVIF never computed Y07-Y09; an
+#           interaction's columns not a block Y08; the two lines left out
+#           Y07; model.layout ignored Y10 Y11; a level call keeping it Y11;
+#           the Gelman scaling by one SD Y12; the product scaling by one SD
+#           Y12 Y13; std = "regular" given the plain choice stop Y14; the
+#           hand-product note left out Y15; Cramer's V without its square
+#           root Y16; the 2 x 2 label not "Phi" Y16; the cap at 30 Y17;
+#           categorical = ignored by the cap Y17; a categorical = name not
+#           in the formula accepted Y17; the whole-number stop removed Y18;
+#           the comparison plot line never printed, printed for the box plot
+#           alone, or left out of jplot.jst_anova() Y19 (each). Sandbox: R
+#           4.3.3, UTF-8 locale, pkgload::load_all(): run_all.R 3035 across
+#           ten, plain and under the RStudio-handler stand-in, each again
+#           with a 43-character temp folder, and interactive; R CMD check
+#           Status OK on a roxygenised copy. Entered dirty (a full level,
+#           diagnostics on, model.layout = "fit", width 60, color on, a
+#           stata convention, a juse() default, workspace objects named like
+#           fixture variables), plain and under the stand-in: green once Y17
+#           read the title with its color stripped (it compared the raw
+#           line, which jstats.color = TRUE colors); the workspace and the
+#           juse() default handed back.
+#           LAST VERIFIED: v0.9.248, 2026-10-19 (S375) -- first delivery:
+#           514/514 on the WORKSTATION through receive_all() ("ALL BATTERIES
+#           GREEN (10 run, 3035 checks)"; R CMD check 0 errors, 0 warnings,
+#           0 notes), matching the sandbox.
+#           SECOND DELIVERY, THE SAME DAY (Jeff's ruling on his walk): the
+#           plot list's "(use the arrow buttons in RStudio's Plots pane to
+#           navigate):" on a line of its own under "N diagnostic plots
+#           produced", where it had wrapped mid-phrase, at all four sites.
+#           Q29, U07, U16 and Y19 RE-PINNED; Y06 now pins jlogistic()'s two
+#           lines too (no check held that site). 514 checks, unchanged in
+#           number. MUTATION MAP: each site given back its one-line form:
+#           jplot()'s model list U16; jlm()'s Q29 U07; jlogistic()'s Y06;
+#           the comparison list Y19.
+#           LAST VERIFIED: v0.9.248, 2026-10-19 (S375) -- second delivery:
+#           514/514 on the WORKSTATION through receive_all() ("ALL BATTERIES
+#           GREEN (10 run, 3035 checks)"; R CMD check 0 errors, 0 warnings,
+#           0 notes), matching the sandbox.
 # S374 EDIT (v0.9.247, 2026-10-19): Fix Slate 21. NEW SECTION X, eleven
 #           checks: y ~ . refused with voice Rule AK's template (ruling R24)
 #           in jlm(), jaov(), jlogistic(), jt() and jcrosstab(), before the
@@ -1135,14 +1199,14 @@ check("A01 a stored values field is returned as-is",
       identical(.jst_dummy_category_values(.regf, d$gf), c("a", "b", "c", "d")))
 check("A02 old factor registration: reconstructed in code order",
       identical(.jst_dummy_category_values(.rego, d$gf), c("a", "b", "c", "d")))
-check("A03 old factor registration, a category absent from the column: its slot is NA, the LATER positions do not shift", {
+check("A03 old factor registration, a category absent from the column: its slot is NA, the LATER positions do not shift", local({
   col <- droplevels(d$gf[d$gf != "b"])
   identical(.jst_dummy_category_values(.rego, col), c("a", NA, "c", "d"))
-})
-check("A04 old factor registration, an unused level in the column: ignored, not positioned", {
+}))
+check("A04 old factor registration, an unused level in the column: ignored, not positioned", local({
   col <- factor(d$g, levels = c("a", "z", "b", "c", "d"))
   identical(.jst_dummy_category_values(.rego, col), c("a", "b", "c", "d"))
-})
+}))
 .regc <- .jst_make_dummy_names(d$g, "g"); .regc$var_name <- "g"
 .regco <- .regc; .regco$values <- NULL
 check("A05 old character registration: reconstructed from the sorted values",
@@ -1152,16 +1216,16 @@ check("A06 old character registration, a category absent: NA slot, no shift",
                 c("a", "b", NA, "d")))
 check("A07 old character registration: a blank cell is not a candidate",
       identical(.jst_dummy_category_values(.regco, d$gb), c("a", "b", "c", "d")))
-check("A08 old registration whose label needed the anti-stutter step still matches", {
+check("A08 old registration whose label needed the anti-stutter step still matches", local({
   col <- c("g_one", "g_two", "g_one", "g_two")
   r   <- .jst_make_dummy_names(col, "g"); r$var_name <- "g"; r$values <- NULL
   identical(.jst_dummy_category_values(r, col), c("g_one", "g_two"))
-})
-check("A09 old registration: a value whose canonical name is empty stays NA rather than mis-positioning", {
+}))
+check("A09 old registration: a value whose canonical name is empty stays NA rather than mis-positioning", local({
   col <- c("***", "b", "***", "b")
   r   <- .jst_make_dummy_names(col, "g"); r$var_name <- "g"; r$values <- NULL
   identical(.jst_dummy_category_values(r, col), c(NA, "b"))
-})
+}))
 .regn <- .jst_make_dummy_names(d$nm, "nm"); .regn$var_name <- "nm"
 .regno <- .regn; .regno$values <- NULL
 check("A10 numeric registration: the codes ARE the values (old form too)",
@@ -1240,18 +1304,18 @@ check("C09 factor, unused middle level: gz_b marks the b cases (was all zero)",
       identical(.ez$gz_b, .truth(d$gz, "b")) && sum(.ez$gz_b) == 30L)
 check("C10 factor, unused middle level: gz_c and gz_d mark their own cases",
       identical(.ez$gz_c, .truth(d$gz, "c")) && identical(.ez$gz_d, .truth(d$gz, "d")))
-check("C11 a text value the registration does not know is zero on every dummy (as an unregistered numeric code is)", {
+check("C11 a text value the registration does not know is zero on every dummy (as an unregistered numeric code is)", local({
   reg <- .jst_make_dummy_names(d$g, "g"); reg$var_name <- "g"
   df  <- data.frame(y = d$y, g = d$g); df$g[1] <- "q"
   e   <- .jst_expand_one_dummy(df, y ~ x, reg)$data
   identical(c(e$g_b[1], e$g_c[1], e$g_d[1]), c(0L, 0L, 0L))
-})
-check("C12 factor: an NA cell is NA on every dummy, and only there", {
+}))
+check("C12 factor: an NA cell is NA on every dummy, and only there", local({
   col <- d$gf; col[c(3, 8)] <- NA
   e <- .expand(col, "gf")
   all(is.na(e$gf_b[c(3, 8)])) && all(is.na(e$gf_c[c(3, 8)])) &&
     !anyNA(e$gf_b[-c(3, 8)]) && !anyNA(e$gf_c[-c(3, 8)])
-})
+}))
 # The unchanged path: numeric, haven and logical keep the value comparison
 # (the S213 commitment: byte-identical for these types).
 .enm <- .expand(d$nm, "nm")
@@ -1259,25 +1323,25 @@ check("C13 numeric: nm_20 == as.integer(nm == 20)",
       identical(.enm$nm_20, ifelse(is.na(d$nm), NA_integer_, as.integer(d$nm == 20))))
 check("C14 numeric: nm_30 == as.integer(nm == 30)",
       identical(.enm$nm_30, ifelse(is.na(d$nm), NA_integer_, as.integer(d$nm == 30))))
-check("C15 numeric: an NA cell is NA", {
+check("C15 numeric: an NA cell is NA", local({
   col <- d$nm; col[4] <- NA
   is.na(.expand(col, "nm")$nm_20[4])
-})
+}))
 .ehv <- .expand(d$hv, "hv")
 check("C16 haven-labelled: dummies compare the underlying codes",
       identical(.ehv$hv_Mid, as.integer(unclass(d$hv) == 2)) &&
       identical(.ehv$hv_High, as.integer(unclass(d$hv) == 3)))
-check("C17 haven-labelled: an NA cell is NA", {
+check("C17 haven-labelled: an NA cell is NA", local({
   col <- d$hv; col[5] <- NA
   is.na(.expand(col, "hv")$hv_Mid[5])
-})
+}))
 .elg <- .expand(d$lg, "lg")
 check("C18 logical: lg_TRUE == as.integer(lg)",
       identical(.elg$lg_TRUE, as.integer(d$lg)))
-check("C19 logical: an NA cell is NA", {
+check("C19 logical: an NA cell is NA", local({
   col <- d$lg; col[2] <- NA
   is.na(.expand(col, "lg")$lg_TRUE[2])
-})
+}))
 check("C20 every dummy column is integer typed on every path",
       all(vapply(c(.ec[-(1:2)], .enm[-(1:2)], .ehv[-(1:2)], .elg[-(1:2)]),
                  is.integer, logical(1))))
@@ -1389,11 +1453,11 @@ check("E02 factor with an unused MIDDLE level: equals glm() (it printed a wrong 
       near(b_of(.l2, "gz_b"), coef(.glm_g)[["gb"]], 1e-6) &&
       near(b_of(.l2, "gz_c"), coef(.glm_g)[["gc"]], 1e-6) &&
       near(b_of(.l2, "gz_d"), coef(.glm_g)[["gd"]], 1e-6))
-check("E03 haven IV: unchanged (equals glm() on the factor of the codes)", {
+check("E03 haven IV: unchanged (equals glm() on the factor of the codes)", local({
   m <- quiet(jlogistic(yb ~ hv, data = d, categorical = "hv"))
   t <- coef(stats::glm(yb ~ factor(unclass(hv)), data = d, family = stats::binomial))
   near(b_of(m, "hv_Mid"), t[["factor(unclass(hv))2"]], 1e-6)
-})
+}))
 .dna <- d; .dna$x1[] <- NA_real_
 # The wording is the shared stop's since S346 (section N pins it whole).
 check("E04 every case excluded: jlogistic stops with jlm's wording (R's 'Argument mu' leaked before)",
@@ -1582,13 +1646,13 @@ check("F22 no note and no drop on a clean registered fit",
                 c("gf_b", "gf_c", "gf_d")))
 
 # -- Interactions, value-space registrations, two variables ---------------
-check("F23 an interaction keeps its shape: x1 * gf under the filter drops gf_b and x1:gf_b only", {
+check("F23 an interaction keeps its shape: x1 * gf under the filter drops gf_b and x1:gf_b only", local({
   m <- with_reg(quiet(jlm(y ~ x1 * gf, data = d, subset = gf != "a")))
   t <- coef(stats::lm(y ~ x1 * gf, data = .dd_no_a))
   identical(m$coefficients_raw$term,
             c("(Intercept)", "x1", "gf_c", "gf_d", "x1:gf_c", "x1:gf_d")) &&
     near(b_of(m, "x1:gf_d"), t[["x1:gfd"]])
-})
+}))
 check("F24 a haven-labelled registration (VALUE space): absent reference 1: Low gives header 2: Mid and the value-labelled note", {
   r <- with_state(quiet(jdummy(d, hv)), list(
          out = shown(jlm(y ~ hv, data = d, subset = hv != 1)),
@@ -1757,8 +1821,10 @@ check("G10 ... one blank line below the table, \"See ?jlm.\" on its own line, th
 check("G11 no legend without an interaction, and none under std = \"none\"",
       !any(grepl("In a model with an interaction", lines_of(jlm(y ~ x1 + x2, data = d)), fixed = TRUE)) &&
       !any(grepl("In a model with an interaction", lines_of(jlm(y ~ x1 * x2, data = d, std = "none")), fixed = TRUE)))
-check("G12 jlogistic has no standardized column, so no legend",
-      !any(grepl("In a model with an interaction", lines_of(jlogistic(yb ~ x1 * x2, data = d)), fixed = TRUE)))
+check("G12 jlogistic's Gelman column (S375) carries the interaction legend, which ends \"See ?jlogistic.\" (until then: no column, so no legend)",
+      { o <- lines_of(jlogistic(yb ~ x1 * x2, data = d))
+        any(grepl("In a model with an interaction, Gelman \u03b2 comes from centered", o, fixed = TRUE)) &&
+          any(o == "See ?jlogistic.") })
 
 # -- Interaction rows: naming and the regular-beta blank -------------------
 check("G13 a continuous x continuous row reads \"x1 * x2\"; the machine key keeps R's \"x1:x2\"",
@@ -2836,11 +2902,11 @@ check("L31 .jst_blank_counts(): the empty and the whitespace cells counted apart
         identical(.jst_blank_counts(dl$bf)$n, 20L) &&
         identical(.jst_blank_counts(dl$y), list(n = 0L, empty = 0L, space = 0L)))
 check("L32 jplot(): the blank cells plot as one category, <blank>, on both paths (a bar per spelling before)",
-      { p <- quiet(jplot(dl, b3)); q <- quiet(jplot(y ~ b3, data = dl))
+      local({ p <- quiet(jplot(dl, b3)); q <- quiet(jplot(y ~ b3, data = dl))
         inherits(p, "ggplot") && inherits(q, "ggplot") &&
           setequal(levels(p$data$x), c("<blank>", "a", "b")) &&
           sum(p$data$x == "<blank>") == 10L &&
-          setequal(levels(q$data$x), c("<blank>", "a", "b")) })
+          setequal(levels(q$data$x), c("<blank>", "a", "b")) }))
 
 # ---- L33-L36: a text OUTCOME in jlogistic() ---------------------------------
 # The two refusals a text outcome can meet. Both printed a blank category as
@@ -3091,13 +3157,13 @@ check("M20 ... control: on a variable that can carry it the registration is read
         identical(r$class, "Numeric") && identical(r$source, "registered") &&
           identical(a$subclass, "Count") && .jst_is_count(dm$Age, "Age", "dm") })
 check("M21 ... jscreen() on them raises nothing (it gave \"NAs introduced by coercion\" twice) and shows no text variable as Numeric",
-      { g <- grab(jscreen(dm, Txt, Fac, Flag, Edu))
+      local({ g <- grab(jscreen(dm, Txt, Fac, Flag, Edu))
         t <- quiet(jscreen(dm, Txt, Fac, Flag, Edu))
         identical(g, "") && !is.null(t) &&
           identical(t$Class, c("Categorical", "Categorical", "Categorical",
                                "Numeric")) &&
           identical(t$Source, c("structural", "structural", "structural",
-                                "registered")) })
+                                "registered")) }))
 check("M22 ... and remove = TRUE is not gated by type: the stored registration can still be taken off a text variable",
       { g <- grab(jnumeric(dm, Txt, remove = TRUE))
         ok <- identical(g, "Numeric registration removed for 'Txt' in dm.\n") &&
@@ -3190,14 +3256,14 @@ check("M31 ... a declared missing value is missing to the comparison: the 8 Refu
       { m <- quiet(jlm(y ~ I(Mood == 3), data = dm))
         .m_same(y ~ I(Mood == 3)) && !is.null(m) && identical(as.integer(m$n), 40L) })
 check("M32 ... as the grouping term of jt() and jaov(): the groups are FALSE and TRUE and the test is base R's",
-      { t  <- quiet(jt(y ~ I(Sex == 1), data = dm))
+      local({ t  <- quiet(jt(y ~ I(Sex == 1), data = dm))
         a  <- quiet(jaov(y ~ I(Fac == "lo"), data = dm))
         tr <- stats::t.test(y ~ I(Sex == 1), data = dm, var.equal = TRUE)
         ar <- summary(stats::aov(y ~ I(Fac == "lo"), data = dm))[[1L]]
         !is.null(t) && !is.null(a) && near(abs(t$t), abs(tr$statistic)) &&
           near(t$p, tr$p.value) && near(a$f, ar[["F value"]][1L]) &&
           identical(.l_rows_m(shown(jt(y ~ I(Sex == 1), data = dm)),
-                              "Group Descriptives"), c("FALSE", "TRUE")) })
+                              "Group Descriptives"), c("FALSE", "TRUE")) }))
 .m_cat <- function(v, term) {
   paste0("jlm(): ", v, " is a categorical variable, so the formula term ",
          term, " cannot be computed.")
@@ -3420,12 +3486,12 @@ check("N16 jlogistic() with a computed outcome: the term named for what it is an
               fixed = TRUE) &&
         !grepl("has values", grab(jlogistic(I(y > 0) ~ x1, data = dn)), fixed = TRUE))
 check("N17 control: a computed PREDICTOR still fits, as glm() fits it, and jlm() takes a computed outcome as it did",
-      { m <- quiet(jlogistic(yb ~ I(x1 > 0), data = dn))
+      local({ m <- quiet(jlogistic(yb ~ I(x1 > 0), data = dn))
         t <- stats::glm(yb ~ I(x1 > 0), data = dn, family = stats::binomial)
         l <- quiet(jlm(log(abs(y) + 1) ~ x1, data = dn))
         is.list(m) && near(m$coefficients_raw$b, unname(stats::coef(t)), 1e-6) &&
           is.list(l) && near(l$coefficients_raw$b,
-                             unname(stats::coef(stats::lm(log(abs(y) + 1) ~ x1, data = dn)))) })
+                             unname(stats::coef(stats::lm(log(abs(y) + 1) ~ x1, data = dn)))) }))
 
 # ---- N18-N26: the "seems categorical" rerun lines ---------------------------
 # --- A call laid out over lines (ruling R5, S353) ----------------------------
@@ -3647,8 +3713,9 @@ do$x4 <- do$x1 + do$x2 / 12                  # nearly x1: a VIF far above 10
 check("O01 the resolver: TRUE is the function's own set, FALSE and no setting are nothing, names are taken in the set's order, another function's name is not this one's",
       { r <- jstats:::.jst_resolve_diagnostics
         identical(r(TRUE, "jlm"), c("vif", "residuals", "qq", "scale", "cooks", "leverage")) &&
-          identical(r(TRUE, "jlogistic"), "vif") && identical(r(TRUE, "jaov"), "levene") &&
-          identical(r(TRUE, "jt"), "levene") &&
+          identical(r(TRUE, "jlogistic"), c("vif", "binned", "cooks", "leverage")) &&
+          identical(r(TRUE, "jaov"), c("levene", "qq")) &&
+          identical(r(TRUE, "jt"), c("levene", "qq")) &&
           identical(r(FALSE, "jlm"), character(0)) && identical(r(NULL, "jlm"), character(0)) &&
           identical(r(c("qq", "vif"), "jlm"), c("vif", "qq")) })
 check("O02 ... and with no argument it reads joutput()'s setting, each function taking what applies to it",
@@ -3656,7 +3723,7 @@ check("O02 ... and with no argument it reads joutput()'s setting, each function 
                  { r <- jstats:::.jst_resolve_diagnostics
                    identical(r(NULL, "jlm"), c("vif", "qq")) &&
                      identical(r(NULL, "jlogistic"), "vif") &&
-                     identical(r(NULL, "jaov"), "levene") &&
+                     identical(r(NULL, "jaov"), c("levene", "qq")) &&
                      identical(r(FALSE, "jlm"), character(0)) &&
                      identical(r("cooks", "jlm"), "cooks") },
                  quiet(joutput(NULL, quiet = TRUE))))
@@ -3690,7 +3757,8 @@ check("O06 a name that is not one of jlm()'s stops, pinned whole (it was ignored
                          "\"qq\", \"scale\", \"cooks\", and \"leverage\".")) &&
         identical(.o_err(jlogistic(yb ~ x1 + x2, data = do, diagnostics = "qq")),
                   paste0("jlogistic(): \"qq\" is not a diagnostic of jlogistic().\n",
-                         "`diagnostics` must be TRUE, FALSE, or \"vif\".")))
+                         "`diagnostics` must be TRUE, FALSE, or one or more of \"vif\", \"binned\",\n",
+                         "\"cooks\", and \"leverage\".")))
 check("O07 several names in one string get the c() form, and the argument it shows runs in the call",
       { e  <- .o_err(jlm(y ~ x1 + x2, data = do, diagnostics = "vif + qq"))
         ln <- trimws(strsplit(e, "\n", fixed = TRUE)[[1L]][3L])
@@ -3708,8 +3776,8 @@ check("O08 the stop comes before the title, and a value that is neither TRUE, FA
         startsWith(.o_err(jlm(y ~ x1 + x2, data = do, diagnostics = 2)),
                    "jlm(): `diagnostics` must be TRUE, FALSE, or one or more of") &&
         startsWith(.o_err(jlogistic(yb ~ x1 + x2, data = do, diagnostics = NA)),
-                   "jlogistic(): `diagnostics` must be TRUE, FALSE, or \"vif\"."))
-check("O09 jlogistic(diagnostics = TRUE) is its VIF table, the predictors' ordinary VIF: 1 / (1 - R-squared) of each on the other",
+                   "jlogistic(): `diagnostics` must be TRUE, FALSE, or one or more of\n\"vif\", \"binned\", \"cooks\", and \"leverage\"."))
+check("O09 jlogistic(diagnostics = TRUE) prints its VIF table, the predictors' ordinary VIF: 1 / (1 - R-squared) of each on the other (since S375 its three plots too: Y06)",
       { o <- .o_out(jlogistic(yb ~ x1 + x2, data = do, diagnostics = TRUE))
         m <- quiet(jlogistic(yb ~ x1 + x2, data = do, diagnostics = "vif"))
         v <- 1 / (1 - stats::cor(do$x1, do$x2)^2)
@@ -4020,13 +4088,13 @@ check("P30 .jst_term_vars(): a name, the names in a computed term, a name that d
           identical(tv("scale(x1, scale = FALSE) * x2"), c("x1", "x2")) &&
           identical(tv("my grp"), "my grp") && identical(tv("`my grp`"), "my grp") })
 check("P31 .jst_filters_naming(): a filter set aside, a frame with no filter and no name do not count",
-      { fnm <- jstats:::.jst_filters_naming
+      local({ fnm <- jstats:::.jst_filters_naming
         si  <- list(subset_expr = NULL, n_original = 10L, n_after_pipeline = 10L)
         a <- with_state({ .p_on(quote(t01 == 1)); quiet(jsubset(dp, off)) },
                         fnm("t01", si, "dp"), .p_off())
         b <- fnm("t01", si, "no_such_frame_p")
         c <- fnm("t01", list(subset_expr = "t01 == 1"), NULL)
-        !a$stored && !a$per && !b$stored && c$per && identical(c$vars, "t01") })
+        !a$stored && !a$per && !b$stored && c$per && identical(c$vars, "t01") }))
 
 rm(dp)
 rm(list = intersect(c(".p_on", ".p_off", ".p_kept", ".p01", ".p03", ".p05", ".p06",
@@ -4354,11 +4422,11 @@ check("Q28 a two-valued outcome coded neither 0/1 nor 1/2: '(a dichotomy)' (it r
 # ---- Q29-Q33: the plot lines and the smoother's note -------------------------
 check("Q29 jlm()'s plot list takes jlogistic()'s form, word for word: the count, the arrow buttons, the list numbered '1.' (it read '(5 diagnostic plots produced -- use the back arrow ...)')",
       local({ o <- .q_both(jlm(y ~ x1 + x2, data = dq, diagnostics = TRUE))
-        i <- which(o == "5 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane")
+        i <- which(o == "5 diagnostic plots produced")
         length(i) == 1L &&
           identical(o[i + 0:6], c(
-            "5 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane",
-            "to navigate):", "  1. Residuals vs Fitted", "  2. Normal Q-Q",
+            "5 diagnostic plots produced",
+            "(use the arrow buttons in RStudio's Plots pane to navigate):", "  1. Residuals vs Fitted", "  2. Normal Q-Q",
             "  3. Scale-Location", "  4. Cook's Distance", "  5. Residuals vs Leverage")) &&
           identical(o[i - 1L], "") }))
 check("Q30 jplot()'s effect plots counted in number: '(1 effect plot produced)' (it read '1 effect plots'); in variables since S359 (it said 'one per predictor')",
@@ -4792,11 +4860,11 @@ check("T06 jcrosstab() and jplot()'s formula path: a fetched object gets the R19
                 .t_has(b, "jplot(): The formula applies a function to a variable: I(x1 > w).") &&
                 !.t_has(b, "separate object") && !.t_has(a, "applies a function") }))
 check("T07 a vector written in the formula and a call the check does not run are not objects: I(x1 * 1:120) and I(x1 + rnorm(120)) fit as lm() fits them",
-      { m <- quiet(jlm(y ~ I(x1 * 1:120), data = d))
+      local({ m <- quiet(jlm(y ~ I(x1 * 1:120), data = d))
         set.seed(357); r <- quiet(jlm(y ~ I(x1 + rnorm(120)), data = d))
         set.seed(357); t <- stats::lm(y ~ I(x1 + rnorm(120)), data = d)
         !is.null(m) && near(m$coefficients_raw$b[2], stats::coef(stats::lm(y ~ I(x1 * 1:120), data = d))[[2]]) &&
-          near(r$coefficients_raw$b, unname(stats::coef(t))) })
+          near(r$coefficients_raw$b, unname(stats::coef(t))) }))
 check("T08 one value per case LEFT after filtering: its count and the requirement, no line (it cannot be added as it is)",
       local({ w80 <- seq_len(80) / 10
               m <- grab(jlm(y ~ I(x1 * w80), data = d, subset = nm > 10))
@@ -4945,8 +5013,8 @@ check("U07 jlm(X ~ 1, diagnostics = TRUE): the two plots it can draw in the list
       local({ o <- .u_both(jlm(X ~ 1, data = .u_d, diagnostics = TRUE))
               i <- which(o == "  2. Cook's Distance")
               length(i) == 1L &&
-                identical(o[i - 3:1], c("2 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane",
-                                        "to navigate):", "  1. Normal Q-Q")) &&
+                identical(o[i - 3:1], c("2 diagnostic plots produced",
+                                        "(use the arrow buttons in RStudio's Plots pane to navigate):", "  1. Normal Q-Q")) &&
                 identical(o[i + 1:4], c("",
                   "Note: The model has no predictors, so Residuals vs Fitted, Scale-Location,",
                   "and Residuals vs Leverage are not drawn.", "")) &&
@@ -5020,8 +5088,8 @@ check("U16 the logistic diagnostics list likewise: nothing above it, one blank l
       local({ g <- quiet(jlogistic(yb ~ x + z, data = .u_c))
               a <- .u_both(jplot(g, which = c("calibration", "cooks")))
               b <- .u_both(jplot(g, which = "cooks"))
-              identical(a, c("2 diagnostic plots produced (use the arrow buttons in RStudio's Plots pane",
-                             "to navigate):", "  1. Calibration Plot", "  2. Cook's Distance", "")) &&
+              identical(a, c("2 diagnostic plots produced",
+                             "(use the arrow buttons in RStudio's Plots pane to navigate):", "  1. Calibration Plot", "  2. Cook's Distance", "")) &&
                 identical(b, c("(Diagnostic plot produced: Cook's Distance)", "")) }))
 check("U17 jplot()'s diagnostic plots on the one-case model: ggplot2's warnings caught there too, and the note opens jplot()'s output with no blank line above it",
       local({ set.seed(3472)
@@ -5468,6 +5536,293 @@ check("X11 ... jlogistic() the same",
         grepl("  jdummy(.x_d, c5)", .x_note(jlogistic(yb ~ c5, data = .x_d)), fixed = TRUE))
 quiet(jdummy(.x_d, NULL))
 rm(.x_dot, .x_ex, .x_d, .x_note)
+
+# =============================================================================
+# Y -- CAPABILITY SLATE C2: MODELS AND CROSSTAB (S375, v0.9.248)
+# =============================================================================
+# (1) jt() and jaov() return the Levene's test they print, as `levene` (F,
+# df1, df2, p, and the verdict of the note: "acceptable", "unreliable",
+# "differ", NA). (2) Their diagnostics gain "qq", a normal Q-Q plot of the
+# standardized residuals (ruling R14, part 2: a plot, not a test), returned
+# as `residuals` and drawn by jplot(which = "qq"). (3) jlogistic()'s
+# diagnostics gain "binned", "cooks" and "leverage" (Jeff's lean okayed
+# S375). (4) The VIF table gives a predictor of three or more categories
+# one row, its generalized VIF (Fox and Monette, 1992), Df and
+# GVIF^(1/(2*Df)), as car::vif() does (the S346 item). (5) model.layout,
+# "coefficients" or "fit" (the Session 63 item). (6) jlogistic()'s
+# standardized column, Gelman's scaling as jlm(std = "gelman") refits it,
+# headed "Gelman beta" between p and Exp(b) -- SPSS's Exp(B) renamed for the
+# lowercase b -- with std = "product" and "none", and jlm()'s legends. (7)
+# jcrosstab()'s Cramer's V under the chi-square table (the Session 72
+# item). (8) jcrosstab() stops on a variable of more than 20 values, and
+# categorical = tabulates it anyway. (9) jdummy() refuses values that are
+# not whole numbers. (10) jplot() on a jt() or jaov() result says what it
+# drew, as on a model's (Y19, found while walking (2)). The car values in Y07-Y08 were computed with car 3.1-2
+# in the sandbox at S375 and are pinned (car is not one of jstats's
+# dependencies). Fixtures dotted; working objects in local().
+# =============================================================================
+cat("\n--- Y. Capability Slate C2: models and crosstab ---\n")
+
+set.seed(375)
+.y_d <- data.frame(x1 = rnorm(160))
+.y_d$g  <- sample(1:4, 160, TRUE)
+.y_d$x2 <- .y_d$x1 + 0.6 * .y_d$g + rnorm(160)
+.y_d$y  <- .y_d$x1 + rnorm(160)
+.y_d$yb <- rbinom(160, 1, plogis(0.8 * .y_d$x1))
+.y_d$b  <- rbinom(160, 1, 0.4)
+# Two groups unequal in size and spread: Levene's test significant, the
+# note "may not be reliable" (sizes 40/20 = 2.0, SDs about 3 times).
+set.seed(3751)
+.y_lv <- data.frame(grp = rep(c("a", "b"), c(40, 20)),
+                    s   = c(rnorm(40, 10, 1), rnorm(20, 12, 3.2)))
+.y_lv3 <- data.frame(grp = rep(c("a", "b", "c"), c(40, 20, 20)),
+                     s   = c(rnorm(40, 10, 1), rnorm(20, 12, 3.2), rnorm(20, 11, 3)))
+.y_pr <- data.frame(t = factor(rep(c("pre", "post"), each = 12), levels = c("pre", "post")),
+                    s = c(5, 6, 7, 6, 5, 8, 7, 6, 9, 5, 6, 7,
+                          6, 8, 9, 6, 7, 9, 9, 7, 9, 6, 8, 10))
+# The Levene test as jt() and jaov() compute it: a one-way ANOVA of the
+# absolute deviations from the group means.
+.y_lev <- function(y, g) {
+  dv <- abs(y - stats::ave(y, g))
+  stats::anova(stats::lm(dv ~ factor(g)))
+}
+
+check("Y01 jt() returns the Levene's test it prints: F, df1, df2 and p as the absolute-deviation ANOVA gives them, and the note's verdict, \"unreliable\" where it prints \"may not be reliable\"",
+      local({ o <- capture.output(r <- jt(s ~ grp, data = .y_lv, diagnostics = "levene"))
+              a <- .y_lev(.y_lv$s, .y_lv$grp)
+              is.list(r$levene) && identical(names(r$levene), c("F", "df1", "df2", "p", "note")) &&
+                near(r$levene$F, a$`F value`[1]) && near(r$levene$p, a$`Pr(>F)`[1]) &&
+                r$levene$df1 == 1 && r$levene$df2 == 58 &&
+                identical(r$levene$note, "unreliable") &&
+                grepl("may not be reliable", flat(paste(o, collapse = " ")), fixed = TRUE) }))
+check("Y02 ... NULL when the test was not asked for, and for a paired test; NA when Welch's test is run (no note) or the test is not significant; the verdict recorded at joutput(\"minimal\"), where the note is not printed",
+      local({ r0 <- quiet(jt(s ~ grp, data = .y_lv))
+              rp <- quiet(jt(s ~ t, data = .y_pr, paired = TRUE, diagnostics = TRUE))
+              rw <- quiet(jt(s ~ grp, data = .y_lv, welch = TRUE, diagnostics = "levene"))
+              rn <- quiet(jaov(y ~ g, data = .y_d, diagnostics = "levene"))
+              quiet(joutput("minimal", quiet = TRUE))
+              om <- capture.output(rm <- jaov(s ~ grp, data = .y_lv3, diagnostics = "levene"))
+              quiet(joutput(NULL, quiet = TRUE))
+              is.null(r0$levene) && is.null(rp$levene) &&
+                is.list(rw$levene) && identical(rw$levene$note, NA_character_) &&
+                rn$levene$p > .05 && identical(rn$levene$note, NA_character_) &&
+                rm$levene$note %in% c("unreliable", "differ") &&
+                !any(grepl("Levene's test is significant", om, fixed = TRUE)) }))
+check("Y03 the residuals jt() and jaov() return are standardized: the traditional ANOVA's are rstandard() of the one-way model; Welch's divide by each group's own SD; a paired test's are the differences from the mean difference",
+      local({ a  <- quiet(jaov(y ~ g, data = .y_d))
+              rs <- stats::rstandard(stats::lm(y ~ factor(g), data = .y_d))
+              aw <- quiet(jaov(s ~ grp, data = .y_lv3, welch = TRUE))
+              e  <- .y_lv3$s - stats::ave(.y_lv3$s, .y_lv3$grp)
+              sg <- stats::ave(.y_lv3$s, .y_lv3$grp, FUN = stats::sd)
+              ng <- stats::ave(.y_lv3$s, .y_lv3$grp, FUN = length)
+              tp <- quiet(jt(s ~ t, data = .y_pr, paired = TRUE))
+              dd <- .y_pr$s[1:12] - .y_pr$s[13:24]
+              near(a$residuals, rs) && identical(names(a$residuals), rownames(.y_d)) &&
+                near(aw$residuals, e / (sg * sqrt(1 - 1 / ng))) &&
+                near(tp$residuals, (dd - mean(dd)) / (stats::sd(dd) * sqrt(1 - 1 / 12))) }))
+check("Y04 diagnostics = TRUE draws the Q-Q plot in both: one line, \"(Diagnostic plot produced: Normal Q-Q)\", a blank line above it, after the effect size; \"levene\" alone draws none; joutput(diagnostics = \"qq\") reaches both",
+      local({ ot <- lines_of(jt(s ~ grp, data = .y_lv, diagnostics = TRUE))
+              oa <- lines_of(jaov(s ~ grp, data = .y_lv3, diagnostics = TRUE))
+              ol <- lines_of(jaov(s ~ grp, data = .y_lv3, diagnostics = "levene"))
+              quiet(joutput(diagnostics = "qq", quiet = TRUE))
+              og <- lines_of(jt(s ~ grp, data = .y_lv))
+              quiet(joutput(NULL, quiet = TRUE))
+              q  <- "(Diagnostic plot produced: Normal Q-Q)"
+              it <- which(ot == q); ia <- which(oa == q)
+              length(it) == 1L && length(ia) == 1L &&
+                identical(ot[it - 1L], "") && startsWith(ot[it - 2L], "Cohen's d: ") &&
+                identical(oa[ia - 1L], "") && startsWith(oa[ia - 2L], "Eta-squared: ") &&
+                !any(ol == q) && sum(og == q) == 1L }))
+check("Y05 jplot(which = \"qq\") draws it from a jt() or jaov() result, \"Normal Q-Q\" (a paired test's subtitled \"Differences between the pairs\"); \"core\" is still the box plot; a result made before S375 is asked to be run again",
+      local({ rt <- quiet(jt(s ~ grp, data = .y_lv))
+              rp <- quiet(jt(s ~ t, data = .y_pr, paired = TRUE))
+              ra <- quiet(jaov(y ~ g, data = .y_d))
+              pt1 <- quiet(jplot(rt, which = "qq")); pp <- quiet(jplot(rp, which = "qq"))
+              pa  <- quiet(jplot(ra, which = "qq")); pb <- quiet(jplot(ra))
+              old <- ra; old$residuals <- NULL
+              inherits(pt1, "ggplot") && identical(pt1$labels$title, "Normal Q-Q") &&
+                identical(pp$labels$subtitle, "Differences between the pairs") &&
+                identical(pa$labels$y, "Standardized Residuals") &&
+                identical(pb$labels$subtitle, "Diamond marks the group mean") &&
+                identical(grab(jplot(old, which = "qq")),
+                          paste0("jplot(): This jaov() result was made by an earlier version of jstats\n",
+                                 "and holds no residuals.\n",
+                                 "Run jaov() again to draw the Q-Q plot.")) }))
+check("Y06 jlogistic(diagnostics = TRUE): after the VIF table, jlm()'s list of the three plots -- binned residuals, Cook's distance, residuals against leverage; one asked for is one line; the intercept-only model draws Cook's distance and names the two it cannot draw",
+      local({ o  <- lines_of(jlogistic(yb ~ x1 + x2, data = .y_d, diagnostics = TRUE))
+              i  <- grep("^3 diagnostic plots produced", o)
+              o1 <- lines_of(jlogistic(yb ~ x1 + x2, data = .y_d, diagnostics = "cooks"))
+              g0 <- grab(jlogistic(yb ~ 1, data = .y_d, diagnostics = TRUE))
+              o0 <- lines_of(jlogistic(yb ~ 1, data = .y_d, diagnostics = TRUE))
+              length(i) == 1L && i > grep("^VIF \\(Variance Inflation Factors\\)$", o) &&
+                identical(o[i + 0:1], c("3 diagnostic plots produced",
+                                        "(use the arrow buttons in RStudio's Plots pane to navigate):")) &&
+                identical(o[i + 2:4], c("  1. Binned Residuals", "  2. Cook's Distance",
+                                        "  3. Residuals vs Leverage")) &&
+                identical(o[i - 1L], "") &&
+                any(o1 == "(Diagnostic plot produced: Cook's Distance)") &&
+                !any(grepl("plots produced", o1)) &&
+                any(o0 == "(Diagnostic plot produced: Cook's Distance)") &&
+                grepl("Binned Residuals and Residuals vs Leverage are not drawn", flat(g0), fixed = TRUE) &&
+                !any(grepl("Diagnostic plot", lines_of(jlogistic(yb ~ x1, data = .y_d)), fixed = TRUE)) }))
+check("Y07 a predictor of four categories gets ONE row in the VIF table: its generalized VIF on 3 Df and GVIF^(1/(2*Df)), car::vif()'s numbers, beside the others' VIF on 1 Df; two lines under the table say what the rows are; without one the table is as it was",
+      local({ quiet(jdummy(.y_d, g)); on.exit(quiet(jdummy(.y_d, NULL)), add = TRUE)
+              o <- lines_of(m <- jlm(y ~ x1 + x2 + g, data = .y_d, diagnostics = "vif"))
+              i <- grep("^VIF \\(Variance Inflation Factors\\)$", o)
+              p <- quiet(jlm(y ~ x1 + x2, data = .y_d, diagnostics = "vif"))
+              op <- lines_of(jlm(y ~ x1 + x2, data = .y_d, diagnostics = "vif"))
+              ip <- grep("^VIF \\(Variance Inflation Factors\\)$", op)
+              is.data.frame(m$gvif) && identical(m$gvif$term, c("x1", "x2", "g")) &&
+                identical(m$gvif$Df, c(1L, 1L, 3L)) &&
+                near(m$gvif$GVIF, c(2.257581411, 2.649986467, 1.416255899), tol = 1e-8) &&
+                near(m$gvif$GVIF_adj, c(1.502525012, 1.627877903, 1.059717945), tol = 1e-8) &&
+                identical(o[i + 1L], "Variable   GVIF  Df  GVIF^(1/(2*Df))") &&
+                identical(o[i + 5L], "g         1.416   3       1.060") &&
+                identical(o[i + 6:8], c("", "A row with Df above 1 is a set of dummy variables, with one generalized VIF",
+                                        "(GVIF) for the set.")) &&
+                identical(o[i + 9L], "GVIF^(1/(2*Df)) squared is on the scale of an ordinary VIF.") &&
+                is.null(p$gvif) && identical(op[ip + 1L], "Variable   VIF") }))
+check("Y08 ... an interaction's columns built on the dummy variables share a row (\"x1 * g\", car's \"x1:factor(g)\"); a set whose GVIF^(1/(2*Df)) squared passes 10 gets the line of interpretation, its GVIF \"on 3 df\"",
+      local({ quiet(jdummy(.y_d, g)); on.exit(quiet(jdummy(.y_d, NULL)), add = TRUE)
+              m <- quiet(jlm(y ~ x1 * g, data = .y_d, diagnostics = "vif"))
+              dc <- .y_d; dc$h <- dc$g; dc$h[1:4] <- c(1, 2, 3, 4)
+              dc$z <- (dc$g == 2) + (dc$g == 3) * 2 + (dc$g == 4) * 3 + stats::rnorm(160, 0, 0.01)
+              quiet(jdummy(dc, g))
+              on.exit(quiet(jdummy(dc, NULL)), add = TRUE)
+              oc <- lines_of(jlm(y ~ z + g, data = dc, diagnostics = "vif"))
+              identical(m$gvif$term, c("x1", "g", "x1 * g")) &&
+                near(m$gvif$GVIF, c(4.390949196, 1.013811840, 4.428900511), tol = 1e-8) &&
+                grepl("g \\(GVIF = [0-9.]+ on 3 df\\): standard errors inflated by a factor of about [0-9.]+\\. If you need to interpret these coefficients specifically",
+                      flat(paste(oc, collapse = " "))) }))
+check("Y09 jlogistic()'s table takes the same form, its GVIF from the predictors' correlations, as its VIF is",
+      local({ quiet(jdummy(.y_d, g)); on.exit(quiet(jdummy(.y_d, NULL)), add = TRUE)
+              m <- quiet(jlogistic(yb ~ x1 + x2 + g, data = .y_d, diagnostics = "vif"))
+              X <- stats::model.matrix(m$model)[, -1]
+              R <- stats::cor(X); b <- grep("^g_", colnames(X))
+              gv <- det(R[b, b]) * det(R[-b, -b]) / det(R)
+              is.data.frame(m$gvif) && near(m$gvif$GVIF[3], gv) &&
+                identical(m$gvif$Df, c(1L, 1L, 3L)) }))
+check("Y10 model.layout = \"fit\" prints the fit block first: jlm()'s R-squared lines and jlogistic()'s Omnibus Test and Model Summary above the Coefficients table, one blank line between; the default order is unchanged",
+      local({ f  <- lines_of(jlm(y ~ x1 + x2, data = .y_d, model.layout = "fit"))
+              c0 <- lines_of(jlm(y ~ x1 + x2, data = .y_d))
+              fl <- lines_of(jlogistic(yb ~ x1 + x2, data = .y_d, model.layout = "fit"))
+              i_r <- grep("^R-squared: ", f); i_c <- which(f == "Coefficients")
+              i_t <- grep("^  Total: ", f)
+              length(i_r) == 1L && i_r < i_c && identical(f[i_t + 1L], "") && identical(i_c, i_t + 2L) &&
+                grep("^R-squared: ", c0) > which(c0 == "Coefficients") &&
+                which(fl == "Omnibus Test of Model Coefficients") < which(fl == "Coefficients") &&
+                which(fl == "Model Summary") < which(fl == "Coefficients") &&
+                grep("^Outcome: yb$", fl) > which(fl == "Coefficients") }))
+check("Y11 joutput(model.layout = \"fit\") reaches both, its panel line \"model.layout: FIT (override)\"; a level call puts it back; a value other than the two stops before the title, and a bare word gets the pointer",
+      local({ e <- lines_of(joutput(model.layout = "fit"))
+              f <- lines_of(jlogistic(yb ~ x1, data = .y_d))
+              quiet(joutput("standard", quiet = TRUE))
+              s <- lines_of(joutput())
+              b <- lines_of(jlm(y ~ x1, data = .y_d))
+              quiet(joutput(NULL, quiet = TRUE))
+              x <- capture.output(try(jlm(y ~ x1, data = .y_d, model.layout = "fits"), silent = TRUE))
+              any(e == "  model.layout: FIT (override)") &&
+                which(f == "Model Summary") < which(f == "Coefficients") &&
+                any(s == "  model.layout: COEFFICIENTS") &&
+                which(b == "Coefficients") < grep("^R-squared", b) &&
+                identical(grab(jlm(y ~ x1, data = .y_d, model.layout = "fits")),
+                          "jlm(): `model.layout` must be \"coefficients\" or \"fit\".") &&
+                length(x) == 0L &&
+                grepl("fit is not in quotes", grab(jlm(y ~ x1, data = .y_d, model.layout = fit)), fixed = TRUE) }))
+check("Y12 jlogistic()'s Gelman column: headed \"Gelman \u03b2\" between p and Exp(b) (SPSS's Exp(B) renamed); a continuous predictor's value is the refit on its centered, 2-SD-scaled self, a 0/1 predictor's its b; both columns' full values and the regime on the return",
+      local({ o <- lines_of(m <- jlogistic(yb ~ x1 + b, data = .y_d))
+              s <- .y_d; s$x1 <- (s$x1 - mean(s$x1)) / (2 * stats::sd(s$x1)); s$b <- s$b - mean(s$b)
+              ref <- stats::coef(stats::glm(yb ~ x1 + b, data = s, family = stats::binomial))
+              cr <- m$coefficients_raw
+              h <- o[which(o == "Coefficients") + 1L]
+              grepl("p +Gelman \u03b2 +Exp\\(b\\)$", h) &&
+                near(cr$beta_gelman[2:3], unname(ref[2:3])) && near(cr$beta_gelman[3], cr$b[3]) &&
+                is.na(cr$beta_gelman[1]) &&
+                near(cr$beta_product[2], cr$b[2] * 2 * stats::sd(.y_d$x1)) &&
+                identical(attr(cr, "beta_standardization"), "gelman") }))
+check("Y13 std = \"product\": headed \"Product \u03b2\", each column as it stands -- b times two SDs of the column, a squared term's included -- with the legend naming the squared term; the Gelman column gives the squared term's refit and its legend",
+      local({ op <- lines_of(mp <- jlogistic(yb ~ x1 + I(x1^2), data = .y_d, std = "product"))
+              og <- lines_of(mg <- jlogistic(yb ~ x1 + I(x1^2), data = .y_d))
+              cp <- mp$coefficients_raw
+              any(grepl("p +Product \u03b2 +Exp\\(b\\)$", op)) &&
+                near(cp$beta_product[3], cp$b[3] * 2 * stats::sd(.y_d$x1^2)) &&
+                any(op == "Product \u03b2 treats each squared term as an ordinary predictor, as some other") &&
+                any(op == "See ?jlogistic.") &&
+                !near(mg$coefficients_raw$beta_gelman[3], cp$beta_product[3]) &&
+                any(grepl("^In a model with a squared term, Gelman \u03b2 comes from centered predictors", og)) }))
+check("Y14 std = \"none\" leaves the column out, and so does a model with no predictor; \"regular\" and \"all\" are refused for want of the outcome's SD; any other value gets the choice error",
+      local({ on <- lines_of(jlogistic(yb ~ x1, data = .y_d, std = "none"))
+              o0 <- lines_of(jlogistic(yb ~ 1, data = .y_d))
+              h  <- on[which(on == "Coefficients") + 1L]
+              h0 <- o0[which(o0 == "Coefficients") + 1L]
+              !grepl("\u03b2", h) && endsWith(h, "Exp(b)") && !grepl("\u03b2", h0) &&
+                identical(grab(jlogistic(yb ~ x1, data = .y_d, std = "regular")),
+                          paste0("jlogistic(): std = \"regular\" is not available in a logistic\n",
+                                 "regression: its outcome has no standard deviation to standardize by.\n",
+                                 "Use std = \"gelman\" (the default), \"product\" or \"none\".")) &&
+                grepl("std = \"all\" is not available", grab(jlogistic(yb ~ x1, data = .y_d, std = "all")), fixed = TRUE) &&
+                identical(grab(jlogistic(yb ~ x1, data = .y_d, std = "gel")),
+                          "jlogistic(): `std` must be \"gelman\", \"product\", or \"none\".") }))
+check("Y15 ... a predictor that is the product of two others is named in a note of its own, as in jlm()",
+      local({ h <- .y_d; h$x12 <- h$x1 * h$x2
+              o <- lines_of(jlogistic(yb ~ x1 + x2 + x12, data = h))
+              any(grepl("^x12 is x1 \\* x2 entered as its own variable, so Gelman \u03b2 treats it as an", o)) &&
+                any(o == "See ?jlogistic.") }))
+check("Y16 jcrosstab(chisq = TRUE): Cramer's V under the chi-square table, sqrt(chi-square / (N (k - 1))); a 2 x 2 table's line names phi; on the return and in tidy(); no line without the test",
+      local({ dx <- data.frame(r = rep(1:3, c(30, 30, 40)), c = rep(c(1, 2, 1, 2, 1, 2), c(20, 10, 10, 20, 15, 25)))
+              o  <- lines_of(m <- jcrosstab(r ~ c, data = dx, chisq = TRUE))
+              ch <- suppressWarnings(stats::chisq.test(table(dx$r, dx$c), correct = FALSE))$statistic
+              v  <- sqrt(unname(ch) / (100 * 1))
+              d2 <- data.frame(r = rep(1:2, each = 30), c = rep(c(1, 2, 1, 2), c(20, 10, 12, 18)))
+              o2 <- lines_of(m2 <- jcrosstab(r ~ c, data = d2, chisq = TRUE))
+              ch2 <- suppressWarnings(stats::chisq.test(table(d2$r, d2$c), correct = FALSE))$statistic
+              i <- grep("^Cramer's V: ", o)
+              near(m$cramers_v, v) && identical(o[i], paste0("Cramer's V: ", sprintf("%.3f", v))) &&
+                identical(o[i - 1L], "") && grepl("^ +[0-9.]+ +2 ", o[i - 2L]) &&
+                any(o2 == paste0("Phi (Cramer's V): ", sprintf("%.3f", sqrt(unname(ch2) / 60)))) &&
+                near(tidy.jst_crosstab(m)$cramers_v, v) &&
+                !any(grepl("Cramer", lines_of(jcrosstab(r ~ c, data = dx)), fixed = TRUE)) }))
+check("Y17 a variable of more than 20 values stops under the title, pinned whole, with the call that tabulates it, which runs; two such variables, one stop; categorical = takes the name bare or quoted, and refuses one not in the formula",
+      local({ dz <- data.frame(age = rep(18:47, 2), sex = rep(1:2, 30), sc = rep(1:30, 2))
+              o  <- capture.output(e <- tryCatch(jcrosstab(age ~ sex, data = dz),
+                                                 error = function(x) conditionMessage(x)))
+              e2 <- tryCatch(jcrosstab(age ~ sc, data = dz), error = function(x) conditionMessage(x))
+              ln <- sub("^  ", "", tail(strsplit(e, "\n", fixed = TRUE)[[1L]], 1L))
+              ok <- tryCatch({ quiet(eval(parse(text = ln)[[1L]])); TRUE }, error = function(x) FALSE)
+              identical(e, paste0("jcrosstab(): age has 30 different values, more than the 20 a\n",
+                                  "cross-tabulation shows.\n",
+                                  "To tabulate every value anyway, name it in categorical =:\n",
+                                  "  jcrosstab(age ~ sex, data = dz, categorical = \"age\")")) &&
+                ok && identical(gsub("\033\\[[0-9;]*m", "", o[1L]), "Cross-Tabulation") &&
+                !any(grepl("^Crosstab:", o)) &&
+                grepl("^jcrosstab\\(\\): age and sc have 30 different values each, more than the 20 a", flat(e2)) &&
+                grepl("categorical = c(\"age\", \"sc\")", flat(e2), fixed = TRUE) &&
+                !is.null(quiet(jcrosstab(age ~ sex, data = dz, categorical = age))) &&
+                !is.null(quiet(jcrosstab(age ~ sex, data = dz, categorical = "age"))) &&
+                identical(grab(jcrosstab(sex ~ sc, data = dz, categorical = c(age, sc))),
+                          paste0("jcrosstab(): categorical = names age, which is not in the formula.\n",
+                                 "Name only the formula's variables there.")) }))
+check("Y18 jdummy() refuses values that are not whole numbers, pinned whole, and registers nothing; jlm(categorical = ) the same; whole numbers register as before",
+      local({ dh <- data.frame(y = 1:30, h = rep(c(1.5, 2, 2.5), 10), k = rep(1:3, 10))
+              e  <- grab(jdummy(dh, h))
+              identical(e, paste0("jdummy(): h has values that are not whole numbers (1.5, 2.5), so it\n",
+                                  "cannot be dummy-coded.\n",
+                                  "Dummy coding makes one indicator for each category. If these values are\n",
+                                  "categories, recode them to whole-number codes first with jrecode().")) &&
+                is.null(getOption(".jst_dummy")[["dh"]]) &&
+                startsWith(grab(jlm(y ~ h, data = dh, categorical = "h")),
+                           "jlm(): h has values that are not whole numbers (1.5, 2.5)") &&
+                { quiet(jdummy(dh, k)); r <- !is.null(getOption(".jst_dummy")[["dh"]]); quiet(jdummy(dh, NULL)); r } }))
+check("Y19 jplot() on a jt() or jaov() result says what it drew, in jplot()'s words for a model: the Q-Q plot alone on one line, both plots as a numbered list naming the arrow buttons, each followed by one blank line; the box plot alone prints nothing, as before",
+      local({ rt <- quiet(jt(s ~ grp, data = .y_lv)); ra <- quiet(jaov(y ~ g, data = .y_d))
+              oq <- lines_of(invisible(jplot(rt, which = "qq")))
+              oa <- lines_of(invisible(jplot(ra, which = "all")))
+              ob <- lines_of(invisible(jplot(ra)))
+              identical(oq, c("(Diagnostic plot produced: Normal Q-Q)", "")) &&
+                identical(oa, c("2 plots produced",
+                                "(use the arrow buttons in RStudio's Plots pane to navigate):", "  1. Box Plot", "  2. Normal Q-Q", "")) &&
+                identical(ob, character(0)) }))
+rm(.y_d, .y_lv, .y_lv3, .y_pr, .y_lev)
 
 # --- Verdict -----------------------------------------------------------------
 
