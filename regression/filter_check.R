@@ -161,6 +161,39 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S377 EDIT (v0.9.250, 2026-10-20): Fix Slate 23. NEW SECTION AH, eight
+#           checks: jdesc() and jcorr() read numeric = and count = as names,
+#           bare or in quotes, the data frame's variable whatever the
+#           workspace holds (AH01); categorical = refused whatever it names,
+#           ahead of R's lookup (AH02); the not-found sentence with the
+#           juse() hint and the stop showing the form (AH03); the vector
+#           path handing the names on as typed (AH04); "unused input" for an
+#           argument given a bare name in jt(), jaov(), jlm(), jlogistic()
+#           and jplot()'s formula form (AH05), which also stops on a named
+#           value it ignored (AH06); a result's stop prefixed jplot() (AH07);
+#           a plot name typed bare on a result, read against its own names
+#           (AH08). 619 -> 627 checks. MUTATION MAP (23 one-change mutants,
+#           with models_check.R; each red): the bare-name reading in
+#           .jst_resolve_which() removed AH08 S08 S11 (and AA03); a bare
+#           name it has read as a value AH08 S08 S11; the generic's which
+#           check kept for a named result AH08 (and AA03); the pointer's two
+#           forms swapped AH08 S08; the name's spelling not canonical AH08;
+#           jt()'s and jlm()'s dots evaluated AH05 (each); the formula
+#           form's unused-input check removed AH05 AH06; a method named in
+#           its prefix AH07; jdesc()'s numeric = or jcorr()'s count = not
+#           read AH01 (and AH04); categorical = evaluated AH02 AH04; the
+#           vector path's names evaluated AH04; the default's hint dropped
+#           AH03; the example's names attribute kept AH03; categorical = held
+#           given always (most of sections C, D, L and AH). Sandbox: the
+#           five ways, and entered dirty (a full level, diagnostics on,
+#           model.layout = "fit", width 60, color on, a stata convention, a
+#           juse() default, workspace objects named like fixture variables),
+#           plain and under the stand-in: green, the workspace's values
+#           handed back.
+#           LAST VERIFIED: v0.9.250, 2026-10-20 (S377) -- 627/627 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3052 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S376 EDIT (v0.9.249, 2026-10-19): Fix Slate 22. Q10 RE-PINNED: jplot()'s
 #           stop for a plot name it does not take is in voice Rule A's form,
 #           as the diagnostics = stop is (.jst_takes_names(), shared): "jplot():
@@ -6392,6 +6425,118 @@ check("AG17 the status notes' set example: one sentence a line and a line on com
             "  jcomplete(community, Age, Income)\n")) }))
 options(.jst_default_data = .ag_def, .jst_options_missing_convention = .ag_conv)
 rm(.ag_def, .ag_conv, .ag_ws, .ag1, .ag_in, .ag_keep, .ag_runs, .ag_lines)
+reset()
+
+# =============================================================================
+# AH -- FIX SLATE 23: NAMES READ, NOT EVALUATED (S377, v0.9.250)
+# =============================================================================
+# (1) jdesc() and jcorr() read numeric = and count = as names, bare or in
+# quotes, as jlm()'s since S376 (.jst_model_name_args()): numeric = Gender
+# had stopped with R's own "object 'Gender' not found". categorical =, which
+# both refuse, is refused whatever it names, ahead of R's lookup
+# (.jst_arg_given()). The vector path hands the names to its re-call as
+# typed. (2) An argument a function does not take is read by NAME
+# (.jst_check_args() over rlang::enquos(...)), so jt(), jaov(), jlm(),
+# jlogistic() and jplot()'s result methods give "unused input" for a bare
+# value too, and the methods name jplot(), never jplot.jst_lm(). jplot()'s
+# formula form, which evaluated its dots and silently ignored a named
+# value, now stops on it as the data-first form does. (3) A plot name typed
+# bare on a result is read against that result's own names: one it has
+# gets ruling R18's pointer, positional or named; one it lacks gets the
+# plot-name stop -- which = vif had stopped with R's error, and which =
+# heatmap on a jlm() result was offered which = "heatmap", which stops
+# next (ruling R23). Fixture d; working objects in local().
+# =============================================================================
+cat("\n--- AH. Fix Slate 23: names read, not evaluated ---\n")
+reset()
+
+.ah_cat_d <- paste0("jdesc(): categorical = is not supported yet: this function always\n",
+                    "computes numeric descriptives.\n",
+                    "For a categorical summary use jfreq() instead.")
+.ah_cat_c <- paste0("jcorr(): categorical = is not supported yet: correlation requires\n",
+                    "numeric variables.\n",
+                    "For association between categorical variables use jcrosstab() instead.")
+.ah_vif <- paste0("jplot(): \"vif\" is not a plot of a jlm() result.\n",
+                  "`which` must be \"core\", \"all\", or one or more of \"fit\", \"predicted\",\n",
+                  "\"effects\", \"coef\", \"residuals\", \"qq\", \"scale\", \"cooks\", and \"leverage\".")
+
+check("AH01 jdesc() and jcorr(): numeric = and count = take a name bare as in quotes -- the seems-categorical caution the plain call gives is gone, both forms, a c() of both forms too; a workspace object named Gender holding another name is not read (ruling R18); a name holding names is read for them",
+      local({ cau_d <- grab(jdesc(d, Gender, Age))
+              cau_c <- grab(jcorr(d, Gender, Age))
+              Gender <- "Age"   # a workspace object named like the variable
+              nms <- "Gender"
+              has(cau_d, "Gender seems categorical") &&
+                has(cau_c, "Gender seems categorical") &&
+                identical(grab(jdesc(d, Gender, Age, numeric = Gender)), "") &&
+                identical(grab(jdesc(d, Gender, Age, numeric = "Gender")), "") &&
+                identical(grab(jdesc(d, Gender, Age, count = Gender)), "") &&
+                identical(grab(jdesc(d, Gender, Age, numeric = c(Gender, "Age"))), "") &&
+                identical(grab(jdesc(d, Gender, Age, numeric = nms)), "") &&
+                identical(grab(jcorr(d, Gender, Age, numeric = Gender)), "") &&
+                identical(grab(jcorr(d, Gender, Age, count = Gender)), "") &&
+                identical(grab(jcorr(d, Gender, Age, count = "Gender")), "") }))
+check("AH02 categorical = is refused whatever it names, ahead of R's lookup: bare, quoted and a name found nowhere get the same stop, in jdesc() and jcorr(); a NULL held by a name is no value",
+      local({ none <- NULL
+              identical(grab(jdesc(d, Gender, Age, categorical = Gender)), .ah_cat_d) &&
+                identical(grab(jdesc(d, Gender, Age, categorical = "Gender")), .ah_cat_d) &&
+                identical(grab(jdesc(d, Gender, Age, categorical = Zzz)), .ah_cat_d) &&
+                identical(grab(jcorr(d, Gender, Age, categorical = Gender)), .ah_cat_c) &&
+                identical(grab(jcorr(d, Gender, Age, categorical = Zzz)), .ah_cat_c) &&
+                has(grab(jdesc(d, Gender, Age, categorical = none)), "Gender seems categorical") }))
+check("AH03 a bare name the data frame lacks gets the not-found sentence, with the juse() hint under a default; a value that is not names gets the stop showing the form, the first variable its example",
+      local({ e1 <- grab(jdesc(d, Gender, Age, numeric = Gendr))
+              e2 <- grab(jcorr(d, Gender, Age, count = 5))
+              quiet(juse(d)); on.exit(quiet(juse(NULL)), add = TRUE)
+              e3 <- grab(jdesc(Gender, numeric = Gendr))
+              identical(e1, paste0("jdesc(): Gendr was not found in the d data frame.\n",
+                                   "Check the spelling.")) &&
+                identical(e2, paste0("jcorr(): count = takes the names of variables, for example:\n",
+                                     "  count = \"Gender\"")) &&
+                has(e3, "Gendr was not found in the d data frame.") &&
+                has(e3, "d is the juse() default") }))
+check("AH04 the single-vector form hands the names to its re-call as typed: jdesc(d$Gender, numeric = Gender) as the quoted form, categorical = refused there too",
+      identical(grab(jdesc(d$Gender, numeric = Gender)), "") &&
+        identical(grab(jdesc(d$Gender, numeric = "Gender")), "") &&
+        has(grab(jdesc(d$Gender)), "Gender seems categorical") &&
+        identical(grab(jdesc(d$Gender, categorical = Gender)), .ah_cat_d))
+check("AH05 an argument a function does not take, its value a name found nowhere: \"unused input\", never R's \"object not found\", in jt(), jaov(), jlm(), jlogistic() and jplot()'s formula form; the alias stop too",
+      identical(grab(jt(Age ~ Keep01, d, numeric = Age)), "jt(): unused input: numeric") &&
+        identical(grab(jaov(Age ~ Condition, d, foo = Name)), "jaov(): unused input: foo") &&
+        identical(grab(jlm(Age ~ Keep01, d, foo = Name)), "jlm(): unused input: foo") &&
+        identical(grab(jlogistic(Keep01 ~ Age, d, foo = Name)), "jlogistic(): unused input: foo") &&
+        identical(grab(jplot(Age ~ Keep01, d, foo = Name)), "jplot(): unused input: foo") &&
+        identical(grab(jt(Age ~ Keep01, d, levene = Age)),
+                  "jt(): 'levene' is not valid. Did you mean `diagnostics`?"))
+check("AH06 jplot()'s formula form stops on an argument it does not take given a value, as the data-first form does, where it was ignored; data = still read",
+      identical(grab(jplot(Age ~ Keep01, d, foo = 1)), "jplot(): unused input: foo") &&
+        identical(grab(jplot(Age ~ Keep01, data = d, foo = 1)), "jplot(): unused input: foo") &&
+        identical(grab(jplot(d, Age, foo = 1)), "jplot(): unused input: foo") &&
+        !errs(jplot(Age ~ Keep01, data = d)))
+check("AH07 jplot() on a result: an argument it does not take, bare or not, and an alias, prefixed jplot(), the function typed, never the method's name",
+      local({ quiet(m <- jlm(Age ~ Keep01, d))   # quiet() returns the lines
+              identical(grab(jplot(m, foo = Name)), "jplot(): unused input: foo") &&
+                identical(grab(jplot(m, foo = 1)), "jplot(): unused input: foo") &&
+                identical(grab(jplot(m, plots = "qq")),
+                          "jplot(): 'plots' is not valid. Did you mean `which`?") }))
+check("AH08 a plot name typed bare on a result: one the result lacks gets the plot-name stop, named or positional (which = vif had stopped with R's error; which = heatmap on a jlm() result was offered a line that stops next); one it has gets ruling R18's pointer, positional as typed, a c() kept, the name spelled as jplot() takes it; a name holding one still works",
+      local({ quiet(m <- jlm(Age ~ Keep01, d)); w <- "qq"
+              identical(grab(jplot(m, which = vif)), .ah_vif) &&
+                identical(grab(jplot(m, vif)), .ah_vif) &&
+                identical(grab(jplot(m, which = heatmap)), sub("\"vif\"", "\"heatmap\"", .ah_vif, fixed = TRUE)) &&
+                identical(grab(jplot(m, qq)), paste0("jplot(): qq is not in quotes.\n",
+                                                     "A plot name goes in quotes:\n",
+                                                     "  jplot(m, \"qq\")")) &&
+                identical(grab(jplot(m, which = qq)), paste0("jplot(): qq is not in quotes.\n",
+                                                             "which = takes a plot name in quotes:\n",
+                                                             "  jplot(m, which = \"qq\")")) &&
+                identical(grab(jplot(m, which = c(qq, "fit"))), paste0("jplot(): qq is not in quotes.\n",
+                                                                       "which = takes a plot name in quotes:\n",
+                                                                       "  jplot(m, which = c(\"qq\", \"fit\"))")) &&
+                identical(grab(jplot(m, which = Fit)), paste0("jplot(): Fit is not in quotes.\n",
+                                                              "which = takes a plot name in quotes:\n",
+                                                              "  jplot(m, which = \"fit\")")) &&
+                identical(grab(jplot(m, which = w)), "") }))
+rm(.ah_cat_d, .ah_cat_c, .ah_vif)
 reset()
 
 # =============================================================================

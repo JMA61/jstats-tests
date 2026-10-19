@@ -10,7 +10,8 @@
 #                   inside a formula; no more cases than coefficients; one
 #                   "seems categorical" warning; the plot lines and the
 #                   fit line of a computed term; the models' variable
-#                   lists bare or quoted, and the VIF plot removed
+#                   lists bare or quoted, and the VIF plot removed;
+#                   jplot()'s variable lists and jcorr()'s scatter stop
 # =============================================================================
 # TYPE:     assertion battery (PASS/FAIL; written for Claude's checking)
 # LOCKS:    the S305 AUDIT-037 fix and its riders, the S306 absent-
@@ -82,6 +83,29 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S377 EDIT (v0.9.250, 2026-10-20): Fix Slate 23. NEW SECTION AA, five
+#           checks: jplot() reads numeric =, categorical = and count = as
+#           names, bare or in quotes, in the data-first form (AA01) and the
+#           formula form (AA02), the plot drawn the quoted form's; a jcorr()
+#           result of three variables asked for its scatter plot gets the
+#           stop that says why and gives the two-variable call, pinned
+#           whole, its data frame and method the result's own, MyData for a
+#           result made before v0.9.250 (AA03), its two lines run (AA04);
+#           and a two-variable result's scatter plot draws the pairs the
+#           correlation used, with no ggplot2 warning, the result carrying
+#           data_name (AA05). 518 -> 523 checks. MUTATION MAP (with
+#           filter_check.R, which has the rest): the stop's explanation
+#           dropped AA03 AA04; data_name not returned AA03 AA04 (three
+#           variables), AA05 (two); the method not kept AA03; the generic's
+#           which check kept for a named result AA03 (and AH08); the
+#           data-first lists not read AA01; the formula form's not read AA02
+#           (and filter_check.R, halted); the incomplete pairs kept AA05.
+#           Sandbox: the five ways, and entered dirty as filter_check.R
+#           was: green.
+#           LAST VERIFIED: v0.9.250, 2026-10-20 (S377) -- 523/523 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3052 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S376 EDIT (v0.9.249, 2026-10-19): Fix Slate 22. NEW SECTION Z, four
 #           checks: categorical = in jlm() and jlogistic() takes a name bare
 #           as in quotes, a c() of both forms, the data frame's variable
@@ -5952,6 +5976,90 @@ check("Z04 jplot() draws no VIF plot (Jeff, S376: the table gives the same numbe
                 is.data.frame(m$gvif) && is.data.frame(l$gvif) &&
                 any(ov == "VIF (Variance Inflation Factors)") }))
 rm(.z_d, .z_cf)
+
+# =============================================================================
+# AA -- FIX SLATE 23: jplot()'s VARIABLE LISTS; jcorr()'s SCATTER STOP (S377,
+#       v0.9.250)
+# =============================================================================
+# (1) jplot() reads numeric =, categorical = and count = as names, bare or
+# in quotes, in the data-first and the formula forms, as jlm() does since
+# S376 (.jst_model_name_args()): numeric = L had stopped with R's own
+# "object 'L' not found". The plot drawn is the quoted form's. (2) A jcorr()
+# result of three or more variables asked for its scatter plot says a
+# scatter plot needs exactly two variables and gives the two-variable call
+# (Jeff, S377: "Default okay."), where it said scatter "is not a plot of a
+# jcorr() result": the data frame the result was made from (data_name,
+# returned since v0.9.250; MyData for an older result) and its method kept.
+# The two lines run and draw the scatter plot, which since this build
+# leaves out a case missing either value, as r and N do, where ggplot2
+# warned that it had removed it. Fixtures dotted; working objects in
+# local().
+# =============================================================================
+cat("\n--- AA. Fix Slate 23: jplot()'s variable lists; jcorr()'s scatter stop ---\n")
+
+set.seed(377)
+.aa_d <- data.frame(x1 = rnorm(80))
+.aa_d$x2 <- .aa_d$x1 + rnorm(80)
+.aa_d$y  <- .aa_d$x1 + rnorm(80)
+.aa_d$g  <- sample(1:4, 80, TRUE)
+.aa_d$L  <- haven::labelled(sample(1:5, 80, TRUE), c(Low = 1, High = 5))
+.aa_st <- function(p) if (is.null(p)) NA_character_ else class(p$layers[[1L]]$stat)[1L]
+.aa_gm <- function(p) if (is.null(p)) NA_character_ else class(p$layers[[1L]]$geom)[1L]
+.aa_sc <- function(dn, meth = "") paste0(
+  "jplot(): a scatter plot needs a jcorr() result with exactly two\n",
+  "variables, and this one has 3.\n",
+  "Correlate two of them and plot that result, for example:\n",
+  "  r2 <- jcorr(", dn, ", x1, x2", meth, ")\n",
+  "  jplot(r2, which = \"scatter\")")
+
+check("AA01 jplot() data-first: numeric = and count = bare draw L as the quoted form does (a histogram, where L alone is a bar chart), categorical = bare draws g as a bar chart as quoted (g alone a histogram); a workspace object named like the variable is not read",
+      local({ L <- "g"
+              identical(.aa_st(quiet(jplot(.aa_d, L))), "StatCount") &&
+                identical(.aa_st(quiet(jplot(.aa_d, L, numeric = L))), "StatBin") &&
+                identical(.aa_st(quiet(jplot(.aa_d, L, numeric = "L"))), "StatBin") &&
+                identical(.aa_st(quiet(jplot(.aa_d, L, count = L))), "StatBin") &&
+                identical(.aa_st(quiet(jplot(.aa_d, g))), "StatBin") &&
+                identical(.aa_st(quiet(jplot(.aa_d, g, categorical = g))), "StatCount") &&
+                identical(.aa_st(quiet(jplot(.aa_d, g, categorical = "g"))), "StatCount") }))
+check("AA02 jplot() formula form: categorical = g bare draws the box plot the quoted form draws, where y ~ g alone is a scatter plot; a name the frame lacks gets the not-found sentence",
+      identical(.aa_gm(quiet(jplot(y ~ g, .aa_d))), "GeomPoint") &&
+        identical(.aa_gm(quiet(jplot(y ~ g, .aa_d, categorical = g))), "GeomBoxplot") &&
+        identical(.aa_gm(quiet(jplot(y ~ g, .aa_d, categorical = "g"))), "GeomBoxplot") &&
+        identical(grab(jplot(y ~ g, .aa_d, numeric = gg)),
+                  paste0("jplot(): gg was not found in the .aa_d data frame.\n",
+                         "Check the spelling.")))
+check("AA03 jcorr()'s scatter plot asked of a result of three variables: the stop says why and gives the two-variable call, pinned whole -- quoted or bare, the method kept, MyData for a result made before v0.9.250; the result carries data_name",
+      local({ r  <- quiet(jcorr(.aa_d, x1, x2, y))
+              rs <- quiet(jcorr(.aa_d, x1, x2, y, method = "spearman"))
+              ro <- r; ro$data_name <- NULL
+              identical(r$data_name, ".aa_d") &&
+                identical(grab(jplot(r, which = "scatter")), .aa_sc(".aa_d")) &&
+                identical(grab(jplot(r, which = scatter)), .aa_sc(".aa_d")) &&
+                identical(grab(jplot(rs, which = "scatter")),
+                          .aa_sc(".aa_d", ", method = \"spearman\"")) &&
+                identical(grab(jplot(ro, which = "scatter")), .aa_sc("MyData")) }))
+check("AA04 the stop's two lines run and draw the scatter plot; a two-variable result's scatter and a three-variable result's heat map unchanged; a name it does not take beside scatter keeps the plot-name stop",
+      local({ r  <- quiet(jcorr(.aa_d, x1, x2, y))
+              ln <- strsplit(grab(jplot(r, which = "scatter")), "\n", fixed = TRUE)[[1L]]
+              ln <- trimws(ln[startsWith(ln, "  ")])
+              env <- new.env(parent = environment())
+              quiet(eval(str2lang(ln[1L]), env))
+              p2 <- quiet(eval(str2lang(ln[2L]), env))
+              h  <- quiet(jplot(r))
+              length(ln) == 2L && exists("r2", envir = env, inherits = FALSE) &&
+                identical(.aa_gm(p2), "GeomPoint") &&
+                identical(h$labels$title, "Correlation Matrix") &&
+                identical(grab(jplot(r, which = c("scatter", "zzz"))),
+                          paste0("jplot(): \"scatter\" and \"zzz\" are not plots of a jcorr() result.\n",
+                                 "`which` must be \"core\", \"all\", or \"heatmap\".")) }))
+check("AA05 a two-variable result's scatter plot draws the pairs the correlation used: a case missing either value is left out with no warning (ggplot2 had said \"Removed 6 rows containing missing values\"), its points N; the result carries data_name as a three-variable one does",
+      local({ dn <- .aa_d; dn$x1[1:4] <- NA; dn$x2[c(4, 9, 10)] <- NA
+              r  <- quiet(jcorr(dn, x1, x2))
+              p  <- quiet(jplot(r))
+              identical(r$data_name, "dn") &&
+              identical(grab(jplot(r)), "") && !is.null(p) &&
+                nrow(p$data) == r$n[1L, 2L] && r$n[1L, 2L] == 74L }))
+rm(.aa_d, .aa_st, .aa_gm, .aa_sc)
 
 # --- Verdict -----------------------------------------------------------------
 

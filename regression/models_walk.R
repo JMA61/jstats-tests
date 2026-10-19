@@ -58,8 +58,28 @@
 #           result and the line it prints; jdummy()'s whole-number stop.
 #           Since S376 (v0.9.249, Section 30): numeric =, categorical = and
 #           count = with the names bare; jplot()'s VIF plot removed.
+#           Since S377 (v0.9.250, Section 31): jcorr()'s scatter stop; plot
+#           names typed bare on a result; "unused input" for a bare value.
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
+# S377 EDIT (v0.9.250; Fix Slate 23): SECTION 31 ADDED -- 30 sections ->
+#           31 -- filled by running (fill.R): jcorr()'s scatter stop on a
+#           result of three variables and the two lines it offers, run; plot
+#           names typed bare on a jlm() result (vif and heatmap, which it
+#           does not draw; qq, which it does, typed in second place); and
+#           "unused input" for an argument given a bare name. On the PENDING
+#           line: the scatter stop's wording is Claude's, to Jeff's okayed
+#           default; the rest reuses wording already walked. A capture of
+#           every section of every walk on 0.9.249 and 0.9.250: no section
+#           moved but the new one (temp folders aside). harness.R derive:
+#           Section 31 needs no other; verify: 78 of 79 Expected blocks
+#           found (Section 1's, as before), 31 of 31 sections in three
+#           orders and by prepare = TRUE. The human half of models_check.R
+#           section AA and filter_check.R section AH.
+# LAST VERIFIED: v0.9.250, 2026-10-20 (S377) -- Section 31 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           R CMD check 0 errors, 0 warnings, 0 notes; ALL BATTERIES GREEN
+#           (10 run, 3052 checks).
 # S376 EDIT (v0.9.249; Fix Slate 22): SECTION 30 ADDED -- 29 sections ->
 #           30 -- filled by running (fill.R): jlm() and jlogistic() fitted
 #           with categorical = Condition typed bare; jplot(which = "vif")
@@ -3641,6 +3661,85 @@ rm(m30, l30, t30)
 #     before it, in the Plots pane behind the list's plots.
 #   - RENDER 3: two names, one sentence ("are not plots of a jt()
 #     result"), and a jt() result's two plot names.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 31 -- names read, not evaluated; jcorr()'s scatter stop (S377) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Fix Slate 23 (v0.9.250).
+#   - jplot(which = "scatter") on a jcorr() result of three or more
+#     variables says why a scatter plot cannot be drawn, and gives the
+#     two-variable call (Jeff, S377: "Default okay."), where it said
+#     scatter "is not a plot of a jcorr() result". The data frame and the
+#     method are the result's own. The scatter plot itself now leaves out
+#     a case missing either value, as r and N do, where ggplot2 warned
+#     that it had removed it.
+#   - A plot name typed without quotes on a result is read against that
+#     result's own names: one it lacks gets the plot-name stop (which =
+#     vif had stopped with R's "object 'vif' not found"; which = heatmap on
+#     a jlm() result was offered which = "heatmap", which stops next); one
+#     it has gets ruling R18's pointer, also when it is typed in second
+#     place without which =.
+#   - An argument jplot() does not take gets "unused input" when its value
+#     is a bare name too, and a result's stop names jplot(), never
+#     jplot.jst_lm(). The same in jt(), jaov(), jlm() and jlogistic(), and
+#     in jplot()'s formula form, which had ignored a named value.
+#   - jdesc(), jcorr() and jplot() take numeric = and count = (jplot()
+#     categorical = too) with the names bare, as jlm() does since S376.
+# The assertion side is models_check.R AA01-AA05 and filter_check.R
+# AH01-AH08.
+
+# Render 1 -- jcorr() of three variables, then its scatter plot.
+r31 <- jcorr(d, Stress, SocialSupport, Flourishing)
+try(jplot(r31, which = "scatter"))
+# Expected:
+#   Error : jplot(): a scatter plot needs a jcorr() result with exactly two
+#   variables, and this one has 3.
+#   Correlate two of them and plot that result, for example:
+#     r2 <- jcorr(d, Stress, SocialSupport)
+#     jplot(r2, which = "scatter")
+
+# Render 2 -- the two lines the stop offers, run as printed. The plot is
+# drawn from the 66 cases with both values, with no warning.
+r2 <- jcorr(d, Stress, SocialSupport)
+jplot(r2, which = "scatter")
+# Expected: nothing printed; the scatter plot in the Plots pane.
+
+# Render 3 -- plot names typed without quotes on a jlm() result: two it
+# does not draw, then one it does, typed in second place.
+m31 <- jlm(Flourishing ~ Stress, data = d)
+try(jplot(m31, which = vif))
+try(jplot(m31, which = heatmap))
+try(jplot(m31, qq))
+# Expected:
+#   Error : jplot(): "vif" is not a plot of a jlm() result.
+#   `which` must be "core", "all", or one or more of "fit", "predicted",
+#   "effects", "coef", "residuals", "qq", "scale", "cooks", and "leverage".
+#   Error : jplot(): "heatmap" is not a plot of a jlm() result.
+#   `which` must be "core", "all", or one or more of "fit", "predicted",
+#   "effects", "coef", "residuals", "qq", "scale", "cooks", and "leverage".
+#   Error : jplot(): qq is not in quotes.
+#   A plot name goes in quotes:
+#     jplot(m31, "qq")
+
+# Render 4 -- an argument jplot() does not take, its value a bare name.
+try(jplot(m31, foo = Stress))
+# Expected:
+#   Error : jplot(): unused input: foo
+rm(r31, r2, m31)
+
+# Things to look at:
+#   - RENDER 1: the stop says what a scatter plot needs and how many
+#     variables this result has, then the two lines that correlate the
+#     first two variables and draw their scatter plot. Claude's wording,
+#     to the default you okayed.
+#   - RENDER 2: the lines run; the plot appears in the Plots pane with
+#     "r = -0.221, N = 66" under it, and no "Removed 4 rows" warning.
+#   - RENDER 3: vif and heatmap get the plot-name stop for a jlm() result,
+#     not R's error and not a line that would stop again; qq, which a jlm()
+#     result draws, gets the "not in quotes" pointer, the line kept in the
+#     form typed.
+#   - RENDER 4: "unused input: foo", prefixed jplot().
 
 
 # --- Restore session state ---------------------------------------------------
