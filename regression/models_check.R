@@ -9,7 +9,8 @@
 #                   registration verbs at the front door; a comparison
 #                   inside a formula; no more cases than coefficients; one
 #                   "seems categorical" warning; the plot lines and the
-#                   fit line of a computed term
+#                   fit line of a computed term; the models' variable
+#                   lists bare or quoted, and the VIF plot removed
 # =============================================================================
 # TYPE:     assertion battery (PASS/FAIL; written for Claude's checking)
 # LOCKS:    the S305 AUDIT-037 fix and its riders, the S306 absent-
@@ -81,6 +82,36 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S376 EDIT (v0.9.249, 2026-10-19): Fix Slate 22. NEW SECTION Z, four
+#           checks: categorical = in jlm() and jlogistic() takes a name bare
+#           as in quotes, a c() of both forms, the data frame's variable
+#           whatever the workspace holds, a name holding names read for them
+#           (Z01); numeric = and count = the same (Z02); the not-found
+#           sentence and the stop showing the form, its example a predictor
+#           (Z03); jplot()'s VIF plot removed (Jeff's ruling): which = "vif"
+#           gets the plot-name stop in both, in voice Rule A's form since
+#           this build (.jst_takes_names(), shared with the diagnostics =
+#           stop), "all" draws the rest, the VIF table unchanged (Z04).
+#           514 -> 518.
+#           MUTATION MAP: jlm()'s lists read as before Z01 Z02; jlogistic()'s
+#           Z01 Z02; each list evaluated, not read as names Z01 Z02 Z03; the
+#           stop's example "Age" Z03; "vif" back in either method's plot
+#           names Z04 (each); the result named "this result" Z04 (and
+#           filter_check.R Q10); the sentence without its lead values --
+#           "core", "all"; TRUE, FALSE -- O06 O08 Z04 (and format_check.R
+#           X15); the names joined without "and" O06 O08 Z04 (and X15). Sandbox: R 4.3.3, UTF-8 locale,
+#           pkgload::load_all(): run_all.R across ten, plain and under the
+#           RStudio-handler stand-in, each again with a 45-character temp
+#           folder, and interactive; R CMD check Status OK on a roxygenised
+#           copy. Entered dirty (a full level, diagnostics on, model.layout
+#           = "fit", width 60, color on, a stata convention, a juse()
+#           default, workspace objects named like fixture variables -- g
+#           holding another variable's name among them), plain and under the
+#           stand-in: green, the workspace's values handed back.
+#           LAST VERIFIED: v0.9.249, 2026-10-19 (S376) -- 518/518 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3039 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S375 EDIT (v0.9.248, 2026-10-19): Capability Slate C2 and Scripts Slate C.
 #           NEW SECTION Y, nineteen checks: jt() and jaov() return the
 #           Levene's test they print, its verdict NA where no note prints
@@ -5823,6 +5854,104 @@ check("Y19 jplot() on a jt() or jaov() result says what it drew, in jplot()'s wo
                                 "(use the arrow buttons in RStudio's Plots pane to navigate):", "  1. Box Plot", "  2. Normal Q-Q", "")) &&
                 identical(ob, character(0)) }))
 rm(.y_d, .y_lv, .y_lv3, .y_pr, .y_lev)
+
+# =============================================================================
+# Z -- FIX SLATE 22: THE MODELS' VARIABLE LISTS; THE VIF PLOT REMOVED (S376,
+#      v0.9.249)
+# =============================================================================
+# (1) jlm() and jlogistic() read numeric =, categorical = and count = as
+# names, bare or in quotes, a c() of either (ruling R18;
+# .jst_model_name_args() over .jst_names_given(), as jcrosstab()'s
+# categorical = since S375): categorical = Region had stopped with R's own
+# "object 'Region' not found", and numeric = and count = the same. A bare
+# name the data frame has is its variable whatever the workspace holds; a
+# name holding names is read for them. (2) jplot() draws no VIF plot
+# (Jeff's ruling, S376: "the plot really [doesn't add] anything that the
+# table doesn't already provide"; SPSS, Stata and SAS print the table
+# only): which = "vif" is not a plot name for a jlm() or jlogistic()
+# result, and gets the plot-name stop with no pointer (Jeff: "let's not
+# worry about that now"); "all" no longer includes it. The VIF table,
+# diagnostics = "vif", is unchanged. The fixture is section Y's (seed 375,
+# the same draws). Fixtures dotted; working objects in local().
+# =============================================================================
+cat("\n--- Z. Fix Slate 22: the models' variable lists; the VIF plot removed ---\n")
+
+set.seed(375)
+.z_d <- data.frame(x1 = rnorm(160))
+.z_d$g  <- sample(1:4, 160, TRUE)
+.z_d$x2 <- .z_d$x1 + 0.6 * .z_d$g + rnorm(160)
+.z_d$y  <- .z_d$x1 + rnorm(160)
+.z_d$yb <- rbinom(160, 1, plogis(0.8 * .z_d$x1))
+.z_d$b  <- rbinom(160, 1, 0.4)
+.z_cf <- function(m) names(stats::coef(m$model))
+
+check("Z01 categorical = takes a name bare as in quotes: g dummy-coded alike in jlm() and jlogistic(), a c() of both forms the same; a workspace object named g is not read (ruling R18); a name holding names is read for them",
+      local({ n  <- quiet(jlm(y ~ x1 + g, data = .z_d))
+              a  <- quiet(jlm(y ~ x1 + g, data = .z_d, categorical = g))
+              q  <- quiet(jlm(y ~ x1 + g, data = .z_d, categorical = "g"))
+              cc <- quiet(jlm(y ~ x1 + g + b, data = .z_d, categorical = c(g, "b")))
+              cq <- quiet(jlm(y ~ x1 + g + b, data = .z_d, categorical = c("g", "b")))
+              g  <- "x1"   # a workspace object named like the variable, holding another name
+              w  <- quiet(jlm(y ~ x1 + g, data = .z_d, categorical = g))
+              cats <- "g"
+              h  <- quiet(jlm(y ~ x1 + g, data = .z_d, categorical = cats))
+              lb <- quiet(jlogistic(yb ~ x1 + g, data = .z_d, categorical = g))
+              lq <- quiet(jlogistic(yb ~ x1 + g, data = .z_d, categorical = "g"))
+              identical(.z_cf(n), c("(Intercept)", "x1", "g")) &&
+                length(.z_cf(a)) == 5L && identical(.z_cf(a), .z_cf(q)) &&
+                near(stats::coef(a$model), stats::coef(q$model)) &&
+                !is.null(cc) && identical(.z_cf(cc), .z_cf(cq)) &&
+                identical(.z_cf(w), .z_cf(a)) && identical(.z_cf(h), .z_cf(a)) &&
+                length(.z_cf(lb)) == 5L && identical(.z_cf(lb), .z_cf(lq)) }))
+check("Z02 numeric = and count = the same: on g registered with jdummy(), numeric = g and count = g bare enter it as one numeric column, as in quotes, in jlm() and jlogistic(); a c() of names bare",
+      local({ quiet(jdummy(.z_d, g)); on.exit(quiet(jdummy(.z_d, NULL)), add = TRUE)
+              r   <- quiet(jlm(y ~ x1 + g, data = .z_d))
+              nb  <- quiet(jlm(y ~ x1 + g, data = .z_d, numeric = g))
+              nq  <- quiet(jlm(y ~ x1 + g, data = .z_d, numeric = "g"))
+              nc  <- quiet(jlm(y ~ x1 + g, data = .z_d, numeric = c(x1, g)))
+              cb  <- quiet(jlm(y ~ x1 + g, data = .z_d, count = g))
+              lnb <- quiet(jlogistic(yb ~ x1 + g, data = .z_d, numeric = g))
+              lcb <- quiet(jlogistic(yb ~ x1 + g, data = .z_d, count = g))
+              one <- c("(Intercept)", "x1", "g")
+              length(.z_cf(r)) == 5L &&
+                identical(.z_cf(nb), one) && identical(.z_cf(nq), one) &&
+                identical(.z_cf(nc), one) && identical(.z_cf(cb), one) &&
+                identical(.z_cf(lnb), one) && identical(.z_cf(lcb), one) }))
+check("Z03 a bare name the data frame lacks gets the not-found sentence, the frame named, under the title; a value that is not names gets the stop showing the form, a predictor of the formula its example (the outcome's frame's first other column in a model with none)",
+      local({ o  <- capture.output(e <- tryCatch(jlm(y ~ x1 + g, data = .z_d, categorical = gg),
+                                                 error = function(x) conditionMessage(x)))
+              e2 <- tryCatch(jlogistic(yb ~ x1 + g, data = .z_d, numeric = 3),
+                             error = function(x) conditionMessage(x))
+              e3 <- tryCatch(jlm(y ~ 1, data = .z_d, count = 3),
+                             error = function(x) conditionMessage(x))
+              identical(e, paste0("jlm(): gg was not found in the .z_d data frame.\n",
+                                  "Check the spelling.")) &&
+                identical(gsub("\033\\[[0-9;]*m", "", o[1L]), "Linear Regression") &&
+                identical(e2, paste0("jlogistic(): numeric = takes the names of variables, for example:\n",
+                                     "  numeric = \"x1\"")) &&
+                identical(e3, paste0("jlm(): count = takes the names of variables, for example:\n",
+                                     "  count = \"x1\"")) }))
+check("Z04 jplot() draws no VIF plot (Jeff, S376: the table gives the same numbers, and the commercial packages draw none): which = \"vif\" gets the plot-name stop, pinned whole, in voice Rule A's form (.jst_takes_names(), S376), for a jlm() and a jlogistic() result; \"all\" draws every other plot; the VIF table itself, diagnostics = \"vif\", unchanged",
+      local({ quiet(jdummy(.z_d, g)); on.exit(quiet(jdummy(.z_d, NULL)), add = TRUE)
+              m  <- quiet(jlm(y ~ x1 + x2 + g, data = .z_d, diagnostics = "vif"))
+              l  <- quiet(jlogistic(yb ~ x1 + x2 + g, data = .z_d, diagnostics = "vif"))
+              em <- grab(jplot(m, which = "vif"))
+              el <- grab(jplot(l, which = c("coef", "vif")))
+              pm <- quiet(jplot(m, which = "all"))
+              pl <- quiet(jplot(l, which = "all"))
+              ov <- lines_of(jlm(y ~ x1 + x2 + g, data = .z_d, diagnostics = "vif"))
+              identical(em, paste0("jplot(): \"vif\" is not a plot of a jlm() result.\n",
+                                   "`which` must be \"core\", \"all\", or one or more of \"fit\", \"predicted\",\n",
+                                   "\"effects\", \"coef\", \"residuals\", \"qq\", \"scale\", \"cooks\", and \"leverage\".")) &&
+                identical(el, paste0("jplot(): \"vif\" is not a plot of a jlogistic() result.\n",
+                                     "`which` must be \"core\", \"all\", or one or more of \"probability\", \"roc\",\n",
+                                     "\"calibration\", \"binned\", \"cooks\", \"leverage\", and \"coef\".")) &&
+                is.list(pm) && !("vif" %in% names(pm)) && "coef" %in% names(pm) &&
+                is.list(pl) && !("vif" %in% names(pl)) && "coef" %in% names(pl) &&
+                !any(vapply(c(pm, pl), function(p) identical(p$labels$title, "Variance Inflation Factors"), logical(1))) &&
+                is.data.frame(m$gvif) && is.data.frame(l$gvif) &&
+                any(ov == "VIF (Variance Inflation Factors)") }))
+rm(.z_d, .z_cf)
 
 # --- Verdict -----------------------------------------------------------------
 

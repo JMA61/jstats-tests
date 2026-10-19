@@ -56,8 +56,28 @@
 #           jlm()'s notes) and the Exp(b) header; the GVIF row in the VIF
 #           table; model.layout; jplot()'s Q-Q plot from a jt() or jaov()
 #           result and the line it prints; jdummy()'s whole-number stop.
+#           Since S376 (v0.9.249, Section 30): numeric =, categorical = and
+#           count = with the names bare; jplot()'s VIF plot removed.
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
+# S376 EDIT (v0.9.249; Fix Slate 22): SECTION 30 ADDED -- 29 sections ->
+#           30 -- filled by running (fill.R): jlm() and jlogistic() fitted
+#           with categorical = Condition typed bare; jplot(which = "vif")
+#           refused, jplot()'s VIF plot removed by Jeff's ruling in the
+#           session (no pointer); jlogistic()'s which = "all" list without
+#           it; and the plot-name stop in voice Rule A's form, as the
+#           diagnostics = stop gives it (.jst_takes_names(), shared), on a
+#           jlm() and a jt() result. On the PENDING line: the stop's wording
+#           is Claude's call. A capture of every section of every walk on
+#           0.9.248 and 0.9.249: no section moved but the new one (temp
+#           folders aside). harness.R derive: Section 30 needs no other;
+#           verify: 75 of 76 Expected blocks found (Section 1's, as before),
+#           30 of 30 sections in three orders and by prepare = TRUE. The
+#           human half of models_check.R section Z.
+# LAST VERIFIED: v0.9.249, 2026-10-19 (S376) -- Section 30 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay all
+#           wording okay"); R CMD check 0 errors, 0 warnings, 0 notes; ALL
+#           BATTERIES GREEN (10 run, 3039 checks).
 # S375 EDIT (v0.9.248; Capability Slate C2): SECTIONS 28 AND 29 ADDED -- 27
 #           sections -> 29 -- filled by running (fill.R): jlogistic()'s
 #           standardized column (the default Gelman column, std = "product" and
@@ -3556,6 +3576,71 @@ rm(r29a, r29b, p29a, p29b, p29c)
 #   - The jdummy() stop names SleepHours, its first values that are not
 #     whole, and what to do; jlm(categorical = ) gives the same stop under
 #     its title. Nothing is registered.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 30 -- categorical = bare; the VIF plot removed (S376) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Fix Slate 22 (v0.9.249), and Jeff's ruling made during it.
+#   - jlm() and jlogistic() take numeric =, categorical = and count = with
+#     the names bare, as every variable list does under ruling R18:
+#     categorical = Condition had stopped with R's own "object 'Condition'
+#     not found". Both fits below name it bare.
+#   - jplot() draws no VIF plot (Jeff, S376: it added nothing the VIF table
+#     does not give, and SPSS, Stata and SAS print the table only). which =
+#     "vif" now gets the stop for a plot name jplot() does not know, and
+#     "all" draws the rest. The VIF table, diagnostics = "vif", is
+#     unchanged (Section 29).
+#   - That stop, for every kind of result jplot() draws, now takes voice
+#     Rule A's form, as the diagnostics = stop does, through one helper
+#     the two share (.jst_takes_names()): it read "Invalid plot name for
+#     class 'jst_lm': 'vif'." with R's class name and single quotes.
+# The full fits are run, not shown (#@SKIP). The assertion side is
+# models_check.R Z01-Z04 and filter_check.R Q10.
+
+# Render 1 -- categorical = Condition, bare, in jlm(); then which = "vif".
+m30 <- jlm(Flourishing ~ Stress + SocialSupport + Condition, data = d,
+           categorical = Condition)
+try(jplot(m30, which = "vif"))
+# Expected:
+#   Error : jplot(): "vif" is not a plot of a jlm() result.
+#   `which` must be "core", "all", or one or more of "fit", "predicted",
+#   "effects", "coef", "residuals", "qq", "scale", "cooks", and "leverage".
+
+# Render 2 -- the same in jlogistic(); which = "all" draws every plot but
+# the VIF plot.
+l30 <- jlogistic(SoughtHelp ~ Stress + Condition, data = d,
+                 categorical = Condition)
+jplot(l30, which = "all")
+# Expected:
+#   5 diagnostic plots produced
+#   (use the arrow buttons in RStudio's Plots pane to navigate):
+#     1. ROC Curve
+#     2. Calibration Plot
+#     3. Binned Residuals
+#     4. Cook's Distance
+#     5. Residuals vs Leverage
+
+# Render 3 -- two names a jt() result does not take.
+t30 <- jt(Flourishing ~ SoughtHelp, data = d)
+try(jplot(t30, which = c("vif", "scatter")))
+# Expected:
+#   Error : jplot(): "vif" and "scatter" are not plots of a jt() result.
+#   `which` must be "core", "all", or one or more of "box" and "qq".
+rm(m30, l30, t30)
+
+# Things to look at:
+#   - Both fits ran with categorical = Condition typed bare: no "object
+#     'Condition' not found".
+#   - RENDER 1: the stop names "vif" and the kind of result, a jlm()
+#     result, then what `which` takes, in the form of the diagnostics =
+#     stop (format_walk.R Section 31): "core", "all", or one or more of the
+#     plot names.
+#   - RENDER 2: the numbered list of jlogistic()'s plots, no "Variance
+#     Inflation Factors"; the probability plot and the odds-ratio plot
+#     before it, in the Plots pane behind the list's plots.
+#   - RENDER 3: two names, one sentence ("are not plots of a jt()
+#     result"), and a jt() result's two plot names.
 
 
 # --- Restore session state ---------------------------------------------------

@@ -161,6 +161,18 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S376 EDIT (v0.9.249, 2026-10-19): Fix Slate 22. Q10 RE-PINNED: jplot()'s
+#           stop for a plot name it does not take is in voice Rule A's form,
+#           as the diagnostics = stop is (.jst_takes_names(), shared): "jplot():
+#           \"zzz\" is not a plot of a jlm() result." / "... \"zzz\" and \"yyy\"
+#           are not plots of ...", where it read "Invalid plot name for
+#           class 'jst_lm': 'zzz'.". 619 checks, unchanged. MUTATION MAP:
+#           the plural sentence always singular Q10; the result named
+#           "this result" Q10. Sandbox: the five ways, green.
+#           LAST VERIFIED: v0.9.249, 2026-10-19 (S376) -- 619/619 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3039 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S375 EDIT (v0.9.248, 2026-10-19): Scripts Slate C. N41's block, which
 #           assigned its working objects at the top level, now in local(),
 #           as a check's working objects go since S355. 619 checks,
@@ -3811,12 +3823,12 @@ check("Q09 jdeclare_missing(): one variable name given twice; two names given tw
         has(flat(grab(jdeclare_missing(d, Age, Age, Gender, Gender, codes = -99,
                                        convention = "spss"))),
             "jdeclare_missing(): variable names given more than once: 'Age', 'Gender'."))
-check("Q10 one invalid plot name; two",
+check("Q10 one invalid plot name; two (voice Rule A's form since S376)",
       has(grab(jstats:::.jst_resolve_which("zzz", "fit", c("fit", "qq"), "jst_lm")),
-          "Invalid plot name for class 'jst_lm': 'zzz'.\n") &&
+          "jplot(): \"zzz\" is not a plot of a jlm() result.\n") &&
         has(grab(jstats:::.jst_resolve_which(c("zzz", "yyy"), "fit",
                                              c("fit", "qq"), "jst_lm")),
-            "Invalid plot names for class 'jst_lm': 'zzz', 'yyy'.\n"))
+            "jplot(): \"zzz\" and \"yyy\" are not plots of a jlm() result.\n"))
 rm(.pl)
 reset()
 
