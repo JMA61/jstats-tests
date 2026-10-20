@@ -161,6 +161,52 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S378 EDIT 2 (v0.9.252, 2026-10-20): jrelabel()'s list form and Jeff's
+#           wording. RE-PINNED: Y10's jrelabel() part (a c() of several is
+#           the list form now, which needs modify = TRUE: jrelabel_check.R
+#           J34); AE08 and AK04 ("add by = to the call", "add by = to the
+#           call instead", Jeff's wording). 640 checks, as before.
+#           LAST VERIFIED: v0.9.252, 2026-10-20 (S378) -- 640/640 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3090 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
+# S378 EDIT (v0.9.251, 2026-10-20): Capability Slate C3. THREE NEW
+#           SECTIONS, thirteen checks. AI (five): the ten functions that
+#           had no ... -- jcrosstab(), jrecode(), jrelabel(), jencode(),
+#           jsave(), jload(), joutput(), joptions(), juse() and jcopy() --
+#           stop in the house voice on an input they do not take, named
+#           (AI01) or unnamed (AI02), read by name and never evaluated
+#           (AI03), the formals before the dots keeping R's partial
+#           matching (AI04), and a correct call unchanged (AI05). AJ
+#           (three): a result made by the call itself or taken from a list
+#           is read against its own plot names, a bare name it lacks the
+#           plot-name stop and one it has the pointer with the call as typed
+#           (AJ01); the data-first form as it was (AJ02); scatter beside a
+#           name that is no plot on a three-variable jcorr() result names
+#           that name alone (AJ03). AK (five): type = "density" (AK01);
+#           facet = on a histogram, a density plot, a bar chart and a
+#           grouped bar chart, with by = within the panels, the panels the
+#           value labels, the title saying so (AK02); the N line counting a
+#           case missing on the facet variable, a declared code among them,
+#           the quoted form and the juse() default (AK03); the four stops
+#           (AK04); a histogram or density of a text variable, a factor or a
+#           date stopping in the house voice with the bar-chart line, which
+#           runs (AK05). 627 -> 640 checks. MUTATION MAP (26 one-change
+#           mutants, with cps_check.R and models_check.R; each red): the
+#           unnamed-item branch removed AI02; juse()'s check removed AI01
+#           AI02 AI03; jcrosstab()'s AI01 AI03; jload()'s AI01; an unnamed
+#           value evaluated AI03; the generic's result test kept to a name
+#           AJ01; the explained name named beside the other AJ03 (and
+#           AA04); the facet variable left out of the pipeline's list AK03;
+#           facet_wrap() not added AK02 AK03; the density drawn as a
+#           histogram AK01; the numeric guard removed AK05 (and P01); the
+#           formula form's facet stop removed AK04; the by =/facet = clash
+#           stop removed AK04; the title without its panel clause AK02
+#           AK03. Sandbox: the five ways, and entered dirty (a full level,
+#           diagnostics on, model.layout = "fit", width 60, color on, a
+#           stata convention, a juse() default, workspace objects named
+#           like fixture variables), plain and under the stand-in: green,
+#           the workspace's values handed back.
 # S377 EDIT (v0.9.250, 2026-10-20): Fix Slate 23. NEW SECTION AH, eight
 #           checks: jdesc() and jcorr() read numeric = and count = as names,
 #           bare or in quotes, the data frame's variable whatever the
@@ -5012,8 +5058,10 @@ check("Y10 a c() of one is the variable in the three; a c() of several stops, na
                   "jencode(): only one variable goes after the data frame, and this\n",
                   "call gives Name and Age.\n",
                   "Name one variable, and run the call once for each.")) &&
+                # Since S378 jrelabel() takes a c() of several as its list form,
+                # which needs modify = TRUE (jrelabel_check.R J34).
                 has(grab(jrelabel(d, c(Age, Gender), labels = "1=x")),
-                    "jrelabel(): only one variable goes after the data frame") }))
+                    "jrelabel(): labelling several variables changes d itself") }))
 check("Y11 by = c(Gender) groups; by = c(Gender, Keep01) stops (pinned whole)",
       !errs(jdesc(d, Age, by = c(Gender))) &&
         identical(grab(jdesc(d, Age, by = c(Gender, Keep01))), paste0(
@@ -5810,7 +5858,8 @@ check("AE07 jcomplete() and jplot() given a data frame and no variables: one sen
 check("AE08 jplot() given three variables: one sentence a line, an example that runs -- the old one, jplot(community, Age, Income, by = Region), stopped for two numeric variables (pinned whole)",
       { m <- grab(jplot(.ae1, Score, Group, Age))
         identical(m, paste0("jplot(): only 1 or 2 variables can be plotted at once.\n",
-                            "To show a variable by the groups of another, use by =, for example:\n",
+                            "To show a variable by the groups of another, add by = to the call,\n",   # S378 wording
+                            "for example:\n",
                             "  jplot(community, Age, by = Region)\n",
                             "Or call jplot() once for each variable.")) &&
           !errs(jplot(community, Age, by = Region)) &&
@@ -6537,6 +6586,219 @@ check("AH08 a plot name typed bare on a result: one the result lacks gets the pl
                                                               "  jplot(m, which = \"fit\")")) &&
                 identical(grab(jplot(m, which = w)), "") }))
 rm(.ah_cat_d, .ah_cat_c, .ah_vif)
+reset()
+
+# =============================================================================
+# AI -- CAPABILITY SLATE C3: THE TEN FUNCTIONS THAT HAD NO ... (S378)
+# =============================================================================
+# jcrosstab(), jrecode(), jrelabel(), jencode(), jsave(), jload(), joutput(),
+# joptions(), juse() and jcopy() had no ..., so an argument they do not
+# take stopped in R's own words ("unused argument (chisqr = TRUE)") before
+# any of their code ran (the S377 item). Each now ends its formals with
+# ..., read by .jst_check_args() on its NAMES, never evaluated
+# (positional = "refuse"): a named input gives "unused input: <name>", an
+# unnamed value "unused input: <value as typed>". The formals before the
+# dots keep R's partial matching (chi = TRUE is chisq = TRUE), and a
+# correct call is unchanged. Fixture d; working objects in local().
+# =============================================================================
+cat("\n--- AI. Capability Slate C3: the ten functions that had no ... ---\n")
+reset()
+
+check("AI01 a named input the function does not take: \"unused input\" with the name, prefixed with the function typed, in each of the ten",
+      local({ tf <- tempfile(fileext = ".rds")
+              identical(grab(jcrosstab(Condition ~ Gender, d, chisqr = TRUE)), "jcrosstab(): unused input: chisqr") &&
+                identical(grab(jrecode(d, Age, "1=2", lables = "1=x")), "jrecode(): unused input: lables") &&
+                identical(grab(jrelabel(d, Age, labels = "1=x", labls = "1=y")), "jrelabel(): unused input: labls") &&
+                identical(grab(jencode(d, Name, fooo = 1)), "jencode(): unused input: fooo") &&
+                identical(grab(jsave(d, tf, overwritte = TRUE)), "jsave(): unused input: overwritte") &&
+                identical(grab(jload(tf, packagee = TRUE)), "jload(): unused input: packagee") &&
+                identical(grab(joutput(fulll = TRUE)), "joutput(): unused input: fulll") &&
+                identical(grab(joptions(digit = 2)), "joptions(): unused input: digit") &&
+                identical(grab(juse(d, quiet = TRUE)), "juse(): unused input: quiet") &&
+                identical(grab(jcopy(d, e9, quiett = TRUE)), "jcopy(): unused input: quiett") &&
+                !file.exists(tf) && !exists("e9", inherits = FALSE) }))
+check("AI02 an unnamed value past the formals is an unused input too, shown as typed (a value in quotes keeps them), and two are listed",
+      identical(grab(juse(d, "x")), "juse(): unused input: \"x\"") &&
+        identical(grab(jcopy(d, e9, TRUE, FALSE, 7)), "jcopy(): unused input: 7") &&
+        identical(grab(jrecode(d, Age, "1=2", "x", "y", "z", w = 1)), "jrecode(): unused inputs: \"z\", w") &&
+        !exists("e9", inherits = FALSE))
+check("AI03 the value is read by name and never evaluated: a name found nowhere gives the same stop, not R's \"object not found\", named or unnamed",
+      identical(grab(jcrosstab(Condition ~ Gender, d, foo = Zzz)), "jcrosstab(): unused input: foo") &&
+        identical(grab(juse(d, foo = Zzz)), "juse(): unused input: foo") &&
+        identical(grab(joptions(foo = Zzz)), "joptions(): unused input: foo") &&
+        identical(grab(juse(d, Zzz)), "juse(): unused input: Zzz") &&
+        identical(grab(jcopy(d, e9, TRUE, FALSE, Zzz)), "jcopy(): unused input: Zzz"))
+check("AI04 the formals before the dots keep R's partial matching: chi = TRUE is chisq = TRUE, overw = TRUE is overwrite = TRUE",
+      local({ a <- plines(jcrosstab(Condition ~ Gender, d, chi = TRUE))
+              b <- plines(jcrosstab(Condition ~ Gender, d, chisq = TRUE))
+              quiet(jcopy(d, e9)); on.exit(rm(e9, envir = globalenv()), add = TRUE)
+              identical(a, b) && any(grepl("Chi", a, fixed = TRUE)) &&
+                !errs(jcopy(d, e9, overw = TRUE, quiet = TRUE)) }))
+check("AI05 a correct call is unchanged in each of the ten: no stop, and the dots take nothing",
+      local({ tf <- tempfile(fileext = ".rds"); on.exit(unlink(tf), add = TRUE)
+              ok <- !errs(jcrosstab(Condition ~ Gender, d)) &&
+                !errs(jrecode(d, Age, "1=2; else=copy")) &&
+                !errs(jrelabel(d, Age, labels = "1=x")) &&
+                !errs(jencode(d, Name)) &&
+                !errs(jsave(d, tf)) && !errs(jload(tf, name = "zz_ai05", overwrite = TRUE)) &&
+                !errs(joutput("standard", quiet = TRUE)) &&
+                !errs(joptions(quiet = TRUE)) &&
+                !errs(juse(d)) && !errs(juse(NULL)) &&
+                !errs(jcopy(d, e9, quiet = TRUE))
+              if (exists("zz_ai05", envir = globalenv())) rm("zz_ai05", envir = globalenv())
+              if (exists("e9", envir = globalenv())) rm("e9", envir = globalenv())
+              ok }))
+reset()
+
+# =============================================================================
+# AJ -- TWO jplot() PLOT-NAME EDGES LEFT BY FIX SLATE 23 (S378; the S377 item)
+# =============================================================================
+# (1) The generic's bare-word check read `which` against every result's
+# plot names unless x was a NAME holding a result, so a result made by the
+# call itself -- jplot(jlm(y ~ x, d), which = heatmap) -- or taken from a
+# list was offered which = "heatmap", which stops next (ruling R23). The
+# check now runs after x is forced, so any result is read against its own
+# names by its method (.jst_resolve_which()). (2) which = c("scatter",
+# "zzz") on a jcorr() result of three or more variables said both "are not
+# plots of a jcorr() result", false of scatter, whose refusal the method
+# explains: the stop names only the name that is not a plot. Fixture d;
+# working objects in local().
+# =============================================================================
+cat("\n--- AJ. Two jplot() plot-name edges (S378) ---\n")
+reset()
+
+check("AJ01 a result made by the call itself, or taken from a list: a bare plot name it lacks gets the plot-name stop, one it has the pointer with the call as typed -- never a line that stops next",
+      local({ fits <- list(a = jlm(Age ~ Keep01, d))
+              stop_h <- paste0("jplot(): \"heatmap\" is not a plot of a jlm() result.\n",
+                               "`which` must be \"core\", \"all\", or one or more of \"fit\", \"predicted\",\n",
+                               "\"effects\", \"coef\", \"residuals\", \"qq\", \"scale\", \"cooks\", and \"leverage\".")
+              identical(grab(jplot(jlm(Age ~ Keep01, d), which = heatmap)), stop_h) &&
+                identical(grab(jplot(fits[[1]], which = heatmap)), stop_h) &&
+                identical(grab(jplot(fits$a, which = vif)), sub("\"heatmap\"", "\"vif\"", stop_h, fixed = TRUE)) &&
+                identical(grab(jplot(jlm(Age ~ Keep01, d), which = qq)),
+                          paste0("jplot(): qq is not in quotes.\n",
+                                 "which = takes a plot name in quotes:\n",
+                                 "  jplot(jlm(Age ~ Keep01, d), which = \"qq\")")) &&
+                identical(grab(jplot(fits$a, which = Qq)),
+                          paste0("jplot(): Qq is not in quotes.\n",
+                                 "which = takes a plot name in quotes:\n",
+                                 "  jplot(fits$a, which = \"qq\")")) }))
+check("AJ02 the data-first form is as it was: a bare column under a default and a bare word in which = still get the generic's pointer",
+      local({ quiet(juse(d)); on.exit(quiet(juse(NULL)), add = TRUE)
+              identical(grab(jplot(Age, which = heatmap)),
+                        paste0("jplot(): heatmap is not in quotes.\n",
+                               "which = takes a plot name in quotes:\n",
+                               "  jplot(Age, which = \"heatmap\")")) &&
+                !errs(jplot(Age)) }))
+check("AJ03 scatter beside a name that is no plot, on a jcorr() result of three variables: the stop names the other name only; scatter alone keeps its explanation; on two variables scatter is a plot",
+      local({ r3 <- jcorr(d, Age, Keep01, Gender); r2 <- jcorr(d, Age, Keep01)
+              e3 <- grab(jplot(r3, which = c("scatter", "zzz")))
+              identical(e3, paste0("jplot(): \"zzz\" is not a plot of a jcorr() result.\n",
+                                   "`which` must be \"core\", \"all\", or \"heatmap\".")) &&
+                has(grab(jplot(r3, which = "scatter")), "a scatter plot needs a jcorr() result with exactly two") &&
+                identical(grab(jplot(r2, which = c("scatter", "zzz"))),
+                          paste0("jplot(): \"zzz\" is not a plot of a jcorr() result.\n",
+                                 "`which` must be \"core\", \"all\", or one or more of \"scatter\" and \"heatmap\".")) }))
+reset()
+
+# =============================================================================
+# AK -- CAPABILITY SLATE C3: type = "density" AND facet = (S378)
+# =============================================================================
+# Two additions to the variable-list form of jplot(). (1) type = "density":
+# the histogram's alternative for a numeric variable, its kernel density,
+# one curve or one per group of by = laid over each other; never the
+# automatic choice. (2) facet =: one panel per group of the variable named
+# (ggplot2::facet_wrap()), the alternative to by = when the groups are
+# many; read as by = is, bare or in quotes, one variable; combined with by
+# =, colors within each panel; refused in the formula form with the by =
+# pointer, and refused beside a by = naming the same variable. The title
+# says ", one panel per <variable>", and the N line counts a case missing
+# on the facet variable among the excluded. With them, a histogram or a
+# density plot of a text variable, a factor or a date stops in the house
+# voice with the bar-chart line, where ggplot2's own "stat_bin() requires
+# a continuous x aesthetic" had answered. Fixture d; working objects in
+# local().
+# =============================================================================
+cat("\n--- AK. Capability Slate C3: type = \"density\" and facet = ---\n")
+reset()
+.ak_geom  <- function(p) if (is.null(p)) NA_character_ else class(p$layers[[1L]]$geom)[1L]
+.ak_facet <- function(p) if (is.null(p)) NA_character_ else class(p$facet)[1L]
+.ak_plot  <- function(expr) tryCatch(suppressMessages(suppressWarnings({
+  grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+  utils::capture.output(p <- expr); p })), error = function(e) NULL)
+
+check("AK01 type = \"density\" draws a density of a numeric variable, titled Density Plot, and is never the automatic choice; by = lays one curve per group; a bare density gets the type pointer",
+      local({ p0 <- .ak_plot(jplot(d, Age)); p1 <- .ak_plot(jplot(d, Age, type = "density"))
+              p2 <- .ak_plot(jplot(d, Age, by = Condition, type = "density"))
+              identical(.ak_geom(p0), "GeomBar") && identical(.ak_geom(p1), "GeomDensity") &&
+                identical(.ak_geom(p2), "GeomDensity") && "fill" %in% names(p2$mapping) &&
+                identical(plines(jplot(d, Age, type = "density"))[1L], "Density Plot: Age") &&
+                identical(plines(jplot(d, Age, by = Condition, type = "density"))[1L],
+                          "Density Plot: Age by Condition") &&
+                identical(grab(jplot(d, Age, type = density)),
+                          paste0("jplot(): density is not in quotes.\n",
+                                 "type = takes a plot type in quotes:\n",
+                                 "  jplot(d, Age, type = \"density\")")) }))
+check("AK02 facet = draws one panel per group: a histogram, a density plot, a bar chart and a grouped bar chart, with by = within the panels too; the panels are the groups' value labels; the title says so",
+      local({ ph <- .ak_plot(jplot(d, Age, facet = Condition))
+              pd <- .ak_plot(jplot(d, Age, facet = Condition, type = "density"))
+              pb <- .ak_plot(jplot(d, Condition, facet = Gender))
+              pg <- .ak_plot(jplot(d, Condition, Gender, facet = Under40, categorical = c(Condition, Gender)))
+              pc <- .ak_plot(jplot(d, Age, by = Gender, facet = Condition))
+              fac <- function(p) levels(p$data$facet)
+              identical(.ak_facet(ph), "FacetWrap") && identical(.ak_facet(pd), "FacetWrap") &&
+                identical(.ak_facet(pb), "FacetWrap") && identical(.ak_facet(pg), "FacetWrap") &&
+                identical(.ak_facet(pc), "FacetWrap") && identical(.ak_facet(.ak_plot(jplot(d, Age))), "FacetNull") &&
+                identical(fac(ph), c("A", "B", "C")) && identical(fac(pb), c("1", "2")) &&
+                "fill" %in% names(pc$mapping) &&
+                identical(plines(jplot(d, Age, facet = Condition))[1L],
+                          "Histogram: Age, one panel per Condition") &&
+                identical(plines(jplot(d, Age, by = Gender, facet = Condition, type = "density"))[1L],
+                          "Density Plot: Age by Gender, one panel per Condition") &&
+                identical(plines(jplot(d, Condition, Gender, facet = Under40, categorical = c(Condition, Gender)))[1L],
+                          "Grouped Bar Chart: Condition and Gender, one panel per Under40") }))
+check("AK03 the N line counts a case missing on the facet variable among the excluded -- a declared missing code too, so the pipeline masks the facet variable -- and the plot drops it; the facet variable in quotes, and under a juse() default, work",
+      local({ e2 <- d
+              e2$Condition <- haven::labelled_spss(c(9L, 2L, 1L, 3L, 2L, 1L, 3L, 2L, 1L, 2L, 3L, 1L),
+                                                   c(A = 1L, B = 2L, C = 3L, Refused = 9L),
+                                                   na_values = 9L)
+              v  <- plines(jplot(e2, Age, facet = Condition))
+              p  <- .ak_plot(jplot(e2, Age, facet = Condition))
+              quiet(juse(d)); on.exit(quiet(juse(NULL)), add = TRUE)
+              identical(v[3L], "Analysis N: 10 (2 Excluded)") && nrow(p$data) == 10L &&
+                identical(levels(droplevels(p$data$facet)), c("A", "B", "C")) &&
+                identical(.ak_facet(.ak_plot(jplot(d, Age, facet = "Condition"))), "FacetWrap") &&
+                identical(plines(jplot(Age, facet = Condition))[1L],
+                          "Histogram: Age, one panel per Condition") }))
+check("AK04 the stops: facet = in the formula form gets the by = pointer; by = and facet = naming one variable; two variables in facet =; a name the frame lacks",
+      identical(flat(grab(jplot(Age ~ Keep01, d, facet = Condition))),
+                paste0("jplot(): facet = draws one panel per group of a histogram, a density plot or a ",
+                       "bar chart, in the variable-list form. ",
+                       "For a scatterplot or a boxplot by groups, add by = to the call instead, for example: ",
+                       "  jplot(WellbeingScore ~ Income, community, by = Region)")) &&
+        identical(flat(grab(jplot(d, Age, by = Condition, facet = Condition))),
+                  paste0("jplot(): by = and facet = both name Condition. ",
+                         "Name it once: by = colors the groups on one plot, facet = draws one panel per ",
+                         "group.")) &&
+        identical(flat(grab(jplot(d, Age, facet = c(Condition, Gender)))),
+                  paste0("jplot(): facet = takes one variable, and this call gives Condition and Gender. ",
+                         "Name one variable.")) &&
+        identical(grab(jplot(d, Age, facet = Zzz)),
+                  "jplot(): Zzz was not found in the d data frame.\nCheck the spelling."))
+check("AK05 a histogram or a density plot of a text variable, a factor or a date stops in the house voice with the bar-chart line, which runs (ggplot2's own error had answered)",
+      local({ e3 <- d; e3$F <- factor(d$Name); e3$D <- as.Date("2024-01-01") + seq_len(12)
+              s1 <- grab(jplot(e3, Name, type = "histogram"))
+              s2 <- grab(jplot(e3, F, type = "density"))
+              s3 <- grab(jplot(e3, D, type = "histogram"))
+              ln <- trimws(strsplit(s1, "\n", fixed = TRUE)[[1L]][4L])
+              identical(flat(s1), paste0("jplot(): a histogram needs a numeric variable, and Name is a text variable. ",
+                                         "For the count of each value, draw a bar chart: ",
+                                         "  jplot(e3, Name, type = \"bar\")")) &&
+                has(flat(s2), "a density plot needs a numeric variable, and F is a factor.") &&
+                has(flat(s3), "a histogram needs a numeric variable, and D is a date variable.") &&
+                identical(ln, "jplot(e3, Name, type = \"bar\")") &&
+                !is.null(.ak_plot(eval(str2lang(ln)))) }))
+rm(.ak_geom, .ak_facet, .ak_plot)
 reset()
 
 # =============================================================================

@@ -32,6 +32,39 @@
 #           blank footnote's two routes, a factor's one, and blanks declared
 #           missing as one row of the Missing block (N58d2, N58d3).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S378 EDIT 2 (v0.9.252, 2026-10-20): N62a RE-PINNED to the Level line
+#           Jeff chose: "Level: silent (the analysis functions print
+#           nothing; see ?joutput)". 268 checks, as before.
+#           LAST VERIFIED: v0.9.252, 2026-10-20 (S378) -- 268/268 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3090 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
+# S378 EDIT (v0.9.251, 2026-10-20): Capability Slate C3 (the Session 70
+#           item, Jeff's okay S377). NEW SECTION N62, ten checks:
+#           joutput("silent") is a level call with the full panel, its
+#           Level line saying what the level does, standard's settings
+#           (N62a); under it each of the ten analysis functions writes
+#           nothing on either stream and returns its result, a
+#           message-stream note muffled with the rest (N62b); a result made
+#           under silent is the standard call's (N62c); errors and warnings
+#           still show, the sink gone after an error (N62d); jload()'s
+#           notice and jrecode()'s reminder stay (N62e); a bare call
+#           autoprints nothing (N62f); print = TRUE under silent and print =
+#           FALSE at standard (N62g); print's flag check and a short name
+#           to the dots (N62h); joutput(silent) bare gets ruling R18's
+#           pointer, a level call clears overrides (N62i); silent's
+#           defaults are standard's and print = TRUE under silent prints
+#           the Case Processing table standard prints (N62j). RE-PINNED:
+#           .lvl56 and N59h's level error, four levels now, the list
+#           wrapping after its third item at the pin width. 258 -> 268
+#           checks. MUTATION MAP (with filter_check.R and models_check.R):
+#           the level ignored by .jst_print_on() N62b N62d; the scope not
+#           muffling messages N62b; silent given minimal's defaults N62a
+#           N62c N62e N62j; "silent" not a valid level: the battery halts at
+#           N62a; the CPS mode "never" under silent N62j; jdesc()'s print
+#           flag unchecked N62h; the level stop naming three levels N56q
+#           N56s N56t N59h (and missing_convention_check.R N83j). Sandbox:
+#           the five ways, and entered dirty as filter_check.R was: green.
 # S375 EDIT (v0.9.248, 2026-10-19): Capability Slate C2. RE-PINNED: N56j,
 #           N56k and N56l (the full panel has fourteen settings,
 #           model.layout under ref.categories: 17 lines); .all59 and N59i
@@ -2149,7 +2182,9 @@ reset()
 .ptr56 <- "Run joutput() to see all settings."
 .e56   <- function(expr) tryCatch({ quiet(expr); NA_character_ },
                                   error = function(e) conditionMessage(e))
-.lvl56 <- "joutput(): `level` must be \"minimal\", \"standard\", or \"full\"."
+# Four levels since S378 (silent): at the pin width the choice list wraps
+# after its third item, as the emitter breaks it.
+.lvl56 <- "joutput(): `level` must be \"minimal\", \"standard\", \"full\",\nor \"silent\"."
 reset()
 .v56a <- plines(joutput(digits = 2))
 check("N56a a setting call echoes the title, the one line and the pointer -- no Level line, no other setting -- and writes the setting",
@@ -2639,7 +2674,7 @@ reset()
 check("N59h the panel has no levene line, and \"levene\" is no longer a setting to query (the level error)",
       !any(grepl("levene", plines(joutput()), fixed = TRUE)) &&
         identical(.e59(joutput("levene")),
-                  "joutput(): `level` must be \"minimal\", \"standard\", or \"full\"."))
+                  "joutput(): `level` must be \"minimal\", \"standard\", \"full\",\nor \"silent\"."))   # four levels since S378
 # Since S375 the sets hold "qq" for jt() and jaov() and "binned" for
 # jlogistic(); the global list is their union, in the sets' order.
 .all59 <- paste0("`diagnostics` must be TRUE, FALSE, or one or more of \"levene\", \"qq\", \"vif\",\n",
@@ -2850,6 +2885,129 @@ check("N61j control: a model's plot prints no N line of its own",
         !any(startsWith(v, "Analysis N")) })
 reset()
 rm(d61, .m61, .both61, .v61a)
+
+# =============================================================================
+# N62 -- joutput("silent") AND print = FALSE (S378; Capability Slate C3, the
+#        Session 70 item; Jeff's okay S377)
+# =============================================================================
+# A fourth level for a script that keeps results and wants no output: the
+# ten analysis functions (jdesc, jfreq, jt, jaov, jcrosstab, jlm,
+# jlogistic, jcorr, jalpha, jscreen) print nothing -- no title, no table,
+# no note -- and return their results as they always do; errors and
+# warnings still show. Every other function prints as at standard (jload()'s
+# notice, the recode family's reminders), and the level's settings are
+# standard's, so a result made under silent holds what a standard call's
+# would. The same for one call: print = FALSE; print = TRUE prints one call
+# under a silent level. Mechanism: each analysis body runs inside
+# .jst_output_scope(), a null-file sink with the messages muffled, so the
+# output level is read at every cat() and message() site through one door.
+reset()
+quiet(jload("clinic", name = "d62", package = TRUE, overwrite = TRUE, quiet = TRUE))
+# .both62(): stdout and the message stream together (N61's .both61), and
+# the warnings and the error apart, so "nothing printed" and "the warning
+# still shows" are two claims.
+.both62 <- function(expr) {
+  tf <- tempfile(); con <- file(tf, open = "wt")
+  warns <- character(0); err <- NA_character_
+  sink(con); sink(con, type = "message")
+  tryCatch(withCallingHandlers(force(expr),
+             warning = function(w) { warns <<- c(warns, conditionMessage(w))
+                                     invokeRestart("muffleWarning") }),
+           error = function(e) err <<- conditionMessage(e),
+           finally = { sink(type = "message"); sink(); close(con) })
+  out <- readLines(tf, warn = FALSE, encoding = "UTF-8"); unlink(tf)
+  list(out = sub("[ \t]+$", "", gsub("\033\\[[0-9;]*[A-Za-z]", "", out)),
+       warns = warns, err = err)
+}
+.v62a <- plines(joutput("silent"))
+check("N62a joutput(\"silent\") is a level call: the full panel, its Level line saying what the level does, and standard's settings",
+      identical(length(.v62a), 17L) &&
+        identical(.v62a[2], "Level: silent (the analysis functions print nothing; see ?joutput)") &&
+        any(.v62a == "  effect.size: ON") && any(.v62a == "  case.processing: AUTO") &&
+        any(.v62a == "  missing.notice: ON") &&
+        identical(getOption(".jst_output_level"), "silent"))
+check("N62b under silent each of the ten analysis functions writes nothing on either stream and returns its result; a message-stream note (the paired Levene note) is muffled with the rest",
+      local({ quiet(joutput("silent", quiet = TRUE))
+              # a message-stream note: jt()'s "Levene's test is not applicable for
+              # paired samples" goes through .jst_msg(), where the titles and
+              # tables are cat()
+              pr <- data.frame(t = factor(rep(c("pre", "post"), each = 12), levels = c("pre", "post")),
+                               s = c(5, 6, 7, 6, 5, 8, 7, 6, 9, 5, 6, 7, 6, 8, 9, 6, 7, 9, 9, 7, 9, 6, 8, 10))
+              r0 <- .both62(jt(s ~ t, pr, paired = TRUE, diagnostics = "levene"))
+              calls <- list(
+                desc = quote(jdesc(d62, Stress)), freq = quote(jfreq(d62, Condition)),
+                t = quote(jt(Stress ~ PriorTherapy, d62)), aov = quote(jaov(Stress ~ Condition, d62)),
+                ct = quote(jcrosstab(Condition ~ PriorTherapy, d62, chisq = TRUE)),
+                lm = quote(jlm(Flourishing ~ Stress + SocialSupport, d62, diagnostics = TRUE)),
+                lg = quote(jlogistic(SoughtHelp ~ Stress, d62)),
+                corr = quote(jcorr(d62, Stress, SocialSupport, Flourishing)),
+                alpha = quote(jalpha(d62, Stress, SocialSupport, Flourishing)),
+                screen = quote(jscreen(d62)))
+              cls <- c("jst_desc", "jst_freq", "jst_ttest", "jst_anova", "jst_crosstab",
+                       "jst_lm", "jst_logistic", "jst_corr", "jst_alpha", "data.frame")
+              ok <- mapply(function(cl, k) {
+                r <- .both62(res <- eval(cl))
+                identical(r$out, character(0)) && is.na(r$err) && inherits(res, k)
+              }, calls, cls)
+              all(ok) && identical(r0$out, character(0)) && is.na(r0$err) }))
+check("N62c a result made under silent is the standard call's: jt() and jdesc() compared whole",
+      local({ quiet(joutput("silent", quiet = TRUE))
+              t1 <- jt(Stress ~ PriorTherapy, d62); s1 <- jdesc(d62, Stress, SocialSupport)
+              quiet(joutput("standard", quiet = TRUE))
+              t0 <- quiet(t0r <- jt(Stress ~ PriorTherapy, d62)); s0 <- quiet(s0r <- jdesc(d62, Stress, SocialSupport))
+              identical(t1, t0r) && identical(s1, s0r) }))
+check("N62d errors and warnings still show under silent: the not-found stop, and jcorr()'s seems-categorical warning; the sink is gone after the error",
+      local({ quiet(joutput("silent", quiet = TRUE))
+              r1 <- .both62(jt(Stress ~ Zzz, d62))
+              r2 <- .both62(jcorr(d62, Stress, PriorTherapy))
+              identical(r1$err, "jt(): Zzz was not found in the d62 data frame.\nCheck the spelling.") &&
+                identical(r1$out, character(0)) &&
+                any(grepl("seems categorical", r2$warns, fixed = TRUE)) &&
+                identical(r2$out, character(0)) && identical(sink.number(), 0L) }))
+check("N62e every other function prints as at standard: jload()'s notice and jrecode()'s reminder stay",
+      local({ quiet(joutput("silent", quiet = TRUE))
+              r1 <- .both62(jload("clinic", name = "zz62", package = TRUE, overwrite = TRUE))
+              r2 <- .both62(jrecode(d62, SoughtHelp, "1=2; else=copy"))
+              if (exists("zz62", envir = globalenv())) rm("zz62", envir = globalenv())
+              any(grepl("SPSS-style missing values", r1$out, fixed = TRUE)) &&
+                any(grepl("This call changes d62 only if you assign the result", r2$out, fixed = TRUE)) }))
+check("N62f a bare analysis call under silent prints nothing and autoprints nothing: the value is invisible",
+      local({ quiet(joutput("silent", quiet = TRUE))
+              v <- withVisible(jdesc(d62, Stress))
+              !v$visible && inherits(v$value, "jst_desc") }))
+check("N62g print = TRUE prints one call under silent; print = FALSE silences one call at standard; the value is the same object either way",
+      local({ quiet(joutput("silent", quiet = TRUE))
+              a <- .both62(jdesc(d62, Stress, print = TRUE))
+              quiet(joutput("standard", quiet = TRUE))
+              b <- .both62(r <- jdesc(d62, Stress, print = FALSE))
+              c0 <- .both62(r0 <- jdesc(d62, Stress))
+              identical(a$out[1], "Descriptive Statistics") && length(a$out) > 3 &&
+                identical(b$out, character(0)) && identical(r, r0) &&
+                identical(c0$out, a$out) }))
+check("N62h print takes TRUE, FALSE or NULL: another value gets the flag stop; a name typed short goes to the dots",
+      identical(.both62(jdesc(d62, Stress, print = "no"))$err, "jdesc(): `print` must be TRUE or FALSE.") &&
+        identical(.both62(jt(Stress ~ PriorTherapy, d62, print = 1))$err, "jt(): `print` must be TRUE or FALSE.") &&
+        identical(.both62(jdesc(d62, Stress, prnt = FALSE))$err, "jdesc(): unused input: prnt"))
+check("N62i the level is a word in quotes: joutput(silent) gets ruling R18's pointer; a level call under silent clears overrides as any level call does",
+      local({ quiet(joutput(digits = 2, quiet = TRUE))
+              e <- .both62(joutput(silent))$err
+              quiet(joutput("silent", quiet = TRUE))
+              identical(e, "joutput(): silent is not in quotes.\nA level or setting name goes in quotes:\n  joutput(\"silent\")") &&
+                is.null(getOption(".jst_output_toggles")) }))
+check("N62j the resolver gives silent standard's defaults for every setting, and the CPS mode is auto, as at standard: print = TRUE under silent prints the Case Processing table a standard call prints (an Auto-listwise row, so the table, not the N line)",
+      local({ quiet(joutput("silent", quiet = TRUE))
+              std <- jstats:::.jst_output_defaults$standard
+              sil <- jstats:::.jst_output_defaults$silent
+              r   <- jt(Stress ~ PriorTherapy, d62)
+              a   <- .both62(jt(Stress ~ PriorTherapy, d62, print = TRUE))
+              quiet(joutput("standard", quiet = TRUE))
+              b   <- .both62(r0r <- jt(Stress ~ PriorTherapy, d62))
+              identical(std, sil) &&
+                identical(jstats:::.jst_resolve_toggle("case.processing", NULL), NULL) &&
+                identical(r$case.processing, r0r$case.processing) &&
+                identical(a$out, b$out) && any(grepl("Auto-listwise", a$out, fixed = TRUE)) }))
+reset()
+rm(d62, .both62, .v62a)
 
 # --- Verdict -----------------------------------------------------------------
 

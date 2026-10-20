@@ -398,6 +398,22 @@
 #           f(NULL) would reach the sole-frame-or-STOP path with no default
 #           to resolve against. No Expected touched; confirmed in the walk
 #           below.
+# S378 EDIT (v0.9.252): CAPABILITY SLATE C3, jrelabel(). SECTION 31 NEW,
+#           filled by running (fill.R): the list form -- a c() after the
+#           data frame -- without modify = TRUE (the stop and the call it
+#           offers) and with it (the one line, jfreq() showing the labels);
+#           the one-variable form assigned (the reminder) and with modify =
+#           TRUE (the one line); and three refusals (variables listed one
+#           after another; a variable label in the list form; a text
+#           variable in the list). Jeff's rulings 1-3 and his okay of the
+#           reminder (S378); the wording Claude's. On the PENDING line. A
+#           capture of every section of every walk on 0.9.251 and 0.9.252:
+#           here only Section 31 moved (temporary paths aside). The human
+#           half of jrelabel_check.R J33-J42.
+# LAST VERIFIED: v0.9.252, 2026-10-20 (S378) -- Section 31 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           R CMD check 0 errors, 0 warnings, 0 notes; ALL BATTERIES GREEN
+#           (10 run, 3090 checks).
 # S361 EDIT (v0.9.234): CAPABILITY SLATE C1, ITS SIX SMALLER ITEMS.
 #           Sections 21 and 22 NEW, each Expected FILLED BY RUNNING the
 #           file (fill.R), the Saved lines that name a temporary folder
@@ -3409,6 +3425,106 @@ rm(.wd30, w30)
 #     two messages, found in the build).
 #   - The file or dataset is loaded either way, the argument ignored
 #     (import_check.R U06-U07).
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 31 -- jrelabel(): the list form, modify = TRUE, the reminder (S378) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S378 (v0.9.252; Capability Slate C3, the (S219) item). Your rulings:
+# the list form is a c() after the data frame (vars = takes quoted names);
+# it works only with modify = TRUE, and without it stops and offers the call
+# with it added (R30); modify = TRUE on one variable too, which still
+# returns the variable; and, with your okay, the assign-or-lose reminder
+# that jrecode(), jencode(), jsum() and javg() already give, printed after
+# every one-variable call without modify = TRUE, since a function cannot
+# see whether its result is assigned. The wording of every message here is
+# Claude's. The assertion side is jrelabel_check.R J33-J42.
+s31 <- data.frame(Q1 = c(1, 3, 2, 1), Q2 = c(2, 2, 3, 1), Q3 = c(3, 1, 1, 2),
+                  Name = c("a", "b", "c", "d"), stringsAsFactors = FALSE)
+
+# Render 1 -- three items that share a response scale, listed without
+# modify = TRUE: the call stops before anything and offers itself with it.
+try(jrelabel(s31, c(Q1, Q2, Q3), labels = "1=Never; 2=Sometimes; 3=Often"))
+# Expected:
+#   Error : jrelabel(): labelling several variables changes s31 itself, so it
+#   needs modify = TRUE:
+#     jrelabel(s31, c(Q1, Q2, Q3), labels = "1=Never; 2=Sometimes; 3=Often",
+#         modify = TRUE)
+
+# Render 2 -- the offered line, run: one line says what changed; jfreq()
+# shows the labels on one of the three.
+jrelabel(s31, c(Q1, Q2, Q3), labels = "1=Never; 2=Sometimes; 3=Often",
+         modify = TRUE)
+jfreq(s31, Q2)
+# Expected:
+#   Value labels applied to Q1, Q2, and Q3 in s31.
+#   Frequencies
+#
+#   4 Cases in the 1 Variable Pool
+#
+#   Q2
+#
+#                 Freq  Total %  Valid %  Cum. %
+#   ------------  ----  -------  -------  ------
+#   1: Never        1     25.00   25.00    25.00
+#   2: Sometimes    2     50.00   50.00    75.00
+#   3: Often        1     25.00   25.00   100.00
+#
+#   Total           4    100.00
+
+# Render 3 -- the one-variable form as taught, assigned: unchanged, with the
+# reminder after it (printed on every such call -- the function cannot see
+# the assignment).
+s31$Q1 <- jrelabel(s31, Q1, labels = "1=Rarely; 2=Sometimes; 3=Often")
+# Expected:
+#   Note: This call changes s31 only if you assign the result:
+#     s31$Q1 <- jrelabel(...)
+#
+#   To label Q1 in s31 directly, rerun with modify = TRUE:
+#     jrelabel(..., modify = TRUE)
+
+# Render 4 -- the same with modify = TRUE: no assignment, no reminder, the
+# one line instead.
+jrelabel(s31, Q1, labels = "1=Never; 2=Sometimes; 3=Often", modify = TRUE)
+# Expected:
+#   Value labels applied to Q1 in s31.
+
+# Render 5 -- variables listed one after another, as jdesc() takes them;
+# then a variable label in the list form; then a text variable in the list.
+try(jrelabel(s31, Q1, Q2, Q3, labels = "1=Never; 2=Sometimes; 3=Often"))
+try(jrelabel(s31, c(Q1, Q2), labels = "1=Never", var.label = "Item",
+             modify = TRUE))
+try(jrelabel(s31, c(Q1, Name), labels = "1=Never", modify = TRUE))
+# Expected:
+#   Error : jrelabel(): only one variable goes after the data frame, and this
+#   call gives Q1, Q2, and Q3.
+#   To label them all at once, list them in c() and add modify = TRUE:
+#     jrelabel(s31, c(Q1, Q2, Q3), labels = "1=Never; 2=Sometimes; 3=Often",
+#         modify = TRUE)
+#   Error : jrelabel(): var.label = names one variable, so it cannot go with a
+#   list of variables.
+#   Give each variable its label in a call of its own, for example:
+#     s31$Q1 <- jrelabel(s31, Q1, var.label = "Item")
+#   Error : jrelabel(): 'Name' is a character (text) variable; value labels can
+#   only be applied to numeric variables.
+#   Nothing was changed. Convert it to numbers first with jencode(), or leave it
+#   out of the list.
+rm(s31)
+
+# Things to look at:
+#   - RENDER 1: "labelling several variables changes s31 itself, so it
+#     needs modify = TRUE:" and the call with modify = TRUE added, laid out
+#     past the width as every printed call is.
+#   - RENDER 2: "Value labels applied to Q1, Q2, and Q3 in s31." -- one line
+#     at standard and full, none at minimal; then jfreq()'s table with the
+#     labels.
+#   - RENDER 3: the reminder: the assignment line, a blank line, the
+#     modify = TRUE line. Is it noise you can live with on every assigned
+#     call (joutput("minimal") hides it)?
+#   - RENDER 4: the one line, no reminder.
+#   - RENDER 5: the dots-style call gets the c() line; a variable label is
+#     refused in the list form with a one-variable line; a text variable
+#     stops the whole call ("Nothing was changed"), jencode() named.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

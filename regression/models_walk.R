@@ -60,8 +60,39 @@
 #           count = with the names bare; jplot()'s VIF plot removed.
 #           Since S377 (v0.9.250, Section 31): jcorr()'s scatter stop; plot
 #           names typed bare on a result; "unused input" for a bare value.
+#           Since S378 (v0.9.251, Sections 32-33): the logit-scale plot, the
+#           density plot and facet =; joutput("silent") and print = FALSE.
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
+# S378 EDIT 2 (v0.9.252): SECTIONS 32 AND 33 RE-PINNED, by running,
+#           mechanically, to Jeff's wording (S378): the facet stop's "add
+#           by = to the call instead, for example:" (Section 32, Render 5)
+#           and the Level line "silent (the analysis functions print
+#           nothing; see ?joutput)" (Section 33, Render 1). Off the PENDING
+#           line, which is none: both sections were walked at v0.9.251.
+# LAST VERIFIED: v0.9.252, 2026-10-20 (S378) -- Sections 32 and 33 WALKED
+#           on the WORKSTATION by Jeff at v0.9.251 ("walked, all okay"; R CMD
+#           check 0 errors, 0 warnings, 0 notes; ALL BATTERIES GREEN, 10 run,
+#           3080 checks), re-pinned mechanically at v0.9.252, which ran
+#           green (3090 checks; R CMD check 0 errors, 0 warnings, 0 notes).
+# S378 EDIT (v0.9.251; Capability Slate C3): SECTIONS 32 AND 33 ADDED --
+#           31 sections -> 33 -- filled by running (fill.R). Section 32,
+#           the three plots, each Claude's design, for the Plots pane: the
+#           logit-scale plot beside the probability plot, and at a
+#           dummy-coded focal variable's categories; the density plot,
+#           alone and by groups; facet = on a histogram, a density plot with
+#           by = within the panels, and a bar chart; the two refusals
+#           (facet = in the formula form; a histogram of a text variable).
+#           Section 33, joutput("silent") and print = FALSE: the panel's
+#           Level line (Claude's wording), two silent analyses, a stop and a
+#           warning still showing, print = TRUE under silent, print = FALSE
+#           at standard. On the PENDING line: both. A capture of every
+#           section of every walk on 0.9.250 and 0.9.251: no section moved
+#           but the two new ones (temp folders aside). harness.R verify: 84
+#           of 85 Expected blocks found (Section 1's, as before), 33 of 33
+#           sections in three orders. The human half of models_check.R
+#           section AB, filter_check.R section AK and cps_check.R section
+#           N62.
 # S377 EDIT (v0.9.250; Fix Slate 23): SECTION 31 ADDED -- 30 sections ->
 #           31 -- filled by running (fill.R): jcorr()'s scatter stop on a
 #           result of three variables and the two lines it offers, run; plot
@@ -3740,6 +3771,196 @@ rm(r31, r2, m31)
 #     result draws, gets the "not in quotes" pointer, the line kept in the
 #     form typed.
 #   - RENDER 4: "unused input: foo", prefixed jplot().
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 32 -- the logit-scale plot, the density plot and facet = (S378) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Capability Slate C3 (v0.9.251): three plots, each Claude's design, for
+# your eye in the Plots pane -- the console shows only each plot's title
+# line and N line.
+#   - jplot(which = "logit") on a jlogistic() result: the probability
+#     plot's companion on the log-odds scale, where the fitted line is
+#     straight. The same line and 95% band, carried through the logit
+#     rather than the S-curve; the cases as a rug along the axis, those
+#     with the outcome at the top and the others at the bottom (a 0/1
+#     outcome has no log-odds to plot); a dashed line at 0 (even odds).
+#     Not in the core set; "all" draws it. At a dummy-coded focal
+#     variable's categories, the log-odds at each with its interval.
+#   - type = "density": the histogram's alternative for a numeric
+#     variable, one curve, or one per group of by = laid over each other.
+#     Never the automatic choice.
+#   - facet =: one panel per group of the variable named, for a histogram,
+#     a density plot, a bar chart or a grouped bar chart -- the alternative
+#     to by = when the groups are many. by = within the panels works too.
+#     The title says ", one panel per <variable>". A scatterplot or boxplot
+#     by groups keeps by =, and facet = is refused there.
+# The assertion side is models_check.R AB01-AB05 and filter_check.R
+# AK01-AK05.
+
+# Render 1 -- the probability plot and its logit-scale companion, from one
+# model (fitted with print = FALSE, Section 33's feature, so the table is
+# not repeated here). Two plots in the pane: the S-curve, then the straight
+# line; the console shows nothing.
+m32 <- jlogistic(SoughtHelp ~ Stress + SocialSupport, d, print = FALSE)
+jplot(m32, which = c("probability", "logit"))
+# Expected: nothing printed; two plots in the Plots pane, the S-curve then the straight line.
+
+# Render 2 -- the logit plot at a dummy-coded focal variable's categories;
+# again nothing on the console.
+m32c <- jlogistic(SoughtHelp ~ Condition + Stress, d, categorical = Condition,
+                  print = FALSE)
+jplot(m32c, which = "logit", focal = Condition)
+# Expected: nothing printed; the plot in the Plots pane.
+
+# Render 3 -- a density plot, alone and by groups.
+jplot(d, Stress, type = "density")
+jplot(d, Stress, by = PriorTherapy, type = "density")
+# Expected:
+#   Density Plot: Stress
+#
+#   Analysis N: 66 (4 Excluded)
+#
+#   Density Plot: Stress by PriorTherapy
+#
+#   Analysis N: 66 (4 Excluded)
+
+# Render 4 -- one panel per Condition: a histogram, then a density plot with
+# PriorTherapy colored within each panel, then a bar chart.
+jplot(d, Stress, facet = Condition)
+jplot(d, Stress, by = PriorTherapy, facet = Condition, type = "density")
+jplot(d, Medication, facet = Condition)
+# Expected:
+#   Histogram: Stress, one panel per Condition
+#
+#   Analysis N: 66 (4 Excluded)
+#
+#   Density Plot: Stress by PriorTherapy, one panel per Condition
+#
+#   Analysis N: 66 (4 Excluded)
+#
+#   Bar Chart: Medication, one panel per Condition
+#
+#   Analysis N: 65 (5 Excluded)
+
+# Render 5 -- the two refusals: facet = in the formula form, and a
+# histogram of a text variable, which had met ggplot2's own error.
+try(jplot(Stress ~ SocialSupport, d, facet = Condition))
+try(jplot(d, ClientID, type = "histogram"))
+# Expected:
+#   Error : jplot(): facet = draws one panel per group of a histogram, a density
+#   plot or a bar chart, in the variable-list form.
+#   For a scatterplot or a boxplot by groups, add by = to the call instead,
+#   for example:
+#     jplot(WellbeingScore ~ Income, community, by = Region)
+#   Error : jplot(): a histogram needs a numeric variable, and ClientID is a
+#   text variable.
+#   For the count of each value, draw a bar chart:
+#     jplot(d, ClientID, type = "bar")
+rm(m32, m32c)
+
+# Things to look at:
+#   - RENDER 1, second plot: the same model as the S-curve, on the log-odds
+#     scale -- the straight line, the band widening toward the ends, the
+#     rug marks along the top (SoughtHelp = Yes) and the bottom (No), the
+#     dashed line at 0, the caption naming the rug. Title, axis label and
+#     held-values subtitle are Claude's wording.
+#   - RENDER 2: four points with intervals, the categories labeled as the
+#     coefficient table labels them ("1: Control"), log-odds shown at
+#     Stress = 0.
+#   - RENDER 3: the filled curve; by groups, two curves laid over each
+#     other at a third opacity, the legend as a histogram's.
+#   - RENDER 4: four panels titled with the value labels (Control, CBT,
+#     Mindfulness, Support group), the axis shared; in the second plot the
+#     two colors within each panel; the bar chart's panels. The titles'
+#     ", one panel per Condition" is Claude's wording.
+#   - RENDER 5: each stop says what facet = is for and gives the by = line
+#     ("add by = to the call instead", reworded at your request, S378);
+#     the histogram stop names the variable's kind and gives the bar-chart
+#     line, which runs.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 33 -- joutput("silent") and print = FALSE (S378) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Capability Slate C3 (v0.9.251); your okay of the lean at S377. A fourth
+# level for a script that keeps results and wants no output: the analysis
+# functions print nothing -- no title, table or note -- and return their
+# results as always; errors and warnings still show; every other function
+# prints as at standard, and the level's settings are standard's. The same
+# for one call with print = FALSE; print = TRUE prints one call under
+# silent. What you did not decide: the panel's Level line, Claude's
+# wording. The assertion side is cps_check.R N62a-N62j.
+
+# Render 1 -- the level call prints the full panel, its Level line saying
+# what the level does; the two analyses after it print nothing, and the
+# results are there.
+joutput("silent")
+t33 <- jt(Stress ~ PriorTherapy, d)
+m33 <- jlm(Flourishing ~ Stress + SocialSupport, d)
+class(t33); class(m33)
+# Expected:
+#   Output Settings
+#   Level: silent (the analysis functions print nothing; see ?joutput)
+#     effect.size: ON
+#     regression.ci: OFF
+#     means.ci: ON
+#     posthoc: OFF
+#     diagnostics: OFF
+#     case.processing: AUTO
+#     case.processing.detail: TOTALS
+#     case.processing.filter: AUTO
+#     variable.id: NAMES
+#     value.id: BOTH
+#     ref.categories: ON
+#     model.layout: COEFFICIENTS
+#     missing.notice: ON
+#     digits: 3
+#
+#   [1] "jst_ttest"
+#   [1] "jst_lm"
+
+# Render 2 -- a stop and a warning still show under silent; print = TRUE
+# prints one call. warn = 1 for this render, so the warning prints where
+# it is raised (at R's default it prints after, headed "Warning message:").
+.warn33 <- options(warn = 1)
+try(jt(Stress ~ Zzz, d))
+r33 <- jcorr(d, Stress, PriorTherapy)
+jdesc(d, Stress, print = TRUE)
+options(.warn33)
+# Expected:
+#   Error : jt(): Zzz was not found in the d data frame.
+#   Check the spelling.
+#   Warning: PriorTherapy seems categorical. Pearson correlations assume
+#   continuous/interval data.
+#   Descriptive Statistics
+#
+#   70 Cases in the 1 Variable Pool
+#
+#   Variable  Total  Non_missing  Min  Max   Mean     SD
+#   --------  -----  -----------  ---  ---  ------  -----
+#   Stress      70        66       0    40  15.182  7.403
+
+# Render 3 -- back at standard, print = FALSE silences one call, and the
+# recode family keeps its reminder under silent and standard alike.
+joutput(NULL)
+m33b <- jlm(Flourishing ~ Stress + SocialSupport, d, print = FALSE)
+identical(m33$coefficients, m33b$coefficients)
+# Expected:
+#   Output Settings
+#   Reset to defaults (standard, no toggle overrides).
+#
+#   [1] TRUE
+rm(t33, m33, m33b, r33, .warn33)
+
+# Things to look at:
+#   - RENDER 1: "Level: silent (the analysis functions print nothing; see
+#     ?joutput)" -- the Level line as you chose it (S378); the settings
+#     under it are standard's; then nothing until the two class lines.
+#   - RENDER 2: the jt() stop and jcorr()'s "seems categorical" warning
+#     show as they always do; jdesc(print = TRUE) prints its table.
+#   - RENDER 3: the reset panel; print = FALSE prints nothing at standard;
+#     TRUE -- the silent fit is the standard fit.
 
 
 # --- Restore session state ---------------------------------------------------

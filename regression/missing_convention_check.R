@@ -10,6 +10,14 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S378 EDIT (v0.9.251, 2026-10-20): Capability Slate C3. N83j RE-PINNED:
+#           joutput()'s level error names four levels since the silent
+#           level, the list wrapping after its third item at the pin width.
+#           907 checks, as before. Sandbox: the five ways: green.
+#           LAST VERIFIED: v0.9.252, 2026-10-20 (S378) -- 907/907 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3090 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S375 EDIT (v0.9.248, 2026-10-19): Scripts Slate C. The blocks of N58b,
 #           N58c, N70c and N72c, which assigned working objects at the top
 #           level, now in local(), as a check's working objects go since
@@ -7441,8 +7449,8 @@ check("N83i the slot guard is first and unchanged: a string near a setting name 
 check("N83j the hint is joptions()'s alone: the other choice errors are as they were, and .jst_stop_arg() without a hint is unchanged",
       identical(.fl(grab(jdeclare_missing(data.frame(Age = 1:3), Age, codes = 3, convention = "spps"))),
                 "jdeclare_missing(): `convention` must be \"spss\", \"stata\", or \"sas\".") &&
-        identical(grab(joutput("standrd")),
-                  "joutput(): `level` must be \"minimal\", \"standard\", or \"full\".") &&
+        identical(grab(joutput("standrd")),   # four levels since S378 (silent)
+                  "joutput(): `level` must be \"minimal\", \"standard\", \"full\",\nor \"silent\".") &&
         identical(grab(joptions(corr.layout = "wid")),
                   "joptions(): `corr.layout` must be \"wide\" or \"stacked\".") &&
         identical(grab(.jst_stop_arg("f", "x", choices = c("a", "b"))),

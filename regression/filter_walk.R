@@ -53,6 +53,17 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S378 EDIT (v0.9.252; Capability Slate C3): SECTION G7 RE-PINNED, by
+#           running (fill.R), mechanically: jplot()'s stop for three
+#           variables reads "To show a variable by the groups of another,
+#           add by = to the call, for example:", Jeff's wording (S378; the
+#           old "use by =, for example" read as a typo). Not on the PENDING
+#           line. A capture of every section of every walk on 0.9.251 and
+#           0.9.252: here only G7 moved.
+# LAST VERIFIED: v0.9.252, 2026-10-20 (S378) -- G7 re-pinned by running to
+#           Jeff's wording, not walked (not on the PENDING line); ALL
+#           BATTERIES GREEN (10 run, 3090 checks); R CMD check 0 errors, 0
+#           warnings, 0 notes.
 # S371 EDIT (v0.9.244; Fix Slate 19): NEW SECTION G9 -- 59 sections -> 60.
 #           Seven renders: ruling R23 (Jeff, S371) -- a call naming a
 #           variable and no data frame that also lacks an input it needs
@@ -1998,7 +2009,8 @@ caught(jplot(g7))
 caught(jplot(g7, Score7, Group7, Age7))
 # Expected:
 #   Caught: jplot(): only 1 or 2 variables can be plotted at once.
-#   To show a variable by the groups of another, use by =, for example:
+#   To show a variable by the groups of another, add by = to the call,
+#   for example:
 #     jplot(community, Age, by = Region)
 #   Or call jplot() once for each variable.
 

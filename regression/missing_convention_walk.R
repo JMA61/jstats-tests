@@ -94,6 +94,17 @@
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S378 (v0.9.252; Capability Slate C3). SECTION 67 RE-PINNED,
+#           by running (fill.R): Render 2's two jrelabel() calls, assigned,
+#           now print jrelabel()'s assign-or-lose reminder (Jeff's okay,
+#           S378), which modify_form_walk.R Section 31 walks in its own
+#           right. On the PENDING line. A capture of every section of every
+#           walk on 0.9.251 and 0.9.252: here only Section 67 moved (the
+#           temporary paths aside).
+# LAST VERIFIED: v0.9.252, 2026-10-20 (S378) -- Section 67 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           R CMD check 0 errors, 0 warnings, 0 notes; ALL BATTERIES GREEN
+#           (10 run, 3090 checks).
 # EDITED:   S374 (v0.9.247; Fix Slate 21, the S372 item). SECTION 71
 #           RE-PINNED, one line: Render 3's second note (S319's) declares the
 #           D1 note's -99 beside its own 0, codes = c(-99, 0), so running
@@ -7490,6 +7501,11 @@ jfreq(w67, Q)
 w67$Q <- jrelabel(w67, Q, labels = "1='Yes'; 2='No'; 9=Don't know")
 jfreq(w67, Q)
 # Expected:
+#   Note: This call changes w67 only if you assign the result:
+#     w67$Q <- jrelabel(...)
+#
+#   To label Q in w67 directly, rerun with modify = TRUE:
+#     jrelabel(..., modify = TRUE)
 #   Frequencies
 #
 #   5 Cases in the 1 Variable Pool
@@ -7504,6 +7520,11 @@ jfreq(w67, Q)
 #
 #   Total                    5    100.00
 #
+#   Note: This call changes w67 only if you assign the result:
+#     w67$Q <- jrelabel(...)
+#
+#   To label Q in w67 directly, rerun with modify = TRUE:
+#     jrelabel(..., modify = TRUE)
 #   Frequencies
 #
 #   5 Cases in the 1 Variable Pool

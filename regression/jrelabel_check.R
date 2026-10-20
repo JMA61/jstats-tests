@@ -28,6 +28,37 @@
 #           A ninth battery: run_all.R reads every *_check.R in the folder.
 #           MUTATION MAP (S359): jrelabel() dropping the declared codes of the
 #           column it labels J01 J27; jrecode()'s factor gate off J20.
+# S378 EDIT (v0.9.252, 2026-10-20): Capability Slate C3, jrelabel()'s list
+#           form and modify = TRUE (Jeff's rulings 1-3 and his okay of the
+#           reminder, S378). NEW SECTION F, ten checks: the list form with
+#           modify = TRUE, in place, declared codes kept, the line, the data
+#           frame returned invisibly (J33); without it, the stop pinned
+#           whole and its line run (J34); every variable checked first --
+#           types, not found, twice -- nothing changed (J35); var.label
+#           refused with a line that runs, no labels (J36); vars =, one name
+#           too, bare names and both slots redirected, empty (J37); variables
+#           listed one after another, a workspace object never read as the
+#           label (J38); modify = TRUE on one variable returning the
+#           variable (J39); the name guard's lines on a place and an
+#           expression, run (J40); the reminder at standard and full, not at
+#           minimal nor with modify, by data kind (J41); c(Q1) the one-
+#           variable form (J42). 32 -> 42 checks. MUTATION MAP (17
+#           one-change mutants, with filter_check.R; each red): the list
+#           form without modify allowed J34 J37 (and Y10); its result
+#           visible J33; no write-back J33 J37 J40; no type check J35;
+#           var.label allowed J36; no guard on listed variables J38; the
+#           one-variable modify returning the frame J39; the reminder at
+#           minimal J41; the reminder with modify J39 J41; the place guard
+#           removed J40; vars = of one name taken as one variable J37; c()
+#           of one taken as a list J42; the list form rebuilding a column
+#           J33; .jst_vars_dots_line()'s c() form or forced modify ignored
+#           J37; the place reminder offering modify J41. Sandbox: the five
+#           ways, and entered dirty: green, the workspace's values handed
+#           back.
+#           LAST VERIFIED: v0.9.252, 2026-10-20 (S378) -- 42/42 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3090 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # LAST VERIFIED: v0.9.232, 2026-10-16 (S359) -- 32/32 on the WORKSTATION
 #           through receive_all() ("ALL BATTERIES GREEN (9 run, 2646
 #           checks)"), matching the sandbox (R 4.3.3 / haven 2.5.4, plain,
@@ -301,6 +332,160 @@ check("J29 control: labels = with no new codes keeps the declaration on a range 
 rm(list = intersect(c(".j_p1", ".j_p2", ".j_p3", ".j_p4", ".j_p5a", ".j_p5b",
                       ".j_p6", ".j_p7", ".j_p8", ".j_p9", ".j_d", ".j_d2",
                       ".j_r1", ".j_r3", ".j_r4", ".j_r7"), ls(all.names = TRUE)))
+
+# --- F. The list form and modify = TRUE (S378, v0.9.252) ---------------------
+# Capability Slate C3, the (S219) item: rulings R30 (the list form only with
+# modify = TRUE) and its S378 corrections (the list a c() after the data
+# frame, vars = quoted; modify = TRUE on the one-variable form too, which
+# still returns the variable), and Jeff's okay of the assign-or-lose
+# reminder. Each check's working objects in local(), so a modify = TRUE
+# writes to the check's own environment, never the workspace.
+.jf_flat <- function(x) gsub("\\s+", " ", x)
+.jf_sv <- function() data.frame(
+  Q1 = c(1, 3, 2), Q2 = c(2, 2, 3),
+  Q3 = haven::labelled_spss(c(3, 1, -99), labels = c(Refused = -99),
+                            na_values = -99),
+  Name = c("a", "b", "c"), F = factor(c("x", "y", "x")),
+  stringsAsFactors = FALSE)
+.jf_lab <- "1=Never; 2=Sometimes; 3=Often"
+
+check("J33 the list form with modify = TRUE labels every variable in the data frame itself, keeps a declared code on each (the in-place contract), says what it did, and returns the data frame invisibly -- so e <- ... keeps a copy",
+      local({ sv <- .jf_sv()
+              msg <- grab(v <- withVisible(jrelabel(sv, c(Q1, Q2, Q3), labels = .jf_lab, modify = TRUE)))
+              q1 <- sv$Q1
+              e <- suppressMessages(jrelabel(sv, c(Q1, Q2), labels = "1=One", modify = TRUE))
+              identical(msg, "Value labels applied to Q1, Q2, and Q3 in sv.\n") &&
+                !v$visible && is.data.frame(v$value) &&
+                identical(unname(labelled::val_labels(q1)), c(1, 2, 3)) &&
+                identical(names(labelled::val_labels(v$value$Q2)), c("Never", "Sometimes", "Often")) &&
+                identical(attr(v$value$Q3, "na_values"), -99) &&
+                inherits(v$value$Q3, "haven_labelled_spss") &&
+                identical(names(labelled::val_labels(sv$Q1)), "One") &&
+                identical(e, sv) }))
+check("J34 without modify = TRUE the list form stops before anything, offering the call with it added (pinned whole); the offered line runs as printed",
+      local({ sv <- .jf_sv(); sv0 <- sv
+              m <- grab(jrelabel(sv, c(Q1, Q2, Q3), labels = "1=Never; 2=Sometimes; 3=Often"))
+              ln <- paste(trimws(strsplit(m, "\n", fixed = TRUE)[[1L]][3:4]), collapse = " ")
+              identical(m, paste0(
+                "jrelabel(): labelling several variables changes sv itself, so it\n",
+                "needs modify = TRUE:\n",
+                "  jrelabel(sv, c(Q1, Q2, Q3), labels = \"1=Never; 2=Sometimes; 3=Often\",\n",
+                "      modify = TRUE)")) &&
+                identical(sv, sv0) &&
+                identical(grab(eval(str2lang(ln))), "Value labels applied to Q1, Q2, and Q3 in sv.\n") }))
+check("J35 every variable is checked before any is changed: a type that cannot take value labels (each named, pinned), a name not found, a name twice -- and nothing changed",
+      local({ sv <- .jf_sv(); sv0 <- sv
+              a <- grab(jrelabel(sv, c(Q1, Name, F), labels = "1=a", modify = TRUE))
+              b <- grab(jrelabel(sv, c(Q1, Qz), labels = "1=a", modify = TRUE))
+              d <- grab(jrelabel(sv, c(Q1, Q1), labels = "1=a", modify = TRUE))
+              identical(a, paste0(
+                "jrelabel(): 'Name' is a character (text) variable and 'F' is a\n",
+                "factor; value labels can only be applied to numeric variables.\n",
+                "Nothing was changed. Convert them to numbers first with jencode(), or leave\n",
+                "them out of the list.")) &&
+                identical(b, "jrelabel(): Qz was not found in the sv data frame.\nCheck the spelling.") &&
+                identical(d, "jrelabel(): variable name given more than once: 'Q1'.") &&
+                identical(sv, sv0) }))
+check("J36 a variable label is refused in the list form, with a line that labels one variable and runs; no labels at all stops with the form of labels =",
+      local({ sv <- .jf_sv(); sv0 <- sv
+              a <- grab(jrelabel(sv, c(Q1, Q2), labels = "1=a", var.label = "Item", modify = TRUE))
+              b <- grab(jrelabel(sv, c(Q1, Q2), modify = TRUE))
+              ln <- trimws(strsplit(a, "\n", fixed = TRUE)[[1L]][4L])
+              ok_a <- identical(.jf_flat(a), paste0(
+                "jrelabel(): var.label = names one variable, so it cannot go with a ",
+                "list of variables. Give each variable its label in a call of its own, for example: ",
+                "sv$Q1 <- jrelabel(sv, Q1, var.label = \"Item\")"))
+              suppressMessages(eval(str2lang(ln)))
+              ok_a && identical(labelled::var_label(sv$Q1), "Item") &&
+                identical(b, paste0("jrelabel(): no labels specified.\n",
+                                    "A list of variables takes the value labels to apply to each, for example:\n",
+                                    "  labels = \"1=Yes; 0=No\"")) }))
+check("J37 vars = takes a stored list of names in quotes, and follows the list rules whatever its length -- one name too: modify = TRUE needed, the data frame returned; names typed bare there, or given twice, get the c() line; an empty list stops",
+      local({ sv <- .jf_sv(); items <- c("Q1", "Q2"); one <- "Q1"
+              m1 <- grab(r1 <- jrelabel(sv, vars = items, labels = "1=x", modify = TRUE))
+              m2 <- grab(jrelabel(sv, vars = one, labels = "1=y"))
+              r3 <- suppressMessages(jrelabel(sv, vars = one, labels = "1=y", modify = TRUE))
+              m4 <- grab(jrelabel(sv, vars = c(Q1, Q2), labels = "1=b"))
+              m5 <- grab(jrelabel(sv, Q1, vars = "Q2", labels = "1=b", modify = TRUE))
+              m6 <- grab(jrelabel(sv, vars = character(0), labels = "1=b", modify = TRUE))
+              identical(m1, "Value labels applied to Q1 and Q2 in sv.\n") && is.data.frame(r1) &&
+                identical(.jf_flat(m2), paste0("jrelabel(): labelling several variables changes sv itself, so it needs modify = TRUE: ",
+                                              "jrelabel(sv, vars = one, labels = \"1=y\", modify = TRUE)")) &&
+                is.data.frame(r3) && identical(names(labelled::val_labels(sv$Q1)), "y") &&
+                identical(.jf_flat(m4), paste0("jrelabel(): vars = takes names in quotes. To name the variables without quotes, ",
+                                              "list them after the data frame: jrelabel(sv, c(Q1, Q2), labels = \"1=b\", modify = TRUE)")) &&
+                identical(.jf_flat(m5), paste0("jrelabel(): the variables are named twice: after the data frame and in vars =. ",
+                                              "Name them in one place: jrelabel(sv, c(Q1, Q2), labels = \"1=b\", modify = TRUE)")) &&
+                grepl("`vars` must be one or more variable names in quotes", .jf_flat(m6), fixed = TRUE) }))
+check("J38 variables listed one after another, as the data-first functions take them: the stop gives the c() line with modify = TRUE (pinned), a workspace object named like one of them never read as the variable label, labels kept as typed or positional",
+      local({ sv <- .jf_sv(); sv0 <- sv; Q2 <- "oops"
+              a <- grab(jrelabel(sv, Q1, Q2, Q3, labels = "1=a"))
+              b <- grab(jrelabel(sv, Q1, Q2, "1=a"))
+              identical(a, paste0(
+                "jrelabel(): only one variable goes after the data frame, and this\n",
+                "call gives Q1, Q2, and Q3.\n",
+                "To label them all at once, list them in c() and add modify = TRUE:\n",
+                "  jrelabel(sv, c(Q1, Q2, Q3), labels = \"1=a\", modify = TRUE)")) &&
+                grepl("jrelabel(sv, c(Q1, Q2), labels = \"1=a\", modify = TRUE)", b, fixed = TRUE) &&
+                identical(sv, sv0) }))
+check("J39 modify = TRUE on one variable: the variable labeled in the data frame, the line saying so, and the VARIABLE returned (Jeff, S378) -- identical to the assigned form's; a variable label too",
+      local({ sv <- .jf_sv(); sv2 <- sv
+              m <- grab(r <- jrelabel(sv, Q1, labels = "1=Uno", modify = TRUE))
+              r2 <- suppressMessages(jrelabel(sv2, Q1, labels = "1=Uno"))
+              m3 <- grab(jrelabel(sv, Q2, labels = "2=Dos", var.label = "Item 2", modify = TRUE))
+              m4 <- grab(jrelabel(sv, Q2, var.label = "Item two", modify = TRUE))
+              identical(m, "Value labels applied to Q1 in sv.\n") &&
+                identical(r, r2) && identical(sv$Q1, r2) && !is.data.frame(r) &&
+                identical(m3, "Value labels and a variable label applied to Q2 in sv.\n") &&
+                identical(m4, "Variable label applied to Q2 in sv.\n") &&
+                identical(labelled::var_label(sv$Q2), "Item two") }))
+check("J40 modify = TRUE needs a data frame with a name: on a place, the assignment line (one variable) or the three lines (a list); on an expression, the naming line -- each runs, and nothing changed",
+      local({ sv <- .jf_sv(); lst <- list(d = sv); mk <- function() sv
+              a <- grab(jrelabel(lst$d, Q1, labels = "1=x", modify = TRUE))
+              b <- grab(jrelabel(lst$d, c(Q1, Q2), labels = "1=x", modify = TRUE))
+              c1 <- grab(jrelabel(mk(), Q1, labels = "1=x", modify = TRUE))
+              lines_of <- function(m) trimws(grep("^  ", strsplit(m, "\n", fixed = TRUE)[[1L]], value = TRUE))
+              ok <- identical(lines_of(a), "lst$d$Q1 <- jrelabel(lst$d, Q1, labels = \"1=x\")") &&
+                identical(lines_of(b), c("mydata <- lst$d",
+                                         "jrelabel(mydata, c(Q1, Q2), labels = \"1=x\", modify = TRUE)",
+                                         "lst$d <- mydata")) &&
+                identical(lines_of(c1), c("mydata <- mk()",
+                                          "jrelabel(mydata, Q1, labels = \"1=x\", modify = TRUE)")) &&
+                identical(lst$d, sv)
+              suppressMessages(for (l in lines_of(b)) eval(str2lang(l)))
+              ok && identical(names(labelled::val_labels(lst$d$Q2)), "x") }))
+check("J41 the assign-or-lose reminder after a one-variable call without modify = TRUE -- assigned or not, since a function cannot tell -- at standard and full; none at minimal, none with modify = TRUE; a place gets the assignment line alone, an expression the naming line, the juse() default its name",
+      local({ sv <- .jf_sv(); lst <- list(d = sv); mk <- function() sv
+              on.exit(options(.jst_output_level = .entry_output_level), add = TRUE)
+              want <- paste0("Note: This call changes sv only if you assign the result:\n",
+                             "  sv$Q1 <- jrelabel(...)\n\n",
+                             "To label Q1 in sv directly, rerun with modify = TRUE:\n",
+                             "  jrelabel(..., modify = TRUE)\n")
+              a <- grab(sv$Q1 <- jrelabel(sv, Q1, labels = "1=a"))
+              b <- grab(jrelabel(sv, Q1, labels = "1=a"))
+              options(.jst_output_level = "full"); f <- grab(jrelabel(sv, Q1, labels = "1=a"))
+              options(.jst_output_level = "minimal"); n <- grab(jrelabel(sv, Q1, labels = "1=a"))
+              n2 <- grab(jrelabel(sv, Q1, labels = "1=a", modify = TRUE))
+              options(.jst_output_level = NULL)
+              p <- grab(jrelabel(lst$d, Q1, labels = "1=a"))
+              x <- grab(jrelabel(mk(), Q1, labels = "1=a"))
+              suppressMessages(juse(sv)); on.exit(suppressMessages(juse(NULL)), add = TRUE)
+              u <- grab(jrelabel(Q2, labels = "1=a"))
+              identical(a, want) && identical(b, want) && identical(f, want) &&
+                identical(n, "") && identical(n2, "") &&
+                identical(p, paste0("Note: This call changes lst$d only if you assign the result:\n",
+                                    "  lst$d$Q1 <- jrelabel(...)\n")) &&
+                identical(x, paste0("Note: The result is kept only if you assign it.\n",
+                                    "Name the data frame first, then assign the result to a variable in it:\n",
+                                    "  mydata <- mk()\n",
+                                    "  mydata$Q1 <- jrelabel(mydata, ...)\n")) &&
+                grepl("  sv$Q2 <- jrelabel(...)", u, fixed = TRUE) }))
+check("J42 c(Q1) after the data frame is the one-variable form: the variable returned, modify not needed, the reminder given",
+      local({ sv <- .jf_sv()
+              m <- grab(r <- jrelabel(sv, c(Q1), labels = "1=a"))
+              !is.data.frame(r) && identical(names(labelled::val_labels(r)), "a") &&
+                grepl("only if you assign the result", m, fixed = TRUE) }))
+rm(.jf_flat, .jf_sv, .jf_lab)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # Keep these three at the foot, below every grab(), and number them into the

@@ -83,6 +83,31 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S378 EDIT (v0.9.251, 2026-10-20): Capability Slate C3. NEW SECTION AB,
+#           five checks: "logit" is a plot of a jlogistic() result, drawn
+#           by name and by "all", not by "core", and listed in the plot-name
+#           stop (AB01); its line is the probability plot's on the link
+#           scale, band included, and straight, x1's coefficient its slope
+#           (AB02); the rug, every case once, the outcome at the top, the
+#           held note and at = "mean" (AB03); a dummy-coded focal variable's
+#           log-odds at each category, qlogis() of the probability plot's,
+#           labeled as the coefficient table labels them (AB04); the
+#           intercept-only model's note and the bare-name pointer (AB05).
+#           RE-PINNED: Z04's jlogistic() plot list ("logit" after
+#           "probability"); AA04's stop for scatter beside a name that is
+#           no plot names that name alone (it had said both "are not
+#           plots", false of scatter: the S377 item). 523 -> 528 checks.
+#           MUTATION MAP (with filter_check.R and cps_check.R): the logit
+#           line on the probability scale AB02; the rug's sides swapped
+#           AB03; the category predictions' link scale ignored AB04;
+#           "logit" not among the plots Z04 AB01-AB05; the no-predictor
+#           skip without it U08 AB05; the explained name named beside the
+#           other AA04 (and AJ03). Sandbox: the five ways, and entered
+#           dirty as filter_check.R was: green.
+#           LAST VERIFIED: v0.9.252, 2026-10-20 (S378) -- 528/528 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3090 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S377 EDIT (v0.9.250, 2026-10-20): Fix Slate 23. NEW SECTION AA, five
 #           checks: jplot() reads numeric =, categorical = and count = as
 #           names, bare or in quotes, in the data-first form (AA01) and the
@@ -5967,9 +5992,9 @@ check("Z04 jplot() draws no VIF plot (Jeff, S376: the table gives the same numbe
               identical(em, paste0("jplot(): \"vif\" is not a plot of a jlm() result.\n",
                                    "`which` must be \"core\", \"all\", or one or more of \"fit\", \"predicted\",\n",
                                    "\"effects\", \"coef\", \"residuals\", \"qq\", \"scale\", \"cooks\", and \"leverage\".")) &&
-                identical(el, paste0("jplot(): \"vif\" is not a plot of a jlogistic() result.\n",
-                                     "`which` must be \"core\", \"all\", or one or more of \"probability\", \"roc\",\n",
-                                     "\"calibration\", \"binned\", \"cooks\", \"leverage\", and \"coef\".")) &&
+                identical(el, paste0("jplot(): \"vif\" is not a plot of a jlogistic() result.\n",   # "logit" since S378
+                                     "`which` must be \"core\", \"all\", or one or more of \"probability\", \"logit\",\n",
+                                     "\"roc\", \"calibration\", \"binned\", \"cooks\", \"leverage\", and \"coef\".")) &&
                 is.list(pm) && !("vif" %in% names(pm)) && "coef" %in% names(pm) &&
                 is.list(pl) && !("vif" %in% names(pl)) && "coef" %in% names(pl) &&
                 !any(vapply(c(pm, pl), function(p) identical(p$labels$title, "Variance Inflation Factors"), logical(1))) &&
@@ -6038,7 +6063,7 @@ check("AA03 jcorr()'s scatter plot asked of a result of three variables: the sto
                 identical(grab(jplot(rs, which = "scatter")),
                           .aa_sc(".aa_d", ", method = \"spearman\"")) &&
                 identical(grab(jplot(ro, which = "scatter")), .aa_sc("MyData")) }))
-check("AA04 the stop's two lines run and draw the scatter plot; a two-variable result's scatter and a three-variable result's heat map unchanged; a name it does not take beside scatter keeps the plot-name stop",
+check("AA04 the stop's two lines run and draw the scatter plot; a two-variable result's scatter and a three-variable result's heat map unchanged; a name it does not take beside scatter gets the plot-name stop naming that name alone (S378: it had said both \"are not plots\", false of scatter)",
       local({ r  <- quiet(jcorr(.aa_d, x1, x2, y))
               ln <- strsplit(grab(jplot(r, which = "scatter")), "\n", fixed = TRUE)[[1L]]
               ln <- trimws(ln[startsWith(ln, "  ")])
@@ -6050,7 +6075,7 @@ check("AA04 the stop's two lines run and draw the scatter plot; a two-variable r
                 identical(.aa_gm(p2), "GeomPoint") &&
                 identical(h$labels$title, "Correlation Matrix") &&
                 identical(grab(jplot(r, which = c("scatter", "zzz"))),
-                          paste0("jplot(): \"scatter\" and \"zzz\" are not plots of a jcorr() result.\n",
+                          paste0("jplot(): \"zzz\" is not a plot of a jcorr() result.\n",
                                  "`which` must be \"core\", \"all\", or \"heatmap\".")) }))
 check("AA05 a two-variable result's scatter plot draws the pairs the correlation used: a case missing either value is left out with no warning (ggplot2 had said \"Removed 6 rows containing missing values\"), its points N; the result carries data_name as a three-variable one does",
       local({ dn <- .aa_d; dn$x1[1:4] <- NA; dn$x2[c(4, 9, 10)] <- NA
@@ -6060,6 +6085,86 @@ check("AA05 a two-variable result's scatter plot draws the pairs the correlation
               identical(grab(jplot(r)), "") && !is.null(p) &&
                 nrow(p$data) == r$n[1L, 2L] && r$n[1L, 2L] == 74L }))
 rm(.aa_d, .aa_st, .aa_gm, .aa_sc)
+
+# =============================================================================
+# AB -- CAPABILITY SLATE C3: THE LOGIT-SCALE PLOT (S378)
+# =============================================================================
+# jplot(which = "logit") on a jlogistic() result: the probability plot's
+# companion on the log-odds scale, where the fitted line is straight. The
+# same grid, the same held values (at =), the same 95% band, carried
+# through qlogis() rather than plogis(): the logit plot's line is the
+# probability plot's line on the link scale, point for point. The cases go
+# in as a rug along the axis (the outcome at the top, the others at the
+# bottom), since a 0/1 outcome has no log-odds to plot. At a dummy-coded
+# focal variable's categories, the log-odds at each with its interval. Not
+# in the core set; "all" draws it; the intercept-only model leaves it out
+# with the note. Fixture d (yb on x1 and g); working objects in local().
+# =============================================================================
+cat("\n--- AB. Capability Slate C3: the logit-scale plot ---\n")
+
+.ab_layer <- function(p, cls) {
+  if (is.null(p)) return(NULL)
+  for (l in p$layers) if (inherits(l$geom, cls)) return(l)
+  NULL
+}
+check("AB01 \"logit\" is a plot of a jlogistic() result -- drawn by name and by \"all\", not by \"core\" -- and the stop for a name it lacks lists it",
+      local({ m <- quiet(jlogistic(yb ~ x1 + x2, d))
+              one <- quiet(jplot(m, which = "logit"))
+              all <- quiet(jplot(m, which = "all"))
+              core <- quiet(jplot(m))
+              inherits(one, "ggplot") &&
+                "logit" %in% names(all) && !"logit" %in% names(core) &&
+                grepl("\"probability\", \"logit\", \"roc\"", flat(grab(jplot(m, which = "zzz"))), fixed = TRUE) }))
+check("AB02 the logit plot's line is the probability plot's line on the link scale: at every grid point qlogis(probability) equals the log-odds, band included, and the line is straight (x1's coefficient its slope)",
+      local({ m <- quiet(jlogistic(yb ~ x1 + x2, d))
+              pp <- quiet(jplot(m, which = "probability"))
+              pl <- quiet(jplot(m, which = "logit"))
+              lp <- .ab_layer(pp, "GeomLine")$data; ll <- .ab_layer(pl, "GeomLine")$data
+              rp <- .ab_layer(pp, "GeomRibbon")$data; rl <- .ab_layer(pl, "GeomRibbon")$data
+              b  <- stats::coef(m$model)
+              isTRUE(all.equal(stats::qlogis(lp$fit), ll$fit)) &&
+                isTRUE(all.equal(stats::qlogis(rp$lwr), rl$lwr)) &&
+                isTRUE(all.equal(stats::qlogis(rp$upr), rl$upr)) &&
+                isTRUE(all.equal(diff(ll$fit) / diff(ll$x), rep(unname(b["x1"]), nrow(ll) - 1L))) &&
+                isTRUE(all.equal(ll$fit, unname(b["(Intercept)"]) + unname(b["x1"]) * ll$x)) }))
+check("AB03 the rug: every case once, those with the outcome at the top and the others at the bottom; the held note names x2 at 0, and at = \"mean\" moves the line as it moves the probability plot's",
+      local({ m <- quiet(jlogistic(yb ~ x1 + x2, d))
+              pl <- quiet(jplot(m, which = "logit"))
+              rugs <- Filter(function(l) inherits(l$geom, "GeomRug"), pl$layers)
+              sides <- vapply(rugs, function(l) l$geom_params$sides, character(1))
+              n_t <- nrow(rugs[[which(sides == "t")]]$data); n_b <- nrow(rugs[[which(sides == "b")]]$data)
+              pm <- quiet(jplot(m, which = "logit", at = "mean"))
+              length(rugs) == 2L && n_t == sum(d$yb == 1) && n_b == sum(d$yb == 0) &&
+                identical(pl$labels$subtitle, "(line shown at x2 = 0)") &&
+                grepl("^\\(line shown at x2 = ", pm$labels$subtitle) &&
+                !isTRUE(all.equal(.ab_layer(pl, "GeomLine")$data$fit, .ab_layer(pm, "GeomLine")$data$fit)) &&
+                identical(pl$labels$title, "Log-odds (Logit Scale): yb = 1") &&
+                identical(pl$labels$y, "Log-odds of yb = 1") }))
+check("AB04 a dummy-coded focal variable: the log-odds at each category with its interval, qlogis() of the probability plot's, the categories labeled as the coefficient table labels them",
+      local({ m <- quiet(jlogistic(yb ~ g + x1, d))
+              pp <- quiet(jplot(m, which = "probability", focal = g))
+              pl <- quiet(jplot(m, which = "logit", focal = g))
+              ep <- .ab_layer(pp, "GeomErrorbar")$data; el <- .ab_layer(pl, "GeomErrorbar")$data
+              # the probability plot's point layers: the cases first, the predictions last;
+              # the logit plot has the predictions alone (a 0/1 outcome has no log-odds)
+              pts_p <- Filter(function(l) inherits(l$geom, "GeomPoint"), pp$layers)
+              pts_l <- Filter(function(l) inherits(l$geom, "GeomPoint"), pl$layers)
+              yp <- pts_p[[length(pts_p)]]$data$fit; yl <- pts_l[[length(pts_l)]]$data$fit
+              nrow(el) == 4L && isTRUE(all.equal(stats::qlogis(ep$lwr), el$lwr)) &&
+                isTRUE(all.equal(stats::qlogis(ep$upr), el$upr)) &&
+                isTRUE(all.equal(stats::qlogis(yp), yl)) &&
+                identical(as.character(el$x), c("1: a", "2: b", "3: c", "4: d")) &&
+                identical(pl$labels$subtitle, "(log-odds shown at x1 = 0)") &&
+                length(pts_l) == 1L }))
+check("AB05 the intercept-only model leaves the logit plot out with the note, as it leaves the probability plot; a plot name typed bare gets the pointer",
+      local({ m0 <- quiet(jlogistic(yb ~ 1, d))
+              m  <- quiet(jlogistic(yb ~ x1, d))
+              grepl("the logit-scale plot is not drawn", grab(jplot(m0, which = "logit")), fixed = TRUE) &&
+                identical(grab(jplot(m, which = logit)),
+                          paste0("jplot(): logit is not in quotes.\n",
+                                 "which = takes a plot name in quotes:\n",
+                                 "  jplot(m, which = \"logit\")")) }))
+rm(.ab_layer)
 
 # --- Verdict -----------------------------------------------------------------
 
