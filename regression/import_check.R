@@ -80,12 +80,24 @@
 #           the file lacks stops before the read and the question) and na =
 #           for CSV and Excel files; both stop on any other format, in one
 #           stop with header = FALSE; na = a number or a bare word stops.
+#           Since v0.9.255 (section X, X14 rewritten and X23-X28; Fix Slate
+#           24, the (S380) item and its rider): a sheet's variable of
+#           numbers that also holds a number stored as text is named by the
+#           note, with base R's lines in place of a reload -- its cells made
+#           missing (== for one value, %in% for several), then as.numeric()
+#           -- and no scan block; beside a variable the reload serves, the
+#           reload first and its as.numeric() line after; a stored number
+#           with a leading zero passes the variable over, to the scan. Every
+#           as.numeric() line jload() offers puts back the label it gave a
+#           renamed variable, CSV and sheet alike. Each line runs, with no
+#           warning, and the offered lines' shape (.calls(), Z03) takes a
+#           subscripted assignment.
 # ORIGIN:   S362 (v0.9.235). The tenth battery. Section R added S362, the
 #           second build (v0.9.236). Section S added S365 (v0.9.237).
 #           Section T added S366 (v0.9.238). Section U added S367
 #           (v0.9.239). Section V added, U05 re-pinned, S368 (v0.9.240).
 #           Section W added S373 (v0.9.246). Section X added S380
-#           (v0.9.254).
+#           (v0.9.254); X14 rewritten and X23-X28 added S381 (v0.9.255).
 # FIXTURES: written by this file into a folder of R's temporary folder,
 #           except one that R cannot write: datasets/import_guess_text.xlsx
 #           (section G). writexl gives every cell of a column one type, and
@@ -152,6 +164,33 @@
 #           Income: number cells and the text cells N/A, - and .; Code:
 #           number cells, one number stored as text ("9") and N/A; Diag:
 #           text cells throughout.
+#           S381, two more, for X23-X28 (and modify_form_walk.R Section
+#           34), made the same way (openpyxl 3.1.5):
+#               wb = openpyxl.Workbook(); ws = wb.active; ws.title = "Stored"
+#               ws.append(["id", "Score no."])
+#               score = [7, "8", "9", 5, "-", "N/A", 3, 6, 2, 1]
+#               for i in range(10):
+#                   ws.append([i + 1, score[i]])
+#               wb.save("import_stored.xlsx")
+#               wb = openpyxl.Workbook(); ws = wb.active; ws.title = "Stored2"
+#               ws.append(["id", "A", "B", "PC", "ID", "Half"])
+#               a  = [1, 2, "3", 4, "N/A", 6, 7, 8, 9, 10]
+#               b  = [1, 2, 3, "4", 5, "-", 7, 8, 9, 10]
+#               pc = [4000, 4101, "0800", 4006, "N/A", 4000, 4101, 4006,
+#                     4000, 4101]
+#               ids = [1001, 1002, 1003, "12345678901234567", 1005, 1006,
+#                      "N/A", 1008, 1009, 1010]
+#               half = [1, "2", "3", 4, "5", 6, "7", "8", 9, "N/A"]
+#               for i in range(10):
+#                   ws.append([i + 1, a[i], b[i], pc[i], ids[i], half[i]])
+#               wb.save("import_stored2.xlsx")
+#           datasets/import_stored.xlsx: "Score no." (renamed Score_no),
+#           number cells, two numbers stored as text ("8", "9") and the text
+#           cells - and N/A. datasets/import_stored2.xlsx: A and B, number
+#           cells with one number stored as text and one N/A or -; PC,
+#           postcodes as number cells with "0800" stored as text and N/A;
+#           ID, number cells with a 17-digit ID stored as text and N/A;
+#           Half, four number cells, five numbers stored as text and N/A.
 # MUTATION MAP (S362; 42 one-change mutants of the new code, this battery
 #           on each): the outer strip A01 A05-A07 B01 B03 C03; the
 #           underscore collapse A07; V's position A01 A06 B01 B03 C04 C05
@@ -291,6 +330,23 @@
 #           value was a word (the count test below it already returned) and
 #           the footnote run's stop at the first case (a run that long
 #           leaves the first variable no numbers).
+#           Section X, S381 (v0.9.255; Fix Slate 24; 22 one-change mutants
+#           of the new code, run detached, this battery on each, 21 red):
+#           the stored number's skip put back X14 X17 X23 X24 X25; the
+#           leading-zero guard X25 X26, the digit-count guard X23 X25 X26;
+#           stored counted as none X14 X17 X23 X24 X25; the one-variable
+#           form's values line X23 X24, its reload in place of the lines X17
+#           X23 X24, its count X24; the mixed form given values lines X14,
+#           its reload dropped X14, "a number" X14; the form for all stored
+#           X25; == always %in% X23 X25; the label line X24 X27, no label
+#           read X24 X27, the label unescaped X27 Z03, the kept note given
+#           no labels X27, the marker note given none X24, the kept lines
+#           joined X27; the scan keeping a stored variable X14 X23; the
+#           values from every text cell X14 X23 X24 X25; "more than half"
+#           over the words alone X23 X25 X28. One survivor, EQUIVALENT, not
+#           a gap: the counts tabulated over every text cell rather than the
+#           words (factor() with the words as levels drops the numbers, so
+#           the counts are the same).
 # FIRST WORKSTATION RUN (S362, the first delivery): 81/83. F03 -- the
 #           title note's line, run as offered, met jload()'s overwrite
 #           question: the workstation runs the batteries in an interactive
@@ -302,6 +358,31 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
+# S381 EDIT (v0.9.255, 2026-10-20): X14 REWRITTEN, X17 AMENDED, X23-X28
+#           ADDED (Fix Slate 24: the (S380) item, a sheet's number stored as
+#           text, and its rider, the label line), with the fixtures
+#           datasets/import_stored.xlsx and import_stored2.xlsx (their recipe
+#           under FIXTURES). X14: Code, beside a number stored as text, now
+#           shares Income's note, its as.numeric() line after the reload; the
+#           scan names Diag alone. X17: with text = Income, Code is in the
+#           note. .calls() and Z03's shape take an assignment to a subscript
+#           (k$A[k$A == "N/A"] <- NA); .runw(), new, returns the warnings
+#           the offered lines raise, so each check of them asks for none.
+#           Sandbox: 183/183, run_all.R 3130 across ten, plain and under the
+#           RStudio-handler stand-in, each again with a 65-character temp
+#           path, once with interactive() TRUE (0 "Overwrite?"), and entered
+#           dirty (joutput("full") with diagnostics, width 101, a juse()
+#           default, a stata convention, jstats.color = TRUE, stored
+#           jsubset(), jcomplete(), jdummy() and jnumeric() settings on a
+#           frame of its own, the load-notice flag, workspace objects named
+#           like its working objects -- k, kb, e, f, m, mb, x, ws, cl, p --
+#           and like the fixtures' variables -- Code, Score_no, A, B, PC, ID,
+#           Half, Post_code, Zip_new, Plain), plain and under the stand-in:
+#           green, nothing changed.
+#           LAST VERIFIED: v0.9.255, 2026-10-20 (S381) -- 183/183 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3130 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S380 EDIT (v0.9.254, 2026-10-20): SECTION X ADDED (ruling R31), 22
 #           checks, and the fixture datasets/import_markers.xlsx (its recipe
 #           under FIXTURES). FIRST WORKSTATION RUN: the receive stopped at
@@ -559,9 +640,12 @@ run <- function(expr) {
 }
 # The calls a message offers, parsed: each indented line that opens a call
 # or an assignment, joined with the indented lines under it until it parses.
+# Since S381 an assignment to a subscript counts (k$A[k$A == "N/A"] <- NA,
+# the first of the lines the note on a few cells gives a number stored as
+# text); the same shape in Z03 below.
 .calls <- function(m) {
   ls <- strsplit(m, "\n", fixed = TRUE)[[1]]
-  shape <- "^ {2,}[A-Za-z.][A-Za-z0-9._]*(\\$[A-Za-z0-9._]+)* *(\\(|<- )"
+  shape <- "^ {2,}[A-Za-z.][A-Za-z0-9._]*(\\$[A-Za-z0-9._]+)*(\\[[^]]*\\])? *(\\(|<- )"
   out <- list(); i <- 1L
   while (i <= length(ls)) {
     if (grepl(shape, ls[i])) {
@@ -2114,18 +2198,43 @@ check("X13 read with header = FALSE, a variable whose first cell is a word is no
         .ix_w("X13.csv", c("score", "12", "15", "11", "14"))
         m <- .gx(eval(quote(jload(.ix("X13.csv"), name = "k", header = FALSE)), e))
         !grepl("numbers except", m, fixed = TRUE) && identical(e$k$V1[1], "score") }))
-check("X14 a sheet: Income's number cells with three text cells get the note, and its line runs; Code, a number stored as text among them, and Diag, text cells throughout, get none",
+# S381: the offered lines run in order in e, the warnings they raise
+# returned (the base R lines for a number stored as text must raise none:
+# as.numeric() on a cell still holding N/A warns "NAs introduced by
+# coercion"). Output and notes are dropped.
+.runw <- function(cl, e) {
+  ws <- character(0)
+  for (x in cl) {
+    withCallingHandlers(
+      invisible(utils::capture.output(suppressMessages(eval(x, e)))),
+      warning = function(w) {
+        ws <<- c(ws, conditionMessage(w)); invokeRestart("muffleWarning")
+      })
+  }
+  ws
+}
+check("X14 a sheet: Income's number cells with three text cells, and Code's beside one number stored as text and an N/A, share one note; its lines -- the reload with na =, then Code's as.numeric() -- run in order with no warning and give both as numbers; Diag, text cells throughout, is not in it, and the scan names Diag alone (pinned)",
       local({ e <- new.env(parent = globalenv())
         f <- file.path(.ix_data, "import_markers.xlsx")
-        m <- .fl(.gx(eval(bquote(jload(.(f), name = "k")), e)))
-        cl <- .calls(.gx(eval(bquote(jload(.(f), name = "k", overwrite = TRUE)), e)))
-        invisible(.gx(eval(cl[[1L]], e)))
-        grepl("Note: Income is numbers except for 3 cells: \"N/A\" (1), \"-\" (1), \".\" (1).",
-              m, fixed = TRUE) &&
-          !grepl("Code is numbers", m, fixed = TRUE) &&
-          !grepl("Diag is numbers", m, fixed = TRUE) && length(cl) == 1L &&
+        m <- .gx(eval(bquote(jload(.(f), name = "k")), e))
+        p <- run(eval(bquote(jload(.(f), name = "k", overwrite = TRUE)), e))$txt
+        cl <- .calls(m)
+        ws <- .runw(cl, e)
+        grepl(paste0("Note: 2 variables are numbers except for a few cells, so ",
+                     "they were read as text: Income \"N/A\" (1), \"-\" (1), ",
+                     "\".\" (1) Code \"N/A\" (1) Code also holds a number ",
+                     "stored as text in the sheet, which na = does not change. ",
+                     "To read those cells as missing and the variables as ",
+                     "numbers:"), .fl(m), fixed = TRUE) &&
+          length(cl) == 2L && identical(cl[[1L]][[1L]], quote(jload)) &&
+          identical(eval(cl[[1L]]$na), c("N/A", "-", ".")) &&
+          identical(deparse(cl[[2L]]), "k$Code <- as.numeric(k$Code)") &&
+          length(ws) == 0L &&
           is.numeric(e$k$Income) && sum(is.na(e$k$Income)) == 3L &&
-          is.character(e$k$Diag) }))
+          identical(e$k$Code, c(7, 8, 9, 5, 4, NA, 3, 6, 2, 1)) &&
+          is.character(e$k$Diag) && !grepl("Diag is numbers", m, fixed = TRUE) &&
+          grepl("  Diag:  \"N/A\" (1)", p, fixed = TRUE) &&
+          !grepl("  Code:", p, fixed = TRUE) }))
 check("X15 text = reads variables exactly as written -- 250.10 kept, the word NA and N/A kept, na = not applied there -- named bare, quoted, in c(), by the file's name or the cleaned one, or by a name holding names",
       local({ e <- new.env(parent = globalenv())
         e$cols15 <- c("Diag", "Note")
@@ -2149,7 +2258,7 @@ check("X16 a name text = gives that the file does not have stops before the read
         grepl("Postcde and Idd were not found in X01.csv.\nIts variables are id and Postcode.",
               m, fixed = TRUE) && !grepl("<asked>", m, fixed = TRUE) &&
           identical(e$k, "here before") }))
-check("X17 a sheet: text = gives number cells as their digits and keeps its variables out of na = and out of the note on a few cells; na = reads the cells it names as missing everywhere else",
+check("X17 a sheet: text = gives number cells as their digits and keeps its variables out of na = and out of the note on a few cells (since S381 Code, beside a number stored as text, is in it when not named); na = reads the cells it names as missing everywhere else",
       local({ e <- new.env(parent = globalenv())
         f <- file.path(.ix_data, "import_markers.xlsx")
         invisible(.gx(eval(bquote(jload(.(f), name = "k", text = c(Code, Diag),
@@ -2159,7 +2268,8 @@ check("X17 a sheet: text = gives number cells as their digits and keeps its vari
           identical(e$k$Diag[5], "N/A") && is.numeric(e$k$Income) &&
           sum(is.na(e$k$Income)) == 3L &&
           identical(e$k2$Income[1:4], c("52000", "N/A", "61000", "-")) &&
-          !grepl("numbers except", m, fixed = TRUE) }))
+          !grepl("Income", m, fixed = TRUE) &&
+          grepl("Note: Code is numbers except for 1 cell:", m, fixed = TRUE) }))
 check("X18 na = in a CSV file: the cells it names are missing in every variable but text = ones, and NA stays missing in a number (na = \"N/A\" never makes it a word)",
       local({ e <- new.env(parent = globalenv())
         invisible(.gx(eval(quote(jload(.ix("X09.csv"), name = "k",
@@ -2206,6 +2316,111 @@ check("X22 the lines jload() offers keep text = as typed and na =: the note on a
                                         na = "x")), e)))
         grepl("jload(\"<DIR>/X09.csv\", name = \"k9\", overwrite = TRUE, text = c(Region), na = c(\"x\", \"N/A\", \"-\", \".\"))",
               m9, fixed = TRUE) }))
+# S381 (v0.9.255; Fix Slate 24): a number stored as text in a sheet, and
+# the label line. Two fixtures R cannot write (the header has their recipe).
+check("X23 a sheet's variable of numbers beside one number stored as text and one N/A: the note says a reload would not make it numbers and gives base R's two lines, == for its one value; they run with no warning; no scan block for it (pinned)",
+      local({ e <- new.env(parent = globalenv())
+        f <- file.path(.ix_data, "import_stored2.xlsx")
+        m <- .gx(eval(bquote(jload(.(f), name = "k", text = c(B, PC))), e))
+        p <- run(eval(bquote(jload(.(f), name = "k", overwrite = TRUE,
+                                   text = c(B, PC))), e))$txt
+        cl <- .calls(m)
+        ws <- .runw(cl, e)
+        grepl(paste0("Note: A is numbers except for 1 cell: \"N/A\" (1). It was ",
+                     "read as text, and one of its numbers is stored as text in ",
+                     "the sheet, so reading the file again with na = would not ",
+                     "make it numbers. To read that cell as missing and A as ",
+                     "numbers: k$A[k$A == \"N/A\"] <- NA k$A <- as.numeric(k$A)"),
+              .fl(m), fixed = TRUE) &&
+          length(cl) == 2L && length(ws) == 0L &&
+          identical(e$k$A, c(1, 2, 3, 4, NA, 6, 7, 8, 9, 10)) &&
+          !grepl("  A:", p, fixed = TRUE) &&
+          grepl("\n  PC: +\"N/A\" \\(1\\)", p) }))
+check("X24 a renamed sheet variable with two numbers stored as text and two values: %in% for the values, the count said, and a last line that puts back the label jload() gave it, which as.numeric() drops; the three lines run with no warning (pinned)",
+      local({ e <- new.env(parent = globalenv())
+        f <- file.path(.ix_data, "import_stored.xlsx")
+        m <- .gx(eval(bquote(jload(.(f), name = "k")), e))
+        cl <- .calls(m)
+        ws <- .runw(cl, e)
+        grepl(paste0("Note: Score_no is numbers except for 2 cells: \"-\" (1), ",
+                     "\"N/A\" (1). It was read as text, and 2 of its numbers are ",
+                     "stored as text in the sheet, so reading the file again with ",
+                     "na = would not make it numbers. To read those cells as ",
+                     "missing and Score_no as numbers: ",
+                     "k$Score_no[k$Score_no %in% c(\"-\", \"N/A\")] <- NA ",
+                     "k$Score_no <- as.numeric(k$Score_no) ",
+                     "attr(k$Score_no, \"label\") <- \"Score no.\""),
+              .fl(m), fixed = TRUE) &&
+          length(cl) == 3L && length(ws) == 0L &&
+          is.numeric(e$k$Score_no) &&
+          identical(as.vector(e$k$Score_no), c(7, 8, 9, 5, NA, NA, 3, 6, 2, 1)) &&
+          identical(.lab(e$k$Score_no), "Score no.") }))
+check("X25 two sheet variables each beside a number stored as text, and none a reload serves: one note, a sentence for both, each variable's lines and no jload() line; they run with no warning (pinned)",
+      local({ e <- new.env(parent = globalenv())
+        f <- file.path(.ix_data, "import_stored2.xlsx")
+        m <- .gx(eval(bquote(jload(.(f), name = "k")), e))
+        cl <- .calls(m)
+        ws <- .runw(cl, e)
+        grepl(paste0("Note: 2 variables are numbers except for a few cells, so ",
+                     "they were read as text: A \"N/A\" (1) B \"-\" (1) They also ",
+                     "hold numbers stored as text in the sheet, so reading the ",
+                     "file again with na = would not make them numbers. To read ",
+                     "those cells as missing and the variables as numbers: ",
+                     "k$A[k$A == \"N/A\"] <- NA k$A <- as.numeric(k$A) ",
+                     "k$B[k$B == \"-\"] <- NA k$B <- as.numeric(k$B)"),
+              .fl(m), fixed = TRUE) &&
+          length(cl) == 4L &&
+          !any(vapply(cl, function(x) grepl("jload(", deparse(x)[1L], fixed = TRUE),
+                      logical(1))) &&
+          length(ws) == 0L &&
+          identical(e$k$A, c(1, 2, 3, 4, NA, 6, 7, 8, 9, 10)) &&
+          identical(e$k$B, c(1, 2, 3, 4, 5, NA, 7, 8, 9, 10)) }))
+check("X26 a stored number that numbers would change -- a postcode 0800, an ID of 17 digits, among number cells -- passes its variable over: no note names it, it stays as read, and the scan names its N/A as before",
+      local({ e <- new.env(parent = globalenv())
+        f <- file.path(.ix_data, "import_stored2.xlsx")
+        m <- .gx(eval(bquote(jload(.(f), name = "k")), e))
+        p <- run(eval(bquote(jload(.(f), name = "k", overwrite = TRUE)), e))$txt
+        !grepl("PC", m, fixed = TRUE) && !grepl("ID", m, fixed = TRUE) &&
+          identical(e$k$PC[3L], "0800") &&
+          identical(e$k$ID[4L], "12345678901234567") &&
+          grepl("\n  PC: +\"N/A\" \\(1\\)", p) &&
+          grepl("\n  ID: +\"N/A\" \\(1\\)", p) }))
+check("X27 a CSV variable kept as text for its leading zero, renamed by jload(): its as.numeric() line is followed by one that puts the label back, a label's quotation marks escaped; a variable not renamed gets none; every line runs, the labels kept (pinned)",
+      local({ e <- new.env(parent = globalenv())
+        .ix_w("X27.csv", c("id,Post code,\"Zip \"\"new\"\"\",Plain",
+                           "1,0800,0810,0820", "2,4000,4001,4002",
+                           "3,0810,0820,0830"))
+        .ix_w("X27b.csv", c("id,Post code", "1,0800", "2,4000", "3,0810"))
+        m  <- .gx(eval(quote(jload(.ix("X27.csv"), name = "k")), e))
+        mb <- .gx(eval(quote(jload(.ix("X27b.csv"), name = "kb")), e))
+        cl <- .calls(.note(m, "3 variables"))
+        cb <- .calls(.note(mb, "Post_code"))
+        ws <- c(.runw(cl, e), .runw(cb, e))
+        # The escaped label pinned on the message as printed: .fl() writes
+        # every backslash as a forward slash, for paths.
+        grepl(paste0("To make them numbers anyway:\n",
+                     "  k$Post_code <- as.numeric(k$Post_code)\n",
+                     "  attr(k$Post_code, \"label\") <- \"Post code\"\n",
+                     "  k$Zip_new <- as.numeric(k$Zip_new)\n",
+                     "  attr(k$Zip_new, \"label\") <- \"Zip \\\"new\\\"\"\n",
+                     "  k$Plain <- as.numeric(k$Plain)"), m, fixed = TRUE) &&
+          grepl(paste0("To make it numbers anyway: ",
+                       "kb$Post_code <- as.numeric(kb$Post_code) ",
+                       "attr(kb$Post_code, \"label\") <- \"Post code\""),
+                .fl(mb), fixed = TRUE) &&
+          length(cl) == 5L && length(cb) == 2L && length(ws) == 0L &&
+          identical(as.vector(e$k$Post_code), c(800, 4000, 810)) &&
+          identical(.lab(e$k$Post_code), "Post code") &&
+          identical(.lab(e$k$Zip_new), "Zip \"new\"") &&
+          identical(e$k$Plain, c(820, 4002, 830)) &&
+          identical(.lab(e$kb$Post_code), "Post code") }))
+check("X28 a sheet variable whose number cells are not more than half its cells (four number cells, five numbers stored as text, an N/A) is not named by the note: the stored numbers count with the text cells, and the scan names its N/A",
+      local({ e <- new.env(parent = globalenv())
+        f <- file.path(.ix_data, "import_stored2.xlsx")
+        m <- .gx(eval(bquote(jload(.(f), name = "k")), e))
+        p <- run(eval(bquote(jload(.(f), name = "k", overwrite = TRUE)), e))$txt
+        !grepl("Half", m, fixed = TRUE) && is.character(e$k$Half) &&
+          grepl("\n  Half: +\"N/A\" \\(1\\)", p) }))
 if (exists("k")) rm(k)
 
 # --- The message surface, swept (guard 4) ------------------------------------
@@ -2260,7 +2475,7 @@ check("Z02 no premature break: a line's first unit never fit on the line above",
 if (length(.pb) > 0L) for (l in .pb) cat("        early: ", l, "\n")
 unparsed <- function(txt) {
   ls    <- strsplit(txt, "\n", fixed = TRUE)[[1]]
-  shape <- "^ {2,}[A-Za-z.][A-Za-z0-9._]*(\\$[A-Za-z0-9._]+)* *(\\(|<- )"
+  shape <- "^ {2,}[A-Za-z.][A-Za-z0-9._]*(\\$[A-Za-z0-9._]+)*(\\[[^]]*\\])? *(\\(|<- )"
   bad <- character(0); n <- 0L; i <- 1L
   while (i <= length(ls)) {
     if (grepl(shape, ls[i]) && !grepl("<[A-Za-z][A-Za-z ]*>", ls[i])) {

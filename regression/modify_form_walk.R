@@ -26,7 +26,32 @@
 #           argument the format does not use (Section 30). Since S380 what
 #           a CSV cell is read as, the note on a few cells that are not
 #           numbers, and jload(text =, na =) (Sections 32-33; ruling R31).
+#           Since S381 a sheet's number stored as text in that note,
+#           with base R's lines, and the label line under every
+#           as.numeric() line jload() offers (Section 34).
 # ORIGIN:   S229
+# EDITED:   S381 (v0.9.255; Fix Slate 24). SECTION 33'S RENDER 3
+#           RE-PINNED and SECTION 34 ADDED, every new Expected block
+#           filled by running (fill.R): a sheet's variable of number
+#           cells beside a number stored as text is in the note on a
+#           few cells, with base R's lines (its cells made missing,
+#           then as.numeric()) in place of a reload, and the scan no
+#           longer offers it a declaration; every as.numeric() line
+#           puts back the label jload() gave a renamed variable.
+#           Section 34 copies the new datasets/import_stored.xlsx and
+#           import_stored2.xlsx into the walk's folder before loading
+#           them. Both on the PENDING line; the wording is Claude's.
+#           The assertion side is import_check.R X14 and X23-X28. No other
+#           section moved (harness.R dump of every section of every walk on
+#           0.9.254 and 0.9.255: only this file's 33 and 34 differed).
+#           harness.R derive: the five NEEDS lines as they were, none for
+#           33 or 34; verify: 34 of 34 sections in three orders and by
+#           prepare = TRUE; 130 of 131 Expected blocks found (Section 9's,
+#           as before).
+# LAST VERIFIED: v0.9.255, 2026-10-20 (S381) -- Sections 33 and 34 WALKED
+#           on the WORKSTATION by Jeff through receive_all() ("walked, all
+#           okay"); PENDING back to none; R CMD check 0 errors, 0 warnings,
+#           0 notes; ALL BATTERIES GREEN (10 run, 3130 checks).
 # EDITED:   S380 (v0.9.254; ruling R31). SECTIONS 32 AND 33 ADDED, every
 #           Expected block filled by running (fill.R; "#@SKIP" after the
 #           data frame and the jsave() of Section 32's Render 5, whose
@@ -3743,31 +3768,37 @@ jdesc(i33, Income, Rent)
 #   Rent        10        7         980   1500   1200.000   185.203
 
 # Render 3 -- the sheet: Income's numbers are number cells, so it gets the
-# note; Code holds a number stored as text and Diag is text throughout, so
-# na = would not make them numbers: no note, and the scan names their N/A
-# as before. (A copy of the sheet in the walk's folder, so the line the note
-# offers names no folder.)
+# note. Since S381 (v0.9.255) Code, number cells beside one number stored
+# as text ("9"), is in the same note: a reload with na = makes its N/A
+# missing but leaves it text, so its as.numeric() line follows the reload
+# (Section 34 has the note's other forms). Diag is text throughout, so no
+# note names it, and the scan names its N/A as before. (A copy of the sheet
+# in the walk's folder, so the line the note offers names no folder.)
 jload("markers33.xlsx", name = "x33", overwrite = TRUE)
 # Expected:
 #   Loaded x33 (Excel format; 10 cases, 4 variables)
 #
-#   Note: Income is numbers except for 3 cells: "N/A" (1), "-" (1), "." (1).
-#   It was read as text.
-#   To read those cells as missing and Income as numbers:
+#   Note: 2 variables are numbers except for a few cells, so they were
+#   read as text:
+#     Income  "N/A" (1), "-" (1), "." (1)
+#     Code    "N/A" (1)
+#   Code also holds a number stored as text in the sheet, which na = does
+#   not change.
+#   To read those cells as missing and the variables as numbers:
 #     jload("markers33.xlsx", name = "x33", overwrite = TRUE,
 #         na = c("N/A", "-", "."))
+#     x33$Code <- as.numeric(x33$Code)
 #
 #   Suspected missing-value codes detected:
-#     Code:  "N/A" (1)
 #     Diag:  "N/A" (1)
 #
 #   These codes are not formally defined, so they are not treated as missing.
 #   Declare them as missing if they are; leave as-is if real.
 #
 #   To declare one variable's values as missing:
-#     jdeclare_missing(x33, Code, codes = "N/A", modify = TRUE)
+#     jdeclare_missing(x33, Diag, codes = "N/A", modify = TRUE)
 #   To declare and label them in one call, replacing the placeholder names:
-#     jdeclare_missing(x33, Code, codes = c(label1 = "N/A"), modify = TRUE)
+#     jdeclare_missing(x33, Diag, codes = c(label1 = "N/A"), modify = TRUE)
 
 # Render 4 -- diagnosis codes: read as numbers, 250.10 and 250.1 merge;
 # with text = they are four codes, as written.
@@ -3833,11 +3864,138 @@ rm(.wd33, .ds33, i33, x33, c33)
 #   - RENDER 1: the note's two-variable form, a line each with the cells and
 #     their counts, then the line -- na = lists every value, overwrite =
 #     TRUE since the read made the frame. No scan block for Income or Rent.
-#   - RENDER 3: the note for Income alone; the scan's block for Code and
-#     Diag ("N/A"), as before.
+#   - RENDER 3 (re-pinned S381): one note for Income and Code; the sentence
+#     saying Code also holds a number stored as text, which na = does not
+#     change; the reload line, then Code's as.numeric() line. The scan's
+#     block for Diag alone.
 #   - RENDER 4: three rows, then four.
 #   - RENDER 5: "Diagnosis was not found in icd33.csv." with the file's
 #     names; one stop naming text = and na =, the line without them.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 34 -- a number stored as text in a sheet, and the label line (S381) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S381 (v0.9.255; Fix Slate 24, your two leans on their defaults). In
+# a sheet, a variable of number cells that also holds a number stored as
+# text stays text after a reload with na =, so the note on a few cells
+# gives it base R's lines instead: its cells made missing, then
+# as.numeric(). Until 0.9.255 the note passed it over and the scan offered
+# a declaration that left it text, after which jt() refused it as a text
+# variable and as.numeric() stopped. And every as.numeric() line jload()
+# offers -- this note's and the CSV leading-zero note's (Section 32) --
+# puts back the label jload() gave a renamed variable, which as.numeric()
+# drops. The wording is Claude's. The sheets are files in the test-data
+# folder (R cannot write a number stored as text among number cells). The
+# assertion side is import_check.R X14 and X23-X28.
+.wd34 <- getwd(); setwd(.walkdir)
+.ds34 <- "E:/00 R Projects/00_jstats_test_data/datasets"
+invisible(file.copy(file.path(.ds34, "import_stored.xlsx"), "stored34.xlsx",
+                    overwrite = TRUE))
+invisible(file.copy(file.path(.ds34, "import_stored2.xlsx"), "stored34b.xlsx",
+                    overwrite = TRUE))
+writeLines(c("id,Post code", "1,0800", "2,4000", "3,0810"), "post34.csv")
+
+# Render 1 -- one variable, renamed from "Score no.": two numbers stored as
+# text and the cells - and N/A. The note says why a reload would not do,
+# and gives three lines: the cells made missing (%in% for two values),
+# as.numeric(), and the label put back.
+jload("stored34.xlsx", name = "s34", overwrite = TRUE)
+# Expected:
+#   Loaded s34 (Excel format; 10 cases, 2 variables)
+#
+#   Note: 1 variable name was changed to a valid R name:
+#     "Score no."  -> Score_no
+#   The original name is the variable's label.
+#
+#   Note: Score_no is numbers except for 2 cells: "-" (1), "N/A" (1).
+#   It was read as text, and 2 of its numbers are stored as text in the sheet,
+#   so reading the file again with na = would not make it numbers.
+#   To read those cells as missing and Score_no as numbers:
+#     s34$Score_no[s34$Score_no %in% c("-", "N/A")] <- NA
+#     s34$Score_no <- as.numeric(s34$Score_no)
+#     attr(s34$Score_no, "label") <- "Score no."
+
+# Render 2 -- the three lines, run: Score_no is numbers, its two cells
+# missing, its label kept, and no warning from as.numeric().
+s34$Score_no[s34$Score_no %in% c("-", "N/A")] <- NA
+s34$Score_no <- as.numeric(s34$Score_no)
+attr(s34$Score_no, "label") <- "Score no."
+jdesc(s34, Score_no)
+attr(s34$Score_no, "label")
+# Expected:
+#   Descriptive Statistics
+#
+#   10 Cases in the 1 Variable Pool
+#
+#   Variable  Total  Non_missing  Min  Max   Mean    SD
+#   --------  -----  -----------  ---  ---  -----  -----
+#   Score_no    10        8        1    9   5.125  2.900
+#
+#   [1] "Score no."
+
+# Render 3 -- two such variables and three it passes over: A and B share
+# the note, each with its lines (== for one value) and no reload line; PC's
+# stored 0800 and ID's stored 17-digit number are ones numbers would
+# change, and Half's number cells are not more than half its cells, so no
+# note names those three, and the scan names their N/A as before.
+jload("stored34b.xlsx", name = "t34", overwrite = TRUE)
+# Expected:
+#   Loaded t34 (Excel format; 10 cases, 6 variables)
+#
+#   Note: 2 variables are numbers except for a few cells, so they were
+#   read as text:
+#     A  "N/A" (1)
+#     B  "-" (1)
+#   They also hold numbers stored as text in the sheet, so reading the file
+#   again with na = would not make them numbers.
+#   To read those cells as missing and the variables as numbers:
+#     t34$A[t34$A == "N/A"] <- NA
+#     t34$A <- as.numeric(t34$A)
+#     t34$B[t34$B == "-"] <- NA
+#     t34$B <- as.numeric(t34$B)
+#
+#   Suspected missing-value codes detected:
+#     PC:    "N/A" (1)
+#     ID:    "N/A" (1)
+#     Half:  "N/A" (1)
+#
+#   These codes are not formally defined, so they are not treated as missing.
+#   Declare them as missing if they are; leave as-is if real.
+#
+#   To declare one variable's values as missing:
+#     jdeclare_missing(t34, PC, codes = "N/A", modify = TRUE)
+#   To declare and label them in one call, replacing the placeholder names:
+#     jdeclare_missing(t34, PC, codes = c(label1 = "N/A"), modify = TRUE)
+
+# Render 4 -- the CSV leading-zero note (Section 32) on a variable jload()
+# renamed: the label line after the as.numeric() line.
+jload("post34.csv", name = "p34", overwrite = TRUE)
+# Expected:
+#   Loaded p34 (CSV format; 3 cases, 2 variables)
+#
+#   Note: 1 variable name was changed to a valid R name:
+#     "Post code"  -> Post_code
+#   The original name is the variable's label.
+#
+#   Note: Post_code was kept as text: 2 of its values start with a 0 (0800 and
+#   0810), which numbers would drop.
+#   To make it numbers anyway:
+#     p34$Post_code <- as.numeric(p34$Post_code)
+#     attr(p34$Post_code, "label") <- "Post code"
+unlink(c("stored34.xlsx", "stored34b.xlsx", "post34.csv"))
+setwd(.wd34)
+rm(.wd34, .ds34, s34, t34, p34)
+
+# Things to look at:
+#   - RENDER 1: "It was read as text, and 2 of its numbers are stored as
+#     text in the sheet, so reading the file again with na = would not make
+#     it numbers." -- then the three lines, the label line last.
+#   - RENDER 2: Score_no summarized as numbers (8 valid of 10); the label.
+#   - RENDER 3: the two-variable form's sentence ("They also hold numbers
+#     stored as text ..."), four lines; nothing for PC, ID or Half but the
+#     scan's block.
+#   - RENDER 4: the label line under the as.numeric() line.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
