@@ -62,11 +62,30 @@
 #           with no menu, running under no convention and under stata, a
 #           blank cell not reported, and no block for a column holding no
 #           such word.
+#           Since v0.9.254 (section X; ruling R31, Jeff's answers at S380):
+#           a CSV file's cells read as written and each variable typed by
+#           jstats's rule -- a leading zero or more than 15 digits keeps a
+#           variable of numbers as text, with a note (the as.numeric() line
+#           for a leading zero only); T and F alone stay text; the word NA
+#           missing in a variable of numbers or TRUE/FALSE, a word in a
+#           text variable, which the scan names; a file with none of these
+#           shapes read exactly as read.csv() reads it; jsave()'s CSV round
+#           trip of "0800" and "F". The note on a variable of numbers made
+#           text by a few cells (at most five values, numbers in more than
+#           half the cells; footnotes and, under header = FALSE, a first
+#           cell that is a word not counted; in a sheet, only number cells
+#           among text cells that are not numbers), its line with na =,
+#           and no scan block for that variable. text = (bare, quoted, c(),
+#           the file's name or the cleaned one, a name holding names; a name
+#           the file lacks stops before the read and the question) and na =
+#           for CSV and Excel files; both stop on any other format, in one
+#           stop with header = FALSE; na = a number or a bare word stops.
 # ORIGIN:   S362 (v0.9.235). The tenth battery. Section R added S362, the
 #           second build (v0.9.236). Section S added S365 (v0.9.237).
 #           Section T added S366 (v0.9.238). Section U added S367
 #           (v0.9.239). Section V added, U05 re-pinned, S368 (v0.9.240).
-#           Section W added S373 (v0.9.246).
+#           Section W added S373 (v0.9.246). Section X added S380
+#           (v0.9.254).
 # FIXTURES: written by this file into a folder of R's temporary folder,
 #           except one that R cannot write: datasets/import_guess_text.xlsx
 #           (section G). writexl gives every cell of a column one type, and
@@ -116,6 +135,23 @@
 #           empty. Footnote: the data in B1:C3, a footnote in A5. Far: the
 #           data in B1:E251 with D empty, a footnote in A253 -- below the
 #           200 rows jload() reads first to find where the data start.
+#           S380, one more, for section X (and modify_form_walk.R Section
+#           33), made the same way (openpyxl 3.1.5):
+#           datasets/import_markers.xlsx -- number cells with text cells
+#           among them, which writexl cannot write:
+#               wb = openpyxl.Workbook(); ws = wb.active; ws.title = "Markers"
+#               ws.append(["id", "Income", "Code", "Diag"])
+#               inc  = [52000, "N/A", 61000, "-", ".", 48000, 55000, 47000,
+#                       58000, 51000]
+#               code = [7, 8, "9", 5, 4, "N/A", 3, 6, 2, 1]
+#               diag = ["250.10", "250.00", "401.9", "250.1", "N/A",
+#                       "250.10", "401.9", "250.00", "250.1", "401.9"]
+#               for i in range(10):
+#                   ws.append([i + 1, inc[i], code[i], diag[i]])
+#               wb.save("import_markers.xlsx")
+#           Income: number cells and the text cells N/A, - and .; Code:
+#           number cells, one number stored as text ("9") and N/A; Diag:
+#           text cells throughout.
 # MUTATION MAP (S362; 42 one-change mutants of the new code, this battery
 #           on each): the outer strip A01 A05-A07 B01 B03 C03; the
 #           underscore collapse A07; V's position A01 A06 B01 B03 C04 C05
@@ -228,6 +264,33 @@
 #           the word list W01 W02; the scan skipping a text variable W01
 #           W02; its line's values unquoted W01 W02. The full map is in
 #           missing_convention_check.R's S373 entry.
+#           Section X (v0.9.254, S380; 38 one-change mutants of the new
+#           code, run detached, this battery on each, every one red): the
+#           read as text taken out (49 checks, X01-X10 among them), no value
+#           read as missing X06 X15 X18; the leading-zero pattern X02, the
+#           digit count X03 (a survivor until X03b gained a 15-digit value
+#           with a space before it: the 16-byte pre-filter had shadowed
+#           the pattern); T and F X05 X07; NA not made missing before
+#           typing S21 X04 X06 X08 X10 X18, nor in a kept variable X04, nor
+#           a blank X04; "more than half" X11 S20, five values X11; NA
+#           counted as a cell X09 X22, NA left in a variable named X09;
+#           footnotes counted X12; the header = FALSE first-word rule X13;
+#           the sheet's cell check gone X14, its number-stored-as-text test
+#           X14; the scan's block back X09; the CSV text = check before the
+#           question X16; the cleaned name X15, a name holding names X15;
+#           text = variables under na = in a sheet X17, na = not passed to
+#           readxl X14 X17, the text read not spliced X17, a sheet's text =
+#           variable in the note X17 (a survivor until X17 gained the case);
+#           the line's na = X09 X10 X14 X22, its text = X22, na = given kept
+#           X10 X22; the format stop's text = and na = X19; na = unchecked
+#           X20, the bare word X20; an as.numeric() line for a long ID X03
+#           X04; "starts" X04; numerals = "no.loss" X03 X04 X08 (a decimal
+#           of 17 digits); text = variables typed X15; na = not applied
+#           X10 X18; the kept note gone X01-X04. Two lines no mutant could
+#           red were DELETED from the master, not mapped: a test that every
+#           value was a word (the count test below it already returned) and
+#           the footnote run's stop at the first case (a run that long
+#           leaves the first variable no numbers).
 # FIRST WORKSTATION RUN (S362, the first delivery): 81/83. F03 -- the
 #           title note's line, run as offered, met jload()'s overwrite
 #           question: the workstation runs the batteries in an interactive
@@ -239,6 +302,33 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
+# S380 EDIT (v0.9.254, 2026-10-20): SECTION X ADDED (ruling R31), 22
+#           checks, and the fixture datasets/import_markers.xlsx (its recipe
+#           under FIXTURES). FIRST WORKSTATION RUN: the receive stopped at
+#           X11, which loaded three files under one name, k: in Jeff's
+#           session the second load asked jload()'s overwrite question and
+#           waited. The sandbox's R --interactive run had answered the same
+#           question "no" by itself, so X11 passed there with two of its
+#           three files never read -- a check that could not fail, and the
+#           run's "Overwrite?" lines were not read. X11 now gives each file
+#           a name of its own and checks all three were read; section X's
+#           checks keep the scan's printed report out of the battery's
+#           output (.gx(): grab() inside capture.output()). Sandbox: the
+#           interactive run asks no question (0 "Overwrite?"), X11 red on
+#           both of its mutants.
+#           LAST VERIFIED: v0.9.254, 2026-10-20 (S380) -- 177/177 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3124 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox. SANDBOX: 177/177, run_all.R 3124 across
+#           ten, plain and under the RStudio-handler stand-in, each again
+#           with a 58-character temp path, once with interactive() TRUE,
+#           and entered dirty (joutput("full") with diagnostics, width 101,
+#           a juse() default, a stata convention, jstats.color = TRUE,
+#           stored jsubset(), jcomplete(), jdummy() and jnumeric() settings
+#           on a frame of its own, the load-notice flag, workspace objects
+#           named like its working objects -- k, e, f, m, x, k2, cols15 --
+#           and like the fixtures' variables -- Postcode, Diag, Income),
+#           plain and under the stand-in: green, nothing changed.
 # S379 EDIT (v0.9.253, 2026-10-20): GUARD 1 WIDENED (Scripts Slate D, the
 #           (S378) item). The jsubset(), jcomplete(), jdummy() and
 #           registration stores and the once-a-session load-notice flag
@@ -1847,6 +1937,276 @@ check("W03 control: a text column holding no such word gives no scan block",
              fixed = TRUE))
 if (exists("W01")) rm(W01)
 if (exists("W03")) rm(W03)
+
+# --- X: what a cell is read as, text = and na = (v0.9.254) ------------------
+
+# v0.9.254 (S380; ruling R31, Jeff's answers one at a time). jload() read a
+# CSV file as read.csv() does, so a postcode 0800 loaded as 800, four
+# 20-digit IDs as one number, a variable of F as FALSE and Namibia's code NA
+# as missing, each without a word, and jsave()'s CSV file of a text "0800"
+# came back 800. A CSV file's cells are now read as written and each
+# variable typed by jstats's rule: numbers, or TRUE and FALSE, only where no
+# value would change (questions 1-3); the word NA missing in a variable of
+# numbers and a word in a text variable, which the scan names (question 4).
+# A variable of numbers that a few cells made text -- in a CSV file or a
+# sheet -- is said to be, with the line whose na = reads them as missing
+# (question 5); text = and na = for CSV and Excel files (question 6). One
+# fixture R cannot write, datasets/import_markers.xlsx (the header has its
+# recipe).
+# Section X's own helper: grab() with the scan's report, which prints to
+# standard output, kept out of the battery's output (S380: it printed
+# between the checks on the workstation).
+.gx <- function(expr) {
+  m <- ""
+  invisible(utils::capture.output(m <- grab(expr)))
+  m
+}
+.ix_w("X01.csv", c("id,Postcode", "1,0800", "2,2000", "3,0870", "4,4000"))
+.ix_w("X03.csv", c("id,AccountID", "1,12345678901234567891",
+                   "2,12345678901234567892", "3,123456789012345"))
+.ix_w("X04.csv", c("id,Postcode,Phone,AccountID,Age",
+                   "1,0800,0412345678,12345678901234567891,34",
+                   "2,2000,0298765432,12345678901234567892,41",
+                   "3,NA,,12345678901234567893,29"))
+.ix_w("X09.csv", c("id,Income,Region", "1,52000,North", "2,N/A,South",
+                   "3,61000,East", "4,-,West", "5,.,North", "6,48000,South",
+                   "7,55000,East", "8,NA,West", "9,58000,North", "10,51000,"))
+.ix_w("X11.csv", c("id,Income,Rent", "1,52000,1200", "2,N/A,N/A",
+                   "3,61000,1350", "4,-,1100", "5,48000,unknown", "6,55000,980",
+                   "7,47000,1020"))
+.ix_w("X15.csv", c("id,Post code,Diag,Note", "1,4000,250.10,NA",
+                   "2,4101,250.00,N/A", "3,4006,401.9,", "4,4000,250.1,ok"))
+
+check("X01 a CSV variable with a leading zero is kept as text, as written, and the note says so with the line that makes it numbers (pinned)",
+      local({ e <- new.env(parent = globalenv())
+        m <- .gx(eval(quote(jload(.ix("X01.csv"), name = "k")), e))
+        identical(e$k$Postcode, c("0800", "2000", "0870", "4000")) &&
+          grepl(paste0("\n\nNote: Postcode was kept as text: 2 of its values ",
+                       "start with a 0 (0800 and\n0870), which numbers would ",
+                       "drop.\nTo make it numbers anyway:\n",
+                       "  k$Postcode <- as.numeric(k$Postcode)"), m, fixed = TRUE) }))
+check("X02 ... the line runs: Postcode becomes 800, 2000, 870, 4000; and 0, 0.5, 10 and -05 are numbers, with no note",
+      local({ e <- new.env(parent = globalenv())
+        m <- .gx(eval(quote(jload(.ix("X01.csv"), name = "k")), e))
+        cl <- .calls(m)
+        invisible(.gx(eval(cl[[1L]], e)))
+        .ix_w("X02.csv", c("a,b", "0,0.5", "10,-05", "3,7"))
+        m2 <- .gx(eval(quote(jload(.ix("X02.csv"), name = "k2")), e))
+        length(cl) == 1L && identical(e$k$Postcode, c(800, 2000, 870, 4000)) &&
+          identical(e$k2$a, c(0L, 10L, 3L)) && identical(e$k2$b, c(0.5, -5, 7)) &&
+          !grepl("Note:", m2, fixed = TRUE) }))
+check("X03 a whole number of more than 15 digits keeps its variable as text -- four IDs had become one number -- and 15 digits is not more, a space before them included (pinned)",
+      local({ e <- new.env(parent = globalenv())
+        m <- .gx(eval(quote(jload(.ix("X03.csv"), name = "k")), e))
+        .ix_w("X03b.csv", c("id", "123456789012345", " 123456789012345", "2"))
+        m2 <- .gx(eval(quote(jload(.ix("X03b.csv"), name = "k3")), e))
+        identical(e$k$AccountID, c("12345678901234567891", "12345678901234567892",
+                                   "123456789012345")) &&
+          grepl(paste0("Note: AccountID was kept as text: 2 of its values are ",
+                       "longer than the 15\ndigits a number holds exactly."),
+                m, fixed = TRUE) && !grepl("as.numeric", m, fixed = TRUE) &&
+          is.numeric(e$k3$id) && !grepl("Note:", m2, fixed = TRUE) }))
+check("X04 several variables kept as text: one note, a line each, and an as.numeric() line for each with a leading zero only, each running; an empty cell and the word NA in them are missing (pinned)",
+      local({ e <- new.env(parent = globalenv())
+        m <- .gx(eval(quote(jload(.ix("X04.csv"), name = "k")), e))
+        ok <- grepl(paste0(
+          "Note: 3 variables were kept as text, since numbers would change\n",
+          "their values:\n",
+          "  Postcode   1 value starts with a 0 (0800)\n",
+          "  Phone      2 values start with a 0 (0412345678 and 0298765432)\n",
+          "  AccountID  3 values are longer than the 15 digits a number holds exactly\n",
+          "To make them numbers anyway:\n",
+          "  k$Postcode <- as.numeric(k$Postcode)\n",
+          "  k$Phone <- as.numeric(k$Phone)"), m, fixed = TRUE) &&
+          identical(e$k$Postcode, c("0800", "2000", NA)) &&
+          identical(e$k$Phone, c("0412345678", "0298765432", NA)) &&
+          identical(e$k$Age, c(34L, 41L, 29L))
+        cl <- .calls(m)
+        for (x in cl) invisible(.gx(eval(x, e)))
+        ok && length(cl) == 2L && identical(e$k$Phone, c(412345678, 298765432, NA)) }))
+check("X05 T and F standing alone keep a variable as text (a sample of women is not FALSE), with no note; the words TRUE and FALSE are logical, an empty cell missing",
+      local({ e <- new.env(parent = globalenv())
+        .ix_w("X05.csv", c("id,Sex,Q1,Done", "1,F,T,TRUE", "2,F,F,FALSE",
+                           "3,F,T,", "4,F,,TRUE"))
+        m <- .gx(eval(quote(jload(.ix("X05.csv"), name = "k")), e))
+        identical(e$k$Sex, rep("F", 4)) && identical(e$k$Q1, c("T", "F", "T", "")) &&
+          identical(e$k$Done, c(TRUE, FALSE, NA, TRUE)) &&
+          !grepl("Note:", m, fixed = TRUE) }))
+check("X06 the word NA: missing in a variable of numbers or of TRUE/FALSE, as R writes it; a word in a text variable, which the scan names with the line that declares it, and the line runs",
+      local({ e <- new.env(parent = globalenv())
+        .ix_w("X06.csv", c("id,Country,Score,Done", "1,AU,12,TRUE", "2,NA,NA,FALSE",
+                           "3,NZ,15,NA", "4,NA,11,TRUE"))
+        p <- run(eval(quote(jload(.ix("X06.csv"), name = "k")), e))$txt
+        ok <- identical(e$k$Country, c("AU", "NA", "NZ", "NA")) &&
+          identical(e$k$Score, c(12L, NA, 15L, 11L)) &&
+          identical(e$k$Done, c(TRUE, FALSE, NA, TRUE)) &&
+          grepl("  Country:  \"NA\" (2)", p, fixed = TRUE)
+        cl <- .calls(p)
+        suppressMessages(utils::capture.output(eval(cl[[1L]], e)))
+        ok && identical(as.character(attr(e$k$Country, "na_values")), "NA") }))
+check("X07 jsave()'s CSV file of text \"0800\" and \"F\" loads back as written, where it had come back 800 and FALSE",
+      local({ e <- new.env(parent = globalenv())
+        e$f7 <- data.frame(id = 1:3, Postcode = c("0800", "2000", "0870"),
+                           Sex = c("F", "F", "F"), stringsAsFactors = FALSE)
+        invisible(.gx(eval(quote(jsave(f7, .ix("X07.csv"))), e)))
+        invisible(.gx(eval(quote(jload(.ix("X07.csv"), name = "g7")), e)))
+        identical(e$g7$Postcode, c("0800", "2000", "0870")) &&
+          identical(e$g7$Sex, c("F", "F", "F")) }))
+check("X08 a file with none of these shapes loads exactly as read.csv() reads it: numbers whole and decimal, negatives, an exponent, text with blanks, TRUE/FALSE, a variable of NA, quoted values, the word NA in a number, a decimal of 17 digits as Python writes it",
+      local({ e <- new.env(parent = globalenv())
+        .ix_w("X08.csv", c("a,b,c,d,e,f,g,h", "1,2.5,-3,\"x\",TRUE,NA,1e3,0.30000000000000004",
+                           "2,,4,,FALSE,NA,2.5e-1,0.1", "NA,3.25,-1, y ,,NA,7,0.7000000000000001"))
+        invisible(.gx(eval(quote(jload(.ix("X08.csv"), name = "k")), e)))
+        ref <- utils::read.csv(.ix("X08.csv"), stringsAsFactors = FALSE)
+        identical(lapply(e$k, function(v) { attributes(v) <- NULL; v }),
+                  lapply(ref, function(v) { attributes(v) <- NULL; v })) }))
+check("X09 a variable of numbers made text by a few cells: one note names them with their counts, the word NA and an empty cell left out, and gives the line with na = (pinned); the scan says nothing of that variable",
+      local({ e <- new.env(parent = globalenv())
+        m <- .fl(.gx(eval(quote(jload(.ix("X09.csv"), name = "k")), e)))
+        p <- run(eval(quote(jload(.ix("X09.csv"), name = "k", overwrite = TRUE)), e))$txt
+        grepl(paste0("Note: Income is numbers except for 3 cells: \"N/A\" (1), ",
+                     "\"-\" (1), \".\" (1). It was read as text. ",
+                     "To read those cells as missing and Income as numbers: ",
+                     "jload(\"<DIR>/X09.csv\", name = \"k\", overwrite = TRUE, ",
+                     "na = c(\"N/A\", \"-\", \".\"))"), m, fixed = TRUE) &&
+          !grepl("missing-value codes detected", p, fixed = TRUE) &&
+          identical(e$k$Income[c(1, 2, 8)], c("52000", "N/A", NA)) &&
+          identical(e$k$Region[10], "") }))
+check("X10 ... the line runs: Income is numbers, the three cells and NA missing; and na = given, the line keeps it and adds the new values (X11's two variables, pinned)",
+      local({ e <- new.env(parent = globalenv())
+        m <- .gx(eval(quote(jload(.ix("X09.csv"), name = "k")), e))
+        cl <- .calls(m)
+        invisible(.gx(eval(cl[[1L]], e)))
+        ok <- length(cl) == 1L &&
+          identical(e$k$Income, c(52000L, NA, 61000L, NA, NA, 48000L, 55000L, NA,
+                                  58000L, 51000L))
+        m2 <- .fl(.gx(eval(quote(jload(.ix("X11.csv"), name = "k2", na = "unknown")), e)))
+        ok && grepl(paste0("Note: 2 variables are numbers except for a few cells, so ",
+                           "they were read as text: Income \"N/A\" (1), \"-\" (1) ",
+                           "Rent \"N/A\" (1) To read those cells as missing and the ",
+                           "variables as numbers: jload(\"<DIR>/X11.csv\", name = ",
+                           "\"k2\", overwrite = TRUE, na = c(\"unknown\", \"N/A\", \"-\"))"),
+                    m2, fixed = TRUE) && identical(e$k2$Rent[5], NA_character_) }))
+check("X11 \"a few\" (Jeff's okay of the lean): no note at half numbers, at six values that are not numbers, or for a Yes/No variable with a stray 3",
+      local({ e <- new.env(parent = globalenv())
+        .ix_w("X11a.csv", c("v", "1", "2", "3", "N/A", "-", "."))
+        .ix_w("X11b.csv", c("v", 1:12, "a", "b", "c", "d", "e", "f"))
+        .ix_w("X11c.csv", c("v", "Yes", "No", "Yes", "3", "No"))
+        # Each file under a name of its own: three loads under one name
+        # asked jload()'s overwrite question in Jeff's session (S380, the
+        # first receive), and the R --interactive run answered it "no", so
+        # the second and third files were never read there.
+        fs <- c("X11a.csv", "X11b.csv", "X11c.csv")
+        ms <- vapply(seq_along(fs), function(i) {
+          .gx(eval(bquote(jload(.ix(.(fs[i])), name = .(paste0("k", i)))), e))
+        }, character(1))
+        all(c("k1", "k2", "k3") %in% ls(e)) &&
+          !any(grepl("numbers except", ms, fixed = TRUE)) }))
+check("X12 footnotes below the data are not cells for the note: the stray-parts note names them, and id is not said to be numbers except for a few cells",
+      local({ e <- new.env(parent = globalenv())
+        .ix_w("X12.csv", c("id,age", "1,23", "2,35", "3,41",
+                           "Source: synthetic survey 2024,", "Note: fewer than 5 cases,"))
+        m <- .gx(eval(quote(jload(.ix("X12.csv"), name = "k")), e))
+        grepl("may be footnotes", m, fixed = TRUE) &&
+          !grepl("numbers except", m, fixed = TRUE) }))
+check("X13 read with header = FALSE, a variable whose first cell is a word is not named by the note (that row may be the names)",
+      local({ e <- new.env(parent = globalenv())
+        .ix_w("X13.csv", c("score", "12", "15", "11", "14"))
+        m <- .gx(eval(quote(jload(.ix("X13.csv"), name = "k", header = FALSE)), e))
+        !grepl("numbers except", m, fixed = TRUE) && identical(e$k$V1[1], "score") }))
+check("X14 a sheet: Income's number cells with three text cells get the note, and its line runs; Code, a number stored as text among them, and Diag, text cells throughout, get none",
+      local({ e <- new.env(parent = globalenv())
+        f <- file.path(.ix_data, "import_markers.xlsx")
+        m <- .fl(.gx(eval(bquote(jload(.(f), name = "k")), e)))
+        cl <- .calls(.gx(eval(bquote(jload(.(f), name = "k", overwrite = TRUE)), e)))
+        invisible(.gx(eval(cl[[1L]], e)))
+        grepl("Note: Income is numbers except for 3 cells: \"N/A\" (1), \"-\" (1), \".\" (1).",
+              m, fixed = TRUE) &&
+          !grepl("Code is numbers", m, fixed = TRUE) &&
+          !grepl("Diag is numbers", m, fixed = TRUE) && length(cl) == 1L &&
+          is.numeric(e$k$Income) && sum(is.na(e$k$Income)) == 3L &&
+          is.character(e$k$Diag) }))
+check("X15 text = reads variables exactly as written -- 250.10 kept, the word NA and N/A kept, na = not applied there -- named bare, quoted, in c(), by the file's name or the cleaned one, or by a name holding names",
+      local({ e <- new.env(parent = globalenv())
+        e$cols15 <- c("Diag", "Note")
+        invisible(.gx(eval(quote(jload(.ix("X15.csv"), name = "k1",
+                                        text = c(Diag, "Note"), na = "N/A")), e)))
+        invisible(.gx(eval(quote(jload(.ix("X15.csv"), name = "k2",
+                                        text = c("Post code", Post_code))), e)))
+        invisible(.gx(eval(quote(jload(.ix("X15.csv"), name = "k3",
+                                        text = cols15)), e)))
+        identical(e$k1$Diag, c("250.10", "250.00", "401.9", "250.1")) &&
+          identical(e$k1$Note, c("NA", "N/A", "", "ok")) &&
+          identical(as.vector(e$k2$Post_code), c("4000", "4101", "4006", "4000")) &&
+          identical(attr(e$k2$Post_code, "label"), "Post code") &&
+          is.numeric(e$k2$Diag) &&
+          identical(e$k3$Diag, e$k1$Diag) && identical(e$k3$Note, e$k1$Note) }))
+check("X16 a name text = gives that the file does not have stops before the read and the question, every such name in one stop, the file's names listed (pinned); nothing is assigned",
+      local({ e <- new.env(parent = globalenv())
+        e$k <- "here before"
+        e$f <- .askT("y")
+        m <- .gx(eval(quote(f(.ix("X01.csv"), name = "k", text = c(Postcde, Idd))), e))
+        grepl("Postcde and Idd were not found in X01.csv.\nIts variables are id and Postcode.",
+              m, fixed = TRUE) && !grepl("<asked>", m, fixed = TRUE) &&
+          identical(e$k, "here before") }))
+check("X17 a sheet: text = gives number cells as their digits and keeps its variables out of na = and out of the note on a few cells; na = reads the cells it names as missing everywhere else",
+      local({ e <- new.env(parent = globalenv())
+        f <- file.path(.ix_data, "import_markers.xlsx")
+        invisible(.gx(eval(bquote(jload(.(f), name = "k", text = c(Code, Diag),
+                                         na = c("N/A", "-", "."))), e)))
+        m <- .gx(eval(bquote(jload(.(f), name = "k2", text = Income)), e))
+        identical(e$k$Code, c("7", "8", "9", "5", "4", "N/A", "3", "6", "2", "1")) &&
+          identical(e$k$Diag[5], "N/A") && is.numeric(e$k$Income) &&
+          sum(is.na(e$k$Income)) == 3L &&
+          identical(e$k2$Income[1:4], c("52000", "N/A", "61000", "-")) &&
+          !grepl("numbers except", m, fixed = TRUE) }))
+check("X18 na = in a CSV file: the cells it names are missing in every variable but text = ones, and NA stays missing in a number (na = \"N/A\" never makes it a word)",
+      local({ e <- new.env(parent = globalenv())
+        invisible(.gx(eval(quote(jload(.ix("X09.csv"), name = "k",
+                                        na = c("N/A", "-", "."))), e)))
+        invisible(.gx(eval(quote(jload(.ix("X15.csv"), name = "k2", na = "N/A")), e)))
+        identical(e$k$Income, c(52000L, NA, 61000L, NA, NA, 48000L, 55000L, NA,
+                                58000L, 51000L)) &&
+          identical(e$k2$Note, c("NA", NA, "", "ok")) }))
+check("X19 text = and na = on a format that carries its own types and missing values stop, in one stop with header = FALSE, each named, the line without them, which runs (pinned)",
+      local({ e <- new.env(parent = globalenv())
+        m1 <- .fl(.gx(jload("community_spss.sav", name = "k", text = Age)))
+        m2 <- .fl(.gx(jload("community_spss.sav", name = "k", na = "x", header = FALSE)))
+        m3 <- .fl(.gx(jload("community", package = TRUE, text = Age, na = "-")))
+        cl <- .calls(.gx(jload("community_spss.sav", name = "k", na = "x",
+                                header = FALSE)))
+        invisible(.gx(eval(cl[[1L]], e)))
+        grepl(paste0("text = is only for Excel format (.xlsx, .xls) and CSV format ",
+                     "(.csv). community_spss.sav is in SPSS format (.sav), which ",
+                     "carries its own variable types. To load it, drop text =: ",
+                     "jload(\"community_spss.sav\", name = \"k\")"), m1, fixed = TRUE) &&
+          grepl(paste0("header = FALSE and na = are only for Excel format (.xlsx, ",
+                       ".xls) and CSV format (.csv). community_spss.sav is in SPSS ",
+                       "format (.sav), which carries its own variable names and ",
+                       "missing values. To load it, drop them: ",
+                       "jload(\"community_spss.sav\", name = \"k\")"), m2, fixed = TRUE) &&
+          grepl(paste0("text = and na = are only for Excel format (.xlsx, .xls) and ",
+                       "CSV format (.csv). community is a jstats example dataset, ",
+                       "which carries its own variable types and missing values. ",
+                       "To load it, drop them: jload(\"community\", package = TRUE)"),
+                m3, fixed = TRUE) && is.data.frame(e$k) }))
+check("X20 na = must be text in quotes: a number stops with the example, a bare word gets ruling R18's pointer with the call quoted (pinned)",
+      local({ m1 <- .fl(.gx(jload(.ix("X01.csv"), name = "k", na = 99)))
+        m2 <- .fl(.gx(jload(.ix("X01.csv"), name = "k", na = missingword)))
+        grepl("`na` must be the cell values to read as missing, in quotes, for example: na = c(\"N/A\", \"-\")",
+              m1, fixed = TRUE) &&
+          grepl("missingword is not in quotes. na = takes a cell value in quotes: jload(.ix(\"X01.csv\"), name = \"k\", na = \"missingword\")",
+                m2, fixed = TRUE) }))
+check("X21 text = given something that is not names stops with an example on the file's first variable",
+      grepl("text = takes the names of variables, for example: text = id",
+            .fl(.gx(jload(.ix("X01.csv"), name = "k", text = 3))), fixed = TRUE))
+check("X22 the lines jload() offers keep text = as typed and na =: the note on a few cells under text = c(Region) and na = \"x\"",
+      local({ e <- new.env(parent = globalenv())
+        m9 <- .fl(.gx(eval(quote(jload(.ix("X09.csv"), name = "k9", text = c(Region),
+                                        na = "x")), e)))
+        grepl("jload(\"<DIR>/X09.csv\", name = \"k9\", overwrite = TRUE, text = c(Region), na = c(\"x\", \"N/A\", \"-\", \".\"))",
+              m9, fixed = TRUE) }))
+if (exists("k")) rm(k)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 

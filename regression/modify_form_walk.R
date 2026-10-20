@@ -23,8 +23,28 @@
 #           with no names row and jload(header =), the rows and columns
 #           that may not be data, and the lines jload() offers keeping the
 #           call (Sections 27-29). Since S367 jload()'s warnings on an
-#           argument the format does not use (Section 30).
+#           argument the format does not use (Section 30). Since S380 what
+#           a CSV cell is read as, the note on a few cells that are not
+#           numbers, and jload(text =, na =) (Sections 32-33; ruling R31).
 # ORIGIN:   S229
+# EDITED:   S380 (v0.9.254; ruling R31). SECTIONS 32 AND 33 ADDED, every
+#           Expected block filled by running (fill.R; "#@SKIP" after the
+#           data frame and the jsave() of Section 32's Render 5, whose
+#           Saved line names a temporary folder). Section 33 copies the
+#           new datasets/import_markers.xlsx into the walk's folder before
+#           loading it, so the line its note offers names no folder (the
+#           S368 trap). On the PENDING line; the wording of every note is
+#           Claude's. The assertion side is import_check.R section X.
+#           harness.R derive: the five NEEDS lines as they were, none for
+#           32 or 33; verify: 33 of 33 sections in three orders and by
+#           prepare = TRUE; 126 of 127 Expected blocks found (Section 9's,
+#           as before). A capture of every section of every walk on
+#           0.9.253 and 0.9.254: only 32 and 33 differ (and the end of
+#           31's capture, a blank line, as the file now goes on).
+# LAST VERIFIED: v0.9.254, 2026-10-20 (S380) -- Sections 32 and 33 WALKED
+#           on the WORKSTATION by Jeff through receive_all() ("walked, all
+#           okay"); PENDING back to none; R CMD check 0 errors, 0 warnings,
+#           0 notes; ALL BATTERIES GREEN (10 run, 3124 checks).
 # EDITED:   S374 (v0.9.247; Fix Slate 21). SECTION 13 RE-PINNED AND
 #           EXTENDED: "Provide a name, for example:" (the audit's layout
 #           item retired the last inline "e.g."); x13.RData is made before
@@ -3525,6 +3545,299 @@ rm(s31)
 #   - RENDER 5: the dots-style call gets the c() line; a variable label is
 #     refused in the list form with a one-variable line; a text variable
 #     stops the whole call ("Nothing was changed"), jencode() named.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 32 -- what a CSV cell is read as (ruling R31, questions 1-4; S380) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S380 (v0.9.254). Your answers, one at a time: a CSV variable is read
+# as numbers, or as TRUE and FALSE, only where no value would change. A
+# leading zero (a postcode 0800) keeps the variable as text, with a note and
+# the as.numeric() line (question 1); more than 15 digits (an ID) keeps it
+# as text, with a note and no line (question 2); T and F alone stay text,
+# with no note (question 3); the word NA is missing in a variable of numbers
+# and a word in a text variable, which the scan names with the line that
+# declares it, as for an Excel sheet (question 4). jsave()'s CSV file of a
+# text "0800" or "F" now comes back as written. The wording of the notes is
+# Claude's. The assertion side is import_check.R X01-X08.
+.wd32 <- getwd(); setwd(.walkdir)
+writeLines(c("id,Postcode,Phone,AccountID", "1,0800,0412345678,12345678901234567891",
+             "2,2000,0298765432,12345678901234567892",
+             "3,0870,,12345678901234567893"), "post32.csv")
+writeLines(c("id,Sex,Q1,Done", "1,F,T,TRUE", "2,F,F,FALSE", "3,F,T,FALSE"),
+           "women32.csv")
+writeLines(c("id,Country,Score", "1,AU,12", "2,NA,NA", "3,NZ,15", "4,NA,11"),
+           "nations32.csv")
+
+# Render 1 -- postcodes, phone numbers and 20-digit IDs: one note; each
+# variable as written; the empty phone number missing.
+jload("post32.csv", name = "p32", overwrite = TRUE)
+p32$Postcode
+p32$AccountID
+# Expected:
+#   Loaded p32 (CSV format; 3 cases, 4 variables)
+#
+#   Note: 3 variables were kept as text, since numbers would change
+#   their values:
+#     Postcode   2 values start with a 0 (0800 and 0870)
+#     Phone      2 values start with a 0 (0412345678 and 0298765432)
+#     AccountID  3 values are longer than the 15 digits a number holds exactly
+#   To make them numbers anyway:
+#     p32$Postcode <- as.numeric(p32$Postcode)
+#     p32$Phone <- as.numeric(p32$Phone)
+#   [1] "0800" "2000" "0870"
+#   [1] "12345678901234567891" "12345678901234567892" "12345678901234567893"
+
+# Render 2 -- the offered lines, run: Postcode and Phone become numbers.
+p32$Postcode <- as.numeric(p32$Postcode)
+p32$Phone <- as.numeric(p32$Phone)
+p32$Postcode
+# Expected:
+#   [1]  800 2000  870
+
+# Render 3 -- a sample of women: F stays F; T and F as answers stay
+# letters; the words TRUE and FALSE are TRUE and FALSE. No note.
+jload("women32.csv", name = "w32", overwrite = TRUE)
+str(w32)
+# Expected:
+#   Loaded w32 (CSV format; 3 cases, 4 variables)
+#   'data.frame':	3 obs. of  4 variables:
+#    $ id  : int  1 2 3
+#    $ Sex : chr  "F" "F" "F"
+#    $ Q1  : chr  "T" "F" "T"
+#    $ Done: logi  TRUE FALSE FALSE
+
+# Render 4 -- the word NA: a word in Country (Namibia), which the scan
+# names; missing in Score. Then the line the scan offers, run.
+jload("nations32.csv", name = "n32", overwrite = TRUE)
+n32$Country
+n32$Score
+# Expected:
+#   Loaded n32 (CSV format; 4 cases, 3 variables)
+#
+#   Suspected missing-value codes detected:
+#     Country:  "NA" (2)
+#
+#   These codes are not formally defined, so they are not treated as missing.
+#   Declare them as missing if they are; leave as-is if real.
+#
+#   To declare one variable's values as missing:
+#     jdeclare_missing(n32, Country, codes = "NA", modify = TRUE)
+#   To declare and label them in one call, replacing the placeholder names:
+#     jdeclare_missing(n32, Country, codes = c(label1 = "NA"), modify = TRUE)
+#   [1] "AU" "NA" "NZ" "NA"
+#   [1] 12 NA 15 11
+jdeclare_missing(n32, Country, codes = "NA", modify = TRUE)
+jfreq(n32, Country)
+# Expected:
+#   Declared SPSS-style missing values on Country in n32:
+#     NA (no label)
+#
+#   To keep it across sessions, save the data frame:
+#     jsave(n32, "n32.rds")
+#   Frequencies
+#
+#   4 Cases in the 1 Variable Pool
+#
+#   Country
+#
+#                  Freq  Total %  Valid %  Cum. %
+#   -------------  ----  -------  -------  ------
+#   Valid
+#   AU               1     25.00    50.00   50.00
+#   NZ               1     25.00    50.00  100.00
+#   Total valid      2     50.00   100.00
+#
+#   Missing
+#   NA (no label)    2     50.00       --      --
+#
+#   Total            4    100.00
+
+# Render 5 -- jsave()'s round trip: text "0800" and "F", saved to CSV and
+# loaded back, come back as written (they had come back 800 and FALSE).
+r32 <- data.frame(id = 1:2, Postcode = c("0800", "2000"), Sex = c("F", "F"),
+                  stringsAsFactors = FALSE)
+jsave(r32, "round32.csv", overwrite = TRUE)
+jload("round32.csv", name = "r32b", overwrite = TRUE)
+r32b
+# Expected:
+#   Loaded r32b (CSV format; 2 cases, 3 variables)
+#
+#   Note: Postcode was kept as text: 1 of its values starts with a 0 (0800),
+#   which a number would drop.
+#   To make it numbers anyway:
+#     r32b$Postcode <- as.numeric(r32b$Postcode)
+#     id Postcode Sex
+#   1  1     0800   F
+#   2  2     2000   F
+unlink(c("post32.csv", "women32.csv", "nations32.csv", "round32.csv"))
+setwd(.wd32)
+rm(.wd32, p32, w32, n32, r32, r32b)
+
+# Things to look at:
+#   - RENDER 1: one note for the three variables, a line each saying why,
+#     then the as.numeric() lines for the two with a leading zero only --
+#     converting the IDs would destroy them. The note's wording is Claude's
+#     (the sketch you saw named one variable).
+#   - RENDER 3: no note at all -- F reads as written.
+#   - RENDER 4: the scan's block for Country, the same block an Excel sheet
+#     gets, and its line run: NA under Missing.
+#   - RENDER 5: the round trip says why Postcode is text (the note), and
+#     Sex is F with no note.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 33 -- a few cells that are not numbers, text = and na = (ruling R31, questions 5-6; S380) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S380 (v0.9.254). Your answers: jstats never assumes N/A, - or . is
+# missing; a variable of numbers that a few such cells made text gets one
+# note naming them, with the jload() line whose na = reads them as missing
+# (question 5) -- "a few" is your okayed lean: at most five values that are
+# not numbers, and numbers in more than half the cells that are not empty;
+# the note replaces the scan's block for that variable, whose declaration
+# left it text. jload() gains text = (variables read exactly as written,
+# for codes the rules cannot see) and na = (question 6), for CSV and Excel
+# files. The sheet is a file in the test-data folder (R cannot write a
+# column of number cells with text cells among them). The assertion side
+# is import_check.R X09-X22.
+.wd33 <- getwd(); setwd(.walkdir)
+.ds33 <- "E:/00 R Projects/00_jstats_test_data/datasets"
+writeLines(c("id,Income,Rent,Region", "1,52000,1200,North", "2,N/A,N/A,South",
+             "3,61000,1350,East", "4,-,1100,West", "5,.,N/A,North",
+             "6,48000,980,South", "7,55000,1020,East", "8,47000,N/A,West",
+             "9,58000,1500,North", "10,51000,1250,South"), "inc33.csv")
+writeLines(c("id,Diag", "1,250.10", "2,250.00", "3,401.9", "4,250.1",
+             "5,250.10"), "icd33.csv")
+invisible(file.copy(file.path(.ds33, "import_markers.xlsx"), "markers33.xlsx",
+                    overwrite = TRUE))
+
+# Render 1 -- two variables of numbers made text by a few cells: one note,
+# the cells counted, the line with na =.
+jload("inc33.csv", name = "i33", overwrite = TRUE)
+# Expected:
+#   Loaded i33 (CSV format; 10 cases, 4 variables)
+#
+#   Note: 2 variables are numbers except for a few cells, so they were
+#   read as text:
+#     Income  "N/A" (1), "-" (1), "." (1)
+#     Rent    "N/A" (3)
+#   To read those cells as missing and the variables as numbers:
+#     jload("inc33.csv", name = "i33", overwrite = TRUE,
+#         na = c("N/A", "-", "."))
+
+# Render 2 -- the offered line, run: Income and Rent are numbers, the
+# marked cells missing.
+jload("inc33.csv", name = "i33", overwrite = TRUE, na = c("N/A", "-", "."))
+jdesc(i33, Income, Rent)
+# Expected:
+#   Loaded i33 (CSV format; 10 cases, 4 variables)
+#   Descriptive Statistics
+#
+#   10 Cases in the 2 Variable Pool
+#
+#   Note: Listwise deletion using jcomplete() first would leave 6 cases.
+#
+#   Variable  Total  Non_missing   Min    Max      Mean       SD
+#   --------  -----  -----------  -----  -----  ---------  --------
+#   Income      10        7       47000  61000  53142.857  5145.502
+#   Rent        10        7         980   1500   1200.000   185.203
+
+# Render 3 -- the sheet: Income's numbers are number cells, so it gets the
+# note; Code holds a number stored as text and Diag is text throughout, so
+# na = would not make them numbers: no note, and the scan names their N/A
+# as before. (A copy of the sheet in the walk's folder, so the line the note
+# offers names no folder.)
+jload("markers33.xlsx", name = "x33", overwrite = TRUE)
+# Expected:
+#   Loaded x33 (Excel format; 10 cases, 4 variables)
+#
+#   Note: Income is numbers except for 3 cells: "N/A" (1), "-" (1), "." (1).
+#   It was read as text.
+#   To read those cells as missing and Income as numbers:
+#     jload("markers33.xlsx", name = "x33", overwrite = TRUE,
+#         na = c("N/A", "-", "."))
+#
+#   Suspected missing-value codes detected:
+#     Code:  "N/A" (1)
+#     Diag:  "N/A" (1)
+#
+#   These codes are not formally defined, so they are not treated as missing.
+#   Declare them as missing if they are; leave as-is if real.
+#
+#   To declare one variable's values as missing:
+#     jdeclare_missing(x33, Code, codes = "N/A", modify = TRUE)
+#   To declare and label them in one call, replacing the placeholder names:
+#     jdeclare_missing(x33, Code, codes = c(label1 = "N/A"), modify = TRUE)
+
+# Render 4 -- diagnosis codes: read as numbers, 250.10 and 250.1 merge;
+# with text = they are four codes, as written.
+jload("icd33.csv", name = "c33", overwrite = TRUE)
+jfreq(c33, Diag)
+# Expected:
+#   Loaded c33 (CSV format; 5 cases, 2 variables)
+#   Frequencies
+#
+#   5 Cases in the 1 Variable Pool
+#
+#   Diag
+#
+#          Freq  Total %  Valid %  Cum. %
+#   -----  ----  -------  -------  ------
+#   250      1     20.00   20.00    20.00
+#   250.1    3     60.00   60.00    80.00
+#   401.9    1     20.00   20.00   100.00
+#
+#   Total    5    100.00
+jload("icd33.csv", name = "c33", overwrite = TRUE, text = Diag)
+jfreq(c33, Diag)
+# Expected:
+#   Loaded c33 (CSV format; 5 cases, 2 variables)
+#   Frequencies
+#
+#   5 Cases in the 1 Variable Pool
+#
+#   Diag
+#
+#           Freq  Total %  Valid %  Cum. %
+#   ------  ----  -------  -------  ------
+#   250.00    1     20.00   20.00    20.00
+#   250.1     1     20.00   20.00    40.00
+#   250.10    2     40.00   40.00    80.00
+#   401.9     1     20.00   20.00   100.00
+#
+#   Total     5    100.00
+
+# Render 5 -- the stops: a name the file does not have (before the read,
+# the file's names listed); text = and na = on a format that carries its
+# own types and missing values; na = given a number.
+try(jload("icd33.csv", name = "c33", text = Diagnosis))
+try(jload("community_spss.sav", text = Age, na = "-"))
+try(jload("icd33.csv", name = "c33", na = 99))
+# Expected:
+#   Error : jload(): Diagnosis was not found in icd33.csv.
+#   Its variables are id and Diag.
+#   Error : jload(): text = and na = are only for Excel format (.xlsx, .xls) and
+#   CSV format (.csv).
+#   community_spss.sav is in SPSS format (.sav), which carries its own variable
+#   types and missing values.
+#   To load it, drop them:
+#     jload("community_spss.sav")
+#   Error : jload(): `na` must be the cell values to read as missing, in quotes,
+#   for example:
+#     na = c("N/A", "-")
+unlink(c("inc33.csv", "icd33.csv", "markers33.xlsx"))
+setwd(.wd33)
+rm(.wd33, .ds33, i33, x33, c33)
+
+# Things to look at:
+#   - RENDER 1: the note's two-variable form, a line each with the cells and
+#     their counts, then the line -- na = lists every value, overwrite =
+#     TRUE since the read made the frame. No scan block for Income or Rent.
+#   - RENDER 3: the note for Income alone; the scan's block for Code and
+#     Diag ("N/A"), as before.
+#   - RENDER 4: three rows, then four.
+#   - RENDER 5: "Diagnosis was not found in icd33.csv." with the file's
+#     names; one stop naming text = and na =, the line without them.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
