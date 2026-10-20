@@ -83,6 +83,21 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S379 EDIT (v0.9.253, 2026-10-20): GUARD 1 WIDENED (Scripts Slate D, the
+#           (S378) item). The jsubset(), jcomplete(), jdummy() and
+#           registration stores and the once-a-session load-notice flag
+#           (.jst_filter, .jst_complete, .jst_dummy, .jst_registry,
+#           .jst_missing_notice_shown) are recorded at Setup and handed
+#           back at the foot, an unset one unset: Setup clears the stores,
+#           so a session that sourced this file lost its own settings.
+#           No check changed. Sandbox: every battery entered dirty with a
+#           stored filter, jcomplete(), jdummy() and jnumeric() on a frame
+#           of the session's own and the flag set, beside the S378 dirty
+#           items: all green, no option and no workspace value changed.
+#           LAST VERIFIED: v0.9.253, 2026-10-20 (S379) -- 528/528 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3102 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S378 EDIT (v0.9.251, 2026-10-20): Capability Slate C3. NEW SECTION AB,
 #           five checks: "logit" is a plot of a jlogistic() result, drawn
 #           by name and by "all", not by "core", and listed in the plot-name
@@ -1149,6 +1164,15 @@ stopifnot(exists("jload", mode = "function"))
 # a level call, so restoring the level alone would hand back a session
 # without it.
 .entry_output_toggles <- getOption(".jst_output_toggles")
+# The stored settings too (S379; Scripts Slate D, the (S378) item): Setup
+# clears the jsubset(), jcomplete(), jdummy() and registration stores so
+# every check starts clean, and a jload() sets the once-a-session notice
+# flag; a session that sources this file gets its own back at the foot.
+# An option that was unset comes back unset.
+.entry_stores <- lapply(stats::setNames(nm = c(".jst_filter", ".jst_complete",
+                                              ".jst_dummy", ".jst_registry",
+                                              ".jst_missing_notice_shown")),
+                        getOption)
 
 # Message-width pin (mandatory since S253). The wording checks below flatten
 # whitespace before matching, so the pin is belt-and-braces here.
@@ -6173,6 +6197,7 @@ options(.jst_options_message_width = .entry_message_width)
 options(.jst_default_data          = .entry_default_data)
 options(.jst_output_level          = .entry_output_level)
 options(.jst_output_toggles = .entry_output_toggles)
+options(.entry_stores)
 
 .n_ok <- sum(vapply(.results, `[[`, logical(1), "ok"))
 .n    <- length(.results)

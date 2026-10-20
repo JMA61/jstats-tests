@@ -10,6 +10,25 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S379 EDIT (v0.9.253, 2026-10-20): GUARD 1 WIDENED (Scripts Slate D, the
+#           (S378) item). The jsubset(), jcomplete(), jdummy() and
+#           registration stores and the once-a-session load-notice flag
+#           (.jst_filter, .jst_complete, .jst_dummy, .jst_registry,
+#           .jst_missing_notice_shown) are recorded at Setup and handed
+#           back at the foot, an unset one unset: Setup clears the stores,
+#           so a session that sourced this file lost its own settings.
+#           This file alone never cleared the stores; it now forces
+#           them unset as well: N96r failed in a session holding a setting
+#           on a frame of its own ("(jsubset not active for this dataset)"
+#           lines in output pinned whole). Found by that dirty run.
+#           No check changed. Sandbox: every battery entered dirty with a
+#           stored filter, jcomplete(), jdummy() and jnumeric() on a frame
+#           of the session's own and the flag set, beside the S378 dirty
+#           items: all green, no option and no workspace value changed.
+#           LAST VERIFIED: v0.9.253, 2026-10-20 (S379) -- 907/907 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3102 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S378 EDIT (v0.9.251, 2026-10-20): Capability Slate C3. N83j RE-PINNED:
 #           joutput()'s level error names four levels since the silent
 #           level, the list wrapping after its third item at the pin width.
@@ -1806,6 +1825,22 @@ options(.jst_options_missing_convention = NULL)
 # a level call, so restoring the level alone would hand back a session
 # without it.
 .entry_output_toggles <- getOption(".jst_output_toggles")
+# The stored settings too (S379; Scripts Slate D, the (S378) item): the
+# jsubset(), jcomplete(), jdummy() and registration stores, and the
+# once-a-session notice flag a jload() sets; a session that sources this
+# file gets its own back at the foot. An option that was unset comes back
+# unset.
+.entry_stores <- lapply(stats::setNames(nm = c(".jst_filter", ".jst_complete",
+                                              ".jst_dummy", ".jst_registry",
+                                              ".jst_missing_notice_shown")),
+                        getOption)
+# FORCED UNSET as well as recorded (S379): this file, alone of the
+# batteries, never cleared the stores, and a setting the session held on
+# a frame of its own put "(jsubset not active for this dataset)" lines
+# into output pinned whole (N96r failed). Found by a run entered dirty
+# with stored settings, which no earlier dirty run had held.
+options(.jst_filter = NULL, .jst_complete = NULL, .jst_dummy = NULL,
+        .jst_registry = NULL)
 
 # Message-width state (S253). The emitter now wraps every message to the
 # message.width setting, so message output has become environment-dependent:
@@ -11775,6 +11810,7 @@ options(.jst_options_missing_convention = .entry_convention)
 options(.jst_options_message_width = .entry_message_width)
 options(.jst_output_level = .entry_output_level)
 options(.jst_output_toggles = .entry_output_toggles)
+options(.entry_stores)
 
 # --- Verdict -----------------------------------------------------------------
 

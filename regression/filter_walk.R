@@ -53,6 +53,20 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S379 EDIT (v0.9.253; Scripts Slate D, the (S378) item): E1 AND G4 GAIN
+#           "# NEEDS: C2". Each offers jsubset(MyData, Gender == 1), and
+#           since S371 (ruling R23) that line names MyData only because two
+#           data frames hold Gender -- d, and e, which C2 makes (e <- d);
+#           with d alone it names d. Run one section at a time through
+#           rewalk(), neither had e. Derived by running (harness.R derive:
+#           E1 and G4 each need C2 and nothing else); harness.R verify
+#           then matched all 60 sections in file order, reversed, shuffled
+#           and after prepare = TRUE. No Expected moved; not on the
+#           PENDING line.
+# LAST VERIFIED: v0.9.253, 2026-10-20 (S379) -- E1 and G4 gained "# NEEDS:
+#           C2", derived by running; no section walked or re-pinned (not on
+#           the PENDING line); ALL BATTERIES GREEN (10 run, 3102 checks); R
+#           CMD check 0 errors, 0 warnings, 0 notes.
 # S378 EDIT (v0.9.252; Capability Slate C3): SECTION G7 RE-PINNED, by
 #           running (fill.R), mechanically: jplot()'s stop for three
 #           variables reads "To show a variable by the groups of another,
@@ -1434,6 +1448,7 @@ jsubset(d, NULL)
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # SECTION E1 -- jsubset(Gender = 1): a top-level single = ----
+# NEEDS: C2
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # R's parser turns Gender = 1 into an argument NAMED Gender before jstats
 # runs. jsubset() had no ... until S290, so R itself refused the call with
@@ -1718,6 +1733,7 @@ rm(mk)
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # SECTION G4 -- quiet = TRUE with no data frame in hand (S352) ----
+# NEEDS: C2
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # ADDED S352 (v0.9.225; the S349 item). G2's rule, where no data frame is in
 # hand -- none named and no juse() default. A named input beside a

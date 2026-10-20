@@ -29,6 +29,10 @@
 #           names a web address, else the first), then the remedy; with no
 #           warning, the bare remedy; no jstats on disk at all is also a
 #           failure. Success names the version now installed.
+#           (I) after a successful install jupdate() prints the NEWS.md
+#           entries newer than the session's version, newest first, as
+#           plain text, and nothing new when there are none; jai(),
+#           jdata_dir() and jupdate() take ... ("unused input"). S379.
 # ORIGIN:   S298 (v0.9.170). The guard compared the gist's plain "jstats"
 #           with the NAMED pkgname via identical(), so every interactive,
 #           online library(jstats) on 0.9.153-0.9.169 printed "jstats has
@@ -45,6 +49,40 @@
 #           errors), and jupdate() printed "jstats has been updated." with
 #           nothing installed -- reproduced live in the sandbox against a
 #           blocked network.
+# S379 EDIT (v0.9.253, 2026-10-20): Capability Slate C4. SECTION I ADDED,
+#           12 checks (54 in all). (I) jupdate() prints, after a successful
+#           install and above the restart lines, the entries of the NEWS.md
+#           the update installed for the versions newer than the session's:
+#           newest first whatever the file's order, the Markdown taken out,
+#           a list item hung at four spaces, a line of code on its own
+#           (I01-I05, I09); with no newer entry, no file, or a file that
+#           cannot be read, the message as it was (I06-I08); and jai(),
+#           jdata_dir() and jupdate() end their formals with ..., "unused
+#           input" read by name and never evaluated (I10-I12). The fixture
+#           is a NEWS.md in a temporary library folder; jupdate() runs as a
+#           stubbed copy, so nothing is read from the network or installed.
+#           update_run() (section D) now holds the news reader to "", so
+#           the D messages do not depend on .LIB being a real folder on the
+#           machine that runs this. The first draft of the reader let R's
+#           "cannot open file" warning print under a successful update; I08
+#           found it (readLines() warns before it errors, as the S340 gist
+#           read did). On the 0.9.252 master 8 red: I01-I05 I09-I11; I06-I08
+#           and I12 are controls there.
+#           MUTATION MAP (S379, sandbox, seventeen one-change mutants, each
+#           red where expected): the file's order kept I05; the session's
+#           own version printed I01 I02 I06; no upper bound I01 I02; the
+#           read's warning not caught I08; bold kept I01 I03 I04; backticks
+#           kept I01 I03 I04; no hanging indent I01 I04; the news not
+#           spliced into the message I01-I05 I09; the check of ... removed
+#           from jai() I10 I11, from jdata_dir() I10 I11, from jupdate()
+#           I10 I11; jupdate()'s unnamed values passed I11; no "v" before
+#           the number I09; a link left as typed I01 I03; NEWS.md read from
+#           the loaded copy I01-I05 I09; typographic characters kept I01
+#           I03; a code line joined to its item I01 I04.
+#           LAST VERIFIED: v0.9.253, 2026-10-20 (S379) -- 54/54 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3102 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S359 EDIT (v0.9.232, 2026-10-16): GUARD 5 (the S345 item, Scripts Slate
 #           B): the values of the workspace's objects on entry, put back at
 #           the foot when a run changed them, and named ("Put back as they
@@ -435,6 +473,10 @@ update_run <- function(writable = TRUE, latest = "99.0.0", install_error = NULL,
     reported
   }
   stubs$.jst_update_installed_version <- function(lib) on_disk
+  # The news reader (S379) is section I's; here it is held to "", so the
+  # D messages do not depend on whether .LIB is a real folder holding a
+  # NEWS.md on the machine that runs this.
+  stubs$.jst_update_news <- function(lib, from, to) ""
   environment(f) <- stubs
   jupdate <- f
   grab(jupdate())
@@ -660,6 +702,205 @@ check("H05 the folder check comes after the format check: an unsupported extensi
       !has(save_run(file.path(.sv_dir, "out.zzz"), writable = FALSE),
            "R cannot write to this folder"))
 unlink(.sv_dir, recursive = TRUE)
+
+# --- I: the news an update brings; ... on jai(), jdata_dir(), jupdate() (S379)
+# Capability Slate C4, its two (S378) items. After a successful install
+# jupdate() prints, between the success line and the restart lines, the
+# entries of the NEWS.md the update installed for the versions newer than
+# the one the session had: newest first whatever the file's order, the
+# backticks and bold taken out, a list item at two spaces with its text hung
+# at four, a line of code on its own (.jst_update_news(), .jst_news_entries(),
+# .jst_news_render(), .jst_news_plain()). No newer entry, no file, or a file
+# that cannot be read: the message exactly as it was. The fixture is a
+# NEWS.md written into a temporary library folder, the versions counted from
+# the one loaded (.V1, .V2 newer; .V3 newer than the update itself). jupdate()
+# runs as a copy whose gist read, version reads, target folder, write probe
+# and install step are stubs (update_run()'s set, the folder pointed at the
+# fixture): nothing is read from the network and nothing is installed. And
+# jai(), jdata_dir() and jupdate() end their formals with ..., read by
+# .jst_check_args() on the names and never evaluated, as the S378 ten are
+# (filter_check.R AI): "unused input". The jupdate() calls go to the stubbed
+# copy, so a mutant that loses the check cannot reach the network.
+.bump <- function(v, k) {
+  p <- unlist(package_version(v))
+  p[length(p)] <- p[length(p)] + k
+  paste(p, collapse = ".")
+}
+.V1 <- .bump(.INSTALLED, 1L)
+.V2 <- .bump(.INSTALLED, 2L)
+.V3 <- .bump(.INSTALLED, 3L)
+.news_lib  <- tempfile("newslib")
+dir.create(file.path(.news_lib, "jstats"), recursive = TRUE)
+.news_file <- file.path(.news_lib, "jstats", "NEWS.md")
+.put_news <- function(lines) {
+  unlink(.news_file, recursive = TRUE)
+  if (!is.null(lines)) writeLines(enc2utf8(lines), .news_file, useBytes = TRUE)
+}
+# The typographic characters are written as escapes, so this file stays ASCII.
+.NEWS_A <- c(
+  paste("# jstats", .V3), "", "Not yet released: never shown.", "",
+  paste("# jstats", .V2), "",
+  "To the testers: a sentence with \u2014 a dash, \u201cquotes\u201d and an",
+  "ellipsis\u2026 across two lines of the file.", "",
+  "* **Bold lead.** Text with `code()`, a [link](https://example.org/a),",
+  "  <https://example.com/b>, and a product `x * z` that keeps its star.",
+  "* **A long item.** Its words run on well past the width of the message so",
+  "  that the item wraps, every line after the first hung four spaces in,",
+  "  under the text and not under the dash.",
+  "  `jrelabel(d, c(Q1, Q2, Q3), labels = \"1=Never; 2=Sometimes; 3=Often\", modify = TRUE)`",
+  "  - A nested item, two spaces further in, whose text also runs long enough",
+  "    to wrap onto a second line.",
+  "", "## Fixes", "",
+  "1. A numbered item keeps its number.", "",
+  "```r", "x <- jfreq(d, Age)", "```", "",
+  paste("# jstats", .V1), "", "The older entry.", "",
+  paste("# jstats", .INSTALLED), "", "The version the session had: never shown.")
+.upd_copy <- function(on_disk = .V2) {
+  f     <- jstats:::jupdate
+  stubs <- new.env(parent = environment(f))
+  stubs$.jst_read_gist <- function() {
+    list(network_ok = TRUE, successor = NULL, message = NULL)
+  }
+  stubs$.jst_latest_universe_version  <- function(pkg = NULL) on_disk
+  stubs$.jst_update_target_lib        <- function(pkg_path = NULL) .news_lib
+  stubs$.jst_lib_writable             <- function(lib) TRUE
+  stubs$.jst_update_install           <- function(lib) { .handed <<- lib; character(0) }
+  stubs$.jst_update_installed_version <- function(lib) on_disk
+  environment(f) <- stubs
+  f
+}
+.UPD_HEAD <- paste0("Updating jstats ... (this may take a moment)\n",
+                    "jstats has been updated to version ", .V2, ".\n\n")
+.UPD_TAIL <- paste0(
+  "Restart R to load it in RStudio:\n",
+  "  - open the Session menu > choose Restart R\n",
+  "  - or press Ctrl+Shift+F10\n",
+  "\n",
+  "If your startup loads packages automatically, their usual messages will\n",
+  "appear after the restart; otherwise the Console returns to an empty prompt.\n",
+  "Reload jstats with library(jstats) (unless loaded automatically on startup).\n")
+.lines_of <- function(txt) strsplit(txt, "\n", fixed = TRUE)[[1]]
+
+.put_news(.NEWS_A)
+.news_76 <- local({ jupdate <- .upd_copy(); grab(jupdate()) })
+
+check("I01 an update with news: the success line, the entries newer than the version the session had (newest first), then the restart lines -- pinned whole at width 76",
+      identical(.news_76, paste0(
+        .UPD_HEAD,
+        "What is new since version ", .INSTALLED, ":\n",
+        "\n",
+        "jstats ", .V2, "\n",
+        "\n",
+        "To the testers: a sentence with -- a dash, \"quotes\" and an ellipsis...\n",
+        "across two lines of the file.\n",
+        "\n",
+        "  - Bold lead. Text with code(), a link (https://example.org/a),\n",
+        "    https://example.com/b, and a product x * z that keeps its star.\n",
+        "  - A long item. Its words run on well past the width of the message so that\n",
+        "    the item wraps, every line after the first hung four spaces in, under\n",
+        "    the text and not under the dash.\n",
+        "      jrelabel(d, c(Q1, Q2, Q3), labels = \"1=Never; 2=Sometimes; 3=Often\",\n",
+        "          modify = TRUE)\n",
+        "    - A nested item, two spaces further in, whose text also runs long enough\n",
+        "      to wrap onto a second line.\n",
+        "\n",
+        "Fixes\n",
+        "\n",
+        "  1. A numbered item keeps its number.\n",
+        "\n",
+        "    x <- jfreq(d, Age)\n",
+        "\n",
+        "jstats ", .V1, "\n",
+        "\n",
+        "The older entry.\n",
+        "\n",
+        .UPD_TAIL)))
+
+check("I02 ... the entry for the version the session had and one newer than the update are left out; the two between are printed newest first",
+      !has(.news_76, "never shown") && !has(.news_76, paste("jstats", .V3)) &&
+        regexpr(paste("jstats", .V2), .news_76, fixed = TRUE) <
+          regexpr(paste("jstats", .V1), .news_76, fixed = TRUE))
+
+check("I03 ... no backtick, no bold marker and no character beyond ASCII is left; a link keeps its address in parentheses, and a single star (x * z) stays",
+      !has(.news_76, "`") && !has(.news_76, "**") &&
+        all(utf8ToInt(.news_76) < 128L) &&
+        has(.news_76, "a link (https://example.org/a),") &&
+        has(.news_76, "x * z"))
+
+.news_50 <- local({
+  options(.jst_options_message_width = 50L)
+  on.exit(options(.jst_options_message_width = .pin_width), add = TRUE)
+  jupdate <- .upd_copy(); grab(jupdate())
+})
+
+check("I04 at width 50 every line fits, an item's lines after its first are hung four spaces in, and the code line is laid out as a printed call is (continued four spaces further in)",
+      { L <- .lines_of(.news_50)
+        all(nchar(L) <= 50L) &&
+          identical(L[grep("^  - A long item", L) + 1L], "    width of the message so that the item wraps,") &&
+          any(L == "      jrelabel(d, c(Q1, Q2, Q3),") &&
+          any(grepl("^          labels = ", L)) })
+
+check("I05 the file's order does not decide: entries written oldest first still print newest first",
+      { .put_news(c(paste("# jstats", .V1), "", "Older.", "",
+                    paste("# jstats", .V2), "", "Newer."))
+        o <- local({ jupdate <- .upd_copy(); grab(jupdate()) })
+        identical(o, paste0(.UPD_HEAD,
+                            "What is new since version ", .INSTALLED, ":\n\n",
+                            "jstats ", .V2, "\n\nNewer.\n\n",
+                            "jstats ", .V1, "\n\nOlder.\n\n",
+                            .UPD_TAIL)) })
+
+.no_news <- paste0(.UPD_HEAD, .UPD_TAIL)
+
+check("I06 no entry newer than the version the session had: the success message as it was, whole",
+      { .put_news(c(paste("# jstats", .INSTALLED), "", "Old."))
+        identical(local({ jupdate <- .upd_copy(); grab(jupdate()) }), .no_news) })
+
+check("I07 no NEWS.md in the folder the update went into: the same message",
+      { .put_news(NULL)
+        identical(local({ jupdate <- .upd_copy(); grab(jupdate()) }), .no_news) })
+
+check("I08 a NEWS.md that cannot be read (a folder in its place): the update still succeeds, the same message, no warning",
+      { .put_news(NULL); dir.create(.news_file)
+        o <- local({ jupdate <- .upd_copy(); grab(jupdate()) })
+        unlink(.news_file, recursive = TRUE)
+        identical(o, .no_news) })
+
+check("I09 a level-one heading with no version is no entry; one with a v before the number and a date after it is read",
+      { .put_news(c("# jstats (development version)", "", "Unreleased.", "",
+                    paste0("# jstats v", .V1, " (2026-10-20)"), "", "Dated."))
+        o <- local({ jupdate <- .upd_copy(); grab(jupdate()) })
+        !has(o, "Unreleased") &&
+          has(o, paste0("\n\njstats v", .V1, " (2026-10-20)\n\nDated.\n\n")) })
+
+check("I10 an input jai(), jdata_dir() or jupdate() does not take: \"unused input\" with its name, read and never evaluated (Zzz is found nowhere), and jupdate() reaches nothing",
+      local({ .handed <<- NULL
+              jupdate <- .upd_copy()
+              identical(grab(jai(foo = Zzz)), "jai(): unused input: foo") &&
+                identical(grab(jdata_dir(foo = Zzz)), "jdata_dir(): unused input: foo") &&
+                identical(grab(jupdate(foo = Zzz)), "jupdate(): unused input: foo") &&
+                is.null(.handed) }))
+
+check("I11 an unnamed value past the formals is an unused input too, shown as typed",
+      local({ .handed <<- NULL
+              jupdate <- .upd_copy()
+              identical(grab(jai("status", NULL, "x")), "jai(): unused input: \"x\"") &&
+                identical(grab(jdata_dir(".", Zzz)), "jdata_dir(): unused input: Zzz") &&
+                identical(grab(jupdate(FALSE, 7)), "jupdate(): unused input: 7") &&
+                is.null(.handed) }))
+
+check("I12 a correct call is unchanged, and the formals before the dots keep R's partial matching (def = is default =, as = is ask =)",
+      local({ old <- options(.jst_options_data_dir = NULL)
+              on.exit(options(old), add = TRUE)
+              jupdate <- .upd_copy(on_disk = "0.0.1")
+              ok_jai <- !inherits(tryCatch(utils::capture.output(suppressMessages(jai())),
+                                           error = function(e) e), "error")
+              identical(jdata_dir(def = "zz9"), "zz9") &&
+                identical(jdata_dir(), ".") &&
+                has(grab(jupdate(as = FALSE)), "is already up to date.") &&
+                ok_jai }))
+
+unlink(.news_lib, recursive = TRUE)
 
 # --- Restore -----------------------------------------------------------------
 

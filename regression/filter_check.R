@@ -161,6 +161,21 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S379 EDIT (v0.9.253, 2026-10-20): GUARD 1 WIDENED (Scripts Slate D, the
+#           (S378) item). The jsubset(), jcomplete(), jdummy() and
+#           registration stores and the once-a-session load-notice flag
+#           (.jst_filter, .jst_complete, .jst_dummy, .jst_registry,
+#           .jst_missing_notice_shown) are recorded at Setup and handed
+#           back at the foot, an unset one unset: Setup clears the stores,
+#           so a session that sourced this file lost its own settings.
+#           No check changed. Sandbox: every battery entered dirty with a
+#           stored filter, jcomplete(), jdummy() and jnumeric() on a frame
+#           of the session's own and the flag set, beside the S378 dirty
+#           items: all green, no option and no workspace value changed.
+#           LAST VERIFIED: v0.9.253, 2026-10-20 (S379) -- 640/640 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3102 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S378 EDIT 2 (v0.9.252, 2026-10-20): jrelabel()'s list form and Jeff's
 #           wording. RE-PINNED: Y10's jrelabel() part (a c() of several is
 #           the list form now, which needs modify = TRUE: jrelabel_check.R
@@ -1597,6 +1612,15 @@ stopifnot(exists("jload", mode = "function"))
 # a level call, so restoring the level alone would hand back a session
 # without it.
 .entry_output_toggles <- getOption(".jst_output_toggles")
+# The stored settings too (S379; Scripts Slate D, the (S378) item): Setup
+# clears the jsubset(), jcomplete(), jdummy() and registration stores so
+# every check starts clean, and a jload() sets the once-a-session notice
+# flag; a session that sources this file gets its own back at the foot.
+# An option that was unset comes back unset.
+.entry_stores <- lapply(stats::setNames(nm = c(".jst_filter", ".jst_complete",
+                                              ".jst_dummy", ".jst_registry",
+                                              ".jst_missing_notice_shown")),
+                        getOption)
 
 # Message-width pin. MANDATORY: the emitter wraps to this setting and since
 # S256 the shipped default follows the console pane, so an unpinned battery
@@ -6922,6 +6946,7 @@ options(.jst_options_message_width = .entry_message_width)
 options(.jst_default_data = .entry_default_data)
 options(.jst_output_level = .entry_output_level)
 options(.jst_output_toggles = .entry_output_toggles)
+options(.entry_stores)
 
 .n_ok <- sum(vapply(.results, `[[`, logical(1), "ok"))
 .n    <- length(.results)
