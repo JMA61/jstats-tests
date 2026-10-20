@@ -11,6 +11,24 @@
 #           jfreq(), jscreen() and a group function (Part K); since S349 a
 #           plot's one-line N statement (Part M).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S382 EDIT (v0.9.256): FIX SLATE 25. A2, B7, C2, F4 and L1 RE-PINNED
+#           MECHANICALLY, one line each, and kept off the PENDING line: the
+#           listwise note without "first" ("Note: Listwise deletion using
+#           jcomplete() would leave 63 cases."), the wording Jeff asked for
+#           on his S381 walk, its sentence now in one place
+#           (.jst_listwise_note). Walked once, in modify_form_walk.R
+#           Section 33. A capture of every section on 0.9.255 and the build
+#           moves only those five here. The assertion side is cps_check.R
+#           N60a, N60g and N63. harness.R derive: the eighteen NEEDS lines as
+#           they were; verify: 70 of 70 sections in three orders and by
+#           prepare = TRUE; 25 of 73 Expected blocks found as runs, as on
+#           0.9.255 (the count, not compared block by block).
+# LAST VERIFIED: v0.9.256, 2026-10-21 (S382) -- A2, B7, C2, F4 and L1
+#           re-pinned mechanically and not walked here; the note WALKED in
+#           modify_form_walk.R Section 33 on the WORKSTATION by Jeff through
+#           receive_all() ("walked, all okay"); PENDING none throughout; R CMD
+#           check 0 errors, 0 warnings, 0 notes; ALL BATTERIES GREEN (10 run,
+#           3141 checks).
 # S373 EDIT (v0.9.246): SLATE E5, ruling R27. K3 RE-PINNED by hand from
 #           the capture: the blank footnote's way out is two lines, one per
 #           route -- jencode() to give the cells a code, jdeclare_missing()
@@ -444,7 +462,7 @@ jdesc(d, Stress, SocialSupport)
 #
 #   70 Cases in the 2 Variable Pool; 63 Complete on All
 #
-#   Note: Listwise deletion using jcomplete() first would leave 63 cases.
+#   Note: Listwise deletion using jcomplete() would leave 63 cases.
 #
 #   Variable       Total  Non_missing  Min  Max   Mean     SD
 #   [... results not pinned here ...]
@@ -799,7 +817,7 @@ jdesc(d, Stress, SleepHours)
 #
 #   70 Cases in the 2 Variable Pool
 #
-#   Note: Listwise deletion using jcomplete() first would leave 62 cases.
+#   Note: Listwise deletion using jcomplete() would leave 62 cases.
 #
 #   Variable    Total  Non_missing  Min   Max   Mean     SD
 #   [... results not pinned here ...]
@@ -869,7 +887,7 @@ jdesc(d, Stress, SocialSupport, case.processing.detail = "per_code")
 #         System/NA              3     4.3
 #   --------------------------------------
 #
-#   Note: Listwise deletion using jcomplete() first would leave 63 cases.
+#   Note: Listwise deletion using jcomplete() would leave 63 cases.
 #
 #   Variable       Total  Non_missing  Min  Max   Mean     SD
 #   [... results not pinned here ...]
@@ -1280,7 +1298,7 @@ joutput(NULL, quiet = TRUE)
 #
 #   70 Cases in the 2 Variable Pool; 63 Complete on All
 #
-#   Note: Listwise deletion using jcomplete() first would leave 63 cases.
+#   Note: Listwise deletion using jcomplete() would leave 63 cases.
 #
 #   Variable       Total  Non_missing  Min  Max   Mean     SD
 #   [... results not pinned here ...]
@@ -2571,7 +2589,7 @@ jdesc(d, Stress, SocialSupport, by = Medication)
 #       Remaining N        --         65
 #   ------------------------------------------------
 #
-#   Note: Listwise deletion using jcomplete() first would leave 58 cases.
+#   Note: Listwise deletion using jcomplete() would leave 58 cases.
 #
 #   Stress
 #

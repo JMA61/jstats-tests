@@ -30,6 +30,26 @@
 #           with base R's lines, and the label line under every
 #           as.numeric() line jload() offers (Section 34).
 # ORIGIN:   S229
+# EDITED:   S382 (v0.9.256; Fix Slate 25). SECTION 33'S RENDER 2
+#           RE-PINNED, one line: the listwise note without "first" ("Note:
+#           Listwise deletion using jcomplete() would leave 6 cases."), the
+#           wording Jeff asked for on his S381 walk of this section ("the
+#           word "first" here seems awkward and unnecessary"), its sentence
+#           now in one place (.jst_listwise_note), and a "Things to look at"
+#           bullet for it. On the PENDING line: the one section walked for
+#           the note. The other blocks that print it were re-pinned
+#           mechanically and kept off their walks' PENDING lines: cps_walk.R
+#           A2, B7, C2, F4 and L1, and format_walk.R 20. A capture of every
+#           section of every walk on 0.9.255 and the new build named those
+#           seven and nothing else (temp paths aside). The assertion side is
+#           cps_check.R N60a, N60g and N63. harness.R derive: the five NEEDS
+#           lines as they were; verify: 34 of 34 sections in three orders and
+#           by prepare = TRUE; 130 of 131 Expected blocks found (Section 9's,
+#           as before).
+# LAST VERIFIED: v0.9.256, 2026-10-21 (S382) -- Section 33 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 3141 checks).
 # EDITED:   S381 (v0.9.255; Fix Slate 24). SECTION 33'S RENDER 3
 #           RE-PINNED and SECTION 34 ADDED, every new Expected block
 #           filled by running (fill.R): a sheet's variable of number
@@ -3760,7 +3780,7 @@ jdesc(i33, Income, Rent)
 #
 #   10 Cases in the 2 Variable Pool
 #
-#   Note: Listwise deletion using jcomplete() first would leave 6 cases.
+#   Note: Listwise deletion using jcomplete() would leave 6 cases.
 #
 #   Variable  Total  Non_missing   Min    Max      Mean       SD
 #   --------  -----  -----------  -----  -----  ---------  --------
@@ -3864,6 +3884,11 @@ rm(.wd33, .ds33, i33, x33, c33)
 #   - RENDER 1: the note's two-variable form, a line each with the cells and
 #     their counts, then the line -- na = lists every value, overwrite =
 #     TRUE since the read made the frame. No scan block for Income or Rent.
+#   - RENDER 2 (re-pinned S382): the listwise note without "first", as you
+#     asked on your S381 walk of this section: "Note: Listwise deletion
+#     using jcomplete() would leave 6 cases." The same sentence prints in
+#     every jdesc() and jfreq() call, now from one place; cps_walk.R and
+#     format_walk.R were re-pinned mechanically to it.
 #   - RENDER 3 (re-pinned S381): one note for Income and Code; the sentence
 #     saying Code also holds a number stored as text, which na = does not
 #     change; the reload line, then Code's as.numeric() line. The scan's

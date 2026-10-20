@@ -109,6 +109,22 @@
 #           from its values (jlogistic's fit tables, jalpha, jdesc's Mean
 #           and SD, the VIF tables, jscreen's stats columns) and to jt's
 #           Cohen's d line, which had the eta-squared defect.
+# S382 EDIT (v0.9.256, 2026-10-21): Fix Slate 25 (the S381 item). NEW
+#           SECTION AB, eight checks: jscreen()'s date line for a variable
+#           with a label is followed by the attr() line that puts the label
+#           back, which as.Date() drops -- the line for an unlabelled
+#           variable unchanged (AB01); the two lines run, giving a Date with
+#           its label (AB02); the day/month-or-month/day sentence ends "then
+#           the attr() line:" and the line follows both, the label escaped
+#           (AB03), and runs back exactly (AB04); a CSV file's renamed date
+#           header, jload()'s label put back (AB05); an expression given as
+#           the data (AB06); an empty or non-text label gets no line (AB07);
+#           and one helper, .jst_label_line(), for these lines and jload()'s
+#           as.numeric() lines (AB08). 324 checks -> 332.
+#           LAST VERIFIED: v0.9.256, 2026-10-21 (S382) -- 332/332 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3141 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S379 EDIT (v0.9.253, 2026-10-20): GUARD 1 WIDENED (Scripts Slate D, the
 #           (S378) item). The jsubset(), jcomplete(), jdummy() and
 #           registration stores and the once-a-session load-notice flag
@@ -4445,6 +4461,96 @@ check("AA13 a date variable registered with jdummy() keeps its registered sub-cl
 check("AA12 the output still ends on exactly one blank line, with the footnote and the note in it",
       { v <- both_out(jscreen(aa_d)); identical(v[length(v)], "") && nzchar(v[length(v) - 1L]) })
 rm(list = intersect(c("aa_d"), ls(all.names = TRUE)))
+
+# =============================================================================
+# SECTION AB -- jscreen(): THE DATE LINE PUTS BACK THE LABEL (S382, v0.9.256)
+# =============================================================================
+# Fix Slate 25 (the S381 item, found by the scan for other conversion lines).
+# as.Date() drops every attribute, so the footnote's line for a date stored
+# as text took away the label jload() gives a renamed variable (its name in
+# the file) -- or any label the variable carries. Where the variable has a
+# label, the line that puts it back now follows its line or lines, as
+# jload()'s as.numeric() lines have since S381; one helper builds both
+# (.jst_label_line()). A variable whose values fit day/month and month/day
+# says "run the line that fits, then the attr() line:". An unlabelled
+# variable's lines are as before (AA01-AA13).
+cat("\n--- AB. jscreen(): the date line puts back the label ---\n")
+.ab_d <- data.frame(
+  Visit = c("2015-04-01", "2016-05-02", "2017-06-03", "2019-12-31"),
+  Amb   = c("01/02/2015", "03/04/2016", "05/06/2017", "07/08/2018"),
+  Plain = c("28NOV2007", "04AUG1994", "01JAN2000", "15MAR2010"),
+  stringsAsFactors = FALSE)
+attr(.ab_d$Visit, "label") <- "Date of first visit"
+attr(.ab_d$Amb, "label") <- "Booked \"on\" \\ date"
+check("AB01 a labelled date variable: its as.Date() line, then the attr() line with its label; an unlabelled one beside it gets none",
+      { v <- both_out(jscreen(.ab_d, Visit, Plain))
+        k <- grep("^date \\(unparsed\\)", v)
+        length(k) == 1L &&
+          identical(v[(k + 1L):(k + 4L)],
+                    c("  .ab_d$Visit <- as.Date(.ab_d$Visit, format = \"%Y-%m-%d\")",
+                      "  attr(.ab_d$Visit, \"label\") <- \"Date of first visit\"",
+                      "  .ab_d$Plain <- as.Date(.ab_d$Plain, format = \"%d%b%Y\")",
+                      "")) })
+check("AB02 the two lines run: a Date variable holding every date, with its label back",
+      local({ v <- both_out(jscreen(.ab_d, Visit))
+              ln <- trimws(grep("^  (\\.ab_d\\$Visit <-|attr\\(\\.ab_d\\$Visit)", v, value = TRUE))
+              e <- new.env(); e$.ab_d <- .ab_d
+              for (l in ln) eval(parse(text = l), e)
+              length(ln) == 2L && inherits(e$.ab_d$Visit, "Date") &&
+                sum(!is.na(e$.ab_d$Visit)) == 4L &&
+                identical(attr(e$.ab_d$Visit, "label"), "Date of first visit") }))
+check("AB03 day/month or month/day with a label: the sentence names the attr() line, both lines, then the attr() line, its label escaped",
+      { v <- both_out(jscreen(.ab_d, Amb))
+        k <- grep("^Amb's values", v)
+        length(k) == 1L &&
+          identical(paste(v[k:(k + 1L)], collapse = " "),
+                    "Amb's values fit day/month and month/day; run the line that fits, then the attr() line:") &&
+          identical(v[(k + 2L):(k + 4L)],
+                    c("  .ab_d$Amb <- as.Date(.ab_d$Amb, format = \"%d/%m/%Y\")",
+                      "  .ab_d$Amb <- as.Date(.ab_d$Amb, format = \"%m/%d/%Y\")",
+                      "  attr(.ab_d$Amb, \"label\") <- \"Booked \\\"on\\\" \\\\ date\"")) })
+check("AB04 ... and the escaped label runs back exactly, quotation marks and backslash",
+      local({ v <- both_out(jscreen(.ab_d, Amb))
+              ln <- trimws(v[grep("^  attr\\(\\.ab_d\\$Amb", v)])
+              e <- new.env(); e$.ab_d <- .ab_d
+              eval(parse(text = ln), e)
+              length(ln) == 1L && identical(attr(e$.ab_d$Amb, "label"), attr(.ab_d$Amb, "label")) }))
+check("AB05 the case the item names: a CSV file's renamed date header, jload()'s label put back by the line after as.Date()",
+      local({ tf <- file.path(tempdir(), "ab05_dates.csv")
+              writeLines(c("ID,Visit Date", "1,2015-04-01", "2,2016-05-02", "3,2017-06-03"), tf)
+              on.exit(unlink(tf), add = TRUE)
+              invisible(both_out(jload(tf, name = "abj", overwrite = TRUE, quiet = TRUE)))
+              v <- both_out(jscreen(abj))
+              k <- grep("^  abj\\$Visit_Date <- as.Date", v)
+              e <- new.env(); e$abj <- abj
+              for (l in trimws(v[k:(k + 1L)])) eval(parse(text = l), e)
+              length(k) == 1L &&
+                identical(v[k + 1L], "  attr(abj$Visit_Date, \"label\") <- \"Visit Date\"") &&
+                inherits(e$abj$Visit_Date, "Date") &&
+                identical(attr(e$abj$Visit_Date, "label"), "Visit Date") }))
+check("AB06 an expression given as the data: the attr() line names mydata, under \"mydata <- mk()\", and the block runs",
+      local({ mk <- function() .ab_d[c("Visit")]
+              b <- both_out(jscreen(mk()))
+              k <- which(b == "  mydata <- mk()")
+              e <- new.env(parent = environment())
+              for (l in trimws(b[k:(k + 2L)])) eval(parse(text = l), e)
+              length(k) == 1L &&
+                identical(b[k + 2L], "  attr(mydata$Visit, \"label\") <- \"Date of first visit\"") &&
+                identical(attr(e$mydata$Visit, "label"), "Date of first visit") }))
+check("AB07 an empty label, or one that is not text, gets no attr() line",
+      { d <- .ab_d[c("Visit")]; attr(d$Visit, "label") <- ""
+        d2 <- .ab_d[c("Visit")]; attr(d2$Visit, "label") <- 5
+        v <- both_out(jscreen(d)); v2 <- both_out(jscreen(d2))
+        !any(grepl("attr(", c(v, v2), fixed = TRUE)) &&
+          any(v == "  d$Visit <- as.Date(d$Visit, format = \"%Y-%m-%d\")") })
+check("AB08 one helper for both: jload()'s as.numeric() lines and the date lines put a label back in the same form",
+      identical(jstats:::.jst_label_line("x$v", "Say \"hi\""),
+                "  attr(x$v, \"label\") <- \"Say \\\"hi\\\"\"") &&
+        identical(jstats:::.jst_numeric_lines("x", "v", label = "Say \"hi\"")[2L],
+                  jstats:::.jst_label_line("x$v", "Say \"hi\"")) &&
+        identical(jstats:::.jst_label_line("x$v", NA_character_), character(0)) &&
+        identical(jstats:::.jst_label_line("x$v", NULL), character(0)))
+rm(list = intersect(c(".ab_d"), ls(all.names = TRUE)))
 
 
 # --- Verdict -----------------------------------------------------------------

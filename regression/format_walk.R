@@ -76,8 +76,30 @@
 #           Since S375 (v0.9.248) the Cramer's V line under a chi-square
 #           table, and jcrosstab()'s stop for a variable of more than 20
 #           values (Section 35).
+#           Since S382 (v0.9.256) the line after a date line that puts back
+#           the variable's label, which as.Date() drops (Section 36).
 #           format_check.R asserts the same surface; this file shows it.
 # ORIGIN:   S326 (v0.9.202): the number-format bundle.
+# S382 EDIT (v0.9.256; Fix Slate 25): SECTION 36 ADDED, three renders --
+#           35 sections -> 36 -- filled by running (fill.R): a CSV file's two
+#           renamed date columns, jscreen()'s footnote with the attr() line
+#           after each date line, and the lines run. It is the PENDING
+#           section: the label line and the two-fit sentence's "then the
+#           attr() line" are Claude's calls. Section 20 RE-PINNED
+#           MECHANICALLY, one line, and kept off the PENDING line: the
+#           listwise note without "first" ("Note: Listwise deletion using
+#           jcomplete() would leave 62 cases."), Jeff's wording at S381,
+#           walked in modify_form_walk.R Section 33. A capture of every
+#           section of every walk on 0.9.255 and on the new build named
+#           Section 20 here and nothing else (temp paths aside). harness.R
+#           derive: Section 36 needs no other, and no NEEDS line changed;
+#           verify: 36 of 36 sections in three orders and by prepare =
+#           TRUE; 57 of 57 Expected blocks.
+# LAST VERIFIED: v0.9.256, 2026-10-21 (S382) -- Section 36 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; Section 20 re-pinned mechanically, not
+#           walked; R CMD check 0 errors, 0 warnings, 0 notes; ALL BATTERIES
+#           GREEN (10 run, 3141 checks).
 # S375 EDIT (v0.9.248; Capability Slate C2): SECTION 35 ADDED, three renders --
 #           34 sections -> 35 -- filled by running (fill.R): Cramer's V under a
 #           5 x 4 table and on the result; jcrosstab()'s stop past 20 values,
@@ -1648,7 +1670,7 @@ jdesc(cl, Flourishing, SleepHours, ScreenTime, Stress)
 #
 #   70 Cases in the 4 Variable Pool; 62 Complete on All
 #
-#   Note: Listwise deletion using jcomplete() first would leave 62 cases.
+#   Note: Listwise deletion using jcomplete() would leave 62 cases.
 #
 #   Variable     Total  Non_missing  Min   Max   Mean     SD
 #   -----------  -----  -----------  ---  ----  ------  ------
@@ -3782,6 +3804,86 @@ jcrosstab(SocialSupport ~ SoughtHelp, data = cl, row.pct = FALSE,
 #     the table under it, one row per value.
 #   - 20 is the lean Jeff okayed at S375: a five-point Likert item or a 0-10
 #     rating (11 values) still tabulates; a scale score or an age stops.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 36 -- jscreen(): a date line puts back the variable's label (S382) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 382 (v0.9.256), Fix Slate 25 (the S381 item). as.Date() drops every
+# attribute, so the footnote line of Section 34 took away a variable's label:
+# the one jload() gives a variable it renames (the name the file had), or any
+# label the variable carries. Where the variable has a label, the line that
+# puts it back now follows the variable's line, or its two lines, as jload()'s
+# as.numeric() lines have since S381. The assertion side is format_check.R
+# section AB.
+
+.f36 <- file.path(tempdir(), "visits36.csv")
+writeLines(c("ID,Visit Date,Booked On,Ward",
+             "101,2015-04-01,01/02/2015,A",
+             "102,2016-05-02,03/04/2016,B",
+             "103,2017-06-03,05/06/2017,C",
+             "104,2019-12-31,07/08/2018,A"), .f36)
+
+# Render 1 -- a CSV file whose two date columns have spaces in their names:
+# jload() renames them, and each keeps its old name as its label.
+jload(.f36, name = "f36", overwrite = TRUE)
+# Expected:
+#   Loaded f36 (CSV format; 4 cases, 4 variables)
+#
+#   Note: 2 variable names were changed to valid R names:
+#     "Visit Date"  -> Visit_Date
+#     "Booked On"   -> Booked_On
+#   The original names are the variables' labels.
+
+# Render 2 -- the footnote: each date line, then its attr() line.
+jscreen(f36)
+# Expected:
+#   Data Screening
+#     Cases: 4
+#     Variables: 4
+#     Cases with missing data: 0
+#     Variables with outliers: 0
+#
+#   Variable Types
+#   Variable    jstats Class  Sub-class        Unique Values
+#   ----------  ------------  ---------------  -------------
+#   ID          Numeric                              4
+#   Visit_Date  Categorical   date (unparsed)        4
+#   Booked_On   Categorical   date (unparsed)        4
+#   Ward        Categorical   3-category             3
+#
+#   date (unparsed): text in a date format, which as.Date() makes a date:
+#     f36$Visit_Date <- as.Date(f36$Visit_Date, format = "%Y-%m-%d")
+#     attr(f36$Visit_Date, "label") <- "Visit Date"
+#   Booked_On's values fit day/month and month/day; run the line that fits, then
+#   the attr() line:
+#     f36$Booked_On <- as.Date(f36$Booked_On, format = "%d/%m/%Y")
+#     f36$Booked_On <- as.Date(f36$Booked_On, format = "%m/%d/%Y")
+#     attr(f36$Booked_On, "label") <- "Booked On"
+
+# Render 3 -- the first variable's two lines, run: a date, with its label.
+f36$Visit_Date <- as.Date(f36$Visit_Date, format = "%Y-%m-%d")
+attr(f36$Visit_Date, "label") <- "Visit Date"
+class(f36$Visit_Date)
+attr(f36$Visit_Date, "label")
+# Expected:
+#   [1] "Date"
+#   [1] "Visit Date"
+unlink(.f36)
+rm(f36, .f36)
+
+# Things to look at:
+#   - RENDER 1: jload()'s note on the two names, and that the old names are
+#     the labels.
+#   - RENDER 2: Visit_Date's line, then the line that puts back "Visit
+#     Date". Booked_On's values fit day/month and month/day, so its
+#     sentence now ends "run the line that fits, then the attr() line:"
+#     and the attr() line comes after both. Is that clear enough that the
+#     attr() line is run as well, whichever date line fits?
+#   - RENDER 3: the lines run as printed: a Date, and its label back. Before
+#     this build the label was gone after the first line.
+#   - Ward and ID: unchanged, and no attr() line for a variable without a
+#     label.
 
 
 # --- Restore -----------------------------------------------------------------

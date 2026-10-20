@@ -30,8 +30,21 @@
 #           panel, a setting name in first position is a query; and since
 #           S349 jplot()'s one-line N statement (N61); and since S373 the
 #           blank footnote's two routes, a factor's one, and blanks declared
-#           missing as one row of the Missing block (N58d2, N58d3).
+#           missing as one row of the Missing block (N58d2, N58d3); and since
+#           S382 the listwise note's one sentence (N63).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S382 EDIT (v0.9.256, 2026-10-21): Fix Slate 25. N60a and N60g
+#           RE-PINNED to the listwise note without "first" (Jeff, S381:
+#           "awkward and unnecessary"). NEW SECTION N63, three checks: the
+#           note's sentence in jdesc(), a grouped jdesc() and jfreq(), once
+#           each (N63a); one case left reads "1 case", none "0 cases", where
+#           the callers' "%d cases" said "1 cases" (N63b); the sentence's one
+#           home, the printer's default .jst_listwise_note, and no copy in
+#           jdesc() or jfreq() (N63c). 268 checks -> 271.
+#           LAST VERIFIED: v0.9.256, 2026-10-21 (S382) -- 271/271 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3141 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S379 EDIT (v0.9.253, 2026-10-20): GUARD 1 WIDENED (Scripts Slate D, the
 #           (S378) item). The jsubset(), jcomplete(), jdummy() and
 #           registration stores and the once-a-session load-notice flag
@@ -2758,7 +2771,7 @@ quiet(jload("clinic", name = "d60", package = TRUE, overwrite = TRUE, quiet = TR
 d60$SocialSupport[1:3] <- NA
 .m60 <- jstats:::.jst_apply_declared_udms_as_na(d60)$data
 .g60 <- !is.na(.m60$Medication)
-.n60 <- "Note: Listwise deletion using jcomplete() first would leave 58 cases."
+.n60 <- "Note: Listwise deletion using jcomplete() would leave 58 cases."
 # .pl60(): plines() for a capture outside check() (guard 3): a call that
 # stops gives its error text instead of halting the battery.
 .pl60 <- function(expr) tryCatch(plines(expr),
@@ -2788,7 +2801,7 @@ check("N60f a grouping variable that excludes no case: the plain \"Cases\", with
 check("N60g the ungrouped call is as it was: the N line and the note",
       { v <- plines(jdesc(d60, Stress, SocialSupport))
         identical(n_line(v), "70 Cases in the 2 Variable Pool; 63 Complete on All") &&
-          any(v == "Note: Listwise deletion using jcomplete() first would leave 63 cases.") })
+          any(v == "Note: Listwise deletion using jcomplete() would leave 63 cases.") })
 quiet(jcomplete(d60, Anxiety1))
 .v60h <- .pl60(jdesc(d60, Stress, SocialSupport))
 .v60i <- .pl60(jfreq(d60, Stress, SocialSupport))
@@ -3032,6 +3045,47 @@ check("N62j the resolver gives silent standard's defaults for every setting, and
                 identical(a$out, b$out) && any(grepl("Auto-listwise", a$out, fixed = TRUE)) }))
 reset()
 rm(d62, .both62, .v62a)
+
+# =============================================================================
+# N63 -- THE LISTWISE NOTE'S ONE HOME, WITHOUT "first" (S382, v0.9.256)
+# =============================================================================
+# Fix Slate 25. Jeff, walking modify_form_walk.R Section 33 at S381: "the
+# word "first" here seems awkward and unnecessary". The sentence was three
+# copies of one string, one in each call that prints it -- jdesc() grouped
+# and ungrouped, and jfreq() -- and is now one: the default of the Case
+# Processing printer's notification_template, .jst_listwise_note. The count
+# goes in with its noun, so one case left reads "1 case", where the copies'
+# "%d cases" said "1 cases" (the S338 rule). The note under a jcomplete()
+# that covers only some of the variables (N60h-N60j) is built apart and is
+# unchanged. N60a and N60g hold the new sentence on clinic.
+reset()
+.d63 <- data.frame(A = c(1.5, 2.5, NA, 4.5, 5.5, 6.5, 7.5, 8.5),
+                   B = c(NA, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5),
+                   g = c(1, 1, 2, 2, 1, 1, 2, 2))
+.e63 <- data.frame(A = c(1.5, 2.5, NA, 4.5), B = c(NA, 2.5, 3.5, NA),
+                   g = c(1, 1, 2, 2))
+.z63 <- data.frame(A = c(1.5, 2.5, NA, NA), B = c(NA, NA, 3.5, 4.5))
+.s63 <- function(n) paste0("Note: Listwise deletion using jcomplete() would leave ", n, ".")
+check("N63a the note without \"first\": jdesc(), a grouped jdesc() and jfreq() each print it once, the count with its noun",
+      { v1 <- plines(jdesc(.d63, A, B)); v2 <- plines(jdesc(.d63, A, B, by = g))
+        v3 <- plines(jfreq(.d63, A, B))
+        sum(v1 == .s63("6 cases")) == 1L && sum(v2 == .s63("6 cases")) == 1L &&
+          sum(v3 == .s63("6 cases")) == 1L &&
+          !any(grepl("jcomplete() first", c(v1, v2, v3), fixed = TRUE)) })
+check("N63b one case left: \"1 case\", in all three; none left: \"0 cases\"",
+      { v1 <- plines(jdesc(.e63, A, B)); v2 <- plines(jdesc(.e63, A, B, by = g))
+        v3 <- plines(jfreq(.e63, A, B)); v4 <- plines(jdesc(.z63, A, B))
+        any(v1 == .s63("1 case")) && any(v2 == .s63("1 case")) &&
+          any(v3 == .s63("1 case")) && any(v4 == .s63("0 cases")) &&
+          !any(grepl("1 cases", c(v1, v2, v3), fixed = TRUE)) })
+check("N63c one home: the printer's default is the constant, the constant is the sentence, and no caller passes a copy",
+      { f <- formals(jstats:::.jst_print_case_processing)
+        identical(f$notification_template, quote(.jst_listwise_note)) &&
+          identical(jstats:::.jst_listwise_note,
+                    "Note: Listwise deletion using jcomplete() would leave %s.") &&
+          !any(grepl("notification_template|Listwise deletion using",
+                     c(deparse(body(jdesc)), deparse(body(jfreq))))) })
+rm(.d63, .e63, .z63, .s63)
 
 # --- Verdict -----------------------------------------------------------------
 
