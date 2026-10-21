@@ -382,6 +382,37 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
+# S387 EDIT (v0.9.260, 2026-10-21): Y16-Y23 ADDED, Y11 AND Y14 RE-PINNED
+#           (ruling R33, the (S386) part-[1] item; and the print room). Run
+#           top to bottom as a user pastes them, every line of jsave()'s
+#           stop with two or more things to fix runs where it sits: the
+#           names part offers no save of its own and points to the save at
+#           the end (Y11, Y16); a name or a place whose stop has a names
+#           part closes on the save that works, clean.names = TRUE and
+#           overwrite = TRUE kept (Y16-Y18); the plain-NA route carries
+#           clean.names = TRUE when a names part is in the stop or the call
+#           typed it (Y19, Y20); the minimal level keeps its compact form
+#           (Y21). Y17-Y20 run the offered lines in printed order (.Yorder(),
+#           .Yrun()). A stop longer than R prints whole raises warning.length
+#           while it is signalled and puts it back, never lowering a larger
+#           setting (Y22); .jst_warn() the same (Y23); .Ywl() reads the
+#           setting in a calling handler. Y14's name and place lose the
+#           names part (BY), so they still hold "run jsave() again" where it
+#           runs. On v0.9.259 Y11, Y16-Y20, Y22 and Y23 are red, Y14 and Y21
+#           green. 14 one-change mutants, every battery run on each: all 14
+#           red, each on the check written for it (M14, the plain-NA route
+#           always carrying clean.names, also on Y13 and twelve pins in
+#           missing_convention_check.R).
+#           Sandbox: 206/206, run_all.R 3173 across ten, plain and under the
+#           RStudio-handler stand-in, each again with a Windows-length temp
+#           path, once with interactive() TRUE (0 "Overwrite?"), and entered
+#           dirty (plain and under the stand-in, workspace objects also named
+#           p, x, src, src2, q and nf, and warning.length 2000): green,
+#           nothing changed, warning.length kept. 206 checks.
+#           LAST VERIFIED: v0.9.260, 2026-10-22 (S387) -- 206/206 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3173 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S386 EDIT (v0.9.259, 2026-10-21): Y11-Y15 ADDED (the (S384) item, ruled
 #           S386): given an expression and two or more things to fix,
 #           jsave()'s stop makes mydata once, under the header, and closes
@@ -2694,7 +2725,7 @@ check("Y10 ... the stop is SPSS format's alone: .dta keeps a long category whole
   s$t <- .Ylt(); attr(s$t, "label") <- "Time of visit"; s$BY <- c(1, 2)
   s
 }
-check("Y11 given an expression and three things to fix (.sav; ruling S386): the line that makes mydata comes once, under the header, no part repeats it, and the closing line is the save on mydata with clean.names = TRUE (pinned)",
+check("Y11 given an expression and three things to fix (.sav; ruling S386): the line that makes mydata comes once, under the header, no part repeats it, part [1] offers no save of its own (ruling R33), and the closing line is the save on mydata with clean.names = TRUE (pinned)",
       local({ e <- new.env(parent = globalenv()); e$src <- .Ysrc()
         m <- grab(eval(quote(jsave(src[c("g", "t", "BY")], .ix("Y11.sav"))), e))
         identical(.fl(m), .fl(paste0(
@@ -2707,9 +2738,8 @@ check("Y11 given an expression and three things to fix (.sav; ruling S386): the 
           "[1] 1 variable name in the src[c(\"g\", \"t\", \"BY\")] data frame cannot be used in\n",
           "SPSS format (.sav):\n",
           "  \"BY\"  -> XBY  (a word SPSS reserves)\n",
-          "To save the file with this name (the src[c(\"g\", \"t\", \"BY\")] data frame\n",
-          "keeps its own):\n",
-          "  jsave(mydata, \"", .ix("Y11.sav"), "\", clean.names = TRUE)\n",
+          "The save at the end gives it this name in the file (the src[c(\"g\", \"t\", \"BY\")]\n",
+          "data frame keeps its own).\n",
           "\n",
           "[2] g has a category longer than 120 characters, which SPSS format (.sav)\n",
           "cannot store as a value label.\n",
@@ -2781,9 +2811,9 @@ check("Y13 given an expression and two things to fix, the second with two routes
           length(conv) == 3L && length(sv) == 2L && length(w) == 0L &&
           !grepl("jsave():", m2, fixed = TRUE) &&
           file.exists(.ix("Y13.dta")) }))
-check("Y14 ... and the rest keep their forms: a name and a place close on \"Fix the above, then run jsave() again.\" with no line making mydata, one part on an expression keeps its own line (S352), and the minimal level has no such header",
+check("Y14 ... and the rest keep their forms: a name and a place with no names part close on \"Fix the above, then run jsave() again.\" with no line making mydata (the names part is Y16 and Y18, ruling R33), one part on an expression keeps its own line (S352), and the minimal level has no such header",
       local({ e <- new.env(parent = globalenv()); s <- .Ysrc()
-        e$p <- s; e$lst <- list(d = s); e$src <- s
+        e$p <- s[c("g", "t")]; e$lst <- list(d = s[c("g", "t")]); e$src <- s
         mn <- grab(eval(quote(jsave(p, .ix("Y14.sav"))), e))
         ml <- grab(eval(quote(jsave(lst$d, .ix("Y14.sav"))), e))
         m1 <- grab(eval(quote(jsave(src["t"], .ix("Y14.sav"))), e))
@@ -2805,7 +2835,189 @@ check("Y15 ... an expression that names no one data frame -- mk() -- says the fi
                      "The fixes shown below work on a copy of your data. ",
                      "Make the copy first: mydata <- mk() [1]"), .fl(m), fixed = TRUE) &&
           !file.exists(.ix("Y15.sav")) }))
-rm(.Ysrc)
+
+# Y16-Y23 (S387; ruling R33, and the print room). Run top to bottom, every
+# line a part offers runs where it sits: the names part, first, offers no
+# save of its own in a combined stop -- run there it stopped on the parts
+# below it -- the plain-NA route carries clean.names = TRUE when the save
+# needs it, and a name or a place whose stop has a names part closes on the
+# save that works. And a stop longer than R prints whole gets the room.
+# .Yorder(): the lines a message offers that a user runs, in the order
+# printed -- the assignments and the jsave() and jconvert() calls -- without
+# the type list's rows, which .calls() reads as t().
+.Yorder <- function(m) {
+  Filter(function(x) is.call(x) && (identical(x[[1L]], as.name("<-")) ||
+                                    identical(x[[1L]], as.name("jsave")) ||
+                                    identical(x[[1L]], as.name("jconvert"))),
+         .calls(m))
+}
+# .Yrun(): the calls run in order in e; the stops met on the way.
+.Yrun <- function(cl, e) {
+  st <- character(0)
+  for (x in cl) {
+    err <- NULL
+    invisible(utils::capture.output(suppressMessages(suppressWarnings(
+      tryCatch(eval(x, e), error = function(c) err <<- conditionMessage(c))))))
+    if (!is.null(err)) st <- c(st, err)
+  }
+  st
+}
+.Yin <- function() {
+  x <- data.frame(v = 1:3, X = haven::labelled_spss(c(1, -1, 2), na_values = -1))
+  names(x)[1] <- "in"
+  x
+}
+check("Y16 given a name and three things to fix (.sav; ruling R33): part [1] offers no save of its own -- run where it sits it stopped on the parts below -- its sentence points to the save at the end, and the message closes on the save that works, with clean.names = TRUE (pinned)",
+      local({ e <- new.env(parent = globalenv()); e$p <- .Ysrc()
+        m <- grab(eval(quote(jsave(p, .ix("Y16.sav"))), e))
+        identical(.fl(m), .fl(paste0(
+          "jsave(): p cannot be saved to SPSS format (.sav) yet -- 3\n",
+          "things to fix:\n",
+          "\n",
+          "[1] 1 variable name in the p data frame cannot be used in SPSS\n",
+          "format (.sav):\n",
+          "  \"BY\"  -> XBY  (a word SPSS reserves)\n",
+          "The save at the end gives it this name in the file (the p data frame\n",
+          "keeps its own).\n",
+          "\n",
+          "[2] g has a category longer than 120 characters, which SPSS format (.sav)\n",
+          "cannot store as a value label.\n",
+          "Save it as text, which SPSS keeps whole:\n",
+          "  p$g <- as.character(p$g)\n",
+          "  attr(p$g, \"label\") <- \"Group\"\n",
+          "\n",
+          "[3] 1 column is of a type that SPSS format (.sav) cannot store:\n",
+          "  t (POSIXlt)\n",
+          "\n",
+          "POSIXlt columns are list-backed; convert to POSIXct (the same instant, which\n",
+          "SPSS format (.sav) can store) before saving with:\n",
+          "  p$t <- as.POSIXct(p$t)\n",
+          "  attr(p$t, \"label\") <- \"Time of visit\"\n",
+          "\n",
+          "Fix the above, then save p:\n",
+          "  jsave(p, \"", .ix("Y16.sav"), "\", clean.names = TRUE)"))) &&
+          !file.exists(.ix("Y16.sav")) }))
+check("Y17 ... its lines run top to bottom as printed, with no stop on the way: the closing save goes ahead, g text with its label, BY renamed in the file only, the data frame keeping its names",
+      local({ e <- new.env(parent = globalenv()); e$p <- .Ysrc()
+        m  <- grab(eval(quote(jsave(p, .ix("Y17.sav"))), e))
+        cl <- .Yorder(m)
+        st <- .Yrun(cl, e)
+        r  <- if (file.exists(.ix("Y17.sav"))) haven::read_sav(.ix("Y17.sav")) else NULL
+        length(cl) == 5L && length(st) == 0L && !is.null(r) &&
+          identical(names(r), c("g", "t", "XBY")) && is.character(r$g) &&
+          identical(.lab(r$g), "Group") && inherits(r$t, "POSIXct") &&
+          identical(names(e$p), c("g", "t", "BY")) }))
+check("Y18 given a place and two things to fix, overwrite = TRUE typed (.sav; ruling R33): the message closes on the save of lst$d, overwrite = TRUE kept and clean.names = TRUE added, and its lines run top to bottom with no stop",
+      local({ e <- new.env(parent = globalenv()); e$lst <- list(d = .Ysrc()[c("g", "BY")])
+        m  <- grab(eval(quote(jsave(lst$d, .ix("Y18.sav"), overwrite = TRUE)), e))
+        cl <- .Yorder(m)
+        st <- .Yrun(cl, e)
+        endsWith(.fl(m), .fl(paste0(
+          "The save at the end gives it this name in the file (the lst$d data frame\n",
+          "keeps its own).\n",
+          "\n",
+          "[2] g has a category longer than 120 characters, which SPSS format (.sav)\n",
+          "cannot store as a value label.\n",
+          "Save it as text, which SPSS keeps whole:\n",
+          "  lst$d$g <- as.character(lst$d$g)\n",
+          "  attr(lst$d$g, \"label\") <- \"Group\"\n",
+          "\n",
+          "Fix the above, then save lst$d:\n",
+          "  jsave(lst$d, \"", .ix("Y18.sav"), "\", overwrite = TRUE,\n",
+          "      clean.names = TRUE)"))) &&
+          length(cl) == 3L && length(st) == 0L && file.exists(.ix("Y18.sav")) &&
+          identical(names(e$lst$d), c("g", "BY")) }))
+check("Y19 a names part beside SPSS-style missing values (.dta; ruling R33): the plain-NA route carries clean.names = TRUE, as the closing save does, and either route run top to bottom saves with no stop on the way (pinned)",
+      local({ e <- new.env(parent = globalenv()); e$x <- .Yin()
+        m  <- grab(eval(quote(jsave(x, .ix("Y19.dta"))), e))
+        sv <- Filter(function(z) identical(z[[1L]], as.name("jsave")), .Yorder(m))
+        cv <- Filter(function(z) identical(z[[1L]], as.name("jconvert")), .Yorder(m))
+        st1 <- .Yrun(sv[1L], e)
+        ok1 <- file.exists(.ix("Y19.dta")); unlink(.ix("Y19.dta"))
+        e2  <- new.env(parent = globalenv()); e2$x <- .Yin()
+        st2 <- .Yrun(c(cv, sv[2L]), e2)
+        r   <- if (file.exists(.ix("Y19.dta"))) haven::read_dta(.ix("Y19.dta")) else NULL
+        identical(.fl(m), .fl(paste0(
+          "jsave(): x cannot be saved to Stata format (.dta) yet -- 2\n",
+          "things to fix:\n",
+          "\n",
+          "[1] 1 variable name in the x data frame cannot be used in Stata\n",
+          "format (.dta):\n",
+          "  \"in\"  -> Xin  (a word Stata reserves)\n",
+          "The save at the end gives it this name in the file (the x data frame\n",
+          "keeps its own).\n",
+          "\n",
+          "[2] 1 variable carries SPSS-style missing values, incompatible with the\n",
+          ".dta format:\n",
+          "  X\n",
+          "\n",
+          "Before saving to Stata format, convert with:\n",
+          "  jconvert(x, to = \"stata\", modify = TRUE)\n",
+          "Or save every declared missing value as plain NA instead:\n",
+          "  jsave(x, \"", .ix("Y19.dta"), "\",\n",
+          "      preserve.declarations = FALSE, clean.names = TRUE)\n",
+          "\n",
+          "Fix the above, then save x:\n",
+          "  jsave(x, \"", .ix("Y19.dta"), "\", clean.names = TRUE)"))) &&
+          length(sv) == 2L && length(cv) == 1L &&
+          length(st1) == 0L && ok1 && length(st2) == 0L && !is.null(r) &&
+          identical(names(r), c("Xin", "X")) }))
+check("Y20 clean.names = TRUE typed, and only the declared values to fix (.dta; ruling R33): the plain-NA route keeps the call's clean.names = TRUE -- so it saves where a name is refused (without it the save stopped on the names), and keeps the call as typed where none is",
+      local({ e <- new.env(parent = globalenv()); e$x <- .Yin()
+        e$x2 <- .Yin(); names(e$x2)[1] <- "v"
+        m  <- grab(eval(quote(jsave(x, .ix("Y20.dta"), clean.names = TRUE)), e))
+        m2 <- grab(eval(quote(jsave(x2, .ix("Y20b.dta"), clean.names = TRUE)), e))
+        sv <- Filter(function(z) identical(z[[1L]], as.name("jsave")), .Yorder(m))
+        st <- .Yrun(sv, e)
+        grepl(.fl(paste0("Or save every declared missing value as plain NA instead:\n",
+                         "  jsave(x, \"", .ix("Y20.dta"), "\", preserve.declarations = FALSE,\n",
+                         "  clean.names = TRUE)")), .fl(m), fixed = TRUE) &&
+          grepl(.fl(paste0("  jsave(x2, \"", .ix("Y20b.dta"), "\", preserve.declarations = FALSE,\n",
+                           "  clean.names = TRUE)")), .fl(m2), fixed = TRUE) &&
+          !grepl("things to fix", paste(m, m2), fixed = TRUE) &&
+          length(sv) == 1L && length(st) == 0L && file.exists(.ix("Y20.dta")) }))
+check("Y21 ... the minimal level keeps its compact form: given a name, the names part keeps its own line and nothing closes on a save",
+      local({ e <- new.env(parent = globalenv()); e$p <- .Ysrc()
+        old <- getOption(".jst_output_level"); options(.jst_output_level = "minimal")
+        mm <- tryCatch(grab(eval(quote(jsave(p, .ix("Y21.sav"))), e)),
+                       finally = options(.jst_output_level = old))
+        grepl(.fl(paste0("To save the file with this name (the p data frame keeps its own):\n",
+                         "  jsave(p, \"", .ix("Y21.sav"), "\", clean.names = TRUE)")),
+              .fl(mm), fixed = TRUE) &&
+          !grepl("The save at the end", mm, fixed = TRUE) &&
+          !grepl("then save p", mm, fixed = TRUE) && !file.exists(.ix("Y21.sav")) }))
+# .Ywl(): f() run with warning.length set to wl; returns the value R held
+# while f()'s first error or warning was signalled -- read in a calling
+# handler, before the stop unwinds -- the value after f(), and the
+# message's length in bytes. The session's own value is put back on exit.
+.Ywl <- function(f, wl) {
+  old <- getOption("warning.length")
+  on.exit(options(warning.length = old), add = TRUE)
+  options(warning.length = wl)
+  during <- NA_integer_; bytes <- NA_integer_
+  seen <- function(c) if (is.na(during)) {
+    during <<- getOption("warning.length")
+    bytes  <<- nchar(conditionMessage(c), type = "bytes")
+  }
+  tryCatch(withCallingHandlers(f(), error = seen,
+                               warning = function(w) { seen(w); invokeRestart("muffleWarning") }),
+           error = function(c) NULL)
+  list(during = during, after = getOption("warning.length"), bytes = bytes)
+}
+check("Y22 a stop longer than R prints whole (S387): while jsave()'s three-part stop is signalled, warning.length holds the message and R's \"Error: \"; after it the setting is back; a user's own larger value is kept, never lowered; a short stop leaves the setting alone",
+      local({ e <- new.env(parent = globalenv()); e$src <- .Ysrc()
+        w0  <- getOption("warning.length")
+        lng <- function() eval(quote(jsave(src[c("g", "t", "BY")], .ix("Y22.sav"))), e)
+        sht <- function() eval(quote(jsave(src["g"], .ix("Y22.sav"))), e)
+        a <- .Ywl(lng, 1000L); b <- .Ywl(lng, 8000L); s <- .Ywl(sht, 1000L)
+        a$bytes > 993L && a$during >= a$bytes + 7L && a$after == 1000L &&
+          b$during == 8000L && b$after == 8000L &&
+          s$bytes < 950L && s$during == 1000L && s$after == 1000L &&
+          identical(getOption("warning.length"), w0) && !file.exists(.ix("Y22.sav")) }))
+check("Y23 ... and a warning: .jst_warn() makes the same room for a long one and puts the setting back",
+      local({ w <- .Ywl(function() .jst_warn("A long warning: ", strrep("x", 1500)), 1000L)
+        w$bytes > 1500L && w$during >= w$bytes && w$after == 1000L }))
+rm(.Ysrc, .Yorder, .Yrun, .Yin, .Ywl)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 

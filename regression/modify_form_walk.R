@@ -34,7 +34,32 @@
 #           Since S386 jsave()'s stop on data given as an expression with
 #           two or more things to fix: the line that makes mydata once,
 #           under the header, and the closing save on mydata (Section 36).
+#           Since S387 every line of that stop runs where it sits, the
+#           lines taken top to bottom, whatever the data given (Section
+#           37; ruling R33).
 # ORIGIN:   S229
+# EDITED:   S387 (v0.9.260; the (S386) part-[1] item, ruled S387 as ruling
+#           R33). SECTION 37 ADDED, every Expected block filled by running
+#           (fill.R; "#@SKIP" after the jsave() call whose Saved line
+#           names a temporary folder): in a stop with two or more things
+#           to fix, the names part offers no save of its own and points to
+#           the save at the end; a name or a place whose stop has a names
+#           part closes on the save that works, clean.names = TRUE; the
+#           plain-NA route carries clean.names = TRUE. On the PENDING line;
+#           the sentence in part [1] is Claude's call. SECTION 36'S RENDER
+#           1 RE-PINNED MECHANICALLY under ruling R33 (the Build
+#           Procedure's [BUILD-TESTING], Jeff, S345), filled by running; kept
+#           off the PENDING line. The assertion side is import_check.R
+#           Y16-Y23. A capture of every section of every walk on 0.9.259
+#           and the build: only this file's Section 36 moved (Render 1's
+#           part [1]), every other section identical (temp paths aside).
+#           harness.R derive: the five NEEDS lines as they were, none for
+#           37; verify: 37 of 37 sections in three orders and by prepare =
+#           TRUE; 143 of 144 Expected blocks found (Section 9's, as before).
+# LAST VERIFIED: v0.9.260, 2026-10-22 (S387) -- Section 37 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay").
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 3173 checks).
 # EDITED:   S386 (v0.9.259; the twin build's fifth stage, the (S384) item
 #           as ruled at S386). SECTION 36 ADDED, every Expected block
 #           filled by running (fill.R; "#@SKIP" after the jsave() call whose
@@ -4279,9 +4304,8 @@ try(jsave(s36[c("g", "t", "BY")], "s36.sav"))
 #   [1] 1 variable name in the s36[c("g", "t", "BY")] data frame cannot be used
 #   in SPSS format (.sav):
 #     "BY"  -> XBY  (a word SPSS reserves)
-#   To save the file with this name (the s36[c("g", "t", "BY")] data frame
-#   keeps its own):
-#     jsave(mydata, "s36.sav", clean.names = TRUE)
+#   The save at the end gives it this name in the file (the
+#   s36[c("g", "t", "BY")] data frame keeps its own).
 #
 #   [2] g has a category longer than 120 characters, which SPSS format (.sav)
 #   cannot store as a value label.
@@ -4383,6 +4407,109 @@ rm(s36, x36, mydata, .wd36)
 #     gone), and the save goes ahead;
 #   - Render 3: both routes of part [2] build on the one mydata;
 #   - Render 4: a name is unchanged.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 37 -- jsave(): every line of a stop runs where it sits (ruling R33; S387) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S387 (v0.9.260; the (S386) part-[1] item, ruled S387 -- Jeff: "For
+# Q2 - your recommendation is fine."; "Okay to your recommendation.").
+# Run top to bottom as a user pastes them, the lines of jsave()'s stop with
+# two or more things to fix stopped on the way: the names part, first,
+# offered a save of its own, which ran before the other parts' fixes;
+# given a name, "run jsave() again" then stopped on the names; and the
+# plain-NA route stopped on them too. Now the names part points to the save
+# at the end, a name or a place whose stop has a names part closes on the
+# save that works (clean.names = TRUE), and the plain-NA route carries it.
+# A stop with no names part keeps "run jsave() again" (Section 36, Render
+# 4), and the names part alone keeps its line (Section 26). The assertion
+# side is import_check.R Y16-Y23.
+.wd37 <- getwd(); setwd(.walkdir)
+unlink(c("d37.sav", "x37.dta"))   # a file left by an earlier run stops a save
+d37 <- data.frame(g = factor(c(strrep("a", 130), "b")))
+attr(d37$g, "label") <- "Group"
+d37$t <- as.POSIXlt(c("2026-03-01 09:30:00", "2026-03-02 14:00:00"), tz = "UTC")
+attr(d37$t, "label") <- "Time of visit"
+d37$BY <- c(1, 2)
+
+# Render 1 -- three things to fix (.sav), the data frame given by name: part
+# [1] points to the save at the end, and the stop closes on that save.
+try(jsave(d37, "d37.sav"))
+# Expected:
+#   Error : jsave(): d37 cannot be saved to SPSS format (.sav) yet -- 3
+#   things to fix:
+#
+#   [1] 1 variable name in the d37 data frame cannot be used in SPSS
+#   format (.sav):
+#     "BY"  -> XBY  (a word SPSS reserves)
+#   The save at the end gives it this name in the file (the d37 data frame
+#   keeps its own).
+#
+#   [2] g has a category longer than 120 characters, which SPSS format (.sav)
+#   cannot store as a value label.
+#   Save it as text, which SPSS keeps whole:
+#     d37$g <- as.character(d37$g)
+#     attr(d37$g, "label") <- "Group"
+#
+#   [3] 1 column is of a type that SPSS format (.sav) cannot store:
+#     t (POSIXlt)
+#
+#   POSIXlt columns are list-backed; convert to POSIXct (the same instant, which
+#   SPSS format (.sav) can store) before saving with:
+#     d37$t <- as.POSIXct(d37$t)
+#     attr(d37$t, "label") <- "Time of visit"
+#
+#   Fix the above, then save d37:
+#     jsave(d37, "d37.sav", clean.names = TRUE)
+
+# Render 2 -- the lines, run top to bottom as a user pastes them: no stop on
+# the way, and the closing save goes ahead (BY becomes XBY in the file only).
+d37$g <- as.character(d37$g)
+attr(d37$g, "label") <- "Group"
+d37$t <- as.POSIXct(d37$t)
+attr(d37$t, "label") <- "Time of visit"
+jsave(d37, "d37.sav", clean.names = TRUE)
+names(haven::read_sav("d37.sav"))
+# Expected:
+#   [1] "g"   "t"   "XBY"
+
+# Render 3 -- a names part beside SPSS-style missing values (.dta): the
+# plain-NA route and the closing save both carry clean.names = TRUE.
+x37 <- data.frame(v = 1:3, X = haven::labelled_spss(c(1, -1, 2), na_values = -1))
+names(x37)[1] <- "in"
+try(jsave(x37, "x37.dta"))
+# Expected:
+#   Error : jsave(): x37 cannot be saved to Stata format (.dta) yet -- 2
+#   things to fix:
+#
+#   [1] 1 variable name in the x37 data frame cannot be used in Stata
+#   format (.dta):
+#     "in"  -> Xin  (a word Stata reserves)
+#   The save at the end gives it this name in the file (the x37 data frame
+#   keeps its own).
+#
+#   [2] 1 variable carries SPSS-style missing values, incompatible with the
+#   .dta format:
+#     X
+#
+#   Before saving to Stata format, convert with:
+#     jconvert(x37, to = "stata", modify = TRUE)
+#   Or save every declared missing value as plain NA instead:
+#     jsave(x37, "x37.dta", preserve.declarations = FALSE, clean.names = TRUE)
+#
+#   Fix the above, then save x37:
+#     jsave(x37, "x37.dta", clean.names = TRUE)
+setwd(.wd37)
+rm(d37, x37, .wd37)
+
+# Things to look at:
+#   - Render 1: part [1] has no line of its own, and its sentence points to
+#     the save at the end (the wording is Claude's call); the closing line
+#     names d37 and adds clean.names = TRUE;
+#   - Render 2: the lines run as printed with no stop, and the save goes
+#     ahead;
+#   - Render 3: the plain-NA route carries clean.names = TRUE, as the
+#     closing save does, so either route saves.
 
 
 # --- End marker --------------------------------------------------------------

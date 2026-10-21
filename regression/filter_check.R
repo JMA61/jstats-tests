@@ -161,6 +161,26 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S387 EDIT (v0.9.260, 2026-10-21): S15, Y33 AND Y37 REWRITTEN (Scripts
+#           Slate E, the (S386) item): they assumed no workspace object named
+#           mydata. S15 compares the global mydata before and after the
+#           offered lines run in an environment of their own, where it had
+#           asserted that none exists; Y33 and Y37 call jload(name = mydata)
+#           with no workspace mydata (.aa_ws(), as H26 and H27 run with no
+#           workspace Score), since one holding a name is read as a value
+#           (ruling R18). Checked: .s_run2() evaluating in the global
+#           environment reds S15, entered clean and dirty. 642 checks, as
+#           before.
+#           Sandbox: 642/642, run_all.R 3173 across ten, plain and under the
+#           RStudio-handler stand-in, each again with a Windows-length temp
+#           path, once with interactive() TRUE (0 "Overwrite?"), and entered
+#           dirty (plain and under the stand-in, workspace objects also named
+#           mydata, p, x, src, src2, q and nf): green, where S386's dirty
+#           entry red S15, Y33 and Y37; nothing changed.
+#           LAST VERIFIED: v0.9.260, 2026-10-22 (S387) -- 642/642 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3173 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S386 EDIT (v0.9.259, 2026-10-21): SECTION AL ADDED (a rider of the twin
 #           build), 2 checks: a name holding NULL given as the data stops
 #           with the guard's three lines, naming it -- AL01 in the
@@ -4338,10 +4358,13 @@ check("S14 ... nothing is stored, under any name",
   e <- new.env(parent = globalenv())
   !errs(for (ln in lines) eval(parse(text = ln), e))
 }
-check("S15 ... and the two lines run, in order, and register Age under the new name",
-      { ok <- .s_run2(.s_code(.s13)) && identical(.s_reg("mydata"), "Age:numeric")
-        quiet(jnumeric(clear.all = TRUE))
-        ok && !exists("mydata", envir = globalenv(), inherits = FALSE) })
+check("S15 ... and the two lines run, in order, and register Age under the new name, a workspace mydata left as it was",
+      local({ had <- exists("mydata", envir = globalenv(), inherits = FALSE)
+              old <- if (had) get("mydata", envir = globalenv()) else NULL
+              ok <- .s_run2(.s_code(.s13)) && identical(.s_reg("mydata"), "Age:numeric")
+              quiet(jnumeric(clear.all = TRUE))
+              ok && identical(exists("mydata", envir = globalenv(), inherits = FALSE), had) &&
+                (!had || identical(get("mydata", envir = globalenv()), old)) }))
 .s16 <- grab(jdummy(d[d$Age > 30, ], Condition, ref = "last", show = TRUE))
 check("S16 a subset typed as the data, with further inputs: the call is given back whole on the new name, in the other three verbs too",
       identical(.s_code(.s16),
@@ -5232,7 +5255,7 @@ check("Y32 joptions(): the convention named or positional -- the line always nam
         identical(grab(joptions(data.dir = Data)), "joptions(): Data is not in quotes.\ndata.dir = takes a folder name in quotes:\n  joptions(data.dir = \"Data\")"))
 check("Y33 rider B at jdata_dir(), jload(name =) and jload(sheet =): a bare symbol that resolves to nothing, before the file is looked for",
       identical(grab(jdata_dir(Data)), "jdata_dir(): Data is not in quotes.\nA folder name goes in quotes:\n  jdata_dir(\"Data\")") &&
-        identical(grab(jload("nofile.rds", name = mydata)), "jload(): mydata is not in quotes.\nname = takes a name in quotes:\n  jload(\"nofile.rds\", name = \"mydata\")") &&
+        identical(.aa_ws("mydata", NULL, grab(jload("nofile.rds", name = mydata))), "jload(): mydata is not in quotes.\nname = takes a name in quotes:\n  jload(\"nofile.rds\", name = \"mydata\")") &&
         identical(grab(jload("nofile.xlsx", sheet = Data)), "jload(): Data is not in quotes.\nsheet = takes a sheet name in quotes:\n  jload(\"nofile.xlsx\", sheet = \"Data\")"))
 check("Y34 jdummy(ref =): a category typed bare, as typed; and the line runs whatever its case, the match made without regard to it",
       local({ zz_yr <- data.frame(zz_yg = haven::labelled(c(1, 2, 1, 2, 1, 2), c(North = 1, South = 2)))
@@ -5250,7 +5273,7 @@ check("Y36 a name holding a value still works, and a word that is not one of the
 check("Y37 every pointer's call line parses, and three of them run",
       local({ g <- c(grab(jdesc(d, Age, variable.id = labels)), unlist(.y30),
                      grab(joutput(full)), grab(joptions(spss)), grab(jdata_dir(Data)),
-                     grab(jload("nofile.rds", name = mydata)), grab(jdummy(d, Condition, ref = zz_ynot)))
+                     .aa_ws("mydata", NULL, grab(jload("nofile.rds", name = mydata))), grab(jdummy(d, Condition, ref = zz_ynot)))
               ls <- grep("^  ", unlist(strsplit(g, "\n", fixed = TRUE)), value = TRUE)
               length(ls) == 11L &&
                 all(vapply(ls, function(l) !inherits(try(parse(text = l), silent = TRUE), "try-error"), logical(1))) &&
