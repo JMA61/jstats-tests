@@ -382,6 +382,44 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
+# S388 EDIT (v0.9.261, 2026-10-22): Y24-Y31 ADDED (Fix Slate 27, both
+#           items Claude's calls). Every line a part offers runs where it
+#           sits (ruling R33), and a note's lines run as printed (S343).
+#           The too-many-codes part's Stata route (.sav) carries
+#           clean.names = TRUE when Stata refuses a name the data frame
+#           holds: long and in, which SPSS takes (Y24, Y25), beside a names
+#           part (Y26), the data an expression or a place (Y27); none where
+#           Stata takes every name (Y25). The note after a save that writes
+#           an undeclared code names the data frame's variable after
+#           clean.names = TRUE and keeps clean.names = TRUE in its save
+#           (Y28, Y29); given an expression it names mydata after the line
+#           that makes it, "run:" over three lines (Y30); a name R reads
+#           only in backticks gets them (in, my var), a place keeps its
+#           assignment form, a path holding a quotation mark is escaped
+#           (Y31). The Stata route saves a file named for the data frame,
+#           so it runs in the fixture folder (.Yat_dir()); .Yroute() takes
+#           the route's lines in order and .Yrw() runs them, returning the
+#           stops and warnings met. Each file a line writes is read back
+#           with user_na = TRUE. On v0.9.260 Y24-Y31 are red, and Z03 too
+#           (the bare in line does not parse).
+#           12 one-change mutants, every battery run on each: all 12 red,
+#           each on the check written for it (M03, the route always carrying
+#           clean.names, also on missing_convention_check.R N87av; M07, the
+#           note's save always carrying it, also on N33a; M11, no backticks,
+#           also on Z03; M04, the route checked against SPSS's names, leaves
+#           Y26 green, since SPSS and Stata both reserve with).
+#           Sandbox: 214/214, run_all.R 3181 across ten, plain and under the
+#           RStudio-handler stand-in, each again with a Windows-length temp
+#           path, once with interactive() TRUE (0 "Overwrite?"), and entered
+#           dirty (plain and under the stand-in, workspace objects also
+#           named d, r, r1, r2, mk, src, src2, X, A, B, v, long, with, q,
+#           cl, st, f, k, x, p, nf, rt and tx, and warning.length 2000):
+#           green, nothing changed; k put back by guard 5 (an older
+#           section's load, as on v0.9.260). 214 checks.
+#           LAST VERIFIED: v0.9.261, 2026-10-22 (S388) -- 214/214 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3181 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S387 EDIT (v0.9.260, 2026-10-21): Y16-Y23 ADDED, Y11 AND Y14 RE-PINNED
 #           (ruling R33, the (S386) part-[1] item; and the print room). Run
 #           top to bottom as a user pastes them, every line of jsave()'s
@@ -3017,7 +3055,219 @@ check("Y22 a stop longer than R prints whole (S387): while jsave()'s three-part 
 check("Y23 ... and a warning: .jst_warn() makes the same room for a long one and puts the setting back",
       local({ w <- .Ywl(function() .jst_warn("A long warning: ", strrep("x", 1500)), 1000L)
         w$bytes > 1500L && w$during >= w$bytes && w$after == 1000L }))
-rm(.Ysrc, .Yorder, .Yrun, .Yin, .Ywl)
+
+# Y24-Y31 (S388; Fix Slate 27). Every line a part offers runs where it sits
+# (ruling R33), and the lines a note offers run as printed (S343). The
+# too-many-codes part's Stata route carries clean.names = TRUE when Stata
+# refuses a name the data frame holds -- SPSS takes long, in and the like,
+# which Stata reserves -- where its save stopped on the name. The note after
+# a save that writes an undeclared code (the release note) names the data
+# frame's own variable after clean.names = TRUE, where it named the file's;
+# keeps clean.names = TRUE in its save; given an expression names mydata
+# after the line that makes it; and puts a name R reads only in backticks in
+# them (`in`, which SPSS takes, printed bare did not parse).
+# The Stata route's lines save a file named for the data frame, not the
+# path typed, so they run in the fixture folder (.Yat_dir()).
+.Y4c <- function(nm) {
+  x <- data.frame(v = 1:5, X = haven::labelled_spss(c(1, -1, -2, -3, -4),
+                                                    na_values = c(-1, -2, -3, -4)))
+  names(x)[1] <- nm
+  x
+}
+.Y4r <- function() data.frame(A = haven::labelled_spss(c(1, -99, 2), na_values = -99),
+                              B = c(3, -99, 4))
+# .Yroute(): the Stata route of a stop, as printed -- the line that makes
+# mydata above it where there is one, the jconvert() line (or a place's
+# assignment of it), and the save to .dta under it.
+.Yroute <- function(m) {
+  cl <- .Yorder(m)
+  k  <- which(vapply(cl, function(x) "jconvert" %in% all.names(x), logical(1)))[1L]
+  if (is.na(k)) return(list())
+  pre <- if (k > 1L && identical(cl[[k - 1L]][[1L]], as.name("<-"))) cl[k - 1L] else list()
+  c(pre, cl[k], if (k < length(cl)) cl[k + 1L])
+}
+# .Yrw(): the calls run in order in e; the stops and warnings met.
+.Yrw <- function(cl, e) {
+  out <- character(0)
+  for (x in cl) {
+    invisible(utils::capture.output(suppressMessages(withCallingHandlers(
+      tryCatch(eval(x, e), error = function(c) out <<- c(out, conditionMessage(c))),
+      warning = function(w) { out <<- c(out, conditionMessage(w)); invokeRestart("muffleWarning") }))))
+  }
+  out
+}
+.Yat_dir <- function(f) {
+  old <- setwd(.ix_dir)
+  tryCatch(f(), finally = setwd(old))
+}
+check("Y24 a .sav save whose one problem is a variable with four declared codes, beside a name Stata reserves and SPSS takes (long; Fix Slate 27): the Stata route's save carries clean.names = TRUE (pinned)",
+      local({ e <- new.env(parent = globalenv()); e$d <- .Y4c("long")
+        m <- grab(eval(quote(jsave(d, .ix("Y24.sav"))), e))
+        identical(.fl(m), .fl(paste0(
+          "jsave(): SPSS format (.sav) allows at most 3 declared missing values\n",
+          "per variable, or a range plus one code.\n",
+          "\n",
+          "This variable in d has more:\n",
+          "  X: 4 codes\n",
+          "\n",
+          "To save in R format (.rds) instead, keeping all the codes:\n",
+          "  jsave(d, \"d.rds\")\n",
+          "To convert to Stata and save as Stata format (.dta), also keeping all\n",
+          "the codes:\n",
+          "  jconvert(d, to = \"stata\", modify = TRUE)\n",
+          "  jsave(d, \"d.dta\", clean.names = TRUE)\n",
+          "To save as SPSS format (.sav) with every declared missing value as plain NA:\n",
+          "  jsave(d, \"", .ix("Y24.sav"), "\",\n",
+          "      preserve.declarations = FALSE)\n",
+          "Or reduce each variable's declared missing values to fit."))) &&
+          !file.exists(.ix("Y24.sav")) }))
+check("Y25 ... the route run as printed, jconvert() then the save, goes ahead with no stop and no warning: the .dta file holds Xlong and X's four markers, the data frame keeps long; where Stata takes every name (v) the save has no clean.names, and runs too",
+      local({ unlink(.ix("d.dta"))
+        e <- new.env(parent = globalenv()); e$d <- .Y4c("long")
+        rt <- .Yroute(grab(eval(quote(jsave(d, .ix("Y25.sav"))), e)))
+        st <- .Yat_dir(function() .Yrw(rt, e))
+        r  <- if (file.exists(.ix("d.dta"))) haven::read_dta(.ix("d.dta")) else NULL
+        unlink(.ix("d.dta"))
+        e2 <- new.env(parent = globalenv()); e2$d <- .Y4c("v")
+        rt2 <- .Yroute(grab(eval(quote(jsave(d, .ix("Y25.sav"))), e2)))
+        st2 <- .Yat_dir(function() .Yrw(rt2, e2))
+        ok2 <- file.exists(.ix("d.dta")); unlink(.ix("d.dta"))
+        length(rt) == 2L && length(st) == 0L && !is.null(r) &&
+          identical(names(r), c("Xlong", "X")) &&
+          identical(sort(haven::na_tag(unclass(r$X))[-1L]), c("a", "b", "c", "d")) &&
+          identical(names(e$d), c("long", "X")) &&
+          identical(.fl(paste(deparse(rt2[[2L]]), collapse = "")),
+                    "jsave(d, \"d.dta\")") && length(st2) == 0L && ok2 }))
+check("Y26 the same beside a names part (with, which SPSS and Stata both reserve; ruling R33): the Stata route's save carries clean.names = TRUE, as the plain-NA route and the closing save do, and the route run as printed saves with no stop (pinned)",
+      local({ unlink(.ix("d.dta"))
+        e <- new.env(parent = globalenv()); e$d <- .Y4c("with")
+        m  <- grab(eval(quote(jsave(d, .ix("Y26.sav"))), e))
+        st <- .Yat_dir(function() .Yrw(.Yroute(m), e))
+        r  <- if (file.exists(.ix("d.dta"))) haven::read_dta(.ix("d.dta")) else NULL
+        unlink(.ix("d.dta"))
+        identical(.fl(m), .fl(paste0(
+          "jsave(): d cannot be saved to SPSS format (.sav) yet -- 2\n",
+          "things to fix:\n",
+          "\n",
+          "[1] 1 variable name in the d data frame cannot be used in SPSS\n",
+          "format (.sav):\n",
+          "  \"with\"  -> Xwith  (a word SPSS reserves)\n",
+          "The save at the end gives it this name in the file (the d data frame\n",
+          "keeps its own).\n",
+          "\n",
+          "[2] SPSS format (.sav) allows at most 3 declared missing values per\n",
+          "variable, or a range plus one code.\n",
+          "\n",
+          "This variable in d has more:\n",
+          "  X: 4 codes\n",
+          "\n",
+          "To save in R format (.rds) instead, keeping all the codes:\n",
+          "  jsave(d, \"d.rds\")\n",
+          "To convert to Stata and save as Stata format (.dta), also keeping all\n",
+          "the codes:\n",
+          "  jconvert(d, to = \"stata\", modify = TRUE)\n",
+          "  jsave(d, \"d.dta\", clean.names = TRUE)\n",
+          "To save as SPSS format (.sav) with every declared missing value as plain NA:\n",
+          "  jsave(d, \"", .ix("Y26.sav"), "\",\n",
+          "      preserve.declarations = FALSE, clean.names = TRUE)\n",
+          "Or reduce each variable's declared missing values to fit.\n",
+          "\n",
+          "Fix the above, then save d:\n",
+          "  jsave(d, \"", .ix("Y26.sav"), "\", clean.names = TRUE)"))) &&
+          length(st) == 0L && !is.null(r) && identical(names(r), c("Xwith", "X")) &&
+          identical(names(e$d), c("with", "X")) }))
+check("Y27 ... the data given as an expression: the route builds on mydata, made by the line above it, and given as a place, on lst$d in the assignment form; each carries clean.names = TRUE and runs with no stop, the data frames keeping in",
+      local({ unlink(.ix(c("mydata.dta", "d.dta")))
+        e <- new.env(parent = globalenv()); e$src <- .Y4c("in"); e$lst <- list(d = .Y4c("in"))
+        rx <- .Yroute(grab(eval(quote(jsave(src[c("in", "X")], .ix("Y27.sav"))), e)))
+        rp <- .Yroute(grab(eval(quote(jsave(lst$d, .ix("Y27.sav"))), e)))
+        st <- .Yat_dir(function() c(.Yrw(rx, e), .Yrw(rp, e)))
+        fx <- if (file.exists(.ix("mydata.dta"))) names(haven::read_dta(.ix("mydata.dta")))
+        fp <- if (file.exists(.ix("d.dta"))) names(haven::read_dta(.ix("d.dta")))
+        unlink(.ix(c("mydata.dta", "d.dta")))
+        tx <- vapply(c(rx, rp), function(x) .fl(paste(deparse(x), collapse = "")), "")
+        identical(tx, c("mydata <- src[c(\"in\", \"X\")]",
+                        "jconvert(mydata, to = \"stata\", modify = TRUE)",
+                        "jsave(mydata, \"mydata.dta\", clean.names = TRUE)",
+                        "lst$d <- jconvert(lst$d, to = \"stata\")",
+                        "jsave(lst$d, \"d.dta\", clean.names = TRUE)")) &&
+          length(st) == 0L && identical(fx, c("Xin", "X")) && identical(fp, c("Xin", "X")) &&
+          identical(names(e$src), c("in", "X")) && identical(names(e$lst$d), c("in", "X")) }))
+check("Y28 the note on an undeclared code after clean.names = TRUE renamed its variable (Fix Slate 27): it names the data frame's variable, with, in its sentence and its declare line, and its save keeps clean.names = TRUE (pinned)",
+      local({ e <- new.env(parent = globalenv()); e$r <- .Y4r(); names(e$r)[2] <- "with"
+        m <- grab(eval(quote(jsave(r, .ix("Y28.sav"), clean.names = TRUE)), e))
+        identical(.fl(.note(m, "-99 in")), .fl(paste0(
+          "Note: -99 in with is not declared as missing, though another column in r\n",
+          "declares SPSS-style missing values.\n",
+          "It was written to the file as an ordinary value, so other software will read\n",
+          "it as valid data.\n",
+          "To declare it and save again, run both:\n",
+          "  jdeclare_missing(r, with, codes = -99, convention = \"spss\", modify = TRUE)\n",
+          "  jsave(r, \"", .ix("Y28.sav"), "\", overwrite = TRUE,\n",
+          "      clean.names = TRUE)\n",
+          "Saved r to ", .ix("Y28.sav"), "\n",
+          "(SPSS format; 3 cases, 2 variables)"))) }))
+check("Y29 ... its two lines run as printed with no stop and no warning: with declares -99 in the data frame, which keeps its names, and the file read back (user_na = TRUE) declares it on Xwith",
+      local({ e <- new.env(parent = globalenv()); e$r <- .Y4r(); names(e$r)[2] <- "with"
+        m  <- grab(eval(quote(jsave(r, .ix("Y29.sav"), clean.names = TRUE)), e))
+        cl <- .calls(.note(m, "-99 in"))
+        st <- .Yrw(cl, e)
+        f  <- haven::read_sav(.ix("Y29.sav"), user_na = TRUE)
+        length(cl) == 2L && length(st) == 0L &&
+          identical(names(e$r), c("A", "with")) &&
+          identical(as.numeric(attr(e$r$with, "na_values")), -99) &&
+          identical(names(f), c("A", "Xwith")) &&
+          identical(as.numeric(attr(f$Xwith, "na_values")), -99) }))
+check("Y30 ... given an expression, mydata is made first and both lines name it, the intro \"run:\" over three lines (pinned); run, mydata declares -99 and the file read back (user_na = TRUE) declares it",
+      local({ e <- new.env(parent = globalenv()); e$mk <- function() .Y4r()
+        m  <- grab(eval(quote(jsave(mk(), .ix("Y30.sav"))), e))
+        cl <- .calls(.note(m, "-99 in"))
+        st <- .Yrw(cl, e)
+        f  <- haven::read_sav(.ix("Y30.sav"), user_na = TRUE)
+        identical(.fl(.note(m, "-99 in")), .fl(paste0(
+          "Note: -99 in B is not declared as missing, though another column in mk()\n",
+          "declares SPSS-style missing values.\n",
+          "It was written to the file as an ordinary value, so other software will read\n",
+          "it as valid data.\n",
+          "To declare it and save again, run:\n",
+          "  mydata <- mk()\n",
+          "  jdeclare_missing(mydata, B, codes = -99, convention = \"spss\",\n",
+          "      modify = TRUE)\n",
+          "  jsave(mydata, \"", .ix("Y30.sav"), "\", overwrite = TRUE)\n",
+          "Saved the data to ", .ix("Y30.sav"), "\n",
+          "(SPSS format; 3 cases, 2 variables)"))) &&
+          length(cl) == 3L && length(st) == 0L &&
+          identical(as.numeric(attr(e$mydata$B, "na_values")), -99) &&
+          identical(as.numeric(attr(f$B, "na_values")), -99) }))
+check("Y31 ... a name R reads only in backticks gets them -- in, which SPSS takes (printed bare, the line did not parse), and my var, which clean.names = TRUE renames in the file -- and the lines run; a place keeps the assignment form and clean.names = TRUE; with no clean.names typed the save has none; a path holding a quotation mark is escaped, and the line parses",
+      local({ e <- new.env(parent = globalenv())
+        e$r1 <- .Y4r(); names(e$r1)[2] <- "in"
+        e$r2 <- data.frame(A = haven::labelled_spss(c(1, -99, 2), na_values = -99),
+                           `my var` = c(3, -99, 4), check.names = FALSE)
+        e$lst <- list(d = .Y4r()); names(e$lst$d)[2] <- "with"
+        m1 <- grab(eval(quote(jsave(r1, .ix("Y31a.sav"))), e))
+        m2 <- grab(eval(quote(jsave(r2, .ix("Y31b.sav"), clean.names = TRUE)), e))
+        m3 <- grab(eval(quote(jsave(lst$d, .ix("Y31c.sav"), clean.names = TRUE)), e))
+        c1 <- .calls(.note(m1, "-99 in")); c2 <- .calls(.note(m2, "-99 in"))
+        c3 <- .calls(.note(m3, "-99 in"))
+        st <- .Yrw(c(c1, c2, c3), e)
+        f2 <- haven::read_sav(.ix("Y31b.sav"), user_na = TRUE)
+        q  <- .jst_jsave_release_notes(.Y4r(), "r", "C:/a\"b/r.sav")
+        qc <- .calls(q)
+        grepl("jdeclare_missing(r1, `in`, codes = -99", .fl(m1), fixed = TRUE) &&
+          grepl(paste0("jsave(r1, \"", .fl(.ix("Y31a.sav")), "\", overwrite = TRUE)"),
+                .fl(m1), fixed = TRUE) &&
+          grepl("jdeclare_missing(r2, `my var`, codes = -99", .fl(m2), fixed = TRUE) &&
+          grepl(paste0("lst$d <- jdeclare_missing(lst$d, with, codes = -99, ",
+                       "convention = \"spss\")"), .fl(m3), fixed = TRUE) &&
+          grepl("overwrite = TRUE, clean.names = TRUE)", .fl(m3), fixed = TRUE) &&
+          length(c(c1, c2, c3)) == 6L && length(st) == 0L &&
+          identical(as.numeric(attr(e$r1[["in"]], "na_values")), -99) &&
+          identical(as.numeric(attr(e$r2[["my var"]], "na_values")), -99) &&
+          identical(as.numeric(attr(e$lst$d$with, "na_values")), -99) &&
+          identical(as.numeric(attr(f2$my_var, "na_values")), -99) &&
+          length(qc) == 2L && identical(qc[[2L]][[3L]], "C:/a\"b/r.sav") }))
+rm(.Ysrc, .Yorder, .Yrun, .Yin, .Ywl, .Y4c, .Y4r, .Yroute, .Yrw, .Yat_dir)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 

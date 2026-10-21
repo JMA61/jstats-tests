@@ -37,7 +37,34 @@
 #           Since S387 every line of that stop runs where it sits, the
 #           lines taken top to bottom, whatever the data given (Section
 #           37; ruling R33).
+#           Since S388 the Stata route of jsave()'s too-many-codes stop,
+#           and the note after a save that writes an undeclared code, run
+#           as printed (Section 38).
 # ORIGIN:   S229
+# EDITED:   S388 (v0.9.261; Fix Slate 27, both items Claude's calls).
+#           SECTION 38 ADDED, every Expected block filled by running
+#           (fill.R, under a Windows-length temp folder, so that the note's
+#           save line and the Saved line, which name the walk folder, are
+#           laid out as on the workstation; the folder shown as <walk
+#           folder>): the too-many-codes stop's Stata route carries
+#           clean.names = TRUE when Stata refuses a name the data frame
+#           holds; the note after a save that writes an undeclared code
+#           names the data frame's variable after clean.names = TRUE, keeps
+#           clean.names = TRUE, names mydata after the line that makes it
+#           when the data are an expression, and puts a name R reads only
+#           in backticks in them. On the PENDING line. The assertion side is
+#           import_check.R Y24-Y31.
+#           A capture of every section of every walk on 0.9.260 and the
+#           build (343 sections): only this file's Section 38 differs, in
+#           the lines the build changed; every other section identical (temp
+#           paths aside). harness.R derive: the five NEEDS lines as they
+#           were, none for 38; verify: 38 of 38 sections in three orders and
+#           by prepare = TRUE; 149 of 150 Expected blocks found (Section
+#           9's, as before).
+# LAST VERIFIED: v0.9.261, 2026-10-22 (S388) -- Section 38 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay").
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 3181 checks).
 # EDITED:   S387 (v0.9.260; the (S386) part-[1] item, ruled S387 as ruling
 #           R33). SECTION 37 ADDED, every Expected block filled by running
 #           (fill.R; "#@SKIP" after the jsave() call whose Saved line
@@ -4510,6 +4537,196 @@ rm(d37, x37, .wd37)
 #     ahead;
 #   - Render 3: the plain-NA route carries clean.names = TRUE, as the
 #     closing save does, so either route saves.
+
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 38 -- jsave(): the Stata route and the declare-again note run as printed (S388) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S388 (v0.9.261; Fix Slate 27, both items Claude's calls). Two sets of
+# lines jsave() offers stopped when run as printed. The .sav stop for a
+# variable with more declared missing values than SPSS allows offers a route
+# to Stata format -- jconvert(), then a save to .dta -- and that save stopped
+# on a name Stata refuses and SPSS takes (long, in); it now carries
+# clean.names = TRUE when the data frame holds such a name (ruling R33: every
+# line a part offers runs where it sits). The note after a save that writes
+# an undeclared code ("To declare it and save again") named, after
+# clean.names = TRUE had renamed the variable, the FILE's name, which the data
+# frame does not hold, and dropped clean.names = TRUE from its save; given an
+# expression, both lines named the expression. It now names the data frame's
+# variable, keeps clean.names = TRUE, and gives the line that makes mydata
+# first. A name R reads only in backticks gets them: in, which SPSS takes,
+# printed bare did not parse. The assertion side is import_check.R Y24-Y31.
+# (The note's save line and the Saved line name the walk folder, a temporary
+# folder, shown here as <walk folder>.)
+.wd38 <- getwd(); setwd(.walkdir)
+unlink(c("d38.sav", "d38.dta", "r38.sav", "mydata.sav", "i38.sav"))
+.note38 <- function(expr) {   # the call's notes as printed, the folder shown as <walk folder>
+  m <- character(0)
+  withCallingHandlers(expr, message = function(c) {
+    m <<- c(m, conditionMessage(c)); invokeRestart("muffleMessage") })
+  cat(gsub(normalizePath(.walkdir, winslash = "/"), "<walk folder>",
+           paste(m, collapse = ""), fixed = TRUE))
+}
+d38 <- data.frame(long = 1:5,
+                  X = haven::labelled_spss(c(1, -1, -2, -3, -4),
+                                           na_values = c(-1, -2, -3, -4)))
+
+# Render 1 -- X declares four missing values, one more than SPSS format
+# (.sav) allows, and the data frame holds long, which SPSS takes and Stata
+# reserves: the Stata route's save carries clean.names = TRUE.
+try(jsave(d38, "d38.sav"))
+# Expected:
+#   Error : jsave(): SPSS format (.sav) allows at most 3 declared missing values
+#   per variable, or a range plus one code.
+#
+#   This variable in d38 has more:
+#     X: 4 codes
+#
+#   To save in R format (.rds) instead, keeping all the codes:
+#     jsave(d38, "d38.rds")
+#   To convert to Stata and save as Stata format (.dta), also keeping all
+#   the codes:
+#     jconvert(d38, to = "stata", modify = TRUE)
+#     jsave(d38, "d38.dta", clean.names = TRUE)
+#   To save as SPSS format (.sav) with every declared missing value as plain NA:
+#     jsave(d38, "d38.sav", preserve.declarations = FALSE)
+#   Or reduce each variable's declared missing values to fit.
+
+# Render 2 -- the route, run as printed: the conversion, then the save,
+# which goes ahead (long becomes Xlong in the file only).
+jconvert(d38, to = "stata", modify = TRUE)
+.note38(jsave(d38, "d38.dta", clean.names = TRUE))
+toString(names(haven::read_dta("d38.dta")))
+toString(names(d38))
+# Expected:
+#   Converted to Stata-style missing values in 1 variable:
+#     X  -4  -> .a
+#        -3  -> .b
+#        -2  -> .c
+#        -1  -> .d
+#
+#   Note: converting X back to SPSS-style missing values would give its codes
+#   -99, -98, -97, -96, not -4, -3, -2, -1.
+#
+#   To keep it across sessions, save the data frame:
+#     jsave(d38, "d38.rds")
+#   Note: 1 variable name was changed in the file to a name Stata format (.dta)
+#   takes; the d38 data frame keeps its own:
+#     "long"  -> Xlong
+#   The original name is the variable's label in the file.
+#   Saved d38 to
+#   <walk folder>/d38.dta
+#   (Stata format; 5 cases, 2 variables)
+#   [1] "Xlong, X"
+#   [1] "long, X"
+
+# Render 3 -- a save with clean.names = TRUE that writes an undeclared -99:
+# the note names the data frame's variable, with (the file's is Xwith), and
+# its save keeps clean.names = TRUE.
+r38 <- data.frame(A = haven::labelled_spss(c(1, -99, 2), na_values = -99),
+                  B = c(3, -99, 4))
+names(r38)[2] <- "with"
+.note38(jsave(r38, "r38.sav", clean.names = TRUE))
+# Expected:
+#   Note: 1 variable name was changed in the file to a name SPSS format (.sav)
+#   takes; the r38 data frame keeps its own:
+#     "with"  -> Xwith
+#   The original name is the variable's label in the file.
+#
+#   Note: -99 in with is not declared as missing, though another column in r38
+#   declares SPSS-style missing values.
+#   It was written to the file as an ordinary value, so other software will read
+#   it as valid data.
+#   To declare it and save again, run both:
+#     jdeclare_missing(r38, with, codes = -99, convention = "spss",
+#         modify = TRUE)
+#     jsave(r38,
+#         "<walk folder>/r38.sav",
+#         overwrite = TRUE, clean.names = TRUE)
+#   Saved r38 to
+#   <walk folder>/r38.sav
+#   (SPSS format; 3 cases, 2 variables)
+
+# Render 4 -- the same data given as an expression: the line that makes
+# mydata comes first, and both lines name mydata.
+.note38(jsave(r38[c("A", "with")], "mydata.sav", clean.names = TRUE))
+# Expected:
+#   Note: 1 variable name was changed in the file to a name SPSS format (.sav)
+#   takes; the r38[c("A", "with")] data frame keeps its own:
+#     "with"  -> Xwith
+#   The original name is the variable's label in the file.
+#
+#   Note: -99 in with is not declared as missing, though another column in
+#   r38[c("A", "with")] declares SPSS-style missing values.
+#   It was written to the file as an ordinary value, so other software will read
+#   it as valid data.
+#   To declare it and save again, run:
+#     mydata <- r38[c("A", "with")]
+#     jdeclare_missing(mydata, with, codes = -99, convention = "spss",
+#         modify = TRUE)
+#     jsave(mydata,
+#         "<walk folder>/mydata.sav",
+#         overwrite = TRUE, clean.names = TRUE)
+#   Saved r38[c("A", "with")] to
+#   <walk folder>/mydata.sav
+#   (SPSS format; 3 cases, 2 variables)
+
+# Render 5 -- Render 3's two lines, run as printed: with declares -99 in
+# r38, which keeps its names, and the file read back declares it on Xwith.
+jdeclare_missing(r38, with, codes = -99, convention = "spss", modify = TRUE)
+.note38(jsave(r38, "r38.sav", overwrite = TRUE, clean.names = TRUE))
+attr(haven::read_sav("r38.sav", user_na = TRUE)$Xwith, "na_values")
+# Expected:
+#   Declared SPSS-style missing values on with in r38:
+#     -99 (no label)
+#
+#   To keep it across sessions, save the data frame:
+#     jsave(r38, "r38.rds")
+#   Note: 1 variable name was changed in the file to a name SPSS format (.sav)
+#   takes; the r38 data frame keeps its own:
+#     "with"  -> Xwith
+#   The original name is the variable's label in the file.
+#   Saved r38 to
+#   <walk folder>/r38.sav
+#   (SPSS format; 3 cases, 2 variables)
+#   [1] -99
+
+# Render 6 -- a variable named in, which SPSS takes and R reads only in
+# backticks: the declare line puts it in them.
+i38 <- data.frame(A = haven::labelled_spss(c(1, -99, 2), na_values = -99),
+                  B = c(3, -99, 4))
+names(i38)[2] <- "in"
+.note38(jsave(i38, "i38.sav"))
+# Expected:
+#   Note: -99 in in is not declared as missing, though another column in i38
+#   declares SPSS-style missing values.
+#   It was written to the file as an ordinary value, so other software will read
+#   it as valid data.
+#   To declare it and save again, run both:
+#     jdeclare_missing(i38, `in`, codes = -99, convention = "spss",
+#         modify = TRUE)
+#     jsave(i38,
+#         "<walk folder>/i38.sav",
+#         overwrite = TRUE)
+#   Saved i38 to
+#   <walk folder>/i38.sav
+#   (SPSS format; 3 cases, 2 variables)
+unlink(c("d38.sav", "d38.dta", "r38.sav", "mydata.sav", "i38.sav"))
+setwd(.wd38)
+rm(d38, r38, i38, .note38, .wd38)
+
+# Things to look at:
+#   - Render 1: the save under "To convert to Stata ..." ends in
+#     clean.names = TRUE; the other lines are as they were;
+#   - Render 2: the two lines run with no stop, and the file holds Xlong;
+#   - Render 3: the note's sentence and its declare line name with, the data
+#     frame's variable, and its save keeps clean.names = TRUE;
+#   - Render 4: "mydata <- r38[...]" first, the intro "run:" over three
+#     lines, both lines naming mydata;
+#   - Render 5: the lines run, and the file declares -99 on Xwith;
+#   - Render 6: `in` in backticks in the declare line (the wording of the
+#     sentence, "-99 in in", is unchanged).
 
 
 # --- End marker --------------------------------------------------------------
