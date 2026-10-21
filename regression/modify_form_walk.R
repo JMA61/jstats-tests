@@ -29,7 +29,28 @@
 #           Since S381 a sheet's number stored as text in that note,
 #           with base R's lines, and the label line under every
 #           as.numeric() line jload() offers (Section 34).
+#           Since S384 the label line under jsave()'s as.character()
+#           and as.POSIXct() lines (Section 35).
 # ORIGIN:   S229
+# EDITED:   S384 (v0.9.258; Fix Slate 26). SECTION 35 ADDED, every
+#           Expected block filled by running (fill.R; "#@SKIP" after the
+#           two jsave() calls whose Saved line names a temporary folder):
+#           jsave()'s as.character() line for a factor with a category
+#           over 120 characters (.sav) and its as.POSIXct() line for a
+#           POSIXlt column are each followed, where the variable has a
+#           label, by the line that puts it back; a variable with no label
+#           gets none. On the PENDING line; the sentences are unchanged and
+#           the label line is Claude's call. The assertion side is
+#           import_check.R section Y. A capture of every section of every
+#           walk on 0.9.257 and the build: only this file's Section 35 is
+#           new, every other section identical (temp paths aside).
+#           harness.R derive: the five NEEDS lines as they were, none for
+#           35; verify: 35 of 35 sections in three orders and by prepare =
+#           TRUE; 136 of 137 Expected blocks found (Section 9's, as before).
+# LAST VERIFIED: v0.9.258, 2026-10-21 (S384) -- Section 35 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 3151 checks).
 # EDITED:   S382 (v0.9.256; Fix Slate 25). SECTION 33'S RENDER 2
 #           RE-PINNED, one line: the listwise note without "first" ("Note:
 #           Listwise deletion using jcomplete() would leave 6 cases."), the
@@ -4021,6 +4042,127 @@ rm(.wd34, .ds34, s34, t34, p34)
 #     stored as text ..."), four lines; nothing for PC, ID or Half but the
 #     scan's block.
 #   - RENDER 4: the label line under the as.numeric() line.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 35 -- jsave(): a conversion line puts back the variable's label (S384) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S384 (v0.9.258; Fix Slate 26, Claude's call). jsave() stops on two
+# kinds of column a format cannot take as they are, and offers the line
+# that converts each: a factor with a category over 120 characters (.sav),
+# made text with as.character(), and a POSIXlt date-time (.sav, .dta and
+# .xpt), made POSIXct with as.POSIXct(). Both functions drop the variable's
+# label, so until 0.9.258 the line took the label away before the save.
+# Each line is now followed, where the variable has a label, by the line
+# that puts it back -- as jload()'s as.numeric() lines (Section 34) and
+# jscreen()'s as.Date() lines (format_walk.R Section 36). A variable with
+# no label gets no such line. The sentences are unchanged. The assertion
+# side is import_check.R section Y. (The Saved lines name a temporary
+# folder, so each Expected stops above them.)
+.wd35 <- getwd(); setwd(.walkdir)
+long35 <- paste("Moved to be closer to family, to a job that suited the",
+                "hours I can work, and to a cheaper rent than the city,",
+                "after the lease ran out")
+g35 <- data.frame(id = 1:2)
+g35$reason <- factor(c(long35, "Other"))
+attr(g35$reason, "label") <- "Main reason for moving"
+nchar(levels(g35$reason))
+# Expected:
+#   [1] 133   5
+
+# Render 1 -- a labelled factor with a category over 120 characters
+# (.sav): the as.character() line, then the line that puts the label back.
+try(jsave(g35, "g35.sav", overwrite = TRUE))
+# Expected:
+#   Error : jsave(): reason has a category longer than 120 characters, which
+#   SPSS format (.sav) cannot store as a value label.
+#   Save it as text, which SPSS keeps whole:
+#     g35$reason <- as.character(g35$reason)
+#     attr(g35$reason, "label") <- "Main reason for moving"
+
+# Render 2 -- the two lines, run: reason is text with its label, the save
+# goes ahead, and the file read back has the category whole and the label.
+g35$reason <- as.character(g35$reason)
+attr(g35$reason, "label") <- "Main reason for moving"
+jsave(g35, "g35.sav", overwrite = TRUE)
+r35 <- haven::read_sav("g35.sav")
+nchar(r35$reason[1])
+attr(r35$reason, "label")
+# Expected:
+#   [1] 133
+#   [1] "Main reason for moving"
+
+# Render 3 -- a labelled POSIXlt date-time (.sav): the as.POSIXct() line,
+# then the line that puts the label back. .dta and .xpt give the same
+# lines under their own format's name (import_check.R Y05).
+t35 <- data.frame(id = 1:2)
+t35$visit <- as.POSIXlt(c("2024-03-01 09:30:00", "2024-03-08 14:00:00"),
+                        tz = "UTC")
+attr(t35$visit, "label") <- "Date and time of visit"
+try(jsave(t35, "t35.sav", overwrite = TRUE))
+# Expected:
+#   Error : jsave(): 1 column is of a type that SPSS format (.sav) cannot store:
+#     visit (POSIXlt)
+#
+#   POSIXlt columns are list-backed; convert to POSIXct (the same instant, which
+#   SPSS format (.sav) can store) before saving with:
+#     t35$visit <- as.POSIXct(t35$visit)
+#     attr(t35$visit, "label") <- "Date and time of visit"
+
+# Render 4 -- the two lines, run: visit is POSIXct with its label, and the
+# file read back keeps the label.
+t35$visit <- as.POSIXct(t35$visit)
+attr(t35$visit, "label") <- "Date and time of visit"
+jsave(t35, "t35.sav", overwrite = TRUE)
+attr(haven::read_sav("t35.sav")$visit, "label")
+# Expected:
+#   [1] "Date and time of visit"
+
+# Render 5 -- both in one data frame, and a second date-time with no
+# label: one numbered message, each labelled variable with its label line,
+# and none for the one without.
+b35 <- data.frame(id = 1:2)
+b35$reason <- factor(c(long35, "Other"))
+attr(b35$reason, "label") <- "Main reason for moving"
+b35$visit <- as.POSIXlt(c("2024-03-01 09:30:00", "2024-03-08 14:00:00"),
+                        tz = "UTC")
+attr(b35$visit, "label") <- "Date and time of visit"
+b35$followup <- as.POSIXlt(c("2024-04-01 10:00:00", "2024-04-08 15:00:00"),
+                           tz = "UTC")
+try(jsave(b35, "b35.sav", overwrite = TRUE))
+# Expected:
+#   Error : jsave(): b35 cannot be saved to SPSS format (.sav) yet -- 2
+#   things to fix:
+#
+#   [1] reason has a category longer than 120 characters, which SPSS format
+#   (.sav) cannot store as a value label.
+#   Save it as text, which SPSS keeps whole:
+#     b35$reason <- as.character(b35$reason)
+#     attr(b35$reason, "label") <- "Main reason for moving"
+#
+#   [2] 2 columns are of a type that SPSS format (.sav) cannot store:
+#     visit (POSIXlt)
+#     followup (POSIXlt)
+#
+#   POSIXlt columns are list-backed; convert to POSIXct (the same instant, which
+#   SPSS format (.sav) can store) before saving with:
+#     b35$visit <- as.POSIXct(b35$visit)
+#     attr(b35$visit, "label") <- "Date and time of visit"
+#     b35$followup <- as.POSIXct(b35$followup)
+#
+#   Fix the above, then run jsave() again.
+unlink(c("g35.sav", "t35.sav", "b35.sav"))
+setwd(.wd35)
+rm(.wd35, long35, g35, r35, t35, b35)
+
+# Things to look at:
+#   - RENDER 1: the attr() line under the as.character() line, naming the
+#     label as the variable has it.
+#   - RENDER 2: the label kept after the two lines, and in the file.
+#   - RENDER 3: the same for a date-time: the attr() line under the
+#     as.POSIXct() line.
+#   - RENDER 5: each part of the numbered message with its label line;
+#     followup, which has no label, its as.POSIXct() line alone.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

@@ -92,12 +92,24 @@
 #           renamed variable, CSV and sheet alike. Each line runs, with no
 #           warning, and the offered lines' shape (.calls(), Z03) takes a
 #           subscripted assignment.
+#           Since v0.9.258 (section Y; Fix Slate 26, the (S382) item):
+#           jsave()'s as.character() line for a factor with a category over
+#           120 characters (.sav) and its as.POSIXct() line for a POSIXlt
+#           column (.sav, .dta, .xpt) are each followed, where the variable
+#           has a label, by the line that puts it back -- none for an empty
+#           label or one that is not text, the label escaped; the lines run
+#           as printed, with no warning, and the save then goes ahead with
+#           the label in the file; a place's lines name the place, an
+#           expression's name mydata after the line that makes it; the
+#           minimal level unchanged; the long-category stop is SPSS
+#           format's alone.
 # ORIGIN:   S362 (v0.9.235). The tenth battery. Section R added S362, the
 #           second build (v0.9.236). Section S added S365 (v0.9.237).
 #           Section T added S366 (v0.9.238). Section U added S367
 #           (v0.9.239). Section V added, U05 re-pinned, S368 (v0.9.240).
 #           Section W added S373 (v0.9.246). Section X added S380
 #           (v0.9.254); X14 rewritten and X23-X28 added S381 (v0.9.255).
+#           Section Y added S384 (v0.9.258).
 # FIXTURES: written by this file into a folder of R's temporary folder,
 #           except one that R cannot write: datasets/import_guess_text.xlsx
 #           (section G). writexl gives every cell of a column one type, and
@@ -347,6 +359,18 @@
 #           a gap: the counts tabulated over every text cell rather than the
 #           words (factor() with the words as levels drops the numbers, so
 #           the counts are the same).
+#           Section Y (v0.9.258, S384; Fix Slate 26; 11 one-change mutants
+#           of the new code, run detached, this battery on each and
+#           format_check.R on the one that reaches it, every one red): the
+#           factor's label line dropped Y01 Y02 Y03 Y08 Y09, put before its
+#           as.character() line Y01 Y02 Y03 Y08 Y09, taken from the first
+#           long factor Y01 Y02; the label unescaped X27 Y03 Z03 (and
+#           format_check.R's AB tests); the POSIXlt label line dropped Y05-Y09,
+#           naming the column without its data frame Y05-Y09; the labels
+#           not passed from jsave() Y05-Y09, not matched to the POSIXlt
+#           columns Y07; the minimal level given the lines Y07 Z03; the .sav
+#           guard dropped Y10; the moved check returning nothing M08 Y01-Y04
+#           Y08 Y09.
 # FIRST WORKSTATION RUN (S362, the first delivery): 81/83. F03 -- the
 #           title note's line, run as offered, met jload()'s overwrite
 #           question: the workstation runs the batteries in an interactive
@@ -358,6 +382,36 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
+# S384 EDIT (v0.9.258, 2026-10-21): SECTION Y ADDED (Fix Slate 26, the
+#           (S382) item), 10 checks: jsave()'s as.character() line for a
+#           factor with a category over 120 characters (.sav) and its
+#           as.POSIXct() line for a POSIXlt column (.sav, .dta, .xpt) are
+#           each followed, where the variable has a label, by the line that
+#           puts it back. The pinned messages were filled by running (the
+#           S339 rule), at the 76-column width. .Ylines() keeps a message's
+#           assignment lines: .calls() also reads the type list's row
+#           "  t (POSIXlt)", which is not a line to run, as a call to t().
+#           Y09 gives the data as an expression one part at a time: with two
+#           parts, each opens on its own "mydata <- ..." line, so running
+#           both parts top to bottom undoes the first part's fix -- found
+#           here, older than this build (v0.9.257 does the same), and
+#           reported for the to-do. Sandbox: 193/193, run_all.R 3151 across
+#           ten, plain and under the RStudio-handler stand-in, each again
+#           with a 68-character temp path, once with interactive() TRUE (0
+#           "Overwrite?"), and entered dirty (joutput("full") with
+#           diagnostics, width 101, a juse() default, a stata convention,
+#           jstats.color = TRUE, stored jsubset(), jcomplete(), jdummy() and
+#           jnumeric() settings on a frame of its own, the load-notice flag,
+#           workspace objects named like its working objects -- g, e, m, p,
+#           q, f, s, h, a, b, k, x, cl, ws, r, md, mx -- and like the
+#           fixtures' variables and frames -- g1, g2, t, u, z, id, lst, src,
+#           mydata), plain and under the stand-in: green, nothing changed.
+#           On v0.9.257 Y01-Y03 and Y05-Y09 are red; Y04 and Y10 hold what
+#           did not change.
+#           LAST VERIFIED: v0.9.258, 2026-10-21 (S384) -- 193/193 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3151 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S381 EDIT (v0.9.255, 2026-10-20): X14 REWRITTEN, X17 AMENDED, X23-X28
 #           ADDED (Fix Slate 24: the (S380) item, a sheet's number stored as
 #           text, and its rider, the label line), with the fixtures
@@ -2422,6 +2476,192 @@ check("X28 a sheet variable whose number cells are not more than half its cells 
         !grepl("Half", m, fixed = TRUE) && is.character(e$k$Half) &&
           grepl("\n  Half: +\"N/A\" \\(1\\)", p) }))
 if (exists("k")) rm(k)
+
+# --- Y: jsave()'s conversion lines put back the label (v0.9.258) ------------
+
+# S384 (Fix Slate 26, the (S382) item): as.character() and as.POSIXct() drop
+# every attribute, so the lines jsave()'s .sav pre-flight offers for a
+# factor with a category over 120 characters, and its .sav, .dta and .xpt
+# pre-flight for a POSIXlt column, are followed, where the variable has a
+# label, by the line that puts it back (.jst_label_line(), as jload()'s
+# as.numeric() lines since S381 and jscreen()'s as.Date() lines since S382).
+.Y130 <- strrep("a", 130)
+.Y125 <- strrep("b", 125)
+.Ylt  <- function() as.POSIXlt(c("2024-01-01 10:00:00", "2024-02-01 11:00:00"),
+                              tz = "UTC")
+# The lines a message offers that assign -- the conversion lines, the label
+# lines, mydata <- ... -- without the type list's rows ("  t (POSIXlt)"),
+# which .calls() reads as a call to t().
+.Ylines <- function(m) {
+  Filter(function(x) is.call(x) && identical(x[[1L]], as.name("<-")), .calls(m))
+}
+check("Y01 a factor with a category over 120 characters and a label (.sav): its as.character() line is followed by one that puts the label back; an unlabelled one beside it gets none, and nothing is saved (pinned)",
+      local({ g <- data.frame(g1 = factor(c(.Y130, "x")), g2 = factor(c("y", .Y125)))
+        attr(g$g1, "label") <- "Group one"
+        m <- grab(jsave(g, .ix("Y01.sav")))
+        identical(.fl(m), .fl(paste0(
+          "jsave(): g1 and g2 have a category longer than 120 characters, which\n",
+          "SPSS format (.sav) cannot store as a value label.\n",
+          "Save them as text, which SPSS keeps whole:\n",
+          "  g$g1 <- as.character(g$g1)\n",
+          "  attr(g$g1, \"label\") <- \"Group one\"\n",
+          "  g$g2 <- as.character(g$g2)"))) && !file.exists(.ix("Y01.sav")) }))
+check("Y02 ... the lines run as printed, with no warning: the factor is text with its label, the save goes ahead, and the .sav file read back holds the category whole and the label",
+      local({ e <- new.env(parent = globalenv())
+        e$g <- data.frame(g1 = factor(c(.Y130, "x")), g2 = factor(c("y", .Y125)))
+        attr(e$g$g1, "label") <- "Group one"
+        m  <- grab(eval(quote(jsave(g, .ix("Y02.sav"))), e))
+        cl <- .Ylines(m)
+        ws <- .runw(cl, e)
+        m2 <- grab(eval(quote(jsave(g, .ix("Y02.sav"))), e))
+        r  <- haven::read_sav(.ix("Y02.sav"))
+        length(cl) == 3L && length(ws) == 0L && is.character(e$g$g1) &&
+          identical(.lab(e$g$g1), "Group one") && is.null(.lab(e$g$g2)) &&
+          !grepl("jsave():", m2, fixed = TRUE) &&
+          identical(r$g1[1], .Y130) && identical(.lab(r$g1), "Group one") }))
+check("Y03 ... a label holding a quotation mark and a backslash is escaped in the line, which gives it back exactly",
+      local({ e <- new.env(parent = globalenv())
+        e$h <- data.frame(g = factor(c(.Y130, "b")))
+        attr(e$h$g, "label") <- "He said \"yes\" \\ no"
+        m <- grab(eval(quote(jsave(h, .ix("Y03.sav"))), e))
+        ws <- .runw(.Ylines(m), e)
+        grepl("\n  attr(h$g, \"label\") <- \"He said \\\"yes\\\" \\\\ no\"", m,
+              fixed = TRUE) && length(ws) == 0L &&
+          identical(.lab(e$h$g), "He said \"yes\" \\ no") }))
+check("Y04 ... an empty label, or one that is not text, gives no line",
+      local({ a <- data.frame(g = factor(c(.Y130, "b"))); attr(a$g, "label") <- ""
+        b <- a; attr(b$g, "label") <- 7
+        ma <- grab(jsave(a, .ix("Y04a.sav"))); mb <- grab(jsave(b, .ix("Y04b.sav")))
+        grepl("\n  a$g <- as.character(a$g)", ma, fixed = TRUE) &&
+          grepl("\n  b$g <- as.character(b$g)", mb, fixed = TRUE) &&
+          !grepl("attr(", ma, fixed = TRUE) && !grepl("attr(", mb, fixed = TRUE) }))
+check("Y05 a POSIXlt column: its as.POSIXct() line alone when it has no label; with a label, the line that puts it back under it, for .sav, .dta and .xpt alike (pinned)",
+      local({ p <- data.frame(id = 1:2); p$t <- .Ylt()
+        q <- p; attr(q$t, "label") <- "Time of visit"
+        mp <- grab(jsave(p, .ix("Y05p.sav")))
+        ms <- vapply(c("sav", "dta", "xpt"), function(x) {
+          .fl(grab(jsave(q, .ix(paste0("Y05.", x)))))
+        }, "")
+        identical(.fl(mp), .fl(paste0(
+          "jsave(): 1 column is of a type that SPSS format (.sav) cannot store:\n",
+          "  t (POSIXlt)\n",
+          "\n",
+          "POSIXlt columns are list-backed; convert to POSIXct (the same instant, which\n",
+          "SPSS format (.sav) can store) before saving with:\n",
+          "  p$t <- as.POSIXct(p$t)"))) &&
+          identical(ms[["sav"]], .fl(paste0(
+          "jsave(): 1 column is of a type that SPSS format (.sav) cannot store:\n",
+          "  t (POSIXlt)\n",
+          "\n",
+          "POSIXlt columns are list-backed; convert to POSIXct (the same instant, which\n",
+          "SPSS format (.sav) can store) before saving with:\n",
+          "  q$t <- as.POSIXct(q$t)\n",
+          "  attr(q$t, \"label\") <- \"Time of visit\""))) &&
+          all(grepl(paste0("before saving with: q$t <- as.POSIXct(q$t) ",
+                           "attr(q$t, \"label\") <- \"Time of visit\""), ms,
+                    fixed = TRUE)) &&
+          !any(file.exists(.ix(c("Y05p.sav", "Y05.sav", "Y05.dta", "Y05.xpt")))) }))
+check("Y06 ... the lines run as printed, with no warning: the column is POSIXct with its label, the save goes ahead, and the .sav file read back holds the label",
+      local({ e <- new.env(parent = globalenv())
+        e$q <- data.frame(id = 1:2); e$q$t <- .Ylt()
+        attr(e$q$t, "label") <- "Time of visit"
+        m  <- grab(eval(quote(jsave(q, .ix("Y06.sav"))), e))
+        cl <- .Ylines(m)
+        ws <- .runw(cl, e)
+        m2 <- grab(eval(quote(jsave(q, .ix("Y06.sav"))), e))
+        r  <- haven::read_sav(.ix("Y06.sav"))
+        length(cl) == 2L && length(ws) == 0L && inherits(e$q$t, "POSIXct") &&
+          identical(.lab(e$q$t), "Time of visit") &&
+          !grepl("jsave():", m2, fixed = TRUE) &&
+          identical(.lab(r$t), "Time of visit") }))
+check("Y07 a complex column ahead of two POSIXlt columns, the second labelled: the drop line, each as.POSIXct() line, and the label line under the labelled column alone; at the minimal level, no lines, as before (pinned)",
+      local({ p <- data.frame(id = 1:2); p$z <- complex(real = 1:2, imaginary = 0)
+        p$t <- .Ylt(); p$u <- .Ylt(); attr(p$u, "label") <- "Second visit"
+        m <- grab(jsave(p, .ix("Y07.sav")))
+        invisible(utils::capture.output(suppressMessages(joutput("minimal"))))
+        mm <- tryCatch(grab(jsave(p, .ix("Y07.sav"))), finally = {
+          invisible(utils::capture.output(suppressMessages(joutput(NULL)))) })
+        identical(.fl(m), .fl(paste0(
+          "jsave(): 3 columns are of a type that SPSS format (.sav)\n",
+          "cannot store:\n",
+          "  z (complex)\n",
+          "  t (POSIXlt)\n",
+          "  u (POSIXlt)\n",
+          "\n",
+          "complex/list/raw columns have no SPSS format (.sav) representation and no\n",
+          "sensible automatic conversion. Drop it before saving with:\n",
+          "  p[c(\"z\")] <- NULL\n",
+          "\n",
+          "POSIXlt columns are list-backed; convert to POSIXct (the same instant, which\n",
+          "SPSS format (.sav) can store) before saving with:\n",
+          "  p$t <- as.POSIXct(p$t)\n",
+          "  p$u <- as.POSIXct(p$u)\n",
+          "  attr(p$u, \"label\") <- \"Second visit\""))) &&
+          identical(.fl(mm), .fl(paste0(
+          "jsave(): 3 columns are of a type that SPSS format (.sav) cannot\n",
+          "store. drop p[c(\"z\")] <- NULL; convert POSIXlt with as.POSIXct()."))) }))
+check("Y08 a labelled factor with a long category beside a labelled POSIXlt column (.sav): one numbered message, each part with its label line (pinned)",
+      local({ p <- data.frame(g = factor(c(.Y130, "b"))); attr(p$g, "label") <- "Group"
+        p$t <- .Ylt(); attr(p$t, "label") <- "Time of visit"
+        m <- grab(jsave(p, .ix("Y08.sav")))
+        identical(.fl(m), .fl(paste0(
+          "jsave(): p cannot be saved to SPSS format (.sav) yet -- 2\n",
+          "things to fix:\n",
+          "\n",
+          "[1] g has a category longer than 120 characters, which SPSS format (.sav)\n",
+          "cannot store as a value label.\n",
+          "Save it as text, which SPSS keeps whole:\n",
+          "  p$g <- as.character(p$g)\n",
+          "  attr(p$g, \"label\") <- \"Group\"\n",
+          "\n",
+          "[2] 1 column is of a type that SPSS format (.sav) cannot store:\n",
+          "  t (POSIXlt)\n",
+          "\n",
+          "POSIXlt columns are list-backed; convert to POSIXct (the same instant, which\n",
+          "SPSS format (.sav) can store) before saving with:\n",
+          "  p$t <- as.POSIXct(p$t)\n",
+          "  attr(p$t, \"label\") <- \"Time of visit\"\n",
+          "\n",
+          "Fix the above, then run jsave() again."))) }))
+check("Y09 ... the data given as a place: the lines name lst$d and run, labels kept, and the save goes ahead; given as an expression, each kind of line names mydata after the line that makes it, and runs",
+      local({ e <- new.env(parent = globalenv())
+        s <- data.frame(g = factor(c(.Y130, "b"))); attr(s$g, "label") <- "Group"
+        s$t <- .Ylt(); attr(s$t, "label") <- "Time of visit"
+        e$lst <- list(d = s); e$src <- s
+        m1 <- grab(eval(quote(jsave(lst$d, .ix("Y09.sav"))), e))
+        w1 <- .runw(.Ylines(m1), e)
+        m1b <- grab(eval(quote(jsave(lst$d, .ix("Y09.sav"))), e))
+        m2 <- grab(eval(quote(jsave(src["g"], .ix("Y09b.sav"))), e))
+        w2 <- .runw(.Ylines(m2), e)
+        g2 <- e$mydata$g
+        m3 <- grab(eval(quote(jsave(src["t"], .ix("Y09c.sav"))), e))
+        w3 <- .runw(.Ylines(m3), e)
+        grepl(paste0("lst$d$g <- as.character(lst$d$g) ",
+                     "attr(lst$d$g, \"label\") <- \"Group\""), .fl(m1), fixed = TRUE) &&
+          grepl(paste0("lst$d$t <- as.POSIXct(lst$d$t) ",
+                       "attr(lst$d$t, \"label\") <- \"Time of visit\""), .fl(m1),
+                fixed = TRUE) &&
+          length(w1) == 0L && !grepl("jsave():", m1b, fixed = TRUE) &&
+          identical(.lab(e$lst$d$g), "Group") &&
+          identical(.lab(e$lst$d$t), "Time of visit") &&
+          grepl(paste0("keeps whole: mydata <- src[\"g\"] ",
+                       "mydata$g <- as.character(mydata$g) ",
+                       "attr(mydata$g, \"label\") <- \"Group\""), .fl(m2), fixed = TRUE) &&
+          grepl(paste0("before saving with: mydata <- src[\"t\"] ",
+                       "mydata$t <- as.POSIXct(mydata$t) ",
+                       "attr(mydata$t, \"label\") <- \"Time of visit\""), .fl(m3),
+                fixed = TRUE) &&
+          length(c(w2, w3)) == 0L && is.character(g2) &&
+          identical(.lab(g2), "Group") && inherits(e$mydata$t, "POSIXct") &&
+          identical(.lab(e$mydata$t), "Time of visit") }))
+check("Y10 ... the stop is SPSS format's alone: .dta keeps a long category whole as a value label, with the variable's label, and .xpt saves the factor, neither stopping",
+      local({ f <- data.frame(g = factor(c(.Y130, "b"))); attr(f$g, "label") <- "Group"
+        md <- grab(jsave(f, .ix("Y10.dta"))); mx <- grab(jsave(f, .ix("Y10.xpt")))
+        r <- haven::read_dta(.ix("Y10.dta"))
+        !grepl("jsave():", paste(md, mx), fixed = TRUE) &&
+          file.exists(.ix("Y10.xpt")) &&
+          identical(names(attr(r$g, "labels"))[1], .Y130) &&
+          identical(.lab(r$g), "Group") }))
 
 # --- The message surface, swept (guard 4) ------------------------------------
 
