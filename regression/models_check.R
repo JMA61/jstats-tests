@@ -83,6 +83,25 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S386 EDIT (v0.9.259, 2026-10-21): SECTION AC ADDED (the twin build, D2
+#           and a rider), 7 checks. The build gave jlm() and jlogistic() one
+#           predictor loop (.jst_model_iv_loop()), and jlogistic() gains
+#           jlm()'s checks of numeric =, categorical = and count = against
+#           the predictors: AC01-AC03 the three not-found stops, AC04 the
+#           two clashes, AC05 the note when categorical = names the outcome,
+#           AC06 the warning when it names a jdummy() variable -- each
+#           jlm()'s sentence, prefixed jlogistic(). AC07 the both-sides stop
+#           of jlm() and jlogistic(), which no battery reached (the S385
+#           trace). On v0.9.258 AC01-AC06 are red and AC07 green.
+#           Sandbox: 535/535, run_all.R 3165 across ten, plain and under the
+#           RStudio-handler stand-in, each again with a Windows-length temp
+#           path, once with interactive() TRUE (0 "Overwrite?"), and entered
+#           dirty (plain and under the stand-in, workspace objects also named
+#           nf, src, src2, p and q): green, nothing changed.
+#           LAST VERIFIED: v0.9.259, 2026-10-21 (S386) -- 535/535 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3165 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S379 EDIT (v0.9.253, 2026-10-20): GUARD 1 WIDENED (Scripts Slate D, the
 #           (S378) item). The jsubset(), jcomplete(), jdummy() and
 #           registration stores and the once-a-session load-notice flag
@@ -6189,6 +6208,72 @@ check("AB05 the intercept-only model leaves the logit plot out with the note, as
                                  "which = takes a plot name in quotes:\n",
                                  "  jplot(m, which = \"logit\")")) }))
 rm(.ab_layer)
+
+# =============================================================================
+# AC -- THE TWIN BUILD: THE NAME CHECKS IN BOTH MODELS, THE BOTH-SIDES STOP
+# =============================================================================
+# The twin build (S386) gave jlm() and jlogistic() one predictor loop
+# (.jst_model_iv_loop()), and with it jlm()'s checks of numeric =,
+# categorical = and count = against the predictors, which jlogistic() had
+# lacked (D2, the S385 drift finding: a name that is not a predictor was
+# ignored, numeric = won a clash with categorical = silently, and
+# categorical = naming the outcome said nothing). Each now reads as jlm()'s,
+# prefixed jlogistic(). And a rider of the S385 trace: the both-sides stop
+# (.jst_dup_regression_stop()), which no battery reached in either model.
+# Fixture d; working objects in local().
+# =============================================================================
+cat("\n--- AC. The twin build: the name checks and the both-sides stop ---\n")
+
+.ac_pair <- function(lm_call, lg_call) {
+  a <- flat(grab(lm_call)); b <- flat(grab(lg_call))
+  list(lg = b, same = identical(sub("^jlm\\(\\): ", "jlogistic(): ", a), b))
+}
+check("AC01 numeric = naming a variable of the data that is not a predictor: jlogistic() stops with jlm()'s sentence, prefixed (it ran with the name ignored)",
+      local({ p <- .ac_pair(jlm(y ~ x1 + hv, d, numeric = "x2"),
+                            jlogistic(yb ~ x1 + hv, d, numeric = "x2"))
+              p$same && identical(p$lg, paste0("jlogistic(): numeric argument: 'x2' not found among ",
+                                               "independent variables in d. Check for typos.")) }))
+check("AC02 ... categorical = naming one: the same stop",
+      local({ p <- .ac_pair(jlm(y ~ x1 + hv, d, categorical = "x2"),
+                            jlogistic(yb ~ x1 + hv, d, categorical = "x2"))
+              p$same && identical(p$lg, paste0("jlogistic(): categorical argument: 'x2' not found among ",
+                                               "independent variables in d. Check for typos.")) }))
+check("AC03 ... count = naming one: the same stop",
+      local({ p <- .ac_pair(jlm(y ~ x1 + hv, d, count = "x2"),
+                            jlogistic(yb ~ x1 + hv, d, count = "x2"))
+              p$same && identical(p$lg, paste0("jlogistic(): count argument: 'x2' not found among ",
+                                               "independent variables in d. Check for typos.")) }))
+check("AC04 a predictor in both numeric = and categorical =, or in both count = and categorical =: jlogistic() stops as jlm() does (numeric = had won silently)",
+      local({ p <- .ac_pair(jlm(y ~ x1 + hv, d, numeric = "hv", categorical = "hv"),
+                            jlogistic(yb ~ x1 + hv, d, numeric = "hv", categorical = "hv"))
+              q <- .ac_pair(jlm(y ~ x1 + hv, d, count = "hv", categorical = "hv"),
+                            jlogistic(yb ~ x1 + hv, d, count = "hv", categorical = "hv"))
+              p$same && q$same &&
+                identical(p$lg, "jlogistic(): 'hv' listed in both numeric and categorical arguments.") &&
+                identical(q$lg, "jlogistic(): 'hv' listed in both count and categorical arguments.") }))
+check("AC05 categorical = naming the outcome: jlogistic() gives jlm()'s note, and fits",
+      local({ a <- flat(grab(jlogistic(yb ~ x1 + hv, d, categorical = c("yb", "hv"))))
+              m <- quiet(jlogistic(yb ~ x1 + hv, d, categorical = c("yb", "hv")))
+              grepl(paste0("Note: 'yb' is the dependent variable and is always treated as ",
+                           "numeric. The categorical argument is only needed for ",
+                           "independent variables."), a, fixed = TRUE) &&
+                !is.null(m) }))
+check("AC06 categorical = naming a predictor registered with jdummy(): jlogistic() warns as jlm() does, and fits",
+      local({ quiet(jdummy(d, g))
+              a <- flat(grab(jlogistic(yb ~ x1 + g, d, categorical = "g")))
+              b <- flat(grab(jlm(y ~ x1 + g, d, categorical = "g")))
+              m <- quiet(jlogistic(yb ~ x1 + g, d, categorical = "g"))
+              quiet(jdummy(d, NULL))
+              w <- paste0("categorical = was ignored for g (already registered as a dummy ",
+                          "via jdummy; categorical treatment is automatic).")
+              grepl(w, a, fixed = TRUE) && grepl(w, b, fixed = TRUE) && !is.null(m) }))
+check("AC07 the both-sides stop, reached by no battery until now (the S385 trace): jlm(y ~ y) and jlogistic(yb ~ yb) each stop with it, prefixed",
+      local({ a <- flat(grab(jlm(y ~ y, d))); b <- flat(grab(jlogistic(yb ~ yb, d)))
+              tail <- paste0(" appears as both the dependent variable and an independent ",
+                             "variable. Each variable can only play one role in a regression.")
+              identical(a, paste0("jlm(): 'y'", tail)) &&
+                identical(b, paste0("jlogistic(): 'yb'", tail)) }))
+rm(.ac_pair)
 
 # --- Verdict -----------------------------------------------------------------
 

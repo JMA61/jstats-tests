@@ -31,7 +31,34 @@
 #           as.numeric() line jload() offers (Section 34).
 #           Since S384 the label line under jsave()'s as.character()
 #           and as.POSIXct() lines (Section 35).
+#           Since S386 jsave()'s stop on data given as an expression with
+#           two or more things to fix: the line that makes mydata once,
+#           under the header, and the closing save on mydata (Section 36).
 # ORIGIN:   S229
+# EDITED:   S386 (v0.9.259; the twin build's fifth stage, the (S384) item
+#           as ruled at S386). SECTION 36 ADDED, every Expected block
+#           filled by running (fill.R; "#@SKIP" after the jsave() call whose
+#           Saved line names a temporary folder): given an expression and
+#           two or more things to fix, the line that makes mydata comes
+#           once, under the header, every part and each route of a part
+#           building on it, and the closing line is the save on mydata,
+#           clean.names = TRUE where a part names variables the format
+#           refuses; a name keeps its form. On the PENDING line. The
+#           sentence above the line names the data frame the copy is made
+#           from (Jeff's wording at the walk, S386: "The fixes shown below
+#           work on a copy of your x36 data frame."; "your data" when the
+#           expression names none), and Section 36 was filled again with
+#           it. SECTION 19'S RENDER 2 RE-PINNED MECHANICALLY under the S386
+#           ruling (the Build Procedure's [BUILD-TESTING], Jeff, S345),
+#           filled by running, and its first note rewritten to say which
+#           blocks open on their own line; kept off the PENDING line. The
+#           assertion side is import_check.R Y11-Y15.
+# LAST VERIFIED: v0.9.259, 2026-10-21 (S386) -- Section 36 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay")
+#           on the build's second receive; his walk on the first asked for
+#           the sentence above the line to be reworded (the entry above).
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 3165 checks).
 # EDITED:   S384 (v0.9.258; Fix Slate 26). SECTION 35 ADDED, every
 #           Expected block filled by running (fill.R; "#@SKIP" after the
 #           two jsave() calls whose Saved line names a temporary folder):
@@ -2425,14 +2452,16 @@ try(jsave(oc19["X"], "oc19.sav"))
 try(jsave(cx19[c("X", "Z")], "oc19.dta"))
 # Expected:
 #   Error : jsave(): cx19[c("X", "Z")] cannot be saved to Stata format (.dta)
-#   yet -- 2 things to fix:
+#   yet -- 2 things to fix.
+#   The fixes shown below work on a copy of your cx19 data frame.
+#   Make the copy first:
+#     mydata <- cx19[c("X", "Z")]
 #
 #   [1] 1 column is of a type that Stata format (.dta) cannot store:
 #     Z (list)
 #
 #   complex/list/raw columns have no Stata format (.dta) representation and no
 #   sensible automatic conversion. Drop it before saving with:
-#     mydata <- cx19[c("X", "Z")]
 #     mydata[c("Z")] <- NULL
 #
 #   [2] 1 variable carries SPSS-style missing values, incompatible with the
@@ -2440,18 +2469,21 @@ try(jsave(cx19[c("X", "Z")], "oc19.dta"))
 #     X
 #
 #   Before saving to Stata format, convert with:
-#     mydata <- cx19[c("X", "Z")]
 #     jconvert(mydata, to = "stata", modify = TRUE)
 #   Or save every declared missing value as plain NA instead:
-#     mydata <- cx19[c("X", "Z")]
 #     jsave(mydata, "oc19.dta", preserve.declarations = FALSE)
 #
-#   Fix the above, then run jsave() again.
+#   Fix the above, then save mydata:
+#     jsave(mydata, "oc19.dta")
 setwd(.wd19)
 rm(oc19, cx19, .wd19)
 
 # Things to look at:
-#   - each block runs on its own, so each opens on "mydata <- ...";
+#   - Render 1: one problem, whose blocks are alternatives, so each runs on
+#     its own and opens on "mydata <- ...";
+#   - Render 2: two problems, to be fixed together, so mydata is made once,
+#     under the header, and the closing line saves it (ruling S386; Section
+#     36 shows it whole);
 #   - the sentences above the lines keep the expression as typed
 #     ("This variable in oc19["X"] has more:"), as the header does.
 
@@ -4206,6 +4238,151 @@ rm(.wd35, long35, g35, r35, t35, b35)
 # still read as prose once the Rule E split lands, and (b) does Section 9's
 # bare jrecode( line above a modify = TRUE jdeclare_missing line read as
 # deliberate or as an inconsistency?
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 36 -- jsave() given an expression: one copy, and the save that works (S386) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S386 (v0.9.259; the (S384) item, ruled S386 -- Jeff: "I like your
+# recommendation"; "I'm okay with your recommendation on this one also").
+# Given an expression as the data and two or more things to fix, jsave()'s
+# stop opened each part on its own "mydata <- ..." line (S352; Section 19),
+# so the lines, run top to bottom as a user pastes them, made mydata again
+# at each part and undid the parts above; and its closing line, "run jsave()
+# again", sent the user back to the expression, which stops as before. The
+# line that makes mydata now comes once, under the header, and every part
+# builds on it -- each route too, where a part offers two -- and the closing
+# line is the save on mydata, the call's own arguments kept and
+# clean.names = TRUE where a part names variables the format refuses. One
+# problem keeps a line per block (Section 19, Render 1), and a name keeps
+# "run jsave() again" (Render 4). The assertion side is import_check.R
+# Y11-Y15. (The Saved line names a temporary folder, so Render 2 shows what
+# was saved instead.)
+.wd36 <- getwd(); setwd(.walkdir)
+unlink(c("s36.sav", "x36.dta"))   # a file left by an earlier run stops a save
+s36 <- data.frame(g = factor(c(strrep("a", 130), "b")))
+attr(s36$g, "label") <- "Group"
+s36$t <- as.POSIXlt(c("2026-03-01 09:30:00", "2026-03-02 14:00:00"), tz = "UTC")
+attr(s36$t, "label") <- "Time of visit"
+s36$BY <- c(1, 2)
+
+# Render 1 -- three things to fix (.sav), the data an expression: mydata is
+# made once, under the header, and the closing line saves it.
+try(jsave(s36[c("g", "t", "BY")], "s36.sav"))
+# Expected:
+#   Error : jsave(): s36[c("g", "t", "BY")] cannot be saved to SPSS format
+#   (.sav) yet -- 3 things to fix.
+#   The fixes shown below work on a copy of your s36 data frame.
+#   Make the copy first:
+#     mydata <- s36[c("g", "t", "BY")]
+#
+#   [1] 1 variable name in the s36[c("g", "t", "BY")] data frame cannot be used
+#   in SPSS format (.sav):
+#     "BY"  -> XBY  (a word SPSS reserves)
+#   To save the file with this name (the s36[c("g", "t", "BY")] data frame
+#   keeps its own):
+#     jsave(mydata, "s36.sav", clean.names = TRUE)
+#
+#   [2] g has a category longer than 120 characters, which SPSS format (.sav)
+#   cannot store as a value label.
+#   Save it as text, which SPSS keeps whole:
+#     mydata$g <- as.character(mydata$g)
+#     attr(mydata$g, "label") <- "Group"
+#
+#   [3] 1 column is of a type that SPSS format (.sav) cannot store:
+#     t (POSIXlt)
+#
+#   POSIXlt columns are list-backed; convert to POSIXct (the same instant, which
+#   SPSS format (.sav) can store) before saving with:
+#     mydata$t <- as.POSIXct(mydata$t)
+#     attr(mydata$t, "label") <- "Time of visit"
+#
+#   Fix the above, then save mydata:
+#     jsave(mydata, "s36.sav", clean.names = TRUE)
+
+# Render 2 -- the lines, run top to bottom as a user pastes them: each fix
+# stays made, and the closing line saves (BY becomes XBY in the file only).
+mydata <- s36[c("g", "t", "BY")]
+mydata$g <- as.character(mydata$g)
+attr(mydata$g, "label") <- "Group"
+mydata$t <- as.POSIXct(mydata$t)
+attr(mydata$t, "label") <- "Time of visit"
+jsave(mydata, "s36.sav", clean.names = TRUE)
+class(mydata$g)
+names(haven::read_sav("s36.sav"))
+# Expected:
+#   [1] "character"
+#   [1] "g"   "t"   "XBY"
+
+# Render 3 -- two things to fix (.dta), the second with two routes: both
+# routes build on the one mydata, and the closing save has no clean.names.
+x36 <- data.frame(X = haven::labelled_spss(c(1, -1, 2), na_values = -1))
+x36$t <- as.POSIXlt(c("2026-03-01 09:30:00", "2026-03-02 14:00:00",
+                      "2026-03-03 08:00:00"), tz = "UTC")
+try(jsave(x36[c("t", "X")], "x36.dta"))
+# Expected:
+#   Error : jsave(): x36[c("t", "X")] cannot be saved to Stata format (.dta) yet
+#   -- 2 things to fix.
+#   The fixes shown below work on a copy of your x36 data frame.
+#   Make the copy first:
+#     mydata <- x36[c("t", "X")]
+#
+#   [1] 1 column is of a type that Stata format (.dta) cannot store:
+#     t (POSIXlt)
+#
+#   POSIXlt columns are list-backed; convert to POSIXct (the same instant, which
+#   Stata format (.dta) can store) before saving with:
+#     mydata$t <- as.POSIXct(mydata$t)
+#
+#   [2] 1 variable carries SPSS-style missing values, incompatible with the
+#   .dta format:
+#     X
+#
+#   Before saving to Stata format, convert with:
+#     jconvert(mydata, to = "stata", modify = TRUE)
+#   Or save every declared missing value as plain NA instead:
+#     jsave(mydata, "x36.dta", preserve.declarations = FALSE)
+#
+#   Fix the above, then save mydata:
+#     jsave(mydata, "x36.dta")
+
+# Render 4 -- the same two things, the data given by name: each part names
+# x36, and the closing line is as it was.
+try(jsave(x36, "x36.dta"))
+# Expected:
+#   Error : jsave(): x36 cannot be saved to Stata format (.dta) yet -- 2
+#   things to fix:
+#
+#   [1] 1 column is of a type that Stata format (.dta) cannot store:
+#     t (POSIXlt)
+#
+#   POSIXlt columns are list-backed; convert to POSIXct (the same instant, which
+#   Stata format (.dta) can store) before saving with:
+#     x36$t <- as.POSIXct(x36$t)
+#
+#   [2] 1 variable carries SPSS-style missing values, incompatible with the
+#   .dta format:
+#     X
+#
+#   Before saving to Stata format, convert with:
+#     jconvert(x36, to = "stata", modify = TRUE)
+#   Or save every declared missing value as plain NA instead:
+#     jsave(x36, "x36.dta", preserve.declarations = FALSE)
+#
+#   Fix the above, then run jsave() again.
+setwd(.wd36)
+rm(s36, x36, mydata, .wd36)
+
+# Things to look at:
+#   - Render 1: one "mydata <- ..." line, under the header, and none in a
+#     part, the sentence above it naming the data frame the copy is made
+#     from (Jeff's wording at the S386 walk); the closing line is the save
+#     on mydata, with clean.names = TRUE because part [1] names a variable
+#     SPSS refuses;
+#   - Render 2: the lines, run as printed, leave g as text (the S384 undo is
+#     gone), and the save goes ahead;
+#   - Render 3: both routes of part [2] build on the one mydata;
+#   - Render 4: a name is unchanged.
 
 
 # --- End marker --------------------------------------------------------------

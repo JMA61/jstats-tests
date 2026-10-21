@@ -161,6 +161,23 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S386 EDIT (v0.9.259, 2026-10-21): SECTION AL ADDED (a rider of the twin
+#           build), 2 checks: a name holding NULL given as the data stops
+#           with the guard's three lines, naming it -- AL01 in the
+#           data-first resolver (jdesc(), jfreq()), AL02 in the formula
+#           front door (jt(), jlm()). No battery reached either guard (the
+#           S385 trace). Green on v0.9.258 too: neither guard changed.
+#           Sandbox: 642/642, run_all.R 3165 across ten, plain and under the
+#           RStudio-handler stand-in, each again with a Windows-length temp
+#           path, once with interactive() TRUE (0 "Overwrite?"), and entered
+#           dirty (plain and under the stand-in, workspace objects also named
+#           nf, src, src2, p and q): S15, Y33 and Y37 red, as on v0.9.258
+#           with the S385 dirty entry -- older than this build, logged at
+#           the S386 closeout; AL green; nothing else changed.
+#           LAST VERIFIED: v0.9.259, 2026-10-21 (S386) -- 642/642 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3165 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S379 EDIT (v0.9.253, 2026-10-20): GUARD 1 WIDENED (Scripts Slate D, the
 #           (S378) item). The jsubset(), jcomplete(), jdummy() and
 #           registration stores and the once-a-session load-notice flag
@@ -6824,6 +6841,33 @@ check("AK05 a histogram or a density plot of a text variable, a factor or a date
                 !is.null(.ak_plot(eval(str2lang(ln)))) }))
 rm(.ak_geom, .ak_facet, .ak_plot)
 reset()
+
+# =============================================================================
+# AL -- THE TWIN BUILD: A NAME HOLDING NULL GIVEN AS THE DATA (S386)
+# =============================================================================
+# A name that holds NULL -- kept from a call that returns nothing,
+# nf <- jload(...) -- given as the data stops with three lines naming it,
+# from the data-first resolver's guard (S205) and from the formula front
+# door's. No battery reached either (the S385 trace); a rider of the twin
+# build. Working objects in local().
+# =============================================================================
+cat("\n--- AL. A name holding NULL given as the data ---\n")
+
+.al_text <- function(fn, nm) {
+  paste0(fn, "(): '", nm, "' exists but contains nothing (it is NULL). This can ",
+         "happen when it was created by a call that returns nothing, such as ", nm,
+         " <- jload(...). Rebuild or reload '", nm, "', then rerun.")
+}
+.al_flat <- function(x) trimws(gsub("\\s+", " ", x))
+check("AL01 the data-first resolver's guard: jdesc() and jfreq() given a name that holds NULL stop with its three lines, naming it",
+      local({ nf <- NULL
+              identical(.al_flat(grab(jdesc(nf, Age))), .al_text("jdesc", "nf")) &&
+                identical(.al_flat(grab(jfreq(nf, Age))), .al_text("jfreq", "nf")) }))
+check("AL02 the formula front door's guard: jt() and jlm() given one stop with the same lines",
+      local({ nf <- NULL
+              identical(.al_flat(grab(jt(Score ~ Group, nf))), .al_text("jt", "nf")) &&
+                identical(.al_flat(grab(jlm(Score ~ Age, nf))), .al_text("jlm", "nf")) }))
+rm(.al_text, .al_flat)
 
 # =============================================================================
 # P -- THE MESSAGE SURFACE, SWEPT (S337)

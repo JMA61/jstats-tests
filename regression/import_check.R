@@ -382,6 +382,32 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
+# S386 EDIT (v0.9.259, 2026-10-21): Y11-Y15 ADDED (the (S384) item, ruled
+#           S386): given an expression and two or more things to fix,
+#           jsave()'s stop makes mydata once, under the header, and closes
+#           on the save on mydata (clean.names = TRUE where a part names
+#           variables the format refuses). Y11 pins the .sav three-part
+#           message; Y12 runs its lines top to bottom and then the closing
+#           save (the S384 undo gone); Y13 pins the .dta form whose second
+#           part has two routes and runs the first route to a save (.calls()
+#           reads the type list's row "  t (POSIXlt)" as t(), so the
+#           assignments come through .Ylines()); Y14 what keeps its form --
+#           a name, a place, one part (S352), the minimal level; Y15 the
+#           sentence above the line, which names the data frame the copy is
+#           made from (Jeff's wording at the walk: "The fixes shown below
+#           work on a copy of your x36 data frame."), "your data" when the
+#           expression names none. On v0.9.258 Y11-Y13 and Y15 are red and
+#           Y14 green.
+#           Sandbox: 198/198, run_all.R 3165 across ten, plain and under the
+#           RStudio-handler stand-in, each again with a Windows-length temp
+#           path, once with interactive() TRUE (0 "Overwrite?"), and entered
+#           dirty (plain and under the stand-in, workspace objects also named
+#           nf, src, src2, p and q): green, nothing changed. 198 checks.
+#           LAST VERIFIED: v0.9.259, 2026-10-21 (S386) -- 198/198 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3165 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox: the build's second receive, with Jeff's
+#           wording and Y15; the first read 197/197 (3164 checks).
 # S384 EDIT (v0.9.258, 2026-10-21): SECTION Y ADDED (Fix Slate 26, the
 #           (S382) item), 10 checks: jsave()'s as.character() line for a
 #           factor with a category over 120 characters (.sav) and its
@@ -2662,6 +2688,124 @@ check("Y10 ... the stop is SPSS format's alone: .dta keeps a long category whole
           file.exists(.ix("Y10.xpt")) &&
           identical(names(attr(r$g, "labels"))[1], .Y130) &&
           identical(.lab(r$g), "Group") }))
+
+.Ysrc <- function() {
+  s <- data.frame(g = factor(c(.Y130, "b"))); attr(s$g, "label") <- "Group"
+  s$t <- .Ylt(); attr(s$t, "label") <- "Time of visit"; s$BY <- c(1, 2)
+  s
+}
+check("Y11 given an expression and three things to fix (.sav; ruling S386): the line that makes mydata comes once, under the header, no part repeats it, and the closing line is the save on mydata with clean.names = TRUE (pinned)",
+      local({ e <- new.env(parent = globalenv()); e$src <- .Ysrc()
+        m <- grab(eval(quote(jsave(src[c("g", "t", "BY")], .ix("Y11.sav"))), e))
+        identical(.fl(m), .fl(paste0(
+          "jsave(): src[c(\"g\", \"t\", \"BY\")] cannot be saved to SPSS format (.sav)\n",
+          "yet -- 3 things to fix.\n",
+          "The fixes shown below work on a copy of your src data frame.\n",
+          "Make the copy first:\n",
+          "  mydata <- src[c(\"g\", \"t\", \"BY\")]\n",
+          "\n",
+          "[1] 1 variable name in the src[c(\"g\", \"t\", \"BY\")] data frame cannot be used in\n",
+          "SPSS format (.sav):\n",
+          "  \"BY\"  -> XBY  (a word SPSS reserves)\n",
+          "To save the file with this name (the src[c(\"g\", \"t\", \"BY\")] data frame\n",
+          "keeps its own):\n",
+          "  jsave(mydata, \"", .ix("Y11.sav"), "\", clean.names = TRUE)\n",
+          "\n",
+          "[2] g has a category longer than 120 characters, which SPSS format (.sav)\n",
+          "cannot store as a value label.\n",
+          "Save it as text, which SPSS keeps whole:\n",
+          "  mydata$g <- as.character(mydata$g)\n",
+          "  attr(mydata$g, \"label\") <- \"Group\"\n",
+          "\n",
+          "[3] 1 column is of a type that SPSS format (.sav) cannot store:\n",
+          "  t (POSIXlt)\n",
+          "\n",
+          "POSIXlt columns are list-backed; convert to POSIXct (the same instant, which\n",
+          "SPSS format (.sav) can store) before saving with:\n",
+          "  mydata$t <- as.POSIXct(mydata$t)\n",
+          "  attr(mydata$t, \"label\") <- \"Time of visit\"\n",
+          "\n",
+          "Fix the above, then save mydata:\n",
+          "  jsave(mydata, \"", .ix("Y11.sav"), "\", clean.names = TRUE)"))) && !file.exists(.ix("Y11.sav")) }))
+check("Y12 ... its lines run top to bottom as printed -- the assignments, then the closing save -- with no warning: the file is saved, g text with its label, t a date-time with its label, BY renamed in the file only, and the data frame unchanged",
+      local({ e <- new.env(parent = globalenv()); e$src <- .Ysrc()
+        m  <- grab(eval(quote(jsave(src[c("g", "t", "BY")], .ix("Y12.sav"))), e))
+        cl <- .calls(m)
+        w  <- .runw(.Ylines(m), e)
+        o  <- utils::capture.output(m2 <- grab(eval(cl[[length(cl)]], e)))
+        r  <- if (file.exists(.ix("Y12.sav"))) haven::read_sav(.ix("Y12.sav")) else NULL
+        length(w) == 0L && !grepl("jsave():", m2, fixed = TRUE) && !is.null(r) &&
+          identical(names(r), c("g", "t", "XBY")) && is.character(r$g) &&
+          identical(.lab(r$g), "Group") && inherits(r$t, "POSIXct") &&
+          identical(.lab(r$t), "Time of visit") && is.factor(e$src$g) &&
+          identical(names(e$src), c("g", "t", "BY")) }))
+check("Y13 given an expression and two things to fix, the second with two routes (.dta): mydata is made once and both routes build on it, the closing save has no clean.names, and the conversion route run top to bottom saves (pinned)",
+      local({ e <- new.env(parent = globalenv())
+        s <- data.frame(X = haven::labelled_spss(c(1, -1), na_values = -1)); s$t <- .Ylt()
+        e$src2 <- s
+        m  <- grab(eval(quote(jsave(src2[c("t", "X")], .ix("Y13.dta"))), e))
+        cl <- .calls(m)
+        # the assignments (not the type list's row, which .calls() reads as
+        # t()), then part [2]'s first route; the jsave() lines are its
+        # second route and the closing save
+        conv <- c(.Ylines(m),
+                  Filter(function(x) identical(x[[1L]], as.name("jconvert")), cl))
+        sv <- Filter(function(x) identical(x[[1L]], as.name("jsave")), cl)
+        w  <- .runw(conv, e)
+        o  <- utils::capture.output(m2 <- grab(eval(sv[[length(sv)]], e)))
+        identical(.fl(m), .fl(paste0(
+          "jsave(): src2[c(\"t\", \"X\")] cannot be saved to Stata format (.dta) yet\n",
+          "-- 2 things to fix.\n",
+          "The fixes shown below work on a copy of your src2 data frame.\n",
+          "Make the copy first:\n",
+          "  mydata <- src2[c(\"t\", \"X\")]\n",
+          "\n",
+          "[1] 1 column is of a type that Stata format (.dta) cannot store:\n",
+          "  t (POSIXlt)\n",
+          "\n",
+          "POSIXlt columns are list-backed; convert to POSIXct (the same instant, which\n",
+          "Stata format (.dta) can store) before saving with:\n",
+          "  mydata$t <- as.POSIXct(mydata$t)\n",
+          "\n",
+          "[2] 1 variable carries SPSS-style missing values, incompatible with the\n",
+          ".dta format:\n",
+          "  X\n",
+          "\n",
+          "Before saving to Stata format, convert with:\n",
+          "  jconvert(mydata, to = \"stata\", modify = TRUE)\n",
+          "Or save every declared missing value as plain NA instead:\n",
+          "  jsave(mydata, \"", .ix("Y13.dta"), "\", preserve.declarations = FALSE)\n",
+          "\n",
+          "Fix the above, then save mydata:\n",
+          "  jsave(mydata, \"", .ix("Y13.dta"), "\")"))) &&
+          length(conv) == 3L && length(sv) == 2L && length(w) == 0L &&
+          !grepl("jsave():", m2, fixed = TRUE) &&
+          file.exists(.ix("Y13.dta")) }))
+check("Y14 ... and the rest keep their forms: a name and a place close on \"Fix the above, then run jsave() again.\" with no line making mydata, one part on an expression keeps its own line (S352), and the minimal level has no such header",
+      local({ e <- new.env(parent = globalenv()); s <- .Ysrc()
+        e$p <- s; e$lst <- list(d = s); e$src <- s
+        mn <- grab(eval(quote(jsave(p, .ix("Y14.sav"))), e))
+        ml <- grab(eval(quote(jsave(lst$d, .ix("Y14.sav"))), e))
+        m1 <- grab(eval(quote(jsave(src["t"], .ix("Y14.sav"))), e))
+        old <- getOption(".jst_output_level"); options(.jst_output_level = "minimal")
+        mm <- grab(eval(quote(jsave(src[c("g", "t", "BY")], .ix("Y14.sav"))), e))
+        options(.jst_output_level = old)
+        endsWith(.fl(mn), "Fix the above, then run jsave() again.") &&
+          endsWith(.fl(ml), "Fix the above, then run jsave() again.") &&
+          !grepl("mydata", paste(mn, ml), fixed = TRUE) &&
+          !grepl("work on a copy of", paste(mn, ml, m1, mm), fixed = TRUE) &&
+          grepl(paste0("before saving with: mydata <- src[\"t\"] ",
+                       "mydata$t <- as.POSIXct(mydata$t)"), .fl(m1), fixed = TRUE) &&
+          !grepl("save mydata", mm, fixed = TRUE) && !file.exists(.ix("Y14.sav")) }))
+check("Y15 ... an expression that names no one data frame -- mk() -- says the fixes work on a copy of \"your data\"; one that names one, as in Y11, names it (Jeff's wording, S386)",
+      local({ e <- new.env(parent = globalenv()); s <- .Ysrc()
+        e$mk <- function() s
+        m <- grab(eval(quote(jsave(mk(), .ix("Y15.sav"))), e))
+        grepl(paste0("cannot be saved to SPSS format (.sav) yet -- 3 things to fix. ",
+                     "The fixes shown below work on a copy of your data. ",
+                     "Make the copy first: mydata <- mk() [1]"), .fl(m), fixed = TRUE) &&
+          !file.exists(.ix("Y15.sav")) }))
+rm(.Ysrc)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 
