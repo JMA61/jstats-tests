@@ -10,6 +10,21 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S390 EDIT (v0.9.263, 2026-10-22): Fix Slate 29 (the (S389)
+#           collision-refusal item, Claude's call). NEW N84l2: on a column of
+#           both forms (.a and .B) under the stata setting, the refusal's
+#           first line sends -99 to .c, a letter free in either case, where
+#           it offered .b beside the carried .B -- one letter in two forms
+#           (.jst_free_tags(), as the other collision lines already used);
+#           the line runs and keeps the three apart. NINE HUNDRED AND
+#           FIFTEEN checks; on the 0.9.262 master N84l2 red (the mutation
+#           map is in nonascii_check.R's header).
+#           LAST VERIFIED: v0.9.263, 2026-10-22 (S390) -- 915/915 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3256 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty. GitHub f820cc2 (package).
 # S389 EDIT (v0.9.262, 2026-10-22): Fix Slate 28. (1) RULING R34: Excel
 #           format (.xlsx) joins the formats that save a text variable's
 #           missing cells as blank text -- jload() now reads a sheet's blank
@@ -7717,6 +7732,14 @@ check("N84l no clash, no refusal: a variable holding .c takes .a for its code, a
           identical(.tags84(o$I), c(NA, NA, "a", NA)) &&
           identical(.tags84(o2$V), c(NA, "a", "B", "A")) &&
           grepl("-99 would become .a under Stata convention", .fl(m3), fixed = TRUE) }))
+check("N84l2 the same column of both forms (.a and .B): the refusal's first line sends -99 to .c, a letter free in either case, where it offered .b beside the carried .B, one letter in two forms (Fix Slate 29, S390); the line runs and keeps the three apart",
+      local({ y <- data.frame(V = haven::labelled(c(1, haven::tagged_na("a"),
+                                                    haven::tagged_na("B"), -99)))
+        m <- .conv84("stata", grab(jdeclare_missing(y, V, codes = c(-99))))
+        r <- .conv84("stata", .run_line_k(m, 1L, "y", y))
+        grepl("  y$VR <- jrecode(y, V, map = \"-99=.c; else=copy\")\n", m, fixed = TRUE) &&
+          !grepl("-99=.b", m, fixed = TRUE) &&
+          !is.null(r) && identical(.tags84(r$VR), c(NA, "a", "B", "c")) }))
 check("N84m a call on several variables: the clash stops the whole call, named under its variable, and no variable is changed",
       local({ w <- data.frame(V = t84$V, W = c(1, 2, 3, -99, 3))
         m <- .conv84("stata", grab(jdeclare_missing(w, V, W, codes = c(-99), modify = TRUE)))

@@ -382,6 +382,28 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
+# S390 EDIT (v0.9.263, 2026-10-22): N01 AND I01 RE-PINNED (the non-English
+#           probe's fix slate; no check added). N01: the .sav note's
+#           parenthetical says what 120 bytes is in letters -- "an accented
+#           letter takes two bytes, and a Chinese, Japanese or Korean
+#           character three" -- where it said "fewer letters when they are
+#           accented" (Claude's call; the text's one home is
+#           .jst_txt_sav_bytes). I01: the note on a CSV file not in UTF-8
+#           says Windows-1252 is the encoding Excel on Windows uses for
+#           English and Western European languages -- it said "the encoding
+#           Excel on Windows saves a CSV file in", untrue on a Chinese,
+#           Japanese or Korean Windows -- and gives the way out, saving the
+#           file from Excel as "CSV UTF-8" (ruling R35, Jeff, S390: "Okay.
+#           Go", on the recommendation to keep reading Windows-1252 and fix
+#           the note). TWO HUNDRED AND TWENTY-ONE checks; on the 0.9.262
+#           master N01 and I01 red. Text in other scripts is
+#           nonascii_check.R's (new at S390).
+#           LAST VERIFIED: v0.9.263, 2026-10-22 (S390) -- 221/221 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3256 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty. GitHub f820cc2 (package).
 # S389 EDIT (v0.9.262, 2026-10-22): SECTION AA ADDED (Fix Slate 28), 7
 #           checks. (1) The (S388) item: jsave()'s no-filename example,
 #           jsave(d1, "mydata.sav"), stopped on a name SPSS refuses when run;
@@ -1189,16 +1211,22 @@ check("H11 a one-column file below a title: skip = reaches the names, its empty 
 
 # --- I: a CSV file's encoding ------------------------------------------------
 
-check("I01 a Windows-1252 file (Excel's \"CSV (Comma delimited)\" on Windows) is read, and said to be (it had stopped on \"invalid multibyte string\")",
+check("I01 a Windows-1252 file (Excel's \"CSV (Comma delimited)\" on Windows) is read, and said to be (it had stopped on \"invalid multibyte string\"); the note is true on every Windows and gives the way to UTF-8 (S390)",
       local({ .ix_b("w1252.csv", iconv("id,Caf\u00e9,answer\n1,4,Don\u2019t know\n2,5,M\u00fcller \u2013 yes\n",
                                       "UTF-8", "CP1252", toRaw = TRUE)[[1]])
         m <- grab(jload(.ix("w1252.csv"), name = "k", overwrite = TRUE))
+        # RE-PINNED S390 (v0.9.263; ruling R35, Option 2): Windows-1252 is
+        # the encoding of an English or Western European Windows only, and
+        # the note now says how to save a file that reads wrongly.
         identical(names(k), c("id", "Caf\u00e9", "answer")) &&
           identical(k$answer, c("Don\u2019t know", "M\u00fcller \u2013 yes")) &&
           identical(.fl(.note(m, "w1252")), .fl(paste0(
             "Note: w1252.csv is not in UTF-8, the encoding R reads, so it was read as ",
-            "Windows-1252, the encoding Excel on Windows saves a CSV file in.\n",
-            "Check its accented letters and symbols."))) }))
+            "Windows-1252, the encoding Excel on Windows uses for English and ",
+            "Western European languages.\n",
+            "Check its accented letters and symbols.\n",
+            "If they read wrongly, or the file's text is in another language, ",
+            "save it from Excel as \"CSV UTF-8\" and load it again."))) }))
 check("I02 ... a byte this platform's Windows-1252 cannot read: Latin-1, which reads every byte (Windows's own converter reads 0x81 as Windows-1252, so there the note says Windows-1252)",
       local({ .ix_b("latin.csv", c(charToRaw("a\n"), as.raw(0x81), charToRaw("x\n")))
         m <- grab(jload(.ix("latin.csv"), name = "k", overwrite = TRUE))
@@ -1343,9 +1371,13 @@ check("N01 .sav: a variable label past 256 bytes and a value label past 120, sai
         L$q2 <- haven::labelled(c(1, 2), labels = setNames(c(1, 2), c(strrep("v", 130), "No")))
         m <- grab(jsave(L, .ix("L.sav")))
         r <- haven::read_sav(.ix("L.sav"))
+        # RE-PINNED S390: the parenthetical says what 120 bytes is in letters
+        # (it said "fewer letters when they are accented", which says nothing
+        # of Chinese, where 120 bytes is 40 characters; nonascii_check.R S03).
         startsWith(.fl(.note(m, "SPSS format")), .fl(paste0(
           "Note: SPSS format (.sav) keeps 256 bytes of a variable label and 120 of a value ",
-          "label (fewer letters when they are accented).\n",
+          "label (an accented letter takes two bytes, and a Chinese, Japanese or Korean ",
+          "character three).\n",
           "Shortened in the file: the variable label of q1 and value labels of q2.\n",
           "The L data frame keeps them whole.\nSaved L to"))) &&
           nchar(.lab(r$q1), type = "bytes") <= 256L &&

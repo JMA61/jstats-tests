@@ -46,6 +46,28 @@
 #           (Section 39; ruling R34); and jsave()'s example save carrying
 #           clean.names = TRUE (Section 40).
 # ORIGIN:   S229
+# EDITED:   S390 (v0.9.263; the non-English probe's fix slate and ruling
+#           R35). SECTION 25'S RENDER 3 AND SECTION 26'S RENDER 3 RE-PINNED,
+#           filled by running (fill.R, under a Windows-length temp folder) and
+#           spliced in. Section 25: the note on a CSV file not in UTF-8 says
+#           Windows-1252 is the encoding Excel on Windows uses for English
+#           and Western European languages, where it said "the encoding Excel
+#           on Windows saves a CSV file in" (untrue on a Chinese, Japanese or
+#           Korean Windows), and gives the way out: save the file from Excel
+#           as "CSV UTF-8" (ruling R35, Jeff, S390: "Okay. Go"). Section 26:
+#           the .sav label note's parenthetical says what 120 bytes is in
+#           letters (Claude's call). Both on the PENDING line. The assertion
+#           side is import_check.R I01 and N01, and nonascii_check.R (new at
+#           S390) for text in other scripts. A capture of every section of
+#           every walk on 0.9.262 and the build (345 sections): only Sections
+#           25 and 26 here differ, in the lines the build changed; every
+#           other section identical (temp paths aside). 151 of 159 Expected
+#           blocks found, as on 0.9.262 (Section 9's, and seven in Sections
+#           38-40 that show <walk folder>).
+# LAST VERIFIED: v0.9.263, 2026-10-22 (S390) -- Sections 25 and 26 WALKED
+#           on the WORKSTATION by Jeff through receive_all() ("walked, all
+#           okay"). PENDING back to none; R CMD check 0 errors, 0 warnings,
+#           0 notes; ALL BATTERIES GREEN (11 run, 3256 checks).
 # EDITED:   S389 (v0.9.262; Fix Slate 28 and ruling R34). SECTIONS 39 AND
 #           40 ADDED, every Expected block filled by running (fill.R, under
 #           a Windows-length temp folder, so that the Saved lines, which
@@ -3177,12 +3199,20 @@ try(jload("empty25.csv", name = "z25"))
 # and the accented letter read right (TRUE).
 jload("w1252_25.csv", name = "w25", overwrite = TRUE)
 identical(w25$answer, c("Don\u2019t know", "Caf\u00e9"))
+# RE-PINNED S390 (v0.9.263; ruling R35): Windows-1252 is the encoding of
+# an English or Western European Windows only, and the note says how to
+# save a file that reads wrongly; it said Windows-1252 was "the encoding
+# Excel on Windows saves a CSV file in", untrue on a Chinese, Japanese or
+# Korean Windows.
 # Expected:
 #   Loaded w25 (CSV format; 2 cases, 2 variables)
 #
 #   Note: w1252_25.csv is not in UTF-8, the encoding R reads, so it was read as
-#   Windows-1252, the encoding Excel on Windows saves a CSV file in.
+#   Windows-1252, the encoding Excel on Windows uses for English and Western
+#   European languages.
 #   Check its accented letters and symbols.
+#   If they read wrongly, or the file's text is in another language, save it
+#   from Excel as "CSV UTF-8" and load it again.
 #   [1] TRUE
 
 # Render 4 -- sheet = naming no sheet.
@@ -3210,6 +3240,9 @@ rm(.wd25, w25)
 #   - RENDER 2: the semicolon stop's two ways out, Excel or base R.
 #   - RENDER 3: the note's wording for a researcher who never chose an
 #     encoding: is "Check its accented letters and symbols." enough?
+#     Since S390 (ruling R35) the note names the languages Windows-1252
+#     serves and gives the way out when the file reads wrongly: save it
+#     from Excel as "CSV UTF-8". Is that way out clear?
 #   - RENDER 5: the readxl message under "R reported:" (Rule AH).
 
 
@@ -3277,9 +3310,13 @@ L26 <- data.frame(q1 = c(1, 2))
 attr(L26$q1, "label") <- paste(rep("How satisfied are you with the services you received?", 6),
                                collapse = " ")
 jsave(L26, "L26.sav", overwrite = TRUE)
+# RE-PINNED S390 (v0.9.263): the parenthetical says what 120 bytes is in
+# letters; it said "fewer letters when they are accented", which says
+# nothing of Chinese, where 120 bytes is 40 characters.
 # Expected:
 #   Note: SPSS format (.sav) keeps 256 bytes of a variable label and 120 of a
-#   value label (fewer letters when they are accented).
+#   value label (an accented letter takes two bytes, and a Chinese, Japanese or
+#   Korean character three).
 #   Shortened in the file: the variable label of q1.
 #   The L26 data frame keeps it whole.
 attr(L26$q1, "label") <- strrep("\u00e9", 100)

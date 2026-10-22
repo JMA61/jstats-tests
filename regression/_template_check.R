@@ -203,12 +203,18 @@ check("a result taken outside check() is read through run()",
 .sw <- .sw[!duplicated(vapply(.sw, function(s) paste(s$kind, s$text), ""))]
 
 # Rule U: no prose line over the pinned width. Indented lines are Rule L
-# runnable or listing lines and are exempt by design.
+# runnable or listing lines and are exempt by design. Widths are display
+# columns (S390): a Chinese, Japanese or Korean character takes two, and a
+# count of characters passes a line in those scripts that overflows.
 .ln <- unlist(lapply(.sw, function(s) strsplit(s$text, "\n", fixed = TRUE)[[1]]))
 .ln <- .ln[nzchar(trimws(.ln)) & !grepl("^\\s{2}", .ln)]
+# A file path on a line of its own (jsave()'s Saved line puts it there)
+# cannot be broken, and a battery that saves to R's temporary folder meets a
+# long one on Windows: path lines are left out, as Z02 leaves them out (S390).
+.ln <- .ln[!grepl("^([A-Za-z]:[\\\\/]|/|~|\\\\\\\\)", .ln)]
 check(paste0("Z01 no prose line of a message exceeds ", .pin_width,
              " columns (", length(.sw), " conditions)"),
-      length(.sw) >= 1L && !any(nchar(.ln) > .pin_width))
+      length(.sw) >= 1L && !any(nchar(.ln, type = "width") > .pin_width))
 
 # No premature break: for each pair of consecutive unindented prose lines,
 # the lower line's first unit must NOT have fit on the line above. A width
@@ -245,7 +251,7 @@ pbreaks <- function(txt, width, first_line_slack = 0L) {
     if (grepl("^([A-Za-z]:[\\\\/]|/|~|\\\\\\\\)", b)) next      # a file path
     if (grepl("[.!?:][)\"']?$", b)) next
     budget <- width - if (i == 1L) first_line_slack else 0L
-    if (nchar(a) + 1L + nchar(unit(b)) <= budget)
+    if (nchar(a, type = "width") + 1L + nchar(unit(b), type = "width") <= budget)
       out <- c(out, sprintf("[%d] %s | %s", i, a, unit(b)))
   }
   out
