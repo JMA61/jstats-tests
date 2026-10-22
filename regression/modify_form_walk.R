@@ -45,7 +45,42 @@
 #           on a text variable's missing cells naming Excel format (.xlsx)
 #           (Section 39; ruling R34); and jsave()'s example save carrying
 #           clean.names = TRUE (Section 40).
+#           Since S391 the overwrite stops naming the way to keep before
+#           the way to replace (Sections 13 and 41), a reload that clears
+#           registrations giving the lines that set them again (Section 42),
+#           and jrelabel() keeping the labels of declared missing values
+#           (Section 43; ruling R37).
 # ORIGIN:   S229
+# EDITED:   S391 (v0.9.264; the decisions pass's leans on the (S298) E8 and
+#           (Session 114) items, and ruling R37). NEW SECTIONS 41-43 -- 40
+#           sections -> 43 -- and SECTION 13 RE-PINNED, filled by running
+#           (fill.R; "#@SKIP" ahead of Section 13's moved block and of
+#           Section 43's Render 3). Section 13: jsave()'s stop where the
+#           session cannot ask names the way to keep the file, then the way to
+#           replace it, where it said "Use overwrite = TRUE to replace it."
+#           Section 41: the overwrite question answered with an empty line or
+#           a script line, in jsave(), jload() and jcopy(), the same two ways
+#           out where the stop named only overwrite = TRUE (copies whose
+#           question answers as the render says, so the walk never waits).
+#           Section 42: jload() of data carrying no registrations, under a
+#           name with registrations from the session, gives the lines that
+#           set them again, and with some variables missing says which the
+#           lines are. Section 43, ruling R37 (Jeff, S391: "Yes to your
+#           recommendation"): jrelabel()'s new set keeps the labels of the
+#           declared missing values it does not name, a marker declared only
+#           by its label stays declared, and a note names what was kept, the
+#           values on a line of their own. All on the PENDING line: the
+#           wording and the note's layout are Claude's. A capture of every
+#           section of every walk on 0.9.263 and on the new build: here only
+#           Section 13 moved. Sandbox: 158 of 166 Expected blocks found in a
+#           straight run (the same 8 unfound as on 0.9.263); harness.R derive
+#           gives the new sections no NEEDS. The human half of
+#           import_check.R sections AB and AC and jrelabel_check.R section G.
+# LAST VERIFIED: v0.9.264, 2026-10-22 (S391) -- Sections 13 and 41-43 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (11 run, 3299 checks); GitHub 78709ca
+#           (package).
 # EDITED:   S390 (v0.9.263; the non-English probe's fix slate and ruling
 #           R35). SECTION 25'S RENDER 3 AND SECTION 26'S RENDER 3 RE-PINNED,
 #           filled by running (fill.R, under a Windows-length temp folder) and
@@ -1852,10 +1887,13 @@ cat("\n--- a file that exists, where the session cannot ask ---\n")
 .m13 <- tryCatch(evalq(jsave(d13, "e13.rds"), .ws13b), error = conditionMessage)
 cat("Error : ", gsub(normalizePath(.walkdir, winslash = "/"), "<walk folder>",
                      .m13, fixed = TRUE), "\n", sep = "")
+# RE-PINNED S391 (v0.9.264): the stop names the way to keep the file, then
+# the way to replace it (the (S298) E8 item; Section 41).
 # Expected:
 #   Error : jsave(): this file already exists:
 #     <walk folder>/e13.rds
-#   Use overwrite = TRUE to replace it.
+#   To keep the file, save under another file name.
+#   To replace it, add overwrite = TRUE to the call, then run it again.
 
 cat("\n--- a name starting with a digit: the file's, then one given with name = ---\n")
 try(jload("2024zz13.csv"))
@@ -5082,6 +5120,256 @@ rm(w40, p40, .note40, .wd40)
 #   - Render 3: "mydata <- w40[1:2, ]" first, the save on mydata with
 #     clean.names = TRUE.
 #   - Render 4: no clean.names = TRUE where every name fits the format.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 41 -- the overwrite question names both ways out (S391) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S391 (v0.9.264; the (S298) E8 item, Jeff's okay of the lean at the
+# S391 decisions pass: "name both ways out, keep the file or replace it").
+# When the overwrite question's answer is not y or n -- an empty line (Enter,
+# or a script's blank line the question took) or a script line it took --
+# the stop named only the destructive way out: "Add overwrite = TRUE to the
+# call, then run it again." It now names the way to keep what exists first,
+# then the way to replace it, in jsave(), jload() and jcopy(); Section 13's
+# stop where the session cannot ask does the same. The wording is Claude's.
+# .ws41 holds copies of the three functions whose question is answered with
+# an empty line (the second jsave() with a script line), as at the console,
+# so the walk never waits; the stops are the package's own. The assertion
+# side is import_check.R section AB.
+.wd41 <- getwd(); setwd(.walkdir)
+.ask41 <- function(fn, answer) {   # fn with its question answered as given
+  conf <- environment(jsave)$.jst_confirm
+  ec <- new.env(parent = environment(conf))
+  ec$readline <- function(prompt = "") answer
+  environment(conf) <- ec
+  e <- new.env(parent = environment(fn))
+  e$interactive <- function() TRUE
+  e$.jst_confirm <- conf
+  environment(fn) <- e
+  fn
+}
+.ws41 <- new.env(parent = baseenv())
+.ws41$d41 <- data.frame(a = 1:3); .ws41$s41 <- data.frame(b = 4:6)
+.ws41$k41 <- data.frame(z = 9)
+saveRDS(.ws41$d41, "e41.rds"); writeLines(c("x", "1", "2"), "e41.csv")
+
+# Render 1 -- jsave(), the question answered with an empty line, then with a
+# script line it took.
+.ws41$jsave <- .ask41(jsave, "")
+try(evalq(jsave(d41, "e41.rds"), .ws41))
+.ws41$jsave <- .ask41(jsave, "jdesc(d, Age)")
+try(evalq(jsave(d41, "e41.rds"), .ws41))
+# Expected:
+#   Error : jsave(): The overwrite question needs y or n. It received an
+#   empty line.
+#   To keep the file, save under another file name.
+#   To replace it, add overwrite = TRUE to the call, then run it again.
+#   Error : jsave(): The overwrite question needs y or n. It received:
+#   jdesc(d, Age)
+#   To keep the file, save under another file name.
+#   To replace it, add overwrite = TRUE to the call, then run it again.
+
+# Render 2 -- jload() into a data frame that exists, and jcopy() onto one.
+.ws41$jload <- .ask41(jload, ""); .ws41$jcopy <- .ask41(jcopy, "")
+try(evalq(jload("e41.csv", name = "k41"), .ws41))
+try(evalq(jcopy(s41, k41), .ws41))
+# Expected:
+#   Error : jload(): The overwrite question needs y or n. It received an
+#   empty line.
+#   To keep the k41 data frame, load the file under another name with name =.
+#   To replace it, add overwrite = TRUE to the call, then run it again.
+#   Error : jcopy(): The overwrite question needs y or n. It received an
+#   empty line.
+#   To keep the k41 data frame, give the copy another name.
+#   To replace it, add overwrite = TRUE to the call, then run it again.
+unlink(c("e41.rds", "e41.csv")); setwd(.wd41)
+rm(.ask41, .ws41, .wd41)
+
+# Things to look at:
+#   - The way to keep comes first: "To keep the file, save under another
+#     file name." / "To keep the k41 data frame, load the file under another
+#     name with name =." / "To keep the k41 data frame, give the copy another
+#     name." -- then the way to replace it, the line the stop had alone.
+#   - Section 13's stop where the session cannot ask: the path, then the
+#     same two lines (it said "Use overwrite = TRUE to replace it.").
+#   - Each says nothing was changed only by implication: the file and the
+#     data frames are untouched (AB01-AB04 hold that). Enough?
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 42 -- a reload that clears registrations gives the lines (S391) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S391 (v0.9.264; the (Session 114) item, Jeff's okay of the lean at
+# the S391 decisions pass). jload() under a name that has registrations from
+# this session, of data that carries none, clears them -- the file is the
+# source of truth at load time -- and said only "Cleared the classification
+# registrations you had set this session". The clearing is unchanged; the
+# note now gives the line that sets each one back, for the variables the
+# loaded data holds: one jnumeric(), jcount() or jlikert() line per kind,
+# the jdummy() variables whose reference the default chose in one line, a
+# named reference with ref =. The lines and their lead are Claude's. The
+# assertion side is import_check.R section AC.
+.wd42 <- getwd(); setwd(.walkdir)
+r42 <- data.frame(Age = c(23, 35, 41, 29, 52, 38), Visits = c(0, 2, 1, 4, 3, 1),
+                  Region = c(1, 2, 3, 1, 2, 3),
+                  Group = c("Control", "CBT", "Control", "Support", "CBT", "Control"),
+                  stringsAsFactors = FALSE)
+saveRDS(r42, "r42.rds")       # a file that carries no registrations
+saveRDS(r42[c("Age", "Group")], "r42b.rds")
+# The registrations, made quietly: their confirmations are not this
+# section's subject.
+invisible(utils::capture.output(suppressMessages({
+  jnumeric(r42, Age); jcount(r42, Visits); jdummy(r42, Region)
+  jdummy(r42, Group, ref = "Control") })))
+
+# Render 1 -- the reload clears all four; the lines set them again.
+jload("r42.rds", name = "r42", overwrite = TRUE, missing.notice = FALSE)
+# Expected:
+#   Cleared the classification registrations you had set this session for 'r42'
+#   (the loaded data carries none).
+#   To set them again:
+#     jnumeric(r42, Age)
+#     jcount(r42, Visits)
+#     jdummy(r42, Region)
+#     jdummy(r42, Group, ref = "Control")
+#
+#   Loaded r42 (R format; 6 cases, 4 variables)
+
+# Render 2 -- a file without two of the variables: the lead says which ones
+# the lines are.
+invisible(utils::capture.output(suppressMessages({
+  jnumeric(r42, Age); jdummy(r42, Region) })))
+jload("r42b.rds", name = "r42", overwrite = TRUE, missing.notice = FALSE)
+# Expected:
+#   Cleared the classification registrations you had set this session for 'r42'
+#   (the loaded data carries none).
+#   To set again the one on a variable the loaded data holds:
+#     jnumeric(r42, Age)
+#
+#   Loaded r42 (R format; 6 cases, 2 variables)
+unlink(c("r42.rds", "r42b.rds")); setwd(.wd42)
+rm(r42, .wd42)
+
+# Things to look at:
+#   - Render 1: the note's first sentence as before; then "To set them
+#     again:" and four lines, which run as printed and make the same
+#     registrations again (AC02): Region's reference was the default's, so
+#     its line has no ref =; Group's was named, in quotes.
+#   - Render 2: Region is not in r42b.rds, so the lead says "To set again
+#     the one on a variable the loaded data holds:" over Age's line. Does
+#     that lead read right, or should the note name Region?
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 43 -- jrelabel() keeps the labels of declared missing values (ruling R37; S391) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S391 (v0.9.264; ruling R37, Jeff at S391: "Yes to your
+# recommendation"). labels = replaced the full set of value labels, so a new
+# set that left out the declared missing values cleared their labels --
+# jfreq() then printed -99 (no label) where it had printed -99 ["Refused"] --
+# and on a Stata-style or SAS-style variable a marker that no case carries,
+# declared only by its label, was no longer declared at all. The new set now
+# replaces the labels of the values it names and of every value that is not
+# a declared missing value; a declared missing value keeps its label unless
+# the set names it, as jrecode()'s labels = keeps it, and a note says which
+# it kept. The note's wording and layout are Claude's: the values on a line
+# of their own, so no wrap parts a code from its label. The assertion side
+# is jrelabel_check.R section G (J43-J50).
+e43 <- data.frame(
+  Ed = haven::labelled_spss(c(1, 2, 3, -99, -98, 2),
+                            labels = c(Low = 1, Mid = 2, High = 3,
+                                       Refused = -99, `Don't know` = -98),
+                            na_values = c(-99, -98)),
+  Sm = haven::labelled_spss(c(0, 1, -99, 0, 1, 0),
+                            labels = c(No = 0, Yes = 1, Refused = -99),
+                            na_values = -99),
+  St = haven::labelled(c(1, 2, haven::tagged_na("a"), 1, 2, 1),
+                       labels = c(Lo = 1, Hi = 2,
+                                  Refused = haven::tagged_na("a"),
+                                  Skipped = haven::tagged_na("c"))))
+e43$E2 <- e43$Ed
+
+# Render 1 -- a new set for Ed's three values: its two declared values keep
+# their labels, and jfreq() names them.
+jrelabel(e43, Ed, labels = "1=Some school; 2=Graduated; 3=Postgraduate",
+         modify = TRUE)
+jfreq(e43, Ed)
+# Expected:
+#   Value labels applied to Ed in e43.
+#   Note: The declared missing values of Ed kept their labels:
+#     -99 ["Refused"], -98 ["Don't know"]
+#   Frequencies
+#
+#   6 Cases in the 1 Variable Pool
+#
+#   Ed
+#
+#                       Freq  Total %  Valid %  Cum. %
+#   ------------------  ----  -------  -------  ------
+#   Valid
+#   1: Some school        1     16.67    25.00   25.00
+#   2: Graduated          2     33.33    50.00   75.00
+#   3: Postgraduate       1     16.67    25.00  100.00
+#   Total valid           4     66.67   100.00
+#
+#   Missing
+#   -99 ["Refused"]       1     16.67       --      --
+#   -98 ["Don't know"]    1     16.67       --      --
+#   Total missing         2     33.33
+#
+#   Total                 6    100.00
+
+# Render 2 -- a declared value the new set names takes its new label and
+# leaves the note; a marker no case carries keeps its label, so it stays
+# declared.
+jrelabel(e43, Ed, labels = "1=A; 2=B; 3=C; -99=No answer", modify = TRUE)
+jrelabel(e43, St, labels = "1=Low; 2=High", modify = TRUE)
+# Expected:
+#   Value labels applied to Ed in e43.
+#   Note: The declared missing value of Ed kept its label:
+#     -98 ["Don't know"]
+#   Value labels applied to St in e43.
+#   Note: The declared missing values of St kept their labels:
+#     .a ["Refused"], .c ["Skipped"]
+
+# Render 3 -- the list form: variables keeping the same labels share a note
+# (E3 is a copy of E2); then the one-variable form without modify = TRUE,
+# the note before the reminder.
+e43$E3 <- e43$E2
+jrelabel(e43, c(E2, E3, Sm), labels = "0=None; 1=One; 2=Two; 3=Three",
+         modify = TRUE)
+e43$Sm <- jrelabel(e43, Sm, labels = "0=Never; 1=Ever")
+# Expected:
+#   Value labels applied to E2, E3, and Sm in e43.
+#   Note: The declared missing values of E2 and E3 kept their labels:
+#     -99 ["Refused"], -98 ["Don't know"]
+#
+#   Note: The declared missing value of Sm kept its label:
+#     -99 ["Refused"]
+#   Note: The declared missing value of Sm kept its label:
+#     -99 ["Refused"]
+#
+#   Note: This call changes e43 only if you assign the result:
+#     e43$Sm <- jrelabel(...)
+#
+#   To label Sm in e43 directly, rerun with modify = TRUE:
+#     jrelabel(..., modify = TRUE)
+rm(e43)
+
+# Things to look at:
+#   - The note: "Note: The declared missing values of Ed kept their
+#     labels:" and the values on the next line, in the form jfreq()'s
+#     Missing rows use. Inline, after the colon, a wrap could put -99 at a
+#     line's end and ["Refused"] at the next line's start; on a line of
+#     their own they start at the margin. Right?
+#   - Render 1: jfreq()'s Missing rows read -99 ["Refused"] and -98 ["Don't
+#     know"], where they read (no label).
+#   - Render 2: -99 named takes "No answer" and leaves the note, -98 kept;
+#     St's .c, which no case carries, keeps its label, so it is still
+#     declared (it had been removed).
+#   - Render 3: one note per set of labels kept, one blank line apart; in
+#     the one-variable form the note comes before the reminder.
 
 # --- End marker --------------------------------------------------------------
 # A real statement, deliberately last: stepping through with Ctrl+Enter, RStudio

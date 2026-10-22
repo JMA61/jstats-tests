@@ -28,6 +28,32 @@
 #           A ninth battery: run_all.R reads every *_check.R in the folder.
 #           MUTATION MAP (S359): jrelabel() dropping the declared codes of the
 #           column it labels J01 J27; jrecode()'s factor gate off J20.
+# S391 EDIT (v0.9.264, 2026-10-22): ruling R37 (Jeff, S391: "Yes to your
+#           recommendation"). NEW SECTION G, eight checks: labels = replaces
+#           the labels of the values it names and of every value that is not
+#           a declared missing value, and a declared missing value keeps its
+#           label unless the new set names it, as jrecode()'s labels =
+#           keeps it -- the declaration unchanged, the note pinned whole, the
+#           values on a line of their own (J43); jfreq()'s Missing rows named
+#           by their labels again (J44); the one-variable form's variable,
+#           the note before the reminder (J45); one value kept, a declared
+#           value the new set names relabelled and left out of the note
+#           (J46); a labelled code inside a declared range (J47); Stata-style
+#           markers kept, so one no case carries stays declared (J48); no
+#           note for a variable with nothing declared, none at minimal
+#           (J49); the list form, one note per set of labels kept (J50). J33
+#           AND J34 RE-PINNED: Q3's declared -99 keeps its label and the note
+#           says so. 42 -> 50 checks; on the 0.9.263 master J33, J34 and
+#           J43-J50 red. MUTATION MAP (S391; each red): the kept labels not
+#           applied J43-J49; markers not counted as declared J48; a declared
+#           range not counted J47; the note's values inline J33 J34 J43 J45
+#           J46 J47 J48 J50.
+#           LAST VERIFIED: v0.9.264, 2026-10-22 (S391) -- 50/50 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3299 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty. GitHub 78709ca (package).
 # S379 EDIT (v0.9.253, 2026-10-20): GUARD 1 WIDENED (Scripts Slate D, the
 #           (S378) item). The jsubset(), jcomplete(), jdummy() and
 #           registration stores and the once-a-session load-notice flag
@@ -378,7 +404,11 @@ check("J33 the list form with modify = TRUE labels every variable in the data fr
               msg <- grab(v <- withVisible(jrelabel(sv, c(Q1, Q2, Q3), labels = .jf_lab, modify = TRUE)))
               q1 <- sv$Q1
               e <- suppressMessages(jrelabel(sv, c(Q1, Q2), labels = "1=One", modify = TRUE))
-              identical(msg, "Value labels applied to Q1, Q2, and Q3 in sv.\n") &&
+              # RE-PINNED S391 (v0.9.264): Q3's declared -99 keeps its label,
+              # and the note says so (ruling R37; section G).
+              identical(msg, paste0("Value labels applied to Q1, Q2, and Q3 in sv.\n",
+                                    "Note: The declared missing value of Q3 kept its label:\n",
+                                    "  -99 [\"Refused\"]\n")) &&
                 !v$visible && is.data.frame(v$value) &&
                 identical(unname(labelled::val_labels(q1)), c(1, 2, 3)) &&
                 identical(names(labelled::val_labels(v$value$Q2)), c("Never", "Sometimes", "Often")) &&
@@ -396,7 +426,12 @@ check("J34 without modify = TRUE the list form stops before anything, offering t
                 "  jrelabel(sv, c(Q1, Q2, Q3), labels = \"1=Never; 2=Sometimes; 3=Often\",\n",
                 "      modify = TRUE)")) &&
                 identical(sv, sv0) &&
-                identical(grab(eval(str2lang(ln))), "Value labels applied to Q1, Q2, and Q3 in sv.\n") }))
+                # RE-PINNED S391 (v0.9.264): the note on Q3's kept label
+                # follows (ruling R37; section G).
+                identical(grab(eval(str2lang(ln))), paste0(
+                  "Value labels applied to Q1, Q2, and Q3 in sv.\n",
+                  "Note: The declared missing value of Q3 kept its label:\n",
+                  "  -99 [\"Refused\"]\n")) }))
 check("J35 every variable is checked before any is changed: a type that cannot take value labels (each named, pinned), a name not found, a name twice -- and nothing changed",
       local({ sv <- .jf_sv(); sv0 <- sv
               a <- grab(jrelabel(sv, c(Q1, Name, F), labels = "1=a", modify = TRUE))
@@ -510,6 +545,109 @@ check("J42 c(Q1) after the data frame is the one-variable form: the variable ret
               !is.data.frame(r) && identical(names(labelled::val_labels(r)), "a") &&
                 grepl("only if you assign the result", m, fixed = TRUE) }))
 rm(.jf_flat, .jf_sv, .jf_lab)
+
+# --- G. Declared missing values keep their labels (S391, ruling R37) --------
+# Ruling R37 (Jeff, S391: "Yes to your recommendation"): labels = replaces
+# the labels of the values it names and of every value that is not a
+# declared missing value; a declared missing value keeps its label unless
+# the new set names it, as jrecode()'s labels = keeps it, and a note names
+# the labels kept. Until then a replacement set cleared them, so jfreq()
+# printed -99 (no label), and a Stata-style or SAS-style marker that no case
+# carries, declared only by its label, was no longer declared at all. Each
+# check's working objects in local(), as in section F.
+.jg_sv <- function() data.frame(
+  Ed = haven::labelled_spss(c(1, 2, 3, -99, -98, 1),
+                            labels = c(Low = 1, Mid = 2, High = 3,
+                                       Refused = -99, `Don't know` = -98),
+                            na_values = c(-99, -98)),
+  Sm = haven::labelled_spss(c(0, 1, -99, 0, 1, 0),
+                            labels = c(No = 0, Yes = 1, Refused = -99),
+                            na_values = -99),
+  Rg = haven::labelled_spss(c(1, 2, -97, 1, 2, 1),
+                            labels = c(A = 1, B = 2, Skipped = -97),
+                            na_range = c(-99, -90)),
+  Pl = haven::labelled(c(1, 2, 3, 1, 2, 3), labels = c(x = 1, y = 2, z = 3)),
+  St = haven::labelled(c(1, 2, haven::tagged_na("a"), 1, 2, 1),
+                       labels = c(Lo = 1, Hi = 2,
+                                  Refused = haven::tagged_na("a"),
+                                  Skipped = haven::tagged_na("c"))))
+# The values on a line of their own, so no wrap parts a code from its label.
+.jg_ed <- paste0("Note: The declared missing values of Ed kept their labels:\n",
+                 "  -99 [\"Refused\"], -98 [\"Don't know\"]\n")
+
+check("J43 modify = TRUE: a new set that leaves out the declared codes keeps their labels, after the new ones (they had been cleared), the declaration unchanged, and the note names them (pinned whole)",
+      local({ sv <- .jg_sv()
+              m <- grab(jrelabel(sv, Ed, labels = "1=One; 2=Two; 3=Three", modify = TRUE))
+              identical(m, paste0("Value labels applied to Ed in sv.\n", .jg_ed)) &&
+                identical(labelled::val_labels(sv$Ed),
+                          c(One = 1, Two = 2, Three = 3, Refused = -99, `Don't know` = -98)) &&
+                identical(attr(sv$Ed, "na_values"), c(-99, -98)) }))
+check("J44 jfreq() after it names the declared rows by their labels again (it printed -99 (no label))",
+      local({ sv <- .jg_sv()
+              suppressMessages(jrelabel(sv, Ed, labels = "1=One; 2=Two; 3=Three", modify = TRUE))
+              ln <- strsplit(run(jfreq(sv, Ed))$txt, "\n", fixed = TRUE)[[1]]
+              any(grepl("^ *-99 \\[\"Refused\"\\] +1 ", ln)) &&
+                any(grepl("^ *-98 \\[\"Don't know\"\\] +1 ", ln)) &&
+                !any(grepl("(no label)", ln, fixed = TRUE)) }))
+check("J45 the one-variable form without modify = TRUE: the variable it returns keeps them; the note, then a blank line, then the reminder (pinned whole)",
+      local({ sv <- .jg_sv()
+              m <- grab(r <- jrelabel(sv, Ed, labels = "1=One; 2=Two; 3=Three"))
+              identical(m, paste0(.jg_ed, "\n",
+                                  "Note: This call changes sv only if you assign the result:\n",
+                                  "  sv$Ed <- jrelabel(...)\n\n",
+                                  "To label Ed in sv directly, rerun with modify = TRUE:\n",
+                                  "  jrelabel(..., modify = TRUE)\n")) &&
+                identical(names(labelled::val_labels(r)),
+                          c("One", "Two", "Three", "Refused", "Don't know")) }))
+check("J46 one declared code kept: \"value ... kept its label\"; a declared code the new set names takes its new label and is not in the note",
+      local({ sv <- .jg_sv()
+              a <- grab(jrelabel(sv, Sm, labels = "0=Never; 1=Ever", modify = TRUE))
+              b <- grab(jrelabel(sv, Ed, labels = "1=A; 2=B; 3=C; -99=No answer", modify = TRUE))
+              identical(a, paste0("Value labels applied to Sm in sv.\n",
+                                  "Note: The declared missing value of Sm kept its label:\n",
+                                  "  -99 [\"Refused\"]\n")) &&
+                identical(b, paste0("Value labels applied to Ed in sv.\n",
+                                    "Note: The declared missing value of Ed kept its label:\n",
+                                    "  -98 [\"Don't know\"]\n")) &&
+                identical(labelled::val_labels(sv$Ed),
+                          c(A = 1, B = 2, C = 3, `No answer` = -99, `Don't know` = -98)) }))
+check("J47 a declared range: a labelled code inside it keeps its label too",
+      local({ sv <- .jg_sv()
+              m <- grab(jrelabel(sv, Rg, labels = "1=First; 2=Second", modify = TRUE))
+              identical(labelled::val_labels(sv$Rg), c(First = 1, Second = 2, Skipped = -97)) &&
+                identical(attr(sv$Rg, "na_range"), c(-99, -90)) &&
+                identical(m, paste0("Value labels applied to Rg in sv.\n",
+                                    "Note: The declared missing value of Rg kept its label:\n",
+                                    "  -97 [\"Skipped\"]\n")) }))
+check("J48 Stata-style markers keep their labels, so one no case carries, declared only by its label, stays declared; the note names each by its letter (it removed .c's declaration)",
+      local({ sv <- .jg_sv()
+              m <- grab(jrelabel(sv, St, labels = "1=L; 2=H", modify = TRUE))
+              lab <- labelled::val_labels(sv$St)
+              identical(names(lab), c("L", "H", "Refused", "Skipped")) &&
+                identical(haven::na_tag(lab), c(NA, NA, "a", "c")) &&
+                identical(m, paste0("Value labels applied to St in sv.\n",
+                                    "Note: The declared missing values of St kept their labels:\n",
+                                    "  .a [\"Refused\"], .c [\"Skipped\"]\n")) }))
+check("J49 control: a variable with no declared values gets no note, nor does any variable at joutput(\"minimal\")",
+      local({ sv <- .jg_sv()
+              a <- grab(jrelabel(sv, Pl, labels = "1=p; 2=q; 3=r", modify = TRUE))
+              lv <- getOption(".jst_output_level")
+              b <- tryCatch({ options(.jst_output_level = "minimal")
+                              grab(jrelabel(sv, Ed, labels = "1=One; 2=Two; 3=Three", modify = TRUE)) },
+                            finally = options(.jst_output_level = lv))
+              identical(a, "Value labels applied to Pl in sv.\n") && identical(b, "") &&
+                identical(names(labelled::val_labels(sv$Ed)),
+                          c("One", "Two", "Three", "Refused", "Don't know")) }))
+check("J50 the list form: variables keeping the same labels share one note, after the confirmation, the notes one blank line apart; a variable with none adds nothing",
+      local({ sv <- .jg_sv(); sv$E2 <- sv$Ed
+              m <- grab(jrelabel(sv, c(Ed, E2, Pl, Sm), labels = "0=z; 1=a; 2=b; 3=c", modify = TRUE))
+              identical(m, paste0(
+                "Value labels applied to Ed, E2, Pl, and Sm in sv.\n",
+                "Note: The declared missing values of Ed and E2 kept their labels:\n",
+                "  -99 [\"Refused\"], -98 [\"Don't know\"]\n\n",
+                "Note: The declared missing value of Sm kept its label:\n",
+                "  -99 [\"Refused\"]\n")) }))
+rm(.jg_sv, .jg_ed)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # Keep these three at the foot, below every grab(), and number them into the

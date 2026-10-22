@@ -49,6 +49,36 @@
 #           errors), and jupdate() printed "jstats has been updated." with
 #           nothing installed -- reproduced live in the sandbox against a
 #           blocked network.
+# S391 EDIT (v0.9.264, 2026-10-22): SECTIONS J AND K ADDED, 7 checks (61 in
+#           all). (J) library(jstats) loads haven, so R's own subsetting of a
+#           labelled variable keeps its labels and declared missing values:
+#           jstats had called haven only through haven::, so a frame subset
+#           straight after library(jstats) -- community[community$Age > 40, ]
+#           -- lost them in silence, -99 counted as an income, and
+#           load_all() hid it, loading every Import. The checks cannot use
+#           the session they run in: J01, the premise, subsets with haven
+#           not loaded in a fresh R process; J02 reads the NAMESPACE with R's
+#           own reader; J03 loads exactly the namespaces it imports, in a
+#           fresh process, and subsets. (K) the (S206) item, Jeff's okay of
+#           the lean: jai("project") and jai("machine") probe the folder --
+#           the nearest one that exists for the skill file's default --
+#           before any question, and a folder R cannot write to is one stop
+#           in the house voice, where R said "cannot open file ...
+#           Permission denied" after the answer: pinned whole, nothing
+#           written (K01, K02); never asked (K03); a writable folder takes
+#           both files, a missing one keeps its own stop (K04). The probe is
+#           stubbed, as in D and H; a real refused write was seen in the
+#           sandbox as a non-root user. On the 0.9.263 master J02, J03 and
+#           K01-K04 red. MUTATION MAP (S391; each red): the NAMESPACE import
+#           removed J02 J03; the project writer's probe removed K01 K02 K03;
+#           the machine writer's K02 K03; the climb to the nearest existing
+#           folder removed K03.
+#           LAST VERIFIED: v0.9.264, 2026-10-22 (S391) -- 61/61 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3299 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty. GitHub 78709ca (package).
 # S379 EDIT (v0.9.253, 2026-10-20): Capability Slate C4. SECTION I ADDED,
 #           12 checks (54 in all). (I) jupdate() prints, after a successful
 #           install and above the restart lines, the entries of the NEWS.md
@@ -901,6 +931,125 @@ check("I12 a correct call is unchanged, and the formals before the dots keep R's
                 ok_jai }))
 
 unlink(.news_lib, recursive = TRUE)
+
+# --- J: library(jstats) loads haven, so R's subsetting keeps labels (S391) --
+# A labelled variable keeps its labels, its declared missing values and its
+# class through R's own subsetting -- community[community$Age > 40, ],
+# subset(), head() -- only when haven, which supplies the methods, is loaded.
+# jstats called haven only through haven::, so a frame subset straight after
+# library(jstats) lost them without a word (-99 counted as an income), and
+# load_all() hid it: it loads every package in DESCRIPTION's Imports, where
+# library() loads only what NAMESPACE imports. So these checks cannot use the
+# session they run in (haven is loaded here either way): J01 is the premise,
+# in a fresh R process; J02 reads the NAMESPACE with R's own reader; J03
+# loads, in a fresh R process, exactly the namespaces the NAMESPACE imports,
+# as library() does, and subsets. Profiles are skipped, so a .Rprofile that
+# loads jstats cannot load haven into the probe.
+.lab_probe <- function(imports) {
+  callr::r(function(imports) {
+    for (p in imports) loadNamespace(p)
+    x <- structure(c(55000, -99, 43000), label = "Annual income (USD)",
+                   labels = c(Refused = -99), na_values = -99,
+                   class = c("haven_labelled_spss", "haven_labelled",
+                             "vctrs_vctr", "double"))
+    y <- x[c(1, 2)]
+    list(haven  = isNamespaceLoaded("haven"),
+         class  = class(y),
+         labels = attr(y, "labels", exact = TRUE),
+         na     = attr(y, "na_values", exact = TRUE))
+  }, args = list(imports = imports),
+  user_profile = FALSE, system_profile = FALSE)
+}
+.ns_dir     <- find.package("jstats")
+.ns_imports <- unique(vapply(
+  parseNamespaceFile(basename(.ns_dir), dirname(.ns_dir))$imports,
+  function(i) as.character(i[[1L]]), character(1)))
+.lab_bare   <- .lab_probe(character(0))
+.lab_jstats <- .lab_probe(.ns_imports)
+
+check("J01 premise: in a fresh R process with haven not loaded, R's own subsetting of a labelled_spss vector drops its class, its labels and its declared missing values (if red, R or haven changed, and J03 can no longer fail)",
+      isFALSE(.lab_bare$haven) && identical(.lab_bare$class, "numeric") &&
+        is.null(.lab_bare$labels) && is.null(.lab_bare$na))
+check("J02 the package's NAMESPACE, read by R's own reader, imports from haven, so library(jstats) loads haven, and with it vctrs, before any line of the user's runs",
+      "haven" %in% .ns_imports)
+check("J03 in a fresh R process that loads exactly the namespaces the NAMESPACE imports, as library(jstats) does, R's own subsetting of a labelled_spss vector keeps its class, its labels and its declared missing values",
+      isTRUE(.lab_jstats$haven) &&
+        "haven_labelled_spss" %in% .lab_jstats$class &&
+        identical(unname(.lab_jstats$labels), -99) &&
+        identical(.lab_jstats$na, -99))
+
+# --- K: jai()'s writers and a folder R cannot write to (S391) ---------------
+# The (S206) item, Jeff's okay of the lean (S391). jai("project") and
+# jai("machine") wrote with writeLines(), so a folder R cannot write to --
+# read-only, protected, or kept out of by an AI assistant's sandbox mode --
+# stopped in R's own words, "cannot open file ... Permission denied", after
+# the question had been answered. The folder, or the nearest one that
+# exists when the skill file's folders are still to be made, is now probed
+# as jsave() probes it (.jst_lib_writable(), section D's helper), before any
+# question, and a folder R cannot write to is one stop. A folder cannot be
+# made unwritable the same way on every platform, so the probe is stubbed,
+# as sections D and H stub it; jai() and its writers run as copies whose
+# enclosure holds the stubs, every other helper the real one. The default
+# skill folder is only ever probed here, never written: the writable
+# control writes into a temporary folder by path =.
+.ai_dir   <- tempfile("aidir"); dir.create(.ai_dir)
+.ai_dir_n <- normalizePath(.ai_dir, winslash = "/", mustWork = FALSE)
+jai_run <- function(setup, path = NULL, writable = TRUE, ask = FALSE) {
+  ns    <- asNamespace("jstats")
+  stubs <- new.env(parent = ns)
+  if (!writable) stubs$.jst_lib_writable <- function(lib) FALSE
+  asked <- FALSE
+  if (ask) {
+    stubs$interactive <- function() TRUE
+    stubs$.jst_jai_confirm <- function(info) { asked <<- TRUE; FALSE }
+  }
+  for (nm in c(".jst_jai_check_writable", ".jst_jai_project",
+               ".jst_jai_machine")) {
+    f <- get(nm, envir = ns)
+    environment(f) <- stubs
+    assign(nm, f, envir = stubs)
+  }
+  jai <- jstats:::jai
+  environment(jai) <- stubs
+  list(msg = grab(jai(setup, path = path)), asked = asked)
+}
+.ai_stop <- function(folder) paste0(
+  "jai(): R cannot write to this folder:\n",
+  "  ", folder, "\n",
+  "Nothing was written.\n",
+  "To write to a different folder, rerun with path = \"<folder>\".")
+# The folder the skill file's default goes in, or the nearest one that
+# exists, as the probe climbs to it.
+.ai_skill_probe <- local({
+  p <- jstats:::.jst_skill_default_dir()
+  while (!dir.exists(p) && !identical(dirname(p), p)) p <- dirname(p)
+  jstats:::.jst_norm_path(p)
+})
+
+check("K01 jai(\"project\") into a folder R cannot write to: one stop, the folder on its own line, that nothing was written, the path = line (pinned whole); no file is written",
+      { r <- jai_run("project", path = .ai_dir, writable = FALSE)
+        identical(r$msg, .ai_stop(.ai_dir_n)) &&
+          length(list.files(.ai_dir, all.files = TRUE, no.. = TRUE)) == 0L })
+check("K02 jai(\"machine\") the same, for its own file",
+      { r <- jai_run("machine", path = .ai_dir, writable = FALSE)
+        identical(r$msg, .ai_stop(.ai_dir_n)) &&
+          length(list.files(.ai_dir, all.files = TRUE, no.. = TRUE)) == 0L })
+check("K03 the stop comes before any question: a session that asks, no path given -- the project file in the working folder, the skill file in its default folder, whose nearest existing folder is the one named -- is never asked",
+      { owd <- setwd(.ai_dir)
+        a <- tryCatch(jai_run("project", writable = FALSE, ask = TRUE),
+                      finally = setwd(owd))
+        b <- jai_run("machine", writable = FALSE, ask = TRUE)
+        identical(a$msg, .ai_stop(.ai_dir_n)) && isFALSE(a$asked) &&
+          identical(b$msg, .ai_stop(.ai_skill_probe)) && isFALSE(b$asked) })
+check("K04 control: a folder that can be written to takes each file, and the probe leaves nothing beside them; a folder that does not exist keeps its own stop, ahead of the probe",
+      { a <- jai_run("project", path = .ai_dir, writable = TRUE)
+        b <- jai_run("machine", path = .ai_dir, writable = TRUE)
+        nx <- jai_run("project", path = file.path(.ai_dir, "nope"), writable = FALSE)
+        identical(sort(list.files(.ai_dir, all.files = TRUE, no.. = TRUE)),
+                  c("AGENTS.md", "SKILL.md")) &&
+          !has(a$msg, "R cannot write") && !has(b$msg, "R cannot write") &&
+          identical(nx$msg, "jai(): `path` must name an existing folder.\nNothing was written.") })
+unlink(.ai_dir, recursive = TRUE)
 
 # --- Restore -----------------------------------------------------------------
 

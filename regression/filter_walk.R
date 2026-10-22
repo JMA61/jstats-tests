@@ -41,6 +41,8 @@
 #           R22's stop (ruling R23), the default's route naming its
 #           arguments, the lines when what is given as the data is no data
 #           frame, and the recode family's map and labels stops (G9);
+#           since S391 a data frame's name typed wrong, offered as the one
+#           data frame holding the variables typed after it (G10);
 #           since S359 the shape check counting cases and naming the
 #           workspace object a wrong count came from (I1), and the vector
 #           path's refusal of a condition on another variable (I2);
@@ -53,6 +55,27 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S391 EDIT (v0.9.264; ruling R36): NEW SECTION G10 -- 60 sections -> 61.
+#           Four renders: a first name that is no object and no variable,
+#           when one data frame holds every variable typed after it and its
+#           name is within two letters (not every letter changed), is
+#           offered as that data frame -- "If you meant the data frame g10:"
+#           and the call as typed with it -- in the data-first functions and
+#           in the five formula functions, which had given R's own "object
+#           'g1' not found"; a line that would stop again for want of its
+#           map gets ruling R23's stop; a name three letters off, a variable
+#           no data frame holds and a name with no letter of the frame's keep
+#           R23's two routes, the formula functions stopping in the house
+#           voice. Filled by running the file. A capture of every section of
+#           every walk on 0.9.263 and on the new build: no section of this
+#           walk moved. Sandbox: 94 of 94 Expected blocks found in a straight
+#           run; harness.R derive gives G10 no NEEDS. The human half of
+#           filter_check.R section AM.
+# LAST VERIFIED: v0.9.264, 2026-10-22 (S391) -- G10 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (11 run, 3299 checks); GitHub 78709ca
+#           (package).
 # S379 EDIT (v0.9.253; Scripts Slate D, the (S378) item): E1 AND G4 GAIN
 #           "# NEEDS: C2". Each offers jsubset(MyData, Gender == 1), and
 #           since S371 (ruling R23) that line names MyData only because two
@@ -2487,6 +2510,121 @@ rm(.def_g9, .conv_g9, .ws_g9, g9)
 #     given, with jrecode()'s own example. The quoted-string stops say "the
 #     map" and "the labels" and give the example on a line of its own, where
 #     each had "e.g." inline (jrelabel()'s without "labels ="). (AG15.)
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# G10 -- a data frame's name typed wrong (ruling R36; S391) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.264 (ruling R36, Jeff at S391: "yes to your recommendation and the
+# three conditions necessary"). The first name in a call matched nothing,
+# and every variable typed after it was in one data frame: the not-found
+# stop read the name as a variable, both its routes keeping that reading
+# (MyData put in front; under the default's route the variable moved into
+# labels =, map = or var.label =), and the five formula functions answered
+# in R's own words, "object 'g1' not found", with no prefix. Now, when the
+# name is no object and no variable of any data frame, exactly one data
+# frame holds every variable typed after it, and its name is within two
+# letters of what was typed -- and, Claude's at the build, not every letter
+# changed -- the stop gives the call as typed with that data frame. Render
+# 1, the data-first functions; Render 2, the formula functions, their other
+# arguments kept; Render 3, a line that would stop again for want of an
+# input gets ruling R23's stop; Render 4, what keeps R23's two routes, and
+# the formula functions' stop with nothing to offer. Each runs in .ws_g10,
+# a stand-in for a console session whose workspace holds one data frame,
+# g10. The assertion side is filter_check.R section AM.
+.def_g10 <- getOption(".jst_default_data")
+options(.jst_default_data = NULL)
+g10 <- data.frame(Score10 = c(4, 7, 5, 8, 6, 9), Group10 = rep(1:2, 3),
+                  Name10 = c("a", "b", "a", "c", "b", "a"))
+.ws_g10 <- new.env(parent = baseenv())
+.ws_g10$g10 <- g10
+for (.f in c("jdesc", "jfreq", "jrecode", "jencode", "jsubset", "jt", "jaov",
+             "jcrosstab", "jlm"))
+  assign(.f, get(.f), envir = .ws_g10)
+rm(.f)
+
+# Render 1: the data-first functions, the name one letter short.
+caught(evalq(jdesc(g1, Score10), .ws_g10))
+caught(evalq(jrecode(g1, Group10, map = "1=0; 2=1"), .ws_g10))
+caught(evalq(jsubset(g1, Score10 > 5), .ws_g10))
+# Expected:
+#   Caught: jdesc(): 'g1' not found.
+#   If you meant the data frame g10:
+#     jdesc(g10, Score10)
+#   Caught: jrecode(): 'g1' not found.
+#   If you meant the data frame g10:
+#     jrecode(g10, Group10, map = "1=0; 2=1")
+#   Caught: jsubset(): 'g1' not found.
+#   If you meant the data frame g10:
+#     jsubset(g10, Score10 > 5)
+
+# Render 2: the formula functions, where R had answered; the data = form,
+# subset = and a name with a letter too many.
+caught(evalq(jt(Score10 ~ Group10, g1), .ws_g10))
+caught(evalq(jaov(Score10 ~ Group10, data = g1), .ws_g10))
+caught(evalq(jlm(Score10 ~ Group10, gg10, subset = Score10 > 4), .ws_g10))
+# Expected:
+#   Caught: jt(): 'g1' not found.
+#   If you meant the data frame g10:
+#     jt(Score10 ~ Group10, g10)
+#   Caught: jaov(): 'g1' not found.
+#   If you meant the data frame g10:
+#     jaov(Score10 ~ Group10, data = g10)
+#   Caught: jlm(): 'gg10' not found.
+#   If you meant the data frame g10:
+#     jlm(Score10 ~ Group10, g10, subset = Score10 > 4)
+
+# Render 3: the line offered would stop again, for want of its map.
+caught(evalq(jrecode(g1, Group10), .ws_g10))
+# Expected:
+#   Caught: jrecode(): 'g1' not found, and no map was named.
+#   Name a data frame, one of its variables and a map, for example:
+#     community$OwnsHome01 <- jrecode(community, OwnsHome, map = "1=1; 2=0")
+
+# Render 4: R23's two routes stay -- a name three letters off; a variable no
+# data frame holds -- and with nothing to offer the formula functions stop
+# in the house voice.
+caught(evalq(jdesc(abc, Score10), .ws_g10))
+caught(evalq(jdesc(g1, Nope10), .ws_g10))
+caught(evalq(jt(Score10 ~ Group10, zz), .ws_g10))
+# Expected:
+#   Caught: jdesc(): 'abc' not found.
+#   Did you mean to use it as a variable name?
+#   If so, name the data frame first:
+#     jdesc(MyData, abc, Score10)
+#   Or set a default first, then run the call:
+#     juse(MyData)
+#     jdesc(abc, Score10)
+#   Caught: jdesc(): 'g1' not found.
+#   Did you mean to use it as a variable name?
+#   If so, name the data frame first:
+#     jdesc(MyData, g1, Nope10)
+#   Or set a default first, then run the call:
+#     juse(MyData)
+#     jdesc(g1, Nope10)
+#   Caught: jt(): 'zz' not found.
+options(.jst_default_data = .def_g10)
+rm(.def_g10, .ws_g10, g10)
+
+# Things to look at:
+#   - Render 1: "'g1' not found." then "If you meant the data frame g10:"
+#     and the call as typed, g10 in g1's place. Each had given "Did you
+#     mean to use it as a variable name?" and the two routes, jdesc(MyData,
+#     g1, Score10) and juse(MyData) with jdesc(g1, Score10). Each line runs
+#     as printed (AM01, AM02).
+#   - Render 2: the formula functions had printed R's own "Error: object
+#     'g1' not found", no jt(): in front; now the same offer, data = and
+#     subset = kept. The check comes after the formula's own refusals (the
+#     dot, a term in quotes), so no line offered stops on them (AM03, AM06).
+#   - Render 3: jrecode(g10, Group10) would stop again for its map, so
+#     ruling R23's stop is given, its lead naming both: "'g1' not found, and
+#     no map was named." (AM04).
+#   - Render 4: abc is three letters from g10; Nope10 is in no data frame,
+#     so no frame holds every variable named; zz has no letter of g10's.
+#     Each keeps what it gave before -- the data-first stop's two routes,
+#     and for the formula functions, now, "jt(): 'zz' not found." (AM05,
+#     AM06). Is "If you meant the data frame g10:" the right lead, and does
+#     the zz rule (no offer when every letter differs) match how you would
+#     read a typo?
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # PART H -- HOW A NAME IS READ: RULING R18'S NAMES SLATE (S356) ----

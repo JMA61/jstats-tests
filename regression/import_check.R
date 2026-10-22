@@ -382,6 +382,37 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
+# S391 EDIT (v0.9.264, 2026-10-22): SECTIONS AB AND AC ADDED, 8 checks; U05,
+#           V01 AND V02 RE-PINNED; Z02 GIVEN ONE EXEMPTION. (AB) the (S298)
+#           E8 item, Jeff's okay of the lean: the stop the overwrite
+#           question gives when its answer is not y or n names the way to
+#           keep what exists first, then the way to replace it, in jsave()
+#           (an empty line, a script line taken: AB01, AB02), jload() (AB03)
+#           and jcopy() (AB04), each pinned through the package's own
+#           question with readline() answering, nothing changed; y and n
+#           still replace and cancel (AB05). jsave()'s stop where the
+#           session cannot ask does the same (U05, V01, V02 re-pinned). (AC)
+#           the (Session 114) item, Jeff's okay of the lean: a reload that
+#           clears this session's registrations gives the lines that set
+#           them again -- kinds grouped, the default-reference dummies in one
+#           line, a named reference with ref =, a name in backticks (AC01,
+#           pinned whole); run as printed they make the same registrations
+#           (AC02); one registration, one on a variable the loaded data
+#           lacks, none on one it holds (AC03). Z02's no-premature-break
+#           sweep leaves out a line ending "It received:", the S221 layout
+#           that puts the line the question took on a line of its own. 221
+#           -> 229 checks; on the 0.9.263 master U05, V01, V02, AB01-AB04
+#           and AC01-AC03 red. MUTATION MAP (S391; each red): the way to
+#           keep the file dropped U05 V01 V02 AB01 AB02; jload()'s AB03;
+#           jcopy()'s AB04; the no-ask stop's old line U05 V01 V02; the
+#           set-again lines dropped AC01-AC03; the partial lead dropped
+#           AC03; a named reference's ref = dropped AC01 AC02.
+#           LAST VERIFIED: v0.9.264, 2026-10-22 (S391) -- 229/229 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3299 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty. GitHub 78709ca (package).
 # S390 EDIT (v0.9.263, 2026-10-22): N01 AND I01 RE-PINNED (the non-English
 #           probe's fix slate; no check added). N01: the .sav note's
 #           parenthetical says what 120 bytes is in letters -- "an accented
@@ -1974,8 +2005,12 @@ check("U05 a session that cannot ask still stops on the file that exists first, 
       local({ writeLines("before", .ix("U05.sav"))
         m1 <- grab(.askU("y", asks = FALSE)(.dU, .ix("U05.sav")))
         m2 <- grab(.askU("y")(.dU, .ix("U05b.sav")))
+        # RE-PINNED S391 (v0.9.264): the way to keep the file, then the way
+        # to replace it (section AB), where "Use overwrite = TRUE to replace
+        # it." named only the second.
         startsWith(m1, "this file already exists:\n  ") &&
-          grepl("U05.sav\nUse overwrite = TRUE to replace it.", m1, fixed = TRUE) &&
+          grepl("U05.sav\nTo keep the file, save under another file name.\nTo replace it, add overwrite = TRUE to the call, then run it again.",
+                m1, fixed = TRUE) &&
           !grepl("cannot be used", m1, fixed = TRUE) && !grepl("<asked>", m1, fixed = TRUE) &&
           identical(readLines(.ix("U05.sav")), "before") &&
           grepl("cannot be used in SPSS format (.sav):", .fl(m2), fixed = TRUE) &&
@@ -2082,9 +2117,12 @@ check("U12 ... with a default set, jsave(file = \"...\") and jsave(\"...\") save
 check("V01 a session that cannot ask, a file that exists: one sentence a line and the path on a line of its own (it put both sentences and the path on one line); nothing written",
       local({ f <- .ix("V01.rds"); writeLines("before", f)
         m <- grab(.askU("y", asks = FALSE)(data.frame(a = 1), f))
+        # RE-PINNED S391 (v0.9.264): both ways out, the way to keep first
+        # (section AB).
         identical(m, paste0("this file already exists:\n",
                             "  ", normalizePath(f, winslash = "/", mustWork = FALSE), "\n",
-                            "Use overwrite = TRUE to replace it.")) &&
+                            "To keep the file, save under another file name.\n",
+                            "To replace it, add overwrite = TRUE to the call, then run it again.")) &&
           identical(readLines(f), "before") }))
 check("V02 ... a path longer than the line, with spaces in its folder names, is still one line, never broken",
       local({ dd <- .ix("a folder name with spaces in it/and another folder name with spaces")
@@ -2092,7 +2130,9 @@ check("V02 ... a path longer than the line, with spaces in its folder names, is 
         writeLines("before", f)
         np <- normalizePath(f, winslash = "/", mustWork = FALSE)
         ln <- strsplit(grab(.askU("y", asks = FALSE)(data.frame(a = 1), f)), "\n", fixed = TRUE)[[1]]
-        nchar(np) > .pin_width && length(ln) == 3L && identical(ln[2], paste0("  ", np)) }))
+        # RE-PINNED S391 (v0.9.264): four lines, the stop naming both ways
+        # out (section AB); the path still one line.
+        nchar(np) > .pin_width && length(ln) == 4L && identical(ln[2], paste0("  ", np)) }))
 check("V03 the four data-argument stops -- not found, could not be evaluated, NULL, not a data frame -- each give the example on a line of its own, naming the one data frame in the workspace (each gave \"e.g. jsave(MyData, ...)\" inline); the not-found stop keeps the file the call named; nothing is written",
       local({ e <- .wsU(d1 = data.frame(a = 1:3), x = 1:3, n0 = NULL)
         ex <- function(lead, file) paste0("jsave(): ", lead, "\n",
@@ -3471,6 +3511,148 @@ check("AA07 the helper's own rules: a variable the note on a few cells names kee
           identical(r2$t, c("5", NA, "6")) }))
 rm(.AAw, .AAl, .AAs, .AAload, .AAcsv)
 
+# --- AB: the overwrite question names both ways out (S391) -------------------
+# The (S298) E8 item, decided at the S391 decisions pass on Jeff's okay of
+# the lean: when the overwrite question's answer is not y or n -- an empty
+# line (Enter, or a script's blank line the question consumed) or a script
+# line it consumed -- the stop named only the destructive way out ("Add
+# overwrite = TRUE to the call, then run it again."). It now names the way
+# to keep what exists first, then the way to replace it, in jsave(), jload()
+# and jcopy(), and jsave()'s stop where the session cannot ask does the same
+# (U05, V01 and V02, re-pinned). The question is the package's own
+# .jst_confirm(), on a copy of each function run as at the console, its
+# readline() answering as the check says; a copy's stop carries no "fn():"
+# prefix, so the text is compared from "The overwrite question" on.
+.askAB <- function(fn, answer) {
+  conf <- jstats:::.jst_confirm
+  ec <- new.env(parent = environment(conf))
+  ec$readline <- function(prompt = "") answer
+  environment(conf) <- ec
+  f <- fn
+  e <- new.env(parent = environment(f))
+  e$interactive <- function() TRUE
+  e$.jst_confirm <- conf
+  environment(f) <- e
+  f
+}
+.abq <- function(m) sub("^.*?(The overwrite question)", "\\1", m)
+.ab_keep_file <- "To keep the file, save under another file name."
+.ab_replace <- "To replace it, add overwrite = TRUE to the call, then run it again."
+
+check("AB01 jsave(), the question answered with an empty line: the way to keep the file, then the way to replace it (it named only overwrite = TRUE; pinned); the file untouched",
+      local({ f <- .ix("AB01.rds"); writeLines("before", f)
+        m <- .abq(grab(.askAB(jsave, "")(data.frame(a = 1), f)))
+        identical(m, paste0("The overwrite question needs y or n. It received an empty line.\n",
+                            .ab_keep_file, "\n", .ab_replace)) &&
+          identical(readLines(f), "before") }))
+check("AB02 ... a script line the question consumed: the line shown, then the same two ways out",
+      local({ f <- .ix("AB02.rds"); writeLines("before", f)
+        m <- .abq(grab(.askAB(jsave, "jdesc(d, Age)")(data.frame(a = 1), f)))
+        identical(m, paste0("The overwrite question needs y or n. It received:\n",
+                            "jdesc(d, Age)\n", .ab_keep_file, "\n", .ab_replace)) &&
+          identical(readLines(f), "before") }))
+check("AB03 jload(): the data frame that exists, named in the way to keep it (name =), then the way to replace it; the data frame untouched",
+      local({ .ix_w("AB03.csv", c("x", "1", "2"))
+        kAB <- data.frame(z = 9)
+        m <- .abq(grab(.askAB(jload, "")(.ix("AB03.csv"), name = "kAB")))
+        identical(m, paste0("The overwrite question needs y or n. It received an empty line.\n",
+                            "To keep the kAB data frame, load the file under another name with name =.\n",
+                            .ab_replace)) &&
+          identical(kAB, data.frame(z = 9)) }))
+check("AB04 jcopy(): the copy's destination, named in the way to keep it, then the way to replace it; the data frame untouched",
+      local({ src <- data.frame(a = 1:2); d2 <- data.frame(z = 9)
+        m <- .abq(grab(.askAB(jcopy, "")(src, d2)))
+        identical(m, paste0("The overwrite question needs y or n. It received an empty line.\n",
+                            "To keep the d2 data frame, give the copy another name.\n",
+                            .ab_replace)) &&
+          identical(d2, data.frame(z = 9)) }))
+check("AB05 control: the same question answered n cancels with nothing changed, and answered y replaces, through the package's own question",
+      local({ f <- .ix("AB05.rds"); writeLines("before", f)
+        m <- grab(.askAB(jsave, "n")(data.frame(a = 1), f))
+        no <- grepl("Save cancelled.", m, fixed = TRUE) && identical(readLines(f), "before")
+        invisible(grab(.askAB(jsave, "y")(data.frame(a = 1), f)))
+        no && identical(readRDS(f), data.frame(a = 1)) }))
+
+# --- AC: the cleared registrations' note gives the lines (S391) --------------
+# The (Session 114) item, decided at the S391 decisions pass on Jeff's okay
+# of the lean: when jload() loads data that carries no registrations under
+# a name that has some from this session, it still clears them -- the file
+# is the source of truth at load time -- and the note now gives the line
+# that sets each one back (.jst_registration_lines()): one jnumeric(),
+# jcount() or jlikert() line per kind, the jdummy() variables whose
+# reference the default chose in one line, a named reference with ref = (a
+# category of text in quotes), a name R reads only in backticks; only
+# variables the loaded data holds. Run as printed, the lines make the same
+# registrations again. Each check's working objects in local(); every
+# registration made under a name of its own and cleared.
+.ac_q <- function(expr) {
+  zz <- textConnection(".junk", "w", local = TRUE)
+  sink(zz, type = "output")
+  on.exit({ sink(type = "output"); close(zz) }, add = TRUE)
+  suppressMessages(suppressWarnings(expr))
+}
+.ac_base <- data.frame(A = c(1, 2, 3, 4, 2, 1), B = c(1, 2, 3, 1, 2, 3),
+                       C = c("x", "y", "x", "z", "y", "x"),
+                       `my var` = c(1, 2, 1, 2, 1, 2), D = c(1, 2, 3, 4, 5, 6),
+                       E = c(1, 2, 1, 2, 1, 2),
+                       check.names = FALSE, stringsAsFactors = FALSE)
+.ac_lead <- function(nm, several = TRUE) paste0(
+  "Cleared the classification ", if (several) "registrations" else "registration",
+  " you had set this session for '", nm, "'\n(the loaded data carries none).\n")
+# Clears one name's registrations only: a session's own, on other frames,
+# are never touched (the dirty-entry rule, S379).
+.ac_clear <- function(nm) {
+  jstats:::.jst_set_registry(nm, NULL); jstats:::.jst_set_dummy(nm, NULL)
+}
+check("AC01 the note names what it cleared, as the lines that set it again -- kinds grouped, the default-reference dummies in one line, a named reference with ref = (text in quotes), a name in backticks (pinned whole); the clearing itself unchanged",
+      local({ saveRDS(.ac_base, .ix("AC01.rds")); ac1 <- .ac_base
+        .ac_q({ jnumeric(ac1, A); jcount(ac1, D); jdummy(ac1, B, E)
+                jdummy(ac1, C, ref = "y"); jdummy(ac1, `my var`, ref = 2) })
+        m <- grab(jload(.ix("AC01.rds"), name = "ac1", overwrite = TRUE,
+                        missing.notice = FALSE))
+        gone <- is.null(jstats:::.jst_get_registry("ac1")) &&
+          is.null(jstats:::.jst_get_dummy("ac1"))
+        .ac_clear("ac1")
+        gone && identical(m, paste0(.ac_lead("ac1"), "To set them again:\n",
+                                    "  jnumeric(ac1, A)\n  jcount(ac1, D)\n",
+                                    "  jdummy(ac1, B, E)\n  jdummy(ac1, C, ref = \"y\")\n",
+                                    "  jdummy(ac1, `my var`, ref = 2)\n\n",
+                                    "Loaded ac1 (R format; 6 cases, 6 variables)\n")) }))
+check("AC02 ... run as printed, the lines make the same registrations again, entry for entry",
+      local({ saveRDS(.ac_base, .ix("AC02.rds")); ac2 <- .ac_base
+        .ac_q({ jnumeric(ac2, A); jlikert(ac2, E); jdummy(ac2, B)
+                jdummy(ac2, C, ref = "y"); jdummy(ac2, `my var`, ref = 2) })
+        reg0 <- jstats:::.jst_get_registry("ac2"); dum0 <- jstats:::.jst_get_dummy("ac2")
+        m <- grab(jload(.ix("AC02.rds"), name = "ac2", overwrite = TRUE,
+                        missing.notice = FALSE))
+        ln <- strsplit(m, "\n", fixed = TRUE)[[1L]]
+        ln <- trimws(ln[startsWith(ln, "  j")])
+        for (l in ln) .ac_q(eval(str2lang(l)))
+        ok <- length(ln) == 5L &&
+          identical(jstats:::.jst_get_registry("ac2"), reg0) &&
+          identical(jstats:::.jst_get_dummy("ac2"), dum0)
+        .ac_clear("ac2")
+        ok }))
+check("AC03 one registration: \"registration ... To set it again:\" (pinned whole); one on a variable the loaded data lacks gets no line, and the lead says which the lines are; none on a variable it holds, the note as before, no lines",
+      local({ saveRDS(.ac_base, .ix("AC03.rds")); saveRDS(.ac_base[, c("A", "C")], .ix("AC03b.rds"))
+        ac3 <- .ac_base; .ac_q(jlikert(ac3, A))
+        a <- grab(jload(.ix("AC03.rds"), name = "ac3", overwrite = TRUE, missing.notice = FALSE))
+        .ac_q({ jnumeric(ac3, A); jdummy(ac3, B) })
+        b <- grab(jload(.ix("AC03b.rds"), name = "ac3", overwrite = TRUE, missing.notice = FALSE))
+        .ac_q({ jdummy(ac3, C) }); .ac_q(jnumeric(ac3, NULL))
+        ac4 <- .ac_base; .ac_q(jdummy(ac4, B))
+        c2 <- grab(jload(.ix("AC03b.rds"), name = "ac4", overwrite = TRUE, missing.notice = FALSE))
+        .ac_clear("ac3"); .ac_clear("ac4")
+        identical(a, paste0(.ac_lead("ac3", FALSE), "To set it again:\n  jlikert(ac3, A)\n\n",
+                            "Loaded ac3 (R format; 6 cases, 6 variables)\n")) &&
+          identical(b, paste0(.ac_lead("ac3"),
+                              "To set again the one on a variable the loaded data holds:\n",
+                              "  jnumeric(ac3, A)\n\n",
+                              "Loaded ac3 (R format; 6 cases, 2 variables)\n")) &&
+          identical(c2, paste0(sub("\n$", "", .ac_lead("ac4", FALSE)), "\n\n",
+                               "Loaded ac4 (R format; 6 cases, 2 variables)\n")) }))
+rm(.ac_q, .ac_base, .ac_lead, .ac_clear)
+
 # --- The message surface, swept (guard 4) ------------------------------------
 
 .sw <- Filter(function(s) identical(as.numeric(s$width), as.numeric(.pin_width)),
@@ -3509,6 +3691,10 @@ pbreaks <- function(txt, width, first_line_slack = 0L) {
     if (grepl("^[A-Z][a-z]+[ ,]", b) || grepl("^\\(", b)) next
     if (grepl("^([A-Za-z]:[\\\\/]|/|~|\\\\\\\\)", b)) next
     if (grepl("[.!?:][)\"']?$", b)) next
+    # The overwrite question's stop shows the line it received on a line of
+    # its own, unindented and unquoted, by design (S221: the received text
+    # is the diagnosis); section AB's checks are the first to catch it.
+    if (grepl("It received:$", a)) next
     budget <- width - if (i == 1L) first_line_slack else 0L
     if (nchar(a) + 1L + nchar(unit(b)) <= budget)
       out <- c(out, sprintf("[%d] %s | %s", i, a, unit(b)))

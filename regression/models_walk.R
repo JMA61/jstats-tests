@@ -62,8 +62,36 @@
 #           names typed bare on a result; "unused input" for a bare value.
 #           Since S378 (v0.9.251, Sections 32-33): the logit-scale plot, the
 #           density plot and facet =; joutput("silent") and print = FALSE.
+#           Since S391 (v0.9.264, Sections 34-35): a labelled variable with a
+#           few categories drawn as categories among two variables and on
+#           the right of a formula, for the plot only (ruling R38); a
+#           jdummy() registration stated in jdesc() and jcorr().
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
+# S391 EDIT (v0.9.264): NEW SECTIONS 34 AND 35 -- 33 sections -> 35.
+#           Section 34, ruling R38 (Jeff, S391: "Your recommendation"), four
+#           renders: jplot(Flourishing ~ Condition, d) a boxplot at
+#           Condition's categories, where it drew a scatter of the codes;
+#           jplot(d, Condition, PriorTherapy) the grouped bar chart, and
+#           jplot(d, Flourishing, Condition) the boxplot stop with its line;
+#           numeric = and -- the build's lean, Claude's default -- line =
+#           "lm" keeping the numbers; the scatter stop's line keeping the
+#           call's numeric =, a defect found building the ruling (the line
+#           alone now draws a boxplot). Section 35, the (Session 80) item,
+#           Jeff's okay of the lean: the hedge before a jdummy()
+#           registration and the statement after it, in jdesc() and jcorr(),
+#           at warn = 1, set and handed back by the section. Filled by
+#           running the file. A capture of every section of every walk on
+#           0.9.263 and on the new build: no existing section of this walk
+#           moved. Sandbox: 89 of 90 Expected blocks found in a straight run
+#           (the same block of Section 1 as on 0.9.263); harness.R derive
+#           gives neither new section NEEDS. The human half of models_check.R
+#           sections AE and AF.
+# LAST VERIFIED: v0.9.264, 2026-10-22 (S391) -- Sections 34 and 35 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (11 run, 3299 checks); GitHub 78709ca
+#           (package).
 # S378 EDIT 2 (v0.9.252): SECTIONS 32 AND 33 RE-PINNED, by running,
 #           mechanically, to Jeff's wording (S378): the facet stop's "add
 #           by = to the call instead, for example:" (Section 32, Render 5)
@@ -3961,6 +3989,160 @@ rm(t33, m33, m33b, r33, .warn33)
 #     show as they always do; jdesc(print = TRUE) prints its table.
 #   - RENDER 3: the reset panel; print = FALSE prints nothing at standard;
 #     TRUE -- the silent fit is the standard fit.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 34 -- a labelled variable with a few categories, among two in jplot() (ruling R38; S391) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.264 (ruling R38, Jeff at S391: "Your recommendation"). jplot(d,
+# Condition) has drawn a bar chart for an unasserted labelled variable with a
+# few categories since the one-variable redirect; with two variables the same
+# variable read as numbers: jplot(Flourishing ~ Condition, d) drew a scatter
+# of the codes 1 to 4, and jplot(d, Condition, PriorTherapy) stopped with a
+# line that drew another scatter. The reading now applies, for the plot only,
+# to each of two variables and to the right side of a formula. Plots for your
+# eye in the Plots pane; the console shows each plot's title and N line.
+# Classification is untouched: jlm() still reads Condition as numbers and
+# warns that it seems categorical (Section 17). The assertion side is
+# models_check.R section AE.
+
+# Render 1 -- the formula form: a boxplot of Flourishing at Condition's four
+# categories, labeled Control, CBT, Mindfulness, Support group.
+jplot(Flourishing ~ Condition, d)
+# Expected:
+#   Boxplot: Flourishing and Condition
+#
+#   Analysis N: 70
+
+# Render 2 -- the variable-list form: two such variables, the grouped bar
+# chart; one of them beside a number, the boxplot stop and its formula line.
+jplot(d, Condition, PriorTherapy)
+try(jplot(d, Flourishing, Condition))
+# Expected:
+#   Grouped Bar Chart: Condition and PriorTherapy
+#
+#   Analysis N: 70
+#
+#   Error : jplot(): For boxplots, use formula syntax to make the outcome and
+#   grouping variable explicit (consistent with jaov):
+#     jplot(Flourishing ~ Condition, d, type = "box")
+#   (The numeric outcome on the left of ~ goes on the y-axis; the categorical
+#   grouping variable on the right goes on the x-axis.)
+
+# Render 3 -- what keeps the numbers: numeric = (the codes as a scatter, as
+# before), and -- the build's lean, Claude's default -- line = "lm", which
+# only a scatterplot draws, here on a five-point Likert item.
+jplot(Flourishing ~ Condition, d, numeric = Condition)
+jplot(Flourishing ~ Anxiety1, d, line = "lm")
+# Expected:
+#   Scatterplot: Flourishing and Condition
+#
+#   Analysis N: 70
+#
+#   Scatterplot: Flourishing and Anxiety1
+#
+#   Analysis N: 70
+
+# Render 4 -- the scatter stop's line keeps the call's numeric =, since the
+# line alone would now draw a boxplot (a defect found building the ruling).
+try(jplot(d, Condition, Flourishing, numeric = Condition))
+# Expected:
+#   Error : jplot(): For two-numeric scatterplots, use formula syntax to make
+#   the DV and IV explicit (consistent with jlm):
+#     jplot(Flourishing ~ Condition, d, numeric = Condition)
+#   (The DV on the left of ~ goes on the y-axis; the IV on the right goes on
+#   the x-axis.)
+
+# Things to look at:
+#   - RENDER 1: the Plots pane shows four boxes, labeled by Condition's value
+#     labels; the title "Boxplot: Flourishing and Condition", as a boxplot
+#     asked for with type = "box" is titled. It drew a scatter of the codes.
+#   - RENDER 2: a grouped bar chart of Condition by PriorTherapy, where the
+#     call stopped with jplot(PriorTherapy ~ Condition, d), a second
+#     scatter; then the boxplot stop, its line jplot(Flourishing ~
+#     Condition, d, type = "box"), unchanged in form.
+#   - RENDER 3: numeric = Condition keeps the scatter, as the ruling said.
+#     The lean: line = (and band =, equation =, r2 =) asks for what only a
+#     scatterplot draws, so it keeps the numbers too -- without that, the
+#     Likert item would have become a boxplot with a note that line = was
+#     ignored. A type = given keeps them as well (models_check.R AE03).
+#   - RENDER 4: the line carries numeric = Condition; without it the line
+#     drew a boxplot, not the scatterplot the stop names (AE05).
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 35 -- a jdummy() registration stated in jdesc() and jcorr() (S391) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.264 (the Session 80 item, Jeff's okay of the lean at S391). A variable
+# registered categorical with jdummy() is the user's own assertion, and
+# jdesc() and jcorr() hedged it: "Condition seems categorical." They now
+# state it, as jsum(), javg() and jalpha() do, in their form: "Condition is
+# categorical; descriptive statistics may not be meaningful." No refusal;
+# numeric = in the call still silences it, and a variable that only seems
+# categorical keeps the hedge. The assertion side is models_check.R
+# section AF.
+
+.warn35 <- options(warn = 1)   # each warning where it is raised, as in Section 17
+
+# Render 1 -- unregistered, the hedge; registered, the statement, in jdesc()
+# and in jcorr().
+jdesc(d, Condition)
+jdummy(d, Condition)
+jdesc(d, Condition)
+jcorr(d, Flourishing, Condition)
+jdummy(d, Condition, remove = TRUE)
+# Expected:
+#   Descriptive Statistics
+#
+#   70 Cases in the 1 Variable Pool
+#
+#   Warning: Condition seems categorical. Descriptive statistics may not
+#   be meaningful.
+#   Variable   Total  Non_missing  Min  Max   Mean    SD
+#   ---------  -----  -----------  ---  ---  -----  -----
+#   Condition    70        70       1    4   2.586  1.173
+#
+#   Dummy Variable Registration
+#     Variable: Condition
+#     Reference category: Condition_Control (default; change with ref =)
+#     Dummy variables: Condition_CBT, Condition_Mindfulness, Condition_Support_group
+#     Cases: 70 (0 missing)
+#
+#   Note: this registration is stored for this session only.
+#   To keep it across sessions, save the data frame in R format (.rds):
+#     jsave(d, "d.rds")
+#
+#   Next session, load that file to restore the registration:
+#     jload("d.rds")
+#
+#   Descriptive Statistics
+#
+#   70 Cases in the 1 Variable Pool
+#
+#   Warning: Condition is categorical; descriptive statistics may not
+#   be meaningful.
+#   Variable   Total  Non_missing  Min  Max   Mean    SD
+#   ---------  -----  -----------  ---  ---  -----  -----
+#   Condition    70        70       1    4   2.586  1.173
+#
+#   Pearson Bivariate Correlation
+#
+#   70 Cases in the 2 Variable Pool
+#
+#   Warning: Condition is categorical; Pearson correlations assume
+#   continuous/interval data.
+#     Flourishing & Condition:  r = .110,  p = .365,  N = 70
+#
+#   Dummy registration removed for 'Condition' in d.
+options(.warn35); rm(.warn35)
+
+# Things to look at:
+#   - The first warning is the hedge, "seems categorical. Descriptive
+#     statistics may not be meaningful."; after jdummy() the warning states
+#     it, in one sentence: "Condition is categorical; descriptive statistics
+#     may not be meaningful." The lean had sketched "is registered as
+#     categorical"; this is the form the three other functions already give
+#     a registered variable. jcorr()'s names its method's assumption.
 
 
 # --- Restore session state ---------------------------------------------------

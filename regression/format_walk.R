@@ -80,6 +80,22 @@
 #           the variable's label, which as.Date() drops (Section 36).
 #           format_check.R asserts the same surface; this file shows it.
 # ORIGIN:   S326 (v0.9.202): the number-format bundle.
+# S391 EDIT (v0.9.264; the (Session 17) degraded-display item, Jeff's okay
+#           of the lean at the S391 decisions pass): SECTION 32 RE-PINNED,
+#           Render 1, by running: jcrosstab()'s stop for a variable left with
+#           one category ends on the line that counts the other variable
+#           alone, "To count h's categories on their own, use jfreq():" and
+#           jfreq(f32, h, subset = id <= 4) -- the stop stays, no degraded
+#           table. A capture of every section of every walk on 0.9.263 and
+#           on the new build: here only Section 32 moved, by those two
+#           lines. On the PENDING line: the line's wording is Claude's. The
+#           assertion side is models_check.R section AG (K07 and Q17
+#           re-pinned).
+# LAST VERIFIED: v0.9.264, 2026-10-22 (S391) -- Section 32 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (11 run, 3299 checks); GitHub 78709ca
+#           (package).
 # S382 EDIT (v0.9.256; Fix Slate 25): SECTION 36 ADDED, three renders --
 #           35 sections -> 36 -- filled by running (fill.R): a CSV file's two
 #           renamed date columns, jscreen()'s footnote with the attr() line
@@ -3227,6 +3243,8 @@ shown32(jcrosstab(g ~ h, data = f32, subset = id <= 4))
 f32m <- f32; f32m$y[f32m$g == "b"] <- NA
 shown32(jt(y ~ g, data = f32m, subset = id <= 8))
 
+# RE-PINNED S391 (v0.9.264): jcrosstab()'s stop ends on the jfreq() line
+# that counts h alone, subset = kept (the (Session 17) item).
 # Expected:
 #   Independent Samples T-Test
 #
@@ -3263,6 +3281,8 @@ shown32(jt(y ~ g, data = f32m, subset = id <= 8))
 #   Error: jcrosstab(): 'g' has 1 category.
 #   A cross-tabulation requires at least 2 categories for each variable.
 #   Check whether subset = is excluding the other categories.
+#   To count h's categories on their own, use jfreq():
+#     jfreq(f32, h, subset = id <= 4)
 #
 #   Independent Samples T-Test
 #

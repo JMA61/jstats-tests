@@ -161,6 +161,35 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S391 EDIT (v0.9.264, 2026-10-22): ruling R36 (Jeff, S391: "yes to your
+#           recommendation and the three conditions necessary"). NEW SECTION
+#           AM, seven checks: a first name that is no object and no variable
+#           of any data frame, when exactly one data frame holds every
+#           variable typed after it and its name is within two letters (not
+#           every letter changed), is offered as that data frame -- "'w3' not
+#           found." / "If you meant the data frame w36:" and the call as
+#           typed with it, pinned whole, each line run: jdesc(), jfreq(),
+#           jcorr(), jrecode(), jencode(), jrelabel() (AM01); jsubset(), its
+#           line storing the filter (AM02); the five formula functions, where
+#           R had answered "object 'w3' not found", data = and the call's
+#           other arguments kept, two letters off (AM03). A line that would
+#           stop again gets ruling R23's stop, its lead naming both (AM04).
+#           R23's two routes stay for a name three letters off, a variable
+#           no frame holds, two frames holding the variables and a name with
+#           no letter of a one-letter frame's (AM05); the formula functions
+#           with nothing to offer stop in the house voice, after the dot's
+#           and a quoted term's own stops (AM06); under a juse() default the
+#           stop as before (AM07). 642 -> 649 checks; on the 0.9.263 master
+#           AM01-AM06 red. MUTATION MAP (S391; each red): no frame ever
+#           offered AM01-AM05; the every-letter condition dropped AM05; the
+#           formula functions' check removed AM03 AM06; the gap check before
+#           the offer removed AM04.
+#           LAST VERIFIED: v0.9.264, 2026-10-22 (S391) -- 649/649 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3299 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty. GitHub 78709ca (package).
 # S387 EDIT (v0.9.260, 2026-10-21): S15, Y33 AND Y37 REWRITTEN (Scripts
 #           Slate E, the (S386) item): they assumed no workspace object named
 #           mydata. S15 compares the global mydata before and after the
@@ -6891,6 +6920,147 @@ check("AL02 the formula front door's guard: jt() and jlm() given one stop with t
               identical(.al_flat(grab(jt(Score ~ Group, nf))), .al_text("jt", "nf")) &&
                 identical(.al_flat(grab(jlm(Score ~ Age, nf))), .al_text("jlm", "nf")) }))
 rm(.al_text, .al_flat)
+
+# =============================================================================
+# AM -- A DATA FRAME'S NAME TYPED WRONG (S391, v0.9.264; ruling R36)
+# =============================================================================
+# Ruling R36 (Jeff, S391: "yes to your recommendation and the three
+# conditions necessary"). A first name that matches nothing -- no object,
+# no variable of any data frame -- when exactly one data frame holds every
+# variable typed after it and its name is within two letters of what was
+# typed, is read as that data frame's name typed wrong: "'w3' not found." /
+# "If you meant the data frame w36:" and the call as typed with the data
+# frame in its place, which runs. Where that call would still stop for want
+# of an input (jrecode() with no map), ruling R23's stop is given instead,
+# leading with "'w3' not found, and no map was named." Every other case
+# keeps R23's stop and its two routes. In the five formula functions, which
+# had answered with R's own "object 'w3' not found" and no prefix, the same
+# offer, and otherwise "jt(): 'w3' not found." -- after the formula's own
+# refusals (a dot, a term in quotes), so a line offered never stops on
+# them. A further condition, Claude's at the build: not every letter
+# changed (zz is two from a one-letter frame name, and shares none of it).
+# Each call runs in a stand-in workspace holding only the check's frames
+# (.am_ws()), so no object of the session the battery runs in -- a w3 of
+# its own -- can change what the stop finds. Pins filled by running.
+# =============================================================================
+cat("\n--- AM. A data frame's name typed wrong (ruling R36) ---\n")
+
+.am_frame <- function() data.frame(
+  Wt36 = c(60, 72, 55, 80, 66, 70, 58, 75),
+  Ht36 = c(160, 175, 158, 182, 170, 168, 161, 177),
+  Gp36 = c(1, 2, 1, 2, 1, 2, 1, 2),
+  Tx36 = c("a", "b", "a", "c", "b", "a", "c", "b"),
+  Yb36 = c(0, 1, 0, 1, 1, 0, 0, 1), stringsAsFactors = FALSE)
+# .am_ws(): a stand-in for a console session whose workspace holds the
+# frames given and nothing else -- its parent is base R's environment, so
+# no object of the session running the battery (a w3 of the user's own, the
+# battery's fixtures) is seen, as filter_walk.R's .ws_g9 does it. The jstats
+# functions are put in it, as a session's search path would show them.
+.am_ws <- function(...) {
+  ws <- new.env(parent = baseenv())
+  fr <- list(...)
+  for (nm in names(fr)) assign(nm, fr[[nm]], envir = ws)
+  for (f in c("jdesc", "jfreq", "jcorr", "jrecode", "jencode", "jrelabel",
+              "jsubset", "juse", "jt", "jaov", "jcrosstab", "jlm", "jlogistic"))
+    assign(f, get(f), envir = ws)
+  ws
+}
+.am_meant <- function(fn, typed, fr, line) {
+  paste0(fn, "(): '", typed, "' not found.\nIf you meant the data frame ", fr,
+         ":\n  ", line)
+}
+.am_grab <- function(cl, ws) grab(eval(str2lang(cl), ws))
+# .am_runs(): the offered line (the message's last line) run where the call
+# was typed; its value, or NULL when it stops.
+.am_runs <- function(msg, ws) {
+  ln <- trimws(utils::tail(strsplit(msg, "\n", fixed = TRUE)[[1L]], 1L))
+  tryCatch({ utils::capture.output(v <- suppressMessages(suppressWarnings(
+    eval(str2lang(ln), ws)))); v }, error = function(e) NULL)
+}
+check("AM01 the data-first functions: a name one letter from the one data frame holding the variables is offered that frame, the call as typed with it in place (pinned whole), and the line runs (it gave the two routes, the name kept as a variable)",
+      local({ ws <- .am_ws(w36 = .am_frame())
+              cs <- list(c("jdesc", 'jdesc(w3, Wt36)', 'jdesc(w36, Wt36)'),
+                         c("jfreq", 'jfreq(w3, Gp36)', 'jfreq(w36, Gp36)'),
+                         c("jcorr", 'jcorr(w3, Wt36, Ht36)', 'jcorr(w36, Wt36, Ht36)'),
+                         c("jrecode", 'jrecode(w3, Gp36, map = "1=0; 2=1")',
+                           'jrecode(w36, Gp36, map = "1=0; 2=1")'),
+                         c("jencode", 'jencode(w3, Tx36)', 'jencode(w36, Tx36)'),
+                         c("jrelabel", 'jrelabel(w3, Gp36, labels = "1=A; 2=B")',
+                           'jrelabel(w36, Gp36, labels = "1=A; 2=B")'))
+              all(vapply(cs, function(x) {
+                m <- .am_grab(x[2L], ws)
+                identical(m, .am_meant(x[1L], "w3", "w36", x[3L])) &&
+                  !is.null(.am_runs(m, ws))
+              }, logical(1))) }))
+check("AM02 ... jsubset() the same, and its line stores the filter on the frame meant (cleared after)",
+      local({ ws <- .am_ws(w36 = .am_frame())
+              m <- .am_grab("jsubset(w3, Wt36 > 60)", ws)
+              ok <- identical(m, .am_meant("jsubset", "w3", "w36", "jsubset(w36, Wt36 > 60)"))
+              quiet(evalq(jsubset(w36, Wt36 > 60), ws)); st <- fs_of("w36")
+              quiet(evalq(jsubset(w36, NULL), ws))
+              ok && !is.null(st) && is.null(fs_of("w36")) }))
+check("AM03 the five formula functions: the same offer in place of R's \"object 'w3' not found\", the data = form and the call's other arguments kept, two letters off still offered (pinned whole); each line runs",
+      local({ ws <- .am_ws(w36 = .am_frame())
+              cs <- list(c("jt", 'jt(Wt36 ~ Gp36, w3)', 'jt(Wt36 ~ Gp36, w36)'),
+                         c("jaov", 'jaov(Wt36 ~ Gp36, w3)', 'jaov(Wt36 ~ Gp36, w36)'),
+                         c("jcrosstab", 'jcrosstab(Gp36 ~ Tx36, w3)', 'jcrosstab(Gp36 ~ Tx36, w36)'),
+                         c("jlm", 'jlm(Wt36 ~ Ht36, w3)', 'jlm(Wt36 ~ Ht36, w36)'),
+                         c("jlogistic", 'jlogistic(Yb36 ~ Wt36, w3)', 'jlogistic(Yb36 ~ Wt36, w36)'),
+                         c("jt", 'jt(Wt36 ~ Gp36, data = w3)', 'jt(Wt36 ~ Gp36, data = w36)'),
+                         c("jt", 'jt(Wt36 ~ Gp36, ww36, subset = Ht36 > 160)',
+                           'jt(Wt36 ~ Gp36, w36, subset = Ht36 > 160)'),
+                         c("jcrosstab", 'jcrosstab(Gp36 ~ Tx36, w63, chisq = TRUE)',
+                           'jcrosstab(Gp36 ~ Tx36, w36, chisq = TRUE)'))
+              all(vapply(cs, function(x) {
+                typed <- sub(".*(w3|ww36|w63).*", "\\1", x[2L])
+                m <- .am_grab(x[2L], ws)
+                identical(m, .am_meant(x[1L], typed, "w36", x[3L])) &&
+                  !is.null(.am_runs(m, ws))
+              }, logical(1))) }))
+check("AM04 a line that would stop again for want of an input gets ruling R23's stop instead, its lead naming both (pinned whole)",
+      local({ ws <- .am_ws(w36 = .am_frame())
+              identical(.am_grab("jrecode(w3, Gp36)", ws), paste0(
+                "jrecode(): 'w3' not found, and no map was named.\n",
+                "Name a data frame, one of its variables and a map, for example:\n",
+                "  community$OwnsHome01 <- jrecode(community, OwnsHome, map = \"1=1; 2=0\")")) &&
+                identical(.am_grab("jcorr(w3, Wt36)", ws), paste0(
+                  "jcorr(): 'w3' not found, and no second variable was named.\n",
+                  "Name a data frame and two or more of its variables, for example:\n",
+                  "  jcorr(community, Income, Age, WellbeingScore)")) }))
+check("AM05 controls -- R23's two routes stay: a name three letters off; a variable the frame lacks; two frames holding the variables; a two-letter name with no letter of a one-letter frame's (the condition added at the build), where a one-letter slip from it is offered",
+      local({ ws <- .am_ws(w36 = .am_frame(), q = data.frame(Ab36 = 1:4))
+              ws2 <- .am_ws(w36 = .am_frame(), w37 = .am_frame())
+              two <- function(fn, typed, vars) paste0(
+                fn, "(): '", typed, "' not found.\nDid you mean to use it as a variable name?\n",
+                "If so, name the data frame first:\n  ", fn, "(MyData, ", typed, ", ", vars, ")\n",
+                "Or set a default first, then run the call:\n  juse(MyData)\n  ",
+                fn, "(", typed, ", ", vars, ")")
+              identical(.am_grab("jdesc(abc, Wt36)", ws), two("jdesc", "abc", "Wt36")) &&
+                identical(.am_grab("jdesc(w3, Nope36)", ws), two("jdesc", "w3", "Nope36")) &&
+                identical(.am_grab("jdesc(zz, Ab36)", ws), two("jdesc", "zz", "Ab36")) &&
+                identical(.am_grab("jdesc(w3, Wt36)", ws2), two("jdesc", "w3", "Wt36")) &&
+                identical(.am_grab("jdesc(qq, Ab36)", ws),
+                          .am_meant("jdesc", "qq", "q", "jdesc(q, Ab36)")) }))
+check("AM06 the formula functions with nothing to offer stop in the house voice, prefixed (R's own message had none); the dot and a term in quotes keep their own stops first, so no line offered stops on them",
+      local({ ws <- .am_ws(w36 = .am_frame())
+              ws2 <- .am_ws(w36 = .am_frame(), w37 = .am_frame())
+              dt <- .am_grab("jt(Wt36 ~ ., w3)", ws); qt <- .am_grab('jt("Wt36" ~ Gp36, w3)', ws)
+              identical(.am_grab("jt(Wt36 ~ Gp36, zz9)", ws), "jt(): 'zz9' not found.") &&
+                identical(.am_grab("jlm(Wt36 ~ Ht36, abc)", ws), "jlm(): 'abc' not found.") &&
+                identical(.am_grab("jaov(Wt36 ~ Gp36, w3)", ws2), "jaov(): 'w3' not found.") &&
+                startsWith(dt, "jt(): this formula is not a form jstats reads:\n  Wt36 ~ .\n") &&
+                identical(qt, paste0("jt(): \"Wt36\" is in quotes.\n",
+                                     "A variable in a formula is named without quotes:\n",
+                                     "  jt(Wt36 ~ Gp36, w3)")) }))
+check("AM07 under a juse() default the data-first stop is unchanged (the ruling leaves it: the name is read as a variable of the default's frame)",
+      local({ ws <- .am_ws(w36 = .am_frame())
+              m <- tryCatch({ quiet(evalq(juse(w36), ws)); .am_grab("jdesc(w3, Wt36)", ws) },
+                            finally = quiet(juse(NULL)))
+              identical(m, paste0("jdesc(): w3 was not found in the w36 data frame.\n",
+                                  "Check the spelling.\n",
+                                  "w36 is the juse() default -- if you meant a different data frame, name it\n",
+                                  "in the call.")) }))
+rm(.am_frame, .am_ws, .am_meant, .am_grab, .am_runs)
 
 # =============================================================================
 # P -- THE MESSAGE SURFACE, SWEPT (S337)

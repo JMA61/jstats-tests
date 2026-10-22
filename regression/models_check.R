@@ -83,6 +83,45 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S391 EDIT (v0.9.264, 2026-10-22): SECTIONS AE, AF AND AG ADDED, 13
+#           checks; K07, K19 AND Q17 RE-PINNED. (AE) ruling R38 (Jeff, S391:
+#           "Your recommendation"): a labelled variable the structural check
+#           reads as discrete, with no assertion, is drawn as categories, for
+#           the plot only, on the right of a formula (a boxplot at its value
+#           labels, AE01) and as either of two variables in the variable-list
+#           form (the grouped bar chart, or the boxplot stop with its line,
+#           run, AE04); not the left side, plain numbers or many values
+#           (AE02); numeric = or count =, type =, a jnumeric() or jcount()
+#           registration and -- the build's lean -- line = or equation = keep
+#           the numbers (AE03); the scatter stop's line carries the call's
+#           numeric =, count = or type = where its IV is such a variable,
+#           since the line alone would draw a boxplot, each run (AE05);
+#           jlm(), jaov() and the registry untouched (AE06). (AF) the (Session
+#           80) item: a jdummy() registration is stated in jdesc() and in
+#           jcorr() under each method, "G is categorical; ...", the hedge kept
+#           without one; numeric = and count = silence it; a registration
+#           stays with its data frame (AF01-AF04). (AG) the (Session 17)
+#           item: jcrosstab()'s one-category stop ends on the other
+#           variable's jfreq() line, subset = kept, run as printed; a filter
+#           naming the collapsed variable keeps its stop; a juse() default's
+#           name; an expression as typed (AG01-AG03). K07 and Q17 re-pinned
+#           for the jfreq() line, K19 for R38 (hv, labelled, now a boxplot;
+#           nm, plain numbers, still points). 540 -> 553 checks; on the
+#           0.9.263 master K07, K19, Q17, AE01, AE03-AE05, AF01-AF03 and
+#           AG01-AG03 red. MUTATION MAP (S391; each red): the variable-list
+#           redirect for one variable only AE03 AE04; the formula's redirect
+#           removed K19 AE01 AE05; the formula's skip for a scatter
+#           argument removed AE03 AE05; the variable list's AE05; the
+#           scatter line's carried argument removed AE05; numeric = ignored
+#           by the redirect K19 AA01 AE03 AE05; jdesc()'s statement removed
+#           AF01 AF03; jcorr()'s AF02; the jfreq() line removed K07 Q17
+#           AG01-AG03; subset = not kept Q17 AG02 AG03.
+#           LAST VERIFIED: v0.9.264, 2026-10-22 (S391) -- 553/553 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3299 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty. GitHub 78709ca (package).
 # S389 EDIT (v0.9.262, 2026-10-22): SECTION AD ADDED (Fix Slate 28), 5
 #           checks: jt()'s stop for more than two categories, when one is a
 #           text variable's <blank>, names the categories, the blank last,
@@ -2704,14 +2743,20 @@ check("K06 jaov(), no stored setting: two lines",
 .k07 <- with_state(.k_on(), grab(jcrosstab(g ~ lg, data = d)), .k_off())
 # RE-PINNED S347 (v0.9.220): jcrosstab() takes the filters' line jt() and
 # jaov() have (the S346 group-count item); it had none.
+# RE-PINNED S391 (v0.9.264): the stop ends on the line that counts the other
+# variable's categories (the (Session 17) degraded-display item, Jeff's okay
+# of the lean); section AG holds it.
 check("K07 jcrosstab(), with a stored filter and without",
       identical(flat(.k07), paste0(
         "jcrosstab(): 'g' has 1 category after applying the jsubset filter (gn == \"5\"). ",
         "A cross-tabulation requires at least 2 categories for each variable. ",
-        "Check whether your jsubset or jcomplete settings are excluding the other categories.")) &&
+        "Check whether your jsubset or jcomplete settings are excluding the other categories. ",
+        "To count lg's categories on their own, use jfreq(): jfreq(d, lg)")) &&
         identical(grab(jcrosstab(k ~ g, data = d)), paste0(
           "jcrosstab(): 'k' has 1 category.\n",
-          "A cross-tabulation requires at least 2 categories for each variable.")))
+          "A cross-tabulation requires at least 2 categories for each variable.\n",
+          "To count g's categories on their own, use jfreq():\n",
+          "  jfreq(d, g)")))
 check("K08 a stored filter that is turned OFF is not named",
       identical(with_state({ .k_on(); quiet(jsubset(d, off)) }, grab(jt(y ~ k, data = d)),
                            .k_off()),
@@ -2771,9 +2816,15 @@ check("K17 the same stops under jt()'s title, as before: the two functions now a
 check("K18 the grouping variable given as by =: the line names it and carries type = \"box\" (it printed 'jplot(y ~ NA, d)')",
       .k_has(.k18, "\n  jplot(y ~ hv, d, type = \"box\")\n") && !.k_has(.k18, "~ NA") &&
         .k_has(flat(.k18), "jplot(): For boxplots, use formula syntax to make the outcome and grouping variable explicit (consistent with jaov):"))
-check("K19 that line draws a boxplot; the same formula without type = \"box\" draws points, which is why the line carries it",
+# RE-PINNED S391 (v0.9.264): since ruling R38 a labelled variable of whole
+# numbers on a formula's right side draws a boxplot with no type =, so hv
+# no longer shows why the line carries type = "box"; nm, plain numbers,
+# still does, and numeric = hv keeps hv's points (section AE holds R38).
+check("K19 that line draws a boxplot; a formula on plain numbers without type = \"box\" draws points, which is why the line carries it",
       identical(.k_geom(.k_fix(.k18)), "GeomBoxplot") &&
-        identical(.k_geom("jplot(y ~ hv, d)"), "GeomPoint"))
+        identical(.k_geom("jplot(y ~ hv, d)"), "GeomBoxplot") &&
+        identical(.k_geom("jplot(y ~ nm, d)"), "GeomPoint") &&
+        identical(.k_geom("jplot(y ~ hv, d, numeric = hv)"), "GeomPoint"))
 check("K20 type = \"box\" forced on two numeric variables: the one with fewer distinct values is the grouping variable, in either order",
       identical(.k_fix(grab(jplot(d, y, nm, type = "box"))), "jplot(y ~ nm, d, type = \"box\")") &&
         identical(.k_fix(grab(jplot(d, nm, y, type = "box"))), "jplot(y ~ nm, d, type = \"box\")") &&
@@ -4448,10 +4499,13 @@ check("Q17 jaov() and jcrosstab() the same, each in its own words",
       identical(grab(jaov(y ~ gq, data = dq, subset = id <= 16)),
                 paste0("jaov(): 'gq' has 1 category.\nAn ANOVA requires at least 2 groups.\n",
                        "Check whether subset = is excluding one or more groups.")) &&
+        # RE-PINNED S391 (v0.9.264): the jfreq() line, subset = kept (AG).
         identical(grab(jcrosstab(gq ~ gn, data = dq, subset = id <= 16)),
                   paste0("jcrosstab(): 'gq' has 1 category.\n",
                          "A cross-tabulation requires at least 2 categories for each variable.\n",
-                         "Check whether subset = is excluding the other categories.")))
+                         "Check whether subset = is excluding the other categories.\n",
+                         "To count gn's categories on their own, use jfreq():\n",
+                         "  jfreq(dq, gn, subset = id <= 16)")))
 check("Q18 a stored filter and a subset =: both named in the one line",
       local({ a <- with_state(quiet(jsubset(dq, id <= 16)),
                         grab(jt(y ~ gq, data = dq, subset = x1 > -99)),
@@ -6348,6 +6402,228 @@ check("AD05 a variable already declaring a value: the line names it beside the b
         grepl("\n  jdeclare_missing(.adu, G, codes = c(\"UNKNOWN\", \"\"), modify = TRUE)\n",
               grab(jt(y ~ G, .adu)), fixed = TRUE) }))
 rm(.adb, .ad_tail)
+
+# =============================================================================
+# AE. Ruling R38 (S391, v0.9.264): a labelled variable with a few categories
+#     among two in jplot()
+# =============================================================================
+# Ruling R38 (Jeff, S391: "Your recommendation"): the one-variable redirect
+# -- an unasserted labelled variable the structural check reads as
+# discrete is drawn as bars -- applies, for the plot only, to each of two
+# variables in the variable-list form and to the right side of a formula.
+# jplot(W ~ R, d) draws the boxplot by R's categories where it drew a
+# scatter of the codes; jplot(d, R, O) the grouped bar chart where it
+# stopped with a line that drew another scatter; jplot(d, W, R) gets the
+# boxplot stop with the formula line. The left side of a formula stays the
+# y axis's numbers. numeric = or count =, a jnumeric() or jcount()
+# registration, type =, and -- the build's lean, Claude's default --
+# line =, band =, equation = or r2 =, which only a scatterplot draws, keep
+# the numbers; the scatter stop's line carries the call's numeric =,
+# count = or type = where its IV is such a variable, since the line alone
+# would draw a boxplot (a defect found building it). Classification is
+# untouched: jlm() still reads R as numbers and warns. Fixtures dotted;
+# working objects in local().
+# =============================================================================
+cat("\n--- AE. Ruling R38: a labelled variable among two in jplot() ---\n")
+
+# .r391_w(): the warnings a call raises, its printed output swallowed; the
+# conditions taken, never the message stream, and no suppressWarnings()
+# between the call and the handler (quiet()'s would muffle them first).
+# Used by sections AE and AF.
+.r391_w <- function(expr) {
+  w <- character(0)
+  zz <- textConnection(".junk", "w", local = TRUE)
+  sink(zz, type = "output")
+  on.exit({ sink(type = "output"); close(zz) }, add = TRUE)
+  withCallingHandlers(tryCatch(suppressMessages(expr), error = function(e) NULL),
+                      warning = function(x) {
+                        w <<- c(w, conditionMessage(x)); invokeRestart("muffleWarning") })
+  w
+}
+set.seed(391)
+.ae_d <- data.frame(W = round(rnorm(60, 50, 10), 1))
+.ae_d$R <- haven::labelled(rep(1:4, length.out = 60),
+                           labels = c(North = 1, South = 2, East = 3, West = 4))
+.ae_d$O <- haven::labelled(rep(c(0, 1, 1), length.out = 60),
+                           labels = c(No = 0, Yes = 1))
+.ae_d$Inc <- haven::labelled_spss(c(round(runif(58, 20000, 90000)), -99, -98),
+                                  labels = c(Refused = -99, `Don't know` = -98),
+                                  na_values = c(-99, -98))
+.ae_d$P <- rep(1:4, length.out = 60)                    # plain numbers
+.ae_gm <- function(p) if (is.null(p) || !inherits(p, "ggplot")) NA_character_ else
+  class(p$layers[[1L]]$geom)[1L]
+.ae_sc <- function(line) paste0(
+  "jplot(): For two-numeric scatterplots, use formula syntax to make\n",
+  "the DV and IV explicit (consistent with jlm):\n",
+  "  ", line, "\n",
+  "(The DV on the left of ~ goes on the y-axis; the IV on the right goes on\n",
+  "the x-axis.)")
+.ae_box <- paste0(
+  "jplot(): For boxplots, use formula syntax to make the outcome and\n",
+  "grouping variable explicit (consistent with jaov):\n",
+  "  jplot(W ~ R, .ae_d, type = \"box\")\n",
+  "(The numeric outcome on the left of ~ goes on the y-axis; the categorical\n",
+  "grouping variable on the right goes on the x-axis.)")
+
+check("AE01 the formula form: jplot(W ~ R, d) draws a boxplot of W at R's categories, its axis labeled by R's value labels (it drew a scatter of R's codes 1 to 4), with no message",
+      local({ m <- grab(p <- jplot(W ~ R, .ae_d))
+              b <- ggplot2::ggplot_build(p)
+              identical(.ae_gm(p), "GeomBoxplot") && identical(m, "") &&
+                identical(b$layout$panel_params[[1L]]$x$get_labels(),
+                          c("North", "South", "East", "West")) }))
+check("AE02 ... only the right side: R on the left stays the y axis's numbers (a scatter), and plain numbers and a labelled variable of many values on the right stay scatters",
+      identical(.ae_gm(quiet(jplot(R ~ W, .ae_d))), "GeomPoint") &&
+        identical(.ae_gm(quiet(jplot(W ~ P, .ae_d))), "GeomPoint") &&
+        identical(.ae_gm(quiet(jplot(W ~ Inc, .ae_d))), "GeomPoint"))
+check("AE03 ... and what keeps the numbers: numeric = R or count = R, bare or quoted; type = \"scatter\"; line = \"lm\" or equation = (the scatter's own arguments, the lean); a jnumeric() or jcount() registration",
+      local({ e <- .ae_d
+              ok <- identical(.ae_gm(quiet(jplot(W ~ R, .ae_d, numeric = R))), "GeomPoint") &&
+                identical(.ae_gm(quiet(jplot(W ~ R, .ae_d, numeric = "R"))), "GeomPoint") &&
+                identical(.ae_gm(quiet(jplot(W ~ R, .ae_d, count = R))), "GeomPoint") &&
+                identical(.ae_gm(quiet(jplot(W ~ R, .ae_d, type = "scatter"))), "GeomPoint") &&
+                identical(.ae_gm(quiet(jplot(W ~ R, .ae_d, line = "lm"))), "GeomPoint") &&
+                identical(.ae_gm(quiet(jplot(W ~ R, .ae_d, equation = TRUE))), "GeomPoint")
+              quiet(jnumeric(e, R))
+              a <- .ae_gm(quiet(jplot(W ~ R, e))); b <- grab(jplot(e, R, O))
+              quiet(jnumeric(e, NULL)); quiet(jcount(e, R))
+              c2 <- .ae_gm(quiet(jplot(W ~ R, e)))
+              quiet(jcount(e, NULL))
+              # Registered numeric, R is the outcome of O's groups: O is
+              # still read as categories, R kept as numbers.
+              ok && identical(a, "GeomPoint") && identical(c2, "GeomPoint") &&
+                grepl("\n  jplot(R ~ O, e, type = \"box\")\n", b, fixed = TRUE) }))
+check("AE04 the variable-list form: two such variables draw the grouped bar chart (it stopped with a line that drew a scatter), its title saying so; one of them beside a number gets the boxplot stop, in either order, pinned whole, its line running as printed and drawing the boxplot",
+      local({ m <- grab(p <- jplot(.ae_d, R, O))
+              out <- utils::capture.output(suppressMessages(jplot(.ae_d, R, O)))
+              out <- gsub("\033\\[[0-9;]*[A-Za-z]", "", out)
+              a <- grab(jplot(.ae_d, W, R)); b <- grab(jplot(.ae_d, R, W))
+              ln <- trimws(strsplit(a, "\n", fixed = TRUE)[[1L]][3L])
+              identical(.ae_gm(p), "GeomBar") && identical(m, "") &&
+                identical(out[nzchar(out)][1L], "Grouped Bar Chart: R and O") &&
+                identical(a, .ae_box) && identical(b, .ae_box) &&
+                identical(.ae_gm(quiet(eval(str2lang(ln)))), "GeomBoxplot") }))
+check("AE05 the scatter stop's line carries what made the call a scatterplot where its IV is such a variable -- numeric = R, count = R, type = \"scatter\" -- and each runs as a scatter (the line alone draws a boxplot since R38); plain numbers and line = \"lm\" keep their line as it was (pinned whole)",
+      local({ a <- grab(jplot(.ae_d, R, W, numeric = R))
+              b <- grab(jplot(.ae_d, R, W, count = R))
+              c2 <- grab(jplot(.ae_d, R, W, type = "scatter"))
+              d2 <- grab(jplot(.ae_d, P, W))
+              e2 <- grab(jplot(.ae_d, R, O, line = "lm"))
+              lns <- vapply(list(a, b, c2, e2), function(x)
+                trimws(strsplit(x, "\n", fixed = TRUE)[[1L]][3L]), character(1))
+              identical(a, .ae_sc("jplot(W ~ R, .ae_d, numeric = R)")) &&
+                identical(b, .ae_sc("jplot(W ~ R, .ae_d, count = R)")) &&
+                identical(c2, .ae_sc("jplot(W ~ R, .ae_d, type = \"scatter\")")) &&
+                identical(d2, .ae_sc("jplot(W ~ P, .ae_d)")) &&
+                identical(e2, .ae_sc("jplot(O ~ R, .ae_d, line = \"lm\")")) &&
+                all(vapply(lns, function(l) identical(.ae_gm(quiet(eval(str2lang(l)))), "GeomPoint"),
+                           logical(1))) &&
+                identical(.ae_gm(quiet(jplot(W ~ R, .ae_d))), "GeomBoxplot") }))
+check("AE06 for the plot only: jlm() still reads R as numbers and warns that it seems categorical, jaov() reads its four groups, nothing is registered, and one variable alone is still a bar chart",
+      local({ w <- .r391_w(jlm(W ~ R, .ae_d)); r <- quiet(jlm(W ~ R, .ae_d))
+              quiet(jplot(W ~ R, .ae_d))
+              a <- quiet(jaov(W ~ R, .ae_d))
+              any(startsWith(w, "R seems categorical")) && !is.null(r) && !is.null(a) &&
+                is.null(.jst_get_intent(".ae_d", "R")) && is.null(.jst_get_dummy(".ae_d")) &&
+                identical(.ae_gm(quiet(jplot(.ae_d, R))), "GeomBar") }))
+rm(.ae_d, .ae_gm, .ae_sc, .ae_box)
+
+# =============================================================================
+# AF. The (Session 80) item (S391, v0.9.264): a jdummy() registration stated
+#     in jdesc() and jcorr()
+# =============================================================================
+# Jeff's okay of the lean (S391): no refusal, and the warning states the
+# registration, voice Rule AI's known cause, where it hedged: "Region seems
+# categorical. Descriptive statistics may not be meaningful." The wording
+# is the house form jsum(), javg() and jalpha() already give a registered
+# variable: "Region is categorical; descriptive statistics may not be
+# meaningful." -- under Pearson, Spearman and Kendall the clause names the
+# method, as since S374. numeric = or count = in the call still silences
+# it; a variable seeming categorical with no registration keeps the hedge.
+# Fixtures dotted; working objects in local(); every registration made on a
+# copy and cleared.
+# =============================================================================
+cat("\n--- AF. a jdummy() registration stated in jdesc() and jcorr() ---\n")
+
+set.seed(80)
+.af_d <- data.frame(S = round(rnorm(40, 10, 2), 2))
+.af_d$G <- haven::labelled(rep(1:4, length.out = 40),
+                           labels = c(A = 1, B = 2, C = 3, D = 4))
+.af_d$T <- rnorm(40)
+.af_w <- .r391_w
+check("AF01 jdesc(): a jdummy()-registered variable is stated, \"G is categorical; descriptive statistics may not be meaningful.\" (it said \"G seems categorical. Descriptive ...\"); without the registration the hedge stays",
+      local({ e <- .af_d
+              h <- .af_w(jdesc(e, G))
+              quiet(jdummy(e, G)); a <- .af_w(jdesc(e, G)); quiet(jdummy(e, NULL))
+              identical(flat(a), "G is categorical; descriptive statistics may not be meaningful.") &&
+                identical(flat(h), "G seems categorical. Descriptive statistics may not be meaningful.") }))
+check("AF02 jcorr(): the same under each method, the clause naming it; the other variable unwarned",
+      local({ e <- .af_d; quiet(jdummy(e, G))
+              a <- .af_w(jcorr(e, S, G))
+              b <- .af_w(jcorr(e, S, G, method = "spearman"))
+              k <- .af_w(jcorr(e, S, G, method = "kendall"))
+              quiet(jdummy(e, NULL))
+              identical(flat(a), "G is categorical; Pearson correlations assume continuous/interval data.") &&
+                identical(flat(b), "G is categorical; Spearman correlations assume ordinal or interval data.") &&
+                identical(flat(k), "G is categorical; Kendall correlations assume ordinal or interval data.") }))
+check("AF03 numeric = and count = in the call still silence it, in both functions; a plain-number variable registered with jdummy() is stated as well",
+      local({ e <- .af_d; e$Q <- rep(1:3, length.out = 40); quiet(jdummy(e, G, Q))
+              a <- .af_w(jdesc(e, G, numeric = G)); b <- .af_w(jcorr(e, S, G, count = G))
+              q <- .af_w(jdesc(e, Q)); quiet(jdummy(e, NULL))
+              identical(a, character(0)) && identical(b, character(0)) &&
+                identical(flat(q), "Q is categorical; descriptive statistics may not be meaningful.") }))
+check("AF04 a registration stays with its data frame: the same variable in another frame keeps the hedge, and a data frame given as an expression has no registration to state",
+      local({ e <- .af_d; f <- .af_d; quiet(jdummy(e, G))
+              a <- .af_w(jdesc(f, G)); b <- .af_w(jdesc(e[1:40, ], G))
+              quiet(jdummy(e, NULL))
+              identical(flat(a), "G seems categorical. Descriptive statistics may not be meaningful.") &&
+                identical(flat(b), "G seems categorical. Descriptive statistics may not be meaningful.") }))
+rm(.af_d, .af_w)
+
+# =============================================================================
+# AG. The (Session 17) degraded-display item (S391, v0.9.264): jcrosstab()'s
+#     one-category stop offers the other variable's jfreq() line
+# =============================================================================
+# Jeff's okay of the lean (S391): the stop stays -- no degraded table --
+# and where one variable has one category the table that can be had is the
+# other's alone, so the stop ends on its jfreq() line, subset = kept, the
+# data frame named (a juse() default's name; an expression as typed). A
+# filter that names the collapsed variable keeps its own stop (S346), and
+# no category at all gets no line. K07 and Q17 were re-pinned for the
+# line. Fixtures dotted; working objects in local().
+# =============================================================================
+cat("\n--- AG. jcrosstab()'s one-category stop offers jfreq() ---\n")
+
+.ag_d <- data.frame(A = rep(c("x", "y"), each = 6), B = rep(c("p", "q", "r"), 4),
+                    K = rep(c(1, 2), each = 6), N = rep(1:2, 6),
+                    stringsAsFactors = FALSE)       # K is 1 exactly where A is "x"
+.ag_head <- paste0("jcrosstab(): 'A' has 1 category.\n",
+                   "A cross-tabulation requires at least 2 categories for each variable.\n")
+.ag_tail <- "To count B's categories on their own, use jfreq():\n"
+check("AG01 one variable with one category: the stop ends on the other variable's jfreq() line, which runs as printed and tabulates it (pinned whole)",
+      local({ d1 <- .ag_d[.ag_d$A == "x", ]
+              m <- grab(jcrosstab(A ~ B, d1))
+              ln <- trimws(strsplit(m, "\n", fixed = TRUE)[[1L]][4L])
+              r <- quiet(eval(str2lang(ln)))
+              identical(m, paste0(.ag_head, .ag_tail, "  jfreq(d1, B)")) && !is.null(r) }))
+check("AG02 ... a subset = on another variable that left the one category: the filter's line, then the jfreq() line with subset = kept, which runs and counts the cases the filter leaves (pinned whole)",
+      local({ m <- grab(jcrosstab(A ~ B, .ag_d, subset = K == 1))
+              ln <- trimws(strsplit(m, "\n", fixed = TRUE)[[1L]][5L])
+              r <- quiet(eval(str2lang(ln)))
+              identical(m, paste0(.ag_head,
+                                  "Check whether subset = is excluding the other categories.\n",
+                                  .ag_tail, "  jfreq(.ag_d, B, subset = K == 1)")) &&
+                !is.null(r) && identical(r$frequencies$B$total, 6L) }))
+check("AG03 a filter that names the collapsed variable keeps its own stop, with no jfreq() line; under a juse() default the line names the default's data frame; an expression as the data is kept as typed, and its line runs",
+      local({ a <- grab(jcrosstab(A ~ B, .ag_d, subset = A == "x"))
+              b <- with_state(quiet(juse(.ag_d)), grab(jcrosstab(A ~ B, subset = K == 2)),
+                              quiet(juse(NULL)))
+              e <- grab(jcrosstab(A ~ B, .ag_d[.ag_d$A == "x", ]))
+              r <- quiet(jfreq(.ag_d[.ag_d$A == "x", ], B))
+              !grepl("jfreq(", a, fixed = TRUE) &&
+                endsWith(b, "\n  jfreq(.ag_d, B, subset = K == 2)") &&
+                identical(e, paste0(.ag_head, .ag_tail, "  jfreq(.ag_d[.ag_d$A == \"x\", ], B)")) &&
+                identical(r$frequencies$B$total, 6L) }))
+rm(.ag_d, .ag_head, .ag_tail, .r391_w)
 
 # --- Verdict -----------------------------------------------------------------
 
