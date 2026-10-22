@@ -161,6 +161,59 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S392 EDIT (v0.9.265, 2026-10-22): the (S391) expression-typo item, the
+#           (S238) .jst_fmt_n sweep and the (S282) item (Jeff's okay of the
+#           leans, S392: "Okay for all defaults."). NEW SECTIONS AN (ten
+#           checks) AND AO (two) AND CHECK P04; AD01 AND AG05 RE-PINNED. (AN)
+#           an expression given as the data that cannot be evaluated: a name
+#           in it found nowhere is "not found", with ruling R36's offer --
+#           the expression with the data frame in its place, every other
+#           argument kept, pinned whole, each line run -- in the five
+#           formula functions and jplot()'s formula form, which had given
+#           R's own "object 'w3' not found" (AN01), and in jplot()'s formula
+#           form given a NAME, which R36 had not reached (AN02); in the
+#           data-first functions, jsave() and jcopy(), which had offered
+#           fn(MyData, <the expression>) with the call's other arguments
+#           dropped (AN03); under a juse() default, where the expression was
+#           read as the default's variable (AN04); nothing offered where
+#           R36's conditions fail, in jsubset() and a registration verb, for
+#           an expression that gives no data frame, and two names found
+#           nowhere named together (AN05); a column the frame lacks, the
+#           not-found sentence (AN06); any other failure relayed, "could not
+#           be evaluated." / "R reported:" (AN07); a condition or a computed
+#           vector keeps the resolver's stop (AN08); and the build's two
+#           riders: an expression that gives no rows by reading a column its
+#           frame lacks -- a plain data frame's $ gives NULL -- gets the same
+#           sentence, where the pipeline said the frame "has no rows" and
+#           jsave() and jcopy() saved and made an empty one (AN09), and R's
+#           own warnings while the data are read are given back only when the
+#           call goes on, so a tibble's "Unknown or uninitialised column" no
+#           longer trails the sentence (AN10). Each call runs in a stand-in
+#           workspace (.an_ws(), AM's form). (AO) counts in prose with
+#           thousands separators, on a frame of 1,540 rows: jcomplete()'s
+#           status lines, the table's N column bare (AO01), and ruling R19's
+#           stop, in a formula term and in subset = (AO02); the listwise note
+#           is cps_check.R N64. (P04) no runtime string says "argument", the
+#           orientation text of jai() aside (Rule B, S355): every string
+#           constant in the namespace's functions and objects read, so a
+#           message no check reaches is read too. AD01 and AG05 re-pinned to
+#           the named-arguments stops in Rule B's form ("when the data frame
+#           is omitted, every input after the variable must be named.").
+#           649 -> 662 checks; on the 0.9.264 master AD01 AG05 AN01-AN07 AN09
+#           AN10 AO01 AO02 P04 red. MUTATION MAP (S392; each red): the offer
+#           never tried AN01 AN03 AN04; no column ever missing AN06 AN09
+#           AN10; no relay AN07; every expression read as data-shaped M05 R22
+#           T06 X01 X02 X04 X05 Y07 AN04 AN08; the empty-frame check removed
+#           AN09 AN10; warnings not held AN10; held warnings not given back
+#           AN10; an offer in jsubset() and the verbs AN05; jplot()'s
+#           formula-form name check removed AN02; counts without separators
+#           AO01 AO02; one "argument" string put back P04.
+#           LAST VERIFIED: v0.9.265, 2026-10-23 (S392) -- 662/662 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3316 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty. GitHub 319d995 (package).
 # S391 EDIT (v0.9.264, 2026-10-22): ruling R36 (Jeff, S391: "yes to your
 #           recommendation and the three conditions necessary"). NEW SECTION
 #           AM, seven checks: a first name that is no object and no variable
@@ -5763,7 +5816,7 @@ options(.jst_default_data = NULL)
 check("AD01 jsave() with the data omitted and a second argument unnamed: the sentence, then \"Name them, for example:\" and the call on a line of its own, and nothing written (it said \"... must be named. Use jsave(file = \"yourfile.ext\")\")",
       local(tryCatch({ options(.jst_default_data = "d")
                        m <- grab(jsave(.ad_f, TRUE))
-                       has(flat(m), "jsave(): when the data argument is omitted, all subsequent arguments must be named.") &&
+                       has(flat(m), "jsave(): when the data frame is omitted, every input must be named.") &&
                          endsWith(m, "named.\nName them, for example:\n  jsave(file = \"mydata.sav\", overwrite = TRUE)") &&
                          !file.exists(.ad_f) },
                      finally = options(.jst_default_data = NULL))))
@@ -6356,14 +6409,14 @@ check("AG05 ... and a variable of the default with an unnamed argument after it:
           m2 <- .ag_in(e, quote(jrelabel(Score, "1=One")))
           m3 <- .ag_in(e, quote(jrecode(Score, Group, map = "1=2")))
           identical(m, paste0(
-            "jrecode(): when the data argument is omitted, all subsequent\n",
-            "arguments must be named.\n",
+            "jrecode(): when the data frame is omitted, every input after the\n",
+            "variable must be named.\n",
             "Name the map:\n",
             "  jrecode(Score, map = \"1=2; else=copy\")")) &&
             has(m2, "Name the labels:\n  jrelabel(Score, labels = \"1=One\")") &&
             identical(m3, paste0(
-              "jrecode(): when the data argument is omitted, all subsequent\n",
-              "arguments must be named.")) &&
+              "jrecode(): when the data frame is omitted, every input after the\n",
+              "variable must be named.")) &&
             .ag_runs(c("juse(ag1)", .ag_lines(m)[[1]]), ag1 = .ag1) }) }))
 check("AG06 ruling R23: the not-found stop's line would stop again for want of an input, so ruling R22's form -- jrecode(Score) a map (pinned whole), jdeclare_missing(Score) the codes, jconvert(Score) the target, jrelabel(Score) a label, jcorr(Score, method = ...) and jalpha(Score) a second variable, the method kept",
       local({ e <- .ag_ws(ag1 = .ag1)
@@ -7063,6 +7116,250 @@ check("AM07 under a juse() default the data-first stop is unchanged (the ruling 
 rm(.am_frame, .am_ws, .am_meant, .am_grab, .am_runs)
 
 # =============================================================================
+# AN -- AN EXPRESSION GIVEN AS THE DATA THAT CANNOT BE EVALUATED (S392,
+#       v0.9.265; the (S391) expression-typo item)
+# =============================================================================
+# Ruling R36 reads a NAME; given an expression whose data frame is typed
+# wrong -- jt(Score ~ Group, dd[dd$Age > 40, ]) -- the five formula functions
+# printed R's own "object 'dd' not found" with no prefix, and the data-first
+# functions read the expression as a variable: "dd[dd$Age > 40, ] needs a
+# data frame", offering jfreq(MyData, dd[dd$Age > 40, ]) with the call's
+# other arguments dropped, and under a juse() default "... was not found in
+# the d data frame". Now (.jst_expr_data_stop()): a name in the expression
+# that is no object and no variable of any data frame is "not found", with
+# R36's offer -- the expression with that frame in its place, every other
+# argument kept -- where R36's conditions hold and that expression gives a
+# data frame; a column the frame lacks gets the not-found sentence; any
+# other failure is relayed under "R reported:". The data-first resolver
+# reads so only an expression shaped as data; a condition or a computed
+# vector keeps its stops. Two riders, the build's leans: an expression that
+# gives no rows by reading a column its frame lacks (a plain data frame's $
+# gives NULL, so d[d$Agee > 40, ] is empty, not an error) gets the same
+# not-found sentence, where the pipeline said the frame "has no rows" and
+# jsave() and jcopy() saved and made an empty one (AN09); and R's own
+# warnings while the data are read are given back only when the call goes
+# on, so a tibble's "Unknown or uninitialised column" no longer trails the
+# sentence (AN10). Each call runs in a stand-in workspace (.an_ws(), the AM
+# form); pins filled by running.
+# =============================================================================
+cat("\n--- AN. An expression given as the data that cannot be evaluated ---\n")
+
+.an_frame <- function() data.frame(
+  Wt39 = c(60, 72, 55, 80, 66, 70, 58, 75),
+  Ht39 = c(160, 175, 158, 182, 170, 168, 161, 177),
+  Gp39 = haven::labelled(c(1, 2, 1, 2, 1, 2, 1, 2), c(A = 1, B = 2)),
+  Tx39 = c("a", "b", "a", "c", "b", "a", "c", "b"),
+  Yb39 = c(0, 1, 0, 1, 1, 0, 0, 1), stringsAsFactors = FALSE)
+# .an_ws(): a console session's workspace holding the frames given, the
+# jstats functions the checks call, and utils::head(), as a session's
+# search path shows them; its parent is base R's environment (AM's .am_ws).
+.an_ws <- function(...) {
+  ws <- new.env(parent = baseenv())
+  fr <- list(...)
+  for (nm in names(fr)) assign(nm, fr[[nm]], envir = ws)
+  for (f in c("jdesc", "jfreq", "jcorr", "jrecode", "jrelabel", "jscreen",
+              "jsum", "jplot", "jsave", "jcopy", "jsubset", "jnumeric", "juse",
+              "jt", "jaov", "jcrosstab", "jlm", "jlogistic"))
+    assign(f, get(f), envir = ws)
+  assign("head", utils::head, envir = ws)
+  ws
+}
+.an_meant <- function(fn, typed, fr, line) {
+  paste0(fn, "(): '", typed, "' not found.\nIf you meant the data frame ", fr,
+         ":\n  ", line)
+}
+.an_grab <- function(cl, ws) grab(eval(str2lang(cl), ws))
+# .an_runs(): the offered line (the message's last line) run where the call
+# was typed, a plot drawn on a null device; TRUE when it runs.
+.an_runs <- function(msg, ws) {
+  ln <- trimws(utils::tail(strsplit(msg, "\n", fixed = TRUE)[[1L]], 1L))
+  tryCatch({
+    grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+    utils::capture.output(suppressMessages(suppressWarnings(
+      eval(str2lang(ln), ws))))
+    TRUE }, error = function(e) FALSE)
+}
+check("AN01 the five formula functions and jplot()'s formula form: an expression whose frame is typed wrong is offered that frame inside the expression, the call's other arguments and data = kept (pinned whole), and the line runs (R had said \"object 'w3' not found\")",
+      local({ ws <- .an_ws(w39 = .an_frame())
+              cs <- list(c("jt", 'jt(Wt39 ~ Gp39, w3[w3$Ht39 > 160, ])',
+                           'jt(Wt39 ~ Gp39, w39[w39$Ht39 > 160, ])'),
+                         c("jaov", 'jaov(Wt39 ~ Gp39, subset(w3, Ht39 > 160))',
+                           'jaov(Wt39 ~ Gp39, subset(w39, Ht39 > 160))'),
+                         c("jcrosstab", 'jcrosstab(Gp39 ~ Tx39, head(w3))',
+                           'jcrosstab(Gp39 ~ Tx39, head(w39))'),
+                         c("jlm", 'jlm(Wt39 ~ Ht39, w3[w3$Ht39 > 160, ])',
+                           'jlm(Wt39 ~ Ht39, w39[w39$Ht39 > 160, ])'),
+                         c("jlogistic", 'jlogistic(Yb39 ~ Wt39, subset(w3, Ht39 > 160))',
+                           'jlogistic(Yb39 ~ Wt39, subset(w39, Ht39 > 160))'),
+                         c("jt", 'jt(Wt39 ~ Gp39, data = w3[w3$Ht39 > 160, ])',
+                           'jt(Wt39 ~ Gp39, data = w39[w39$Ht39 > 160, ])'),
+                         c("jplot", 'jplot(Wt39 ~ Ht39, w3[w3$Ht39 > 160, ])',
+                           'jplot(Wt39 ~ Ht39, w39[w39$Ht39 > 160, ])'))
+              all(vapply(cs, function(x) {
+                m <- .an_grab(x[2L], ws)
+                identical(m, .an_meant(x[1L], "w3", "w39", x[3L])) && .an_runs(m, ws)
+              }, logical(1))) }))
+check("AN02 ... jplot()'s formula form given a NAME typed wrong gets ruling R36's offer too (it had R's own message: R36 had reached the five)",
+      local({ ws <- .an_ws(w39 = .an_frame())
+              m <- .an_grab("jplot(Wt39 ~ Ht39, w3)", ws)
+              identical(m, .an_meant("jplot", "w3", "w39", "jplot(Wt39 ~ Ht39, w39)")) &&
+                .an_runs(m, ws) }))
+check("AN03 the data-first functions, jsave() and jcopy(): the same offer, the call's other arguments kept (pinned whole), and each line runs (they offered fn(MyData, <the expression>), the other arguments dropped)",
+      local({ ws <- .an_ws(w39 = .an_frame(),
+                           f39 = file.path(tempdir(), "an39.rds"))
+              on.exit(unlink(file.path(tempdir(), "an39.rds")), add = TRUE)
+              cs <- list(c("jdesc", 'jdesc(w3[w3$Ht39 > 160, ], Wt39)',
+                           'jdesc(w39[w39$Ht39 > 160, ], Wt39)'),
+                         c("jfreq", 'jfreq(subset(w3, Ht39 > 160), Gp39)',
+                           'jfreq(subset(w39, Ht39 > 160), Gp39)'),
+                         c("jcorr", 'jcorr(w3[w3$Ht39 > 160, ], Wt39, Ht39)',
+                           'jcorr(w39[w39$Ht39 > 160, ], Wt39, Ht39)'),
+                         c("jrecode", 'jrecode(w3[w3$Ht39 > 160, ], Gp39, map = "1=0; 2=1")',
+                           'jrecode(w39[w39$Ht39 > 160, ], Gp39, map = "1=0; 2=1")'),
+                         c("jrelabel", 'jrelabel(subset(w3, Ht39 > 160), Gp39, labels = "1=A; 2=B")',
+                           'jrelabel(subset(w39, Ht39 > 160), Gp39, labels = "1=A; 2=B")'),
+                         c("jsum", 'jsum(w3[w3$Ht39 > 160, ], Wt39, Ht39)',
+                           'jsum(w39[w39$Ht39 > 160, ], Wt39, Ht39)'),
+                         c("jplot", 'jplot(w3[w3$Ht39 > 160, ], Wt39)',
+                           'jplot(w39[w39$Ht39 > 160, ], Wt39)'),
+                         c("jfreq", 'jfreq(w3$Gp39)', 'jfreq(w39$Gp39)'),
+                         c("jsave", 'jsave(w3[w3$Ht39 > 160, ], f39)',
+                           'jsave(w39[w39$Ht39 > 160, ], f39)'),
+                         c("jcopy", 'jcopy(w3[w3$Ht39 > 160, ], cp39)',
+                           'jcopy(w39[w39$Ht39 > 160, ], cp39)'))
+              all(vapply(cs, function(x) {
+                m <- .an_grab(x[2L], ws)
+                identical(m, .an_meant(x[1L], "w3", "w39", x[3L])) && .an_runs(m, ws)
+              }, logical(1))) }))
+check("AN04 under a juse() default the expression is still not a variable: the same offer (it said the expression \"was not found in the w39 data frame\"), and a condition keeps the default's sentence",
+      local({ ws <- .an_ws(w39 = .an_frame())
+              ms <- tryCatch({ quiet(evalq(juse(w39), ws))
+                               c(.an_grab("jfreq(subset(w3, Ht39 > 160), Gp39)", ws),
+                                 .an_grab("jsubset(Htt39 > 160)", ws)) },
+                             finally = quiet(juse(NULL)))
+              identical(ms[1L], .an_meant("jfreq", "w3", "w39",
+                                          "jfreq(subset(w39, Ht39 > 160), Gp39)")) &&
+                identical(ms[2L], paste0(
+                  "jsubset(): Htt39 > 160 names Htt39, which was not found in the w39\n",
+                  "data frame.\n",
+                  "Check the spelling.\n",
+                  "w39 is the juse() default -- if you meant a different data frame, name it\n",
+                  "in the call.")) }))
+check("AN05 nothing offered, \"not found\" alone: a name near no frame; two frames holding the variables; nothing typed to match; jsubset() and a registration verb, which refuse an expression as the data; an expression that gives no data frame; two names found nowhere, named together",
+      local({ ws <- .an_ws(w39 = .an_frame())
+              ws2 <- .an_ws(w39 = .an_frame(), w40 = .an_frame())
+              identical(.an_grab("jt(Wt39 ~ Gp39, zz[zz$Ht39 > 160, ])", ws), "jt(): 'zz' not found.") &&
+                identical(.an_grab("jt(Wt39 ~ Gp39, w3[w3$Ht39 > 160, ])", ws2), "jt(): 'w3' not found.") &&
+                identical(.an_grab("jscreen(head(w3))", ws), "jscreen(): 'w3' not found.") &&
+                identical(.an_grab("jsubset(w3[w3$Ht39 > 160, ], Ht39 > 170)", ws), "jsubset(): 'w3' not found.") &&
+                identical(.an_grab("jnumeric(w3[w3$Ht39 > 160, ], Wt39)", ws), "jnumeric(): 'w3' not found.") &&
+                identical(.an_grab("jlm(Wt39 ~ Ht39, w3$Ht39)", ws), "jlm(): 'w3' not found.") &&
+                identical(.an_grab("jt(Wt39 ~ Gp39, merge(aa, bb))", ws), "jt(): 'aa' and 'bb' not found.") }))
+check("AN06 a column the frame lacks, after $ or in subset()'s condition: the not-found sentence (pinned whole), every such column of the frame named (jt() gave vctrs' \"Can't subset elements\", jfreq() said the expression \"names the w39 data frame\")",
+      local({ ws <- .an_ws(w39 = .an_frame())
+              identical(.an_grab("jt(Wt39 ~ Gp39, w39[w39$Htt39 > 160, ])", ws),
+                        "jt(): Htt39 was not found in the w39 data frame.\nCheck the spelling.") &&
+                identical(.an_grab("jfreq(subset(w39, Htt39 > 160), Gp39)", ws),
+                          "jfreq(): Htt39 was not found in the w39 data frame.\nCheck the spelling.") &&
+                identical(.an_grab("jt(Wt39 ~ Gp39, w39[w39$Htt39 > 1 & w39$Wtt39 > 1, ])", ws),
+                          "jt(): Htt39 and Wtt39 were not found in the w39 data frame.\nCheck the spelling.") }))
+check("AN07 any other failure is relayed in the house voice: what was typed \"could not be evaluated.\", then \"R reported:\" over R's message (jt() printed R's own error, jfreq() said it \"names the w39 data frame\")",
+      local({ ws <- .an_ws(w39 = .an_frame())
+              rel <- function(fn, typed, m) startsWith(m, paste0(
+                fn, "(): ", typed, " could not be evaluated.\nR reported:\n  ")) &&
+                length(strsplit(m, "\n", fixed = TRUE)[[1L]]) == 3L
+              rel("jt", "w39[w39$Ht39 > 160]", .an_grab("jt(Wt39 ~ Gp39, w39[w39$Ht39 > 160])", ws)) &&
+                rel("jfreq", "w39[w39$Ht39 > 160]", .an_grab("jfreq(w39[w39$Ht39 > 160], Gp39)", ws)) &&
+                rel("jlm", "subst(w39, Ht39 > 160)", .an_grab("jlm(Wt39 ~ Ht39, subst(w39, Ht39 > 160))", ws)) }))
+check("AN08 controls -- a condition or a computed vector in the data's place keeps the resolver's stop and its two routes (pinned whole), and an expression that evaluates is read as before",
+      local({ ws <- .an_ws(w39 = .an_frame())
+              m1 <- .an_grab("jsubset(Htt39 > 160)", ws)
+              m2 <- .an_grab("jdesc(log(Wtt39))", ws)
+              identical(m1, paste0(
+                "jsubset(): Htt39 > 160 needs a data frame, and none was named or set\n",
+                "as the default.\n",
+                "Name the data frame first:\n",
+                "  jsubset(MyData, Htt39 > 160)\n",
+                "Or set a default first, then run the call:\n",
+                "  juse(MyData)\n",
+                "  jsubset(Htt39 > 160)")) &&
+                identical(m2, paste0(
+                  "jdesc(): log(Wtt39) needs a data frame, and none was named or set as\n",
+                  "the default.\n",
+                  "Name the data frame first:\n",
+                  "  jdesc(MyData, log(Wtt39))\n",
+                  "Or set a default first, then run the call:\n",
+                  "  juse(MyData)\n",
+                  "  jdesc(log(Wtt39))")) &&
+                identical(.an_grab("jfreq(w39[w39$Ht39 > 160, ], Gp39)", ws), "") }))
+check("AN09 an expression that gives no rows by reading a column its frame lacks -- a plain data frame's $ gives NULL -- gets the same not-found sentence (pinned whole): a formula function, jplot()'s two forms, a data-first function given [[ ]], jrecode(), and jsave() and jcopy(), which saved and made an empty one; a frame a condition on its own columns leaves empty keeps the no-rows stop",
+      local({ f39 <- file.path(tempdir(), "an39e.rds"); unlink(f39)
+              ws <- .an_ws(p39 = data.frame(Wt39 = c(60, 72, 55, 80),
+                                            Ht39 = c(160, 175, 158, 182),
+                                            Gp39 = c(1, 2, 1, 2)),
+                           f39 = f39)
+              on.exit(unlink(f39), add = TRUE)
+              s <- "Htt39 was not found in the p39 data frame.\nCheck the spelling."
+              cs <- c(jt      = 'jt(Wt39 ~ Gp39, p39[p39$Htt39 > 160, ])',
+                      jplot   = 'jplot(Wt39 ~ Ht39, p39[p39$Htt39 > 160, ])',
+                      jplot   = 'jplot(p39[p39$Htt39 > 160, ], Wt39)',
+                      jdesc   = 'jdesc(p39[p39[["Htt39"]] > 160, ], Wt39)',
+                      jrecode = 'jrecode(p39[p39$Htt39 > 160, ], Gp39, map = "1=0; 2=1")',
+                      jsave   = 'jsave(p39[p39$Htt39 > 160, ], f39)',
+                      jcopy   = 'jcopy(p39[p39$Htt39 > 160, ], cp39e)')
+              ok <- vapply(seq_along(cs), function(k)
+                identical(.an_grab(cs[[k]], ws), paste0(names(cs)[k], "(): ", s)),
+                logical(1))
+              all(ok) && !file.exists(f39) &&
+                !exists("cp39e", envir = ws, inherits = FALSE) &&
+                identical(.an_grab("jt(Wt39 ~ Gp39, p39[p39$Ht39 > 200, ])", ws),
+                          "jt(): the p39[p39$Ht39 > 200, ] data frame has no rows, so there is\nnothing to analyze.") }))
+check("AN10 R's own warnings while the data are read: a tibble's \"Unknown or uninitialised column\" is dropped where the not-found sentence says it -- the read stopping, or giving no rows -- where it trailed the stop; a read that goes on keeps R's warning",
+      local({ ws <- .an_ws(t39 = tibble::as_tibble(data.frame(
+                             Wt39 = c(60, 72, 55, 80), Ht39 = c(160, 175, 158, 182),
+                             Gp39 = c(1, 2, 1, 2))))
+              s <- "Htt39 was not found in the t39 data frame.\nCheck the spelling."
+              a <- .an_grab("jt(Wt39 ~ Gp39, t39[t39$Htt39 > 160, ])", ws)
+              b <- .an_grab("jdesc(t39[which(t39$Htt39 > 160), ], Wt39)", ws)
+              w <- .an_grab("jdesc(transform(t39, L39 = log(Wt39 - 70)), L39)", ws)
+              identical(a, paste0("jt(): ", s)) && identical(b, paste0("jdesc(): ", s)) &&
+                identical(w, "NaNs produced") }))
+rm(.an_frame, .an_ws, .an_meant, .an_grab, .an_runs)
+
+# =============================================================================
+# AO -- COUNTS IN PROSE TAKE THOUSANDS SEPARATORS (S392, v0.9.265; the (S238)
+#       .jst_fmt_n sweep)
+# =============================================================================
+# The S238 convention, applied package-wide at S392: a count in a note, a
+# warning, a stop or a status line goes through .jst_fmt_n() ("1,540
+# cases"); a table's cells, a data value and anything inside a printed call
+# stay bare. Only a count of 1,000 or more prints differently, so these use
+# a frame of 1,540 rows. (The listwise note: cps_check.R N64.)
+# =============================================================================
+cat("\n--- AO. Counts in prose take thousands separators ---\n")
+
+.ao_frame <- function() {
+  set.seed(64)
+  f <- data.frame(A = round(stats::rnorm(1540, 50, 10), 1),
+                  B = round(stats::rnorm(1540, 20, 5), 1))
+  f$A[1:300] <- NA; f$B[281:503] <- NA
+  f
+}
+check("AO01 jcomplete()'s status: \"Complete cases: 1,037 of 1,540\", where it printed 1037 and 1540; the table's N column stays bare",
+      local({ .d64 <- .ao_frame()
+              v <- tryCatch(plines(jcomplete(.d64, A, B)),
+                            finally = quiet(jcomplete(.d64, NULL)))
+              any(v == "  Complete cases: 1,037 of 1,540 (67.3%)") &&
+                any(grepl("^A +1540 +300 ", v)) }))
+check("AO02 ruling R19's stop counts the cases with the separator, in a formula term and in subset = alike (it said \"the 1540 cases\")",
+      local({ .d64 <- .ao_frame(); w64 <- rep(1, 900)
+              a <- flat(grab(jlm(A ~ I(B * w64), .d64)))
+              b <- flat(grab(jdesc(.d64, A, subset = B > w64)))
+              all(grepl("It has 900 values for the 1,540 cases in the .d64 data frame.",
+                        c(a, b), fixed = TRUE)) }))
+rm(.ao_frame)
+
+# =============================================================================
 # P -- THE MESSAGE SURFACE, SWEPT (S337)
 # =============================================================================
 # P01 (S337) -- NO PREMATURE BREAK, swept over every condition grab() took.
@@ -7175,6 +7472,43 @@ check(paste0("P03 no message hedges a count with (s) or (ies), the map parser's 
       length(.seen) >= 300L && length(.ps) == 0L &&
         all(grepl("Invalid old value", .g_p03, fixed = TRUE)))
 if (length(.ps) > 0L) for (s in .ps) cat("        hedged: ", s$text, "\n")
+
+# P04 (S392) -- NO RUNTIME STRING SAYS "argument". Voice Rule B drops the
+# word (the S355 form names the input with its "=": map =, labels =,
+# numeric =), and the (S282) item's last 44 sites went at S392. Every string
+# constant in the package's functions and objects is read -- not only the
+# conditions grab() took, so a message no check reaches is read too --
+# except jai()'s orientation text, which Rule B does not reach (Jeff, S355).
+.p04_strings <- local({
+  ns  <- asNamespace("jstats")
+  out <- character(0)
+  walk <- function(x) {
+    if (is.character(x)) { out <<- c(out, x); return(invisible(NULL)) }
+    if (is.call(x) || is.pairlist(x) || is.expression(x)) {
+      xs <- as.list(x)
+      for (k in seq_along(xs)) {
+        if (identical(xs[[k]], quote(expr = ))) next
+        walk(xs[[k]])
+      }
+    }
+    invisible(NULL)
+  }
+  skip <- c(".jst_orientation_body", ".jst_orientation_machine_note")
+  for (nm in setdiff(ls(ns, all.names = TRUE), skip)) {
+    obj <- get(nm, envir = ns)
+    if (is.function(obj) && !is.primitive(obj)) {
+      walk(body(obj)); walk(formals(obj))
+    } else if (is.character(obj)) out <- c(out, obj)
+  }
+  out
+})
+.p04_hits <- unique(grep("\\bargument", .p04_strings, value = TRUE,
+                         ignore.case = TRUE))
+check(paste0("P04 no runtime string says \"argument\", jai()'s text aside (",
+             length(.p04_strings), " strings)"),
+      length(.p04_strings) >= 5000L && length(.p04_hits) == 0L)
+if (length(.p04_hits) > 0L) for (s in .p04_hits) cat("        says it: ", s, "\n")
+rm(.p04_strings, .p04_hits)
 
 # --- Verdict -----------------------------------------------------------------
 

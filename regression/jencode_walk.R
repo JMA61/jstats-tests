@@ -27,6 +27,27 @@
 #           Since S355 (Section 16): the NA rule's note on such a variable,
 #           and the parse layer phrased by the setting.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S392 EDIT (v0.9.265, 2026-10-22): SECTIONS 3, 7, 9 AND 16 RE-PINNED (the
+#           (S282) item, voice Rule B; Jeff's okay of the lean: "Okay for
+#           all defaults."). The map parser's stops lose their wrapper,
+#           "Error in map argument:" (Sections 3 and 16), and "the map
+#           argument" becomes "the map" (Section 3); the collapse note's
+#           last line names "labels =" where it said "the labels argument"
+#           (Sections 7 and 9). Section 9's and 16's Expected blocks FILLED
+#           BY RUNNING the file (fill.R); Section 3's two "Expected
+#           (exact)" blocks and Section 7's prose-form block re-pinned from a
+#           capture of the section on the build, line for line, and checked
+#           against it. Each section's "Things to look at", or a RE-PINNED
+#           note after its block, says what moved. On the PENDING line. A
+#           capture of every section of every walk on 0.9.264 and on the
+#           build: here Sections 3, 7, 9 and 16 moved, nothing else.
+#           harness.R verify: 18 of 18 sections in three orders and by
+#           prepare = TRUE; 32 of 32 Expected blocks found.
+#           LAST VERIFIED: v0.9.265, 2026-10-23 (S392) -- Sections 3, 7, 9
+#           and 16 WALKED on the WORKSTATION by Jeff through receive_all()
+#           ("walked, all okay"); PENDING back to none; R CMD check 0
+#           errors, 0 warnings, 0 notes; ALL BATTERIES GREEN (11 run, 3316
+#           checks); GitHub 319d995 (package).
 # S389 EDIT (v0.9.262, 2026-10-22): SECTION 11 RE-PINNED (Fix Slate 28, the
 #           remedy-line audit's finding A, Claude's call): given an
 #           expression as the data, every block of offered lines that names
@@ -556,9 +577,8 @@ tryCatch(jencode(tdat, Status, map = "\"Bail=1; Parole=2"),
                                  sep = ""))
 
 # Expected (exact):
-#   Caught: jencode(): Error in map argument: Unbalanced quotation mark in the
-#   map argument. A quoted word must open and close with the same mark, as
-#   in "Not stated"=9.
+#   Caught: jencode(): Unbalanced quotation mark in the map. A quoted word must
+#   open and close with the same mark, as in "Not stated"=9.
 
 # Commas between rules get the specific diagnosis, remedy on its own line:
 
@@ -567,9 +587,13 @@ tryCatch(jencode(tdat, Status, map = "Bail=1, Parole=2"),
                                  sep = ""))
 
 # Expected (exact; the runnable map line sits alone, never wrapped):
-#   Caught: jencode(): Error in map argument: It looks like commas were used to
-#   separate rules in the map string. Use semicolons instead:
+#   Caught: jencode(): It looks like commas were used to separate rules in the
+#   map string. Use semicolons instead:
 #     map = "Bail=1; Parole=2; Remand=3"
+#
+# RE-PINNED S392 (v0.9.265; the (S282) item, voice Rule B): both stops
+# without the parser's wrapper, "Error in map argument:", and the first
+# naming "the map" where it said "the map argument".
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -765,8 +789,7 @@ tdat$ReasonC <- jencode(tdat, ReasonDeclined,
 #   chosen for them:
 #     -99 <- "Refused", "Don't know", "No answer"
 #   The other numbers keep their original words as labels.
-#   Name each combined number with the labels argument, or later
-#   with jrelabel().
+#   Name each combined number with labels =, or later with jrelabel().
 #
 # Then the minting note, which names ALL THREE collapsing words in MAP
 # order (the S238 fix -- only the first was named before) and, because no
@@ -811,6 +834,9 @@ tdat$ReasonC <- jencode(tdat, ReasonDeclined,
 # to land after it. Either reading is useful for the logged item.
 #
 # Things to look at:
+#   - RE-PINNED S392 (the (S282) item, voice Rule B): the collapse note's
+#     last line, "Name each combined number with labels =, or later with
+#     jrelabel()." where it said "with the labels argument".
 #   - That map line is ONE UNWRAPPED LINE, about 150 columns. The D1
 #     remedy does not route through the packer that wraps the automatic
 #     and blank suggestions, so nothing holds it to 76. Pre-existing,
@@ -996,8 +1022,7 @@ ms9$MaritalD <- jencode(
 #   chosen for them:
 #     -99 <- "REF", "UNKNOWN"
 #   The other numbers keep their original words as labels.
-#   Name each combined number with the labels argument, or later
-#   with jrelabel().
+#   Name each combined number with labels =, or later with jrelabel().
 #
 #   Note: -99 was used for missing, from the missing.convention.codes default,
 #   and declared as a missing value on the encoded variable.
@@ -1050,6 +1075,9 @@ rm(ms9)
 #     number for each (REF=-98; UNKNOWN=-99): jencode() then prints the
 #     jdeclare_missing() call that declares both, the note Section 7 shows.
 #     Should the Render 1 note offer that map instead of the merged one?
+#     RE-PINNED S392 (the (S282) item, voice Rule B): the first note's last
+#     line, "Name each combined number with labels =, or later with
+#     jrelabel()." where it said "with the labels argument".
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -1600,10 +1628,9 @@ r16 <- jencode(r16d, Reply, map = "Yes=1; No=2; Refused=.a; NA=-98")
 joptions(missing.convention = "sas", quiet = TRUE)
 try(jencode(r16d, Reply, map = "Yes=1; No=maybe"))
 # Expected:
-#   Error : jencode(): Error in map argument: Invalid new value 'maybe' in map
-#   rule 'No=maybe'. New values must be numeric, the word missing, a system-NA
-#   alias (NA, System, or SYSMIS), or a SAS-style missing-value marker (.A
-#   through .Z).
+#   Error : jencode(): Invalid new value 'maybe' in map rule 'No=maybe'.
+#   New values must be numeric, the word missing, a system-NA alias (NA, System,
+#   or SYSMIS), or a SAS-style missing-value marker (.A through .Z).
 options(.jst_options_missing_convention = NULL)
 rm(r16d, r16)
 
@@ -1611,7 +1638,11 @@ rm(r16d, r16)
 #   - RENDER 1: one line that runs, where the note said to declare -98;
 #     "map NA to a Stata-style marker the encoded variable does not use";
 #   - RENDER 2: "SAS-style missing-value marker (.A through .Z)", and the
-#     word missing listed.
+#     word missing listed. RE-PINNED S392 (the (S282) item, voice Rule B):
+#     without "Error in map argument:" in front, which said again what the
+#     sentence after it says. The second sentence now opens a line: the
+#     wrapper breaks at a sentence's end rather than carry a word or two of
+#     the next sentence onto the line above.
 
 
 

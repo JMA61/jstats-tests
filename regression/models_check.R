@@ -83,6 +83,31 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S392 EDIT (v0.9.265, 2026-10-22): SECTION AH ADDED, 3 checks; AC01-AC05
+#           RE-PINNED. The (Session 88) Likert-tuning item and the (S282)
+#           item (Jeff's okay of the leans, S392: "Okay for all defaults.").
+#           (AH) the eleven anchor pairs added to the five families: each, as
+#           a lone four- or five-point item, reads Likert on its anchors
+#           alone, the five first families still do, sixteen pairs in all
+#           (AH01); an approve item and a true item draw no "seems
+#           categorical" warning from jdesc() or jcorr(), jscreen() calling
+#           them Likert (AH02); controls -- a "Not at all important ...
+#           Extremely important" item, a ruling still to be put, and a
+#           one-pole scale stay categorical (AH03). AC01-AC05 re-pinned to
+#           the name checks in Rule B's form, jlm()'s words prefixed
+#           jlogistic() ("numeric = names 'x2', which is not among the
+#           independent variables in d. Check for typos."; "... is listed in
+#           both numeric = and categorical ="; "categorical = is only needed
+#           for independent variables."). 553 -> 556 checks; on the 0.9.264
+#           master AC01-AC05, AH01 and AH02 red. MUTATION MAP (S392; each
+#           red): the approval pair removed AH01 AH02; an intensity pair
+#           added AH01 AH03.
+#           LAST VERIFIED: v0.9.265, 2026-10-23 (S392) -- 556/556 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3316 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty. GitHub 319d995 (package).
 # S391 EDIT (v0.9.264, 2026-10-22): SECTIONS AE, AF AND AG ADDED, 13
 #           checks; K07, K19 AND Q17 RE-PINNED. (AE) ruling R38 (Jeff, S391:
 #           "Your recommendation"): a labelled variable the structural check
@@ -6301,31 +6326,31 @@ cat("\n--- AC. The twin build: the name checks and the both-sides stop ---\n")
 check("AC01 numeric = naming a variable of the data that is not a predictor: jlogistic() stops with jlm()'s sentence, prefixed (it ran with the name ignored)",
       local({ p <- .ac_pair(jlm(y ~ x1 + hv, d, numeric = "x2"),
                             jlogistic(yb ~ x1 + hv, d, numeric = "x2"))
-              p$same && identical(p$lg, paste0("jlogistic(): numeric argument: 'x2' not found among ",
-                                               "independent variables in d. Check for typos.")) }))
+              p$same && identical(p$lg, paste0("jlogistic(): numeric = names 'x2', which is not ",
+                                               "among the independent variables in d. Check for typos.")) }))
 check("AC02 ... categorical = naming one: the same stop",
       local({ p <- .ac_pair(jlm(y ~ x1 + hv, d, categorical = "x2"),
                             jlogistic(yb ~ x1 + hv, d, categorical = "x2"))
-              p$same && identical(p$lg, paste0("jlogistic(): categorical argument: 'x2' not found among ",
-                                               "independent variables in d. Check for typos.")) }))
+              p$same && identical(p$lg, paste0("jlogistic(): categorical = names 'x2', which is not ",
+                                               "among the independent variables in d. Check for typos.")) }))
 check("AC03 ... count = naming one: the same stop",
       local({ p <- .ac_pair(jlm(y ~ x1 + hv, d, count = "x2"),
                             jlogistic(yb ~ x1 + hv, d, count = "x2"))
-              p$same && identical(p$lg, paste0("jlogistic(): count argument: 'x2' not found among ",
-                                               "independent variables in d. Check for typos.")) }))
+              p$same && identical(p$lg, paste0("jlogistic(): count = names 'x2', which is not ",
+                                               "among the independent variables in d. Check for typos.")) }))
 check("AC04 a predictor in both numeric = and categorical =, or in both count = and categorical =: jlogistic() stops as jlm() does (numeric = had won silently)",
       local({ p <- .ac_pair(jlm(y ~ x1 + hv, d, numeric = "hv", categorical = "hv"),
                             jlogistic(yb ~ x1 + hv, d, numeric = "hv", categorical = "hv"))
               q <- .ac_pair(jlm(y ~ x1 + hv, d, count = "hv", categorical = "hv"),
                             jlogistic(yb ~ x1 + hv, d, count = "hv", categorical = "hv"))
               p$same && q$same &&
-                identical(p$lg, "jlogistic(): 'hv' listed in both numeric and categorical arguments.") &&
-                identical(q$lg, "jlogistic(): 'hv' listed in both count and categorical arguments.") }))
+                identical(p$lg, "jlogistic(): 'hv' is listed in both numeric = and categorical =.") &&
+                identical(q$lg, "jlogistic(): 'hv' is listed in both count = and categorical =.") }))
 check("AC05 categorical = naming the outcome: jlogistic() gives jlm()'s note, and fits",
       local({ a <- flat(grab(jlogistic(yb ~ x1 + hv, d, categorical = c("yb", "hv"))))
               m <- quiet(jlogistic(yb ~ x1 + hv, d, categorical = c("yb", "hv")))
               grepl(paste0("Note: 'yb' is the dependent variable and is always treated as ",
-                           "numeric. The categorical argument is only needed for ",
+                           "numeric. categorical = is only needed for ",
                            "independent variables."), a, fixed = TRUE) &&
                 !is.null(m) }))
 check("AC06 categorical = naming a predictor registered with jdummy(): jlogistic() warns as jlm() does, and fits",
@@ -6624,6 +6649,93 @@ check("AG03 a filter that names the collapsed variable keeps its own stop, with 
                 identical(e, paste0(.ag_head, .ag_tail, "  jfreq(.ag_d[.ag_d$A == \"x\", ], B)")) &&
                 identical(r$frequencies$B$total, 6L) }))
 rm(.ag_d, .ag_head, .ag_tail, .r391_w)
+
+# =============================================================================
+# AH. The (Session 88) Likert-tuning item (S392, v0.9.265): eleven anchor
+#     pairs added to the five families
+# =============================================================================
+# Jeff's okay of the lean (S392): a measurement of 33 common single-question
+# wordings found the five families caught 7, and a scale the anchors miss
+# draws jdesc()'s and jcorr()'s "seems categorical" warning. Eleven pairs
+# were added: a second frequency pair (Never ... Very often), a second
+# quality pair (Very poor ... Very good), and approve, support, safe, true,
+# good, better, easy, happy and comfortable. The "Not at all X ...
+# Extremely X" scales are a ruling still to be put, and stay categorical
+# (AH03). Each item stands alone -- its neighbours carry other labels -- so
+# only the anchor branch can fire. Fixtures dotted; working objects in
+# local().
+# =============================================================================
+cat("\n--- AH. The Likert anchors: eleven pairs added ---\n")
+
+# .ah_w(): the warnings a call raises, its printed output swallowed (the
+# form of section AE's .r391_w(), which section AG removes).
+.ah_w <- function(expr) {
+  w <- character(0)
+  zz <- textConnection(".junk", "w", local = TRUE)
+  sink(zz, type = "output")
+  on.exit({ sink(type = "output"); close(zz) }, add = TRUE)
+  withCallingHandlers(tryCatch(suppressMessages(expr), error = function(e) NULL),
+                      warning = function(x) {
+                        w <<- c(w, conditionMessage(x)); invokeRestart("muffleWarning") })
+  w
+}
+.ah_item <- function(lab, n = 60L) {
+  k <- length(lab)
+  haven::labelled(rep(seq_len(k), length.out = n),
+                  labels = stats::setNames(seq_len(k), lab))
+}
+.ah_new <- list(
+  frequency2 = c("Never", "Rarely", "Sometimes", "Often", "Very often"),
+  quality2   = c("Very poor", "Poor", "Fair", "Good", "Very good"),
+  approval   = c("Strongly disapprove", "Disapprove", "Neither approve nor disapprove",
+                 "Approve", "Strongly approve"),
+  support    = c("Strongly oppose", "Oppose", "Neither support nor oppose",
+                 "Support", "Strongly support"),
+  safety     = c("Very unsafe", "A bit unsafe", "Fairly safe", "Very safe"),
+  truth      = c("Definitely false", "Mostly false", "Mostly true", "Definitely true"),
+  goodness   = c("Very bad", "Bad", "Neither good nor bad", "Good", "Very good"),
+  change     = c("Much worse", "Somewhat worse", "About the same", "Somewhat better",
+                 "Much better"),
+  ease       = c("Very difficult", "Difficult", "Neither easy nor difficult", "Easy",
+                 "Very easy"),
+  happiness  = c("Very unhappy", "Unhappy", "Neither happy nor unhappy", "Happy",
+                 "Very happy"),
+  comfort    = c("Very uncomfortable", "Uncomfortable", "Comfortable", "Very comfortable"))
+.ah_old <- list(
+  agreement    = c("Strongly disagree", "Disagree", "Agree", "Strongly agree"),
+  satisfaction = c("Very dissatisfied", "Dissatisfied", "Satisfied", "Very satisfied"),
+  frequency    = c("Never", "Rarely", "Sometimes", "Often", "Always"),
+  likelihood   = c("Very unlikely", "Unlikely", "Likely", "Very likely"),
+  quality      = c("Poor", "Fair", "Good", "Very good", "Excellent"))
+check("AH01 each of the eleven new pairs, as a lone four- or five-point item, reads Likert on its anchors alone -- no frame named, so no battery -- and the five first families still do; sixteen pairs in all",
+      { hit <- vapply(.ah_new, function(s) jstats:::.jst_is_likert(.ah_item(s)), logical(1))
+        old <- vapply(.ah_old, function(s) jstats:::.jst_is_likert(.ah_item(s)), logical(1))
+        length(hit) == 11L && all(hit) && all(old) &&
+          length(jstats:::.jst_likert_anchor_families) == 16L })
+check("AH02 so an item worded that way draws no \"seems categorical\" warning from jdesc() or jcorr(), and jscreen() calls it Likert (an approve item and a true item, each between plain columns)",
+      local({ set.seed(88)
+              e <- data.frame(S = round(stats::rnorm(60, 10, 2), 2))
+              e$Apr <- .ah_item(.ah_new$approval); e$T <- stats::rnorm(60)
+              e$Tru <- .ah_item(.ah_new$truth);    e$U <- stats::rnorm(60)
+              a <- .ah_w(jdesc(e, Apr, Tru)); b <- .ah_w(jcorr(e, S, Apr))
+              v <- lines_of(jscreen(e))
+              identical(a, character(0)) && identical(b, character(0)) &&
+                any(grepl("^Apr +Categorical +Likert +5$", v)) &&
+                any(grepl("^Tru +Categorical +Likert +4$", v)) }))
+check("AH03 controls: a \"Not at all important ... Extremely important\" item is still categorical -- jdesc()'s warning and jscreen()'s \"5-category\" -- as is a one-pole scale (\"Not at all satisfied\" ... \"Very satisfied\", no \"dissatisfied\")",
+      local({ set.seed(88)
+              e <- data.frame(S = round(stats::rnorm(60, 10, 2), 2))
+              e$Imp <- .ah_item(c("Not at all important", "Slightly important",
+                                  "Moderately important", "Very important",
+                                  "Extremely important"))
+              e$T <- stats::rnorm(60)
+              one <- .ah_item(c("Not at all satisfied", "Slightly satisfied",
+                                "Very satisfied"))
+              a <- .ah_w(jdesc(e, Imp)); v <- lines_of(jscreen(e))
+              identical(flat(a), "Imp seems categorical. Descriptive statistics may not be meaningful.") &&
+                any(grepl("^Imp +Categorical +5-category +5$", v)) &&
+                !jstats:::.jst_is_likert(one) }))
+rm(.ah_w, .ah_item, .ah_new, .ah_old)
 
 # --- Verdict -----------------------------------------------------------------
 

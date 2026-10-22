@@ -31,8 +31,23 @@
 #           S349 jplot()'s one-line N statement (N61); and since S373 the
 #           blank footnote's two routes, a factor's one, and blanks declared
 #           missing as one row of the Missing block (N58d2, N58d3); and since
-#           S382 the listwise note's one sentence (N63).
+#           S382 the listwise note's one sentence (N63); and since S392
+#           the note's count with thousands separators (N64).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S392 EDIT (v0.9.265, 2026-10-22): the (S238) .jst_fmt_n sweep (Jeff's
+#           okay of the lean, S392: "Okay for all defaults."). NEW SECTION
+#           N64, one check: the listwise note's count with the thousands
+#           separator -- "would leave 1,037 cases." on a frame of 1,540 rows,
+#           where it said 1037 -- in jdesc() and jfreq() (N64a); the Case
+#           Processing block's counts are a table's and stay bare. 271 ->
+#           272 checks; on the 0.9.264 master N64a red. MUTATION MAP (S392):
+#           counts without separators N64a.
+#           LAST VERIFIED: v0.9.265, 2026-10-23 (S392) -- 272/272 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3316 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty. GitHub 319d995 (package).
 # S382 EDIT (v0.9.256, 2026-10-21): Fix Slate 25. N60a and N60g
 #           RE-PINNED to the listwise note without "first" (Jeff, S381:
 #           "awkward and unnecessary"). NEW SECTION N63, three checks: the
@@ -3086,6 +3101,23 @@ check("N63c one home: the printer's default is the constant, the constant is the
           !any(grepl("notification_template|Listwise deletion using",
                      c(deparse(body(jdesc)), deparse(body(jfreq))))) })
 rm(.d63, .e63, .z63, .s63)
+
+# =============================================================================
+# N64 -- THE LISTWISE NOTE'S COUNT WITH THOUSANDS SEPARATORS (S392, v0.9.265)
+# =============================================================================
+# The (S238) .jst_fmt_n sweep: a count in a note goes through .jst_fmt_n(),
+# so 1,037 cases left print with the separator, where the note said 1037.
+# The Case Processing block's own counts are a table's and stay bare.
+reset()
+set.seed(64)
+.d64 <- data.frame(A = round(stats::rnorm(1540, 50, 10), 1),
+                   B = round(stats::rnorm(1540, 20, 5), 1))
+.d64$A[1:300] <- NA; .d64$B[281:503] <- NA
+check("N64a the listwise note's count with the separator: \"would leave 1,037 cases.\", in jdesc() and jfreq()",
+      { v1 <- plines(jdesc(.d64, A, B)); v2 <- plines(jfreq(.d64, A, B))
+        s <- "Note: Listwise deletion using jcomplete() would leave 1,037 cases."
+        sum(v1 == s) == 1L && sum(v2 == s) == 1L })
+rm(.d64)
 
 # --- Verdict -----------------------------------------------------------------
 

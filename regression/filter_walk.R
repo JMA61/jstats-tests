@@ -43,6 +43,9 @@
 #           frame, and the recode family's map and labels stops (G9);
 #           since S391 a data frame's name typed wrong, offered as the one
 #           data frame holding the variables typed after it (G10);
+#           since S392 an expression given as the data that cannot be
+#           evaluated, said in the house voice, its data frame offered
+#           where ruling R36's conditions hold (G11);
 #           since S359 the shape check counting cases and naming the
 #           workspace object a wrong count came from (I1), and the vector
 #           path's refusal of a condition on another variable (I2);
@@ -55,6 +58,35 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S392 EDIT (v0.9.265; the (S391) expression-typo item and the (S282)
+#           item, Jeff's okay of the leans: "Okay for all defaults."): NEW
+#           SECTION G11 -- 61 sections -> 62 -- and SECTION G9 RE-PINNED.
+#           G11, four renders, each in a stand-in workspace holding one data
+#           frame, g11: an expression where the data frame goes with that
+#           frame's name typed wrong inside it is "not found", with ruling
+#           R36's offer -- the expression with g11 in its place, every other
+#           input kept -- in the formula functions, which had given R's own
+#           "object 'g1' not found", and in the data-first functions, jsave()
+#           and jcopy(); jsubset() and a registration verb, which take no
+#           expression as their data, and two names found nowhere, "not
+#           found" alone; a column g11 lacks, after $ (where the expression
+#           gives no rows rather than stopping) and in subset(), the
+#           not-found sentence; any other failure R's own words under "R
+#           reported:". G9's Render 3: the named-arguments stop in Rule B's
+#           form, "when the data frame is omitted, every input after the
+#           variable must be named." G11 and G9's two blocks FILLED BY
+#           RUNNING the file (fill.R). Both on the PENDING line: the wording
+#           and the riders are Claude's. A capture of every section of every
+#           walk on 0.9.264 and on the build (the temporary paths aside):
+#           here only G9 moved. Sandbox: 98 of 98 Expected blocks found in a
+#           straight run; harness.R derive gives G11 no NEEDS; verify: 62 of
+#           62 sections in three orders and by prepare = TRUE. The human
+#           half of filter_check.R sections AN and P04.
+# LAST VERIFIED: v0.9.265, 2026-10-23 (S392) -- G9 and G11 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (11 run, 3316 checks); GitHub 319d995
+#           (package).
 # S391 EDIT (v0.9.264; ruling R36): NEW SECTION G10 -- 60 sections -> 61.
 #           Four renders: a first name that is no object and no variable,
 #           when one data frame holds every variable typed after it and its
@@ -2354,12 +2386,12 @@ caught(jencode(Nam9, Name9, map = "a=1"))
 juse(NULL)
 # Expected:
 #   Default data frame set to: g9
-#   Caught: jrecode(): when the data argument is omitted, all subsequent
-#   arguments must be named.
+#   Caught: jrecode(): when the data frame is omitted, every input after the
+#   variable must be named.
 #   Name the map:
 #     jrecode(Score9, map = "1=2; else=copy")
-#   Caught: jrecode(): when the data argument is omitted, all subsequent
-#   arguments must be named.
+#   Caught: jrecode(): when the data frame is omitted, every input after the
+#   variable must be named.
 #   Caught: jencode(): Nam9 was not found in the g9 data frame.
 #   Check the spelling.
 #   g9 is the juse() default -- if you meant a different data frame, name it
@@ -2485,7 +2517,10 @@ rm(.def_g9, .conv_g9, .ws_g9, g9)
 #     the default hint; a variable of the default with ONE unnamed argument
 #     after it gets the call with that argument named, on a line of its
 #     own; with two unnamed, the sentence alone, since which is the map
-#     cannot be told (AG04, AG05).
+#     cannot be told (AG04, AG05). RE-PINNED S392 (the (S282) item, voice
+#     Rule B): "when the data frame is omitted, every input after the
+#     variable must be named." where it said "when the data argument is
+#     omitted, all subsequent arguments must be named."
 #   - Render 4: "g9" in quotes with no variable had been offered jdesc(g9),
 #     which stopped for want of variables; jplot(1:3) "needs a data frame"
 #     and jplot(MyData, 1:3), the value taken for a variable; nofr, a single
@@ -2625,6 +2660,130 @@ rm(.def_g10, .ws_g10, g10)
 #     AM06). Is "If you meant the data frame g10:" the right lead, and does
 #     the zz rule (no offer when every letter differs) match how you would
 #     read a typo?
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# G11 -- an expression given as the data that cannot be evaluated (S392) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.265 (the (S391) item; Jeff at S392: "Okay for all defaults."). An
+# expression where the data frame goes -- g11[g11$Age11 > 40, ],
+# subset(g11, Age11 > 30), head(g11) -- with the data frame's name typed
+# wrong inside it: the five formula functions printed R's own "Error:
+# object 'g1' not found", no prefix, and the data-first functions read the
+# expression as a variable, offering jdesc(MyData, <the expression>) with
+# the call's other inputs dropped. Now a name found nowhere is "not found",
+# with ruling R36's offer -- the expression with the data frame in its
+# place, every other input kept -- where R36's conditions hold and that
+# expression gives a data frame (Render 1, the formula functions; Render 2,
+# the data-first functions, jsave() and jcopy()). jsubset() and the
+# registration verbs, which take no expression as their data, and two names
+# found nowhere get "not found" alone (Render 3). A column the data frame
+# lacks gets the not-found sentence -- where the expression stops, and
+# where it gives no rows for want of the column -- and any other failure
+# R's own words under "R reported:" (Render 4). Each runs in .ws_g11, a
+# stand-in for a console session whose workspace holds one data frame,
+# g11. The assertion side is filter_check.R section AN.
+.def_g11 <- getOption(".jst_default_data")
+options(.jst_default_data = NULL)
+g11 <- data.frame(Score11 = c(4, 7, 5, 8, 6, 9, 5, 7),
+                  Group11 = rep(1:2, 4),
+                  Age11   = c(35, 52, 41, 60, 28, 47, 39, 55))
+.ws_g11 <- new.env(parent = baseenv())
+.ws_g11$g11 <- g11
+for (.f in c("jdesc", "jfreq", "jsave", "jcopy", "jsubset", "jnumeric", "jt",
+             "jaov", "jlm"))
+  assign(.f, get(.f), envir = .ws_g11)
+assign("head", utils::head, envir = .ws_g11)
+rm(.f)
+
+# Render 1: the formula functions, where R had answered; the data = form
+# and subset = kept.
+caught(evalq(jt(Score11 ~ Group11, g1[g1$Age11 > 40, ]), .ws_g11))
+caught(evalq(jaov(Score11 ~ Group11, data = subset(g1, Age11 > 30)), .ws_g11))
+caught(evalq(jlm(Score11 ~ Age11, head(g1), subset = Group11 == 1), .ws_g11))
+# Expected:
+#   Caught: jt(): 'g1' not found.
+#   If you meant the data frame g11:
+#     jt(Score11 ~ Group11, g11[g11$Age11 > 40, ])
+#   Caught: jaov(): 'g1' not found.
+#   If you meant the data frame g11:
+#     jaov(Score11 ~ Group11, data = subset(g11, Age11 > 30))
+#   Caught: jlm(): 'g1' not found.
+#   If you meant the data frame g11:
+#     jlm(Score11 ~ Age11, head(g11), subset = Group11 == 1)
+
+# Render 2: the data-first functions, jsave() and jcopy(), their other
+# inputs kept.
+caught(evalq(jdesc(g1[g1$Age11 > 40, ], Score11), .ws_g11))
+caught(evalq(jfreq(g1$Group11), .ws_g11))
+caught(evalq(jsave(subset(g1, Age11 > 40), "older11.sav"), .ws_g11))
+caught(evalq(jcopy(g1[g1$Age11 > 40, ], older11), .ws_g11))
+# Expected:
+#   Caught: jdesc(): 'g1' not found.
+#   If you meant the data frame g11:
+#     jdesc(g11[g11$Age11 > 40, ], Score11)
+#   Caught: jfreq(): 'g1' not found.
+#   If you meant the data frame g11:
+#     jfreq(g11$Group11)
+#   Caught: jsave(): 'g1' not found.
+#   If you meant the data frame g11:
+#     jsave(subset(g11, Age11 > 40), "older11.sav")
+#   Caught: jcopy(): 'g1' not found.
+#   If you meant the data frame g11:
+#     jcopy(g11[g11$Age11 > 40, ], older11)
+
+# Render 3: "not found" alone -- jsubset() and a registration verb, which
+# take no expression as their data, and two names found nowhere, named
+# together.
+caught(evalq(jsubset(g1[g1$Age11 > 40, ], Score11 > 5), .ws_g11))
+caught(evalq(jnumeric(g1[g1$Age11 > 40, ], Score11), .ws_g11))
+caught(evalq(jt(Score11 ~ Group11, merge(aa, bb)), .ws_g11))
+# Expected:
+#   Caught: jsubset(): 'g1' not found.
+#   Caught: jnumeric(): 'g1' not found.
+#   Caught: jt(): 'aa' and 'bb' not found.
+
+# Render 4: the data frame's name right, a column's wrong -- after $, and
+# in subset()'s condition -- then an expression that fails for another
+# reason (a condition on rows where the columns are picked).
+caught(evalq(jt(Score11 ~ Group11, g11[g11$Agee11 > 40, ]), .ws_g11))
+caught(evalq(jfreq(subset(g11, Agee11 > 40), Group11), .ws_g11))
+caught(evalq(jfreq(g11[g11$Age11 > 40], Group11), .ws_g11))
+# Expected:
+#   Caught: jt(): Agee11 was not found in the g11 data frame.
+#   Check the spelling.
+#   Caught: jfreq(): Agee11 was not found in the g11 data frame.
+#   Check the spelling.
+#   Caught: jfreq(): g11[g11$Age11 > 40] could not be evaluated.
+#   R reported:
+#     undefined columns selected
+options(.jst_default_data = .def_g11)
+rm(.def_g11, .ws_g11, g11)
+
+# Things to look at:
+#   - Render 1: the formula functions had printed R's own "Error: object
+#     'g1' not found", no jt(): in front. Now "'g1' not found." then "If
+#     you meant the data frame g11:" and the call as typed, g11 in g1's
+#     place inside the expression, data = and subset = kept (AN01).
+#   - Render 2: jdesc() and jfreq() had read the expression as a variable
+#     -- "... needs a data frame, and none was named or set as the
+#     default." with jdesc(MyData, g1[g1$Age11 > 40, ]) and the default's
+#     route; jsave() said "'subset(g1, Age11 > 40)' could not be
+#     evaluated." and offered jsave(g11, "mydata.sav"), its file name
+#     replaced; jcopy() gave R's own "object 'g1' not found". Now the same
+#     offer as Render 1, jsave()'s file and jcopy()'s name kept (AN03).
+#   - Render 3: jsubset() and jnumeric() refuse an expression as their
+#     data, so a line offering one would stop again: "not found" alone.
+#     merge(aa, bb) names two things found nowhere, named together (AN05).
+#   - Render 4: Agee11 is a column g11 lacks: the not-found sentence the
+#     variable lists give. After $ the expression does not stop -- a data
+#     frame's $ gives NULL for a name it lacks, so g11[g11$Agee11 > 40, ]
+#     has no rows -- and jt() had printed its title, then "the
+#     g11[g11$Agee11 > 40, ] data frame has no rows, so there is nothing to
+#     analyze." (AN09; jsave() saved an empty file). In subset() it stops,
+#     and jfreq() had said the expression "names the g11 data frame" (AN06).
+#     The last is no typo: g11[g11$Age11 > 40] picks COLUMNS by a condition
+#     on rows, and R's own words are relayed under "R reported:" (AN07).
+#     Does "could not be evaluated." read right over R's message?
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # PART H -- HOW A NAME IS READ: RULING R18'S NAMES SLATE (S356) ----

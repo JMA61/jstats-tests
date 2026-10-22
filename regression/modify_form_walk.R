@@ -51,6 +51,21 @@
 #           and jrelabel() keeping the labels of declared missing values
 #           (Section 43; ruling R37).
 # ORIGIN:   S229
+# EDITED:   S392 (v0.9.265; the (S282) item, voice Rule B, Jeff's okay of
+#           the lean: "Okay for all defaults."). SECTION 13 RE-PINNED, filled
+#           by running (fill.R): jsave()'s stop for a second argument
+#           unnamed with the data omitted, "when the data frame is omitted,
+#           every input must be named." Its "Things to look at" bullet says
+#           so. On the PENDING line. A capture of every section of every
+#           walk on 0.9.264 and on the build: here only Section 13 moved
+#           (the temporary paths aside). harness.R verify: 43 of 43 sections
+#           in three orders and by prepare = TRUE; 158 of 166 Expected
+#           blocks found (the same 8 unfound as on 0.9.264).
+# LAST VERIFIED: v0.9.265, 2026-10-23 (S392) -- Section 13 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (11 run, 3316 checks); GitHub 319d995
+#           (package).
 # EDITED:   S391 (v0.9.264; the decisions pass's leans on the (S298) E8 and
 #           (Session 114) items, and ruling R37). NEW SECTIONS 41-43 -- 40
 #           sections -> 43 -- and SECTION 13 RE-PINNED, filled by running
@@ -1937,8 +1952,7 @@ options(.jst_default_data = "d13")
 try(jsave("t13.rds", TRUE))
 options(.jst_default_data = NULL)
 # Expected:
-#   Error : jsave(): when the data argument is omitted, all subsequent arguments
-#   must be named.
+#   Error : jsave(): when the data frame is omitted, every input must be named.
 #   Name them, for example:
 #     jsave(file = "mydata.sav", overwrite = TRUE)
 
@@ -2011,6 +2025,9 @@ rm(.wd13, .def13, .ws13, .ws13b, .ns13, .m13, d13, p13, z13)
 #     One sentence a line, then "Name them, for example:" and a call that
 #     names the file and an argument after it (filter_check.R AD01). Does
 #     overwrite = TRUE make the point, or would the file alone do?
+#     RE-PINNED S392 (the (S282) item, voice Rule B): "when the data frame
+#     is omitted, every input must be named." where it said "when the data
+#     argument is omitted, all subsequent arguments must be named."
 #   - A FILE THAT EXISTS (S368): one sentence a line, the path on a line of
 #     its own (Rules E and Z), where "File '<path>' already exists. Use
 #     overwrite = TRUE to replace it." put both sentences and the path on

@@ -94,6 +94,24 @@
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S392 (v0.9.265; the (S282) item, voice Rule B, Jeff's okay of
+#           the lean: "Okay for all defaults."). SECTIONS 56, 61 AND 66
+#           RE-PINNED, filled by running (fill.R): the map parser's stops
+#           lose their wrapper, "Error in map argument:" (Sections 56 and
+#           66), "in the map argument" becomes "in the map" (66), and the
+#           labels note names "labels =" where it said "labels argument"
+#           (61). Each section's "Things to look at" says what moved;
+#           Section 56's asks about a wrap that breaks inside a quoted rule.
+#           On the PENDING line. A capture of every section of every walk on
+#           0.9.264 and on the build: here Sections 56, 61 and 66 moved
+#           (the temporary paths aside). harness.R verify: 74 of 74
+#           sections in three orders and by prepare = TRUE; 121 of 122
+#           Expected blocks found (Section 10's, as before).
+# LAST VERIFIED: v0.9.265, 2026-10-23 (S392) -- Sections 56, 61 and 66
+#           WALKED on the WORKSTATION by Jeff through receive_all() ("walked,
+#           all okay"); PENDING back to none; R CMD check 0 errors, 0
+#           warnings, 0 notes; ALL BATTERIES GREEN (11 run, 3316 checks);
+#           GitHub 319d995 (package).
 # EDITED:   S389 (v0.9.262; Fix Slate 28, the remedy-line audit's finding
 #           B, Claude's call). SECTION 20 RE-PINNED: jdeclare_missing()'s
 #           two convention gates offered the call without convention =,
@@ -6473,18 +6491,17 @@ iv56 <- data.frame(v = c(1, 2, 8, 2, 1, 3, 8))
 try(jrecode(iv56, v, map = "1, abc = 9; else=copy"))
 
 # Expected:
-#   Error : jrecode(): Error in map argument: Invalid old value 'abc' in map
-#   rule '1, abc = 9'. Old values must be numeric, a system-NA alias (NA,
-#   System, or SYSMIS), or a Stata-style missing-value marker (.a through .z).
+#   Error : jrecode(): Invalid old value 'abc' in map rule '1, abc = 9'.
+#   Old values must be numeric, a system-NA alias (NA, System, or SYSMIS), or a
+#   Stata-style missing-value marker (.a through .z).
 
 # Render 2 -- two.
 try(jrecode(iv56, v, map = "1, abc, x y = 9; else=copy"))
 
 # Expected:
-#   Error : jrecode(): Error in map argument: Invalid old values 'abc' and 'x y'
-#   in map rule '1, abc, x y = 9'. Old values must be numeric, a system-NA alias
-#   (NA, System, or SYSMIS), or a Stata-style missing-value marker (.a
-#   through .z).
+#   Error : jrecode(): Invalid old values 'abc' and 'x y' in map rule '1, abc, x
+#   y = 9'. Old values must be numeric, a system-NA alias (NA, System, or
+#   SYSMIS), or a Stata-style missing-value marker (.a through .z).
 rm(iv56)
 
 # Things to look at:
@@ -6495,6 +6512,12 @@ rm(iv56)
 #     help pages). The section runs with no setting, so the marker is named
 #     Stata-style; under a sas setting it is SAS-style, .A through .Z
 #     (Fix Slate W1's S240 item, Section 66).
+#   - RE-PINNED S392 (the (S282) item, voice Rule B): both stops without
+#     the parser's wrapper, "Error in map argument:", so the second
+#     sentence now opens a line. The second stop's wrap breaks inside the
+#     quoted rule, '1, abc, x' then 'y = 9' -- the wrapper breaks at any
+#     space, a quoted value's included. Does it read, or should a quoted
+#     rule be kept whole?
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -6895,7 +6918,7 @@ r61 <- jrecode(e61, E, map = "4,5=-88; else=copy")
 #     jdeclare_missing(e61, ER, codes = c(-99, -98, -88), modify = TRUE)
 #
 #   Note: Categories were collapsed.
-#   Use labels argument or jrelabel() to assign new value labels.
+#   Use labels = or jrelabel() to assign new value labels.
 #
 #   Note: This call changes e61 only if you assign the result:
 #     e61$<name> <- jrecode(...)
@@ -6949,6 +6972,9 @@ rm(e61, r61)
 #     result") keeps the blank line above it even when it prints alone:
 #     it is the closing block jrecode() shares with jencode(), jsum() and
 #     javg(), which this build left as it was.
+#   - RE-PINNED S392 (the (S282) item, voice Rule B): the labels note,
+#     "Use labels = or jrelabel() to assign new value labels." where it said
+#     "Use labels argument or jrelabel()".
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -7484,13 +7510,12 @@ try(jrecode(w66, Q, map = "9=.AA; else=copy"))
 try(jrecode(w66, Q, map = "9=.A; else=foo"))
 joptions(missing.convention = "stata", quiet = TRUE)
 # Expected:
-#   Error : jrecode(): Error in map argument: Invalid new value '.AA' in map
-#   rule '9=.AA'. SAS-style missing-value markers are '.A' through '.Z' (one
-#   letter after a period). The NA(a) longhand is not supported in the
-#   map argument.
-#   Error : jrecode(): Error in map argument: Invalid else action 'foo' in map
-#   argument. Use 'else=NA', 'else=copy', or a SAS-style missing-value marker
-#   such as 'else=.A' (Stata or SAS convention only).
+#   Error : jrecode(): Invalid new value '.AA' in map rule '9=.AA'.
+#   SAS-style missing-value markers are '.A' through '.Z' (one letter after a
+#   period). The NA(a) longhand is not supported in the map.
+#   Error : jrecode(): Invalid else action 'foo' in the map. Use 'else=NA',
+#   'else=copy', or a SAS-style missing-value marker such as 'else=.A' (Stata or
+#   SAS convention only).
 
 # Render 4 -- joptions() given four codes. (0.9.227: "missing.convention.codes
 # must have length 1 to 3.")
@@ -7541,6 +7566,10 @@ rm(w66, q66)
 #   - RENDER 5: Q: 9 ["Not asked"], then the declaration line, with
 #     modify = TRUE, and no "see jdeclare_missing()";
 #   - RENDER 6: labels = ".b=Said \"no\"", backslashes in the line.
+#   - RE-PINNED S392 (the (S282) item, voice Rule B): RENDER 3's two stops
+#     without "Error in map argument:" in front; "The NA(a) longhand is not
+#     supported in the map." and "Invalid else action 'foo' in the map."
+#     where each said "in the map argument" (or "in map argument").
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

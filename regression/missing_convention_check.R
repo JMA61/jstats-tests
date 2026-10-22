@@ -10,6 +10,19 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S392 EDIT (v0.9.265, 2026-10-22): N84a, N90q-N90u, N90w, N90x AND
+#           N91h RE-PINNED (the (S282) item, voice Rule B; Jeff's okay of the
+#           lean, S392: "Okay for all defaults."): the map and labels
+#           parsers' stops without the wrappers "Error in map argument:" and
+#           "Error in labels argument:", and "in the map" / "in the labels"
+#           where each said "in the map argument" ("the labels argument"). No
+#           check added; 915 checks. On the 0.9.264 master the nine red.
+#           LAST VERIFIED: v0.9.265, 2026-10-23 (S392) -- 915/915 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3316 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty. GitHub 319d995 (package).
 # S390 EDIT (v0.9.263, 2026-10-22): Fix Slate 29 (the (S389)
 #           collision-refusal item, Claude's call). NEW N84l2: on a column of
 #           both forms (.a and .B) under the stata setting, the refusal's
@@ -7629,9 +7642,9 @@ rm(list = intersect(c(".entry_conv83", ".m83a", ".m83b"), ls(all.names = TRUE)))
 d84 <- data.frame(v = c(1, 2, 8, 2, 1, 3, 8))
 check("N84a one invalid old value among valid ones is named alone, in the singular (pinned whole)",
       identical(grab(jrecode(d84, v, map = "1, abc = 9; else=copy")), paste0(
-        "jrecode(): Error in map argument: Invalid old value 'abc' in map\n",
-        "rule '1, abc = 9'. Old values must be numeric, a system-NA alias (NA,\n",
-        "System, or SYSMIS), or a Stata-style missing-value marker (.a through .z).")))
+        "jrecode(): Invalid old value 'abc' in map rule '1, abc = 9'.\n",
+        "Old values must be numeric, a system-NA alias (NA, System, or SYSMIS), or a\n",
+        "Stata-style missing-value marker (.a through .z).")))
 check("N84b two invalid values: the plural, joined by and; a repeated one is named once; the rule is still quoted whole",
       local({ m2 <- .fl(grab(jrecode(d84, v, map = "1, abc, x y = 9; else=copy")))
         m3 <- .fl(grab(jrecode(d84, v, map = "abc, abc, 2 = 9; else=copy")))
@@ -9968,40 +9981,36 @@ rm(.d89, .conv89, .under89, .c89, .ws89, .runs89, .tagged89)
     "Add 'missing' to the map (for example '8=missing'), or label the\n",
     "value directly."),
   N90q = paste0(
-    "jrecode(): Error in map argument: Invalid new value '.AA' in map\n",
-    "rule '1=.AA'. SAS-style missing-value markers are '.A' through '.Z' (one\n",
-    "letter after a period). The NA(a) longhand is not supported in the\n",
-    "map argument."),
+    "jrecode(): Invalid new value '.AA' in map rule '1=.AA'.\n",
+    "SAS-style missing-value markers are '.A' through '.Z' (one letter after a\n",
+    "period). The NA(a) longhand is not supported in the map."),
   N90r = paste0(
-    "jrecode(): Error in map argument: Invalid else action '.zz' in map\n",
-    "argument. Stata-style missing-value markers are '.a' through '.z' (one\n",
-    "letter after a period). The NA(a) longhand is not supported in the\n",
-    "map argument."),
+    "jrecode(): Invalid else action '.zz' in the map.\n",
+    "Stata-style missing-value markers are '.a' through '.z' (one letter after a\n",
+    "period). The NA(a) longhand is not supported in the map."),
   N90s = paste0(
-    "jrecode(): Error in map argument: Invalid else action 'foo' in map\n",
-    "argument. Use 'else=NA', 'else=copy', or a SAS-style missing-value marker\n",
-    "such as 'else=.A' (Stata or SAS convention only)."),
+    "jrecode(): Invalid else action 'foo' in the map. Use 'else=NA',\n",
+    "'else=copy', or a SAS-style missing-value marker such as 'else=.A' (Stata or\n",
+    "SAS convention only)."),
   N90t = paste0(
-    "jrecode(): Error in map argument: Invalid new value 'foo' in map\n",
-    "rule '1=foo'. New values must be numeric, the word missing, a system-NA\n",
-    "alias (NA, System, or SYSMIS), or a Stata-style missing-value marker (.a\n",
-    "through .z)."),
+    "jrecode(): Invalid new value 'foo' in map rule '1=foo'.\n",
+    "New values must be numeric, the word missing, a system-NA alias (NA, System,\n",
+    "or SYSMIS), or a Stata-style missing-value marker (.a through .z)."),
   N90u = paste0(
-    "jrecode(): Error in map argument: Invalid old value 'foo' in map\n",
-    "rule 'foo=1'. Old values must be numeric, a system-NA alias (NA, System, or\n",
-    "SYSMIS), or a SAS-style missing-value marker (.A through .Z)."),
+    "jrecode(): Invalid old value 'foo' in map rule 'foo=1'.\n",
+    "Old values must be numeric, a system-NA alias (NA, System, or SYSMIS), or a\n",
+    "SAS-style missing-value marker (.A through .Z)."),
   N90v = paste0(
     "jdeclare_missing(): Invalid code 'abc'. Codes must be numbers (for\n",
     "example -99) or SAS-style markers (.A through .Z)."),
   N90w = paste0(
-    "jrelabel(): Error in labels argument: Invalid value '.AB' in label\n",
-    "rule '.AB=Skip'. SAS-style missing-value markers are '.A' through '.Z' (one\n",
-    "letter after a period). The NA(a) longhand is not supported in the\n",
-    "labels argument."),
+    "jrelabel(): Invalid value '.AB' in label rule '.AB=Skip'.\n",
+    "SAS-style missing-value markers are '.A' through '.Z' (one letter after a\n",
+    "period). The NA(a) longhand is not supported in the labels."),
   N90x = paste0(
-    "jrelabel(): Error in labels argument: Invalid value 'foo' in label\n",
-    "rule 'foo=Skip'. The left side of each label rule must be numeric or a\n",
-    "Stata-style missing-value marker (.a through .z)."),
+    "jrelabel(): Invalid value 'foo' in label rule 'foo=Skip'.\n",
+    "The left side of each label rule must be numeric or a Stata-style\n",
+    "missing-value marker (.a through .z)."),
   N90ac = paste0(
     "joptions(): missing.convention.codes takes at most 3 codes, the most\n",
     "SPSS allows on a variable, and this call gives 4.\n",
@@ -10447,7 +10456,7 @@ check("N91g an unquoted label reads as written, a quotation mark partway through
                 c("Don't know", "Said \"no\"", "Refused; \"no\"")) &&
         identical(.labs91(jrelabel(.e91, Q, labels = "1=\"a=b; c\"; 2=\"Yes\" or so")), c("a=b; c", "\"Yes\" or so")))
 check("N91h a quote opened and never closed stops, naming the form (pinned by phrase)",
-      grepl("Unbalanced quotation mark in the labels argument. A quoted label must open and close with the same mark, as in 9=\"Refused; not asked\".",
+      grepl("Unbalanced quotation mark in the labels. A quoted label must open and close with the same mark, as in 9=\"Refused; not asked\".",
             .fl(grab(jrelabel(.e91, Q, labels = "1=\"Yes; 2=No"))), fixed = TRUE))
 check("N91i the same reading in jrecode(labels =), jdeclare_missing(labels =) and a labels string on a marker rule",
       local({ r <- suppressMessages(.conv91("stata", jrecode(.e91, Q, map = "9=.a; else=copy", labels = ".a=\"Refused; not asked\"")))

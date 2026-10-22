@@ -27,6 +27,18 @@
 #           Since S373 (N51): automatic mode on a variable whose blank
 #           cells are declared missing.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S392 EDIT (v0.9.265, 2026-10-22): N49b AND N49c RE-PINNED (the (S282)
+#           item, voice Rule B; Jeff's okay of the lean, S392: "Okay for all
+#           defaults."): the parse layer's stops without the wrapper "Error
+#           in map argument:", the sentence that follows it saying the same.
+#           No check added; 135 checks. On the 0.9.264 master N49b and N49c
+#           red.
+#           LAST VERIFIED: v0.9.265, 2026-10-23 (S392) -- 135/135 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3316 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty. GitHub 319d995 (package).
 # S389 EDIT (v0.9.262, 2026-10-22): N46b, N46e AND N46j RE-PINNED, NEW
 #           N46o-N46q (Fix Slate 28; the remedy-line audit's finding A).
 #           Given an expression as the data, jencode()'s note on an
@@ -1925,14 +1937,13 @@ rm(list = intersect(c("w48", ".g48a", ".g48c", ".conv48", ".line48"),
     "Add 'missing' to the map (for example 'Refused=missing'), or label the\n",
     "value directly."),
   N49b = paste0(
-    "jencode(): Error in map argument: Invalid new value 'foo' in map\n",
-    "rule 'No=foo'. New values must be numeric, the word missing, a system-NA\n",
-    "alias (NA, System, or SYSMIS), or a SAS-style missing-value marker (.A\n",
-    "through .Z)."),
+    "jencode(): Invalid new value 'foo' in map rule 'No=foo'.\n",
+    "New values must be numeric, the word missing, a system-NA alias (NA, System,\n",
+    "or SYSMIS), or a SAS-style missing-value marker (.A through .Z)."),
   N49c = paste0(
-    "jencode(): Error in map argument: Invalid else action '.QQ' in map\n",
-    "argument. SAS-style missing-value markers are '.A' through '.Z' (one letter\n",
-    "after a period). The NA(a) longhand is not supported in the map argument."),
+    "jencode(): Invalid else action '.QQ' in the map.\n",
+    "SAS-style missing-value markers are '.A' through '.Z' (one letter after a\n",
+    "period). The NA(a) longhand is not supported in the map."),
   N49d = paste0(
     "Note: 1 NA value in 'R' was encoded as -98.\n",
     "To make that case missing, map NA to a Stata-style marker the encoded\n",
