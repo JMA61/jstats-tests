@@ -10,6 +10,51 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S389 EDIT (v0.9.262, 2026-10-22): Fix Slate 28. (1) RULING R34: Excel
+#           format (.xlsx) joins the formats that save a text variable's
+#           missing cells as blank text -- jload() now reads a sheet's blank
+#           text cells as <blank>, as a CSV file's -- so jsave()'s note says
+#           so for .xlsx, a factor counted as in .csv, and R format (.rds)
+#           alone keeps them missing. .note86() and N86ac, N86ae RE-PINNED
+#           ("R format (.rds) keeps them missing."); N86aa RE-PINNED (none
+#           for .rds or a missing number; .xlsx has the note); NEW N86bh,
+#           the .xlsx round trip. (2) The remedy-line audit's finding B:
+#           jdeclare_missing()'s two convention gates offered the call
+#           without convention =, which stopped at the marker-collision
+#           refusal on a column already carrying the markers the codes would
+#           take; such a gate offers the codes sent to markers the column
+#           does not use (.jst_gate_marker_route(); S352's rule). N90c
+#           RE-PINNED (its .mix90 fixture is that case: -99 would take .a
+#           under the stata setting, and V carries .a), filled by running;
+#           NEW N90c2 (the line runs), N90c3 (the column-form gate on a SAS
+#           column carrying .A, one code and two, pinned and run; a column
+#           whose markers the code does not meet keeps the drop line, which
+#           runs). The same gates' fallback for a call they cannot echo --
+#           named codes, a labels string -- said "drop convention = ... from
+#           the call.", which led to the same refusal: it gets the recode
+#           line too, the labels carried to the markers. N90d RE-PINNED (a
+#           labels string under the stata setting), NEW N90d2 (that line
+#           runs, the label on .c), N90d3 (where the setting's first marker
+#           is free, the prose stays, and the call without convention =
+#           runs), N90c4 (the column-form gate: named codes, a labels string
+#           standing alone; pinned and run). And the both-forms guard, which
+#           said "Set convention = "stata" or convention = "sas"", names
+#           only a convention the declaration runs under: N90n RE-PINNED
+#           (sas alone: under stata -99 would take .a, which V carries), NEW
+#           N90n2 (both named when both run and when neither does; the one
+#           named runs). (3) The remedy-line audit's finding A: N88x
+#           RE-PINNED -- every block naming mydata opens on its naming line,
+#           so the subscript's naming line appears in each, each laid out
+#           alike; it reads the calls once each, so it holds on both builds.
+#           The mutation map is in import_check.R's S389 entry. NINE HUNDRED
+#           AND FOURTEEN checks. On the 0.9.261 master, run: N86x, N86y,
+#           N86z, N86aa, N86ac, N86ae, N90c, N90d and N90n red as RE-PINNED,
+#           and N86bh, N90c2, N90c3, N90c4 and N90d2 red; N90d3 and N90n2
+#           (the cases the build leaves as they were) green.
+#           LAST VERIFIED: v0.9.262, 2026-10-22 (S389) -- 914/914 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3203 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S379 EDIT (v0.9.253, 2026-10-20): GUARD 1 WIDENED (Scripts Slate D, the
 #           (S378) item). The jsubset(), jcomplete(), jdummy() and
 #           registration stores and the once-a-session load-notice flag
@@ -8340,11 +8385,11 @@ tx86 <- data.frame(
 .note86 <- function(fmt, kind = "a text variable") {
   paste0("Note: ", fmt, " cannot store a missing value in ", kind, ".\n",
          "2 missing cells in S were saved as blank text.\n",
-         "R format (.rds) and Excel format (.xlsx) keep them missing.")
+         "R format (.rds) keeps them missing.")
 }
 .save86 <- function(fr, file) grab(jsave(fr, file, overwrite = TRUE))
 m86x <- .save86(tx86, "tx86.sav")
-check("N86x .sav: the note -- the format, the cells, the two formats that keep them -- ahead of the Saved line",
+check("N86x .sav: the note -- the format, the cells, the format that keeps them (.rds; since ruling R34, S389, .xlsx saves them blank too) -- ahead of the Saved line",
       startsWith(m86x, paste0(.note86("SPSS format (.sav)"), "\nSaved fr to")))
 check("N86y ... .dta and .xpt say the same of their format",
       grepl(.fl(.note86("Stata format (.dta)")), .fl(.save86(tx86, "tx86.dta")), fixed = TRUE) &&
@@ -8354,9 +8399,10 @@ m86z <- .save86(tx86, "tx86.csv")
 check("N86z ... .csv: after the label note, a blank line between them",
       grepl(paste0("value labels.\n\n", .note86("CSV format (.csv)"), "\nSaved"),
             m86z, fixed = TRUE))
-check("N86aa ... none for .rds or .xlsx, which keep them, nor for a missing number",
+check("N86aa ... none for .rds, which keeps them, nor for a missing number; .xlsx has the note since ruling R34 (S389), which reads a sheet's empty text cell back as <blank>",
       !grepl("blank text", .save86(tx86, "tx86.rds"), fixed = TRUE) &&
-        !grepl("blank text", .save86(tx86, "tx86.xlsx"), fixed = TRUE) &&
+        grepl(.fl(.note86("Excel format (.xlsx)")), .fl(.save86(tx86, "tx86.xlsx")),
+              fixed = TRUE) &&
         !grepl("blank text", .save86(tx86[, c("L", "D")], "num86.sav"), fixed = TRUE))
 check("N86ab ... the count is the round trip's: the blanks read back from the .sav file",
       local({ invisible(grab(jload("tx86.sav", name = "r86")))
@@ -8368,14 +8414,14 @@ m86ac <- .save86(fc86, "fc86.csv")
 check("N86ac ... a factor in a CSV file: \"text or categorical\", each variable with its count",
       grepl(paste0("Note: CSV format (.csv) cannot store a missing value in a text or ",
                    "categorical variable. 3 missing cells in G (1) and S (2) were saved ",
-                   "as blank text. R format (.rds) and Excel format (.xlsx) keep them missing."),
+                   "as blank text. R format (.rds) keeps them missing."),
             .fl(m86ac), fixed = TRUE))
 check("N86ad ... the same frame to .sav: the factor keeps its NA, so only S is named",
       grepl("2 missing cells in S were saved as blank text.",
             .save86(fc86, "fc86.sav"), fixed = TRUE))
 check("N86ae ... one cell: the singular, and \"keep it missing\"",
       grepl(paste0("1 missing cell in S was saved as blank text.\n",
-                   "R format (.rds) and Excel format (.xlsx) keep it missing."),
+                   "R format (.rds) keeps it missing."),
             .save86(data.frame(S = c("a", NA)), "one86.sav"), fixed = TRUE))
 dsn86 <- data.frame(S = haven::labelled_spss(c("a", "X", NA, "b"),
                                              labels = c(Refused = "X"),
@@ -8387,6 +8433,14 @@ check("N86ag ... and with preserve.declarations = FALSE to CSV, the declared cod
       grepl("2 missing cells in S were saved as blank text.",
             grab(jsave(dsn86, "dsn86.csv", overwrite = TRUE,
                        preserve.declarations = FALSE)), fixed = TRUE))
+check("N86bh .xlsx (ruling R34, S389): the note, the factor counted as in a CSV file; and the round trip reads both back as <blank>, never as missing",
+      local({ m <- .save86(fc86, "fc86.xlsx")
+        invisible(grab(jload("fc86.xlsx", name = "x86")))
+        grepl(paste0("Note: Excel format (.xlsx) cannot store a missing value in a text or ",
+                     "categorical variable. 3 missing cells in G (1) and S (2) were saved ",
+                     "as blank text. R format (.rds) keeps them missing."),
+              .fl(m), fixed = TRUE) &&
+          identical(x86$G, c("a", "", "b")) && identical(x86$S, c("", "x", "")) }))
 
 # --- E: a frame holding a text variable with declared missing values ----------
 ds86 <- data.frame(
@@ -9334,13 +9388,13 @@ check("N88w a first argument too long for the call's first line is broken inside
                                 x, map = "1=10; else=copy"))
         grepl(paste0("\n  mydata <- data.frame(x = haven::labelled(c(1, 2, 3, 2),\n",
                      "      labels = c(A = 1, B = 2, C = 3)))\n"), g, fixed = TRUE) }))
-check("N88x a subscript given as the data, named mydata in the reminder: broken after the commas inside its brackets, at the fixed indent, and it runs as its one-line form does; an empty first index kept",
+check("N88x a subscript given as the data, named mydata in the reminder: broken after the commas inside its brackets, at the fixed indent, and it runs as its one-line form does; an empty first index kept (since S389 every block naming mydata opens on that line, each laid out alike)",
       local({ hh88 <- data.frame(NumberOfAdultsInHousehold = c(1, 2, 8, 2),
                                  IncomeBeforeTaxInDollars = c(10, 20, 30, 40))
         g <- grab(jrecode(hh88[hh88$NumberOfAdultsInHousehold < 8,
                                c("NumberOfAdultsInHousehold", "IncomeBeforeTaxInDollars")],
                           NumberOfAdultsInHousehold, map = "1=10; else=copy"))
-        b <- .r5_calls(.ln88(g), shape = "^  mydata <- hh88")
+        b <- unique(.r5_calls(.ln88(g), shape = "^  mydata <- hh88"))
         e1 <- new.env(parent = globalenv()); assign("hh88", hh88, envir = e1)
         e2 <- new.env(parent = globalenv()); assign("hh88", hh88, envir = e2)
         eval(parse(text = b), envir = e1); eval(parse(text = .r5_flat(b)), envir = e2)
@@ -9750,6 +9804,9 @@ rm(.d89, .conv89, .under89, .c89, .ws89, .runs89, .tagged89)
 .spd90b <- data.frame(V = haven::labelled_spss(c(1, -98, -99, 3), labels = c(Refused = -99, DK = -98),
                                                na_values = c(-99, -98)))
 .mix90  <- data.frame(V = c(1, 2, haven::tagged_na("a"), haven::tagged_na("B"), 3, -99))
+# S389: a column of both forms whose markers neither convention's first
+# letter meets (.b, .C).
+.mixf90 <- data.frame(V = c(1, 2, haven::tagged_na("b"), haven::tagged_na("C"), 3, -99))
 .hb90   <- data.frame(P = c(1, haven::tagged_na("a"), 2))
 .x90    <- data.frame(x = c(1, 2, 3, 2))
 .pa90   <- data.frame(Q = haven::labelled(c(1, 2, 9, 9, 3), labels = c("Not asked" = 9)),
@@ -9805,15 +9862,32 @@ rm(.d89, .conv89, .under89, .c89, .ws89, .runs89, .tagged89)
     "To follow the column's form, drop convention = \"stata\" from the call.\n",
     "Or convert the column first:\n",
     "  jconvert(.spd90, vars = \"V\", to = \"stata\", modify = TRUE)"),
+  # Re-pinned S389, filled by running on v0.9.262: under the stata setting
+  # -99 would take .a, which V carries, so the guard's line is the recode
+  # to a marker V does not use (.jst_gate_marker_route(); it offered the
+  # call without convention =, which stopped at the collision refusal).
   N90c = paste0(
     "jdeclare_missing(): 'V' carries both Stata-style (.a) and SAS-style\n",
     "(.B) missing values, which SPSS convention cannot act on.\n",
     "This call sets convention = \"spss\", but your missing.convention setting is\n",
-    "\"stata\". To use the setting, drop convention = \"spss\":\n",
-    "  jdeclare_missing(.mix90, V, codes = c(-99))"),
+    "\"stata\". To use the setting, recode -99 to a marker V does not use:\n",
+    "  .mix90$VR <- jrecode(.mix90, V, map = \"-99=.c; else=copy\")"),
+  # Re-pinned S389, filled by running on v0.9.262: the call the guard cannot
+  # echo (a labels string) gets the same line, the label carried to its
+  # marker; its prose, "drop convention = ... from the call.", led to the
+  # same collision refusal. N90d3 keeps the prose where nothing collides.
   N90d = paste0(
     "jdeclare_missing(): 'V' carries both Stata-style (.a) and SAS-style\n",
     "(.B) missing values, which SPSS convention cannot act on.\n",
+    "This call sets convention = \"spss\", but your missing.convention setting is\n",
+    "\"stata\". To use the setting, recode -99 to a marker V does not use:\n",
+    "  .mix90$VR <- jrecode(.mix90, V, map = \"-99=.c; else=copy\",\n",
+    "      labels = \".c=R\")"),
+  # S389, filled by running on v0.9.262: .mixf90 carries .b and .C, so the
+  # call under the stata setting takes .a, which it does not carry.
+  N90d3 = paste0(
+    "jdeclare_missing(): 'V' carries both Stata-style (.b) and SAS-style\n",
+    "(.C) missing values, which SPSS convention cannot act on.\n",
     "This call sets convention = \"spss\", but your missing.convention setting is\n",
     "\"stata\". To use the setting, drop convention = \"spss\" from the call."),
   N90e = paste0(
@@ -9833,10 +9907,39 @@ rm(.d89, .conv89, .under89, .c89, .ws89, .runs89, .tagged89)
     "values, so a bare marker has nothing to name.\n",
     "To name one, put its label in place of MyLabel:\n",
     "  .hb90 <- jdeclare_missing(.hb90, P, codes = c(MyLabel = \".a\"))"),
+  # Re-pinned S389, filled by running on v0.9.262: under stata -99 would
+  # take .a, which V carries, so only sas is named (N90n2: both are named
+  # when both run, and when neither does).
   N90n = paste0(
     "jdeclare_missing(): 'V' carries both Stata-style (.a) and SAS-style\n",
     "(.B) missing values, which SPSS convention cannot act on.\n",
+    "Set convention = \"sas\" on this call."),
+  N90n2a = paste0(
+    "jdeclare_missing(): 'V' carries both Stata-style (.a) and SAS-style\n",
+    "(.B) missing values, which SPSS convention cannot act on.\n",
     "Set convention = \"stata\" or convention = \"sas\" on this call."),
+  N90n2b = paste0(
+    "jdeclare_missing(): 'V' carries both Stata-style (.b) and SAS-style\n",
+    "(.C) missing values, which SPSS convention cannot act on.\n",
+    "Set convention = \"stata\" or convention = \"sas\" on this call."),
+  # S389, filled by running on v0.9.262: the column-form gate, a call it
+  # cannot echo -- named codes, a labels string standing alone.
+  N90c4a = paste0(
+    "jdeclare_missing(): 'V' already carries SAS-style missing values;\n",
+    "cannot use convention = \"spss\" here.\n",
+    "To follow the column's form, recode -99 to a marker V does not use:\n",
+    "  .sas90$VR <- jrecode(.sas90, V, map = \"-99=.C; else=copy\",\n",
+    "      labels = \".C=Refused\", convention = \"sas\")\n",
+    "Or convert the column first:\n",
+    "  jconvert(.sas90, vars = \"V\", to = \"spss\", modify = TRUE)"),
+  N90c4b = paste0(
+    "jdeclare_missing(): 'V' already carries SAS-style missing values;\n",
+    "cannot use convention = \"spss\" here.\n",
+    "To follow the column's form, recode the codes to markers V does not use:\n",
+    "  .sas90$VR <- jrecode(.sas90, V, map = \"-99=.C; -98=.D; else=copy\",\n",
+    "      labels = \".C=Refused; .D=Don't know\", convention = \"sas\")\n",
+    "Or convert the column first:\n",
+    "  jconvert(.sas90, vars = \"V\", to = \"spss\", modify = TRUE)"),
   N90p = paste0(
     "jrecode(): labels names 'missing', but the map has no target for it.\n",
     "Add 'missing' to the map (for example '8=missing'), or label the\n",
@@ -9935,10 +10038,83 @@ check("N90a per-call convention against the column's form, the call echoed: the 
       .pin90("N90a", .m90a))
 check("N90b ... the prose fallback, labels given: \"drop convention = ... from the call\" (pinned whole)",
       .pin90("N90b", .m90b))
-check("N90c the mixed-marker guard, a stata setting and convention = \"spss\", echoed: \"To use the setting, drop convention = \"spss\":\" (pinned whole)",
+check("N90c the mixed-marker guard, a stata setting and convention = \"spss\": -99 would take .a, which V carries, so the line is the recode to a marker V does not use, where the call without convention = stopped at the collision refusal (S389; pinned whole)",
       .pin90("N90c", .m90c))
-check("N90d ... and its prose fallback (pinned whole)",
+check("N90c2 ... and that line runs as printed under the setting, with no stop: VR holds .c where V held -99, V's .a and .B as they were",
+      local({ e <- new.env(parent = globalenv()); e$.mix90 <- .mix90
+        r <- .conv90("stata", tryCatch({
+          suppressMessages(eval(parse(text = .calls90(.m90c)[1]), envir = e)); TRUE },
+          error = function(err) FALSE))
+        r && identical(haven::na_tag(e$.mix90$VR)[6L], "c") &&
+          identical(haven::na_tag(e$.mix90$VR)[3:4], c("a", "B")) &&
+          identical(as.numeric(e$.mix90$VR[c(1, 2, 5)]), c(1, 2, 3)) }))
+check("N90c3 the column-form gate on a SAS column already carrying .A and .B: one code and two get the recode to markers V does not use, with convention = \"sas\", each line runs; a column whose markers the code does not meet (.C) keeps the drop line, which runs (filled by running, S389)",
+      local({ .sas90 <- data.frame(V = c(1, 2, haven::tagged_na("A"), haven::tagged_na("B"), 3, -99))
+        .sasc90 <- data.frame(V = c(1, 2, haven::tagged_na("C"), 3, -99))
+        m1 <- .conv90("stata", grab(jdeclare_missing(.sas90, V, codes = -99, convention = "spss")))
+        m2 <- .conv90("stata", grab(jdeclare_missing(.sas90, V, codes = c(-99, -98), convention = "spss")))
+        m3 <- .conv90("stata", grab(jdeclare_missing(.sasc90, V, codes = -99, convention = "spss")))
+        e1 <- new.env(parent = globalenv()); e1$.sas90 <- .sas90
+        e3 <- new.env(parent = globalenv()); e3$.sasc90 <- .sasc90
+        ok1 <- .conv90("stata", tryCatch({
+          suppressMessages(eval(parse(text = .calls90(m1)[1]), envir = e1)); TRUE },
+          error = function(err) FALSE))
+        r3 <- .conv90("stata", tryCatch(suppressMessages(eval(parse(text = .calls90(m3)[1]),
+                                                              envir = e3)),
+                                        error = function(err) NULL))
+        identical(m1, paste0(
+          "jdeclare_missing(): 'V' already carries SAS-style missing values;\n",
+          "cannot use convention = \"spss\" here.\n",
+          "To follow the column's form, recode -99 to a marker V does not use:\n",
+          "  .sas90$VR <- jrecode(.sas90, V, map = \"-99=.C; else=copy\",\n",
+          "      convention = \"sas\")\n",
+          "Or convert the column first:\n",
+          "  jconvert(.sas90, vars = \"V\", to = \"spss\", modify = TRUE)")) &&
+          grepl(paste0("To follow the column's form, recode the codes to markers V does not use:\n",
+                       "  .sas90$VR <- jrecode(.sas90, V, map = \"-99=.C; -98=.D; else=copy\",\n",
+                       "      convention = \"sas\")"), m2, fixed = TRUE) &&
+          ok1 && identical(haven::na_tag(e1$.sas90$VR)[6L], "C") &&
+          grepl("To follow the column's form, drop convention = \"spss\":\n  jdeclare_missing(.sasc90, V, codes = c(-99))",
+                m3, fixed = TRUE) &&
+          is.data.frame(r3) && identical(haven::na_tag(r3$V)[5L], "A") }))
+check("N90c4 the column-form gate, a call it cannot echo -- named codes, a labels string standing alone -- gets the recode line, the labels carried to the markers (S389; it read \"drop convention = ... from the call.\", which stopped at the collision refusal; pinned whole), and each line runs as printed",
+      local({ .sas90 <- data.frame(V = c(1, 2, haven::tagged_na("A"), haven::tagged_na("B"), 3, -99))
+        ma <- .conv90("stata", grab(jdeclare_missing(.sas90, V, codes = c(Refused = -99), convention = "spss")))
+        mb <- .conv90("stata", grab(jdeclare_missing(.sas90, V, labels = "-99=Refused; -98=Don't know",
+                                                     convention = "spss")))
+        run1 <- function(m) { e <- new.env(parent = globalenv()); e$.sas90 <- .sas90
+          ok <- .conv90("stata", tryCatch({
+            suppressMessages(eval(parse(text = .calls90(m)[1]), envir = e)); TRUE },
+            error = function(err) FALSE))
+          if (ok) e$.sas90$VR else NULL }
+        va <- run1(ma); vb <- run1(mb)
+        la <- if (!is.null(va)) labelled::val_labels(va) else NULL
+        lb <- if (!is.null(vb)) labelled::val_labels(vb) else NULL
+        .pin90("N90c4a", ma) && .pin90("N90c4b", mb) &&
+          identical(haven::na_tag(va)[6L], "C") && identical(names(la), "Refused") &&
+          identical(haven::na_tag(unname(la)), "C") &&
+          identical(haven::na_tag(vb)[6L], "C") &&
+          identical(names(lb), c("Refused", "Don't know")) &&
+          identical(haven::na_tag(unname(lb)), c("C", "D")) }))
+check("N90d ... a call it cannot echo (a labels string): the same line, the label carried to its marker -- it read \"drop convention = ... from the call.\", which stopped at the same refusal (S389; pinned whole)",
       .pin90("N90d", .m90d))
+check("N90d2 ... and that line runs as printed under the setting: VR holds .c, labeled R, where V held -99",
+      local({ e <- new.env(parent = globalenv()); e$.mix90 <- .mix90
+        r <- .conv90("stata", tryCatch({
+          suppressMessages(eval(parse(text = .calls90(.m90d)[1]), envir = e)); TRUE },
+          error = function(err) FALSE))
+        lab <- labelled::val_labels(e$.mix90$VR)
+        r && identical(haven::na_tag(e$.mix90$VR)[6L], "c") &&
+          identical(names(lab), "R") && identical(haven::na_tag(unname(lab)), "c") }))
+check("N90d3 ... where the setting's first marker is free (V carries .b and .C), the prose stays (pinned whole), and the call without convention = runs: -99 becomes .a, labeled R",
+      local({ m <- .conv90("stata", grab(jdeclare_missing(.mixf90, V, codes = -99, labels = "-99=R",
+                                                         convention = "spss")))
+        r <- NULL
+        invisible(utils::capture.output(r <- .conv90("stata", tryCatch(suppressMessages(
+          jdeclare_missing(.mixf90, V, codes = -99, labels = "-99=R")), error = function(err) NULL))))
+        lab <- if (is.data.frame(r)) labelled::val_labels(r$V) else NULL
+        .pin90("N90d3", m) && is.data.frame(r) && identical(haven::na_tag(r$V)[6L], "a") &&
+          "R" %in% names(lab) && identical(haven::na_tag(unname(lab[["R"]])), "a") }))
 check("N90e jplot() given two data frames after the formula names both, where it said \"Extra positional arguments were supplied\" (pinned whole)",
       .pin90("N90e", .m90e))
 check("N90f none of the five says \"argument\"",
@@ -9974,8 +10150,16 @@ check("N90m ... and the scaffold runs: .a is named MyLabel",
         identical(names(lab), "MyLabel") && identical(haven::na_tag(unname(lab)), "a") }))
 
 # --- D: one vocabulary for the mixed-marker guard and note (S267) ---------------------
-check("N90n the mixed-marker guard names the markers the cells carry, as the note does (pinned whole)",
+check("N90n the mixed-marker guard names the markers the cells carry, as the note does, and only the convention the declaration runs under: under stata -99 would take .a, which V carries (S389; pinned whole)",
       .pin90("N90n", .conv90("spss", grab(jdeclare_missing(.mix90, V, codes = -99)))))
+check("N90n2 ... both are named when both run (V carries .b and .C) and when neither does (two codes would take .a and .b, or .A and .B); and the one named runs: under sas -99 becomes .A",
+      local({ m2a <- .conv90("spss", grab(jdeclare_missing(.mix90, V, codes = c(-99, -98))))
+        m2b <- .conv90("spss", grab(jdeclare_missing(.mixf90, V, codes = -99)))
+        r <- NULL
+        invisible(utils::capture.output(r <- .conv90("spss", tryCatch(suppressMessages(
+          jdeclare_missing(.mix90, V, codes = -99, convention = "sas")), error = function(err) NULL))))
+        .pin90("N90n2a", m2a) && .pin90("N90n2b", m2b) &&
+          is.data.frame(r) && identical(haven::na_tag(r$V)[6L], "A") }))
 check("N90o the mixed-marker note says \"missing values\", the guard's words, not \"missing-value markers\"",
       local({ m <- .conv90("stata", printed(jdeclare_missing(.mix90, V, codes = -99, convention = "sas")))
         grepl("Note: V carries both Stata-style (.a) and SAS-style (.A, .B) missing values.", .fl(m), fixed = TRUE) &&
@@ -10145,7 +10329,7 @@ check("N90ba .jst_dq_escape(): a quotation mark and a backslash both survive the
         identical(eval(parse(text = paste0("c(", paste0('"', .jst_dq_escape(x), '"', collapse = ", "), ")"))), x) }))
 check("N90bb .jst_marker_recode_line() escapes a label it is given",
       grepl('labels = ".b=Said \\"no\\""', .jst_marker_recode_line(".qd90", "V", -99, "stata", "a", labels = 'Said "no"'), fixed = TRUE))
-rm(.spd90, .spd90b, .mix90, .hb90, .x90, .pa90, .qd90, .fd90, .fe90, .conv90, .lvl90,
+rm(.spd90, .spd90b, .mix90, .mixf90, .hb90, .x90, .pa90, .qd90, .fd90, .fe90, .conv90, .lvl90,
    .under90, .calls90, .run90, .pin90, .pins90, .parse90, .p90sas, .p90st,
    list = ls(pattern = "^\\.m90", all.names = TRUE))
 

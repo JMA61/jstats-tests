@@ -40,7 +40,47 @@
 #           Since S388 the Stata route of jsave()'s too-many-codes stop,
 #           and the note after a save that writes an undeclared code, run
 #           as printed (Section 38).
+#           Since S389 a sheet's blank cells read as a CSV file's, jt()'s
+#           stop naming <blank> among its categories, and jsave()'s note
+#           on a text variable's missing cells naming Excel format (.xlsx)
+#           (Section 39; ruling R34); and jsave()'s example save carrying
+#           clean.names = TRUE (Section 40).
 # ORIGIN:   S229
+# EDITED:   S389 (v0.9.262; Fix Slate 28 and ruling R34). SECTIONS 39 AND
+#           40 ADDED, every Expected block filled by running (fill.R, under
+#           a Windows-length temp folder, so that the Saved lines, which
+#           name the walk folder, are laid out as on the workstation; the
+#           folder shown as <walk folder>). Section 39, ruling R34 (Jeff,
+#           S389: "Let's go with your recommendation on the excel issue."):
+#           a sheet's text variable read as a CSV file's -- its blank cells
+#           the <blank> category, counted valid, a variable of numbers
+#           stored as text keeping them missing; jt() on a variable whose
+#           third category is <blank> naming the categories, with the
+#           declaration that leaves the blank cells out (Claude's call,
+#           lean L1), run as printed; jsave()'s note naming Excel format
+#           (.xlsx), and the sheet read back. Section 40, the (S388) item
+#           (Claude's call): jsave()'s example save carries clean.names =
+#           TRUE when the data frame holds a name the format refuses, and
+#           runs as printed. Both on the PENDING line. SECTION 16 RE-PINNED
+#           MECHANICALLY under ruling R34 (the Build Procedure's
+#           [BUILD-TESTING], Jeff, S345): its five notes' last line names R
+#           format (.rds) alone, each checked against a capture of the
+#           section on the build; its "Things to look at" says one format
+#           keeps them; kept off the PENDING line. The assertion side is
+#           import_check.R AA01-AA07, models_check.R AD01-AD05 and
+#           missing_convention_check.R N86aa-N86ae and N86bh. A capture of
+#           every section of every walk on 0.9.261 and the build (345
+#           sections): Sections 16, 39 and 40 here differ, with
+#           jencode_walk.R Section 11 and missing_convention_walk.R Section
+#           20; every other section identical (temp paths aside). harness.R
+#           derive: the five NEEDS lines as they were, none for 39 or 40;
+#           verify, under a Windows-length temp folder: 40 of 40 sections in
+#           three orders and by prepare = TRUE; 158 of 159 Expected blocks
+#           found (Section 9's, as before).
+# LAST VERIFIED: v0.9.262, 2026-10-22 (S389) -- Sections 39 and 40 WALKED
+#           on the WORKSTATION by Jeff through receive_all() ("walked, all
+#           okay"). PENDING back to none; R CMD check 0 errors, 0 warnings,
+#           0 notes; ALL BATTERIES GREEN (10 run, 3203 checks).
 # EDITED:   S388 (v0.9.261; Fix Slate 27, both items Claude's calls).
 #           SECTION 38 ADDED, every Expected block filled by running
 #           (fill.R, under a Windows-length temp folder, so that the note's
@@ -2206,7 +2246,9 @@ rm(ds15, mx15, oc15, f15, fm15, .wd15)
 # lose the same way (Jeff's lean, S351). And a CSV file of ONE column lost
 # its missing rows altogether (the S345 item): an empty cell there is an
 # empty line, which read.csv() skips -- 8 cases saved, 6 loaded. jload()
-# now keeps the empty lines of a one-column file.
+# now keeps the empty lines of a one-column file. RE-PINNED S389 under
+# ruling R34 (Section 39): a sheet's empty cell is read as blank text too,
+# so the notes' last line names R format (.rds) alone.
 .wd16 <- getwd(); setwd(.walkdir)
 tx16 <- data.frame(Source = c("web", NA, "mail", NA),
                    Visits = haven::labelled(c(1L, 2L, NA, 1L), labels = c(Once = 1L)),
@@ -2221,18 +2263,18 @@ jsave(tx16, "tx16.sav", overwrite = TRUE)
 # Expected:
 #   Note: SPSS format (.sav) cannot store a missing value in a text variable.
 #   2 missing cells in Source were saved as blank text.
-#   R format (.rds) and Excel format (.xlsx) keep them missing.
+#   R format (.rds) keeps them missing.
 jsave(tx16, "tx16.dta", overwrite = TRUE)
 # Expected:
 #   Note: Stata format (.dta) cannot store a missing value in a text variable.
 #   2 missing cells in Source were saved as blank text.
-#   R format (.rds) and Excel format (.xlsx) keep them missing.
+#   R format (.rds) keeps them missing.
 jsave(tx16, "tx16.xpt", overwrite = TRUE)
 # Expected:
 #   Note: SAS interchange format (.xpt) cannot store a missing value in a
 #   text variable.
 #   2 missing cells in Source were saved as blank text.
-#   R format (.rds) and Excel format (.xlsx) keep them missing.
+#   R format (.rds) keeps them missing.
 
 cat("\n--- CSV format, a factor beside the text variable ---\n")
 jsave(fc16, "fc16.csv", overwrite = TRUE)
@@ -2240,14 +2282,14 @@ jsave(fc16, "fc16.csv", overwrite = TRUE)
 #   Note: CSV format (.csv) cannot store a missing value in a text or
 #   categorical variable.
 #   3 missing cells in Group (1) and Source (2) were saved as blank text.
-#   R format (.rds) and Excel format (.xlsx) keep them missing.
+#   R format (.rds) keeps them missing.
 
 cat("\n--- one cell ---\n")
 jsave(data.frame(Source = c("web", NA)), "one16.sav", overwrite = TRUE)
 # Expected:
 #   Note: SPSS format (.sav) cannot store a missing value in a text variable.
 #   1 missing cell in Source was saved as blank text.
-#   R format (.rds) and Excel format (.xlsx) keep it missing.
+#   R format (.rds) keeps it missing.
 
 cat("\n--- the .sav file read back ---\n")
 jload("tx16.sav", name = "b16", overwrite = TRUE)
@@ -2304,7 +2346,8 @@ rm(.wd16, tx16, fc16, v16, b16, c16)
 #
 # Things to look at:
 #   - THE NOTE, three lines: the format and what it cannot store; the
-#     cells, and in which variable; the two formats that keep them.
+#     cells, and in which variable; the format that keeps them (two until
+#     S389, when ruling R34 took Excel format (.xlsx) out).
 #     Visits and Score lose nothing -- a missing NUMBER survives every
 #     format -- and are not named.
 #   - CSV: this note alone -- fc16 carries no labels, so since S359 no
@@ -4728,6 +4771,280 @@ rm(d38, r38, i38, .note38, .wd38)
 #   - Render 6: `in` in backticks in the declare line (the wording of the
 #     sentence, "-99 in in", is unchanged).
 
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 39 -- a sheet's blank cells, read as a CSV file's (ruling R34; S389) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S389 (v0.9.262; ruling R34, Jeff, S389: "Let's go with your
+# recommendation on the excel issue."). readxl reads a sheet's empty cell,
+# and a cell holding only spaces, as missing; the same cells in a CSV file
+# are the <blank> category, counted valid (a blank is reported, never
+# assumed missing). jload() now reads a sheet's text variable as a CSV
+# file's: a variable of words gets the <blank> category in its blank cells,
+# and one of numbers stored as text keeps them missing, as a CSV file's
+# variable of numbers does. jt() given a grouping variable whose third
+# category is <blank> names the categories and offers the declaration that
+# leaves the blank cells out. And jsave()'s note on a text variable's
+# missing cells names Excel format (.xlsx) among the formats that save them
+# as blank text: R format (.rds) alone keeps them missing. The assertion
+# side is import_check.R AA04-AA07, models_check.R AD01-AD05 and
+# missing_convention_check.R N86aa-N86ae and N86bh. (The Saved line names
+# the walk folder, a temporary folder, shown here as <walk folder>.)
+.wd39 <- getwd(); setwd(.walkdir)
+unlink(c("s39.xlsx", "t39.xlsx"))
+.note39 <- function(expr) {   # the call's notes as printed, the folder shown as <walk folder>
+  m <- character(0)
+  withCallingHandlers(expr, message = function(c) {
+    m <<- c(m, conditionMessage(c)); invokeRestart("muffleMessage") })
+  cat(gsub(normalizePath(.walkdir, winslash = "/"), "<walk folder>",
+           paste(m, collapse = ""), fixed = TRUE))
+}
+# The sheet: Sex is Female, Male or blank -- one cell empty, one holding
+# three spaces; Score a number; Code numbers stored as text, each with a
+# leading zero, one cell empty.
+writexl::write_xlsx(data.frame(
+  Sex   = c("Female", "Male", "", "Female", "   ", "Male", "Female", "Male"),
+  Score = c(12, 15, 11, 14, 13, 16, 12, 17),
+  Code  = c("0801", "0802", NA, "0804", "0805", "0806", "0807", "0808")),
+  "s39.xlsx")
+
+# Render 1 -- the sheet loaded: Sex's two blank cells are the <blank>
+# category, counted valid; Code's empty cell stays missing.
+jload("s39.xlsx", name = "s39", overwrite = TRUE)
+jfreq(s39, Sex)
+s39$Code
+# Expected:
+#   Loaded s39 (Excel format; 8 cases, 3 variables)
+#   Frequencies
+#
+#   8 Cases in the 1 Variable Pool
+#
+#   Sex
+#
+#            Freq  Total %  Valid %  Cum. %
+#   -------  ----  -------  -------  ------
+#   <blank>    2     25.00   25.00    25.00
+#   Female     3     37.50   37.50    62.50
+#   Male       3     37.50   37.50   100.00
+#
+#   Total      8    100.00
+#   <blank>: 2 cells with no text.
+#   They are counted as valid values, not as missing.
+#   To give them a code, use jencode().
+#   To declare them missing, use jdeclare_missing() with codes = "".
+#
+#   [1] "0801" "0802" NA     "0804" "0805" "0806" "0807" "0808"
+
+# Render 2 -- jt() on Sex: three categories, <blank> among them, and the
+# declaration that leaves the blank cells out.
+try(jt(Score ~ Sex, data = s39))
+# Expected:
+#   Independent Samples T-Test
+#
+#   Analysis N: 8
+#
+#   Error : jt(): 'Sex' has 3 categories: Female, Male, and <blank>.
+#   A t-test requires exactly 2.
+#   To leave out the blank cells, declare them missing:
+#     jdeclare_missing(s39, Sex, codes = "", modify = TRUE)
+#   Or use jaov() for more than 2 categories.
+
+# Render 3 -- the declaration, run as printed; jt() then compares the two
+# categories with a name.
+jdeclare_missing(s39, Sex, codes = "", modify = TRUE)
+jt(Score ~ Sex, data = s39)
+# Expected:
+#   Declared SPSS-style missing values on Sex in s39:
+#     <blank> (no label)
+#
+#   To keep it across sessions, save the data frame:
+#     jsave(s39, "s39.rds")
+#   Independent Samples T-Test
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --          8
+#       Auto-listwise         2          6
+#       Analysis N           --          6
+#
+#   Missing data   From 8    %
+#       Sex
+#         Missing     2    25.0
+#   --------------------------------------
+#
+#   Group Descriptives: Score by Sex
+#   Group   N   Mean     SD
+#   ------  -  ------  -----
+#   Female  3  12.667  1.155
+#   Male    3  16.000  1.000
+#
+#   Independent Samples T-Test Results (equal variances assumed)
+#      t    df    p   Mean Difference  95% CI Lower  95% CI Upper
+#   ------  --  ----  ---------------  ------------  ------------
+#   -3.780   4  .019       -3.333         -5.782        -0.885
+#
+#   Cohen's d: -3.086
+
+# Render 4 -- a data frame with a text variable's missing cells saved to a
+# sheet: the note names Excel format (.xlsx); R format (.rds) alone keeps
+# them missing.
+t39 <- data.frame(Source = c("web", NA, "mail", NA), Score = c(1.5, 2.5, 2, 3))
+.note39(jsave(t39, "t39.xlsx", overwrite = TRUE))
+# Expected:
+#   Note: Excel format (.xlsx) cannot store a missing value in a text variable.
+#   2 missing cells in Source were saved as blank text.
+#   R format (.rds) keeps them missing.
+#   Saved t39 to
+#   <walk folder>/t39.xlsx
+#   (Excel format; 4 cases, 2 variables)
+
+# Render 5 -- the sheet read back: the two cells are the <blank> category,
+# as the note said.
+jload("t39.xlsx", name = "b39", overwrite = TRUE)
+jfreq(b39, Source)
+# Expected:
+#   Loaded b39 (Excel format; 4 cases, 2 variables)
+#   Frequencies
+#
+#   4 Cases in the 1 Variable Pool
+#
+#   Source
+#
+#            Freq  Total %  Valid %  Cum. %
+#   -------  ----  -------  -------  ------
+#   <blank>    2     50.00   50.00    50.00
+#   mail       1     25.00   25.00    75.00
+#   web        1     25.00   25.00   100.00
+#
+#   Total      4    100.00
+#   <blank>: 2 cells with no text.
+#   They are counted as valid values, not as missing.
+#   To give them a code, use jencode().
+#   To declare them missing, use jdeclare_missing() with codes = "".
+unlink(c("s39.xlsx", "t39.xlsx"))
+setwd(.wd39)
+rm(s39, t39, b39, .note39, .wd39)
+
+# Things to look at:
+#   - Render 1: <blank> 2, counted valid, and its footnote -- the counts a
+#     CSV file with the same cells gives (until this build Sex read
+#     Female 3, Male 3, with 2 missing). The footnote counts "2 cells with
+#     no text" without the CSV file's "(1 empty, 1 holding only spaces or
+#     tabs)": the sheet reader drops the spaces before jload() sees them.
+#     Code's empty cell is NA: a variable of numbers stored as text keeps
+#     its blank cells missing, as a CSV file's variable of numbers does.
+#   - Render 2: the stop names the three categories, <blank> last, and
+#     offers the declaration because the other two are a t-test's two
+#     groups. Until this build a sheet's blank cells were missing and jt()
+#     ran on two groups; a CSV file's were <blank>, and the stop said
+#     "'Sex' has 3 categories." and "Use jaov() for more than 2
+#     categories.", naming none of the three. With three named categories
+#     beside <blank> it names all four and says only "Use jaov() for more
+#     than 2 categories."; with no <blank> among them it reads as it did.
+#     Does "To leave out the blank cells, declare them missing:" say
+#     enough about what the line does?
+#   - Render 3: the declaration runs as printed; jt() excludes the two
+#     cells (Auto-listwise 2) and compares Female with Male.
+#   - Render 4: "Excel format (.xlsx)" in the note's first line, and its
+#     last line "R format (.rds) keeps them missing." -- until this build
+#     it read "R format (.rds) and Excel format (.xlsx) keep them missing."
+#     Section 16's six notes say the same, re-pinned under the ruling.
+#   - Render 5: the round trip the note describes: the two cells back as
+#     <blank>, valid.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 40 -- jsave(): the example save carries clean.names = TRUE (S389) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S389 (v0.9.262; Fix Slate 28, the (S388) item, Claude's call).
+# jsave() given no file name stops with an example save, jsave(<data>,
+# "mydata.sav"); on a data frame holding a name SPSS format refuses -- with,
+# which SPSS reserves -- that line, run as printed, stopped on the name. The
+# example carries clean.names = TRUE when the data frame holds such a name,
+# and so do the example of the stop on a data frame not found and the two
+# routes of the stop given nothing (the workspace decides their data frame,
+# so they are shown in import_check.R AA02-AA03, not here). The assertion
+# side is import_check.R AA01-AA03. (The Saved line names the walk folder,
+# shown as <walk folder>.)
+.wd40 <- getwd(); setwd(.walkdir)
+unlink("mydata.sav")
+.note40 <- function(expr) {   # the call's notes as printed, the folder shown as <walk folder>
+  m <- character(0)
+  withCallingHandlers(expr, message = function(c) {
+    m <<- c(m, conditionMessage(c)); invokeRestart("muffleMessage") })
+  cat(gsub(normalizePath(.walkdir, winslash = "/"), "<walk folder>",
+           paste(m, collapse = ""), fixed = TRUE))
+}
+w40 <- data.frame(id = 1:3, score = c(4, 5, 6))
+names(w40)[2] <- "with"
+
+# Render 1 -- jsave() with no file name, on a data frame holding with.
+try(jsave(w40))
+# Expected:
+#   Error : jsave(): Provide a filename with extension, for example:
+#     jsave(w40, "mydata.sav", clean.names = TRUE)
+#   Supported formats:
+#     .sav       SPSS
+#     .dta       Stata
+#     .xpt       SAS interchange
+#     .xlsx      Excel
+#     .csv       Comma-separated values
+#     .rds       R
+
+# Render 2 -- the example, run as printed: the save goes ahead, with
+# becomes Xwith in the file, and the note says so.
+.note40(jsave(w40, "mydata.sav", clean.names = TRUE))
+toString(names(haven::read_sav("mydata.sav")))
+# Expected:
+#   Note: 1 variable name was changed in the file to a name SPSS format (.sav)
+#   takes; the w40 data frame keeps its own:
+#     "with"  -> Xwith
+#   The original name is the variable's label in the file.
+#   Saved w40 to
+#   <walk folder>/mydata.sav
+#   (SPSS format; 3 cases, 2 variables)
+#   [1] "id, Xwith"
+
+# Render 3 -- the same data frame given as an expression: the line that
+# makes mydata first, and the save on mydata carrying clean.names = TRUE.
+try(jsave(w40[1:2, ]))
+# Expected:
+#   Error : jsave(): Provide a filename with extension, for example:
+#     mydata <- w40[1:2, ]
+#     jsave(mydata, "mydata.sav", clean.names = TRUE)
+#   Supported formats:
+#     .sav       SPSS
+#     .dta       Stata
+#     .xpt       SAS interchange
+#     .xlsx      Excel
+#     .csv       Comma-separated values
+#     .rds       R
+
+# Render 4 -- a data frame whose names SPSS takes: the example as it was.
+p40 <- data.frame(id = 1:3)
+try(jsave(p40))
+# Expected:
+#   Error : jsave(): Provide a filename with extension, for example:
+#     jsave(p40, "mydata.sav")
+#   Supported formats:
+#     .sav       SPSS
+#     .dta       Stata
+#     .xpt       SAS interchange
+#     .xlsx      Excel
+#     .csv       Comma-separated values
+#     .rds       R
+unlink("mydata.sav")
+setwd(.wd40)
+rm(w40, p40, .note40, .wd40)
+
+# Things to look at:
+#   - Render 1: the example ends in clean.names = TRUE. The stop does not
+#     say why; the note after the save does (Render 2). Enough, or should
+#     the stop say a name will change?
+#   - Render 2: the line runs with no stop, and the file holds Xwith.
+#   - Render 3: "mydata <- w40[1:2, ]" first, the save on mydata with
+#     clean.names = TRUE.
+#   - Render 4: no clean.names = TRUE where every name fits the format.
 
 # --- End marker --------------------------------------------------------------
 # A real statement, deliberately last: stepping through with Ctrl+Enter, RStudio

@@ -382,6 +382,42 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
+# S389 EDIT (v0.9.262, 2026-10-22): SECTION AA ADDED (Fix Slate 28), 7
+#           checks. (1) The (S388) item: jsave()'s no-filename example,
+#           jsave(d1, "mydata.sav"), stopped on a name SPSS refuses when run;
+#           it carries clean.names = TRUE when the data frame holds such a
+#           name, as do the front-door stops' example (a .dta file and a name
+#           Stata refuses alike; none for .rds or a frame whose names fit)
+#           and the no-data-frame stop's two routes
+#           (.jst_example_clean_names()); each pinned whole and run as
+#           printed (AA01-AA03). (2) Ruling R34 (Jeff, S389): a sheet's text
+#           variable reads as a CSV file's -- a variable of words gets "" in
+#           its empty cells, its empty-string cells and its cells of spaces
+#           (the <blank> category, counted valid; jfreq() agrees with the
+#           same cells read from a CSV file); a variable of numbers stored as
+#           text, of TRUE/FALSE words, and a numeric one keep them missing;
+#           T and F alone are words; na = keeps its cells missing, na = ""
+#           every blank, text = reads blanks as written (AA04-AA06); the
+#           helper's own rules -- a variable the note on a few cells names
+#           keeps its blanks missing, a text = variable gets "", the second
+#           read's mask is used when na = is given (AA07). TWO HUNDRED AND
+#           TWENTY-ONE checks; on the 0.9.261 master AA01-AA07 red.
+#           MUTATION MAP for the build (each a one-change copy of v0.9.262,
+#           its battery run): .jst_example_clean_names() giving "" -- AA01
+#           AA02 AA03 red; .jst_sheet_blank_text() returning the sheet as
+#           read -- AA04-AA07; its na = mask taken from the first read --
+#           AA06 AA07; .jst_expr_open_lines() returning its lines --
+#           jencode_check.R N46b N46e N46o; the expression context left set
+#           when the call ends -- N46p; .jst_gate_marker_route() giving NULL
+#           -- missing_convention_check.R N90c N90c2 N90c3 N90c4 N90d N90d2;
+#           its labels dropped -- N90c4 N90d N90d2; the both-forms guard
+#           counting stata as running -- N90n N90n2; .xlsx out of the
+#           text-NA note's formats -- N86aa N86bh; jt()'s stop as before
+#           whatever its categories -- models_check.R AD01-AD05.
+#           LAST VERIFIED: v0.9.262, 2026-10-22 (S389) -- 221/221 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3203 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S388 EDIT (v0.9.261, 2026-10-22): Y24-Y31 ADDED (Fix Slate 27, both
 #           items Claude's calls). Every line a part offers runs where it
 #           sits (ruling R33), and a note's lines run as printed (S343).
@@ -3268,6 +3304,140 @@ check("Y31 ... a name R reads only in backticks gets them -- in, which SPSS take
           identical(as.numeric(attr(f2$my_var, "na_values")), -99) &&
           length(qc) == 2L && identical(qc[[2L]][[3L]], "C:/a\"b/r.sav") }))
 rm(.Ysrc, .Yorder, .Yrun, .Yin, .Ywl, .Y4c, .Y4r, .Yroute, .Yrw, .Yat_dir)
+
+# =============================================================================
+# AA. Fix Slate 28 (S389, v0.9.262): an example save that runs; a sheet's
+#     blank text cells (ruling R34)
+# =============================================================================
+# (1) The (S388) item: the example jsave() lines the front-door stops offer
+# name a data frame and a file, and stopped when run on a frame holding a
+# name the format refuses (with, which SPSS reserves; long, which Stata
+# does). They carry clean.names = TRUE then (.jst_example_clean_names()).
+# The workspaces are .wsU()'s (section U): one data frame each, so the
+# stops name it. (2) Ruling R34 (Jeff, S389: "Let's go with your
+# recommendation on the excel issue."): readxl reads a sheet's empty cell,
+# empty-string cell and cell of spaces all as missing, where the same cells
+# in a CSV file are the <blank> category, counted valid; jload() now puts
+# a text variable's blank cells back as "" as the CSV rule types them
+# (.jst_sheet_blank_text()). writexl writes "" and NA alike, as no cell,
+# and a cell of spaces as text; every pin filled by running on v0.9.262.
+cat("\n--- AA. Fix Slate 28: example saves; a sheet's blank text cells ---\n")
+
+.AAw <- data.frame(v = 1:3, w = 4:6); names(.AAw)[1] <- "with"
+.AAl <- data.frame(v = 1:3, w = 4:6); names(.AAl)[1] <- "long"
+check("AA01 jsave() with no file, on a data frame holding a name SPSS refuses: the example carries clean.names = TRUE (pinned whole), and the line, run as printed, saves the file with the name changed in it",
+      local({ e <- .wsU(d1 = .AAw); f <- .ix("mydata.sav")
+        dd <- getOption(".jst_options_data_dir")
+        tryCatch({ options(.jst_options_data_dir = .ix_dir)
+          m <- .nodefU(grab(eval(quote(jsave(d1)), e)))
+          unlink(f)
+          invisible(grab(eval(.calls(m)[[1]], e)))
+          r <- if (file.exists(f)) haven::read_sav(f, user_na = TRUE) else NULL
+          unlink(f)
+          identical(m, paste0(
+            "jsave(): Provide a filename with extension, for example:\n",
+            "  jsave(d1, \"mydata.sav\", clean.names = TRUE)\n",
+            "Supported formats:\n",
+            "  .sav       SPSS\n", "  .dta       Stata\n", "  .xpt       SAS interchange\n",
+            "  .xlsx      Excel\n", "  .csv       Comma-separated values\n", "  .rds       R")) &&
+            !is.null(r) && identical(names(r), c("Xwith", "w")) },
+          finally = options(.jst_options_data_dir = dd)) }))
+check("AA02 the front-door stop's example (a data frame not found): clean.names = TRUE for a .sav file and a name SPSS refuses, for a .dta file and one Stata refuses; none for .rds, nor where the frame's names fit (pinned)",
+      local({ go <- function(e, call) .nodefU(grab(eval(call, e)))
+        pre <- "jsave(): 'dd' not found.\nProvide a data frame, for example:\n"
+        identical(go(.wsU(d1 = .AAw), quote(jsave(dd, "AA02.sav"))),
+                  paste0(pre, "  jsave(d1, \"AA02.sav\", clean.names = TRUE)")) &&
+          identical(go(.wsU(d1 = .AAl), quote(jsave(dd, "AA02.dta"))),
+                    paste0(pre, "  jsave(d1, \"AA02.dta\", clean.names = TRUE)")) &&
+          identical(go(.wsU(d1 = .AAw), quote(jsave(dd, "AA02.rds"))),
+                    paste0(pre, "  jsave(d1, \"AA02.rds\")")) &&
+          identical(go(.wsU(d1 = data.frame(v = 1:3)), quote(jsave(dd, "AA02.sav"))),
+                    paste0(pre, "  jsave(d1, \"AA02.sav\")")) }))
+check("AA03 jsave() given nothing, no default: both routes carry clean.names = TRUE (pinned whole), and both run as printed, the second after juse()",
+      local({ e <- .wsU(d1 = .AAw); f <- .ix("mydata.sav")
+        dd <- getOption(".jst_options_data_dir")
+        tryCatch({ options(.jst_options_data_dir = .ix_dir)
+          m  <- .nodefU(grab(eval(quote(jsave()), e)))
+          cl <- .calls(m)
+          unlink(f); .nodefU(invisible(grab(eval(cl[[1]], e))))
+          ok1 <- file.exists(f) && identical(names(haven::read_sav(f)), c("Xwith", "w"))
+          unlink(f)
+          .nodefU({ invisible(grab(eval(cl[[2]], e))); invisible(grab(eval(cl[[3]], e))) })
+          ok2 <- file.exists(f) && identical(names(haven::read_sav(f)), c("Xwith", "w"))
+          unlink(f)
+          identical(m, paste0(
+            "jsave(): no data frame or file name was given.\n",
+            "Name the data frame first, then the file:\n",
+            "  jsave(d1, \"mydata.sav\", clean.names = TRUE)\n",
+            "Or set a default first, then name the file:\n",
+            "  juse(d1)\n",
+            "  jsave(\"mydata.sav\", clean.names = TRUE)")) && ok1 && ok2 },
+          finally = options(.jst_options_data_dir = dd)) }))
+# The sheet and the CSV file: Priority "Y" or blank (the S222 field case) --
+# empty, an empty string (writexl writes it as no cell, as NA) and three
+# spaces; Code, numbers stored as text with a leading zero; Score, numbers;
+# Flag, the words TRUE and FALSE; Sex, F and M alone; Resp, words beside an
+# N/A.
+.AAs <- data.frame(id = 1:6,
+                   Priority = c("Y", "", "Y", "   ", "Y", NA),
+                   Code = c("0800", "0870", NA, "2000", "", "4000"),
+                   Score = c(5, NA, 7, 8, 9, 10),
+                   Flag = c("TRUE", "FALSE", "", "TRUE", NA, "FALSE"),
+                   Sex = c("F", "M", "", "F", NA, "M"),
+                   Resp = c("Yes", "No", "N/A", "", "Yes", "No"))
+writexl::write_xlsx(.AAs, .ix("AA_blank.xlsx"))
+writeLines(c("id,Priority", "1,Y", "2,", "3,Y", "4,   ", "5,Y", "6,"), .ix("AA_blank.csv"))
+.AAload <- function(...) {
+  e <- new.env(parent = globalenv())
+  invisible(utils::capture.output(grab(eval(substitute(
+    jload(.ix("AA_blank.xlsx"), name = "s", quiet = TRUE, ...)), e))))
+  e$s
+}
+.AAcsv <- function() {
+  e <- new.env(parent = globalenv())
+  invisible(utils::capture.output(grab(eval(quote(
+    jload(.ix("AA_blank.csv"), name = "v", quiet = TRUE)), e))))
+  e$v
+}
+check("AA04 a sheet's variable of words: its empty cell, its empty-string cell and its cell of spaces are \"\", the <blank> category, counted valid; jfreq()'s table is the one the same cells read from a CSV file give, and its note counts 3 cells with no text (pinned: the sheet keeps no spaces to count, the CSV file's note counts them)",
+      local({ s <- .AAload(); v <- .AAcsv()
+        ts <- run(jfreq(s, Priority))$txt; tv <- run(jfreq(v, Priority))$txt
+        tab <- function(t) { l <- strsplit(t, "\n", fixed = TRUE)[[1]]
+          l[seq_len(match(TRUE, startsWith(l, "<blank>:")) - 1L)] }
+        identical(s$Priority, c("Y", "", "Y", "", "Y", "")) &&
+          identical(v$Priority, c("Y", "", "Y", "   ", "Y", "")) &&
+          identical(tab(ts), tab(tv)) && length(tab(ts)) == 12L &&
+          grepl("\n<blank>    3     50.00   50.00    50.00\n", ts, fixed = TRUE) &&
+          grepl("\n<blank>: 3 cells with no text.\nThey are counted as valid values, not as missing.\n",
+                ts, fixed = TRUE) &&
+          grepl("\n<blank>: 3 cells with no text (2 empty, 1 holding only spaces or tabs).\n",
+                tv, fixed = TRUE) }))
+check("AA05 the variables a CSV file types as numbers or TRUE/FALSE keep their blank cells missing: numbers stored as text with a leading zero, the words TRUE and FALSE, and a numeric variable; F and M alone are words, as written, and get \"\"",
+      local({ s <- .AAload()
+        identical(s$Code, c("0800", "0870", NA, "2000", NA, "4000")) &&
+          identical(s$Score, c(5, NA, 7, 8, 9, 10)) &&
+          identical(s$Flag, c("TRUE", "FALSE", NA, "TRUE", NA, "FALSE")) &&
+          identical(s$Sex, c("F", "M", "", "F", "", "M")) &&
+          identical(s$Resp, c("Yes", "No", "N/A", "", "Yes", "No")) }))
+check("AA06 na = keeps its cells missing and the blanks blank (the second read's mask); na = \"\" keeps every blank missing; text = reads a blank as written, \"\"",
+      local({ a <- .AAload(na = "N/A"); b <- .AAload(na = ""); t <- .AAload(text = "Code")
+        identical(a$Resp, c("Yes", "No", NA, "", "Yes", "No")) &&
+          identical(a$Priority, c("Y", "", "Y", "", "Y", "")) &&
+          identical(b$Priority, c("Y", NA, "Y", NA, "Y", NA)) &&
+          identical(b$Resp, c("Yes", "No", "N/A", NA, "Yes", "No")) &&
+          identical(t$Code, c("0800", "0870", "", "2000", "", "4000")) }))
+check("AA07 the helper's own rules: a variable the note on a few cells names keeps its blank cells missing, a text = variable gets \"\"; with na = given, only the cells missing in the second read become \"\", and a cell na = named stays missing",
+      local({ df <- data.frame(a = c("x", NA, NA), m = c("1", NA, "N/A"), t = c("5", NA, "6"))
+        r1 <- jstats:::.jst_sheet_blank_text(df, text_pos = 3L, marker_pos = 2L, na = NULL,
+                                             reread = function(cols) stop("not read"))
+        rr <- function(cols) data.frame(a = c("x", "q", NA), m = c("1", NA, "N/A"))[seq_along(cols)]
+        r2 <- jstats:::.jst_sheet_blank_text(df, text_pos = integer(0), marker_pos = integer(0),
+                                             na = "q", reread = rr)
+        identical(r1$a, c("x", "", "")) && identical(r1$m, c("1", NA, "N/A")) &&
+          identical(r1$t, c("5", "", "6")) &&
+          identical(r2$a, c("x", NA, "")) && identical(r2$m, c("1", "", "N/A")) &&
+          identical(r2$t, c("5", NA, "6")) }))
+rm(.AAw, .AAl, .AAs, .AAload, .AAcsv)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 

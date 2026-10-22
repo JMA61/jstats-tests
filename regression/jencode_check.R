@@ -27,6 +27,36 @@
 #           Since S373 (N51): automatic mode on a variable whose blank
 #           cells are declared missing.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S389 EDIT (v0.9.262, 2026-10-22): N46b, N46e AND N46j RE-PINNED, NEW
+#           N46o-N46q (Fix Slate 28; the remedy-line audit's finding A).
+#           Given an expression as the data, jencode()'s note on an
+#           alphabetical encoding and jrecode()'s note on a value that looks
+#           like a coded missing value offered lines on mydata in blocks
+#           that opened on nothing: the line that made mydata was in the
+#           reminder printed below them, so pasted top to bottom the first
+#           line stopped on "'mydata' not found". N46b and N46e had pinned
+#           that shape ("the expression is pasted nowhere but on the naming
+#           line"); every block naming mydata now opens on "mydata <-
+#           mk46()" (the S374 form of jscreen()'s date lines), once where
+#           every message is wrapped (.jst_expr_open_lines(),
+#           .jst_expr_context). N46e runs each of the note's two blocks in a
+#           session of its own; N46j looks for the reminder's own line,
+#           since a note's block may now hold a naming line at the minimal
+#           level. N46o: a stop on an expression (jrecode()'s "Use one of
+#           the declared codes instead:") opens on it too, and runs. N46p:
+#           the expression is forgotten when the call ends, by a stop too,
+#           so a later message on a name has no naming line. N46q: a block
+#           that already opens on its naming line (the reminder's) gets no
+#           second one. N46o and N46p restore the convention they set
+#           whatever the outcome (a failure that left "spss" in force turned
+#           four N47 checks red on the old build). ONE HUNDRED AND
+#           THIRTY-FIVE checks; on the 0.9.261 master N46b, N46e, N46o, N46p
+#           and N46q red (N46p and N46q name helpers the build adds); N46j
+#           holds on both.
+#           LAST VERIFIED: v0.9.262, 2026-10-22 (S389) -- 135/135 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3203 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S379 EDIT (v0.9.253, 2026-10-20): GUARD 1 WIDENED (Scripts Slate D, the
 #           (S378) item). The jsubset(), jcomplete(), jdummy() and
 #           registration stores and the once-a-session load-notice flag
@@ -1386,6 +1416,15 @@ check("N45j the new notes hold the pinned width outside their code lines and bre
 mk46  <- function() data.frame(w = rep(c("a", "b"), 3), Age = c(1, 2, 3, 1, 2, 3),
                                stringsAsFactors = FALSE)
 lst46 <- list(d = mk46())
+# S389: the indented lines under a line of a message, up to the next line
+# that is not indented -- one block, run on its own.
+.blk46 <- function(ln, head) {
+  i <- match(head, ln)
+  if (is.na(i)) return(character(0))
+  j <- i + 1L; out <- character(0)
+  while (j <= length(ln) && grepl("^  ", ln[j])) { out <- c(out, ln[j]); j <- j + 1L }
+  out
+}
 .g46  <- grab(jencode(mk46(), w))
 check("N46a jencode(): the reminder names the data frame first, then assigns (pinned whole)",
       grepl(paste0(
@@ -1395,10 +1434,10 @@ check("N46a jencode(): the reminder names the data frame first, then assigns (pi
         "  mydata$<name> <- jencode(mydata, ...)\n",
         "To check the encoding landed correctly, compare jfreq() on the original and\n",
         "the new column."), .g46, fixed = TRUE))
-check("N46b ... the call the listing offers names mydata, and the expression is pasted nowhere but on the naming line",
-      grepl("  mydata$wR <- jencode(mydata, w, map = \"a=1; b=2\")", .g46, fixed = TRUE) &&
-        identical(grep("mk46()", strsplit(.g46, "\n", fixed = TRUE)[[1]], fixed = TRUE, value = TRUE),
-                  "  mydata <- mk46()"))
+check("N46b ... the call the listing offers names mydata, in a block that opens on the line that makes it (S389, the remedy-line audit: the block opened on nothing, and the line pasted as printed stopped on 'mydata' not found); the expression is pasted on naming lines only, one in the note's block and one in the reminder's",
+      grepl("  mydata <- mk46()\n  mydata$wR <- jencode(mydata, w, map = \"a=1; b=2\")", .g46, fixed = TRUE) &&
+        { k <- grep("mk46()", strsplit(.g46, "\n", fixed = TRUE)[[1]], fixed = TRUE, value = TRUE)
+          length(k) == 2L && all(k == "  mydata <- mk46()") })
 check("N46c ... and the two lines run as printed: the naming line, then the offered call",
       { e  <- new.env(parent = globalenv())
         ln <- strsplit(.g46, "\n", fixed = TRUE)[[1]]
@@ -1414,17 +1453,20 @@ check("N46d jrecode(): the same reminder, with its own function and noun (pinned
         "  mydata$<name> <- jrecode(mydata, ...)\n",
         "To check the recode landed correctly, compare jfreq() on the original and\n",
         "the new column."), .r46, fixed = TRUE))
-check("N46e ... and every call its notes offer names mydata: the recode pair and the declaration with modify = TRUE, which run after the naming line",
-      { e  <- new.env(parent = globalenv())
-        ln <- strsplit(.r46, "\n", fixed = TRUE)[[1]]
-        dl <- ln[grep("^  jdeclare_missing\\(mydata, AgeR, ", ln)]
+check("N46e ... and every call its notes offer names mydata, each block opening on the line that makes it (S389): the direct map, and the recode pair with the declaration (modify = TRUE), each run as printed in a session of its own",
+      { ln <- strsplit(.r46, "\n", fixed = TRUE)[[1]]
+        b1 <- .blk46(ln, "Then map it directly:")
+        b2 <- .blk46(ln, "Or declare -99 as missing on the recoded variable:")
         cv <- getOption(".jst_options_missing_convention")
         options(.jst_options_missing_convention = "spss")
-        ok <- identical(grep("mk46()", ln, fixed = TRUE, value = TRUE), "  mydata <- mk46()") &&
-          length(dl) == 1L &&
-          .runs(ln[grep("^  mydata <- ", ln)], e) &&
-          .runs(.offered(.r46, "jrecode")[[2]], e) && .runs(dl, e) &&
-          identical(attr(e$mydata$AgeR, "na_values"), -99)
+        e1 <- new.env(parent = globalenv()); e2 <- new.env(parent = globalenv())
+        ok <- all(grep("mk46()", ln, fixed = TRUE, value = TRUE) == "  mydata <- mk46()") &&
+          length(b1) == 2L && identical(b1[1L], "  mydata <- mk46()") &&
+          length(b2) == 3L && identical(b2[1L], "  mydata <- mk46()") &&
+          grepl("^  jdeclare_missing\\(mydata, AgeR, ", b2[3L]) &&
+          .runs(b1, e1) && .runs(b2, e2) &&
+          !is.null(e1$mydata$AgeR) &&
+          identical(attr(e2$mydata$AgeR, "na_values"), -99)
         options(.jst_options_missing_convention = cv)
         ok })
 check("N46f a subset in the data's place is an expression too, quoted as typed",
@@ -1447,11 +1489,12 @@ check("N46i the result is the same whatever the data's form: an expression, a pl
       { d46 <- mk46()
         .same(quiet(jencode(mk46(), w)), quiet(jencode(d46, w))) &&
           .same(quiet(jencode(lst46$d, w)), quiet(jencode(d46, w))) })
-check("N46j at the minimal level there is no reminder, for any form of the data",
+check("N46j at the minimal level there is no reminder, for any form of the data (a note's own block opens on mydata <- mk46() since S389, so it is the reminder's own line that is looked for)",
       { lv <- getOption(".jst_output_level"); options(.jst_output_level = "minimal")
         g <- paste(grab(jencode(mk46(), w)), grab(jrecode(mk46(), Age, map = "1=1; else=copy")))
         options(.jst_output_level = lv)
-        !grepl("only if you assign", g, fixed = TRUE) && !grepl("mydata <-", g, fixed = TRUE) })
+        !grepl("only if you assign", g, fixed = TRUE) &&
+          !grepl("mydata$<name>", g, fixed = TRUE) })
 check("N46k the new reminder holds the pinned width outside its code lines and breaks nowhere early",
       { s  <- c(.g46, .r46)
         ln <- unlist(strsplit(s, "\n", fixed = TRUE))
@@ -1485,7 +1528,52 @@ check("N46n ... a place and a name keep the one line they had, in both",
           grepl("to keep them:\n  d46$<name> <- jsum(...)\nFor the full", grab(jsum(d46, Age, Age)), fixed = TRUE) &&
           grepl("to keep them:\n  d46$<name> <- javg(...)\nFor the full", grab(javg(d46, Age, Age)), fixed = TRUE) &&
           grepl("to keep them:\n  tdat$<name> <- jsum(...)\nFor the full", grab(jsum(id, id)), fixed = TRUE) })
-rm(q45, .g45, .a45, .k45, .b45, .l45, mk46, lst46, .g46, .r46, .s46)
+# N46o-N46q (S389, Fix Slate 28; the remedy-line audit's finding A): the
+# naming line opens every block that names mydata, in a stop as in a note,
+# for as long as the call runs and no longer.
+mk46s <- function() data.frame(v = haven::labelled_spss(c(1, 2, 5, -1, -2, -3),
+                                                        na_values = c(-1, -2, -3)))
+check("N46o a stop on an expression opens each of its blocks on the naming line, and each block runs as printed in a session of its own (pinned whole; under spss the third declared code leaves no room for 'missing')",
+      { cv <- getOption(".jst_options_missing_convention")
+        tryCatch({ options(.jst_options_missing_convention = "spss")
+          m <- grab(jrecode(mk46s(), v, map = "5=missing; else=copy"))
+          ln <- strsplit(m, "\n", fixed = TRUE)[[1]]
+          b1 <- .blk46(ln, "Use one of the declared codes instead:")
+          b2 <- .blk46(ln, "Or re-declare v with fewer codes first:")
+          e1 <- new.env(parent = globalenv()); e2 <- new.env(parent = globalenv())
+          identical(m, paste0(
+            "jrecode(): v already declares 3 SPSS-style missing values (-1, -2,\n",
+            "-3), the maximum SPSS allows. 'missing' would add -99 as a fourth.\n",
+            "Use one of the declared codes instead:\n",
+            "  mydata <- mk46s()\n",
+            "  mydata$vR <- jrecode(mydata, v, map = \"5=-1; else=copy\")\n",
+            "Or re-declare v with fewer codes first:\n",
+            "  mydata <- mk46s()\n",
+            "  jdeclare_missing(mydata, v, codes = c(-1, -2), modify = TRUE)")) &&
+            .runs(b1, e1) && .runs(b2, e2) &&
+            identical(as.numeric(unclass(e1$mydata$vR)), c(1, 2, -1, -1, -2, -3)) &&
+            identical(as.numeric(attr(e2$mydata$v, "na_values")), c(-1, -2)) },
+          finally = options(.jst_options_missing_convention = cv)) })
+check("N46p the expression is forgotten when the call ends -- after a stop, after a note -- so a later message on a name holds no naming line",
+      { cv <- getOption(".jst_options_missing_convention")
+        a <- tryCatch({ options(.jst_options_missing_convention = "spss")
+          grab(jrecode(mk46s(), v, map = "5=missing; else=copy"))
+          is.null(.jst_expr_context$typed) },
+          finally = options(.jst_options_missing_convention = cv))
+        grab(jencode(mk46(), w))
+        b <- is.null(.jst_expr_context$typed)
+        g <- grab(jencode(tdat, Status))
+        a && b && !grepl("mydata", g, fixed = TRUE) })
+check("N46q a block that already opens on its naming line gets no second one: the reminder holds one, and the helper leaves such a block, a block naming no mydata and a line that is not indented as they are",
+      { ln <- strsplit(.g46, "\n", fixed = TRUE)[[1]]
+        rb <- .blk46(ln, "Name the data frame first, then assign the result to a variable in it:")
+        x  <- c("Head:", "  mydata <- mk()", "  mydata$v <- 1", "Other:", "  d$v <- 2",
+                "mydata as prose", "Last:", "  mydata$w <- 3")
+        identical(rb, c("  mydata <- mk46()", "  mydata$<name> <- jencode(mydata, ...)")) &&
+          identical(.jst_expr_open_blocks(x, "mk()"),
+                    c("Head:", "  mydata <- mk()", "  mydata$v <- 1", "Other:", "  d$v <- 2",
+                      "mydata as prose", "Last:", "  mydata <- mk()", "  mydata$w <- 3")) })
+rm(q45, .g45, .a45, .k45, .b45, .l45, mk46, lst46, .g46, .r46, .s46, .blk46, mk46s)
 
 # --- N47a-N47s: Fix Slate 5, the second cut (S345, v0.9.218) -----------------
 # Four things on jencode()'s surface.

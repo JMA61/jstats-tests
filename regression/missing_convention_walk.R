@@ -94,6 +94,29 @@
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S389 (v0.9.262; Fix Slate 28, the remedy-line audit's finding
+#           B, Claude's call). SECTION 20 RE-PINNED: jdeclare_missing()'s
+#           two convention gates offered the call without convention =,
+#           which on a column already carrying the markers the codes would
+#           take stopped at the collision refusal; they offer the codes sent
+#           to markers the column does not use (refusals 1 and 4), labels
+#           carried for a call they cannot echo (refusal 7, NEW); the
+#           both-forms guard names only a convention the declaration runs
+#           under (refusal 3). The refusals' Expected lines are taken from a
+#           capture of the section on the build, and checked as runs against
+#           it (this section's prose-form blocks are not ones harness.R
+#           finds); the S389 paragraphs and "Things to look at" added. On
+#           the PENDING line. The assertion side is
+#           missing_convention_check.R N90c-N90d3, N90n and N90n2. A capture
+#           of every section of every walk on 0.9.261 and the build (345
+#           sections): here only Section 20 moved. harness.R derive: the
+#           NEEDS lines as they were; verify: 74 of 74 sections in three
+#           orders and by prepare = TRUE; 121 of 122 Expected blocks found
+#           (Section 10's, as before).
+# LAST VERIFIED: v0.9.262, 2026-10-22 (S389) -- Section 20 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (10 run, 3203 checks).
 # EDITED:   S378 (v0.9.252; Capability Slate C3). SECTION 67 RE-PINNED,
 #           by running (fill.R): Render 2's two jrelabel() calls, assigned,
 #           now print jrelabel()'s assign-or-lose reminder (Jeff's okay,
@@ -2852,6 +2875,9 @@ wm <- jdeclare_missing(wm, Fear, codes = c(Late = ".d"), convention = "stata")
 # Three refusals in a row: the sign-off 2 conflict gate naming SAS-style
 # on an uppercase column; the range gate on the same column; and the
 # both-representations guard on an ambiguous column resolved spss.
+# RE-PINNED S389 (v0.9.262; Fix Slate 28): refusals 1, 3 and 4 offered a
+# call that stopped when run, and now offer only what runs; refusal 7 is
+# new. The S389 paragraphs below say what changed in each.
 
 wg <- data.frame(id = 1:4)
 wg$Up <- haven::labelled(
@@ -2884,6 +2910,11 @@ options(.jst_options_missing_convention = "sas")
 try(jdeclare_missing(wg, Mix, codes = -99, convention = "spss"))
 
 try(jdeclare_missing(wg, Mix, codes = c(Refused = -99), convention = "spss"))
+
+# S389: refusal 7 -- refusal 6's call under a STATA setting, where the call
+# without convention = would put -99 on .a, which Mix carries.
+options(.jst_options_missing_convention = "stata")
+try(jdeclare_missing(wg, Mix, codes = c(Refused = -99), convention = "spss"))
 options(.jst_options_missing_convention = NULL)
 
 # REWRITTEN S268. Two things happened to this block at once. All three
@@ -2898,8 +2929,8 @@ options(.jst_options_missing_convention = NULL)
 # Expected, refusal 1 -- the sign-off 2 conflict gate, under try():
 #   Error : jdeclare_missing(): 'Up' already carries SAS-style missing values;
 #   cannot use convention = "spss" here.
-#   To follow the column's form, drop convention = "spss":
-#     jdeclare_missing(wg, Up, codes = c(-99))
+#   To follow the column's form, recode -99 to a marker Up does not use:
+#     wg$UpR <- jrecode(wg, Up, map = "-99=.C; else=copy", convention = "sas")
 #   Or convert the column first:
 #     jconvert(wg, vars = "Up", to = "spss", modify = TRUE)
 #
@@ -2918,6 +2949,19 @@ options(.jst_options_missing_convention = NULL)
 # convention argument" (6); and the head of refusals 3-6 names the markers
 # the column's cells carry, (.a) and (.B), where it named the two ranges
 # (the S267 item: one vocabulary with the mixed-marker note, Section 19).
+#
+# RE-PINNED S389 (v0.9.262; Fix Slate 28, the remedy-line audit's finding
+# B): the echoed call stopped when run. Without convention = it follows the
+# column's own form, SAS, which gives -99 the first SAS marker, .A -- and Up
+# carries .A, so the call met the collision refusal. The guard now asks
+# what the call without convention = would meet, and where the column
+# already carries those markers it offers what runs: -99 sent to a marker
+# Up does not use, .C (A and B are taken), in a new variable, UpR -- the
+# line the collision refusal itself gives (ruling R8's offered
+# declarations, S352). A column whose first marker is free keeps the
+# echoed call, and a call the guard cannot echo (named codes, a labels
+# string) gets the recode line too, its labels carried
+# (missing_convention_check.R N90c3, N90c4).
 #
 # Note also what LEFT: the old Expected opened "Column 'Up' already
 # carries", and the builder has no "Column". S266 logged that prefix as
@@ -2938,7 +2982,7 @@ options(.jst_options_missing_convention = NULL)
 # Expected, refusal 3 -- the both-representations guard:
 #   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a) and
 #   SAS-style (.B) missing values, which SPSS convention cannot act on.
-#   Set convention = "stata" or convention = "sas" on this call.
+#   Set convention = "sas" on this call.
 #
 # S267 rewrote the head and left this remedy alone. It used to say the
 # column "carries tagged missing values in both letter cases, which the
@@ -2948,6 +2992,13 @@ options(.jst_options_missing_convention = NULL)
 # every other message in the family names them. The guard is otherwise
 # the same one: it keeps an spss resolution from minting na_values
 # BESIDE tagged cells (the both-representations state).
+#
+# RE-PINNED S389: the remedy named both conventions, and under stata -99
+# would take .a, which Mix carries -- that call stopped at the collision
+# refusal. It names only a convention the declaration runs under: both
+# when both run, and both when neither does, each then refusing with the
+# line that sends the codes to markers the column does not use
+# (missing_convention_check.R N90n, N90n2).
 #
 # BREAKS FROM THE S268 RUN. Refusals 1 and 2 wrap exactly as shown.
 # Refusal 3 did NOT -- its head is TWO lines, not three: line 1 runs
@@ -2973,15 +3024,20 @@ options(.jst_options_missing_convention = NULL)
 # and correctly show no space. If a future diff flags one, check which
 # wrapper the call used before changing anything.
 #
-# Expected, refusal 4 -- per-call spss over a STATA setting:
+# Expected, refusal 4 -- per-call spss over a STATA setting (RE-PINNED
+# S389: the drop line, jdeclare_missing(wg, Mix, codes = c(-99)), put -99
+# on .a under the setting, and Mix carries .a; it stopped at the collision
+# refusal):
 #   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a) and
 #   SAS-style (.B) missing values, which SPSS convention cannot act on.
 #   This call sets convention = "spss", but your missing.convention setting is
-#   "stata". To use the setting, drop convention = "spss":
-#     jdeclare_missing(wg, Mix, codes = c(-99))
+#   "stata". To use the setting, recode -99 to a marker Mix does not use:
+#     wg$MixR <- jrecode(wg, Mix, map = "-99=.c; else=copy")
 #
-# Expected, refusal 5 -- the same, over a SAS setting. Byte-identical to
-# refusal 4 except the setting token:
+# Expected, refusal 5 -- the same, over a SAS setting. Until S389
+# byte-identical to refusal 4 but for the setting token; now the drop line
+# stays here alone, because under sas -99 takes .A, which Mix does not
+# carry (it carries .a and .B):
 #   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a) and
 #   SAS-style (.B) missing values, which SPSS convention cannot act on.
 #   This call sets convention = "spss", but your missing.convention setting is
@@ -2996,18 +3052,40 @@ options(.jst_options_missing_convention = NULL)
 #   This call sets convention = "spss", but your missing.convention setting is
 #   "sas". To use the setting, drop convention = "spss" from the call.
 #
+# Expected, refusal 7 (S389) -- refusal 6's call under a STATA setting: a
+# call the guard cannot echo, whose drop would put -99 on .a, which Mix
+# carries; the recode line, its label carried to the marker:
+#   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a) and
+#   SAS-style (.B) missing values, which SPSS convention cannot act on.
+#   This call sets convention = "spss", but your missing.convention setting is
+#   "stata". To use the setting, recode -99 to a marker Mix does not use:
+#     wg$MixR <- jrecode(wg, Mix, map = "-99=.c; else=copy",
+#         labels = ".c=Refused")
+#
 # WHAT THESE THREE ADD. The head is the same in all six refusals; what
 # changes is the remedy, and it changes because the guard now knows WHY the
 # spss resolution happened. Reached through a resolved spss (refusals 1-3),
-# there is no argument to remove, so the message names the two conventions
+# there is no argument to remove, so the message names the conventions
 # that can act on the column. Reached through a per-call override (4-6), the
 # argument IS the problem and removing it is one edit. That distinction is
 # what S267 built and what nothing in this file could see until now.
+# Since S389 that one edit is offered only where it runs: under the stata
+# setting -99 would take .a, which Mix carries, so refusals 4 and 7 send it
+# to a marker Mix does not use, in a new variable, MixR.
 #
 # (All three sandbox-rendered against the v0.9.158 master at S282, at the
 # pinned 76, then confirmed by the S282 workstation walk.)
 #
-# Things to look at, REFUSALS 4-6 specifically:
+# Things to look at, REFUSALS 4-7 specifically:
+#   - S389: refusals 4 and 7 against 5 and 6. The same guard, and the
+#     setting decides which marker the declaration would take: under stata
+#     the line is a recode to a marker Mix does not use, into MixR; under
+#     sas the drop line runs and stays. Does "To use the setting, recode
+#     -99 to a marker Mix does not use:" read as using the setting? (The
+#     line carries no convention =: the setting supplies stata.)
+#   - S389, refusal 7: the label rides on the marker, labels =
+#     ".c=Refused"; refusal 6's prose there would have led to the collision
+#     refusal.
 #   - Refusal 4 against refusal 3. Same column, same guard, same head; two
 #     different remedies. Does the pair read as one guard adapting to how
 #     you got there, or as two messages that happen to share an opening?
@@ -3022,6 +3100,11 @@ options(.jst_options_missing_convention = NULL)
 #     know that. Does the prose form feel like a lesser answer?
 #
 # Things to look at, refusals 1-3:
+#   - S389, refusal 1: the recode line where the echoed call stood. The
+#     sentence says what the line does, not why the echo would stop (Up
+#     carries .A). Enough?
+#   - S389, refusal 3: one convention named, sas. Does it want the reason
+#     (stata would put -99 on .a, which Mix carries)?
 #   - Does refusal 3 read as protective rather than obstructive? Its fix
 #     line is the escape the skip ruling promised (per-call wins on an
 #     ambiguous column -- for the conventions that can act on it).

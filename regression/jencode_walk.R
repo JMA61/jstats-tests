@@ -27,6 +27,25 @@
 #           Since S355 (Section 16): the NA rule's note on such a variable,
 #           and the parse layer phrased by the setting.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S389 EDIT (v0.9.262, 2026-10-22): SECTION 11 RE-PINNED (Fix Slate 28, the
+#           remedy-line audit's finding A, Claude's call): given an
+#           expression as the data, every block of offered lines that names
+#           mydata opens on the line that makes it, mydata <- mk11() --
+#           Render 1's first note, whose map line stopped when run where it
+#           sat, as the reminder already did. Render 1's Expected FILLED BY
+#           RUNNING the file (fill.R); its "Things to look at" rewritten (it
+#           asked whether the naming line should come first). On the PENDING
+#           line. The assertion side is jencode_check.R N46o-N46q. A capture
+#           of every section of every walk on 0.9.261 and the build (345
+#           sections): this file's Section 11 moved by that one line,
+#           nothing else here. harness.R derive: no NEEDS change; verify: 18
+#           of 18 sections in three orders and by prepare = TRUE; 32 of 32
+#           Expected blocks found.
+#           LAST VERIFIED v0.9.262, 2026-10-22 (S389) -- Section 11 WALKED
+#           on the WORKSTATION through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0
+#           notes; ALL BATTERIES GREEN (10 run, 3203 checks); GitHub
+#           4947981 (package).
 # S356 EDIT (v0.9.229, 2026-10-15): SECTION 17 ADDED, three renders, for
 #           the NAMES slate (ruling R18) and ruling R17 at jencode(): the
 #           variable named in quotes, jencode(r17d, "Reply", ...), read as
@@ -1144,7 +1163,10 @@ rm(qw10)
 # offered pasted the expression the same way. The lines now name mydata and
 # the reminder says how mydata is made -- the form jdeclare_missing() and
 # the registration verbs took at S339 and S342. The assertion side is
-# jencode_check.R N46a-N46k.
+# jencode_check.R N46a-N46k. RE-PINNED S389 (v0.9.262; Fix Slate 28, the
+# remedy-line audit): every block that names mydata now opens on the line
+# that makes it -- Render 1's first note too, whose line, run where it sat,
+# stopped on a mydata nothing had made (jencode_check.R N46o-N46q).
 
 mk11 <- function() {
   data.frame(id = 1:6, Grp = rep(c("ctl", "trt"), 3),
@@ -1160,6 +1182,7 @@ g11 <- jencode(mk11(), Grp)
 #     "trt" -> 2
 #   If these categories have a natural order (like Low/Medium/High), rerun with
 #   a map to choose the numbers:
+#     mydata <- mk11()
 #     mydata$GrpR <- jencode(mydata, Grp, map = "ctl=1; trt=2")
 #
 #   Note: The result is kept only if you assign it.
@@ -1202,9 +1225,12 @@ p11 <- jencode(lst11$d, Grp)
 rm(mk11, g11, r11, lst11, p11)
 
 # Things to look at:
-#   - RENDER 1: the first note's call names mydata before the reminder has
-#     said what mydata is. Read top to bottom, does that land, or should
-#     the naming line come first?
+#   - RENDER 1 (S389): the first note's block opens on its own naming
+#     line, mydata <- mk11(), as the reminder's does, so each block runs
+#     where it sits. Until S389 the question here was whether the naming
+#     line should come first; the remedy-line audit found the note's line
+#     stopped when run alone. Two naming lines in one call's output: does
+#     the repeat read as each block standing on its own, or as padding?
 #   - The reminder's two code lines: "mydata <- mk11()" runs as printed;
 #     the line under it is the pattern it has always been (<name> and ...
 #     are yours to fill in), now with mydata inside the call as well.

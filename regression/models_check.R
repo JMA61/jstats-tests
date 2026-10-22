@@ -83,6 +83,22 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S389 EDIT (v0.9.262, 2026-10-22): SECTION AD ADDED (Fix Slate 28), 5
+#           checks: jt()'s stop for more than two categories, when one is a
+#           text variable's <blank>, names the categories, the blank last,
+#           and where two named categories are left gives the declaration
+#           that leaves the blank cells out (codes = "", the values the
+#           variable declares named too) before the jaov() line -- pinned
+#           whole, run as printed (jt() then runs), a place's assignment
+#           form, the juse() default's name; no line for a factor, an
+#           expression or three named categories; a variable declaring
+#           "UNKNOWN" gets codes = c("UNKNOWN", ""). Every pin filled by
+#           running. K03 (no blank: the stop as it was) unchanged. On
+#           v0.9.261 AD01-AD05 are red. 540 checks.
+#           LAST VERIFIED: v0.9.262, 2026-10-22 (S389) -- 540/540 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (10 run,
+#           3203 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox.
 # S386 EDIT (v0.9.259, 2026-10-21): SECTION AC ADDED (the twin build, D2
 #           and a rider), 7 checks. The build gave jlm() and jlogistic() one
 #           predictor loop (.jst_model_iv_loop()), and jlogistic() gains
@@ -6274,6 +6290,64 @@ check("AC07 the both-sides stop, reached by no battery until now (the S385 trace
               identical(a, paste0("jlm(): 'y'", tail)) &&
                 identical(b, paste0("jlogistic(): 'yb'", tail)) }))
 rm(.ac_pair)
+
+# =============================================================================
+# AD. Fix Slate 28 (S389, v0.9.262): jt()'s stop on a blank category
+# =============================================================================
+# A text grouping variable's blank cells are a category of their own,
+# <blank> (S340), and jt()'s stop for more than two categories said
+# "'G' has 3 categories" and pointed to jaov(), with nothing to say what
+# the third was. Found putting ruling R34, under which a sheet's empty text
+# cells are <blank> as a CSV file's are. With <blank> among the categories
+# the stop names them, the blank last, and -- when the categories besides
+# the blank are two, the variable is text and the data are not an
+# expression -- gives the declaration that leaves the blank cells out
+# before the jaov() line, naming any values the variable declares already
+# (.jst_t_categories_stop_text()). Every pin filled by running on v0.9.262.
+cat("\n--- AD. Fix Slate 28: jt()'s stop on a blank category ---\n")
+
+.adb <- data.frame(y = c(10, 12, 11, 14, 9, 13, 15, 10),
+                   G = c("Male", "Female", "", "Male", "Female", "Male", "Female", "   "))
+.ad_tail <- "A t-test requires exactly 2.\n"
+check("AD01 a blank category: the stop names the categories, the blank last, and gives the declaration that leaves the blank cells out, before the jaov() line (pinned whole)",
+      identical(grab(jt(y ~ G, .adb)), paste0(
+        "jt(): 'G' has 3 categories: Female, Male, and <blank>.\n", .ad_tail,
+        "To leave out the blank cells, declare them missing:\n",
+        "  jdeclare_missing(.adb, G, codes = \"\", modify = TRUE)\n",
+        "Or use jaov() for more than 2 categories.")))
+check("AD02 ... the line run as printed declares the empty and the spaces cell, and jt() then runs on two groups, the blank cells missing",
+      local({ e <- new.env(parent = globalenv()); e$.adb <- .adb
+        ln <- regmatches(grab(jt(y ~ G, .adb)), regexpr("jdeclare_missing\\([^\n]*", grab(jt(y ~ G, .adb))))
+        suppressMessages(eval(parse(text = ln), envir = e))
+        r <- quiet(eval(quote(jt(y ~ G, .adb)), e))
+        !is.null(r) && identical(attr(e$.adb$G, "na_values"), "") &&
+          identical(sum(.jst_text_codes_mask(e$.adb$G, "")), 2L) }))
+check("AD03 a place takes the assignment form, which runs; under a juse() default the line names the default's data frame",
+      local({ lst <- list(d = .adb)
+        a <- grab(jt(y ~ G, lst$d))
+        b <- with_state(quiet(juse(.adb)), grab(jt(y ~ G)), quiet(juse(NULL)))
+        e <- new.env(parent = globalenv()); e$lst <- lst
+        suppressMessages(eval(parse(text = "lst$d <- jdeclare_missing(lst$d, G, codes = \"\")"), envir = e))
+        grepl("\n  lst$d <- jdeclare_missing(lst$d, G, codes = \"\")\n", a, fixed = TRUE) &&
+          identical(attr(e$lst$d$G, "na_values"), "") &&
+          grepl("\n  jdeclare_missing(.adb, G, codes = \"\", modify = TRUE)\n", b, fixed = TRUE) }))
+check("AD04 no declaration line where it would not serve: a factor (jdeclare_missing() refuses one), an expression as the data, three named categories beside the blank (the line would lead to this stop again) -- each names the categories and keeps the jaov() line (pinned whole)",
+      local({ .adf <- .adb; .adf$G <- factor(.adf$G)
+        .ad3 <- .adb; .ad3$G[1] <- "Other"
+        three <- paste0("jt(): 'G' has 3 categories: Female, Male, and <blank>.\n", .ad_tail,
+                        "Use jaov() for more than 2 categories.")
+        identical(grab(jt(y ~ G, .adf)), three) &&
+          identical(grab(jt(y ~ G, .adb[1:8, ])), three) &&
+          identical(grab(jt(y ~ G, .ad3)), paste0(
+            "jt(): 'G' has 4 categories: Female, Male, Other, and <blank>.\n", .ad_tail,
+            "Use jaov() for more than 2 categories.")) }))
+check("AD05 a variable already declaring a value: the line names it beside the blank, since a declaration replaces a variable's values (pinned)",
+      local({ .adu <- .adb
+        .adu$G <- haven::labelled_spss(c("Male", "Female", "", "UNKNOWN", "Female", "Male",
+                                         "Female", "   "), na_values = "UNKNOWN")
+        grepl("\n  jdeclare_missing(.adu, G, codes = c(\"UNKNOWN\", \"\"), modify = TRUE)\n",
+              grab(jt(y ~ G, .adu)), fixed = TRUE) }))
+rm(.adb, .ad_tail)
 
 # --- Verdict -----------------------------------------------------------------
 
