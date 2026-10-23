@@ -11,6 +11,21 @@
 #           jfreq(), jscreen() and a group function (Part K); since S349 a
 #           plot's one-line N statement (Part M).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S395 EDIT (v0.9.267): FIX SLATE 30, THE SECOND BUILD -- the S393 message
+#           pass's accepts, with rulings R40-R44 and the (S393) parenthetical
+#           lean (Jeff, S393 and S395). L2 RE-PINNED MECHANICALLY, by running
+#           (fill.R), and kept off the PENDING line: the listwise note's
+#           second sentence on a line of its own (voice Rule E). The shapes
+#           are walked once, in format_walk.R Section 37. A capture of every
+#           section of every walk on 0.9.266 and on the build moves only L2
+#           here (the temporary paths aside). harness.R verify: 70 of 70
+#           sections in three orders and by prepare = TRUE; 25 of 73 Expected
+#           blocks found as runs, as on 0.9.266.
+# LAST VERIFIED: v0.9.267, 2026-10-23 (S395) -- L2 re-pinned mechanically and
+#           not walked here; the shapes WALKED in format_walk.R Section 37 on
+#           the WORKSTATION by Jeff ("All good."); PENDING none throughout; R
+#           CMD check clean (the receive went on to the batteries); ALL
+#           BATTERIES GREEN (11 run, 3342 checks).
 # S382 EDIT (v0.9.256): FIX SLATE 25. A2, B7, C2, F4 and L1 RE-PINNED
 #           MECHANICALLY, one line each, and kept off the PENDING line: the
 #           listwise note without "first" ("Note: Listwise deletion using
@@ -2665,8 +2680,8 @@ jdesc(d, Stress, SocialSupport)
 #       Remaining N        --         70
 #   ----------------------------------------------
 #
-#   Note: jcomplete() is not set on Stress and SocialSupport. Listwise deletion
-#   across all of these variables would leave 63 cases.
+#   Note: jcomplete() is not set on Stress and SocialSupport.
+#   Listwise deletion across all of these variables would leave 63 cases.
 #
 #   Variable       Total  Non_missing  Min  Max   Mean     SD
 #   -------------  -----  -----------  ---  ---  ------  -----

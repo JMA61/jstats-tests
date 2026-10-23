@@ -71,6 +71,29 @@
 #           infinite value, its lines run.
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
+# S395 EDIT (v0.9.267): FIX SLATE 30, THE SECOND BUILD -- the S393 message
+#           pass's accepts, with rulings R40-R44 and the (S393) parenthetical
+#           lean (Jeff, S393 and S395). SECTIONS 21, 26, 28, 29, 33, 34 AND 35
+#           RE-PINNED MECHANICALLY, by running (fill.R), and kept off the
+#           PENDING line: the 1/2 dichotomy note's sentences on lines of their
+#           own (21, 28; voice Rule E); "Then use tickR as your outcome" (21)
+#           and "one of the predictors in the model" (26), and jplot()'s
+#           pointer in outcome and predictor where it said DV and IV (34;
+#           ruling R43); jdummy()'s stop with "(4.8, 5.1, 5.2, ...)" kept
+#           whole and a sentence a line (29); "seems categorical;" one
+#           sentence (33, 35; ruling R40). The shapes are walked once, in
+#           format_walk.R Section 37. The assertion side is models_check.R and
+#           the re-pins its header names. A capture of every section of every
+#           walk on 0.9.266 and on the build moves only those seven here;
+#           Section 35's "Things to look at" quotes the hedge as one sentence.
+#           harness.R verify: 36 of 36 sections in three orders and by prepare
+#           = TRUE; 94 of 95 Expected blocks found (Section 1's, as before).
+# LAST VERIFIED: v0.9.267, 2026-10-23 (S395) -- Sections 21, 26, 28, 29, 33,
+#           34 and 35 re-pinned mechanically and not walked here; the shapes
+#           WALKED in format_walk.R Section 37 on the WORKSTATION by Jeff
+#           ("All good."); PENDING none throughout; R CMD check clean (the
+#           receive went on to the batteries); ALL BATTERIES GREEN (11 run,
+#           3342 checks).
 # S394 EDIT (v0.9.266): NEW SECTION 36 -- 35 sections -> 36. The (S392)
 #           infinite-value item, on the lean Jeff okayed at S394 ("Yes to
 #           everything."), five renders on clinic, whose ScreenTime holds a
@@ -2151,8 +2174,9 @@ jlm(y ~ s + x1, data = m21)
 
 # Expected:
 #   Linear Regression
-#   Note: s is a 1/2 dichotomy. The model runs correctly, but registering s as a
-#   dummy can help interpret the intercept:
+#   Note: s is a 1/2 dichotomy.
+#   The model runs correctly, but registering s as a dummy can help interpret
+#   the intercept:
 #     jdummy(m21, s)
 #   Or make it a 0/1 variable in the data frame.
 #
@@ -2186,16 +2210,16 @@ shown21(jlogistic(tick ~ x1, data = mk21()))
 #   Error: jlogistic(): 'tick' has text categories Y/<blank>.
 #   Encode it as a 0/1 variable, so that the modeled category is explicit:
 #     m21$tickR <- jencode(m21, tick, map = "blank=0; Y=1")
-#   Then use tickR as your dependent variable (the category mapped to 1 is the
-#   one jlogistic() models).
+#   Then use tickR as your outcome (the category mapped to 1 is the one
+#   jlogistic() models).
 #
 #   Logistic Regression
 #   Error: jlogistic(): 'tick' has text categories Y/<blank>.
 #   Encode it as a 0/1 variable, so that the modeled category is explicit:
 #     mydata <- mk21()
 #     mydata$tickR <- jencode(mydata, tick, map = "blank=0; Y=1")
-#   Then use tickR as your dependent variable (the category mapped to 1 is the
-#   one jlogistic() models).
+#   Then use tickR as your outcome (the category mapped to 1 is the one
+#   jlogistic() models).
 
 # Render 4 -- arithmetic on a labelled categorical variable, the frame
 # given as an expression.
@@ -2920,8 +2944,7 @@ cat(p26g$labels$subtitle, "\n", sep = "")
 # Render 3 -- a name that is not a variable of the model.
 shown26(jplot(r26b, which = "fit", focal = q))
 # Expected:
-#   Error: jplot(): `focal` must be one of the independent variables in the
-#   model: g, x
+#   Error: jplot(): `focal` must be one of the predictors in the model: g, x
 
 # Render 4 -- jlogistic(): the probability plot at focal = g, x held at its
 # mean (at x = 0 every probability is near 0).
@@ -3079,8 +3102,9 @@ jlogistic(SoughtHelp ~ Stress + SocialSupport + PriorTherapy, data = d)
 jlogistic(SoughtHelp ~ Stress + Condition, data = d, categorical = "Condition")
 # Expected:
 #   Logistic Regression
-#   Note: PriorTherapy is a 1/2 dichotomy. The model runs correctly, but
-#   registering PriorTherapy as a dummy can help interpret the intercept:
+#   Note: PriorTherapy is a 1/2 dichotomy.
+#   The model runs correctly, but registering PriorTherapy as a dummy can help
+#   interpret the intercept:
 #     jdummy(d, PriorTherapy)
 #   Or make it a 0/1 variable in the data frame.
 #
@@ -3636,15 +3660,17 @@ rm(r29a, r29b, p29a, p29b, p29c)
 #     1. Box Plot
 #     2. Normal Q-Q
 #
-#   Error : jdummy(): SleepHours has values that are not whole numbers (4.8,
-#   5.1, 5.2, ...), so it cannot be dummy-coded.
-#   Dummy coding makes one indicator for each category. If these values are
-#   categories, recode them to whole-number codes first with jrecode().
+#   Error : jdummy(): SleepHours has values that are not whole numbers
+#   (4.8, 5.1, 5.2, ...), so it cannot be dummy-coded.
+#   Dummy coding makes one indicator for each category.
+#   If these values are categories, recode them to whole-number codes first
+#   with jrecode().
 #   Linear Regression
-#   Error : jlm(): SleepHours has values that are not whole numbers (4.8, 5.1,
-#   5.2, ...), so it cannot be dummy-coded.
-#   Dummy coding makes one indicator for each category. If these values are
-#   categories, recode them to whole-number codes first with jrecode().
+#   Error : jlm(): SleepHours has values that are not whole numbers
+#   (4.8, 5.1, 5.2, ...), so it cannot be dummy-coded.
+#   Dummy coding makes one indicator for each category.
+#   If these values are categories, recode them to whole-number codes first
+#   with jrecode().
 
 # Things to look at:
 #   - RENDER 1, jlm(): the VIF table has three columns now -- GVIF, Df and
@@ -3983,7 +4009,7 @@ options(.warn33)
 # Expected:
 #   Error : jt(): Zzz was not found in the d data frame.
 #   Check the spelling.
-#   Warning: PriorTherapy seems categorical. Pearson correlations assume
+#   Warning: PriorTherapy seems categorical; Pearson correlations assume
 #   continuous/interval data.
 #   Descriptive Statistics
 #
@@ -4072,10 +4098,10 @@ jplot(Flourishing ~ Anxiety1, d, line = "lm")
 try(jplot(d, Condition, Flourishing, numeric = Condition))
 # Expected:
 #   Error : jplot(): For two-numeric scatterplots, use formula syntax to make
-#   the DV and IV explicit (consistent with jlm):
+#   the outcome and the predictor explicit (consistent with jlm):
 #     jplot(Flourishing ~ Condition, d, numeric = Condition)
-#   (The DV on the left of ~ goes on the y-axis; the IV on the right goes on
-#   the x-axis.)
+#   (The outcome on the left of ~ goes on the y-axis; the predictor on the right
+#   goes on the x-axis.)
 
 # Things to look at:
 #   - RENDER 1: the Plots pane shows four boxes, labeled by Condition's value
@@ -4120,7 +4146,7 @@ jdummy(d, Condition, remove = TRUE)
 #
 #   70 Cases in the 1 Variable Pool
 #
-#   Warning: Condition seems categorical. Descriptive statistics may not
+#   Warning: Condition seems categorical; descriptive statistics may not
 #   be meaningful.
 #   Variable   Total  Non_missing  Min  Max   Mean    SD
 #   ---------  -----  -----------  ---  ---  -----  -----
@@ -4161,12 +4187,13 @@ jdummy(d, Condition, remove = TRUE)
 options(.warn35); rm(.warn35)
 
 # Things to look at:
-#   - The first warning is the hedge, "seems categorical. Descriptive
-#     statistics may not be meaningful."; after jdummy() the warning states
-#     it, in one sentence: "Condition is categorical; descriptive statistics
-#     may not be meaningful." The lean had sketched "is registered as
-#     categorical"; this is the form the three other functions already give
-#     a registered variable. jcorr()'s names its method's assumption.
+#   - The first warning is the hedge, "seems categorical; descriptive
+#     statistics may not be meaningful." (one sentence since S395, ruling
+#     R40; it was two); after jdummy() the warning states it: "Condition is
+#     categorical; descriptive statistics may not be meaningful." The lean
+#     had sketched "is registered as categorical"; this is the form the
+#     three other functions already give a registered variable. jcorr()'s
+#     names its method's assumption.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

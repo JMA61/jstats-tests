@@ -58,6 +58,23 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S395 EDIT (v0.9.267): FIX SLATE 30, THE SECOND BUILD -- the S393 message
+#           pass's accepts, with rulings R40-R44 and the (S393) parenthetical
+#           lean (Jeff, S393 and S395). C1, F1 AND H1 RE-PINNED MECHANICALLY,
+#           by running (fill.R), and kept off the PENDING line: "Nothing to
+#           clear." on a line of its own (C1, voice Rule E); "seems
+#           categorical; descriptive statistics may not be meaningful." as one
+#           sentence (F1, H1; ruling R40). The shapes are walked once, in
+#           format_walk.R Section 37. The assertion side is filter_check.R P05
+#           and the re-pins its header names. A capture of every section of
+#           every walk on 0.9.266 and on the build moves only those three
+#           here. harness.R verify: 62 of 62 sections in three orders and by
+#           prepare = TRUE; 98 of 98 Expected blocks.
+# LAST VERIFIED: v0.9.267, 2026-10-23 (S395) -- C1, F1 and H1 re-pinned
+#           mechanically and not walked here; the shapes WALKED in
+#           format_walk.R Section 37 on the WORKSTATION by Jeff ("All good.");
+#           PENDING none throughout; R CMD check clean (the receive went on to
+#           the batteries); ALL BATTERIES GREEN (11 run, 3342 checks).
 # S392 EDIT (v0.9.265; the (S391) expression-typo item and the (S282)
 #           item, Jeff's okay of the leans: "Okay for all defaults."): NEW
 #           SECTION G11 -- 61 sections -> 62 -- and SECTION G9 RE-PINNED.
@@ -865,7 +882,8 @@ jsubset(d, NULL)
 #   jsubset deactivated for d.
 #   jsubset reactivated for d: Age < 40
 #   jsubset cleared for d (had: Age < 40).
-#   No jsubset set for d. Nothing to clear.
+#   No jsubset set for d.
+#   Nothing to clear.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -1617,7 +1635,7 @@ jdesc(Age, Gender)
 #
 #   12 Cases in the 2 Variable Pool; 11 Complete on All
 #
-#   Warning: Gender seems categorical. Descriptive statistics may not
+#   Warning: Gender seems categorical; descriptive statistics may not
 #   be meaningful.
 #   Variable  Total  Non_missing  Min  Max   Mean     SD
 #   --------  -----  -----------  ---  ---  ------  -----
@@ -1635,7 +1653,7 @@ jdesc(Tenure)
 #
 #   3 Cases in the 1 Variable Pool
 #
-#   Warning: Tenure seems categorical. Descriptive statistics may not
+#   Warning: Tenure seems categorical; descriptive statistics may not
 #   be meaningful.
 #   Variable  Total  Non_missing  Min  Max   Mean    SD
 #   --------  -----  -----------  ---  ---  -----  -----
@@ -2815,7 +2833,7 @@ caught(jrecode(d, c(Age, Gender), map = "1=0"))
 #
 #   12 Cases in the 2 Variable Pool; 11 Complete on All
 #
-#   Warning: Gender seems categorical. Descriptive statistics may not
+#   Warning: Gender seems categorical; descriptive statistics may not
 #   be meaningful.
 #   Variable  Total  Non_missing  Min  Max   Mean     SD
 #   --------  -----  -----------  ---  ---  ------  ------

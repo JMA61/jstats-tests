@@ -27,6 +27,28 @@
 #           Since S373 (N51): automatic mode on a variable whose blank
 #           cells are declared missing.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S395 EDIT (v0.9.267, 2026-10-23): N52a-N52c ADDED; N46o, N49b AND N49c
+#           RE-PINNED; N42 GIVEN A THIRD EXEMPTION. Fix Slate 30's second
+#           build: the S393 message pass's accepts (Jeff: "okay accept the
+#           rest"; "D1, D2, D3, okay with your recommendation."), rulings
+#           R40-R44 and the (S393) parenthetical lean. Ruling R44 (Jeff, on
+#           the student's answer: "I'll have to take your recommendation."):
+#           jencode()'s note for words beyond A to Z says "in character-code
+#           order, which may not be alphabetical:", the numbers unchanged
+#           (N52a Chinese, N52b an accented Latin letter); words of A to Z
+#           keep "alphabetically:" and a factor "in its level order:" (N52c).
+#           N42's no-premature-break sweep counts a parenthetical of up to 40
+#           columns opening the line below as one word (exemption 3). Re-pins:
+#           a parenthetical kept whole (N46o, N49b, N49c), a sentence a line
+#           (N49c). 135 -> 138 checks; on the 0.9.266 master N46o, N49b, N49c,
+#           N52a and N52b red (N52c is the control). MUTATION MAP (S395; each
+#           red): R44's test of the words switched off N52a N52b.
+#           LAST VERIFIED: v0.9.267, 2026-10-23 (S395) -- 138/138 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3342 checks)"; R CMD check clean), matching the sandbox plain,
+#           under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, once with interactive() TRUE, and
+#           entered dirty.
 # S392 EDIT (v0.9.265, 2026-10-22): N49b AND N49c RE-PINNED (the (S282)
 #           item, voice Rule B; Jeff's okay of the lean, S392: "Okay for all
 #           defaults."): the parse layer's stops without the wrapper "Error
@@ -1050,7 +1072,8 @@ if (length(.over) > 0L) for (l in .over) cat("        over: ", l, "\n")
 # sat under a green 41/41. The runtime counterpart of the dev script's
 # wrap gate: for each pair of consecutive unindented prose lines, the
 # lower line's first word must NOT have fit on the line above. Two
-# exemptions, both breaks the wrapper makes on purpose: (1) the line
+# exemptions, both breaks the wrapper makes on purpose (and since S395 a
+# parenthetical of up to 40 columns counts as one word, (3) below): (1) the line
 # above ends a sentence and the line below opens one (Rule 2 relocates a
 # break to the sentence boundary); (2) the line below is a paragraph's
 # last line (the orphan pull-back moves a word DOWN by design). An
@@ -1065,6 +1088,15 @@ pbreaks <- function(txt, width, first_line_slack = 0L) {
     a <- ls[i]; b <- ls[i + 1L]
     if (!nzchar(a) || !nzchar(b) || grepl("^ ", a) || grepl("^ ", b)) next
     w <- strsplit(b, " ", fixed = TRUE)[[1]][1L]
+    # (3) a parenthetical of up to 40 columns opening the line below moves
+    #     whole (the (S393) parenthetical item, S395): its "first word" is
+    #     the whole parenthetical with what is attached after it, which
+    #     must not have fit above either
+    if (startsWith(b, "(")) {
+      pm <- regmatches(b, regexpr("^\\((?:[^()]|\\([^()]*\\))*\\)", b, perl = TRUE))
+      if (length(pm) && nchar(pm, type = "width") <= 40L)
+        w <- regmatches(b, regexpr("^\\((?:[^()]|\\([^()]*\\))*\\)[^ ]*", b, perl = TRUE))
+    }
     # (1) sentence end above (not an initialism like "e.g.") + sentence
     #     start below -> Rule 2 relocation, exempt
     if (grepl("[.!?]$", a) &&
@@ -1545,6 +1577,8 @@ check("N46n ... a place and a name keep the one line they had, in both",
 # for as long as the call runs and no longer.
 mk46s <- function() data.frame(v = haven::labelled_spss(c(1, 2, 5, -1, -2, -3),
                                                         na_values = c(-1, -2, -3)))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "(-1, -2,
+# -3)" kept whole (the (S393) parenthetical item).
 check("N46o a stop on an expression opens each of its blocks on the naming line, and each block runs as printed in a session of its own (pinned whole; under spss the third declared code leaves no room for 'missing')",
       { cv <- getOption(".jst_options_missing_convention")
         tryCatch({ options(.jst_options_missing_convention = "spss")
@@ -1554,8 +1588,8 @@ check("N46o a stop on an expression opens each of its blocks on the naming line,
           b2 <- .blk46(ln, "Or re-declare v with fewer codes first:")
           e1 <- new.env(parent = globalenv()); e2 <- new.env(parent = globalenv())
           identical(m, paste0(
-            "jrecode(): v already declares 3 SPSS-style missing values (-1, -2,\n",
-            "-3), the maximum SPSS allows. 'missing' would add -99 as a fourth.\n",
+            "jrecode(): v already declares 3 SPSS-style missing values\n",
+            "(-1, -2, -3), the maximum SPSS allows. 'missing' would add -99 as a fourth.\n",
             "Use one of the declared codes instead:\n",
             "  mydata <- mk46s()\n",
             "  mydata$vR <- jrecode(mydata, v, map = \"5=-1; else=copy\")\n",
@@ -1938,12 +1972,14 @@ rm(list = intersect(c("w48", ".g48a", ".g48c", ".conv48", ".line48"),
     "value directly."),
   N49b = paste0(
     "jencode(): Invalid new value 'foo' in map rule 'No=foo'.\n",
-    "New values must be numeric, the word missing, a system-NA alias (NA, System,\n",
-    "or SYSMIS), or a SAS-style missing-value marker (.A through .Z)."),
+    "New values must be numeric, the word missing, a system-NA alias\n",
+    "(NA, System, or SYSMIS), or a SAS-style missing-value\n",
+    "marker (.A through .Z)."),
   N49c = paste0(
     "jencode(): Invalid else action '.QQ' in the map.\n",
-    "SAS-style missing-value markers are '.A' through '.Z' (one letter after a\n",
-    "period). The NA(a) longhand is not supported in the map."),
+    "SAS-style missing-value markers are '.A' through '.Z'\n",
+    "(one letter after a period).\n",
+    "The NA(a) longhand is not supported in the map."),
   N49d = paste0(
     "Note: 1 NA value in 'R' was encoded as -98.\n",
     "To make that case missing, map NA to a Stata-style marker the encoded\n",
@@ -1958,6 +1994,9 @@ rm(list = intersect(c("w48", ".g48a", ".g48c", ".conv48", ".line48"),
 )
 check("N49a the no-target refusal: the token quoted three times, \"to label\" gone (pinned whole)",
       .pin49("N49a", grab(jencode(.e49, R, map = "Yes=1; No=2; Refused=3", labels = "missing=Refused"))))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): a
+# parenthetical kept whole (the (S393) parenthetical item) and a sentence a
+# line (voice Rule E); the pins of N49b and N49c, above.
 check("N49b a new value that is no value, under sas: the word missing listed, the marker SAS-style (pinned whole)",
       .pin49("N49b", .conv49("sas", grab(jencode(.e49, R, map = "Yes=1; No=foo")))))
 check("N49c a malformed else marker, under sas: SAS-style, '.A' through '.Z' (pinned whole)",
@@ -2056,6 +2095,30 @@ check("N51d control: the same variable undeclared keeps the plain-blank note and
       grepl("blank=0", grab(jencode(data.frame(S = c("a", "", "b"), stringsAsFactors = FALSE), S)),
             fixed = TRUE))
 rm(.e51, .g51)
+
+# --- N52: the order said as what it is (S395, ruling R44) --------------------
+# Jeff, on his Chinese student's answer (she expects pinyin order:
+# Beijing, Guangzhou, Shanghai):
+# "I'll have to take your recommendation." The order stays the characters'
+# codes, the same on every computer (Session 236); for words holding a
+# character beyond A to Z the note no longer calls it alphabetical. Written
+# with \u escapes so this file stays ASCII.
+.e52 <- data.frame(city = c("\u5317\u4eac", "\u4e0a\u6d77", "\u5e7f\u5dde"),
+                   pt = c("Zebrinha", "\u00c1vila", "abacate"),
+                   en = c("b", "a", "b"), stringsAsFactors = FALSE)
+.e52$fc <- factor(.e52$city, levels = .e52$city)
+.r44 <- "was encoded in character-code order, which may not be alphabetical:"
+check("N52a Chinese words: the note says character-code order, not alphabetically, and the numbers are the codes' order (shanghai 1, beijing 2, guangzhou 3)",
+      { m <- flat(grab(jencode(.e52, city)))
+        grepl(.r44, m, fixed = TRUE) && !grepl("alphabetically", m, fixed = TRUE) &&
+          grepl("\"\u4e0a\u6d77\" -> 1 \"\u5317\u4eac\" -> 2 \"\u5e7f\u5dde\" -> 3", m, fixed = TRUE) })
+check("N52b an accented Latin letter is beyond A to Z too: the same sentence (Avila after Zebrinha)",
+      { m <- flat(grab(jencode(.e52, pt)))
+        grepl(.r44, m, fixed = TRUE) && grepl("\"Zebrinha\" -> 2 \"\u00c1vila\" -> 3", m, fixed = TRUE) })
+check("N52c controls: words of A to Z keep \"alphabetically:\", and a factor keeps \"in its level order:\" whatever its script",
+      grepl("'en' was encoded alphabetically:", grab(jencode(.e52, en)), fixed = TRUE) &&
+        grepl("'fc' was encoded in its level order:", grab(jencode(.e52, fc)), fixed = TRUE))
+rm(.e52, .r44)
 
 # --- Restore session state ---------------------------------------------------
 # Placed ABOVE the verdict so a failing run still leaves the session clean.

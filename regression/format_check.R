@@ -109,6 +109,22 @@
 #           from its values (jlogistic's fit tables, jalpha, jdesc's Mean
 #           and SD, the VIF tables, jscreen's stats columns) and to jt's
 #           Cohen's d line, which had the eta-squared defect.
+# S395 EDIT (v0.9.267, 2026-10-23): W13, X01-X04, X07 AND X14 RE-PINNED. Fix
+#           Slate 30's second build: the S393 message pass's accepts (Jeff:
+#           "okay accept the rest"; "D1, D2, D3, okay with your
+#           recommendation."), rulings R40-R44 and the (S393) parenthetical
+#           lean. jaov()'s and jt()'s Levene notes say "standard deviation"
+#           where they said "SD" and re-wrap (X01-X04, X07; ruling R43); "Did
+#           you mean `diagnostics`?" on a line of its own (X14, R41; its raw
+#           capture holds the stop as one element, so it is pinned whole); a
+#           sentence a line (W13, voice Rule E). No check added; 332 checks.
+#           On the 0.9.266 master the seven red.
+#           LAST VERIFIED: v0.9.267, 2026-10-23 (S395) -- 332/332 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3342 checks)"; R CMD check clean), matching the sandbox plain,
+#           under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, once with interactive() TRUE, and
+#           entered dirty.
 # S382 EDIT (v0.9.256, 2026-10-21): Fix Slate 25 (the S381 item). NEW
 #           SECTION AB, eight checks: jscreen()'s date line for a variable
 #           with a label is followed by the attr() line that puts the label
@@ -3784,13 +3800,15 @@ check("W12 Welch's ANOVA with one constant group stops in the form of the one-ca
                        "Welch's ANOVA requires variation within every category.\n",
                        "The standard ANOVA can include it: run jaov() without ",
                        "welch = TRUE.")))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): a sentence a
+# line (voice Rule E).
 check("W13 ... in number for two such groups, named by their labels, before the descriptives",
       { d <- f_w01; d$y[d$g == "c"] <- 8.5
         d <- rbind(d, data.frame(g = "d", y = c(1.5, 2.5, 4.5), stringsAsFactors = FALSE))
         d$g <- haven::labelled(match(d$g, c("a", "b", "c", "d")),
                                c(Alpha = 1, Beta = 2, Gamma = 3, Delta = 4))
         e <- .u_stop(jaov(y ~ g, data = d, welch = TRUE, posthoc = TRUE))
-        startsWith(e, "jaov(): 'g' has 2 categories in which 'y' does not vary (Beta\nand Gamma).\n") &&
+        startsWith(e, "jaov(): 'g' has 2 categories in which 'y' does not\nvary (Beta and Gamma).\n") &&
           grepl("The standard ANOVA can include them:", e, fixed = TRUE) &&
           !any(startsWith(raw_out(jaov(y ~ g, data = d, welch = TRUE)),
                           "Group Descriptives")) })
@@ -3966,19 +3984,22 @@ f_y1 <- .x_mk(c(40, 40), c(1, 1.9), c(5, 6))               # same size, 1.9
 f_y2 <- .x_mk(c(42, 40), c(1, 2.4), c(5, 6))               # 1.05 and 2.4
 f_y3 <- .x_mk(c(40, 20), c(1, 2.6), c(5, 6))               # 2.0 and 2.6
 
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): the Levene
+# notes say "standard deviation" where they said "SD" (ruling R43), and
+# re-wrap; X01-X04 and X07.
 check("X01 jaov(), sizes within 1.25 and SDs within 2: the two ratios, then \"usually still acceptable\", then the help page -- pinned whole",
       identical(.x_note(both_out(jaov(y ~ g, data = f_x1, diagnostics = TRUE))),
                 c("Note: Levene's test is significant (p = .011).",
-                  "The largest group is 1.2 times the smallest, and the largest SD is 1.9 times",
-                  "the smallest.",
+                  "The largest group is 1.2 times the smallest, and the largest standard",
+                  "deviation is 1.9 times the smallest.",
                   "Both are within the usual guidelines, so the standard ANOVA is usually",
                   "still acceptable.",
                   "See ?jaov.")))
 check("X02 ... between the two: \"Guidelines differ\", and Welch's ANOVA named with its argument (it read \"the standard test remains appropriate\" at any SD ratio)",
       identical(.x_note(both_out(jaov(y ~ g, data = f_x2, diagnostics = TRUE))),
                 c("Note: Levene's test is significant (p < .001).",
-                  "The largest group is 1.5 times the smallest, and the largest SD is 2.1 times",
-                  "the smallest.",
+                  "The largest group is 1.5 times the smallest, and the largest standard",
+                  "deviation is 2.1 times the smallest.",
                   "Guidelines differ on whether the standard ANOVA is acceptable at",
                   "these values.",
                   "Welch's ANOVA does not assume equal variances: welch = TRUE.",
@@ -3986,8 +4007,8 @@ check("X02 ... between the two: \"Guidelines differ\", and Welch's ANOVA named w
 check("X03 ... sizes beyond 1.5 and SDs beyond 2: the p-value \"may not be reliable\", with no word on which way it errs",
       identical(.x_note(both_out(jaov(y ~ g, data = f_x3, diagnostics = TRUE))),
                 c("Note: Levene's test is significant (p < .001).",
-                  "The largest group is 2.0 times the smallest, and the largest SD is 2.6 times",
-                  "the smallest.",
+                  "The largest group is 2.0 times the smallest, and the largest standard",
+                  "deviation is 2.6 times the smallest.",
                   "Both are beyond the usual guidelines, so the p-value of the standard ANOVA",
                   "may not be reliable.",
                   "Welch's ANOVA does not assume equal variances: welch = TRUE.",
@@ -3995,21 +4016,22 @@ check("X03 ... sizes beyond 1.5 and SDs beyond 2: the p-value \"may not be relia
 check("X04 jt() has the same three forms in its own words: Student's and Welch's t-test, a larger and a smaller group, ?jt",
       identical(.x_note(both_out(jt(y ~ g, data = f_y1, diagnostics = TRUE))),
                 c("Note: Levene's test is significant (p < .001).",
-                  "The groups are the same size, and the larger SD is 1.9 times the smaller.",
+                  "The groups are the same size, and the larger standard deviation is 1.9 times",
+                  "the smaller.",
                   "Both are within the usual guidelines, so Student's t-test is usually",
                   "still acceptable.",
                   "See ?jt.")) &&
         identical(.x_note(both_out(jt(y ~ g, data = f_y2, diagnostics = TRUE))),
                   c("Note: Levene's test is significant (p < .001).",
-                    "The larger group is 1.05 times the smaller, and the larger SD is 2.4 times",
-                    "the smaller.",
+                    "The larger group is 1.05 times the smaller, and the larger standard",
+                    "deviation is 2.4 times the smaller.",
                     "Guidelines differ on whether Student's t-test is acceptable at these values.",
                     "Welch's t-test does not assume equal variances: welch = TRUE.",
                     "See ?jt.")) &&
         identical(.x_note(both_out(jt(y ~ g, data = f_y3, diagnostics = TRUE))),
                   c("Note: Levene's test is significant (p < .001).",
-                    "The larger group is 2.0 times the smaller, and the larger SD is 2.6 times",
-                    "the smaller.",
+                    "The larger group is 2.0 times the smaller, and the larger standard deviation",
+                    "is 2.6 times the smaller.",
                     "Both are beyond the usual guidelines, so the p-value of Student's t-test may",
                     "not be reliable.",
                     "Welch's t-test does not assume equal variances: welch = TRUE.",
@@ -4035,7 +4057,7 @@ check("X06 the cautionary form needs BOTH beyond: sizes at 1.55 with SDs at 2.05
         identical(.x_form(c(30, 20), c(1, 4)), "differ") &&
         identical(.x_form(c(60, 20), c(1, 1.99)), "differ") &&
         identical(.x_form(c(20, 20), c(1, 5)), "differ"))
-check("X07 a ratio is shown to one place, and to two where one would mislead: \"1.05 times\" for groups of 21 and 20, \"2.03 times\" over a verdict that 2.0 would contradict; a constant group is \"the smallest SD is 0\"",
+check("X07 a ratio is shown to one place, and to two where one would mislead: \"1.05 times\" for groups of 21 and 20, \"2.03 times\" over a verdict that 2.0 would contradict; a constant group is \"the smallest standard deviation is 0\"",
       { a <- utils::capture.output(jstats:::.jst_levene_note(
                0.01, c(.x_mk(c(21, 20), c(1, 1.5), c(5, 5))$y),
                factor(rep(c("a", "b"), c(21, 20))), "jt"))
@@ -4051,12 +4073,12 @@ check("X07 a ratio is shown to one place, and to two where one would mislead: \"
                0.01, rep(c(3, 5, 8), each = 4),
                factor(rep(c("a", "b", "c"), each = 4)), "jaov")),
              error = function(e) "error")
-        any(grepl("The groups are the same size, and the smallest SD is 0.", z, fixed = TRUE)) &&
+        any(grepl("The groups are the same size, and the smallest standard deviation is 0.", z, fixed = TRUE)) &&
           any(grepl("The larger group is 1.05 times the smaller", a, fixed = TRUE)) &&
-          grepl("The larger group is 1.6 times the smaller, and the larger SD is 2.03 times the smaller.",
+          grepl("The larger group is 1.6 times the smaller, and the larger standard deviation is 2.03 times the smaller.",
                 e, fixed = TRUE) &&
           grepl("Both are beyond the usual guidelines", e, fixed = TRUE) &&
-          any(grepl("The groups are the same size, and the smallest SD is 0.", b, fixed = TRUE)) &&
+          any(grepl("The groups are the same size, and the smallest standard deviation is 0.", b, fixed = TRUE)) &&
           any(grepl("Guidelines differ", b, fixed = TRUE)) })
 check("X08 no note: a test that is not significant, Welch's test run, or a group of one case (no SD to compare)",
       { ns <- utils::capture.output(jstats:::.jst_levene_note(0.05, f_x3$y, factor(f_x3$g), "jaov"))
@@ -4109,13 +4131,15 @@ check("X13 a level call leaves the setting as it was, in both directions",
         b <- .x_has(jt(y ~ g, data = f_y3))
         quiet(joutput(NULL))
         a && !b })
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "Did you
+# mean `diagnostics`?" on a line of its own (ruling R41).
 check("X14 levene = is refused with the name that replaced it, before any output (R's own \"unused argument\" otherwise)",
       identical(.u_stop(jaov(y ~ g, data = f_x3, levene = TRUE)),
-                "jaov(): 'levene' is not valid. Did you mean `diagnostics`?") &&
+                "jaov(): 'levene' is not valid.\nDid you mean `diagnostics`?") &&
         identical(.u_stop(jt(y ~ g, data = f_y3, levene = TRUE)),
-                  "jt(): 'levene' is not valid. Did you mean `diagnostics`?") &&
+                  "jt(): 'levene' is not valid.\nDid you mean `diagnostics`?") &&
         identical(raw_out(jaov(y ~ g, data = f_x3, levene = TRUE))[1L],
-                  "[error] jaov(): 'levene' is not valid. Did you mean `diagnostics`?"))
+                  "[error] jaov(): 'levene' is not valid.\nDid you mean `diagnostics`?"))
 check("X15 a name that is not one of the function's diagnostics stops, pinned whole: another function's, a misspelling, a number",
       identical(.u_stop(jaov(y ~ g, data = f_x3, diagnostics = "vif")),
                 paste0("jaov(): \"vif\" is not a diagnostic of jaov().\n",

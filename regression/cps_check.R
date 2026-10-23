@@ -34,6 +34,18 @@
 #           S382 the listwise note's one sentence (N63); and since S392
 #           the note's count with thousands separators (N64).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S395 EDIT (v0.9.267, 2026-10-23): N56r AND N56s RE-PINNED. Fix Slate 30's
+#           second build: the S393 message pass's accepts (Jeff: "okay accept
+#           the rest"; "D1, D2, D3, okay with your recommendation."), rulings
+#           R40-R44 and the (S393) parenthetical lean. joutput()'s near miss
+#           puts "Did you mean digits?" on a line of its own (ruling R41). No
+#           check added; 272 checks. On the 0.9.266 master the two red.
+#           LAST VERIFIED: v0.9.267, 2026-10-23 (S395) -- 272/272 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3342 checks)"; R CMD check clean), matching the sandbox plain,
+#           under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, once with interactive() TRUE, and
+#           entered dirty.
 # S392 EDIT (v0.9.265, 2026-10-22): the (S238) .jst_fmt_n sweep (Jeff's
 #           okay of the lean, S392: "Okay for all defaults."). NEW SECTION
 #           N64, one check: the listwise note's count with the thousands
@@ -2318,14 +2330,16 @@ check("N56p ... and pulls no partner: joutput(\"case.processing.detail\") is one
 reset()
 check("N56q a NAMED level = \"digits\" is a setting call with a bad value: the level error",
       identical(.e56(joutput(level = "digits")), .lvl56))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "Did you
+# mean digits?" on a line of its own (ruling R41); N56r and N56s.
 check("N56r a near miss names the setting, quoting what was typed, with the call to run",
       identical(.e56(joutput("digit")),
-                "joutput(): no setting named \"digit\". Did you mean digits?\n  joutput(\"digits\")") &&
+                "joutput(): no setting named \"digit\".\nDid you mean digits?\n  joutput(\"digits\")") &&
       identical(.e56(joutput("DIGITS")),
-                "joutput(): no setting named \"DIGITS\". Did you mean digits?\n  joutput(\"digits\")"))
+                "joutput(): no setting named \"DIGITS\".\nDid you mean digits?\n  joutput(\"digits\")"))
 check("N56s ... at two edits (\"dgts\") but not at three (\"dgt\"), which is the level error",
       identical(.e56(joutput("dgts")),
-                "joutput(): no setting named \"dgts\". Did you mean digits?\n  joutput(\"digits\")") &&
+                "joutput(): no setting named \"dgts\".\nDid you mean digits?\n  joutput(\"digits\")") &&
       identical(.e56(joutput("dgt")), .lvl56))
 check("N56t a string near no setting is the level error: \"ful\", \"xyzzy\"",
       identical(.e56(joutput("ful")), .lvl56) && identical(.e56(joutput("xyzzy")), .lvl56))

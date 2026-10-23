@@ -382,6 +382,32 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
+# S395 EDIT (v0.9.267, 2026-10-23): AB06 AND AB07 ADDED; T05, U04, X01 AND
+#           AB01-AB04 RE-PINNED. Fix Slate 30's second build: the S393 message
+#           pass's accepts (Jeff: "okay accept the rest"; "D1, D2, D3, okay
+#           with your recommendation."), rulings R40-R44 and the (S393)
+#           parenthetical lean. Ruling R42: a question's statement is printed
+#           on a line of its own and only "Overwrite? (y/n): " is asked (AB06,
+#           through the package's own question with readline() answering);
+#           jcopy()'s and jsave()'s questions on separate lines, jsave()'s
+#           statement "This file already exists:" with the path on a line of
+#           its own, the form of its stop where the session cannot ask (AB07,
+#           U04; Claude's wording); jload()'s (T05). .askU drops the folder
+#           from the path's own line, and .askAB's copies keep the statement
+#           out of the battery's output. Re-pins: "(0800 and 0870)" kept whole
+#           (X01, the parenthetical lean); "It received ..." on a line of its
+#           own (AB01-AB04, voice Rule E). 229 -> 231 checks; on the 0.9.266
+#           master T05, U04, X01, AB01-AB04, AB06, AB07 and Z01 red (Z01 for
+#           .askU's new folder rule, which the old one-line question escapes).
+#           MUTATION MAP (S395; each red): readline() given the whole prompt
+#           AB06; jsave()'s question back to "File '<path>' already exists."
+#           U04 AB07.
+#           LAST VERIFIED: v0.9.267, 2026-10-23 (S395) -- 231/231 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3342 checks)"; R CMD check clean), matching the sandbox plain,
+#           under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, once with interactive() TRUE, and
+#           entered dirty.
 # S391 EDIT (v0.9.264, 2026-10-22): SECTIONS AB AND AC ADDED, 8 checks; U05,
 #           V01 AND V02 RE-PINNED; Z02 GIVEN ONE EXEMPTION. (AB) the (S298)
 #           E8 item, Jeff's okay of the lean: the stop the overwrite
@@ -1866,10 +1892,12 @@ check("T04 ... and an Excel file's: sheet = naming no sheet, a file that is not 
           grepl("brokenT.xlsx could not be read.", m2, fixed = TRUE) &&
           !grepl("<asked>", m1, fixed = TRUE) && !grepl("<asked>", m2, fixed = TRUE) &&
           identical(k, "here before") }))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): jload()'s
+# question: the statement on its line, then "Overwrite? (y/n): " (ruling R42).
 check("T05 ... the question is still asked before the read and before the multi-sheet note: answered n, the load is cancelled with no note and nothing read; answered y, the question, the note, then the Loaded line, and not the note of a session that cannot ask",
       local({ k <- "here before"
         m1 <- grab(.askT("n")(.ix("twoT.xlsx"), name = "k"))
-        ok1 <- grepl("<asked> 'k' already exists in your environment. Overwrite? (y/n): n", m1, fixed = TRUE) &&
+        ok1 <- grepl("<asked> 'k' already exists in your environment.\nOverwrite? (y/n): n", m1, fixed = TRUE) &&
           grepl("Load cancelled.", m1, fixed = TRUE) && !grepl("sheets", m1, fixed = TRUE) &&
           identical(k, "here before")
         m2 <- grab(.askT("y")(.ix("twoT.xlsx"), name = "k"))
@@ -1921,8 +1949,9 @@ check("T07 the multi-sheet note puts one sentence on a line (Rule E): \"Reading 
   e$interactive <- function() asks
   # The marker drops the prompt's folder: guard 4 (Z01) reads every message
   # a check catches, and a temporary folder's path made this line long.
+  # Since S395 the path has a line of its own (ruling R42 and Rule Z).
   e$.jst_confirm <- function(prompt, remedy, subject = "overwrite") {
-    message("<asked> ", sub("^File '[^']*[/\\\\]", "File '", prompt), answer)
+    message("<asked> ", sub("\n  [^\n]*[/\\\\]", "\n  ", prompt), answer)
     identical(answer, "y")
   }
   if (!writable) e$.jst_lib_writable <- function(lib) FALSE
@@ -1984,8 +2013,8 @@ check("U04 ... the question is still asked before the write: answered n, the sav
       local({ a <- data.frame(a = 1:3)
         writeLines("before", .ix("U04.rds"))
         m1 <- grab(.askU("n")(a, .ix("U04.rds")))
-        ok1 <- grepl("<asked> File '", m1, fixed = TRUE) &&
-          grepl("U04.rds' already exists. Overwrite? (y/n): n", .fl(m1), fixed = TRUE) &&
+        ok1 <- grepl("<asked> This file already exists:\n  U04.rds\nOverwrite? (y/n): n",
+                     m1, fixed = TRUE) &&
           grepl("Save cancelled.", m1, fixed = TRUE) &&
           identical(readLines(.ix("U04.rds")), "before")
         m2 <- grab(.askU("y")(a, .ix("U04.rds")))
@@ -2318,12 +2347,14 @@ if (exists("W03")) rm(W03)
 .ix_w("X15.csv", c("id,Post code,Diag,Note", "1,4000,250.10,NA",
                    "2,4101,250.00,N/A", "3,4006,401.9,", "4,4000,250.1,ok"))
 
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "(0800 and
+# 0870)" kept whole (the (S393) parenthetical item).
 check("X01 a CSV variable with a leading zero is kept as text, as written, and the note says so with the line that makes it numbers (pinned)",
       local({ e <- new.env(parent = globalenv())
         m <- .gx(eval(quote(jload(.ix("X01.csv"), name = "k")), e))
         identical(e$k$Postcode, c("0800", "2000", "0870", "4000")) &&
           grepl(paste0("\n\nNote: Postcode was kept as text: 2 of its values ",
-                       "start with a 0 (0800 and\n0870), which numbers would ",
+                       "start with a 0\n(0800 and 0870), which numbers would ",
                        "drop.\nTo make it numbers anyway:\n",
                        "  k$Postcode <- as.numeric(k$Postcode)"), m, fixed = TRUE) }))
 check("X02 ... the line runs: Postcode becomes 800, 2000, 870, 4000; and 0, 0.5, 10 and -05 are numbers, with no note",
@@ -3527,6 +3558,9 @@ rm(.AAw, .AAl, .AAs, .AAload, .AAcsv)
   conf <- jstats:::.jst_confirm
   ec <- new.env(parent = environment(conf))
   ec$readline <- function(prompt = "") answer
+  # Since S395 (ruling R42) the question's statement line goes through cat();
+  # AB06 checks it, and here it is kept out of the battery's output.
+  ec$cat <- function(...) invisible(NULL)
   environment(conf) <- ec
   f <- fn
   e <- new.env(parent = environment(f))
@@ -3539,30 +3573,32 @@ rm(.AAw, .AAl, .AAs, .AAload, .AAcsv)
 .ab_keep_file <- "To keep the file, save under another file name."
 .ab_replace <- "To replace it, add overwrite = TRUE to the call, then run it again."
 
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "It received
+# ..." on a line of its own (voice Rule E); AB01-AB04.
 check("AB01 jsave(), the question answered with an empty line: the way to keep the file, then the way to replace it (it named only overwrite = TRUE; pinned); the file untouched",
       local({ f <- .ix("AB01.rds"); writeLines("before", f)
         m <- .abq(grab(.askAB(jsave, "")(data.frame(a = 1), f)))
-        identical(m, paste0("The overwrite question needs y or n. It received an empty line.\n",
+        identical(m, paste0("The overwrite question needs y or n.\nIt received an empty line.\n",
                             .ab_keep_file, "\n", .ab_replace)) &&
           identical(readLines(f), "before") }))
 check("AB02 ... a script line the question consumed: the line shown, then the same two ways out",
       local({ f <- .ix("AB02.rds"); writeLines("before", f)
         m <- .abq(grab(.askAB(jsave, "jdesc(d, Age)")(data.frame(a = 1), f)))
-        identical(m, paste0("The overwrite question needs y or n. It received:\n",
+        identical(m, paste0("The overwrite question needs y or n.\nIt received:\n",
                             "jdesc(d, Age)\n", .ab_keep_file, "\n", .ab_replace)) &&
           identical(readLines(f), "before") }))
 check("AB03 jload(): the data frame that exists, named in the way to keep it (name =), then the way to replace it; the data frame untouched",
       local({ .ix_w("AB03.csv", c("x", "1", "2"))
         kAB <- data.frame(z = 9)
         m <- .abq(grab(.askAB(jload, "")(.ix("AB03.csv"), name = "kAB")))
-        identical(m, paste0("The overwrite question needs y or n. It received an empty line.\n",
+        identical(m, paste0("The overwrite question needs y or n.\nIt received an empty line.\n",
                             "To keep the kAB data frame, load the file under another name with name =.\n",
                             .ab_replace)) &&
           identical(kAB, data.frame(z = 9)) }))
 check("AB04 jcopy(): the copy's destination, named in the way to keep it, then the way to replace it; the data frame untouched",
       local({ src <- data.frame(a = 1:2); d2 <- data.frame(z = 9)
         m <- .abq(grab(.askAB(jcopy, "")(src, d2)))
-        identical(m, paste0("The overwrite question needs y or n. It received an empty line.\n",
+        identical(m, paste0("The overwrite question needs y or n.\nIt received an empty line.\n",
                             "To keep the d2 data frame, give the copy another name.\n",
                             .ab_replace)) &&
           identical(d2, data.frame(z = 9)) }))
@@ -3572,6 +3608,38 @@ check("AB05 control: the same question answered n cancels with nothing changed, 
         no <- grepl("Save cancelled.", m, fixed = TRUE) && identical(readLines(f), "before")
         invisible(grab(.askAB(jsave, "y")(data.frame(a = 1), f)))
         no && identical(readRDS(f), data.frame(a = 1)) }))
+# AB06-AB07 (S395; ruling R42, Jeff on the S393 mvbatch's D3, "okay with
+# your recommendation"): Rule E reaches a prompt -- the statement on its line,
+# the question on the line the answer follows. readline() takes one line, so
+# the statement is printed through cat() and only the question is asked.
+# jsave()'s statement takes its stop's form (S368): "This file already
+# exists:" and the path on a line of its own (Rule Z).
+check("AB06 the question: the statement printed on a line of its own, and only \"Overwrite? (y/n): \" asked",
+      local({ conf <- jstats:::.jst_confirm
+        ec <- new.env(parent = environment(conf)); asked <- NULL
+        ec$readline <- function(prompt = "") { asked <<- prompt; "n" }
+        environment(conf) <- ec
+        out <- utils::capture.output(r <- conf(
+          "'d' already exists in your environment.\nOverwrite? (y/n): ", "remedy"))
+        identical(out, "'d' already exists in your environment.") &&
+          identical(asked, "Overwrite? (y/n): ") && identical(r, FALSE) }))
+check("AB07 ... jcopy() and jsave() put the statement and the question on separate lines, jsave()'s path on a line of its own as in its stop that cannot ask (jload()'s is T05)",
+      local({ got <- character(0)
+        stand <- function(fn) { e <- new.env(parent = environment(fn))
+          e$interactive <- function() TRUE
+          e$.jst_confirm <- function(prompt, remedy, subject = "overwrite") {
+            got <<- c(got, prompt); FALSE }
+          environment(fn) <- e; fn }
+        src <- data.frame(a = 1:2); d2 <- data.frame(z = 9)
+        f <- .ix("AB07.rds"); writeLines("before", f)
+        invisible(grab(stand(jcopy)(src, d2)))
+        invisible(grab(stand(jsave)(data.frame(a = 1), f)))
+        length(got) == 2L &&
+          identical(got[1], "'d2' already exists in your environment.\nOverwrite? (y/n): ") &&
+          identical(got[2], paste0("This file already exists:\n  ",
+                                   normalizePath(f, winslash = "/"),
+                                   "\nOverwrite? (y/n): ")) &&
+          identical(readLines(f), "before") }))
 
 # --- AC: the cleared registrations' note gives the lines (S391) --------------
 # The (Session 114) item, decided at the S391 decisions pass on Jeff's okay

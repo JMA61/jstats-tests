@@ -27,6 +27,28 @@
 #           Since S355 (Section 16): the NA rule's note on such a variable,
 #           and the parse layer phrased by the setting.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S395 EDIT (v0.9.267): FIX SLATE 30, THE SECOND BUILD -- the S393 message
+#           pass's accepts, with rulings R40-R44 and the (S393) parenthetical
+#           lean (Jeff, S393 and S395). SECTIONS 9, 11 AND 16 RE-PINNED
+#           MECHANICALLY, by running (fill.R), and kept off the PENDING line:
+#           a parenthetical moves whole to the next line, ("REF", "UNKNOWN")
+#           in 9 and (NA, System, or SYSMIS) in 16; "To add labels, use
+#           jrelabel()." on a line of its own (11, voice Rule E). The shapes,
+#           and ruling R44's note for words beyond A to Z, are walked once, in
+#           format_walk.R Section 37; the assertion side is jencode_check.R
+#           N52. A capture of every section of every walk on 0.9.266 and on
+#           the build moves those three and Sections 3, 5 and 6, whose moved
+#           lines sit in no Expected block: Section 3's hand-typed pins
+#           re-pinned from the capture (two stops, a sentence a line), Section
+#           5's prose pin likewise; Section 6 has none. harness.R verify: 18
+#           of 18 sections in three orders and by prepare = TRUE; 32 of 32
+#           Expected blocks.
+# LAST VERIFIED: v0.9.267, 2026-10-23 (S395) -- Sections 9, 11 and 16
+#           re-pinned mechanically, and 3 and 5's prose pins, not walked here;
+#           the shapes WALKED in format_walk.R Section 37 on the WORKSTATION
+#           by Jeff ("All good."); PENDING none throughout; R CMD check clean
+#           (the receive went on to the batteries); ALL BATTERIES GREEN (11
+#           run, 3342 checks).
 # S392 EDIT (v0.9.265, 2026-10-22): SECTIONS 3, 7, 9 AND 16 RE-PINNED (the
 #           (S282) item, voice Rule B; Jeff's okay of the lean: "Okay for
 #           all defaults."). The map parser's stops lose their wrapper,
@@ -577,8 +599,8 @@ tryCatch(jencode(tdat, Status, map = "\"Bail=1; Parole=2"),
                                  sep = ""))
 
 # Expected (exact):
-#   Caught: jencode(): Unbalanced quotation mark in the map. A quoted word must
-#   open and close with the same mark, as in "Not stated"=9.
+#   Caught: jencode(): Unbalanced quotation mark in the map.
+#   A quoted word must open and close with the same mark, as in "Not stated"=9.
 
 # Commas between rules get the specific diagnosis, remedy on its own line:
 
@@ -588,7 +610,8 @@ tryCatch(jencode(tdat, Status, map = "Bail=1, Parole=2"),
 
 # Expected (exact; the runnable map line sits alone, never wrapped):
 #   Caught: jencode(): It looks like commas were used to separate rules in the
-#   map string. Use semicolons instead:
+#   map string.
+#   Use semicolons instead:
 #     map = "Bail=1; Parole=2; Remand=3"
 #
 # RE-PINNED S392 (v0.9.265; the (S282) item, voice Rule B): both stops
@@ -660,8 +683,8 @@ tdat$Age <- jencode(tdat, AgeText)
 
 # Expected: "is a number stored as text; each was converted to its own
 # value" with a ("NN" -> NN, never renumbered) example (the example is the
-# column's LARGEST value), then: No value labels were attached. To add
-# labels, use jrelabel().
+# column's LARGEST value), then, a line each (since S395, voice Rule E):
+# No value labels were attached. / To add labels, use jrelabel().
 
 # AgeAtRelease is the poisoned column: ages + "-99" + "Refused" +
 # "Not stated" + blanks. map = "else=NA" is the one-line repair -- and the
@@ -954,8 +977,8 @@ ms9$MaritalR <- jencode(ms9, Marital)
 #     ms9$MaritalR <- jencode(ms9, Marital,
 #         map = "Married=1; Single=2; REF=NA; UNKNOWN=NA")
 #
-#   Note: 3 cells in 'Marital' holding a declared missing value ("REF",
-#   "UNKNOWN") were left missing (NA).
+#   Note: 3 cells in 'Marital' holding a declared missing value
+#   ("REF", "UNKNOWN") were left missing (NA).
 #   No missing-value convention is selected, so the values cannot be
 #   declared yet.
 #   Choose one for this session:
@@ -1224,7 +1247,8 @@ g11 <- jencode(mk11(), Grp)
 r11 <- jrecode(mk11(), Score, map = "1=10; 2=20; 3=30")
 
 # Expected:
-#   Note: No value labels assigned. To add labels, use jrelabel().
+#   Note: No value labels assigned.
+#   To add labels, use jrelabel().
 #
 #   Note: The result is kept only if you assign it.
 #   Name the data frame first, then assign the result to a variable in it:
@@ -1629,8 +1653,9 @@ joptions(missing.convention = "sas", quiet = TRUE)
 try(jencode(r16d, Reply, map = "Yes=1; No=maybe"))
 # Expected:
 #   Error : jencode(): Invalid new value 'maybe' in map rule 'No=maybe'.
-#   New values must be numeric, the word missing, a system-NA alias (NA, System,
-#   or SYSMIS), or a SAS-style missing-value marker (.A through .Z).
+#   New values must be numeric, the word missing, a system-NA alias
+#   (NA, System, or SYSMIS), or a SAS-style missing-value
+#   marker (.A through .Z).
 options(.jst_options_missing_convention = NULL)
 rm(r16d, r16)
 

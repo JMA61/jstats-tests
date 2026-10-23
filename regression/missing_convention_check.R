@@ -10,6 +10,39 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S395 EDIT (v0.9.267, 2026-10-23): N58d-N58h AND N97a-N97d ADDED; SIXTEEN
+#           .pins90 ENTRIES AND N83i, N84ac, N96l, N96m AND N96aa RE-PINNED.
+#           Fix Slate 30's second build: the S393 message pass's accepts
+#           (Jeff: "okay accept the rest"; "D1, D2, D3, okay with your
+#           recommendation."), rulings R40-R44 and the (S393) parenthetical
+#           lean. (N58d-N58h) the parenthetical lean (Jeff: "your
+#           recommendation to the 40"): a parenthetical of up to 40 columns
+#           that does not fit moves whole to the next line (N58d), one wider
+#           wraps inside (N58e), one that fits stays (N58f), a call inside it
+#           counts (N58g), measured in display columns (N58h, four Chinese
+#           words of 45 columns). (N97) the accepts by family, each check
+#           reading the line break after a sentence end at the widest message
+#           width, 120, where the wrap cannot make the break itself: the
+#           parsers (N97a), jdeclare_missing() with "marker" and codes =
+#           (N97b), load, save, options and the filters (N97c), the models,
+#           jdesc(), jdummy(), jconvert() and jplot() with the outcome and the
+#           predictor (N97d). The .pins90 entries regenerated from their
+#           recorded values; N83i R41's line; N84ac voice Rule E; N96l and
+#           N96m codes = (voice Rule B); N96aa a parenthetical kept whole. 915
+#           -> 924 checks; on the 0.9.266 master 27 red: N58d, N58g, N83i,
+#           N84ac, the sixteen N90 pins, N96l, N96m, N96aa and N97a-N97d
+#           (N58e, N58f and N58h are controls, N58h a mutant's). MUTATION MAP
+#           (S395; each red): the second protection pass removed N58d N58g
+#           N90q N90r N90t N90v N90w N96aa; measured in characters N58h; the
+#           parser's line break undone N97a (at width 76 it passed: the reason
+#           for 120); "token input" back N97b; joptions()'s data.dir note on
+#           one line N97c; jlm()'s count note on one line N97d.
+#           LAST VERIFIED: v0.9.267, 2026-10-23 (S395) -- 924/924 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3342 checks)"; R CMD check clean), matching the sandbox plain,
+#           under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, once with interactive() TRUE, and
+#           entered dirty.
 # S392 EDIT (v0.9.265, 2026-10-22): N84a, N90q-N90u, N90w, N90x AND
 #           N91h RE-PINNED (the (S282) item, voice Rule B; Jeff's okay of the
 #           lean, S392: "Okay for all defaults."): the map and labels
@@ -3899,6 +3932,40 @@ check("N58c a single-word tail under min_last is still pulled back",
         !(.nwords58(t) == 1L && nchar(t) < 20L)
       }))
 
+# N58d-N58h (S395; the (S393) parenthetical item, Jeff: "your recommendation
+# to the 40"): a parenthetical that opens a word, of up to 40 columns, is one
+# piece -- one that does not fit on the line moves whole to the next, where
+# it had been broken inside. Measured in display columns: a Chinese
+# parenthetical of 45 columns is broken as before. Each fixture is checked
+# whole at width 50; written with \u escapes so this file stays ASCII.
+.w58 <- function(s) strsplit(jstats:::.jst_wrap_prose(s, width = 50L), "\n",
+                             fixed = TRUE)[[1]]
+check("N58d a parenthetical of up to 40 columns that does not fit moves whole to the next line",
+      identical(.w58("alpha beta gamma delta epsilon zeta (one two three four) kappa lambda mu"),
+                c("alpha beta gamma delta epsilon zeta",
+                  "(one two three four) kappa lambda mu")))
+check("N58e ... one of more than 40 columns wraps inside, as before",
+      identical(.w58("alpha beta gamma delta (one two three four five six seven eight nine) kappa lambda"),
+                c("alpha beta gamma delta (one two three four five",
+                  "six seven eight nine) kappa lambda")))
+check("N58f ... one that fits stays on its line",
+      identical(.w58("alpha beta (one two) gamma delta epsilon zeta eta theta iota kappa lambda"),
+                c("alpha beta (one two) gamma delta epsilon zeta eta",
+                  "theta iota kappa lambda")))
+check("N58g ... a call inside it is part of it (one level of nesting)",
+      identical(.w58("alpha beta gamma delta epsilon zeta (for example c(1, 2)) kappa lambda mu"),
+                c("alpha beta gamma delta epsilon zeta",
+                  "(for example c(1, 2)) kappa lambda mu")))
+check("N58h ... measured in display columns: four Chinese words of five characters (45 columns, 25 characters) are broken inside",
+      identical(.w58(paste0("alpha beta gamma delta (",
+                            paste(rep("\u4e00\u4e8c\u4e09\u56db\u4e94", 4), collapse = " "),
+                            ") kappa lambda")),
+                c(paste0("alpha beta gamma delta (\u4e00\u4e8c\u4e09\u56db\u4e94 ",
+                         "\u4e00\u4e8c\u4e09\u56db\u4e94"),
+                  paste0("\u4e00\u4e8c\u4e09\u56db\u4e94 \u4e00\u4e8c\u4e09\u56db\u4e94) ",
+                         "kappa lambda"))))
+rm(.w58)
+
 # =============================================================================
 # N59 -- TWO PROPERTIES THE SUITE WAS BLIND TO (S267). Both were shipped in
 # S267 and both went green through 189/189 without being seen, because no
@@ -7550,9 +7617,11 @@ check("N83h over-fire: a value that is not one string gets the choice error and 
         m <- .fl(grab(eval(bquote(joptions(missing.convention = .(v))))))
         identical(m, "joptions(): `missing.convention` must be \"none\", \"spss\", \"stata\", or \"sas\".")
       }, logical(1))))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "Did you
+# mean ...?" on a line of its own (ruling R41).
 check("N83i the slot guard is first and unchanged: a string near a setting name gets its message, with no value hint",
       { m <- grab(joptions("missing.converntion"))
-        grepl("no setting named \"missing.converntion\". Did you", m, fixed = TRUE) &&
+        grepl("no setting named \"missing.converntion\".\nDid you", m, fixed = TRUE) &&
           !grepl("must be", m, fixed = TRUE) })
 check("N83j the hint is joptions()'s alone: the other choice errors are as they were, and .jst_stop_arg() without a hint is unchanged",
       identical(.fl(grab(jdeclare_missing(data.frame(Age = 1:3), Age, codes = 3, convention = "spps"))),
@@ -7888,8 +7957,10 @@ check("N84ab \"8=missing; else=copy\": no labels hint under any convention (unde
       all(vapply(c("spss", "stata", "sas"), function(cv) {
         !grepl("No value labels assigned", .conv84(cv, grab(jrecode(d84, v, map = "8=missing; else=copy"))), fixed = TRUE)
       }, logical(1))))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "To add
+# labels, use jrelabel()." on a line of its own (voice Rule E).
 check("N84ac the hint still fires when the map makes another category of its own, with or without the token, and for a plain recode",
-      grepl("\n\nNote: No value labels assigned. To add labels, use jrelabel().\n",
+      grepl("\n\nNote: No value labels assigned.\nTo add labels, use jrelabel().\n",
             .conv84("spss", grab(jrecode(d84, v, map = "8=missing; 1=0; else=copy"))), fixed = TRUE) &&
         grepl("No value labels assigned", .conv84("stata", grab(jrecode(d84, v, map = "8=missing; 1=0; else=copy"))), fixed = TRUE) &&
         grepl("No value labels assigned", grab(jrecode(d84, v, map = "1=0; else=copy")), fixed = TRUE))
@@ -9884,6 +9955,9 @@ rm(.d89, .conv89, .under89, .c89, .ws89, .runs89, .tagged89)
 # .pin90(): a message pinned whole. The pins were FILLED BY RUNNING the
 # section on v0.9.228 (n90/fill), never typed.
 .pin90 <- function(id, got) identical(got, .pins90[[id]])
+# Since S395 (v0.9.267): the entries the S393 mvbatch's accepts moved were
+# re-pinned by running -- one sentence a line, codes = for `codes`, a
+# parenthetical of up to 40 columns kept whole.
 .pins90 <- list(
   N90a = paste0(
     "jdeclare_missing(): 'V' already carries SPSS-style missing values;\n",
@@ -9905,8 +9979,9 @@ rm(.d89, .conv89, .under89, .c89, .ws89, .runs89, .tagged89)
   N90c = paste0(
     "jdeclare_missing(): 'V' carries both Stata-style (.a) and SAS-style\n",
     "(.B) missing values, which SPSS convention cannot act on.\n",
-    "This call sets convention = \"spss\", but your missing.convention setting is\n",
-    "\"stata\". To use the setting, recode -99 to a marker V does not use:\n",
+    "This call sets convention = \"spss\", but your missing.convention setting\n",
+    "is \"stata\".\n",
+    "To use the setting, recode -99 to a marker V does not use:\n",
     "  .mix90$VR <- jrecode(.mix90, V, map = \"-99=.c; else=copy\")"),
   # Re-pinned S389, filled by running on v0.9.262: the call the guard cannot
   # echo (a labels string) gets the same line, the label carried to its
@@ -9915,8 +9990,9 @@ rm(.d89, .conv89, .under89, .c89, .ws89, .runs89, .tagged89)
   N90d = paste0(
     "jdeclare_missing(): 'V' carries both Stata-style (.a) and SAS-style\n",
     "(.B) missing values, which SPSS convention cannot act on.\n",
-    "This call sets convention = \"spss\", but your missing.convention setting is\n",
-    "\"stata\". To use the setting, recode -99 to a marker V does not use:\n",
+    "This call sets convention = \"spss\", but your missing.convention setting\n",
+    "is \"stata\".\n",
+    "To use the setting, recode -99 to a marker V does not use:\n",
     "  .mix90$VR <- jrecode(.mix90, V, map = \"-99=.c; else=copy\",\n",
     "      labels = \".c=R\")"),
   # S389, filled by running on v0.9.262: .mixf90 carries .b and .C, so the
@@ -9924,23 +10000,26 @@ rm(.d89, .conv89, .under89, .c89, .ws89, .runs89, .tagged89)
   N90d3 = paste0(
     "jdeclare_missing(): 'V' carries both Stata-style (.b) and SAS-style\n",
     "(.C) missing values, which SPSS convention cannot act on.\n",
-    "This call sets convention = \"spss\", but your missing.convention setting is\n",
-    "\"stata\". To use the setting, drop convention = \"spss\" from the call."),
+    "This call sets convention = \"spss\", but your missing.convention setting\n",
+    "is \"stata\".\n",
+    "To use the setting, drop convention = \"spss\" from the call."),
   N90e = paste0(
     "jplot(): only one data frame goes after the formula, and this call\n",
     "gives .fd90 and .fe90.\n",
     "Specify the data frame once, after the formula."),
   N90h = paste0(
-    "jdeclare_missing(): `codes` names some of its codes and not others.\n",
+    "jdeclare_missing(): codes = names some of its codes and not others.\n",
     "Name every code, as in codes = c(Refused = -99, Unknown = -98), or name none\n",
     "and give the labels with labels =."),
   N90i = paste0(
     "jdeclare_missing(): the codes are labeled twice: by their names in\n",
-    "`codes` and by `labels`. Use one: the names, as in codes = c(Refused = -99),\n",
-    "or labels = with codes that carry no names."),
+    "codes = and by labels =.\n",
+    "Use one: the names, as in codes = c(Refused = -99), or labels = with codes\n",
+    "that carry no names."),
   N90l = paste0(
-    "Note: jdeclare_missing made no change to P. Its markers are already missing\n",
-    "values, so a bare marker has nothing to name.\n",
+    "Note: jdeclare_missing made no change to P.\n",
+    "Its markers are already missing values, so a bare marker has\n",
+    "nothing to name.\n",
     "To name one, put its label in place of MyLabel:\n",
     "  .hb90 <- jdeclare_missing(.hb90, P, codes = c(MyLabel = \".a\"))"),
   # Re-pinned S389, filled by running on v0.9.262: under stata -99 would
@@ -9982,31 +10061,36 @@ rm(.d89, .conv89, .under89, .c89, .ws89, .runs89, .tagged89)
     "value directly."),
   N90q = paste0(
     "jrecode(): Invalid new value '.AA' in map rule '1=.AA'.\n",
-    "SAS-style missing-value markers are '.A' through '.Z' (one letter after a\n",
-    "period). The NA(a) longhand is not supported in the map."),
+    "SAS-style missing-value markers are '.A' through '.Z'\n",
+    "(one letter after a period).\n",
+    "The NA(a) longhand is not supported in the map."),
   N90r = paste0(
     "jrecode(): Invalid else action '.zz' in the map.\n",
-    "Stata-style missing-value markers are '.a' through '.z' (one letter after a\n",
-    "period). The NA(a) longhand is not supported in the map."),
+    "Stata-style missing-value markers are '.a' through '.z'\n",
+    "(one letter after a period).\n",
+    "The NA(a) longhand is not supported in the map."),
   N90s = paste0(
-    "jrecode(): Invalid else action 'foo' in the map. Use 'else=NA',\n",
-    "'else=copy', or a SAS-style missing-value marker such as 'else=.A' (Stata or\n",
-    "SAS convention only)."),
+    "jrecode(): Invalid else action 'foo' in the map.\n",
+    "Use 'else=NA', 'else=copy', or a SAS-style missing-value marker such as\n",
+    "'else=.A' (Stata or SAS convention only)."),
   N90t = paste0(
     "jrecode(): Invalid new value 'foo' in map rule '1=foo'.\n",
-    "New values must be numeric, the word missing, a system-NA alias (NA, System,\n",
-    "or SYSMIS), or a Stata-style missing-value marker (.a through .z)."),
+    "New values must be numeric, the word missing, a system-NA alias\n",
+    "(NA, System, or SYSMIS), or a Stata-style missing-value\n",
+    "marker (.a through .z)."),
   N90u = paste0(
     "jrecode(): Invalid old value 'foo' in map rule 'foo=1'.\n",
     "Old values must be numeric, a system-NA alias (NA, System, or SYSMIS), or a\n",
     "SAS-style missing-value marker (.A through .Z)."),
   N90v = paste0(
-    "jdeclare_missing(): Invalid code 'abc'. Codes must be numbers (for\n",
-    "example -99) or SAS-style markers (.A through .Z)."),
+    "jdeclare_missing(): Invalid code 'abc'.\n",
+    "Codes must be numbers (for example -99) or SAS-style\n",
+    "markers (.A through .Z)."),
   N90w = paste0(
     "jrelabel(): Invalid value '.AB' in label rule '.AB=Skip'.\n",
-    "SAS-style missing-value markers are '.A' through '.Z' (one letter after a\n",
-    "period). The NA(a) longhand is not supported in the labels."),
+    "SAS-style missing-value markers are '.A' through '.Z'\n",
+    "(one letter after a period).\n",
+    "The NA(a) longhand is not supported in the labels."),
   N90x = paste0(
     "jrelabel(): Invalid value 'foo' in label rule 'foo=Skip'.\n",
     "The left side of each label rule must be numeric or a Stata-style\n",
@@ -10021,8 +10105,8 @@ rm(.d89, .conv89, .under89, .c89, .ws89, .runs89, .tagged89)
     "for example:\n",
     "  joptions(missing.convention.codes = c(-99, -98, -97))"),
   N90ah = paste0(
-    "jconvert(): vars = takes names in quotes. To name the variables\n",
-    "without quotes, list them after the data frame:\n",
+    "jconvert(): vars = takes names in quotes.\n",
+    "To name the variables without quotes, list them after the data frame:\n",
     "  jconvert(.pa90, A, B, to = \"stata\", modify = TRUE)"),
   N90aj = paste0(
     "jdeclare_missing(): vars = takes names in quotes.\n",
@@ -10032,12 +10116,13 @@ rm(.d89, .conv89, .under89, .c89, .ws89, .runs89, .tagged89)
     "jconvert(): Zed was not found in the .pa90 data frame.\n",
     "Check the spelling."),
   N90am = paste0(
-    "jconvert(): vars = takes names in quotes. To name the variables\n",
-    "without quotes, list them first:\n",
+    "jconvert(): vars = takes names in quotes.\n",
+    "To name the variables without quotes, list them first:\n",
     "  jconvert(A, B, to = \"stata\")"),
   N90an = paste0(
     "jconvert(): the variables are named twice: after the data frame and\n",
-    "in vars =. Name them in one place:\n",
+    "in vars =.\n",
+    "Name them in one place:\n",
     "  jconvert(.pa90, A, B, to = \"stata\")"),
   N90ar = paste0(
     "Skipped (value labels suggest missingness but not formally declared):\n",
@@ -10051,7 +10136,8 @@ rm(.d89, .conv89, .under89, .c89, .ws89, .runs89, .tagged89)
     "Note: 'x' contained none of the map values 7 and 8 -- nothing was\n",
     "recoded for them.\n",
     "\n",
-    "Note: No value labels assigned. To add labels, use jrelabel().\n",
+    "Note: No value labels assigned.\n",
+    "To add labels, use jrelabel().\n",
     "\n",
     "Note: This call changes .x90 only if you assign the result:\n",
     "  .x90$<name> <- jrecode(...)\n",
@@ -11577,6 +11663,9 @@ check("N96k labels both ways (lean 3): codes = c(Refused = ...) and labels = \".
               identical(a, b) &&
                 identical(sort(attr(c3, "na_values")), c("", "a=b;c")) &&
                 identical(labelled::val_labels(c3)[["No answer; none"]], "") }))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "codes ="
+# where it said "`codes`" (voice Rule B); N96l and N96m. N96aa: its
+# parenthetical kept whole (the (S393) parenthetical item).
 check("N96l the codes' other refusals: a label naming no code, the same value twice (\"\" and \"  \" are one), a fourth value, NA, a TRUE",
       grepl("labels names a value that is not among the\ncodes: REF=Refused.",
             grab(jdeclare_missing(.T96, M, codes = "UNKNOWN", labels = "REF=Refused")), fixed = TRUE) &&
@@ -11584,7 +11673,7 @@ check("N96l the codes' other refusals: a label naming no code, the same value tw
               grab(jdeclare_missing(.T96, M, codes = c("", "  "))), fixed = TRUE) &&
         grepl("at most 3 declared missing values",
               .fl(grab(jdeclare_missing(.T96, M, codes = c("a", "b", "c", "d")))), fixed = TRUE) &&
-        grepl("`codes` holds NA.",
+        grepl("codes = holds NA.",
               grab(jdeclare_missing(.T96, M, codes = NA_character_)), fixed = TRUE) &&
         grepl("must be quoted text",
               grab(jdeclare_missing(.T96, M, codes = TRUE)), fixed = TRUE))
@@ -11601,7 +11690,7 @@ check("N96m a value typed without quotes: ruling R18's pointer, the call with it
               b <- grab(eval(quote(jdeclare_missing(.T96, M, codes = c(Unknown = UNKNOWN, ""))), eb))
               cc <- grab(eval(quote(jdeclare_missing(.T96, M, codes = UNKNOWN,
                                                      convention = "stata")), eb))
-              startsWith(b, "jdeclare_missing(): `codes` names some of its codes and not others.") &&
+              startsWith(b, "jdeclare_missing(): codes = names some of its codes and not others.") &&
                 endsWith(cc, "  jdeclare_missing(.T96, M, codes = \"UNKNOWN\")") &&
                 identical(a, paste0(
                 "jdeclare_missing(): UNKNOWN is not in quotes.\n",
@@ -11767,7 +11856,7 @@ check("N96aa ... a text variable with more than three such values: the three mos
               haven::write_sav(d, "v96.sav")
               p <- printed(jload("v96.sav", name = "v96", overwrite = TRUE))
               e <- new.env(parent = globalenv()); e$v96 <- v96
-              grepl("To declare the three most frequent of one variable's values as missing (a\ntext variable takes at most three):\n  jdeclare_missing(v96, V, codes = c(\"N/A\", \"Refused\", \"UNKNOWN\"),\n      modify = TRUE)",
+              grepl("To declare the three most frequent of one variable's values as missing\n(a text variable takes at most three):\n  jdeclare_missing(v96, V, codes = c(\"N/A\", \"Refused\", \"UNKNOWN\"),\n      modify = TRUE)",
                     p, fixed = TRUE) && .run96(p, e) &&
                 identical(sort(attr(e$v96$V, "na_values")), c("N/A", "Refused", "UNKNOWN")) }))
 check("N96ab jconvert(to = \"stata\" or \"sas\"): a text variable is still left out of Pattern A (its values cannot take a marker)",
@@ -12018,6 +12107,150 @@ check(paste0("N88s every call in a message, at the pinned width: none left as on
 if (length(.r5s$long) > 0L) for (l in unique(.r5s$long)) cat("        one long line: ", l, "\n")
 if (length(.r5s$over) > 0L) for (l in unique(.r5s$over)) cat("        over the width: ", l, "\n")
 rm(.r5s, .s, .b5, .b, .l)
+
+# --- N97: the S393 mvbatch's accepts (S395, Fix Slate 30's second build) -----
+# Jeff, on the whole-bank review: "okay accept the rest"; the rulings, "D1,
+# D2, D3, okay with your recommendation." Voice Rule E: a message of two or
+# more sentences puts each on a line of its own. Each check reads the line
+# break after a sentence end -- the end of one line, the start of the next
+# -- so the rest of a message may wrap as the width has it. One check a
+# family; the messages no other check holds, the "from source" entries
+# among them, each reached here by a call. Working objects in local().
+# At the widest message width, 120: there the wrap cannot itself break a
+# line at a sentence end that the message runs on from, as at 76 it can
+# when the end falls near the line's last word -- a mutant that took
+# entry 1's line break away passed N97a at 76 for that reason.
+.w97 <- getOption(".jst_options_message_width")
+options(.jst_options_message_width = 120L)
+.n97 <- data.frame(E = c(1, 2, 3, 1, 2, 3), A = c(20, 30, -99, 40, 50, 60),
+                   T = c("REF", "a", "b", "a", "b", "a"), G = c(1, 2, 1, 2, 1, 2),
+                   stringsAsFactors = FALSE)
+.c97 <- function(conv, expr) {
+  old <- getOption(".jst_options_missing_convention")
+  options(.jst_options_missing_convention = conv)
+  on.exit(options(.jst_options_missing_convention = old))
+  grab(expr)
+}
+.lv97 <- function(level, expr) {
+  old <- getOption(".jst_output_level")
+  options(.jst_output_level = level); on.exit(options(.jst_output_level = old))
+  .both97(expr)
+}
+.both97 <- function(expr) {
+  m <- NULL
+  o <- utils::capture.output(m <- grab(expr))
+  paste(c(o, m), collapse = "\n")
+}
+.q97 <- function(expr) {
+  v <- NULL
+  invisible(utils::capture.output(v <- suppressMessages(suppressWarnings(expr))))
+  v
+}
+.has97 <- function(m, ...) all(vapply(c(...), function(f) grepl(f, m, fixed = TRUE),
+                                      logical(1)))
+check("N97a the map and labels parsers: each sentence on a line of its own (entries 1-9)",
+      .has97(grab(jrecode(.n97, E, map = ".ab=1")), "map rule '.ab=1'.\nOld values must be numeric") &&
+        .has97(grab(jrecode(.n97, E, map = "1=foo")), "map rule '1=foo'.\nNew values must be numeric") &&
+        .has97(.c97("stata", jrecode(.n97, E, map = "1=1; else=.zz")),
+               "in the map.\nStata-style missing-value markers are",
+               "period).\nThe NA(a) longhand is not supported in the map.") &&
+        .has97(.c97("sas", jrelabel(.n97, E, labels = ".AB=Skip")),
+               "label rule '.AB=Skip'.\nSAS-style missing-value markers are",
+               "period).\nThe NA(a) longhand is not supported in the labels.") &&
+        .has97(grab(jrecode(.n97, E, map = "1=1; else=foo")), "in the map.\nUse 'else=NA'") &&
+        .has97(grab(jrelabel(.n97, E, labels = "foo=Skip")), "label rule 'foo=Skip'.\nThe left side") &&
+        .has97(grab(jencode(.n97, T, map = '"Not stated=9')), "in the map.\nA quoted word must") &&
+        .has97(grab(jrelabel(.n97, E, labels = '9="Refused; not asked')), "in the labels.\nA quoted label must") &&
+        .has97(grab(jencode(.n97, T, map = "a=1, b=2")), "map string.\nUse semicolons instead:") &&
+        .has97(grab(jrecode(.n97, E, map = "NA=1; System=2")), "map rule.\nName NA (or System") &&
+        .has97(.c97("stata", jrelabel(.n97, E, labels = "missing=Refused; missing=DK")),
+               "label rule.\nName missing in at most one rule.") &&
+        .has97(grab(jencode(.n97, T, map = "blank=1; blank=2")), "rule.\nName blank in at most one rule."))
+check("N97b jdeclare_missing(): its codes, labels and notes, \"marker\" for token and codes = for `codes` (entries 3, 5, 10, 13, 14, 19-21, 23)",
+      local({
+        hz <- data.frame(X = haven::labelled(c(1, -99, haven::tagged_na("b"), 2)))
+        sv <- data.frame(S = haven::labelled_spss(c(1, 2, -99, -98), labels = c(Refused = -99, DK = -98),
+                                                  na_values = c(-99, -98)))
+        hn <- data.frame(V = haven::labelled(c(1, haven::tagged_na("a"), 2)))
+        mx <- grab(jdeclare_missing(hz, X, codes = c(".b", "-99"), convention = "stata"))
+        .has97(grab(jdeclare_missing(.n97, A, codes = ".1", convention = "stata")),
+               "Invalid code '.1'.\nStata-style missing-value markers") &&
+          .has97(grab(jdeclare_missing(.n97, A, codes = "abc", convention = "spss")),
+                 "Invalid code 'abc'.\nCodes must be numbers") &&
+          .has97(grab(jdeclare_missing(.n97, T, codes = "REF", labels = " ")),
+                 "The labels are empty.\nProvide at least one label, for example:\n  labels = \"REF=Refused\"") &&
+          .has97(grab(jdeclare_missing(.n97, T, codes = "REF", labels = "=Refused")),
+                 "'=Refused'.\nName a value, or use blank") &&
+          .has97(grab(jdeclare_missing(.n97, T, codes = "REF", labels = "REF=")), "rule 'REF='.\nProvide a label name") &&
+          .has97(grab(jrelabel(.n97, E, labels = "1=")), "rule '1='.\nProvide a label name") &&
+          .has97(mx, "(marker input)") && !grepl("token", mx, fixed = TRUE) &&
+          .has97(.lv97("minimal", jdeclare_missing(hz, X, codes = c(".b", "-99"), convention = "stata")),
+                 "numeric codes.\nIssue these as separate jdeclare_missing() calls.") &&
+          .has97(grab(jdeclare_missing(.n97, A, codes = TRUE, convention = "stata")), "or Stata-style markers") &&
+          .has97(.fl(grab(jdeclare_missing(.n97, A, codes = ".a", labels = ".b=Refused", convention = "stata"))),
+                 "labels = contains Stata-style marker entries that match no marker in codes =: .b=Refused.") &&
+          .has97(grab(jdeclare_missing(.n97, A, codes = ".a", labels = ".b=Refused", convention = "stata")),
+                 "\nMarker entries label the markers named in codes =") &&
+          .has97(.fl(grab(jdeclare_missing(.n97, A, convention = "spss"))),
+                 "Provide codes = (for example codes = c(-99, -98)), range = (for example range = c(-99, -51))") &&
+          .has97(.fl(grab(jdeclare_missing(.n97, A, codes = -99, labels = "-98=DK", convention = "stata"))),
+                 "any value in codes =: -98=DK.") &&
+          .has97(grab(jdeclare_missing(.n97, T, codes = NA_character_)), "codes = holds NA.\nName the values") &&
+          .has97(.both97(jdeclare_missing(sv, S, codes = -97, convention = "spss")),
+                 "missing values for S.\nPreviously declared codes dropped:") &&
+          .has97(.lv97("minimal", jdeclare_missing(sv, S, codes = -97, convention = "spss")),
+                 "missing values on S.\nDropped: -99, -98.") &&
+          .has97(.both97(jdeclare_missing(hn, V, codes = ".a", convention = "stata")),
+                 "made no change to V.\nIts markers are already missing values") }))
+check("N97c load, save, options and the filters (entries 25, 26, 28-33, 36, 37)",
+      local({
+        f1 <- tempfile(fileext = ".zzz"); writeLines("x", f1)
+        f2 <- tempfile(fileext = ".rds"); saveRDS(1:3, f2)
+        t94 <- data.frame(P = haven::labelled_spss(c(1, -99), na_values = -99),
+                          Q = haven::labelled_spss(c(1, -98), na_values = -98))
+        oc <- getOption(".jst_complete"); od <- getOption(".jst_default_data")
+        options(.jst_complete = list(), .jst_default_data = NULL)
+        on.exit(options(.jst_complete = oc, .jst_default_data = od))
+        .has97(grab(jload(f1)), "'.zzz'.\nSupported formats:\n") &&
+          .has97(grab(jsave(.n97, file.path(tempdir(), "n97.zzz"))), "'.zzz'.\nSupported formats for saving:\n") &&
+          .has97(grab(jload(f2, name = "zz97")), "does not contain a data frame.\njload() only loads data frames.") &&
+          .has97(grab(jsave(data.frame(L = I(list(1, 2))), file.path(tempdir(), "n97.dta"))),
+                 "sensible automatic conversion.\nDrop it before saving with:") &&
+          .has97(.lv97("minimal", jsave(t94, file.path(tempdir(), "n97.xpt"))), "(.sav).\nTo drop them:") &&
+          .has97(grab(jsave(.n97, file.path(tempdir(), "n97.xls"))), "not supported for saving.\nUse .xlsx instead:") &&
+          .has97(grab(joptions(data.dir = "NULL")), "looks like a typo.\nTo clear the data folder") &&
+          .has97(grab(joptions(data.dir = 5)), "NULL, or \"\".\n(NULL or \"\" clears the folder.)") &&
+          .has97(grab(joptions(message.width = 200)), "between 40 and 120.\nOut-of-range widths") &&
+          .has97(grab(jcomplete(preview = TRUE)), "No jcomplete filter set.\nRun jcomplete(") &&
+          .has97(grab(juse()), "No default data frame set.\nUse juse(DataFrameName) to set one.") &&
+          !exists("zz97", inherits = FALSE) }))
+check("N97d the models, jdesc(), jdummy(), jconvert() and jplot(), with the outcome and the predictor (entries 42-45, 47-50, 52, 53; rulings R43 and the outcome item)",
+      local({
+        cn <- data.frame(Cnt = c(0, 1, 2, 1, 0, 3, 2, 1), X = c(20, 30, 25, 40, 35, 50, 45, 30))
+        g4 <- data.frame(y = c(1, 4, 2, 5, 3, 6, 2, 5), g = c(1, 2, 3, 1, 2, 3, 1, 2))
+        r97 <- data.frame(Q = haven::labelled_spss(c(1, -99, -98, -97), na_range = c(-99, -95)))
+        one <- data.frame(One = c(1, 1, 1))
+        .q97(jdummy(g4, g)); on.exit(.q97(jdummy(g4, NULL)))
+        rr <- .q97(jt(A ~ G, .n97)); rr$model_frame <- NULL
+        cv <- .c97("stata", jconvert(r97, to = "stata"))
+        .has97(grab(jt(A ~ G, NULL)), "NULL is not a valid data frame.\nProvide a data frame") &&
+          .has97(.both97(jdesc(.n97, A, T)), "categorical variables.\nSkipping it.") &&
+          .has97(.both97(jlm(Cnt ~ X, cn)), "integers).\nLinear regression expects an interval outcome.") &&
+          .has97(.both97(jlogistic(G ~ A, .n97)), "is coded 1/2.\nLogistic regression requires 0/1 coding.",
+                 "Then use GR as your outcome.") &&
+          .has97(.both97(jlm(A ~ G, .n97)), "is a 1/2 dichotomy.\nThe model runs correctly") &&
+          .has97(.both97(jlm(y ~ g, g4, numeric = g)), "interval scale.\nThe registration is unchanged.") &&
+          .has97(grab(jdummy(.n97, G, ref = 3)), "not found in 'G'.\nAvailable codes: 1, 2") &&
+          .has97(grab(jdummy(one, One)), "fewer than 2 categories.\nCannot create dummy variables.") &&
+          .has97(cv, "no range concept.\nFor the range declarations above") &&
+          !grepl("\n  range declarations", cv, fixed = TRUE) &&
+          .has97(grab(jplot(rr)), "is missing model_frame.\nRe-run jt()") &&
+          .has97(grab(jplot(T ~ A, .n97)), "the outcome (left of ~) must be numeric.\n\"T\" is categorical.") &&
+          .has97(grab(jplot(~ A, .n97)), "A two-sided formula is required: outcome ~ predictor.") &&
+          .has97(grab(jplot(A ~ G + E, .n97)), "Only one predictor is supported in the formula.") &&
+          .has97(grab(jt(5, .n97)), "jt(Outcome ~ Group, MyData)") }))
+options(.jst_options_message_width = .w97)
+rm(.n97, .c97, .lv97, .both97, .q97, .has97, .w97)
 
 options(.jst_options_missing_convention = NULL)
 # Placed ABOVE the verdict so a failing run still leaves the session clean.

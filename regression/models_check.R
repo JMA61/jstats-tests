@@ -83,6 +83,27 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S395 EDIT (v0.9.267, 2026-10-23): O12, Q25, R05, W08, W11, X07, X08, Y18,
+#           AC01-AC03, AC05, AC07, AE05, AF01, AF04 AND AH03 RE-PINNED; THE
+#           I29 AND M18 CONTROLS FOLLOWED. Fix Slate 30's second build: the
+#           S393 message pass's accepts (Jeff: "okay accept the rest"; "D1,
+#           D2, D3, okay with your recommendation."), rulings R40-R44 and the
+#           (S393) parenthetical lean. Ruling R43 with the (S393) outcome
+#           item: outcome and predictor where the messages said dependent and
+#           independent variable or DV and IV (Q25, R05, W08, W11, AC01-AC03,
+#           AC05, AC07, AE05; I29's control looks for the new words); ruling
+#           R40: "seems categorical;" and its clause, one sentence (X07, AF01,
+#           AF04, AH03); ruling R41 (O12); a sentence a line (X08, Y18 with
+#           "(4.8, 5.1, 5.2, ...)" kept whole; M18's control reads the stop
+#           flattened). No check added; 566 checks. On the 0.9.266 master the
+#           seventeen red. MUTATION MAP (S395; each red): the "seems" entries
+#           back to two sentences X07 AF01 AF04 AH03.
+#           LAST VERIFIED: v0.9.267, 2026-10-23 (S395) -- 566/566 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3342 checks)"; R CMD check clean), matching the sandbox plain,
+#           under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, once with interactive() TRUE, and
+#           entered dirty.
 # S394 EDIT (v0.9.266, 2026-10-23): AH03 RE-PINNED, AH04 AND AH05 ADDED;
 #           SECTION AI ADDED, 8 checks. Fix Slate 30's first build. (AH)
 #           ruling R39 (S392; Jeff: "Yes, I think that example should be
@@ -2566,10 +2587,12 @@ check("I27 ... and so does its VIF > 10 note",
 check("I28 jplot(y ~ I(x1 > 0), d) is refused as a computed term (it plotted raw x1)",
       .i_has(flat(grab(jplot(y ~ I(x1 > 0), d))),
           "jplot(): The formula applies a function to a variable: I(x1 > 0)."))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): the
+# control looks for jplot()'s new words, "Only one predictor" (ruling R43).
 check("I29 ... and with a constant gives that reason, not the variable count",
       { a <- flat(grab(jplot(y ~ I(x1 > cut_i), d)))
         .i_has(a, "The formula applies a function to a variable") &&
-          !.i_has(a, "Only one independent variable") })
+          !.i_has(a, "Only one predictor") })
 check("I30 jplot refuses a data frame named inside a term, with the corrected call, which plots",
       { a <- grab(jplot(d$y ~ d$x1, d))
         .i_has(a, "jplot(): d$y names the d data frame") &&
@@ -3384,12 +3407,15 @@ check("M17 control: a numeric variable and a haven-labelled one that holds numbe
         quiet(jlikert(clear.all = TRUE))
         identical(a, c("Grp:numeric", "Edu:numeric")) &&
           setequal(b, c("Grp:numeric", "Edu:likert", "Age:count", "Mood:likert")) })
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): the
+# control reads jdummy()'s stop flattened, a sentence a line since S395
+# (voice Rule E).
 check("M18 control: jdummy() is unchanged -- a factor, a text variable, a labelled string and a logical all register (a date stays refused there, as before)",
       { quiet(jdummy(dm, Fac, Txt, Sx, Flag))
         r <- .m_dreg(); quiet(jdummy(clear.all = TRUE))
         identical(r, c("Fac", "Txt", "Sx", "Flag")) &&
           grepl("unsupported type for dummy coding",
-                grab(jdummy(dm, When)), fixed = TRUE) })
+                flat(grab(jdummy(dm, When))), fixed = TRUE) })
 # A registration saved before the refusal: put in the notebook directly, as
 # jload() restores one from an older .rds file.
 .m_stale <- function() {
@@ -4067,9 +4093,11 @@ check("O11 the lines under a VIF above 10 print with the table at the standard a
         quiet(joutput(NULL, quiet = TRUE))
         identical(got, list(c(TRUE, FALSE, TRUE, FALSE), c(TRUE, TRUE, TRUE, TRUE),
                             c(TRUE, TRUE, TRUE, TRUE))) })
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "Did you
+# mean `diagnostics`?" on a line of its own (ruling R41).
 check("O12 control: which =, plots = and show = given to jlm() are still pointed at diagnostics",
       identical(.o_err(jlm(y ~ x1 + x2, data = do, which = "qq")),
-                "jlm(): 'which' is not valid. Did you mean `diagnostics`?"))
+                "jlm(): 'which' is not valid.\nDid you mean `diagnostics`?"))
 rm(do)
 rm(list = intersect(c(".o_out", ".o_vif", ".o_plots", ".o_all5", ".o_err"),
                     ls(all.names = TRUE)))
@@ -4635,19 +4663,21 @@ check("Q24 the dichotomy notes end on the state to reach, not a method (voice Ru
           grepl("  jdummy(dq, t37)\nOr make it a 0/1 variable in the data frame.\n", b, fixed = TRUE) &&
           !grepl("jrecode", paste(a, b), fixed = TRUE) }))
 .q25 <- grab(jlogistic(bl ~ x1, data = dq))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "Then use
+# ... as your outcome" (ruling R43; the (S393) outcome item).
 check("Q25 jlogistic()'s text-outcome refusal: a sentence a line, 'Encode' over the jencode() call, the blank coded 0 so the word is modeled (it said 'Recode' and offered \"Y=0; blank=1\"); jlogistic() with its parentheses (Rule AE, S359)",
       identical(flat(.q25), paste0(
         "jlogistic(): 'bl' has text categories Y/<blank>. ",
         "Encode it as a 0/1 variable, so that the modeled category is explicit: ",
         "dq$blR <- jencode(dq, bl, map = \"blank=0; Y=1\") ",
-        "Then use blR as your dependent variable (the category mapped to 1 is the one ",
+        "Then use blR as your outcome (the category mapped to 1 is the one ",
         "jlogistic() models).")) &&
         grepl("^jlogistic\\(\\): 'bl' has text categories Y/<blank>\\.\nEncode it", .q25) &&
         identical(flat(grab(jlogistic(gn ~ x1, data = dq))), paste0(
           "jlogistic(): 'gn' has text categories u/v. ",
           "Encode it as a 0/1 variable, so that the modeled category is explicit: ",
           "dq$gnR <- jencode(dq, gn, map = \"u=0; v=1\") ",
-          "Then use gnR as your dependent variable (the category mapped to 1 is the one ",
+          "Then use gnR as your outcome (the category mapped to 1 is the one ",
           "jlogistic() models).")))
 check("Q26 an expression given as the data: named first, and the lines run to an outcome jlogistic() fits (the line was \"mk()$blR <- jencode(mk(), ...)\")",
       local({ mk_q <- function() dq
@@ -4868,11 +4898,13 @@ dt <- dr
 dt$y <- haven::labelled(c(dr$y[1:55], rep(haven::tagged_na("a"), 5)),
                         labels = c(Skipped = haven::tagged_na("a")))
 .r05 <- .conv_r("stata", grab(jlogistic(y ~ x, data = dt)))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "Then use yR
+# as your outcome." (ruling R43).
 check("R05 an outcome of Stata form carrying .a: -99 recoded to a marker it does not use (the declaration would be refused); pinned",
       grepl(paste0("-99 looks like a coded missing value.\n",
                    "Recode it to a Stata-style marker y does not use, so analyses exclude it:\n",
                    "  dt$yR <- jrecode(dt, y, map = \"-99=.b; else=copy\")\n",
-                   "Then use yR as your dependent variable.\n",
+                   "Then use yR as your outcome.\n",
                    "Or convert it to NA, dropping the code:\n"), .r05, fixed = TRUE) &&
         !grepl("jdeclare_missing(", .r05, fixed = TRUE))
 check("R06 ... the line runs, and jlogistic() runs on yR; under no setting the line carries convention = \"stata\" and runs there",
@@ -5623,12 +5655,14 @@ check("W07 ... focal = g: its categories along the axis, the predicted mean at e
                 near(pd$fit, pr[, "fit"]) && near(pd$lwr, pr[, "lwr"]) &&
                 nrow(pts) == nrow(.w_d) && all(round(pts$x) == ci) &&
                 all(abs(pts$x - ci) <= 0.12 + 1e-9) && near(pts$y, .w_d$y) }))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "one of the
+# predictors in the model" (ruling R43); W08 and W11.
 check("W08 focal names a variable: focal = g_c, a dummy column the old refusal listed, draws g; a name that is not a variable stops with the model's variables listed (it listed g_b, g_c, g_d, x)",
       local({ m <- quiet(jlm(y ~ g + x, data = .w_d))
               p <- .u_plots(jplot(m, which = "fit", focal = g_c))[[1L]]
               e <- .u_msg(jplot(m, which = "fit", focal = q))
               identical(p$labels$x, "g") &&
-                identical(flat(e), "jplot(): `focal` must be one of the independent variables in the model: g, x") }))
+                identical(flat(e), "jplot(): `focal` must be one of the predictors in the model: g, x") }))
 check("W09 a model whose only predictor is dummy-coded: the fit plot draws it, its categories along the axis at their means, the equation naming its dummy columns as the coefficients do, nothing held",
       local({ m  <- quiet(jlm(y ~ g, data = .w_d))
               p  <- .u_plots(jplot(m, which = "fit"))[[1L]]
@@ -5655,7 +5689,7 @@ check("W11 ... and in jlogistic(): focal = g_b draws g, and a name that is not a
               p <- .u_plots(jplot(m, which = "probability", focal = g_b))[[1L]]
               e <- .u_msg(jplot(m, which = "probability", focal = q))
               identical(p$labels$x, "g") &&
-                identical(flat(e), "jplot(): `focal` must be one of the independent variables in the model: g, x") }))
+                identical(flat(e), "jplot(): `focal` must be one of the predictors in the model: g, x") }))
 check("W12 control: a result made before this build, with no dummy_groups, draws its dummy columns as before",
       local({ m <- quiet(jlm(y ~ x + g, data = .w_d)); m$dummy_groups <- NULL
               identical(names(.u_plots(jplot(m, which = "effects"))),
@@ -5763,6 +5797,8 @@ check("X06 ... every example line runs as printed, on community, with no setting
                       warning = function(x) invokeRestart("muffleWarning"))
   paste(m[grepl("dichotomy", m, fixed = TRUE)], collapse = "")
 }
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "seems
+# categorical;" and its clause, one sentence (ruling R40).
 check("X07 jcorr()'s seems-categorical warning names the method in use: Spearman and Kendall say ordinal or interval data; Pearson keeps its sentence (it said \"Pearson correlations assume continuous/interval data.\" under all three)",
       local({ ws <- vapply(c("spearman", "kendall", "pearson"), function(m) {
                 w <- character(0)
@@ -5773,12 +5809,14 @@ check("X07 jcorr()'s seems-categorical warning names the method in use: Spearman
                   warning = function(x) { w <<- c(w, conditionMessage(x)); invokeRestart("muffleWarning") })
                 flat(paste(w, collapse = " "))
               }, character(1))
-              identical(ws[["spearman"]], "q4 seems categorical. Spearman correlations assume ordinal or interval data.") &&
-                identical(ws[["kendall"]], "q4 seems categorical. Kendall correlations assume ordinal or interval data.") &&
-                identical(ws[["pearson"]], "q4 seems categorical. Pearson correlations assume continuous/interval data.") }))
+              identical(ws[["spearman"]], "q4 seems categorical; Spearman correlations assume ordinal or interval data.") &&
+                identical(ws[["kendall"]], "q4 seems categorical; Kendall correlations assume ordinal or interval data.") &&
+                identical(ws[["pearson"]], "q4 seems categorical; Pearson correlations assume continuous/interval data.") }))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): the
+# dichotomy note, a sentence a line (voice Rule E).
 check("X08 the dichotomy note on codes 5 and 10: the jdummy() line, and run, it registers the variable as a dummy of two categories",
       local({ n <- .x_note(jlm(y ~ c5, data = .x_d))
-              ok <- grepl("registering c5 as a dummy can help interpret the intercept:\n  jdummy(.x_d, c5)\nOr make it a 0/1 variable in the data frame.", n, fixed = TRUE)
+              ok <- grepl("registering c5 as a dummy can help interpret\nthe intercept:\n  jdummy(.x_d, c5)\nOr make it a 0/1 variable in the data frame.", n, fixed = TRUE)
               r <- tryCatch(quiet(eval(parse(text = "jdummy(.x_d, c5)")[[1L]], globalenv())), error = function(e) NULL)
               reg <- getOption(".jst_dummy")[[".x_d"]]
               quiet(jdummy(.x_d, NULL))
@@ -6064,13 +6102,17 @@ check("Y17 a variable of more than 20 values stops under the title, pinned whole
                 identical(grab(jcrosstab(sex ~ sc, data = dz, categorical = c(age, sc))),
                           paste0("jcrosstab(): categorical = names age, which is not in the formula.\n",
                                  "Name only the formula's variables there.")) }))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): jdummy()'s
+# stop: "(4.8, 5.1, 5.2, ...)" kept whole (the (S393) parenthetical item) and
+# a sentence a line (voice Rule E).
 check("Y18 jdummy() refuses values that are not whole numbers, pinned whole, and registers nothing; jlm(categorical = ) the same; whole numbers register as before",
       local({ dh <- data.frame(y = 1:30, h = rep(c(1.5, 2, 2.5), 10), k = rep(1:3, 10))
               e  <- grab(jdummy(dh, h))
               identical(e, paste0("jdummy(): h has values that are not whole numbers (1.5, 2.5), so it\n",
                                   "cannot be dummy-coded.\n",
-                                  "Dummy coding makes one indicator for each category. If these values are\n",
-                                  "categories, recode them to whole-number codes first with jrecode().")) &&
+                                  "Dummy coding makes one indicator for each category.\n",
+                                  "If these values are categories, recode them to whole-number codes first\n",
+                                  "with jrecode().")) &&
                 is.null(getOption(".jst_dummy")[["dh"]]) &&
                 startsWith(grab(jlm(y ~ h, data = dh, categorical = "h")),
                            "jlm(): h has values that are not whole numbers (1.5, 2.5)") &&
@@ -6367,21 +6409,23 @@ cat("\n--- AC. The twin build: the name checks and the both-sides stop ---\n")
   a <- flat(grab(lm_call)); b <- flat(grab(lg_call))
   list(lg = b, same = identical(sub("^jlm\\(\\): ", "jlogistic(): ", a), b))
 }
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "among the
+# predictors in d" (ruling R43); AC01-AC03.
 check("AC01 numeric = naming a variable of the data that is not a predictor: jlogistic() stops with jlm()'s sentence, prefixed (it ran with the name ignored)",
       local({ p <- .ac_pair(jlm(y ~ x1 + hv, d, numeric = "x2"),
                             jlogistic(yb ~ x1 + hv, d, numeric = "x2"))
               p$same && identical(p$lg, paste0("jlogistic(): numeric = names 'x2', which is not ",
-                                               "among the independent variables in d. Check for typos.")) }))
+                                               "among the predictors in d. Check for typos.")) }))
 check("AC02 ... categorical = naming one: the same stop",
       local({ p <- .ac_pair(jlm(y ~ x1 + hv, d, categorical = "x2"),
                             jlogistic(yb ~ x1 + hv, d, categorical = "x2"))
               p$same && identical(p$lg, paste0("jlogistic(): categorical = names 'x2', which is not ",
-                                               "among the independent variables in d. Check for typos.")) }))
+                                               "among the predictors in d. Check for typos.")) }))
 check("AC03 ... count = naming one: the same stop",
       local({ p <- .ac_pair(jlm(y ~ x1 + hv, d, count = "x2"),
                             jlogistic(yb ~ x1 + hv, d, count = "x2"))
               p$same && identical(p$lg, paste0("jlogistic(): count = names 'x2', which is not ",
-                                               "among the independent variables in d. Check for typos.")) }))
+                                               "among the predictors in d. Check for typos.")) }))
 check("AC04 a predictor in both numeric = and categorical =, or in both count = and categorical =: jlogistic() stops as jlm() does (numeric = had won silently)",
       local({ p <- .ac_pair(jlm(y ~ x1 + hv, d, numeric = "hv", categorical = "hv"),
                             jlogistic(yb ~ x1 + hv, d, numeric = "hv", categorical = "hv"))
@@ -6390,12 +6434,14 @@ check("AC04 a predictor in both numeric = and categorical =, or in both count = 
               p$same && q$same &&
                 identical(p$lg, "jlogistic(): 'hv' is listed in both numeric = and categorical =.") &&
                 identical(q$lg, "jlogistic(): 'hv' is listed in both count = and categorical =.") }))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "the
+# outcome", "predictors" (ruling R43).
 check("AC05 categorical = naming the outcome: jlogistic() gives jlm()'s note, and fits",
       local({ a <- flat(grab(jlogistic(yb ~ x1 + hv, d, categorical = c("yb", "hv"))))
               m <- quiet(jlogistic(yb ~ x1 + hv, d, categorical = c("yb", "hv")))
-              grepl(paste0("Note: 'yb' is the dependent variable and is always treated as ",
+              grepl(paste0("Note: 'yb' is the outcome and is always treated as ",
                            "numeric. categorical = is only needed for ",
-                           "independent variables."), a, fixed = TRUE) &&
+                           "predictors."), a, fixed = TRUE) &&
                 !is.null(m) }))
 check("AC06 categorical = naming a predictor registered with jdummy(): jlogistic() warns as jlm() does, and fits",
       local({ quiet(jdummy(d, g))
@@ -6406,10 +6452,12 @@ check("AC06 categorical = naming a predictor registered with jdummy(): jlogistic
               w <- paste0("categorical = was ignored for g (already registered as a dummy ",
                           "via jdummy; categorical treatment is automatic).")
               grepl(w, a, fixed = TRUE) && grepl(w, b, fixed = TRUE) && !is.null(m) }))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "appears as
+# both the outcome and a predictor." (ruling R43).
 check("AC07 the both-sides stop, reached by no battery until now (the S385 trace): jlm(y ~ y) and jlogistic(yb ~ yb) each stop with it, prefixed",
       local({ a <- flat(grab(jlm(y ~ y, d))); b <- flat(grab(jlogistic(yb ~ yb, d)))
-              tail <- paste0(" appears as both the dependent variable and an independent ",
-                             "variable. Each variable can only play one role in a regression.")
+              tail <- paste0(" appears as both the outcome and a predictor. ",
+                             "Each variable can only play one role in a regression.")
               identical(a, paste0("jlm(): 'y'", tail)) &&
                 identical(b, paste0("jlogistic(): 'yb'", tail)) }))
 rm(.ac_pair)
@@ -6521,12 +6569,14 @@ set.seed(391)
 .ae_d$P <- rep(1:4, length.out = 60)                    # plain numbers
 .ae_gm <- function(p) if (is.null(p) || !inherits(p, "ggplot")) NA_character_ else
   class(p$layers[[1L]]$geom)[1L]
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): jplot()'s
+# scatter pointer in outcome and predictor (ruling R43), for AE05.
 .ae_sc <- function(line) paste0(
   "jplot(): For two-numeric scatterplots, use formula syntax to make\n",
-  "the DV and IV explicit (consistent with jlm):\n",
+  "the outcome and the predictor explicit (consistent with jlm):\n",
   "  ", line, "\n",
-  "(The DV on the left of ~ goes on the y-axis; the IV on the right goes on\n",
-  "the x-axis.)")
+  "(The outcome on the left of ~ goes on the y-axis; the predictor on the right\n",
+  "goes on the x-axis.)")
 .ae_box <- paste0(
   "jplot(): For boxplots, use formula syntax to make the outcome and\n",
   "grouping variable explicit (consistent with jaov):\n",
@@ -6619,12 +6669,15 @@ set.seed(80)
                            labels = c(A = 1, B = 2, C = 3, D = 4))
 .af_d$T <- rnorm(40)
 .af_w <- .r391_w
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "seems
+# categorical; descriptive statistics may not be meaningful." one sentence
+# (ruling R40); AF01 and AF04.
 check("AF01 jdesc(): a jdummy()-registered variable is stated, \"G is categorical; descriptive statistics may not be meaningful.\" (it said \"G seems categorical. Descriptive ...\"); without the registration the hedge stays",
       local({ e <- .af_d
               h <- .af_w(jdesc(e, G))
               quiet(jdummy(e, G)); a <- .af_w(jdesc(e, G)); quiet(jdummy(e, NULL))
               identical(flat(a), "G is categorical; descriptive statistics may not be meaningful.") &&
-                identical(flat(h), "G seems categorical. Descriptive statistics may not be meaningful.") }))
+                identical(flat(h), "G seems categorical; descriptive statistics may not be meaningful.") }))
 check("AF02 jcorr(): the same under each method, the clause naming it; the other variable unwarned",
       local({ e <- .af_d; quiet(jdummy(e, G))
               a <- .af_w(jcorr(e, S, G))
@@ -6644,8 +6697,8 @@ check("AF04 a registration stays with its data frame: the same variable in anoth
       local({ e <- .af_d; f <- .af_d; quiet(jdummy(e, G))
               a <- .af_w(jdesc(f, G)); b <- .af_w(jdesc(e[1:40, ], G))
               quiet(jdummy(e, NULL))
-              identical(flat(a), "G seems categorical. Descriptive statistics may not be meaningful.") &&
-                identical(flat(b), "G seems categorical. Descriptive statistics may not be meaningful.") }))
+              identical(flat(a), "G seems categorical; descriptive statistics may not be meaningful.") &&
+                identical(flat(b), "G seems categorical; descriptive statistics may not be meaningful.") }))
 rm(.af_d, .af_w)
 
 # =============================================================================
@@ -6766,6 +6819,8 @@ check("AH02 so an item worded that way draws no \"seems categorical\" warning fr
               identical(a, character(0)) && identical(b, character(0)) &&
                 any(grepl("^Apr +Categorical +Likert +5$", v)) &&
                 any(grepl("^Tru +Categorical +Likert +4$", v)) }))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): the hedge,
+# one sentence (ruling R40).
 check("AH03 ruling R39 (S394; re-pinned, its first control at S392): a \"Not at all important ... Extremely important\" item now reads Likert -- no \"seems categorical\" warning from jdesc(), jscreen()'s \"Likert\" -- as does a one-pole scale from \"Not at all satisfied\" to \"Very satisfied\"; a \"No pain ... Severe\" item, which no rule reaches, keeps the warning and its \"4-category\"",
       local({ set.seed(88)
               e <- data.frame(S = round(stats::rnorm(60, 10, 2), 2))
@@ -6782,7 +6837,7 @@ check("AH03 ruling R39 (S394; re-pinned, its first control at S392): a \"Not at 
               identical(a, character(0)) &&
                 any(grepl("^Imp +Categorical +Likert +5$", v)) &&
                 jstats:::.jst_is_likert(one) &&
-                identical(flat(p), "Pn seems categorical. Descriptive statistics may not be meaningful.") &&
+                identical(flat(p), "Pn seems categorical; descriptive statistics may not be meaningful.") &&
                 any(grepl("^Pn +Categorical +4-category +4$", v)) }))
 
 # Ruling R39 (S394): a column reads Likert when one label holds the phrase

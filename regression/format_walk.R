@@ -78,8 +78,34 @@
 #           values (Section 35).
 #           Since S382 (v0.9.256) the line after a date line that puts back
 #           the variable's label, which as.Date() drops (Section 36).
+#           Since S395 (v0.9.267) the message pass: a sentence a line, a
+#           parenthetical of up to 40 columns kept whole, and rulings
+#           R40-R44 (Section 37).
 #           format_check.R asserts the same surface; this file shows it.
 # ORIGIN:   S326 (v0.9.202): the number-format bundle.
+# S395 EDIT (v0.9.267): FIX SLATE 30, THE SECOND BUILD -- the S393 message
+#           pass's accepts, with rulings R40-R44 and the (S393) parenthetical
+#           lean (Jeff, S393 and S395). SECTION 37 ADDED, eight renders -- 36
+#           sections -> 37 -- filled by running (fill.R): each shape the pass
+#           makes, once -- a sentence a line, a parenthetical kept whole,
+#           R40's one-sentence warning, R41's "Did you mean" line, R43's
+#           outcome and "standard deviation", R44's jencode() note, and R42's
+#           question (jsave()'s statement in the form of its stop where the
+#           session cannot ask: Claude's wording). It is the PENDING section.
+#           Sections 23, 27, 28 and 31 RE-PINNED MECHANICALLY, by running, and
+#           kept off the PENDING line: the Levene notes' "standard deviation"
+#           where they said "SD" (R43), and Section 31's "Did you mean
+#           `diagnostics`?" on a line of its own (R41). A capture of every
+#           section of every walk on 0.9.266 and on the build moves those four
+#           here, and Section 37 is new; Section 28's "Things to look at"
+#           quotes the note with "standard deviation". harness.R derive:
+#           Section 37 needs no other; verify: 37 of 37 sections in three
+#           orders and by prepare = TRUE; 65 of 65 Expected blocks.
+# LAST VERIFIED: v0.9.267, 2026-10-23 (S395) -- Section 37 WALKED on the
+#           WORKSTATION by Jeff through receive_all() and rewalk() ("All
+#           good."); Sections 23, 27, 28 and 31 re-pinned mechanically and not
+#           walked; PENDING back to none; R CMD check clean (the receive went
+#           on to the batteries); ALL BATTERIES GREEN (11 run, 3342 checks).
 # S391 EDIT (v0.9.264; the (Session 17) degraded-display item, Jeff's okay
 #           of the lean at the S391 decisions pass): SECTION 32 RE-PINNED,
 #           Render 1, by running: jcrosstab()'s stop for a variable left with
@@ -1937,8 +1963,8 @@ jaov(y ~ g, data = f_gh, welch = TRUE, posthoc = TRUE)
 #   12.823   2    15  <.001
 #
 #   Note: Levene's test is significant (p < .001).
-#   The largest group is 2.0 times the smallest, and the largest SD is 5.4 times
-#   the smallest.
+#   The largest group is 2.0 times the smallest, and the largest standard
+#   deviation is 5.4 times the smallest.
 #   Both are beyond the usual guidelines, so the p-value of the standard ANOVA
 #   may not be reliable.
 #   Welch's ANOVA does not assume equal variances: welch = TRUE.
@@ -2284,8 +2310,8 @@ jaov(y ~ g, data = f_in, diagnostics = TRUE)
 #   4.803   2    83  .011
 #
 #   Note: Levene's test is significant (p = .011).
-#   The largest group is 1.2 times the smallest, and the largest SD is 1.9 times
-#   the smallest.
+#   The largest group is 1.2 times the smallest, and the largest standard
+#   deviation is 1.9 times the smallest.
 #   Both are within the usual guidelines, so the standard ANOVA is usually
 #   still acceptable.
 #   See ?jaov.
@@ -2323,8 +2349,8 @@ jaov(y ~ g, data = f_mid, diagnostics = TRUE)
 #   8.367   2    71  <.001
 #
 #   Note: Levene's test is significant (p < .001).
-#   The largest group is 1.5 times the smallest, and the largest SD is 2.1 times
-#   the smallest.
+#   The largest group is 1.5 times the smallest, and the largest standard
+#   deviation is 2.1 times the smallest.
 #   Guidelines differ on whether the standard ANOVA is acceptable at
 #   these values.
 #   Welch's ANOVA does not assume equal variances: welch = TRUE.
@@ -2364,8 +2390,8 @@ rm(groups, f_in, f_mid, f_out)
 #   14.378   2    77  <.001
 #
 #   Note: Levene's test is significant (p < .001).
-#   The largest group is 2.0 times the smallest, and the largest SD is 2.6 times
-#   the smallest.
+#   The largest group is 2.0 times the smallest, and the largest standard
+#   deviation is 2.6 times the smallest.
 #   Both are beyond the usual guidelines, so the p-value of the standard ANOVA
 #   may not be reliable.
 #   Welch's ANOVA does not assume equal variances: welch = TRUE.
@@ -2442,7 +2468,8 @@ jt(y ~ g, data = t_in, diagnostics = TRUE)
 #   12.619   1    78  <.001
 #
 #   Note: Levene's test is significant (p < .001).
-#   The groups are the same size, and the larger SD is 1.9 times the smaller.
+#   The groups are the same size, and the larger standard deviation is 1.9 times
+#   the smaller.
 #   Both are within the usual guidelines, so Student's t-test is usually
 #   still acceptable.
 #   See ?jt.
@@ -2477,8 +2504,8 @@ jt(y ~ g, data = t_mid, diagnostics = TRUE)
 #   21.697   1    80  <.001
 #
 #   Note: Levene's test is significant (p < .001).
-#   The larger group is 1.05 times the smaller, and the larger SD is 2.4 times
-#   the smaller.
+#   The larger group is 1.05 times the smaller, and the larger standard
+#   deviation is 2.4 times the smaller.
 #   Guidelines differ on whether Student's t-test is acceptable at these values.
 #   Welch's t-test does not assume equal variances: welch = TRUE.
 #   See ?jt.
@@ -2519,8 +2546,8 @@ rm(groups, t_in, t_mid, t_out)
 #   21.377   1    58  <.001
 #
 #   Note: Levene's test is significant (p < .001).
-#   The larger group is 2.0 times the smaller, and the larger SD is 2.6 times
-#   the smaller.
+#   The larger group is 2.0 times the smaller, and the larger standard deviation
+#   is 2.6 times the smaller.
 #   Both are beyond the usual guidelines, so the p-value of Student's t-test may
 #   not be reliable.
 #   Welch's t-test does not assume equal variances: welch = TRUE.
@@ -2588,8 +2615,9 @@ rm(groups, t_in, t_mid, t_out)
 #   (Diagnostic plot produced: Normal Q-Q)
 #
 # Things to look at:
-#   - RENDER 1: "The groups are the same size, and the larger SD is 1.9
-#     times the smaller.", and the verdict names Student's t-test.
+#   - RENDER 1: "The groups are the same size, and the larger standard
+#     deviation is 1.9 times the smaller." ("SD" until S395, ruling R43),
+#     and the verdict names Student's t-test.
 #   - RENDER 2: the size ratio reads 1.05, with two decimals: at one it
 #     would read 1.0 beside a sentence saying one group is larger. The
 #     verdict is "Guidelines differ", on the SDs alone.
@@ -3050,8 +3078,8 @@ joutput("standard")
 #   12.823   2    15  <.001
 #
 #   Note: Levene's test is significant (p < .001).
-#   The largest group is 2.0 times the smallest, and the largest SD is 5.4 times
-#   the smallest.
+#   The largest group is 2.0 times the smallest, and the largest standard
+#   deviation is 5.4 times the smallest.
 #   Both are beyond the usual guidelines, so the p-value of the standard ANOVA
 #   may not be reliable.
 #   Welch's ANOVA does not assume equal variances: welch = TRUE.
@@ -3169,7 +3197,8 @@ rm(shown, f_gh)
 #   Error: jaov(): "vif" is not a diagnostic of jaov().
 #   `diagnostics` must be TRUE, FALSE, or one or more of "levene" and "qq".
 #
-#   Error: jaov(): 'levene' is not valid. Did you mean `diagnostics`?
+#   Error: jaov(): 'levene' is not valid.
+#   Did you mean `diagnostics`?
 #
 #   Error: joutput(): "leven" is not a diagnostic.
 #   `diagnostics` must be TRUE, FALSE, or one or more of "levene", "qq", "vif",
@@ -3904,6 +3933,199 @@ rm(f36, .f36)
 #     this build the label was gone after the first line.
 #   - Ward and ID: unchanged, and no attr() line for a variable without a
 #     label.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 37 -- the message pass: a sentence a line, a parenthetical kept whole (S395) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 395 (v0.9.267), Fix Slate 30's second build: the accepts of the
+# S393 whole-bank review. Fifty-three messages that put two or more
+# sentences on one line give each sentence a line of its own (voice Rule E),
+# with four rulings: a "seems categorical" warning is one sentence (R40);
+# "Did you mean ...?" takes a line of its own (R41); a question's statement
+# and its question go on separate lines (R42); a model's roles are the
+# outcome and the predictors, and "SD" in a sentence is "standard deviation"
+# (R43).
+# With them, a parenthetical of up to 40 columns moves whole to the next
+# line where it had been broken inside (the (S393) parenthetical item), and
+# jencode()'s note says what its order is for words beyond A to Z (R44, on
+# your student's answer). This section shows each shape once. The other
+# walk sections whose Expected blocks moved were refilled by running and are
+# named in each walk's header. The assertion side is
+# missing_convention_check.R N58d-N58h and N97, filter_check.R P05,
+# jencode_check.R N52 and import_check.R AB06-AB07.
+
+f37 <- data.frame(Score = c(12, 15, 11, 19, 14, 22, 13, 30),
+                  G     = c(1, 2, 1, 2, 1, 2, 1, 2),
+                  City  = c("Zebrinha", "\u00c1vila", "abacate", "Bahia",
+                            "Zebrinha", "Bahia", "abacate", "\u00c1vila"),
+                  stringsAsFactors = FALSE)
+f37v <- data.frame(s = c(1, 2, 1, 2, 1, 2, 10, 20, 30, 40, 50, 60),
+                   g = rep(1:2, each = 6))
+
+# Render 1 -- a stop of two sentences: each on a line of its own (it read
+# "... in map rule '.ab=1'. Old values must" on one line).
+try(jrecode(f37, Score, map = ".ab=1"))
+# Expected:
+#   Error : jrecode(): Invalid old value '.ab' in map rule '.ab=1'.
+#   Old values must be numeric, a system-NA alias (NA, System, or SYSMIS), or a
+#   Stata-style missing-value marker (.a through .z).
+
+# Render 2 -- a parenthetical kept whole: "(one letter after a period)."
+# moves to the next line, where it had ended one line on "(one letter after
+# a" and opened the next on "period).".
+try(jrecode(f37, Score, map = "1=1; else=.zz", convention = "stata"))
+# Expected:
+#   Error : jrecode(): Invalid else action '.zz' in the map.
+#   Stata-style missing-value markers are '.a' through '.z'
+#   (one letter after a period).
+#   The NA(a) longhand is not supported in the map.
+
+# Render 3 -- two parentheticals, each kept whole (three lines where there
+# had been two).
+try(jdeclare_missing(f37, Score, codes = TRUE, convention = "stata"))
+# Expected:
+#   Error : jdeclare_missing(): `codes` must be one or more numbers
+#   (for example codes = c(-99, -98)) or Stata-style markers
+#   (for example codes = c(".a", ".b")).
+
+# Render 4 -- ruling R40: the warning is one sentence ("G seems categorical.
+# Descriptive statistics may not be meaningful." before).
+jdesc(f37, G)
+# Expected:
+#   Descriptive Statistics
+#
+#   8 Cases in the 1 Variable Pool
+#
+#   Warning: G seems categorical; descriptive statistics may not be meaningful.
+#   Variable  Total  Non_missing  Min  Max   Mean    SD
+#   --------  -----  -----------  ---  ---  -----  -----
+#   G           8         8        1    2   1.500  0.535
+
+# Render 5 -- ruling R41: the question on a line of its own.
+try(jt(Score ~ G, f37, levene = TRUE))
+# Expected:
+#   Error : jt(): 'levene' is not valid.
+#   Did you mean `diagnostics`?
+
+# Render 6 -- ruling R43: the outcome and a predictor (it said "the dependent
+# variable and an independent variable"), and the Levene note's "standard
+# deviation" (it said "SD").
+try(jlm(Score ~ Score + G, f37))
+jt(s ~ g, f37v, diagnostics = "levene")
+# Expected:
+#   Linear Regression
+#   Error : jlm(): 'Score' appears as both the outcome and a predictor.
+#   Each variable can only play one role in a regression.
+#   Independent Samples T-Test
+#
+#   Analysis N: 12
+#
+#   Levene's Test for Homogeneity of Variance
+#      F    df1  df2    p
+#   ------  ---  ---  ----
+#   15.769   1    10  .003
+#
+#   Note: Levene's test is significant (p = .003).
+#   The groups are the same size, and the larger standard deviation is 34.2
+#   times the smaller.
+#   Guidelines differ on whether Student's t-test is acceptable at these values.
+#   Welch's t-test does not assume equal variances: welch = TRUE.
+#   See ?jt.
+#
+#   Group Descriptives: s by g
+#   Group  N   Mean     SD
+#   -----  -  ------  ------
+#   1      6   1.500   0.548
+#   2      6  35.000  18.708
+#
+#   Independent Samples T-Test Results (equal variances assumed)
+#      t    df    p   Mean Difference  95% CI Lower  95% CI Upper
+#   ------  --  ----  ---------------  ------------  ------------
+#   -4.384  10  .001      -33.500         -50.525       -16.475
+#
+#   Cohen's d: -2.531
+
+# Render 7 -- ruling R44: words beyond A to Z, so the note says what the
+# order is; the numbers are as before (Avila after Zebrinha).
+f37$CityN <- jencode(f37, City)
+# Expected:
+#   Note: 'City' was encoded in character-code order, which may not
+#   be alphabetical:
+#     "abacate"  -> 1
+#     "Bahia"    -> 2
+#     "Zebrinha" -> 3
+#     "Ávila"    -> 4
+#   If these categories have a natural order (like Low/Medium/High), rerun with
+#   a map to choose the numbers:
+#     f37$CityR <- jencode(f37, City,
+#         map = "abacate=1; Bahia=2; Zebrinha=3; Ávila=4")
+#
+#   Note: This call changes f37 only if you assign the result:
+#     f37$<name> <- jencode(...)
+#   To check the encoding landed correctly, compare jfreq() on the original and
+#   the new column.
+
+# Render 8 -- ruling R42: a question's statement on its line, the question on
+# the line the answer follows ("'k37' already exists in your environment.
+# Overwrite? (y/n): " was one line). jsave()'s statement takes the form of
+# its stop where the session cannot ask, the path on a line of its own (it
+# was "File '<path>' already exists. Overwrite? (y/n): "). Each question is
+# answered n here, as typed at the Console; the folder is shown as <folder>,
+# since a temporary folder differs on every run.
+.wd37 <- getwd(); .d37 <- file.path(tempdir(), "format_walk_s37")
+dir.create(.d37, showWarnings = FALSE); setwd(.d37)
+.ask37 <- function(fn, answer) {   # fn with its question answered as given
+  conf <- environment(jsave)$.jst_confirm
+  ec <- new.env(parent = environment(conf))
+  ec$readline <- function(prompt = "") {
+    cat(prompt, answer, "\n", sep = ""); answer }
+  ec$cat <- function(..., sep = " ")
+    base::cat(gsub(normalizePath(.d37, winslash = "/"), "<folder>", c(...),
+                   fixed = TRUE), sep = sep)
+  environment(conf) <- ec
+  e <- new.env(parent = environment(fn))
+  e$interactive <- function() TRUE
+  e$.jst_confirm <- conf
+  environment(fn) <- e
+  fn
+}
+.ws37 <- new.env(parent = baseenv()); .ws37$k37 <- data.frame(z = 9)
+saveRDS(.ws37$k37, "k37.rds")
+.ws37$jsave <- .ask37(jsave, "n"); .ws37$jload <- .ask37(jload, "n")
+evalq(jsave(k37, "k37.rds"), .ws37)
+evalq(jload("k37.rds"), .ws37)
+# Expected:
+#   This file already exists:
+#     <folder>/k37.rds
+#   Overwrite? (y/n): n
+#   Save cancelled.
+#   'k37' already exists in your environment.
+#   Overwrite? (y/n): n
+#   Load cancelled.
+setwd(.wd37); unlink(.d37, recursive = TRUE)
+rm(f37, f37v, .ask37, .ws37, .wd37, .d37)
+
+# Things to look at:
+#   - RENDERS 1-3: every sentence starts a line; nothing else in the words
+#     moved. In Render 2 the parenthetical is whole on a line of its own; in
+#     Render 3 the two examples each stay whole, so the stop takes three
+#     lines. Does the shorter first line read well, or would you rather a
+#     parenthetical broke inside to fill the line?
+#   - RENDER 4: one sentence, the hedge and its consequence joined by a
+#     semicolon, as the registered form ("G is categorical; ...") has read
+#     since S391.
+#   - RENDER 5: "Did you mean `diagnostics`?" under the problem.
+#   - RENDER 6: "the outcome and a predictor"; "the larger standard
+#     deviation". The other Levene notes are re-pinned in Sections 27 and 28.
+#   - RENDER 7: "in character-code order, which may not be alphabetical:"
+#     where it said "alphabetically:" -- Avila numbered after Zebrinha.
+#     Words of A to Z alone keep "alphabetically:".
+#   - RENDER 8: the statement, then "Overwrite? (y/n): " and the answer on
+#     the next line. jsave()'s statement now reads as its stop where the
+#     session cannot ask (modify_form_walk.R Section 13), the path on its
+#     own line: Claude's wording.
+#     Enough, or should "This file already exists:" name the file instead?
 
 
 # --- Restore -----------------------------------------------------------------

@@ -51,6 +51,34 @@
 #           and jrelabel() keeping the labels of declared missing values
 #           (Section 43; ruling R37).
 # ORIGIN:   S229
+# EDITED:   S395 (v0.9.267; Fix Slate 30, the second build -- the S393 message
+#           pass's accepts, with rulings R40-R44 and the (S393) parenthetical
+#           lean, Jeff, S393 and S395). SECTIONS 5, 17, 19, 20, 34, 37 AND 41
+#           RE-PINNED MECHANICALLY, by running (fill.R), and kept off the
+#           PENDING line: each sentence on a line of its own (5, 19, 20; voice
+#           Rule E); a parenthetical moved whole to the next line (17, 34,
+#           37); and Section 41's overwrite question shown as the Console
+#           shows it, the statement on its line, then "Overwrite? (y/n): " and
+#           the answer (ruling R42), jsave()'s statement now "This file
+#           already exists:" with the path on a line of its own -- its stop's
+#           form in Section 13, Claude's wording. Section 41's copies print
+#           the question where they had asked nothing visible, and show the
+#           walk folder as <walk folder>. The shapes are walked once, in
+#           format_walk.R Section 37, Render 8 for the question. The assertion
+#           side is import_check.R AB06-AB07, U04 and T05. A capture of every
+#           section of every walk on 0.9.266 and on the build moves those
+#           seven and Section 6, whose moved line ("To drop them:" on a line
+#           of its own, at the .xpt refusal's minimal tier) sits in no
+#           Expected block; a sentence in its notes says so (the temporary
+#           paths aside). harness.R verify: 43 of 43 sections in three orders
+#           and by prepare = TRUE; 165 of 166 Expected blocks found (Section
+#           9's; 165 on 0.9.266 with the same temporary folder).
+# LAST VERIFIED: v0.9.267, 2026-10-23 (S395) -- Sections 5, 17, 19, 20, 34, 37
+#           and 41 re-pinned mechanically and not walked here; the shapes
+#           WALKED in format_walk.R Section 37 on the WORKSTATION by Jeff
+#           ("All good."); PENDING none throughout; R CMD check clean (the
+#           receive went on to the batteries); ALL BATTERIES GREEN (11 run,
+#           3342 checks).
 # EDITED:   S392 (v0.9.265; the (S282) item, voice Rule B, Jeff's okay of
 #           the lean: "Okay for all defaults."). SECTION 13 RE-PINNED, filled
 #           by running (fill.R): jsave()'s stop for a second argument
@@ -1127,8 +1155,8 @@ jload(f_susp, name = "clinic", overwrite = TRUE)
 #     Contact:  -99 (1)
 #
 #   These codes match the missing.convention.codes setting (-99, -98, -97) but
-#   are not formally declared, so they are not treated as missing. Declare them
-#   as missing if they are; leave as-is if real.
+#   are not formally declared, so they are not treated as missing.
+#   Declare them as missing if they are; leave as-is if real.
 #
 #   No missing-value convention is selected, so this code cannot be
 #   declared yet.
@@ -1255,7 +1283,9 @@ joutput(NULL)
 # tagged-only branch substitutes Stata format (.dta); the both-forms
 # branch reads "To preserve them, convert them to one form with
 # jconvert() and save as SPSS format (.sav) or Stata format (.dta). To
-# drop them:" and wraps once. This walk is where the fix meets the LIVE
+# drop them:" and wraps once. (Since S395, v0.9.267, voice Rule E: "To drop
+# them:" has a line of its own in all three branches, the colon still
+# directly above the runnable line.) This walk is where the fix meets the LIVE
 # path: S269's evidence was the builder called through .jst_stop() in a
 # sandbox, which cannot prove jsave() reaches it with these arguments.
 #
@@ -2469,8 +2499,8 @@ jload("clinic.rds", name = "r17", overwrite = TRUE, missing.notice = TRUE)
 cat("\n--- notes above it: a registration restored, the default set ---\n")
 jload("reg17.rds", name = "s17", overwrite = TRUE, use = TRUE, missing.notice = FALSE)
 # Expected:
-#   Restored the classification registrations saved with this file (saved
-#   under 'reg17').
+#   Restored the classification registrations saved with this file
+#   (saved under 'reg17').
 #
 #   Default data frame set to: s17
 #
@@ -2633,7 +2663,8 @@ try(jsave(cx19[c("X", "Z")], "oc19.dta"))
 #     Z (list)
 #
 #   complex/list/raw columns have no Stata format (.dta) representation and no
-#   sensible automatic conversion. Drop it before saving with:
+#   sensible automatic conversion.
+#   Drop it before saving with:
 #     mydata[c("Z")] <- NULL
 #
 #   [2] 1 variable carries SPSS-style missing values, incompatible with the
@@ -2689,7 +2720,8 @@ jload("s20.rds", name = "l20", overwrite = TRUE, missing.notice = FALSE)
 try(jload("s20.zzz"))
 # Expected:
 #   Loaded l20 (R format; 4 cases, 1 variable)
-#   Error : jload(): Unsupported file extension '.zzz'. Supported formats:
+#   Error : jload(): Unsupported file extension '.zzz'.
+#   Supported formats:
 #     .sav       SPSS
 #     .dta       Stata
 #     .sas7bdat  SAS
@@ -4243,8 +4275,8 @@ jload("post34.csv", name = "p34", overwrite = TRUE)
 #     "Post code"  -> Post_code
 #   The original name is the variable's label.
 #
-#   Note: Post_code was kept as text: 2 of its values start with a 0 (0800 and
-#   0810), which numbers would drop.
+#   Note: Post_code was kept as text: 2 of its values start with a 0
+#   (0800 and 0810), which numbers would drop.
 #   To make it numbers anyway:
 #     p34$Post_code <- as.numeric(p34$Post_code)
 #     attr(p34$Post_code, "label") <- "Post code"
@@ -4604,8 +4636,8 @@ try(jsave(d37, "d37.sav"))
 #   [1] 1 variable name in the d37 data frame cannot be used in SPSS
 #   format (.sav):
 #     "BY"  -> XBY  (a word SPSS reserves)
-#   The save at the end gives it this name in the file (the d37 data frame
-#   keeps its own).
+#   The save at the end gives it this name in the file
+#   (the d37 data frame keeps its own).
 #
 #   [2] g has a category longer than 120 characters, which SPSS format (.sav)
 #   cannot store as a value label.
@@ -4647,8 +4679,8 @@ try(jsave(x37, "x37.dta"))
 #   [1] 1 variable name in the x37 data frame cannot be used in Stata
 #   format (.dta):
 #     "in"  -> Xin  (a word Stata reserves)
-#   The save at the end gives it this name in the file (the x37 data frame
-#   keeps its own).
+#   The save at the end gives it this name in the file
+#   (the x37 data frame keeps its own).
 #
 #   [2] 1 variable carries SPSS-style missing values, incompatible with the
 #   .dta format:
@@ -5154,11 +5186,21 @@ rm(w40, p40, .note40, .wd40)
 # an empty line (the second jsave() with a script line), as at the console,
 # so the walk never waits; the stops are the package's own. The assertion
 # side is import_check.R section AB.
+# RE-PINNED S395 (v0.9.267; ruling R42): the question is shown as the
+# Console shows it -- the statement on its line, then "Overwrite? (y/n): "
+# and the answer -- where the copies asked nothing visible. jsave()'s
+# statement is "This file already exists:" and the path on a line of its
+# own (it was "File '<path>' already exists. Overwrite? (y/n): "); the walk
+# folder is shown as <walk folder>, as in Section 13.
 .wd41 <- getwd(); setwd(.walkdir)
 .ask41 <- function(fn, answer) {   # fn with its question answered as given
   conf <- environment(jsave)$.jst_confirm
   ec <- new.env(parent = environment(conf))
-  ec$readline <- function(prompt = "") answer
+  ec$readline <- function(prompt = "") {
+    cat(prompt, answer, "\n", sep = ""); answer }
+  ec$cat <- function(..., sep = " ")
+    base::cat(gsub(normalizePath(.walkdir, winslash = "/"), "<walk folder>",
+                   c(...), fixed = TRUE), sep = sep)
   environment(conf) <- ec
   e <- new.env(parent = environment(fn))
   e$interactive <- function() TRUE
@@ -5178,11 +5220,18 @@ try(evalq(jsave(d41, "e41.rds"), .ws41))
 .ws41$jsave <- .ask41(jsave, "jdesc(d, Age)")
 try(evalq(jsave(d41, "e41.rds"), .ws41))
 # Expected:
-#   Error : jsave(): The overwrite question needs y or n. It received an
-#   empty line.
+#   This file already exists:
+#     <walk folder>/e41.rds
+#   Overwrite? (y/n): 
+#   Error : jsave(): The overwrite question needs y or n.
+#   It received an empty line.
 #   To keep the file, save under another file name.
 #   To replace it, add overwrite = TRUE to the call, then run it again.
-#   Error : jsave(): The overwrite question needs y or n. It received:
+#   This file already exists:
+#     <walk folder>/e41.rds
+#   Overwrite? (y/n): jdesc(d, Age)
+#   Error : jsave(): The overwrite question needs y or n.
+#   It received:
 #   jdesc(d, Age)
 #   To keep the file, save under another file name.
 #   To replace it, add overwrite = TRUE to the call, then run it again.
@@ -5192,12 +5241,16 @@ try(evalq(jsave(d41, "e41.rds"), .ws41))
 try(evalq(jload("e41.csv", name = "k41"), .ws41))
 try(evalq(jcopy(s41, k41), .ws41))
 # Expected:
-#   Error : jload(): The overwrite question needs y or n. It received an
-#   empty line.
+#   'k41' already exists in your environment.
+#   Overwrite? (y/n): 
+#   Error : jload(): The overwrite question needs y or n.
+#   It received an empty line.
 #   To keep the k41 data frame, load the file under another name with name =.
 #   To replace it, add overwrite = TRUE to the call, then run it again.
-#   Error : jcopy(): The overwrite question needs y or n. It received an
-#   empty line.
+#   'k41' already exists in your environment.
+#   Overwrite? (y/n): 
+#   Error : jcopy(): The overwrite question needs y or n.
+#   It received an empty line.
 #   To keep the k41 data frame, give the copy another name.
 #   To replace it, add overwrite = TRUE to the call, then run it again.
 unlink(c("e41.rds", "e41.csv")); setwd(.wd41)

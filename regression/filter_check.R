@@ -161,6 +161,28 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S395 EDIT (v0.9.267, 2026-10-23): CHECK P05 ADDED; C05, C06, C23, O13,
+#           AG15b, AH05 AND AH07 RE-PINNED. Fix Slate 30's second build: the
+#           S393 message pass's accepts (Jeff: "okay accept the rest"; "D1,
+#           D2, D3, okay with your recommendation."), rulings R40-R44 and the
+#           (S393) parenthetical lean. P05 reads the runtime strings P04
+#           harvests for the pass's words: no DV, IV, dependent or independent
+#           variable, or token, and `codes` and `range` in backticks only
+#           before "must be" or "cannot be" (ruling R43 with the (S393)
+#           outcome item; voice Rule B). Re-pins: "Nothing to clear." and
+#           "Nothing to deactivate." on a line of their own (C05, C06, C23,
+#           O13; voice Rule E); the placeholder formula "Outcome ~ Predictor"
+#           (AG15b, R43); "Did you mean ...?" on a line of its own (AH05,
+#           AH07; R41). 663 -> 664 checks; on the 0.9.266 master the seven and
+#           P05 red. MUTATION MAP (S395; each red): "token input" back in
+#           jrecode()'s note P05; "DV ~ IV" back in jplot()'s stop P05;
+#           "`codes` holds NA." back P05; R41's line break undone AH05 AH07.
+#           LAST VERIFIED: v0.9.267, 2026-10-23 (S395) -- 664/664 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3342 checks)"; R CMD check clean), matching the sandbox plain,
+#           under the RStudio-handler stand-in, each again with a
+#           Windows-length temp path, once with interactive() TRUE, and
+#           entered dirty.
 # S394 EDIT (v0.9.266, 2026-10-23): CHECK AN11 ADDED. Fix Slate 30's
 #           first build, the (S392) jplot() item (AUDIT-052's sibling):
 #           jplot()'s variable-list form read the expression twice -- the
@@ -2043,10 +2065,12 @@ check("C03 jsubset(d, on) reactivates by name",
 check("C04 jsubset(d, NULL) clears that frame only, reporting what it had",
       has(grab(jsubset(d, NULL)), "jsubset cleared for d (had: Age < 40).") &&
       is.null(fs_of("d")))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "Nothing to
+# clear." on a line of its own (voice Rule E); C05, C06 and C23.
 check("C05 ... again: nothing to clear",
-      has(grab(jsubset(d, NULL)), "No jsubset set for d. Nothing to clear."))
+      has(grab(jsubset(d, NULL)), "No jsubset set for d.\nNothing to clear."))
 check("C06 jsubset(d, off) with none set",
-      has(grab(jsubset(d, off)), "No jsubset set for d. Nothing to deactivate."))
+      has(grab(jsubset(d, off)), "No jsubset set for d.\nNothing to deactivate."))
 check("C07 jsubset(d, on) with none set: one sentence a line and a line on community that sets one (S371 re-pin: \"Use jsubset(d, expression) to set one.\")",
       has(grab(jsubset(d, on)),
           "No jsubset set for d.\nTo set one, give a condition, for example:\n  jsubset(community, Age < 40)"))
@@ -2129,7 +2153,7 @@ check("C22 jcomplete(d, NULL) clears that frame only, reporting what it had",
       is.null(cs_of("d")))
 check("C23 ... again: nothing to clear",
       has(grab(jcomplete(d, NULL)),
-          "No jcomplete filter set for d. Nothing to clear."))
+          "No jcomplete filter set for d.\nNothing to clear."))
 check("C24 jcomplete(d, off) / (d, on) with none set; on gives a line on community that sets one (S371 re-pin: \"Use jcomplete(d, var1, var2, ...) to set one.\")",
       has(grab(jcomplete(d, off)), "No jcomplete filter set for d.") &&
       has(grab(jcomplete(d, on)),
@@ -3839,9 +3863,11 @@ check("O12 the juse() default frame removed: the NAMED jsubset(o_d2, NULL) clear
         is.null(fs_of("o_d2")))
 reset()
 quiet(jsubset(d, Age < 40)); quiet(jsubset(d, off))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "Nothing to
+# deactivate." on a line of its own (voice Rule E).
 check("O13 control: a name that IS a data frame takes the frame route as before",
       identical(grab(jsubset(d, on)), "jsubset reactivated for d: Age < 40\n") &&
-        identical(grab(jsubset(e, off)), "No jsubset set for e. Nothing to deactivate.\n"))
+        identical(grab(jsubset(e, off)), "No jsubset set for e.\nNothing to deactivate.\n"))
 reset()
 
 # ---- O14-O22: jcomplete(), the same ------------------------------------------
@@ -6570,6 +6596,8 @@ check("AG15 the recode family's quoted-string stops: one sentence, then the exam
 # L): the last inline "e.g." stops -- the map and labels parsers' empty and
 # rule-format stops, the formula-order stops, vars = c(...)'s stop and
 # jplot()'s result stops -- each give the example on a line of its own.
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): the
+# placeholder formula is "Outcome ~ Predictor" (ruling R43).
 check("AG15b the parsers', the formula-order, vars = and jplot() result stops: no \"e.g.\", the example on a line of its own (pinned whole where short)",
       local({ e <- .ag_ws(ag1 = .ag1); assign("jlm", jlm, envir = e)
         ms <- list(
@@ -6597,7 +6625,7 @@ check("AG15b the parsers', the formula-order, vars = and jplot() result stops: n
           identical(ms[[7]], paste0("jlm(): The formula goes first, for example:\n  jlm(Score ~ Group, MyData)\n",
                                     "With a juse() default set, no comma is needed:\n  jlm(Score ~ Group)")) &&
           identical(ms[[8]], "jlm(): The formula should not be in quotes.\nRemove them:\n  jlm(Score ~ Group, MyData)") &&
-          identical(ms[[9]], "jlm(): The first input must be a formula, for example:\n  jlm(DV ~ IV, MyData)") &&
+          identical(ms[[9]], "jlm(): The first input must be a formula, for example:\n  jlm(Outcome ~ Predictor, MyData)") &&
           endsWith(ms[[10]], "for example:\n  vars = c(\"Age\", \"Income\")") &&
           endsWith(ms[[11]], "for example:\n  vars = c(\"Age\", \"Income\")") &&
           grepl("is not supported.\nCall jplot() with the data frame instead, for example:\n  jplot(community, Age)", ms[[12]], fixed = TRUE) &&
@@ -6712,6 +6740,8 @@ check("AH04 the single-vector form hands the names to its re-call as typed: jdes
         identical(grab(jdesc(d$Gender, numeric = "Gender")), "") &&
         has(grab(jdesc(d$Gender)), "Gender seems categorical") &&
         identical(grab(jdesc(d$Gender, categorical = Gender)), .ah_cat_d))
+# RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "Did you
+# mean ...?" on a line of its own (ruling R41); AH05 and AH07.
 check("AH05 an argument a function does not take, its value a name found nowhere: \"unused input\", never R's \"object not found\", in jt(), jaov(), jlm(), jlogistic() and jplot()'s formula form; the alias stop too",
       identical(grab(jt(Age ~ Keep01, d, numeric = Age)), "jt(): unused input: numeric") &&
         identical(grab(jaov(Age ~ Condition, d, foo = Name)), "jaov(): unused input: foo") &&
@@ -6719,7 +6749,7 @@ check("AH05 an argument a function does not take, its value a name found nowhere
         identical(grab(jlogistic(Keep01 ~ Age, d, foo = Name)), "jlogistic(): unused input: foo") &&
         identical(grab(jplot(Age ~ Keep01, d, foo = Name)), "jplot(): unused input: foo") &&
         identical(grab(jt(Age ~ Keep01, d, levene = Age)),
-                  "jt(): 'levene' is not valid. Did you mean `diagnostics`?"))
+                  "jt(): 'levene' is not valid.\nDid you mean `diagnostics`?"))
 check("AH06 jplot()'s formula form stops on an argument it does not take given a value, as the data-first form does, where it was ignored; data = still read",
       identical(grab(jplot(Age ~ Keep01, d, foo = 1)), "jplot(): unused input: foo") &&
         identical(grab(jplot(Age ~ Keep01, data = d, foo = 1)), "jplot(): unused input: foo") &&
@@ -6730,7 +6760,7 @@ check("AH07 jplot() on a result: an argument it does not take, bare or not, and 
               identical(grab(jplot(m, foo = Name)), "jplot(): unused input: foo") &&
                 identical(grab(jplot(m, foo = 1)), "jplot(): unused input: foo") &&
                 identical(grab(jplot(m, plots = "qq")),
-                          "jplot(): 'plots' is not valid. Did you mean `which`?") }))
+                          "jplot(): 'plots' is not valid.\nDid you mean `which`?") }))
 check("AH08 a plot name typed bare on a result: one the result lacks gets the plot-name stop, named or positional (which = vif had stopped with R's error; which = heatmap on a jlm() result was offered a line that stops next); one it has gets ruling R18's pointer, positional as typed, a c() kept, the name spelled as jplot() takes it; a name holding one still works",
       local({ quiet(m <- jlm(Age ~ Keep01, d)); w <- "qq"
               identical(grab(jplot(m, which = vif)), .ah_vif) &&
@@ -7544,7 +7574,29 @@ check(paste0("P04 no runtime string says \"argument\", jai()'s text aside (",
              length(.p04_strings), " strings)"),
       length(.p04_strings) >= 5000L && length(.p04_hits) == 0L)
 if (length(.p04_hits) > 0L) for (s in .p04_hits) cat("        says it: ", s, "\n")
-rm(.p04_strings, .p04_hits)
+
+# P05 (S395) -- THE S393 MVBATCH'S WORDS, ON THE SAME STRINGS. Ruling R43 and
+# the (S393) outcome item: a model's roles are the outcome and the
+# predictors, never DV, IV, "dependent variable" or "independent variable";
+# the (S392) token item: a typed .a is a marker, never a "token"; and Rule
+# B's S393 addendum: `codes` and `range` keep their backticks only in a
+# "must be" or "cannot be" sentence, any other sentence naming the input
+# with its "=" (codes =). "token" as a value of an internal argument (act =
+# "token") and an internal invariant's own stop (".jst_...") are not text a
+# user reads.
+.p05_hits <- unique(c(
+  grep("dependent variable|\\bDVs?\\b|\\bIVs?\\b", .p04_strings, value = TRUE,
+       ignore.case = FALSE),
+  grep("\\btokens?\\b", .p04_strings[!.p04_strings %in% "token" &
+                                      !startsWith(.p04_strings, ".jst_")],
+       value = TRUE, ignore.case = TRUE),
+  Filter(function(x) !grepl("must be|cannot be", x),
+         grep("`(codes|range)`", .p04_strings, value = TRUE))))
+check(paste0("P05 no runtime string says DV, IV, dependent or independent variable, or token, ",
+             "and `codes` and `range` are backticked only before \"must be\" or \"cannot be\""),
+      length(.p05_hits) == 0L && any(grepl("`codes` must be", .p04_strings, fixed = TRUE)))
+if (length(.p05_hits) > 0L) for (s in .p05_hits) cat("        says it: ", s, "\n")
+rm(.p04_strings, .p04_hits, .p05_hits)
 
 # --- Verdict -----------------------------------------------------------------
 

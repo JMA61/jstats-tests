@@ -94,6 +94,32 @@
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S395 (v0.9.267; Fix Slate 30, the second build -- the S393 message
+#           pass's accepts, with rulings R40-R44 and the (S393) parenthetical
+#           lean, Jeff, S393 and S395). SECTIONS 29, 50, 56, 57, 59, 61, 63,
+#           64, 66, 70, 71 AND 72 RE-PINNED MECHANICALLY, by running (fill.R),
+#           and kept off the PENDING line: each sentence on a line of its own
+#           (voice Rule E; all twelve); "the outcome" where the stops said
+#           "the dependent variable" (29, 59; ruling R43); "(one letter after
+#           a period)." kept whole (66); "marker input" where it said "token
+#           input" (71) and "codes =" where it said "`codes`" (72; voice Rule
+#           B). The shapes are walked once, in format_walk.R Section 37. The
+#           assertion side is missing_convention_check.R N58d-N58h, N97 and
+#           the re-pins its header names. A capture of every section of every
+#           walk on 0.9.266 and on the build moves those twelve and Sections
+#           1, 20, 23, 24, 27, 35, 38, 39, 40, 41, 42 and 43, whose moved
+#           lines sit in no Expected block: the hand-typed pins of Sections 1,
+#           20, 23, 24, 27, 39, 40, 41 and 43 re-pinned from the capture (each
+#           sentence on a line of its own; Section 24's "(-1, -2, -3)" kept
+#           whole); 35, 38 and 42 have none. harness.R verify: 74 of 74
+#           sections in three orders and by prepare = TRUE; 121 of 122
+#           Expected blocks found (Section 10's, as before).
+# LAST VERIFIED: v0.9.267, 2026-10-23 (S395) -- the twelve sections and nine
+#           prose pins re-pinned mechanically and not walked here; the shapes
+#           WALKED in format_walk.R Section 37 on the WORKSTATION by Jeff
+#           ("All good."); PENDING none throughout; R CMD check clean (the
+#           receive went on to the batteries); ALL BATTERIES GREEN (11 run,
+#           3342 checks).
 # EDITED:   S392 (v0.9.265; the (S282) item, voice Rule B, Jeff's okay of
 #           the lean: "Okay for all defaults."). SECTIONS 56, 61 AND 66
 #           RE-PINNED, filled by running (fill.R): the map parser's stops
@@ -1469,20 +1495,20 @@ tryCatch(joptions("banana"),
                                  sep = ""))
 
 # Expected, first call -- a transposition inside the slot name:
-#   Caught: joptions(): no setting named "missing.converntion". Did you
-#   mean missing.convention?
+#   Caught: joptions(): no setting named "missing.converntion".
+#   Did you mean missing.convention?
 #     joptions("missing.convention")
 #
 # Expected, second call -- CASE-only, and still a suggestion rather than a
 # silent resolution:
-#   Caught: joptions(): no setting named "Missing.Convention". Did you
-#   mean missing.convention?
+#   Caught: joptions(): no setting named "Missing.Convention".
+#   Did you mean missing.convention?
 #     joptions("missing.convention")
 #
 # Expected, third call -- the guard is not convention-specific; it reaches
 # every slot in the defaults table:
-#   Caught: joptions(): no setting named "message.with". Did you
-#   mean message.width?
+#   Caught: joptions(): no setting named "message.with".
+#   Did you mean message.width?
 #     joptions("message.width")
 #
 # Expected, fourth call -- nothing is near, so the guard does NOT fire and
@@ -3048,8 +3074,9 @@ options(.jst_options_missing_convention = NULL)
 # refusal):
 #   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a) and
 #   SAS-style (.B) missing values, which SPSS convention cannot act on.
-#   This call sets convention = "spss", but your missing.convention setting is
-#   "stata". To use the setting, recode -99 to a marker Mix does not use:
+#   This call sets convention = "spss", but your missing.convention setting
+#   is "stata".
+#   To use the setting, recode -99 to a marker Mix does not use:
 #     wg$MixR <- jrecode(wg, Mix, map = "-99=.c; else=copy")
 #
 # Expected, refusal 5 -- the same, over a SAS setting. Until S389
@@ -3058,8 +3085,9 @@ options(.jst_options_missing_convention = NULL)
 # carry (it carries .a and .B):
 #   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a) and
 #   SAS-style (.B) missing values, which SPSS convention cannot act on.
-#   This call sets convention = "spss", but your missing.convention setting is
-#   "sas". To use the setting, drop convention = "spss":
+#   This call sets convention = "spss", but your missing.convention
+#   setting is "sas".
+#   To use the setting, drop convention = "spss":
 #     jdeclare_missing(wg, Mix, codes = c(-99))
 #
 # Expected, refusal 6 -- same setting, but a NAMED codes vector, so the
@@ -3067,16 +3095,18 @@ options(.jst_options_missing_convention = NULL)
 # the last line replaces BOTH the intro and the echoed call:
 #   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a) and
 #   SAS-style (.B) missing values, which SPSS convention cannot act on.
-#   This call sets convention = "spss", but your missing.convention setting is
-#   "sas". To use the setting, drop convention = "spss" from the call.
+#   This call sets convention = "spss", but your missing.convention
+#   setting is "sas".
+#   To use the setting, drop convention = "spss" from the call.
 #
 # Expected, refusal 7 (S389) -- refusal 6's call under a STATA setting: a
 # call the guard cannot echo, whose drop would put -99 on .a, which Mix
 # carries; the recode line, its label carried to the marker:
 #   Error : jdeclare_missing(): 'Mix' carries both Stata-style (.a) and
 #   SAS-style (.B) missing values, which SPSS convention cannot act on.
-#   This call sets convention = "spss", but your missing.convention setting is
-#   "stata". To use the setting, recode -99 to a marker Mix does not use:
+#   This call sets convention = "spss", but your missing.convention setting
+#   is "stata".
+#   To use the setting, recode -99 to a marker Mix does not use:
 #     wg$MixR <- jrecode(wg, Mix, map = "-99=.c; else=copy",
 #         labels = ".c=Refused")
 #
@@ -3364,9 +3394,11 @@ wc$StatusR <- jrecode(wc, Status, map = "8=missing; else=copy",
 options(.jst_options_missing_convention = NULL)
 wc$StatusR <- NULL
 
-# Expected, first call (D7, verbatim to the draft):
-#   "Error: jrecode(): 'missing' is ambiguous for Status. The column uses
-#    SPSS-style missing values, but your missing.convention setting is "stata".
+# Expected, first call (D7, verbatim to the draft; RE-PINNED S395, voice
+# Rule E: the second sentence on a line of its own):
+#   "Error: jrecode(): 'missing' is ambiguous for Status.
+#    The column uses SPSS-style missing values, but your missing.convention
+#    setting is "stata".
 #    To follow the column's form for this call:
 #      wc$StatusR <- jrecode(wc, Status, map = "8=missing; else=copy",
 #          convention = "spss")
@@ -3431,9 +3463,10 @@ wc$StatusR <- NULL
 # the pin against v0.9.157 in the S280 sandbox and confirmed by the S280
 # workstation walk, matching S271/S278.)
 #
-# Expected, second call (D3, verbatim to the draft):
-#   "Error: jrecode(): Income already declares 3 SPSS-style missing values (-1,
-#    -2, -3), the maximum SPSS allows. 'missing' would add -99 as a fourth.
+# Expected, second call (D3, verbatim to the draft; RE-PINNED S395: the
+# parenthetical "(-1, -2, -3)" moves whole to the next line):
+#   "Error: jrecode(): Income already declares 3 SPSS-style missing values
+#    (-1, -2, -3), the maximum SPSS allows. 'missing' would add -99 as a fourth.
 #    Use one of the declared codes instead:
 #      wd$IncomeR <- jrecode(wd, Income, map = "8=-1; else=copy")
 #    Or re-declare Income with fewer codes first:
@@ -3703,7 +3736,7 @@ try(jlogistic(Reinc ~ Age, data = wl))
 # Expected:
 #   Logistic Regression
 #   Error : jlogistic(): Reinc has 3 unique values (-99, 0, 1).
-#   The dependent variable must have exactly 2 categories coded 0/1.
+#   The outcome must have exactly 2 categories coded 0/1.
 #   -99 looks like a coded missing value.
 #   No missing-value convention is selected, so the value cannot be
 #   declared yet.
@@ -4233,7 +4266,8 @@ options(.jst_options_missing_convention = NULL)
 # Not silent, though, and CORRECTED S251: the Expected used to promise the
 # four ran silently bar the assign-to-keep reminders, and was one message
 # short. The second call (8=7) also emits
-#   Note: No value labels assigned. To add labels, use jrelabel().
+#   Note: No value labels assigned.
+#   To add labels, use jrelabel().
 # where the first (8=NA) does not. That is the labels-hint asymmetry
 # already open against Section 22, surfacing here as a promise of silence
 # the run does not keep. Read past it; the gate is what this section is
@@ -4335,11 +4369,13 @@ jdeclare_missing(hw, W, codes = c(Newer = ".c"))
 
 try(jdeclare_missing(hn, V, codes = c(New = ".b", ".a")))
 
-# Expected: "jdeclare_missing(): `codes` names some of its codes and not others.
+# Expected: "jdeclare_missing(): codes = names some of its codes and not others.
 # Name every code, as in codes = c(Refused = -99, Unknown = -98), or name none
 # and give the labels with labels =." (RE-PINNED S355, the S282 item: each
 # form said for what it is, where it named the help page's "Option C" and
-# "Option A", opaque with the page closed.) Partial
+# "Option A", opaque with the page closed. RE-PINNED S395, voice Rule B:
+# "codes =" where it said "`codes`", backticks being kept for the "must be"
+# sentences.) Partial
 # naming is refused upstream, which is why all-bare (Section 40) is the
 # only bare path, and why the "(no change)" annotation above is reachable
 # only by re-asserting a name.
@@ -4383,8 +4419,9 @@ joptions(missing.convention = "stata", quiet = TRUE)
 jdeclare_missing(hn, V, codes = ".a")
 
 # Expected -- the naming header is GONE, replaced outright:
-#   Note: jdeclare_missing made no change to V. Its markers are already missing
-#   values, so a bare marker has nothing to name.
+#   Note: jdeclare_missing made no change to V.
+#   Its markers are already missing values, so a bare marker has
+#   nothing to name.
 #   To name one, put its label in place of MyLabel:
 #     hn <- jdeclare_missing(hn, V, codes = c(MyLabel = ".a"))
 #
@@ -4518,8 +4555,9 @@ jdeclare_missing(hb, P, R, codes = c(New = ".c"))
 jdeclare_missing(hb, P, R, codes = ".a")
 
 # Expected: the all-bare note, pluralized, with the variables named --
-#   Note: jdeclare_missing made no change to 2 variables. Their markers are
-#   already missing values, so a bare marker has nothing to name.
+#   Note: jdeclare_missing made no change to 2 variables.
+#   Their markers are already missing values, so a bare marker has
+#   nothing to name.
 #     P, R
 #   To name one, put its label in place of MyLabel:
 #     hb <- jdeclare_missing(hb, P, codes = c(MyLabel = ".a"))
@@ -4890,11 +4928,12 @@ options(.jst_options_missing_convention_codes = NULL)
 #             -95 ["Lost"]        -> .e
 #             range -99 to -95  (enumerated)
 #
-#   Note: Stata-style missing values have no range concept. For the
-#     range declarations above, only values present in the data or
-#     carrying value labels were translated; the range rule itself was
-#     not preserved. A range value first appearing in later data will
-#     arrive as an ordinary data value.
+#   Note: Stata-style missing values have no range concept.
+#   For the range declarations above, only values present in the data or
+#   carrying value labels were translated; the range rule itself was
+#   not preserved.
+#   A range value first appearing in later data will arrive as an ordinary
+#   data value.
 #
 #   This call changes jc5_spss only if you assign the result:
 #     jc5_spss <- jconvert(jc5_spss, ...)
@@ -5960,8 +5999,9 @@ invisible(jdeclare_missing(dn50, Income, codes = c(-99, -97)))
 #     -99 ["Refused"]
 #     -97 (no label; not present in the data)
 #
-#   Note: jdeclare_missing replaced the existing declared missing values for
-#   Income. Previously declared codes dropped: -98 ["Don't know"].
+#   Note: jdeclare_missing replaced the existing declared missing values
+#   for Income.
+#   Previously declared codes dropped: -98 ["Don't know"].
 #
 #   This call changes dn50 only if you assign the result:
 #     dn50 <- jdeclare_missing(dn50, Income, ...)
@@ -5979,8 +6019,9 @@ jdeclare_missing(dm50, Income, codes = c(-99, -97), modify = TRUE)
 #     -99 ["Refused"]
 #     -97 (no label; not present in the data)
 #
-#   Note: jdeclare_missing replaced the existing declared missing values for
-#   Income. Previously declared codes dropped: -98 ["Don't know"].
+#   Note: jdeclare_missing replaced the existing declared missing values
+#   for Income.
+#   Previously declared codes dropped: -98 ["Don't know"].
 #
 #   To keep it across sessions, save the data frame:
 #     jsave(dm50, "dm50.rds")
@@ -5996,8 +6037,9 @@ joutput(NULL, quiet = TRUE)
 #     -99 ["Refused"]
 #     -97 (no label; not present in the data)
 #
-#   Note: jdeclare_missing replaced the existing declared missing values on
-#   Income. Dropped: -98.
+#   Note: jdeclare_missing replaced the existing declared missing values
+#   on Income.
+#   Dropped: -98.
 
 options(.jst_options_missing_convention = NULL)
 rm(dn50, dm50)
@@ -6499,9 +6541,10 @@ try(jrecode(iv56, v, map = "1, abc = 9; else=copy"))
 try(jrecode(iv56, v, map = "1, abc, x y = 9; else=copy"))
 
 # Expected:
-#   Error : jrecode(): Invalid old values 'abc' and 'x y' in map rule '1, abc, x
-#   y = 9'. Old values must be numeric, a system-NA alias (NA, System, or
-#   SYSMIS), or a Stata-style missing-value marker (.a through .z).
+#   Error : jrecode(): Invalid old values 'abc' and 'x y' in map rule '1,
+#   abc, x y = 9'.
+#   Old values must be numeric, a system-NA alias (NA, System, or SYSMIS), or a
+#   Stata-style missing-value marker (.a through .z).
 rm(iv56)
 
 # Things to look at:
@@ -6546,7 +6589,8 @@ a57 <- jrecode(survey$w1, Age, map = "1=-99; else=copy")
 #     survey$w1$AgeR <- jrecode(survey$w1, Age, map = "1=-99; else=copy")
 #     survey$w1 <- jdeclare_missing(survey$w1, AgeR, codes = c(-99))
 #
-#   Note: No value labels assigned. To add labels, use jrelabel().
+#   Note: No value labels assigned.
+#   To add labels, use jrelabel().
 #
 #   Note: This call changes survey$w1 only if you assign the result:
 #     survey$w1$<name> <- jrecode(...)
@@ -6760,11 +6804,11 @@ try(jlogistic(Out ~ Age, data = o59))
 # Expected:
 #   Logistic Regression
 #   Error : jlogistic(): Out has 3 unique values (-99, 0, 1).
-#   The dependent variable must have exactly 2 categories coded 0/1.
+#   The outcome must have exactly 2 categories coded 0/1.
 #   -99 looks like a coded missing value.
 #   Recode it to a Stata-style marker Out does not use, so analyses exclude it:
 #     o59$OutR <- jrecode(o59, Out, map = "-99=.b; else=copy")
-#   Then use OutR as your dependent variable.
+#   Then use OutR as your outcome.
 #   Or convert it to NA, dropping the code:
 #     o59$OutR <- jrecode(o59, Out, map = "-99=NA; else=copy")
 
@@ -6806,8 +6850,8 @@ jload(file.path(tempdir(), "sc59.rds"))
 #     Score:  -99 (2)
 #
 #   These codes match the missing.convention.codes setting (-99, -98, -97) but
-#   are not formally declared, so they are not treated as missing. Declare them
-#   as missing if they are; leave as-is if real.
+#   are not formally declared, so they are not treated as missing.
+#   Declare them as missing if they are; leave as-is if real.
 #
 #   To recode one variable's codes to markers it does not use:
 #     sc59$ScoreR <- jrecode(sc59, Score, map = "-99=.b; else=copy")
@@ -6930,7 +6974,8 @@ r61 <- jrecode(e61, E, map = "4,5=-88; else=copy")
 r61 <- jrecode(data.frame(x = c(1, 2, 3, 2)), x, map = "1=0; 2=1; else=copy")
 
 # Expected:
-#   Note: No value labels assigned. To add labels, use jrelabel().
+#   Note: No value labels assigned.
+#   To add labels, use jrelabel().
 #
 #   Note: The result is kept only if you assign it.
 #   Name the data frame first, then assign the result to a variable in it:
@@ -6953,7 +6998,8 @@ r61 <- jrecode(data.frame(x = c(1, 2, 3, 2)), x,
 #   Note: 'x' contained none of the map values 7 and 8 -- nothing was
 #   recoded for them.
 #
-#   Note: No value labels assigned. To add labels, use jrelabel().
+#   Note: No value labels assigned.
+#   To add labels, use jrelabel().
 #
 #   Note: The result is kept only if you assign it.
 #   Name the data frame first, then assign the result to a variable in it:
@@ -7061,8 +7107,9 @@ try(jrecode(st63, N, map = "1=.b; else=copy"))
 try(jrecode(st63, N, map = "1=missing; else=copy"))
 
 # Expected:
-#   Error : jrecode(): 'missing' is ambiguous for N. The column uses SPSS-style
-#   missing values, but your missing.convention setting is "stata".
+#   Error : jrecode(): 'missing' is ambiguous for N.
+#   The column uses SPSS-style missing values, but your missing.convention
+#   setting is "stata".
 #   To follow the column's form for this call:
 #     st63$NR <- jrecode(st63, N, map = "1=missing; else=copy",
 #         convention = "spss")
@@ -7226,7 +7273,8 @@ hh64$AdultsR <- jrecode(hh64, NumberOfAdultsInHousehold,
 #     jdeclare_missing(hh64, NumberOfAdultsInHouseholdR, codes = c(-99),
 #         modify = TRUE)
 #
-#   Note: No value labels assigned. To add labels, use jrelabel().
+#   Note: No value labels assigned.
+#   To add labels, use jrelabel().
 #
 #   Note: This call changes hh64 only if you assign the result:
 #     hh64$<name> <- jrecode(...)
@@ -7267,7 +7315,8 @@ x64 <- jrecode(hh64[hh64$NumberOfAdultsInHousehold < 8,
                     c("NumberOfAdultsInHousehold", "Income")],
                NumberOfAdultsInHousehold, map = "1=10; else=copy")
 # Expected:
-#   Note: No value labels assigned. To add labels, use jrelabel().
+#   Note: No value labels assigned.
+#   To add labels, use jrelabel().
 #
 #   Note: The result is kept only if you assign it.
 #   Name the data frame first, then assign the result to a variable in it:
@@ -7485,8 +7534,8 @@ w66 <- data.frame(
 try(jconvert(w66, to = "stata", vars = c(A, B), modify = TRUE))
 try(jdeclare_missing(w66, vars = A, codes = -98))
 # Expected:
-#   Error : jconvert(): vars = takes names in quotes. To name the variables
-#   without quotes, list them after the data frame:
+#   Error : jconvert(): vars = takes names in quotes.
+#   To name the variables without quotes, list them after the data frame:
 #     jconvert(w66, A, B, to = "stata", modify = TRUE)
 #   Error : jdeclare_missing(): vars = takes names in quotes.
 #   To name the variables without quotes, list them after the data frame:
@@ -7498,7 +7547,8 @@ try(jdeclare_missing(w66, vars = A, codes = -98))
 try(jconvert(w66, A, vars = "B", to = "stata"))
 # Expected:
 #   Error : jconvert(): the variables are named twice: after the data frame and
-#   in vars =. Name them in one place:
+#   in vars =.
+#   Name them in one place:
 #     jconvert(w66, A, B, to = "stata")
 
 # Render 3 -- the parse layer under a sas setting: a malformed marker in a
@@ -7511,11 +7561,12 @@ try(jrecode(w66, Q, map = "9=.A; else=foo"))
 joptions(missing.convention = "stata", quiet = TRUE)
 # Expected:
 #   Error : jrecode(): Invalid new value '.AA' in map rule '9=.AA'.
-#   SAS-style missing-value markers are '.A' through '.Z' (one letter after a
-#   period). The NA(a) longhand is not supported in the map.
-#   Error : jrecode(): Invalid else action 'foo' in the map. Use 'else=NA',
-#   'else=copy', or a SAS-style missing-value marker such as 'else=.A' (Stata or
-#   SAS convention only).
+#   SAS-style missing-value markers are '.A' through '.Z'
+#   (one letter after a period).
+#   The NA(a) longhand is not supported in the map.
+#   Error : jrecode(): Invalid else action 'foo' in the map.
+#   Use 'else=NA', 'else=copy', or a SAS-style missing-value marker such as
+#   'else=.A' (Stata or SAS convention only).
 
 # Render 4 -- joptions() given four codes. (0.9.227: "missing.convention.codes
 # must have length 1 to 3.")
@@ -7867,8 +7918,8 @@ jload("w70.csv", overwrite = TRUE)
 #     Age:  -99 (2)
 #
 #   These codes match the missing.convention.codes setting (-99, -98, -97) but
-#   are not formally declared, so they are not treated as missing. Declare them
-#   as missing if they are; leave as-is if real.
+#   are not formally declared, so they are not treated as missing.
+#   Declare them as missing if they are; leave as-is if real.
 #
 #   No missing-value convention is selected, so this code cannot be
 #   declared yet.
@@ -7939,8 +7990,8 @@ jload("community_excel.xlsx", overwrite = TRUE)
 #     Environment3:  -99 (6), -98 (6)
 #
 #   These codes match the missing.convention.codes setting (-99, -98, -97) but
-#   are not formally declared, so they are not treated as missing. Declare them
-#   as missing if they are; leave as-is if real.
+#   are not formally declared, so they are not treated as missing.
+#   Declare them as missing if they are; leave as-is if real.
 #
 #   No missing-value convention is selected, so these codes cannot be
 #   declared yet.
@@ -8079,7 +8130,7 @@ try(jdeclare_missing(w71s, X, codes = c(-99, ".b"), convention = "stata"))
 #   Error : jdeclare_missing(): codes for X mixes Stata-style missing values and
 #   SPSS-style numeric codes.
 #   The two operations are different -- labeling existing Stata-style
-#   missing-value cells (token input) and converting numeric cells to
+#   missing-value cells (marker input) and converting numeric cells to
 #   Stata-style missing values (numeric input) -- and must be issued as
 #   separate calls.
 #   For your input, that would be:
@@ -8323,11 +8374,11 @@ try(jdeclare_missing(w72, Marital, codes = c("", "  ")))
 #   once: <blank>.
 try(jdeclare_missing(w72, Marital, codes = NA_character_))
 # Expected:
-#   Error : jdeclare_missing(): `codes` holds NA.
+#   Error : jdeclare_missing(): codes = holds NA.
 #   Name the values to declare in quotes; for blank cells, codes = "".
 try(jdeclare_missing(w72, Marital, codes = c(Unknown = "UNKNOWN", "")))
 # Expected:
-#   Error : jdeclare_missing(): `codes` names some of its codes and not others.
+#   Error : jdeclare_missing(): codes = names some of its codes and not others.
 #   Name every code, as in codes = c(Refused = "REF", Unknown = "UNK"), or name
 #   none and give the labels with labels =.
 try(jdeclare_missing(w72, Marital))
@@ -8342,8 +8393,9 @@ w72d <- jdeclare_missing(w72, Marital, codes = "UNKNOWN")
 #   Declared SPSS-style missing values on Marital:
 #     UNKNOWN ["Unknown"]
 #
-#   Note: jdeclare_missing replaced the existing declared missing values for
-#   Marital. Previously declared codes dropped: <blank>.
+#   Note: jdeclare_missing replaced the existing declared missing values
+#   for Marital.
+#   Previously declared codes dropped: <blank>.
 #
 #   Note: Marital also holds a value that differs from a declared value only in
 #   letter case or outer spaces:
