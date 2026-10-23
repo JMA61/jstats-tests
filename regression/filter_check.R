@@ -161,6 +161,24 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S394 EDIT (v0.9.266, 2026-10-23): CHECK AN11 ADDED. Fix Slate 30's
+#           first build, the (S392) jplot() item (AUDIT-052's sibling):
+#           jplot()'s variable-list form read the expression twice -- the
+#           generic, choosing a method, then jplot.default() on the rebuilt
+#           call -- and held neither read's warnings, so a tibble's "Unknown
+#           or uninitialised column" printed twice above the not-found
+#           sentence (once with data =). Both reads now hold them, given
+#           back once where the call goes on, both ways (AN11). 662 -> 663
+#           checks; on the 0.9.265 master AN11 red. MUTATION MAP (S394; each
+#           red): the generic's read not held AN11; its warnings not given
+#           back AN11; jplot.default()'s read not held AN11; its warnings
+#           not given back AN11.
+#           LAST VERIFIED: v0.9.266, 2026-10-23 (S394) -- 663/663 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3327 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty. GitHub 2a52f6a (package).
 # S392 EDIT (v0.9.265, 2026-10-22): the (S391) expression-typo item, the
 #           (S238) .jst_fmt_n sweep and the (S282) item (Jeff's okay of the
 #           leans, S392: "Okay for all defaults."). NEW SECTIONS AN (ten
@@ -7324,6 +7342,24 @@ check("AN10 R's own warnings while the data are read: a tibble's \"Unknown or un
               w <- .an_grab("jdesc(transform(t39, L39 = log(Wt39 - 70)), L39)", ws)
               identical(a, paste0("jt(): ", s)) && identical(b, paste0("jdesc(): ", s)) &&
                 identical(w, "NaNs produced") }))
+# S394 (Fix Slate 30; the (S392) jplot() item, AUDIT-052's sibling): the
+# variable-list form read the expression twice -- the generic, choosing a
+# method, then jplot.default() on the rebuilt call -- and neither read held
+# its warnings, so a tibble's warning printed twice above the sentence (once
+# with data =, where only the second read happens).
+check("AN11 jplot()'s variable-list form holds them too: the tibble's warning is dropped where the not-found sentence says it, the expression given first (it printed twice) and as data = (once); a read that goes on gives its warning back once, both ways",
+      local({ ws <- .an_ws(t39 = tibble::as_tibble(data.frame(
+                             Wt39 = c(60, 72, 55, 80), Ht39 = c(160, 175, 158, 182),
+                             Gp39 = c(1, 2, 1, 2))),
+                           d39 = .an_frame())
+              s <- "jplot(): Htt39 was not found in the t39 data frame.\nCheck the spelling."
+              a <- .an_grab("jplot(t39[t39$Htt39 > 160, ], Wt39)", ws)
+              b <- .an_grab("jplot(data = t39[t39$Htt39 > 160, ], Wt39)", ws)
+              grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+              w1 <- .an_grab("jplot({ warning(\"w39\"); d39 }, Wt39)", ws)
+              w2 <- .an_grab("jplot(data = { warning(\"w39\"); d39 }, Wt39)", ws)
+              identical(a, s) && identical(b, s) && identical(w1, "w39") &&
+                identical(w2, "w39") }))
 rm(.an_frame, .an_ws, .an_meant, .an_grab, .an_runs)
 
 # =============================================================================

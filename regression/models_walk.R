@@ -66,8 +66,32 @@
 #           few categories drawn as categories among two variables and on
 #           the right of a formula, for the plot only (ruling R38); a
 #           jdummy() registration stated in jdesc() and jcorr().
+#           Since S394 (v0.9.266, Section 36): -Inf printed with its sign in
+#           jdesc(), and one stop where an analysis or a plot cannot use an
+#           infinite value, its lines run.
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
+# S394 EDIT (v0.9.266): NEW SECTION 36 -- 35 sections -> 36. The (S392)
+#           infinite-value item, on the lean Jeff okayed at S394 ("Yes to
+#           everything."), five renders on clinic, whose ScreenTime holds a
+#           zero: jdesc()'s Min and Mean of log(ScreenTime) read -Inf, where
+#           they read "Inf"; jt()'s stop under the Case Processing block and
+#           its two lines; jlm()'s for two variables, a log and a division
+#           by zero, each with its count and sign; jplot()'s under its N
+#           line; and Render 2's lines run as printed. The stop's wording is
+#           Claude's, so the section is on the PENDING line. Filled by
+#           running the file (fill.R). A capture of every section of every
+#           walk on 0.9.265 and on the new build: no section of any walk
+#           moved but the new one (Section 35's echo lost a trailing blank
+#           line, the file's own, before the new banner). Sandbox: 94 of 95
+#           Expected blocks found in a straight run (Section 1's, as
+#           before); harness.R derive gives Section 36 no NEEDS. The human
+#           half of models_check.R section AI.
+# LAST VERIFIED: v0.9.266, 2026-10-23 (S394) -- Section 36 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (11 run, 3327 checks); GitHub 2a52f6a
+#           (package).
 # S391 EDIT (v0.9.264): NEW SECTIONS 34 AND 35 -- 33 sections -> 35.
 #           Section 34, ruling R38 (Jeff, S391: "Your recommendation"), four
 #           renders: jplot(Flourishing ~ Condition, d) a boxplot at
@@ -4143,6 +4167,128 @@ options(.warn35); rm(.warn35)
 #     may not be meaningful." The lean had sketched "is registered as
 #     categorical"; this is the form the three other functions already give
 #     a registered variable. jcorr()'s names its method's assumption.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 36 -- infinite values: -Inf with its sign, and one stop (S394) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.266 (the (S392) infinite-value item, Jeff's okay of the lean at S394:
+# "Yes to everything."). log() of a zero is -Inf, and a division by zero is
+# Inf; ScreenTime holds zeros. jdesc() printed -Inf as "Inf". jt(), jaov(),
+# jlm() and jlogistic() stopped on R's own errors ("missing value where
+# TRUE/FALSE needed"; "NA/NaN/Inf in 'y'"), jcorr() printed r = NaN, jalpha()
+# a blank alpha, and jplot() drew a histogram without the cases its N line
+# counted. Now jdesc() keeps the sign, and the others stop under the Case
+# Processing block (jplot(): under its N line), naming each variable and its
+# count, with the lines that make the values missing in a new variable --
+# voice Rule G's R suffix -- and the call on it. The wording is Claude's.
+# Spearman's and Kendall's correlations rank the values and do not stop. The
+# assertion side is models_check.R section AI.
+
+d$LogScreen <- log(d$ScreenTime)
+d$PerHour   <- d$Flourishing / d$ScreenTime
+
+# Render 1 -- jdesc(): Min and Mean are -Inf, with the sign; the SD blank.
+jdesc(d, ScreenTime, LogScreen)
+# Expected:
+#   Descriptive Statistics
+#
+#   70 Cases in the 2 Variable Pool
+#
+#   Variable    Total  Non_missing    Min    Max    Mean    SD
+#   ----------  -----  -----------  ------  -----  -----  -----
+#   ScreenTime    70        70         0.0  8.1    4.119  1.996
+#   LogScreen     70        70      -Inf    2.092   -Inf
+
+# Render 2 -- jt(): the stop under the Case Processing block, and its lines.
+try(jt(LogScreen ~ SoughtHelp, d))
+# Expected:
+#   Independent Samples T-Test
+#
+#   Analysis N: 70
+#
+#   Error : jt(): LogScreen holds 1 infinite value (-Inf), which this analysis
+#   cannot use.
+#   Set it to missing in a new variable first:
+#     d$LogScreenR <- replace(d$LogScreen, is.infinite(d$LogScreen), NA)
+#     jt(LogScreenR ~ SoughtHelp, d)
+
+# Render 3 -- jlm(): two variables, each named with its count and signs.
+try(jlm(SocialSupport ~ LogScreen + PerHour, d))
+# Expected:
+#   Linear Regression
+#
+#   Analysis N: 70
+#
+#   Error : jlm(): 2 variables hold infinite values, which this analysis
+#   cannot use:
+#     LogScreen: 1 value (-Inf)
+#     PerHour: 1 value (Inf)
+#   Set them to missing in new variables first:
+#     d$LogScreenR <- replace(d$LogScreen, is.infinite(d$LogScreen), NA)
+#     d$PerHourR <- replace(d$PerHour, is.infinite(d$PerHour), NA)
+#     jlm(SocialSupport ~ LogScreenR + PerHourR, d)
+
+# Render 4 -- jplot(): a histogram stops under its N line.
+try(jplot(d, LogScreen))
+# Expected:
+#   Histogram: LogScreen
+#
+#   Analysis N: 70
+#
+#   Error : jplot(): LogScreen holds 1 infinite value (-Inf), which the plot
+#   cannot show.
+#   Set it to missing in a new variable first:
+#     d$LogScreenR <- replace(d$LogScreen, is.infinite(d$LogScreen), NA)
+#     jplot(d, LogScreenR)
+
+# Render 5 -- the two lines Render 2 offers, run as printed.
+d$LogScreenR <- replace(d$LogScreen, is.infinite(d$LogScreen), NA)
+jt(LogScreenR ~ SoughtHelp, d)
+# Expected:
+#   Independent Samples T-Test
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --         70
+#       Auto-listwise         1         69
+#       Analysis N           --         69
+#
+#   Missing data   From 70   %
+#       LogScreenR
+#         Missing     1     1.4
+#   --------------------------------------
+#
+#   Group Descriptives: LogScreenR by SoughtHelp
+#   Group    N   Mean    SD
+#   ------  --  -----  -----
+#   0: No   48  1.411  0.585
+#   1: Yes  21  0.967  0.687
+#
+#   Independent Samples T-Test Results (equal variances assumed)
+#     t    df    p   Mean Difference  95% CI Lower  95% CI Upper
+#   -----  --  ----  ---------------  ------------  ------------
+#   2.751  67  .008       0.444           0.122         0.767
+#
+#   Cohen's d: 0.720
+
+d$LogScreen <- NULL; d$PerHour <- NULL; d$LogScreenR <- NULL
+
+# Things to look at:
+#   - RENDER 1: LogScreen's Min and Mean read -Inf. They read "Inf": the
+#     rule that prints a value rounding to zero from below unsigned
+#     ("0.000", not "-0.000") found no digit in "-Inf" either.
+#   - RENDERS 2-4: the stop comes after the Case Processing block (the N
+#     line, in jplot()), as the stop for no case left does, and counts the
+#     infinite values among the cases analyzed. jstats does not make them
+#     missing itself, as it never assumes a blank text cell is missing; the
+#     first line offered does it in a new variable, the second runs the
+#     call on that variable. A term computed in the formula is different
+#     (jt(log(ScreenTime) ~ SoughtHelp, d)): jstats computed it, and sets
+#     the values missing with a note (AUDIT-024).
+#   - RENDER 3: two variables are listed one to a line, with their counts
+#     and, for PerHour, the sign of each.
+#   - RENDER 5: the lines run; the test reads the cases the stop counted
+#     as missing (Auto-listwise).
 
 
 # --- Restore session state ---------------------------------------------------

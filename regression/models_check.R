@@ -83,6 +83,50 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S394 EDIT (v0.9.266, 2026-10-23): AH03 RE-PINNED, AH04 AND AH05 ADDED;
+#           SECTION AI ADDED, 8 checks. Fix Slate 30's first build. (AH)
+#           ruling R39 (S392; Jeff: "Yes, I think that example should be
+#           recognised as a Likert."): a column reads Likert when one label
+#           holds "not at all" and another one of extremely, very,
+#           completely, exactly, a great deal, a lot or nearly every day, on
+#           whole words. AH03, whose first control was the "Not at all
+#           important ... Extremely important" item, now holds it Likert --
+#           no jdesc() warning, jscreen()'s "Likert" -- with the one-pole
+#           "Not at all satisfied ... Very satisfied" scale, and a "No pain
+#           ... Severe" item as its control; AH04 the thirteen "Not at all"
+#           scales as lone items; AH05 the controls (the four wordings left
+#           to jlikert(), "not" alone beside "very", "not at all" with no
+#           high pole, one label holding both). (AI) the (S392)
+#           infinite-value item, on the lean Jeff okayed at S394 ("Yes to
+#           everything."): jdesc() prints -Inf with its sign (AI01); one
+#           stop under the Case Processing block naming each variable and
+#           its count among the cases analyzed, with the line that makes the
+#           values missing in a new variable and the call on it, run, in
+#           jt() and jaov() (AI02), jlm() and jlogistic() (AI03, two
+#           variables, and a variable named like a function the call
+#           uses), jcorr() for Pearson's r and jalpha() (AI04, Spearman and
+#           Kendall going on), and jplot() under its N line, a bar chart
+#           going on (AI05); the controls -- a filter that leaves the case
+#           out, a computed term's note, an expression's sentence with no
+#           line, a juse() default's call (AI06) -- and the count taken on
+#           the cases analyzed (AI07); and the rider, jcrosstab() leaving a
+#           NaN case out of its table as its Case Processing block does
+#           (AI08). 556 -> 566 checks; on the 0.9.265 master AH03 AH04
+#           AI01-AI08 red. MUTATION MAP (S394; each red): the sign guard
+#           removed AI01; the stop removed from the group front AI02 AI06,
+#           from jlm() AI03 AI07, from jlogistic() AI03, from jalpha() AI04,
+#           from jplot()'s two forms AI05 (each); jcorr() stopping for every
+#           method AI04, for none AI04; the bar chart stopped AI05; a
+#           function's name swapped too AI03; the NaN fix removed AI08;
+#           "nearly every day" removed AH04; "not" for "not at all" AH05;
+#           one label taken as another AH05; the R39 rule off AH03 AH04; the
+#           lines given for an expression AI06; no call line AI02-AI06.
+#           LAST VERIFIED: v0.9.266, 2026-10-23 (S394) -- 566/566 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3327 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty. GitHub 2a52f6a (package).
 # S392 EDIT (v0.9.265, 2026-10-22): SECTION AH ADDED, 3 checks; AC01-AC05
 #           RE-PINNED. The (Session 88) Likert-tuning item and the (S282)
 #           item (Jeff's okay of the leans, S392: "Okay for all defaults.").
@@ -6722,20 +6766,228 @@ check("AH02 so an item worded that way draws no \"seems categorical\" warning fr
               identical(a, character(0)) && identical(b, character(0)) &&
                 any(grepl("^Apr +Categorical +Likert +5$", v)) &&
                 any(grepl("^Tru +Categorical +Likert +4$", v)) }))
-check("AH03 controls: a \"Not at all important ... Extremely important\" item is still categorical -- jdesc()'s warning and jscreen()'s \"5-category\" -- as is a one-pole scale (\"Not at all satisfied\" ... \"Very satisfied\", no \"dissatisfied\")",
+check("AH03 ruling R39 (S394; re-pinned, its first control at S392): a \"Not at all important ... Extremely important\" item now reads Likert -- no \"seems categorical\" warning from jdesc(), jscreen()'s \"Likert\" -- as does a one-pole scale from \"Not at all satisfied\" to \"Very satisfied\"; a \"No pain ... Severe\" item, which no rule reaches, keeps the warning and its \"4-category\"",
       local({ set.seed(88)
               e <- data.frame(S = round(stats::rnorm(60, 10, 2), 2))
               e$Imp <- .ah_item(c("Not at all important", "Slightly important",
                                   "Moderately important", "Very important",
                                   "Extremely important"))
               e$T <- stats::rnorm(60)
+              e$Pn <- .ah_item(c("No pain", "Mild", "Moderate", "Severe"))
+              e$U <- stats::rnorm(60)
               one <- .ah_item(c("Not at all satisfied", "Slightly satisfied",
                                 "Very satisfied"))
-              a <- .ah_w(jdesc(e, Imp)); v <- lines_of(jscreen(e))
-              identical(flat(a), "Imp seems categorical. Descriptive statistics may not be meaningful.") &&
-                any(grepl("^Imp +Categorical +5-category +5$", v)) &&
-                !jstats:::.jst_is_likert(one) }))
-rm(.ah_w, .ah_item, .ah_new, .ah_old)
+              a <- .ah_w(jdesc(e, Imp)); p <- .ah_w(jdesc(e, Pn))
+              v <- lines_of(jscreen(e))
+              identical(a, character(0)) &&
+                any(grepl("^Imp +Categorical +Likert +5$", v)) &&
+                jstats:::.jst_is_likert(one) &&
+                identical(flat(p), "Pn seems categorical. Descriptive statistics may not be meaningful.") &&
+                any(grepl("^Pn +Categorical +4-category +4$", v)) }))
+
+# Ruling R39 (S394): a column reads Likert when one label holds the phrase
+# "not at all" and ANOTHER label one of extremely, very, completely,
+# exactly, a great deal, a lot or nearly every day, on whole words. The
+# wordings are the S392 measurement's: the eleven R39 catches as lone
+# items, and the four it does not (declared with jlikert()).
+.ah_r39 <- list(
+  importance    = c("Not at all important", "Slightly important", "Moderately important",
+                    "Very important", "Extremely important"),
+  interest      = c("Not at all interested", "Slightly interested",
+                    "Somewhat interested", "Very interested", "Extremely interested"),
+  concern       = c("Not at all concerned", "Slightly concerned",
+                    "Moderately concerned", "Very concerned"),
+  worry         = c("Not at all worried", "A little worried", "Fairly worried",
+                    "Very worried"),
+  fear          = c("Not at all afraid", "A little afraid", "Somewhat afraid",
+                    "Very afraid"),
+  trust         = c("Not at all", "A little", "A moderate amount", "A great deal"),
+  seriousness   = c("Not at all serious", "Slightly serious", "Moderately serious",
+                    "Very serious", "Extremely serious"),
+  effectiveness = c("Not at all effective", "Slightly effective",
+                    "Moderately effective", "Very effective", "Extremely effective"),
+  familiarity   = c("Not at all familiar", "Slightly familiar",
+                    "Moderately familiar", "Very familiar", "Extremely familiar"),
+  phq           = c("Not at all", "Several days", "More than half the days",
+                    "Nearly every day"),
+  self_efficacy = c("Not at all true", "Hardly true", "Moderately true", "Exactly true"),
+  completely    = c("Not at all", "Partly", "Mostly", "Completely"),
+  a_lot         = c("Not at all", "A little", "Some", "A lot"))
+.ah_r39_not <- list(
+  confidence = c("No confidence at all", "Not very much confidence",
+                 "Quite a lot of confidence", "A great deal of confidence"),
+  definitely = c("Definitely not", "Probably not", "Probably yes", "Definitely yes"),
+  none_alot  = c("None", "A little", "Some", "A lot"),
+  pain       = c("No pain", "Mild", "Moderate", "Severe"),
+  # labelled nominals: "not" without "at all" beside "very"; "Not at all"
+  # with no high pole; one label holding both phrases
+  residence  = c("Very remote", "Remote", "Regional", "Major city", "Not stated"),
+  employment = c("Employed", "Unemployed", "Not in labour force", "Not applicable"),
+  region     = c("North", "South", "East", "West", "Not at all known"),
+  one_label  = c("Not at all or very little", "Some", "Other"))
+check("AH04 ruling R39: each of thirteen \"Not at all\" scales -- importance, interest, concern, worry, fear, trust, seriousness, effectiveness, familiarity, the PHQ-9's \"Nearly every day\", the General Self-Efficacy scale's \"Exactly true\", \"Completely\" and \"A lot\" -- reads Likert as a lone item, on its anchors alone (no frame named, so no battery)",
+      { hit <- vapply(.ah_r39, function(s) jstats:::.jst_is_likert(.ah_item(s)), logical(1))
+        length(hit) == 13L && all(hit) })
+check("AH05 ... and none of the controls does: the four wordings the S392 measurement left to jlikert() (\"No confidence at all\", \"Definitely not\", \"None ... A lot\", \"No pain\"); \"Not stated\" or \"Not applicable\" beside \"Very remote\" (\"not\" alone is not the phrase); \"Not at all known\" with no high pole; and one label holding both phrases, which is not another label",
+      { hit <- vapply(.ah_r39_not, function(s) jstats:::.jst_is_likert(.ah_item(s)), logical(1))
+        length(hit) == 8L && !any(hit) })
+rm(.ah_w, .ah_item, .ah_new, .ah_old, .ah_r39, .ah_r39_not)
+
+# =============================================================================
+# AI. The (S392) infinite-value item (S394): -Inf printed with its sign, and
+#     one stop where an analysis cannot use an infinite value
+# =============================================================================
+# Jeff's okay of the lean (S394, "Yes to everything."): a variable holding
+# Inf or -Inf -- log() of a zero, here -- printed "Inf" for -Inf in jdesc()
+# (the negative-zero rule took the sign), and the analyses reached R's own
+# errors (jt(): "missing value where TRUE/FALSE needed"; jaov(), jlm(),
+# jlogistic(): lm.fit()'s "NA/NaN/Inf in 'y'"), r = NaN (jcorr()), a blank
+# alpha under "NA, NA, NA" (jalpha()), or a histogram that dropped a case
+# its N line counted (jplot()). Now one stop under the Case Processing block
+# (jplot(): under the N line) naming each variable and its count among the
+# cases analyzed, with the line that makes them missing in a new variable
+# (voice Rule G) and the call on it. Spearman's and Kendall's correlations
+# rank the values and go on; a filter that leaves the case out goes on; a
+# computed term keeps its note (AUDIT-024). Riders: jcrosstab() no longer
+# counts a NaN case its Analysis N excluded (AI08). Pins filled by running;
+# fixtures dotted, working objects in local().
+# =============================================================================
+cat("\n--- AI. Infinite values ---\n")
+
+.ai_frame <- function() {
+  f <- data.frame(Sc94 = c(4, 5, 6:21), Gp94 = rep(1:2, 9),
+                  Xa94 = c(0.3, -1.2, 0.8, 1.9, -0.4, 0.1, -0.9, 1.4, 0.6,
+                           -1.6, 0.2, 1.1, -0.3, 0.7, -0.8, 1.5, 0.4, -1.1),
+                  Ya94 = c(1.2, 0.4, -0.6, 2.1, 0.9, -1.3, 0.5, 1.7, -0.2,
+                           0.8, -0.9, 1.4, 0.3, -0.5, 1.1, 0.6, -1.4, 0.2))
+  f$Lg94 <- suppressWarnings(log(f$Sc94 - 5))    # NaN, -Inf, then finite
+  f$Mx94 <- f$Xa94; f$Mx94[c(3, 5)] <- Inf; f$Mx94[7] <- -Inf
+  f$Bn94 <- rep(0:1, length.out = 18)
+  f
+}
+.ai_head <- function(fn, v = "Lg94", what = "this analysis\ncannot use.") {
+  paste0(fn, "(): ", v, " holds 1 infinite value (-Inf), which ", what)
+}
+.ai_set1 <- paste0("Set it to missing in a new variable first:\n",
+                   "  e94$Lg94R <- replace(e94$Lg94, is.infinite(e94$Lg94), NA)\n")
+# .ai_out(): the lines a call prints before it stops, ANSI stripped and
+# trailing space trimmed (lines_of() gives the error alone).
+.ai_out <- function(expr) {
+  out <- character(0)
+  zz <- textConnection("out", "w", local = TRUE)
+  sink(zz, type = "output")
+  tryCatch(suppressMessages(suppressWarnings(expr)), error = function(e) NULL,
+           finally = { sink(type = "output"); close(zz) })
+  sub("[ \t]+$", "", gsub("\033\\[[0-9;]*[A-Za-z]", "", out))
+}
+# .ai_runs(): the offered lines (those after "Set ... first:") run in turn
+# where the call was typed, a plot drawn on a null device; TRUE when they
+# run without an error.
+.ai_runs <- function(msg, env) {
+  ln <- strsplit(msg, "\n", fixed = TRUE)[[1L]]
+  at <- grep("^Set (it|them) to missing in .* first:$", ln)
+  if (length(at) != 1L || at == length(ln)) return(FALSE)
+  ln <- trimws(ln[(at + 1L):length(ln)])
+  tryCatch({
+    grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+    utils::capture.output(suppressMessages(suppressWarnings(
+      for (l in ln) eval(str2lang(l), env))))
+    TRUE }, error = function(e) FALSE)
+}
+check("AI01 jdesc() prints -Inf with its sign, in Min and in Mean, the SD blank (it printed \"Inf\" in both); grouped too, in the group that holds it",
+      local({ e94 <- .ai_frame()
+              v <- lines_of(jdesc(e94, Lg94, Sc94))
+              g <- lines_of(jdesc(e94, Lg94, by = Gp94))
+              any(grepl("^Lg94 +18 +17 +-Inf +2\\.773 +-Inf$", v)) &&
+                any(grepl("^2 +9 +9 +-Inf +2\\.773 +-Inf$", g)) &&
+                !any(grepl("(^| )Inf", c(v, g))) }))
+check("AI02 jt() and jaov(): one stop under the Case Processing block, the outcome named with its count (pinned whole) -- R's own error before -- and the two lines run",
+      local({ e94 <- .ai_frame()
+              a <- grab(jt(Lg94 ~ Gp94, e94)); b <- grab(jaov(Lg94 ~ Gp94, e94))
+              v <- .ai_out(jt(Lg94 ~ Gp94, e94))
+              identical(a, paste0(.ai_head("jt"), "\n", .ai_set1,
+                                  "  jt(Lg94R ~ Gp94, e94)")) &&
+                identical(b, paste0(.ai_head("jaov"), "\n", .ai_set1,
+                                    "  jaov(Lg94R ~ Gp94, e94)")) &&
+                any(grepl("^ +Analysis N +-- +17$", v)) &&
+                !any(grepl("Group Descriptives", v)) &&
+                .ai_runs(a, environment()) && "Lg94R" %in% names(e94) }))
+check("AI03 jlm() and jlogistic(): every variable holding one named, its count and their signs, then a line for each and the call on the new variables (pinned whole), which run; a variable that shares a function's name in the call is swapped as a variable only",
+      local({ e94 <- .ai_frame()
+              a <- grab(jlm(Ya94 ~ Lg94 + Mx94, e94))
+              b <- grab(jlogistic(Bn94 ~ Lg94, e94))
+              e94$log <- e94$Mx94; e94$Xp94 <- e94$Sc94
+              f <- grab(jlm(Ya94 ~ log + log(Xp94), e94))
+              identical(a, paste0(
+                "jlm(): 2 variables hold infinite values, which this analysis\n",
+                "cannot use:\n  Lg94: 1 value (-Inf)\n  Mx94: 3 values (2 Inf, 1 -Inf)\n",
+                "Set them to missing in new variables first:\n",
+                "  e94$Lg94R <- replace(e94$Lg94, is.infinite(e94$Lg94), NA)\n",
+                "  e94$Mx94R <- replace(e94$Mx94, is.infinite(e94$Mx94), NA)\n",
+                "  jlm(Ya94 ~ Lg94R + Mx94R, e94)")) &&
+                identical(b, paste0(.ai_head("jlogistic", what = "this analysis\ncannot use."),
+                                    "\n", .ai_set1, "  jlogistic(Bn94 ~ Lg94R, e94)")) &&
+                grepl("  jlm(Ya94 ~ logR + log(Xp94), e94)", f, fixed = TRUE) &&
+                .ai_runs(a, environment()) && .ai_runs(f, environment()) }))
+check("AI04 jcorr() stops for Pearson's r (it printed r = NaN) and jalpha() for an item (a blank alpha under \"NA, NA, NA\"), each pinned whole; Spearman's and Kendall's correlations rank the values and print r with no stop",
+      local({ e94 <- .ai_frame()
+              a <- grab(jcorr(e94, Lg94, Xa94)); b <- grab(jalpha(e94, Lg94, Xa94, Ya94))
+              s <- lines_of(jcorr(e94, Lg94, Xa94, method = "spearman"))
+              k <- lines_of(jcorr(e94, Lg94, Xa94, method = "kendall"))
+              identical(a, paste0(.ai_head("jcorr"), "\n", .ai_set1,
+                                  "  jcorr(e94, Lg94R, Xa94)")) &&
+                identical(b, paste0(.ai_head("jalpha"), "\n", .ai_set1,
+                                    "  jalpha(e94, Lg94R, Xa94, Ya94)")) &&
+                any(grepl("Lg94 & Xa94: +r = -?\\.[0-9]{3}, +p = ", s)) &&
+                any(grepl("Lg94 & Xa94: +r = -?\\.[0-9]{3}, +p = ", k)) &&
+                .ai_runs(a, environment()) }))
+check("AI05 jplot(): a histogram and a scatterplot stop under the N line, \"which the plot cannot show\" (pinned whole) -- ggplot2 had left the case out under its \"Removed 1 rows\" warning -- and a bar chart (type = \"bar\"), which draws -Inf as a category, does not stop",
+      local({ e94 <- .ai_frame()
+              e94$Fw94 <- rep(c(-Inf, 0, 1), 6)
+              a <- grab(jplot(e94, Lg94)); b <- grab(jplot(Ya94 ~ Mx94, e94))
+              v <- .ai_out(jplot(e94, Lg94))
+              grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+              c3 <- grab(print(jplot(e94, Fw94, type = "bar")))
+              identical(a, paste0(.ai_head("jplot", what = "the plot\ncannot show."),
+                                  "\n", .ai_set1, "  jplot(e94, Lg94R)")) &&
+                identical(b, paste0(
+                  "jplot(): Mx94 holds 3 infinite values (2 Inf, 1 -Inf), which the\n",
+                  "plot cannot show.\nSet them to missing in a new variable first:\n",
+                  "  e94$Mx94R <- replace(e94$Mx94, is.infinite(e94$Mx94), NA)\n",
+                  "  jplot(Ya94 ~ Mx94R, e94)")) &&
+                any(grepl("^Analysis N: 17 \\(1 Excluded\\)$", v)) &&
+                !grepl("infinite", c3) && .ai_runs(a, environment()) }))
+.ai_e94 <- .ai_frame()
+check("AI06 controls: a filter that leaves the case out runs the test; a computed term keeps its note and sets the values missing (AUDIT-024); data given as an expression gets the sentence and no line; under a juse() default the call is offered without the data frame",
+      local({ e94 <- .ai_frame()
+              f <- lines_of(jt(Lg94 ~ Gp94, e94, subset = Sc94 > 5))
+              cterm <- grab(jt(log(Sc94 - 5) ~ Gp94, e94))
+              x <- grab(jt(Lg94 ~ Gp94, e94[e94$Xa94 > -5, ]))
+              was <- getOption(".jst_default_data")
+              u <- with_state(quiet(juse(.ai_e94)), grab(jt(Lg94 ~ Gp94)),
+                              options(.jst_default_data = was))
+              any(grepl("Independent Samples T-Test Results", f)) &&
+                identical(cterm, paste0("Note: log(Sc94 - 5): 2 values became infinite ",
+                                        "or undefined and were set\nto missing.\n")) &&
+                identical(x, paste0(.ai_head("jt"), "\nSet it to missing in a new ",
+                                    "variable first.")) &&
+                identical(u, paste0(.ai_head("jt"), "\n", gsub("e94", ".ai_e94", .ai_set1,
+                                                               fixed = TRUE),
+                                    "  jt(Lg94R ~ Gp94)")) }))
+check("AI07 the count is of the cases analyzed: a variable's infinite values outside the analysis sample are not counted, and one with none left passes",
+      local({ e94 <- .ai_frame()
+              a <- grab(jlm(Ya94 ~ Mx94, e94, subset = Xa94 > -0.5))
+              b <- lines_of(jlm(Ya94 ~ Mx94, e94, subset = !is.infinite(Mx94)))
+              grepl("^jlm\\(\\): Mx94 holds 2 infinite values \\(Inf\\)", a) &&
+                any(grepl("^Coefficients", b)) }))
+check("AI08 rider: jcrosstab() leaves a NaN case out of its table, as its Case Processing block does (the table had a \"NaN\" row and totaled 18 under Analysis N 16); -Inf stays a category, as jfreq() lists it",
+      local({ e94 <- .ai_frame()
+              e94$Lw94 <- rep(c(-Inf, 0, 1), 6); e94$Lw94[c(1, 4)] <- NaN
+              v <- lines_of(jcrosstab(Lw94 ~ Gp94, e94))
+              any(grepl("^ +Analysis N +-- +16$", v)) &&
+                any(grepl("^Total +8 +8 +16$", v)) && !any(grepl("^NaN", v)) &&
+                any(grepl("^-Inf ", v)) }))
+rm(.ai_frame, .ai_head, .ai_set1, .ai_out, .ai_runs, .ai_e94)
 
 # --- Verdict -----------------------------------------------------------------
 
