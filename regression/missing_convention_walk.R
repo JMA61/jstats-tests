@@ -94,6 +94,16 @@
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S397 (v0.9.268; Fix Slate 31, the (S395) three-code cap item).
+#           SECTION 24's hand-typed D3 pin RE-PINNED from a capture: the cap
+#           stop's second sentence, "'missing' would add -99 as a fourth.",
+#           on a line of its own (voice Rule E). On the PENDING line. A
+#           capture of every section of every walk on 0.9.267 and on the
+#           build: only Section 24 moved (the temporary paths aside).
+# LAST VERIFIED: v0.9.268, 2026-10-27 (S397) -- Section 24 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes; ALL BATTERIES GREEN (11 run,
+#           3351 checks); GitHub 547e7bd (package).
 # EDITED:   S395 (v0.9.267; Fix Slate 30, the second build -- the S393 message
 #           pass's accepts, with rulings R40-R44 and the (S393) parenthetical
 #           lean, Jeff, S393 and S395). SECTIONS 29, 50, 56, 57, 59, 61, 63,
@@ -3464,9 +3474,11 @@ wc$StatusR <- NULL
 # workstation walk, matching S271/S278.)
 #
 # Expected, second call (D3, verbatim to the draft; RE-PINNED S395: the
-# parenthetical "(-1, -2, -3)" moves whole to the next line):
+# parenthetical "(-1, -2, -3)" moves whole to the next line; RE-PINNED S397:
+# its second sentence on a line of its own, voice Rule E):
 #   "Error: jrecode(): Income already declares 3 SPSS-style missing values
-#    (-1, -2, -3), the maximum SPSS allows. 'missing' would add -99 as a fourth.
+#    (-1, -2, -3), the maximum SPSS allows.
+#    'missing' would add -99 as a fourth.
 #    Use one of the declared codes instead:
 #      wd$IncomeR <- jrecode(wd, Income, map = "8=-1; else=copy")
 #    Or re-declare Income with fewer codes first:

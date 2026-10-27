@@ -161,6 +161,32 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S397 EDIT (v0.9.268, 2026-10-27): NEW SECTION AP (seven checks). Fix
+#           Slate 31, the (S395) jt(d, Age) item: the five formula functions
+#           given the data-first form -- a data frame then names, or names
+#           under a juse() default -- stopped in R's own words ("object 'Age'
+#           not found"), the names evaluated as data, paired = or subset =
+#           before any check. .jst_formula_first_stop() reads the call as
+#           typed first: the formula offered when the names fill it (AP01),
+#           the roles and the community example otherwise (AP02), other
+#           inputs kept (AP03), the default's form (AP04), the old formula
+#           stop for a name found nowhere (AP05), controls (AP06), nothing
+#           printed or evaluated before the stop (AP07). 664 -> 671 checks;
+#           on the 0.9.267 master AP01-AP05 and AP07 red (AP06, the controls,
+#           holds on both). MUTATION MAP (S397; 25 of 25 red): the call
+#           removed from each of the five functions AP01 AP02 AP05; the
+#           formula guards (a ~, a formula value, a held quoted formula, a
+#           later name holding one, a frame alone) AP06; the default branch,
+#           R18 and the singular/plural roles AP04 AP01 AP03; the jlm count,
+#           kept inputs, duplicates, names not columns, the frame dropped,
+#           the head line, the generic fallback, a later input evaluated,
+#           roles swapped, the call moved after the flag checks -- each red.
+#           LAST VERIFIED: v0.9.268, 2026-10-27 (S397) -- 671/671 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3351 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty.
 # S395 EDIT (v0.9.267, 2026-10-23): CHECK P05 ADDED; C05, C06, C23, O13,
 #           AG15b, AH05 AND AH07 RE-PINNED. Fix Slate 30's second build: the
 #           S393 message pass's accepts (Jeff: "okay accept the rest"; "D1,
@@ -7424,6 +7450,166 @@ check("AO02 ruling R19's stop counts the cases with the separator, in a formula 
               all(grepl("It has 900 values for the 1,540 cases in the .d64 data frame.",
                         c(a, b), fixed = TRUE)) }))
 rm(.ao_frame)
+
+# =============================================================================
+# AP -- A FORMULA FUNCTION GIVEN THE DATA-FIRST FORM (S397, Fix Slate 31; the
+#       (S395) item)
+# =============================================================================
+# jt(d, Age) -- the form jdesc() and jfreq() take, tried in a formula
+# function -- stopped in R's own words, with no prefix: "object 'Age' not
+# found". The names after the data frame were read as the data, paired =
+# or subset = and evaluated before any check saw the call; the same under
+# a juse() default (jt(Age, Volunteer)) and for a name found nowhere
+# (jt(dd, Age)). Since v0.9.268 the call as typed is read first
+# (.jst_formula_first_stop()): with a data frame first and names that fill
+# the formula -- two for jt(), jaov() and jcrosstab(), two or more for
+# jlm() and jlogistic() -- the formula is offered in the order typed, the
+# line above saying which name is which, the call's other inputs kept;
+# otherwise the line says what the formula names and the function's own
+# example on community follows. Under a juse() default the call offered
+# names no data frame. A name found nowhere, with no default, gets the
+# formula stop the function always gave. Each call runs in a stand-in
+# workspace holding only the check's frame (.ap_ws()), as group AM's do.
+# Pins filled by running.
+# =============================================================================
+cat("\n--- AP. A formula function given the data-first form ---\n")
+
+.ap_frame <- function() data.frame(
+  Sc97 = c(12, 15, 11, 18, 14, 16, 10, 19, 13, 17),
+  Gp97 = c(1, 2, 1, 2, 1, 2, 1, 2, 1, 2),
+  Rg97 = c(1, 2, 3, 1, 2, 3, 1, 2, 3, 1),
+  Xv97 = c(3, 5, 2, 8, 4, 6, 1, 9, 3, 7),
+  Yb97 = c(0, 1, 0, 1, 1, 0, 0, 1, 0, 1))
+.ap_ws <- function() {
+  ws <- new.env(parent = baseenv())
+  assign("p97", .ap_frame(), envir = ws)
+  for (f in c("jt", "jaov", "jcrosstab", "jlm", "jlogistic", "juse",
+              "subset", "community"))
+    assign(f, get(f), envir = ws)
+  ws
+}
+.ap_grab <- function(cl, ws) grab(eval(str2lang(cl), ws))
+# .ap_runs(): the message's last line run where the call was typed; TRUE
+# when it does not stop.
+.ap_runs <- function(m, ws) {
+  ln <- strsplit(m, "\n", fixed = TRUE)[[1]]
+  isTRUE(tryCatch({
+    invisible(utils::capture.output(suppressWarnings(suppressMessages(
+      eval(str2lang(trimws(ln[length(ln)])), ws)))))
+    TRUE }, error = function(e) FALSE))
+}
+.ap_head <- "The first input must be a formula, then the data frame.\n"
+
+check("AP01 a data frame and names that fill the formula, in all five functions: the formula offered in the order typed, the line above naming each role (pinned whole), and each offered line runs where the call was typed",
+      local({ ws <- .ap_ws()
+        cls <- c("jt(p97, Sc97, Gp97)", "jaov(p97, Sc97, Rg97)",
+                 "jcrosstab(p97, Rg97, Gp97)", "jlm(p97, Sc97, Xv97, Rg97)",
+                 "jlogistic(p97, Yb97, Xv97)")
+        want <- c(
+          "jt(): The first input must be a formula, then the data frame.\nWith Sc97 as the outcome and Gp97 as the grouping variable:\n  jt(Sc97 ~ Gp97, p97)",
+          "jaov(): The first input must be a formula, then the data frame.\nWith Sc97 as the outcome and Rg97 as the grouping variable:\n  jaov(Sc97 ~ Rg97, p97)",
+          "jcrosstab(): The first input must be a formula, then the data frame.\nWith Rg97 as the row variable and Gp97 as the column variable:\n  jcrosstab(Rg97 ~ Gp97, p97)",
+          "jlm(): The first input must be a formula, then the data frame.\nWith Sc97 as the outcome and Xv97 and Rg97 as the predictors:\n  jlm(Sc97 ~ Xv97 + Rg97, p97)",
+          "jlogistic(): The first input must be a formula, then the data frame.\nWith Yb97 as the outcome and Xv97 as the predictor:\n  jlogistic(Yb97 ~ Xv97, p97)")
+        ms <- vapply(cls, .ap_grab, character(1), ws = ws)
+        identical(unname(ms), want) &&
+          all(vapply(ms, .ap_runs, logical(1), ws = ws)) }))
+check("AP02 names that do not fill the formula -- one name, three for jt(), a name the frame lacks, a name twice -- get the roles and the function's own example on community, which runs (pinned whole)",
+      local({ ws <- .ap_ws()
+        one <- c(jt = "jt(p97, Sc97)", jaov = "jaov(p97, Sc97)",
+                 jcrosstab = "jcrosstab(p97, Rg97)", jlm = "jlm(p97, Sc97)",
+                 jlogistic = "jlogistic(p97, Yb97)")
+        want <- c(
+          "jt(): The first input must be a formula, then the data frame.\nName the outcome and the grouping variable in the formula, for example:\n  jt(WellbeingScore ~ Volunteer, data = community)",
+          "jaov(): The first input must be a formula, then the data frame.\nName the outcome and the grouping variable in the formula, for example:\n  jaov(WellbeingScore ~ Region, data = community)",
+          "jcrosstab(): The first input must be a formula, then the data frame.\nName the row variable and the column variable in the formula, for example:\n  jcrosstab(Education ~ Volunteer, data = community)",
+          "jlm(): The first input must be a formula, then the data frame.\nName the outcome and each predictor in the formula, for example:\n  jlm(WellbeingScore ~ Age + Income, data = community)",
+          "jlogistic(): The first input must be a formula, then the data frame.\nName the outcome and each predictor in the formula, for example:\n  jlogistic(Volunteer ~ Income + Age, data = community)")
+        ms <- vapply(one, .ap_grab, character(1), ws = ws)
+        others <- vapply(c("jt(p97, Sc97, Gp97, Rg97)", "jt(p97, Scc97, Gp97)",
+                           "jt(p97, Sc97, Sc97)"), .ap_grab, character(1), ws = ws)
+        identical(unname(ms), want) && all(others == want[1]) &&
+          all(vapply(ms, .ap_runs, logical(1), ws = ws)) }))
+check("AP03 the call's other inputs are kept, a quoted name is read as the bare one, and a data frame given as an expression is kept as typed (pinned whole)",
+      local({ ws <- .ap_ws()
+        a <- .ap_grab("jt(p97, Sc97, Gp97, welch = TRUE)", ws)
+        b <- .ap_grab("jt(p97, \"Sc97\", \"Gp97\")", ws)
+        e <- .ap_grab("jlm(subset(p97, Xv97 > 2), Sc97, Xv97)", ws)
+        identical(a, "jt(): The first input must be a formula, then the data frame.\nWith Sc97 as the outcome and Gp97 as the grouping variable:\n  jt(Sc97 ~ Gp97, p97, welch = TRUE)") &&
+          identical(b, "jt(): The first input must be a formula, then the data frame.\nWith Sc97 as the outcome and Gp97 as the grouping variable:\n  jt(Sc97 ~ Gp97, p97)") &&
+          identical(e, "jlm(): The first input must be a formula, then the data frame.\nWith Sc97 as the outcome and Xv97 as the predictor:\n  jlm(Sc97 ~ Xv97, subset(p97, Xv97 > 2))") &&
+          .ap_runs(a, ws) && .ap_runs(e, ws) }))
+check("AP04 under a juse() default the names are the default's variables and the call offered names no data frame, which runs (pinned whole); a workspace object of a variable's name changes nothing (ruling R18)",
+      local({ ws <- .ap_ws(); old <- getOption(".jst_default_data")
+        on.exit(options(.jst_default_data = old), add = TRUE)
+        options(.jst_default_data = "p97")
+        a <- .ap_grab("jt(Sc97, Gp97)", ws)
+        b <- .ap_grab("jlm(Sc97, Xv97, Rg97)", ws)
+        x <- .ap_grab("jcrosstab(Rg97, Gp97)", ws)
+        o <- .ap_grab("jt(Sc97)", ws)
+        assign("Sc97", 1:3, envir = ws)
+        a2 <- .ap_grab("jt(Sc97, Gp97)", ws)
+        identical(a, "jt(): The first input must be a formula.\nWith Sc97 as the outcome and Gp97 as the grouping variable:\n  jt(Sc97 ~ Gp97)") &&
+          identical(b, "jlm(): The first input must be a formula.\nWith Sc97 as the outcome and Xv97 and Rg97 as the predictors:\n  jlm(Sc97 ~ Xv97 + Rg97)") &&
+          identical(x, "jcrosstab(): The first input must be a formula.\nWith Rg97 as the row variable and Gp97 as the column variable:\n  jcrosstab(Rg97 ~ Gp97)") &&
+          identical(o, "jt(): The first input must be a formula.\nName the outcome and the grouping variable in the formula, for example:\n  jt(WellbeingScore ~ Volunteer, data = community)") &&
+          identical(a2, a) && .ap_runs(a, ws) && .ap_runs(b, ws) }))
+check("AP05 R's words are gone: a name found nowhere, with no default, gets the formula stop each function always gave, as jt(5) does; no message in the group says \"object '\"",
+      local({ ws <- .ap_ws(); old <- getOption(".jst_default_data")
+        on.exit(options(.jst_default_data = old), add = TRUE)
+        options(.jst_default_data = NULL)
+        gen <- "jt(): The first input must be a formula, for example:\n  jt(Outcome ~ Group, MyData)"
+        ms <- vapply(c("jt(pp97, Sc97)", "jt(Sc97)", "jt(Sc97, Gp97)", "jt(5)"),
+                     .ap_grab, character(1), ws = ws)
+        l <- .ap_grab("jlm(Sc97, Xv97)", ws)
+        every <- vapply(c("jt(p97, Sc97)", "jaov(p97, Sc97, Rg97, Xv97)",
+                          "jcrosstab(p97, Rg97, Gp97, Xv97)", "jlm(p97, Sc97, Xv97)",
+                          "jlogistic(pp97, Yb97, Xv97)", "jaov(Sc97, Rg97)"),
+                        .ap_grab, character(1), ws = ws)
+        all(ms == gen) &&
+          identical(l, "jlm(): The first input must be a formula, for example:\n  jlm(Outcome ~ Predictor, MyData)") &&
+          !any(grepl("object '", c(ms, l, every), fixed = TRUE)) &&
+          all(startsWith(every, c("jt(): ", "jaov(): ", "jcrosstab(): ", "jlm(): ",
+                                  "jlogistic(): ", "jaov(): "))) }))
+check("AP06 controls: a formula call runs, as does one given as a name holding a formula or through do.call(); the swapped order (a formula, or a name holding one, after the data frame), a quoted formula (typed, or held by a name) and a data frame alone keep their own stops",
+      local({ ws <- .ap_ws()
+        assign("f97", Sc97 ~ Gp97, envir = ws)
+        assign("q97", "Sc97 ~ Gp97", envir = ws)
+        runs <- function(cl) isTRUE(tryCatch({
+          invisible(utils::capture.output(suppressMessages(eval(str2lang(cl), ws))))
+          TRUE }, error = function(e) FALSE))
+        sw <- "jt(): The formula goes first, then the data:\n  jt(Sc97 ~ Gp97, p97)"
+        runs("jt(Sc97 ~ Gp97, p97)") && runs("jt(f97, p97)") &&
+          runs("do.call(jt, list(Sc97 ~ Gp97, p97))") &&
+          runs("jlm(Sc97 ~ Xv97, data = p97)") &&
+          identical(.ap_grab("jt(p97, Sc97 ~ Gp97)", ws), sw) &&
+          identical(.ap_grab("jt(p97, f97)", ws), sw) &&
+          identical(.ap_grab("jt(\"Sc97 ~ Gp97\", p97)", ws),
+                    "jt(): The formula should not be in quotes.\nRemove them:\n  jt(Sc97 ~ Gp97, MyData)") &&
+          identical(.ap_grab("jt(q97, p97)", ws),
+                    "jt(): The formula should not be in quotes.\nRemove them:\n  jt(Sc97 ~ Gp97, MyData)") &&
+          identical(.ap_grab("jt(p97)", ws),
+                    "jt(): The first input must be a formula, for example:\n  jt(Outcome ~ Group, MyData)") }))
+check("AP07 the stop comes before anything is evaluated or printed: no title on standard output, and an input after the data frame that is not a name is never run",
+      local({ ws <- .ap_ws(); assign("hit97", FALSE, envir = ws)
+        # Standard output taken here, not through grab(), which swallows it.
+        so <- function(cl) {
+          m <- ""
+          out <- utils::capture.output(tryCatch(eval(str2lang(cl), ws),
+                                                error = function(e) m <<- conditionMessage(e)))
+          list(out = out, m = m)
+        }
+        a <- so("jt(p97, Sc97, Gp97)")
+        b <- so("jt(p97, Sc97, {hit97 <- TRUE; Gp97})")
+        x <- so("jlm(p97, Sc97, Xv97, Rg97)")
+        r <- so("jt(Sc97 ~ Gp97, p97)")
+        length(a$out) == 0L && length(b$out) == 0L && length(x$out) == 0L &&
+          length(r$out) > 0L &&
+          startsWith(a$m, paste0("jt(): ", .ap_head)) &&
+          startsWith(b$m, paste0("jt(): ", .ap_head)) &&
+          startsWith(x$m, paste0("jlm(): ", .ap_head)) &&
+          isFALSE(get("hit97", envir = ws)) }))
+rm(.ap_frame, .ap_ws, .ap_grab, .ap_runs, .ap_head)
 
 # =============================================================================
 # P -- THE MESSAGE SURFACE, SWEPT (S337)

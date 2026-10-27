@@ -10,6 +10,21 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S397 EDIT (v0.9.268, 2026-10-27): N26e AND N26f ADDED. Fix Slate 31, the
+#           (S395) three-code cap item: jrecode()'s cap stop puts "'missing'
+#           would add -99 as a fourth." on a line of its own (voice Rule E;
+#           the sentence opens with a quotation mark, which the S393 screen
+#           missed), and past three declared codes says "as another code."
+#           (a rider on the same message). Pinned whole, filled by running.
+#           924 -> 926 checks; on the 0.9.267 master both red. MUTATION MAP
+#           (S397): the two sentences joined N26e N26f; "a fourth" past three
+#           N26f.
+#           LAST VERIFIED: v0.9.268, 2026-10-27 (S397) -- 926/926 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3351 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty.
 # S395 EDIT (v0.9.267, 2026-10-23): N58d-N58h AND N97a-N97d ADDED; SIXTEEN
 #           .pins90 ENTRIES AND N83i, N84ac, N96l, N96m AND N96aa RE-PINNED.
 #           Fix Slate 30's second build: the S393 message pass's accepts
@@ -2627,6 +2642,34 @@ check("N26c D3 remedies: declared-code swap and the re-declare",
 r26d <- suppressMessages(jrecode(f26, v, map = "8=-1; else=copy"))
 check("N26d recoding into a declared code carries the declaration",
       -1 %in% as.numeric(attr(r26d, "na_values")))
+# N26e-N26f (S397, Fix Slate 31; the (S395) item): the cap stop's second
+# sentence, which opens with a quotation mark, is a line of its own (voice
+# Rule E; the S393 screen did not read it as a sentence start), and past
+# three declared codes the new one is "another code", not "a fourth".
+# Pinned whole, filled by running.
+check("N26e D3 cap error: each sentence on a line of its own (pinned whole)",
+      identical(m26b, paste0(
+        "jrecode(): v already declares 3 SPSS-style missing values\n",
+        "(-1, -2, -3), the maximum SPSS allows.\n",
+        "'missing' would add -99 as a fourth.\n",
+        "Use one of the declared codes instead:\n",
+        "  f26$vR <- jrecode(f26, v, map = \"8=-1; else=copy\")\n",
+        "Or re-declare v with fewer codes first:\n",
+        "  jdeclare_missing(f26, v, codes = c(-1, -2), modify = TRUE)")))
+f26f <- data.frame(v = haven::labelled_spss(c(1, 2, 8, 2, 1, 8, NA),
+                                            na_values = c(-1, -2, -3, -4)))
+m26f <- grab(jrecode(f26f, v, map = "8=missing; else=copy"))
+check("N26f D3 cap error past three declared codes: the new code is another, not a fourth (pinned whole)",
+      identical(m26f, paste0(
+        "jrecode(): v already declares 4 SPSS-style missing values\n",
+        "(-1, -2, -3, -4); SPSS allows at most 3.\n",
+        "'missing' would add -99 as another code.\n",
+        "Use one of the declared codes instead:\n",
+        "  f26f$vR <- jrecode(f26f, v, map = \"8=-1; else=copy\")\n",
+        "Or re-declare v with fewer codes first:\n",
+        "  jdeclare_missing(f26f, v, codes = c(-1, -2), modify = TRUE)")) &&
+        !grepl("fourth", m26f, fixed = TRUE))
+rm(f26f, m26f)
 
 # =============================================================================
 # N27 -- NA=missing: the row-4 note yields to the token's own note (D4)

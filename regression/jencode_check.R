@@ -27,6 +27,16 @@
 #           Since S373 (N51): automatic mode on a variable whose blank
 #           cells are declared missing.
 # ORIGIN:   S237 (core) / S238 (completion; this file)
+# S397 EDIT (v0.9.268, 2026-10-27): N46o RE-PINNED. Fix Slate 31, the
+#           (S395) three-code cap item: the cap stop's second sentence on a
+#           line of its own (voice Rule E). 138 checks; on the 0.9.267 master
+#           N46o red. MUTATION MAP (S397): the two sentences joined N46o.
+#           LAST VERIFIED: v0.9.268, 2026-10-27 (S397) -- 138/138 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (11 run,
+#           3351 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty.
 # S395 EDIT (v0.9.267, 2026-10-23): N52a-N52c ADDED; N46o, N49b AND N49c
 #           RE-PINNED; N42 GIVEN A THIRD EXEMPTION. Fix Slate 30's second
 #           build: the S393 message pass's accepts (Jeff: "okay accept the
@@ -1579,6 +1589,8 @@ mk46s <- function() data.frame(v = haven::labelled_spss(c(1, 2, 5, -1, -2, -3),
                                                         na_values = c(-1, -2, -3)))
 # RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): "(-1, -2,
 # -3)" kept whole (the (S393) parenthetical item).
+# RE-PINNED S397 (v0.9.268; Fix Slate 31, the (S395) item): "'missing'
+# would add -99 as a fourth." on a line of its own (voice Rule E).
 check("N46o a stop on an expression opens each of its blocks on the naming line, and each block runs as printed in a session of its own (pinned whole; under spss the third declared code leaves no room for 'missing')",
       { cv <- getOption(".jst_options_missing_convention")
         tryCatch({ options(.jst_options_missing_convention = "spss")
@@ -1589,7 +1601,8 @@ check("N46o a stop on an expression opens each of its blocks on the naming line,
           e1 <- new.env(parent = globalenv()); e2 <- new.env(parent = globalenv())
           identical(m, paste0(
             "jrecode(): v already declares 3 SPSS-style missing values\n",
-            "(-1, -2, -3), the maximum SPSS allows. 'missing' would add -99 as a fourth.\n",
+            "(-1, -2, -3), the maximum SPSS allows.\n",
+            "'missing' would add -99 as a fourth.\n",
             "Use one of the declared codes instead:\n",
             "  mydata <- mk46s()\n",
             "  mydata$vR <- jrecode(mydata, v, map = \"5=-1; else=copy\")\n",
