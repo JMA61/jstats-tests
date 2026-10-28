@@ -1,24 +1,36 @@
 # =============================================================================
-# tables_check.R -- what the table layer reads from a saved result
+# tables_check.R -- the table layer: what a result carries, and jtable()
 # =============================================================================
 # TYPE:     assertion battery (PASS/FAIL; written for Claude's checking)
-# LOCKS:    the fields Capability Slate T's table builders read from the
-#           analysis results, and the two internal accessors that read them
-#           (.jst_apa_terms(), .jst_apa_model()). Build 0 (S399, v0.9.269):
-#           the code and the label beside every display string (jfreq()'s
-#           Valid and Missing rows, jt()'s and jaov()'s Group, jcrosstab()'s
-#           row and column categories, jaov()'s post-hoc pairs); the
-#           statistics kept unrounded where the printed frame is rounded
-#           (jt(), jaov(), jalpha(); jcorr()'s M and SD); jdesc(by =)'s
-#           descriptives_raw; the jstats_version stamp on every result; an
-#           accessor method for every result class, registered. Later
-#           Slate T builds add their sections here.
+# LOCKS:    (A-H) the fields Capability Slate T's table builders read from
+#           the analysis results, and the two internal accessors that read
+#           them (.jst_apa_terms(), .jst_apa_model()). Build 0 (S399,
+#           v0.9.269): the code and the label beside every display string
+#           (jfreq()'s Valid and Missing rows, jt()'s and jaov()'s Group,
+#           jcrosstab()'s row and column categories, jaov()'s post-hoc
+#           pairs); the statistics kept unrounded where the printed frame
+#           is rounded (jt(), jaov(), jalpha(); jcorr()'s M and SD);
+#           jdesc(by =)'s descriptives_raw; the jstats_version stamp on
+#           every result; an accessor method for every result class,
+#           registered.
+#           (I-M) build 1 (S400, v0.9.270): the table layer's number
+#           formats and the built-in apa style; the descriptives table's
+#           structure from jdesc() results (headings =, markers =, the
+#           list form, the front door's stops); the console preview, pinned
+#           whole; the Word file (the five parts, the XML pinned by its
+#           checksum and read for its caption row, header, rules, decimal
+#           tabs, marks and note row; the paragraph placements, a report
+#           style's fills and grid, landscape auto, the minus sign; the
+#           overwrite gate; a built table given back); and the output.dir
+#           setting. Later Slate T builds add their sections here.
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.269, 2026-10-28 (S399) -- 56/56 on the WORKSTATION
-#           through receive_all() ("ALL BATTERIES GREEN (12 run, 3407
-#           checks)"; R CMD check 0 errors, 0 warnings, 0 notes), matching
-#           the sandbox (plain, under the RStudio-handler stand-in, each
-#           again with a 35-character temp path, and interactive).
+# LAST VERIFIED: v0.9.270, 2026-10-29 (S400) -- 107/107 on the WORKSTATION;
+#           the S400 EDIT block below holds the stamp. Prior: v0.9.269,
+#           2026-10-28 (S399) -- 56/56 on the WORKSTATION through
+#           receive_all() ("ALL BATTERIES GREEN (12 run, 3407 checks)"; R
+#           CMD check 0 errors, 0 warnings, 0 notes), matching the sandbox
+#           (plain, under the RStudio-handler stand-in, each again with a
+#           35-character temp path, and interactive).
 # RUN:      source()-safe from any working directory. All output is explicit
 #           cat(), so echo = TRUE is NOT required. Also runnable via
 #           regression/run_all.R, which treats a stop() as FAIL.
@@ -37,6 +49,66 @@
 # EXPECTED VALUES are computed here from the data, not read from the
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
+# =============================================================================
+# S400 EDIT (v0.9.270, 2026-10-29): Capability Slate T, build 1. SECTIONS I-M
+#           ADDED, 51 checks (107 in all). (I) the number formats: the
+#           decimals, thousands separators, the minus sign, the leading zero
+#           dropped for a bounded statistic, p exact with its floor, stars
+#           and their legend from one set of thresholds, the marks' glyphs,
+#           the style's key lookup. (J) the structure a jdesc() result
+#           builds: the apa columns and heads, the cells beside their raw
+#           numbers (computed here from the data), headings = and markers =
+#           in every form ruling R18 gives a name, the named-list form, and
+#           every stop at the front door, rendered. (K) the preview, pinned
+#           whole at the battery's width, its decimal alignment, print(),
+#           print = and the silent level, the note markup. (L) the Word
+#           file: the five parts in order, document.xml read for the caption
+#           row on Word's SEQ field (the table's first row, apa's default:
+#           Jeff, S400), the header row, APA's three rules, the heading rows
+#           and indents, the decimal tab stops (with no tab character), the
+#           superscript marks and the note row (the last), the page and the
+#           styles part, both parts pinned by checksum; the caption and
+#           notes as PARAGRAPHS under a report style with fills, a grid,
+#           symbol marks and a landscape Letter page; landscape = auto on a
+#           wide table; the
+#           minus sign in the file and the hyphen in the preview; the
+#           overwrite gate where the session cannot ask; two tables in one
+#           file; a built table given back to jtable(). (M) output.dir: the
+#           panel's seventh row, the folder created when set and again at
+#           the write, a bare name routed there, the stops. MUTATION MAP
+#           (S400; 42 one-change mutants of tables.R, options.R and zzz.R,
+#           each red; by the first check that reds): the thousands
+#           separators removed I01; the leading zero kept I02; the minus
+#           sign never written I01 L14; a space in the p floor I04; a star
+#           at the threshold I05; the legend's full stop I05; capital
+#           marks I06; the section lookup skipped I07; indents dropped
+#           J04; heading rows dropped J04; the headings' order ignored
+#           J05; the left-out stop removed J09; marks not set J06; the N
+#           note dropped J03; Min and Max at the style's decimals J02; the
+#           preview's values padded left K06; the top rule dropped K01;
+#           the caret dropped K01; the header's repeat flag dropped L04;
+#           a right tab for the decimal tab L07; the SEQ switch dropped
+#           L03; the header's top rule dropped L05; the heading row's span
+#           dropped L02; superscripts dropped L06; the caption's keep-next
+#           dropped L03; landscape auto never L13; the parts reordered L01;
+#           output.dir ignored M03; the folder not re-created M04; the
+#           .docx check removed J14; the gate's stop removed L15; the panel
+#           row dropped M01; one table written of two L17; the duplicate
+#           check removed J10; the unnamed-item stop removed J11; print()
+#           as print.default() K03; the nested call not discarded J15;
+#           bold for italic in a note L08; wider columns L09; the session
+#           key dropped M02; n from the total J02; a bare name read from
+#           the workspace before the result J05.
+#           LAST VERIFIED: v0.9.270, 2026-10-29 (S400) -- 107/107 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3458 checks)"; R CMD check 0 errors, 0 warnings, 0 notes), on
+#           the second delivery of 0.9.270 (the caption and notes as rows
+#           by default); the first read 106/107 there, K03 red on a stale
+#           S3 registration in the receiving session, fixed in the dev
+#           tools (receive_package() reloads after document()). Matching
+#           the sandbox plain, under the RStudio-handler stand-in, each
+#           again with a Windows-length temp path, once with interactive()
+#           TRUE, and entered dirty.
 # =============================================================================
 
 # --- Setup -------------------------------------------------------------------
@@ -661,6 +733,640 @@ check("H11 a result made before the build reads without an error: NA codes and l
       is.data.frame(.h11$f) && all(is.na(.h11$f$code[.h11$f$block == "valid"])) &&
         is.null(.h11$t) && is.data.frame(.h11$x) && all(is.na(.h11$x$row_code)) &&
         is.null(.h11$a))
+
+# =============================================================================
+# I. The table layer's number formats (build 1, S400)
+# =============================================================================
+cat("\n--- I. Number formats ---\n")
+
+# The console's colour escapes, stripped from a capture (the panel's title
+# is red where the output draws colour).
+.strip_ansi <- function(x) gsub("\033\\[[0-9;]*m", "", x)
+
+check("I01 .jst_tbl_num(): the decimals, thousands separators, a hyphen or the minus sign, NA a blank cell, a value that rounds to zero from below unsigned",
+      identical(.jst_tbl_num(c(49855.670103, 1234567.891, 0.5, -0.004, NA, -12.5),
+                             2, "comma", TRUE, "hyphen"),
+                c("49,855.67", "1,234,567.89", "0.50", "0.00", "", "-12.50")) &&
+        identical(.jst_tbl_num(c(49855.670103, -12.5), 2, "none", TRUE, "hyphen"),
+                  c("49855.67", "-12.50")) &&
+        identical(.jst_tbl_num(-12.5, 1, "comma", TRUE, "true"),
+                  paste0("\u2212", "12.5")))
+
+check("I02 ... the leading zero dropped for a statistic bounded by 1 (r, p, beta), the sign kept",
+      identical(.jst_tbl_num(c(0.234, -0.123, 1.5, -1.0), 2, "comma", FALSE, "hyphen"),
+                c(".23", "-.12", "1.50", "-1.00")))
+
+check("I03 .jst_tbl_count(): a count with its separators, NA blank",
+      identical(.jst_tbl_count(c(103, 1037, 1e6, NA), "comma"),
+                c("103", "1,037", "1,000,000", "")) &&
+        identical(.jst_tbl_count(1037, "none"), "1037"))
+
+check("I04 .jst_tbl_p(): exact to 3 places with the <.001 floor and no leading zero; stars; both; NA blank",
+      identical(.jst_tbl_p(c(0.0499, 0.004, 0.0004, 0.5, NA), "exact", 3),
+                c(".050", ".004", "<.001", ".500", "")) &&
+        identical(.jst_tbl_p(c(0.0499, 0.004, 0.0004, 0.5, NA), "stars", 3),
+                  c("*", "**", "***", "", "")) &&
+        identical(.jst_tbl_p(c(0.004, 0.5), "both", 3), c(".004**", ".500")) &&
+        identical(.jst_tbl_p(0.0004, "exact", 2), "<.01"))
+
+check("I05 .jst_tbl_stars(): one star per threshold passed, none at the threshold itself; the legend made from the same thresholds",
+      identical(.jst_tbl_stars(c(0.05, 0.049, 0.01, 0.0099, 0.001, 0.0009, NA)),
+                c("", "*", "*", "**", "**", "***", "")) &&
+        identical(.jst_tbl_stars(0.03, stars = c(0.1, 0.05)), "**") &&
+        identical(.jst_tbl_stars_legend(), "**p* < .05. ***p* < .01. ****p* < .001.") &&
+        identical(.jst_tbl_stars_legend(c(0.05, 0.01)), "**p* < .05. ***p* < .01."))
+
+check("I06 .jst_tbl_mark(): letters a, b, c ... and symbols dagger, double dagger, section sign, then doubled",
+      identical(vapply(1:3, .jst_tbl_mark, character(1)), c("a", "b", "c")) &&
+        identical(.jst_tbl_mark(27), "a") &&
+        identical(vapply(1:4, .jst_tbl_mark, character(1), marks = "symbols"),
+                  c("\u2020", "\u2021", "\u00a7", "\u2020\u2020")))
+
+check("I07 the built-in apa style: a key is read from the table type's section, then the general part, and a key nowhere is an internal error",
+      identical(.jst_style_key(.jst_style_apa, "descriptives", "columns"),
+                c("n", "mean", "sd", "min", "max")) &&
+        identical(.jst_style_key(.jst_style_apa, "descriptives", "decimals"), 2) &&
+        identical(.jst_style_key(.jst_style_apa, "descriptives", "caption.form"), "apa") &&
+        inherits(tryCatch(.jst_style_key(.jst_style_apa, "descriptives", "no.such.key"),
+                          error = function(e) e), "error") &&
+        identical(.jst_style_resolve("APA"), .jst_style_apa))
+
+# =============================================================================
+# J. The descriptives table's structure, from a jdesc() result
+# =============================================================================
+cat("\n--- J. The structure ---\n")
+
+.td <- file.path(tempdir(), "tables_check_out")
+unlink(.td, recursive = TRUE); dir.create(.td)
+.j0 <- res(jdesc(tcm, WellbeingScore, Income, Age, CommuteTime))$val
+.jh <- list("Dependent variable" = "WellbeingScore",
+            "Independent variables" = c("Income", "Age"),
+            "Control variable" = "CommuteTime")
+.j1 <- res(jtable(.j0, print = FALSE))$val
+.j2 <- res(jtable(.j0,
+                  headings = list("Dependent variable"    = WellbeingScore,
+                                  "Independent variables" = c(Income, Age),
+                                  "Control variable"      = CommuteTime),
+                  markers  = list("Mean-centered" = c(Income, Age)),
+                  title    = "Descriptive Statistics for Study Variables",
+                  note     = "Wellbeing is scored from 0 to 100.",
+                  print    = FALSE))$val
+.jvals <- function(v) {
+  x  <- as.numeric(tcm[[v]]); na <- attr(tcm[[v]], "na_values", exact = TRUE)
+  x[!is.na(x) & !(x %in% na)]
+}
+
+check("J01 jtable() on a jdesc() result returns a jst_table: the stub and the apa columns n, M, SD, Min, Max, the statistics' heads italic, one data row per variable in the result's order, each labelled by its variable label",
+      inherits(.j1, "jst_table") && identical(.j1$type, "descriptives") &&
+        identical(.j1$columns$key, c("stub", "n", "mean", "sd", "min", "max")) &&
+        identical(.j1$columns$label, c("Variable", "n", "M", "SD", "Min", "Max")) &&
+        identical(.j1$columns$kind, c("text", rep("number", 5))) &&
+        identical(.j1$columns$italic, c(FALSE, TRUE, TRUE, TRUE, FALSE, FALSE)) &&
+        length(.j1$rows) == 4L &&
+        all(vapply(.j1$rows, function(r) identical(r$kind, "data") && r$indent == 0L,
+                   logical(1))) &&
+        identical(vapply(.j1$rows, `[[`, character(1), "label"),
+                  c("Wellbeing score (0-100)", "Annual income (USD)", "Age (years)",
+                    "Daily commute time (minutes)")))
+
+check("J02 the cells: n a count, M and SD at 2 decimals with separators, Min and Max at the data's precision; the raw numbers beside them are the statistics of the data, unrounded",
+      identical(.j1$rows[[2]]$cells,
+                list(n = "97", mean = "49,855.67", sd = "17,427.22",
+                     min = "14,000", max = "93,000")) &&
+        identical(.j1$rows[[1]]$cells$mean, "50.89") &&
+        identical(.j1$rows[[1]]$cells$min, "25") &&
+        isTRUE(all.equal(.j1$rows[[2]]$raw$mean, mean(.jvals("Income")))) &&
+        isTRUE(all.equal(.j1$rows[[2]]$raw$sd, stats::sd(.jvals("Income")))) &&
+        identical(.j1$rows[[2]]$raw$n, length(.jvals("Income"))) &&
+        identical(.j1$rows[[1]]$raw$max, max(.jvals("WellbeingScore"))))
+
+check("J03 no headings, no markers: no heading rows, no marks, the type's template title, the general note on N alone",
+      !any(vapply(.j1$rows, function(r) identical(r$kind, "heading"), logical(1))) &&
+        all(lengths(lapply(.j1$rows, `[[`, "marks")) == 0L) &&
+        identical(.j1$caption$title, "Descriptive Statistics") &&
+        is.na(.j1$caption$number) &&
+        identical(.j1$notes$general, "*N* = 103.") &&
+        length(.j1$notes$specific) == 0L && length(.j1$notes$probability) == 0L)
+
+check("J04 headings = puts a heading row before each group, the variables indented under it, in the list's order",
+      length(.j2$rows) == 7L &&
+        identical(vapply(.j2$rows, `[[`, character(1), "kind"),
+                  c("heading", "data", "heading", "data", "data", "heading", "data")) &&
+        identical(vapply(.j2$rows, `[[`, character(1), "label"),
+                  c("Dependent variable", "Wellbeing score (0-100)",
+                    "Independent variables", "Annual income (USD)", "Age (years)",
+                    "Control variable", "Daily commute time (minutes)")) &&
+        identical(vapply(.j2$rows, `[[`, integer(1), "indent"),
+                  c(0L, 1L, 0L, 1L, 1L, 0L, 1L)))
+
+.j2o <- res(jtable(.j0, headings = list(Later = c(CommuteTime, Age),
+                                        First = c(WellbeingScore, Income)),
+                   print = FALSE))$val
+# A workspace object named like a variable changes nothing (ruling R18): the
+# bare name is the result's variable; a name that is no variable is read
+# for the names it holds.
+.j2w <- local({
+  Income <- c("Age", "CommuteTime")   # the object, in this frame, not the workspace
+  res(jtable(.j0, headings = list(A = c(WellbeingScore, Income), B = c(Age, CommuteTime)),
+             print = FALSE))$val
+})
+.j2h <- local({
+  nms <- c("Income", "Age")
+  res(jtable(.j0, headings = list(A = WellbeingScore, B = nms, C = CommuteTime),
+             print = FALSE))$val
+})
+check("J05 ... the table follows the headings' order, not the result's; names in quotes and a name holding names read the same; a workspace object named like a variable changes nothing",
+      identical(vapply(.j2w$rows, `[[`, character(1), "label"),
+                c("A", "Wellbeing score (0-100)", "Annual income (USD)",
+                  "B", "Age (years)", "Daily commute time (minutes)")) &&
+        identical(vapply(.j2h$rows, `[[`, character(1), "label"),
+                  c("A", "Wellbeing score (0-100)", "B", "Annual income (USD)",
+                    "Age (years)", "C", "Daily commute time (minutes)")) &&
+      identical(vapply(.j2o$rows, `[[`, character(1), "label"),
+                c("Later", "Daily commute time (minutes)", "Age (years)",
+                  "First", "Wellbeing score (0-100)", "Annual income (USD)")) &&
+        identical(res(jtable(.j0, headings = .jh, print = FALSE))$val$rows,
+                  .j2$rows[seq_along(.j2$rows)]  |> lapply(function(r) { r$marks <- character(0); r })))
+
+check("J06 markers = marks each named variable's row with the style's letter, in the markers' order, and writes the specific note; the user's title and note are carried",
+      identical(.j2$rows[[4]]$marks, "a") && identical(.j2$rows[[5]]$marks, "a") &&
+        length(.j2$rows[[2]]$marks) == 0L &&
+        identical(.j2$notes$specific, list(list(mark = "a", text = "Mean-centered"))) &&
+        identical(.j2$caption$title, "Descriptive Statistics for Study Variables") &&
+        identical(.j2$notes$general,
+                  c("*N* = 103.", "Wellbeing is scored from 0 to 100.")))
+
+.j7 <- res(jtable(.j0, markers = list("Mean-centered" = c(Income, Age),
+                                      "Log-transformed" = Income),
+                  print = FALSE))$val
+check("J07 two specific notes: a and b, a variable under both carrying both marks",
+      identical(.j7$rows[[2]]$marks, c("a", "b")) &&
+        identical(.j7$rows[[3]]$marks, "a") &&
+        identical(vapply(.j7$notes$specific, `[[`, character(1), "mark"), c("a", "b")) &&
+        identical(vapply(.j7$notes$specific, `[[`, character(1), "text"),
+                  c("Mean-centered", "Log-transformed")))
+
+.ja <- res(jdesc(tcm, WellbeingScore))$val
+.jb <- res(jdesc(tcm, Income, Age))$val
+.j8 <- res(jtable(list("Outcome" = .ja, "Predictors" = .jb), print = FALSE))$val
+.j8u <- res(jtable(list(.ja, .jb), print = FALSE))$val
+check("J08 a NAMED list of jdesc() results stacks into one table under the names as headings; an unnamed list stacks with no headings",
+      identical(vapply(.j8$rows, `[[`, character(1), "label"),
+                c("Outcome", "Wellbeing score (0-100)", "Predictors",
+                  "Annual income (USD)", "Age (years)")) &&
+        identical(vapply(.j8$rows, `[[`, character(1), "kind"),
+                  c("heading", "data", "heading", "data", "data")) &&
+        identical(.j8$notes$general, "*N* = 103.") &&
+        length(.j8u$rows) == 3L &&
+        all(vapply(.j8u$rows, function(r) identical(r$kind, "data"), logical(1))))
+
+.j9 <- res(jtable(.j0, headings = list("Some" = c(WellbeingScore, Income)), print = FALSE))
+check("J09 headings = that leaves a variable out stops, naming the variables left out (nothing is dropped silently)",
+      is.null(.j9$val) &&
+        grepl("jtable(): headings = leaves out Age and CommuteTime.", .j9$txt, fixed = TRUE) &&
+        grepl("Name every variable of the result under a heading, or leave", .j9$txt, fixed = TRUE))
+
+.j10 <- res(jtable(.j0, headings = list("Some" = c(WellbeingScore, Agee, Income)), print = FALSE))
+.j10b <- res(jtable(.j0, markers = list("Centered" = c(Income, Income)), print = FALSE))
+check("J10 a name the result does not hold stops, listing the result's variables; a name given twice stops",
+      is.null(.j10$val) &&
+        grepl("headings = names Agee, which is not among the variables of", .j10$txt, fixed = TRUE) &&
+        grepl("The result holds WellbeingScore, Income, Age, and CommuteTime.", .j10$txt, fixed = TRUE) &&
+        is.null(.j10b$val) &&
+        grepl("markers = names Income more than once.", .j10b$txt, fixed = TRUE))
+
+.j11 <- res(jtable(.j0, headings = list(c(WellbeingScore, Income)), print = FALSE))
+.j11b <- res(jtable(.j0, markers = "Income", print = FALSE))
+check("J11 an item with no name stops with the example; a value that is not a list stops with the example",
+      is.null(.j11$val) &&
+        grepl("each item of headings = needs a name, the heading's text,", .j11$txt, fixed = TRUE) &&
+        grepl("  headings = list(\"Outcome\" = Wellbeing, \"Predictors\" = c(Age, Income))",
+              .j11$txt, fixed = TRUE) &&
+        is.null(.j11b$val) &&
+        grepl("markers = takes a named list of variable names,", .j11b$txt, fixed = TRUE) &&
+        grepl("markers = list(\"Mean-centered\" = c(Age, Income))", .j11b$txt, fixed = TRUE))
+
+.j12 <- res(jtable(.a1, print = FALSE))
+.j12b <- res(jtable(tcm, print = FALSE))
+.j12c <- res(jtable(list(.j0, .a1), print = FALSE))
+.j12d <- res(jtable(list(), print = FALSE))
+check("J12 a result of another kind stops, naming its function; a data frame is not a result; results of two kinds in one list stop; an empty list stops",
+      is.null(.j12$val) &&
+        grepl("jtable() does not yet make a table from a jfreq() result.", .j12$txt, fixed = TRUE) &&
+        grepl("It makes a table from a jdesc() result.", .j12$txt, fixed = TRUE) &&
+        is.null(.j12b$val) &&
+        grepl("jtable() takes a saved result -- what an analysis function", .j12b$txt, fixed = TRUE) &&
+        grepl("  d1 <- jdesc(community, Age, Income)", .j12b$txt, fixed = TRUE) &&
+        is.null(.j12c$val) &&
+        grepl("(jdesc() and jfreq()) in one table.", .j12c$txt, fixed = TRUE) &&
+        is.null(.j12d$val) && grepl("the list given to jtable() is empty.", .j12d$txt, fixed = TRUE))
+
+.j13 <- res(jtable(.d1, print = FALSE))
+.j13o <- local({ old <- .j0; old$descriptives_raw <- NULL; attr(old, "jstats_version") <- "0.9.200"
+                 res(jtable(old, print = FALSE)) })
+.j13n <- local({ old <- .j0; old$descriptives_raw <- NULL; attr(old, "jstats_version") <- NULL
+                 res(jtable(old, print = FALSE)) })
+check("J13 a grouped jdesc(by =) result stops in this build; a result without the fields names the version that made it, or 'an earlier version' with no stamp",
+      is.null(.j13$val) &&
+        grepl("does not yet make a table from a grouped", .j13$txt, fixed = TRUE) &&
+        is.null(.j13o$val) &&
+        grepl("this jdesc() result was made by jstats 0.9.200, before the", .j13o$txt, fixed = TRUE) &&
+        grepl("Run the analysis again, then jtable() on the new result.", .j13o$txt, fixed = TRUE) &&
+        is.null(.j13n$val) &&
+        grepl("was made by an earlier version of", .j13n$txt, fixed = TRUE))
+
+.j14 <- res(jtable(.j0, headinggs = .jh, print = FALSE))
+.j14b <- res(jtable(.j0, notes = "x", print = FALSE))
+.j14c <- res(jtable(.j0, style = apa, print = FALSE))
+.j14d <- res(jtable(.j0, style = "journal", print = FALSE))
+.j14e <- res(jtable(.j0, file = Table1.docx, print = FALSE))
+.j14f <- res(jtable(.j0, file = "Table1.txt", print = FALSE))
+.j14g <- res(jtable(.j0, overwrite = "yes", print = FALSE))
+.j14h <- res(jtable(.j0, title = c("a", "b"), print = FALSE))
+check("J14 the front door: an unused input, the pointer for notes =, a bare word in style = or file =, a style that is not apa, a file without .docx, a flag that is not TRUE or FALSE, a title that is not one string",
+      grepl("jtable(): unused input: headinggs", .j14$txt, fixed = TRUE) &&
+        grepl("'notes' is not valid.\nDid you mean `note`?", .j14b$txt, fixed = TRUE) &&
+        grepl("jtable(): apa is not in quotes.\nstyle = takes a style name in quotes:",
+              .j14c$txt, fixed = TRUE) &&
+        grepl("  jtable(.j0, style = \"apa\", print = FALSE)", .j14c$txt, fixed = TRUE) &&
+        grepl("`style` must be \"apa\".", .j14d$txt, fixed = TRUE) &&
+        grepl("jtable(): Table1.docx is not in quotes.\nfile = takes a file name in quotes:",
+              .j14e$txt, fixed = TRUE) &&
+        grepl("  jtable(.j0, file = \"Table1.docx\", print = FALSE)", .j14e$txt, fixed = TRUE) &&
+        grepl("jtable(): jtable() writes Word files, so the file name needs the", .j14f$txt, fixed = TRUE) &&
+        grepl("  file = \"Table1.docx\"", .j14f$txt, fixed = TRUE) &&
+        grepl("`overwrite` must be TRUE or FALSE.", .j14g$txt, fixed = TRUE) &&
+        grepl("`title` must be a single quoted string.", .j14h$txt, fixed = TRUE))
+
+# A nested analysis call runs quietly: only the table prints.
+.j15 <- res(jtable(jdesc(tcm, Age), print = FALSE))
+check("J15 a nested analysis call, jtable(jdesc(...)), runs with its output discarded and gives the table",
+      inherits(.j15$val, "jst_table") && !grepl("Descriptive Statistics\n", .j15$txt, fixed = TRUE) &&
+        identical(.j15$val$rows[[1]]$label, "Age (years)"))
+
+# =============================================================================
+# K. The preview
+# =============================================================================
+cat("\n--- K. The preview ---\n")
+
+.k1 <- res(jtable(.j0,
+                  headings = list("Dependent variable"    = WellbeingScore,
+                                  "Independent variables" = c(Income, Age),
+                                  "Control variable"      = CommuteTime),
+                  markers  = list("Mean-centered" = c(Income, Age)),
+                  title    = "Descriptive Statistics for Study Variables",
+                  note     = "Wellbeing is scored from 0 to 100."))
+.k1l <- strsplit(.k1$txt, "\n", fixed = TRUE)[[1]]
+check("K01 the preview, pinned whole: the two caption lines, the rules, the header, the headings and the indented rows, the notes, one blank line at the end",
+      endsWith(.k1$txt, "Mean-centered.\n") && identical(.k1l, c(
+        "Table 1",
+        "Descriptive Statistics for Study Variables",
+        "-------------------------------------------------------------------------",
+        "Variable                         n       M          SD       Min     Max",
+        "-------------------------------------------------------------------------",
+        "Dependent variable",
+        "  Wellbeing score (0-100)       103      50.89      11.48      25      81",
+        "Independent variables",
+        "  Annual income (USD)^a          97  49,855.67  17,427.22  14,000  93,000",
+        "  Age (years)^a                 103      40.65      11.62      18      71",
+        "Control variable",
+        "  Daily commute time (minutes)  103      30.74      12.68       5      58",
+        "-------------------------------------------------------------------------",
+        "Note. N = 103. Wellbeing is scored from 0 to 100.",
+        "^a Mean-centered.")))
+
+.k2 <- vapply(c(7, 9, 10, 12), function(i) regexpr(".", .k1l[i], fixed = TRUE), integer(1))
+check("K02 the numbers align on the decimal point: the M column's points sit in one console column down the table, and the column heads are centered over their columns",
+      length(unique(.k2)) == 1L &&
+        identical(regexpr("M", .k1l[4], fixed = TRUE)[1] > regexpr("n", .k1l[4], fixed = TRUE)[1], TRUE) &&
+        identical(nchar(.k1l[3]), nchar(.k1l[5])) && identical(nchar(.k1l[3]), nchar(.k1l[13])))
+
+.k3 <- res(print(.j2))
+check("K03 print() on the table reprints the preview, the same text",
+      identical(.k3$txt, .k1$txt))
+
+.k4a <- res(jtable(.j0, print = FALSE))
+invisible(utils::capture.output(suppressMessages(joutput("silent"))))
+.k4b <- res(jtable(.j0))
+.k4c <- res(jtable(.j0, print = TRUE))
+invisible(utils::capture.output(suppressMessages(joutput(NULL))))
+options(.jst_options_message_width = .pin_width)
+check("K04 print = FALSE prints nothing; under joutput(\"silent\") the default prints nothing and print = TRUE prints; the table is returned either way",
+      identical(.k4a$txt, "") && inherits(.k4a$val, "jst_table") &&
+        identical(.k4b$txt, "") && inherits(.k4b$val, "jst_table") &&
+        grepl("^Table 1\nDescriptive Statistics\n", .k4c$txt))
+
+.k5 <- res(jtable(.j0, note = "Centered at the *mean*."))$val
+.k5l <- .jst_table_note_lines(.k5, .jst_style_apa, plain = TRUE)
+check("K05 the note markup: *italic* and ^superscript^ are kept for the Word writer and stripped for the preview, a letter mark written ^a",
+      identical(.jst_table_note_lines(.k5, .jst_style_apa),
+                c("*Note.* *N* = 103. Centered at the *mean*.")) &&
+        identical(.k5l, "Note. N = 103. Centered at the mean.") &&
+        identical(.jst_table_note_lines(.j2, .jst_style_apa),
+                  c("*Note.* *N* = 103. Wellbeing is scored from 0 to 100.",
+                    "^a^ Mean-centered.")) &&
+        identical(.jst_table_note_lines(.j2, .jst_style_apa, plain = TRUE)[2], "^a Mean-centered."))
+
+# A column narrower than its head: the one-digit values sit right-aligned
+# under the centered head, the head's spare space on the left.
+.k6 <- local({
+  w <- data.frame(x = 1:9); attr(w$x, "label") <- "x"
+  res(jtable(res(jdesc(w, x))$val))
+})
+.k6l <- strsplit(.k6$txt, "\n", fixed = TRUE)[[1]]
+check("K06 a number column narrower than its head: the values right-aligned under the centered head",
+      identical(.k6l[4:6], c("Variable  n    M    SD   Min  Max",
+                             "---------------------------------",
+                             "x         9  5.00  2.74    1    9")))
+
+# =============================================================================
+# L. The Word file
+# =============================================================================
+cat("\n--- L. The Word file ---\n")
+
+.lf <- file.path(.td, "Table1.docx")
+.l1 <- res(jtable(.j0,
+                  headings = list("Dependent variable"    = WellbeingScore,
+                                  "Independent variables" = c(Income, Age),
+                                  "Control variable"      = CommuteTime),
+                  markers  = list("Mean-centered" = c(Income, Age)),
+                  title    = "Descriptive Statistics for Study Variables",
+                  note     = "Wellbeing is scored from 0 to 100.",
+                  file     = .lf, overwrite = TRUE))
+.lz <- utils::unzip(.lf, list = TRUE)
+.lx <- file.path(.td, "x"); unlink(.lx, recursive = TRUE)
+invisible(utils::unzip(.lf, exdir = .lx))
+.ldoc <- paste(readLines(file.path(.lx, "word", "document.xml"), warn = FALSE,
+                         encoding = "UTF-8"), collapse = "\n")
+.lsty <- paste(readLines(file.path(.lx, "word", "styles.xml"), warn = FALSE,
+                         encoding = "UTF-8"), collapse = "\n")
+check("L01 file = writes a .docx: a zip of the five parts, the content types first; the written line follows the preview",
+      file.exists(.lf) &&
+        identical(.lz$Name, c("[Content_Types].xml", "_rels/.rels",
+                              "word/_rels/document.xml.rels", "word/document.xml",
+                              "word/styles.xml")) &&
+        grepl("^a Mean-centered.\n\nTable written to", .l1$txt, fixed = TRUE) &&
+        grepl(paste0("Table written to ", .jst_norm_path(.lf)),
+              gsub("\\s+", " ", .l1$txt), fixed = TRUE))
+
+.ltag <- function(x, tag) {
+  c(open = lengths(regmatches(x, gregexpr(paste0("<", tag, "[ >]"), x))),
+    close = lengths(regmatches(x, gregexpr(paste0("</", tag, ">"), x))))
+}
+check("L02 document.xml is one table of 10 rows (the caption row, the header, three headings and four variables, the note row): every tag closed, the body's one w:tbl, a gridCol per column, each row's cells spanning the six columns",
+      all(vapply(c("w:document", "w:body", "w:tbl", "w:tr", "w:tc", "w:p", "w:r", "w:t"),
+                 function(t) { n <- .ltag(.ldoc, t); n[["open"]] == n[["close"]] }, logical(1))) &&
+        .ltag(.ldoc, "w:tbl")[["open"]] == 1L &&
+        .ltag(.ldoc, "w:tr")[["open"]] == 10L &&
+        lengths(regmatches(.ldoc, gregexpr("<w:gridCol ", .ldoc))) == 6L &&
+        all(vapply(regmatches(.ldoc, gregexpr("<w:tr>.*?</w:tr>", .ldoc))[[1]], function(r) {
+          cells <- lengths(regmatches(r, gregexpr("<w:tc>", r)))
+          spans <- as.integer(unlist(regmatches(r, gregexpr("(?<=<w:gridSpan w:val=\")[0-9]+", r, perl = TRUE))))
+          cells - length(spans) + sum(spans) == 6L
+        }, logical(1))))
+
+check("L03 the caption is the table's FIRST ROW (apa's default since the S400 walk): one cell spanning the table with no borders, two paragraphs in it -- the first on Word's SEQ Table field with the cached number 1 in bold, the second the title in italics, kept with the next -- and no caption paragraph outside the table",
+      grepl("<w:pStyle w:val=\"Caption\"/><w:keepNext/>", .ldoc, fixed = TRUE) &&
+        grepl("<w:instrText xml:space=\"preserve\"> SEQ Table \\* ARABIC </w:instrText>", .ldoc, fixed = TRUE) &&
+        grepl("<w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:rPr><w:b/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">1</w:t></w:r>", .ldoc, fixed = TRUE) &&
+        grepl("<w:rPr><w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">Descriptive Statistics for Study Variables</w:t>", .ldoc, fixed = TRUE) &&
+        regexpr("<w:tbl>", .ldoc, fixed = TRUE) < regexpr("SEQ Table", .ldoc, fixed = TRUE) &&
+        !grepl("Caption", sub("<w:tbl>.*$", "", .ldoc), fixed = TRUE) &&
+        grepl("^<w:tr><w:trPr><w:cantSplit/><w:tblHeader/></w:trPr><w:tc><w:tcPr><w:tcW w:w=\"[0-9]+\" w:type=\"dxa\"/><w:gridSpan w:val=\"6\"/><w:tcBorders><w:top w:val=\"nil\"/><w:left w:val=\"nil\"/><w:bottom w:val=\"nil\"/><w:right w:val=\"nil\"/></w:tcBorders>",
+              regmatches(.ldoc, gregexpr("<w:tr>.*?</w:tr>", .ldoc))[[1]][1]))
+
+check("L04 the caption row and the header row repeat across pages (Word repeats a table's top rows), the stub head flush left and the statistics' heads centered, n, M and SD in italics, Min and Max upright",
+      grepl("<w:trPr><w:cantSplit/><w:tblHeader/></w:trPr>", .ldoc, fixed = TRUE) &&
+        lengths(regmatches(.ldoc, gregexpr("<w:tblHeader/>", .ldoc))) == 2L &&
+        grepl("<w:jc w:val=\"left\"/></w:pPr><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">Variable</w:t>", .ldoc, fixed = TRUE) &&
+        grepl("<w:jc w:val=\"center\"/></w:pPr><w:r><w:rPr><w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">SD</w:t>", .ldoc, fixed = TRUE) &&
+        grepl("<w:jc w:val=\"center\"/></w:pPr><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">Max</w:t>", .ldoc, fixed = TRUE))
+
+check("L05 the rules are APA's: a rule above and below the header cells and under the last row's cells (18 edges), no vertical rule, every other edge nil, the table's own borders nil",
+      lengths(regmatches(.ldoc, gregexpr("w:val=\"single\" w:sz=\"8\"", .ldoc))) == 18L &&
+        lengths(regmatches(.ldoc, gregexpr("<w:top w:val=\"single\"", .ldoc))) == 6L &&
+        lengths(regmatches(.ldoc, gregexpr("<w:bottom w:val=\"single\"", .ldoc))) == 12L &&
+        !grepl("<w:left w:val=\"single\"", .ldoc, fixed = TRUE) &&
+        !grepl("<w:right w:val=\"single\"", .ldoc, fixed = TRUE) &&
+        grepl("<w:tblBorders><w:top w:val=\"nil\"/><w:left w:val=\"nil\"/><w:bottom w:val=\"nil\"/><w:right w:val=\"nil\"/><w:insideH w:val=\"nil\"/><w:insideV w:val=\"nil\"/></w:tblBorders>", .ldoc, fixed = TRUE))
+
+check("L06 a heading row spans the table in italics; a row under it is indented 180 twips; a mark is a superscript run after the label",
+      grepl("<w:gridSpan w:val=\"6\"/>", .ldoc, fixed = TRUE) &&
+        grepl("<w:rPr><w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">Independent variables</w:t>", .ldoc, fixed = TRUE) &&
+        grepl("<w:ind w:left=\"180\"/></w:pPr><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">Annual income (USD)</w:t></w:r><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/><w:vertAlign w:val=\"superscript\"/></w:rPr><w:t xml:space=\"preserve\">a</w:t></w:r>", .ldoc, fixed = TRUE) &&
+        lengths(regmatches(.ldoc, gregexpr("<w:ind w:left=\"180\"/>", .ldoc))) == 4L)
+
+check("L07 every number sits on a decimal tab stop in its cell, with no tab character, the stop short of the cell's right edge",
+      lengths(regmatches(.ldoc, gregexpr("<w:tab w:val=\"decimal\" w:pos=\"", .ldoc))) == 20L &&
+        !grepl("<w:tab/>", .ldoc, fixed = TRUE) &&
+        grepl("<w:tabs><w:tab w:val=\"decimal\" w:pos=\"[0-9]+\"/></w:tabs><w:spacing [^>]*/></w:pPr><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">49,855.67</w:t>", .ldoc) &&
+        local({
+          cells <- regmatches(.ldoc, gregexpr("<w:tc><w:tcPr><w:tcW w:w=\"[0-9]+\"[^>]*>.*?</w:tc>", .ldoc))[[1]]
+          ok <- TRUE
+          for (cl in cells) {
+            w <- as.integer(sub(".*<w:tcW w:w=\"([0-9]+)\".*", "\\1", cl))
+            p <- regmatches(cl, gregexpr("(?<=w:pos=\")[0-9]+", cl, perl = TRUE))[[1]]
+            if (length(p) && any(as.integer(p) >= w - 216L)) ok <- FALSE
+          }
+          ok
+        }))
+
+check("L08 the notes are the table's LAST ROW, under the bottom rule: the italic Note. and N, the user's sentence, then the specific note with its superscript a; no note paragraph outside the table",
+      grepl("<w:r><w:rPr><w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">Note.</w:t></w:r><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\"> </w:t></w:r><w:r><w:rPr><w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">N</w:t></w:r><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\"> = 103. Wellbeing is scored from 0 to 100.</w:t></w:r>", .ldoc, fixed = TRUE) &&
+        grepl("<w:vertAlign w:val=\"superscript\"/></w:rPr><w:t xml:space=\"preserve\">a</w:t></w:r><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\"> Mean-centered.</w:t>", .ldoc, fixed = TRUE) &&
+        regexpr("Mean-centered.", .ldoc, fixed = TRUE) < regexpr("</w:tbl>", .ldoc, fixed = TRUE) &&
+        regexpr("Mean-centered.", .ldoc, fixed = TRUE) > regexpr("Daily commute time", .ldoc, fixed = TRUE) &&
+        !grepl("Mean-centered", sub("^.*</w:tbl>", "", .ldoc), fixed = TRUE))
+
+check("L09 the page: A4 portrait with one-inch margins; the styles part sets Times New Roman 12 for every script and the Normal and Caption styles",
+      grepl("<w:sectPr><w:pgSz w:w=\"11906\" w:h=\"16838\"/><w:pgMar w:top=\"1440\" w:right=\"1440\" w:bottom=\"1440\" w:left=\"1440\"", .ldoc, fixed = TRUE) &&
+        grepl("<w:rFonts w:ascii=\"Times New Roman\" w:hAnsi=\"Times New Roman\" w:cs=\"Times New Roman\" w:eastAsia=\"Times New Roman\"/><w:sz w:val=\"24\"/>", .lsty, fixed = TRUE) &&
+        grepl("w:styleId=\"Normal\"", .lsty, fixed = TRUE) && grepl("w:styleId=\"Caption\"", .lsty, fixed = TRUE))
+
+# The XML pinned whole: a build that changes the writer re-pins these.
+check("L10 document.xml and styles.xml pinned by their checksums",
+      identical(unname(tools::md5sum(file.path(.lx, "word", "document.xml"))), "06cb16b3a55ddcdeb85d749d960d9db2") &&
+        identical(unname(tools::md5sum(file.path(.lx, "word", "styles.xml"))), "48761045aed48494802a638a03d41c3e"))
+
+# The caption and the notes as PARAGRAPHS (the alternative placement), the
+# journal caption form, the symbol marks, the rules and fills a report
+# style sets.
+.lsr <- .jst_style_apa
+.lsr$general$caption.position <- "paragraph"; .lsr$general$note.position <- "paragraph"
+.lsr$general$caption.form <- "journal"; .lsr$general$marks <- "symbols"
+.lsr$general$rules <- "grid"; .lsr$general$header.fill <- "1F3864"
+.lsr$general$header.text <- "FFFFFF"; .lsr$general$header.bold <- "yes"
+.lsr$general$band.fill <- "F2F2F2"; .lsr$general$landscape <- "yes"
+.lsr$general$paper <- "letter"
+.lr <- .jst_table_build_desc(list(.j0), .lsr, headings = .jh,
+                             markers = list("Mean-centered" = c("Income", "Age")))
+.lrf <- file.path(.td, "rows.docx")
+.jst_docx_pack(.jst_docx_parts(list(.lr), .lsr), .lrf)
+.lrx <- file.path(.td, "xr"); unlink(.lrx, recursive = TRUE)
+invisible(utils::unzip(.lrf, exdir = .lrx))
+.lrd <- paste(readLines(file.path(.lrx, "word", "document.xml"), warn = FALSE,
+                        encoding = "UTF-8"), collapse = "\n")
+check("L11 caption.position = paragraph and note.position = paragraph: the caption is a paragraph before the table (Word's Caption style), the notes paragraphs after it, the header row alone repeated; the journal form puts bold 'Table 1.' and the title on one line",
+      .ltag(.lrd, "w:tr")[["open"]] == 8L &&
+        lengths(regmatches(.lrd, gregexpr("<w:tblHeader/>", .lrd))) == 1L &&
+        regexpr("SEQ Table", .lrd, fixed = TRUE) < regexpr("<w:tbl>", .lrd, fixed = TRUE) &&
+        regexpr("Mean-centered.", .lrd, fixed = TRUE) > regexpr("</w:tbl>", .lrd, fixed = TRUE) &&
+        grepl("<w:t xml:space=\"preserve\">.</w:t></w:r><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\"> Descriptive Statistics</w:t>", .lrd, fixed = TRUE) &&
+        grepl("<w:pStyle w:val=\"Caption\"/>", sub("<w:tbl>.*$", "", .lrd), fixed = TRUE))
+
+check("L12 ... symbol marks: the dagger on the marked rows and in the note; a grid draws every edge; the header fill and text colour, bold heads; banded rows; a landscape Letter page",
+      grepl(paste0("<w:vertAlign w:val=\"superscript\"/></w:rPr><w:t xml:space=\"preserve\">", "\u2020", "</w:t>"), .lrd, fixed = TRUE) &&
+        lengths(regmatches(.lrd, gregexpr("<w:left w:val=\"single\"", .lrd))) >= 20L &&
+        grepl("<w:shd w:val=\"clear\" w:color=\"auto\" w:fill=\"1F3864\"/>", .lrd, fixed = TRUE) &&
+        grepl("<w:b/><w:i/><w:color w:val=\"FFFFFF\"/>", .lrd, fixed = TRUE) &&
+        grepl("<w:shd w:val=\"clear\" w:color=\"auto\" w:fill=\"F2F2F2\"/>", .lrd, fixed = TRUE) &&
+        grepl("<w:pgSz w:w=\"15840\" w:h=\"12240\" w:orient=\"landscape\"/>", .lrd, fixed = TRUE))
+
+# landscape = auto: a table wider than the portrait text width turns the page.
+.lw <- local({
+  w <- data.frame(A = 1:12, B = 1:12 * 2)
+  attr(w$A, "label") <- paste(rep("A very long variable label", 5), collapse = " ")
+  attr(w$B, "label") <- "B"
+  res(jdesc(w, A, B))$val
+})
+.lwf <- file.path(.td, "wide.docx")
+invisible(res(jtable(.lw, file = .lwf, overwrite = TRUE, print = FALSE)))
+.lwx <- file.path(.td, "xw"); unlink(.lwx, recursive = TRUE)
+invisible(utils::unzip(.lwf, exdir = .lwx))
+.lwd <- paste(readLines(file.path(.lwx, "word", "document.xml"), warn = FALSE,
+                        encoding = "UTF-8"), collapse = "\n")
+check("L13 landscape = auto: a table whose natural width passes the portrait text width is written on a landscape page, its columns shrunk to the page when they pass even that",
+      grepl("w:orient=\"landscape\"", .lwd, fixed = TRUE) &&
+        sum(as.integer(regmatches(.lwd, gregexpr("(?<=<w:gridCol w:w=\")[0-9]+", .lwd, perl = TRUE))[[1]])) <= 16838L - 2880L)
+
+# A negative statistic carries the minus sign in the file and a hyphen in
+# the preview.
+.ln <- local({
+  w <- data.frame(Change = c(-3.5, -1.25, -2, -4.75)); attr(w$Change, "label") <- "Change"
+  res(jdesc(w, Change))
+})
+.lnt <- res(jtable(.ln$val, file = file.path(.td, "neg.docx"), overwrite = TRUE))
+.lnx <- file.path(.td, "xn"); unlink(.lnx, recursive = TRUE)
+invisible(utils::unzip(file.path(.td, "neg.docx"), exdir = .lnx))
+.lnd <- paste(readLines(file.path(.lnx, "word", "document.xml"), warn = FALSE,
+                        encoding = "UTF-8"), collapse = "\n")
+check("L14 a negative value: the minus sign (U+2212) in the file's cells, a hyphen in the preview; Min and Max keep the data's two places",
+      grepl(paste0("<w:t xml:space=\"preserve\">", "\u2212", "2.88</w:t>"), .lnd, fixed = TRUE) &&
+        grepl(paste0("<w:t xml:space=\"preserve\">", "\u2212", "4.75</w:t>"), .lnd, fixed = TRUE) &&
+        !grepl("\u2212", .lnt$txt, fixed = TRUE) &&
+        grepl("Change    4  -2.88  1.56  -4.75  -1.25", .lnt$txt, fixed = TRUE))
+
+# The overwrite gate, where the session cannot ask.
+.lo <- res(.jst_table_overwrite_gate(.lf, overwrite = FALSE, ask = FALSE))
+.lo2 <- res(.jst_table_overwrite_gate(.lf, overwrite = TRUE, ask = FALSE))
+.lo3 <- res(.jst_table_overwrite_gate(file.path(.td, "new.docx"), overwrite = FALSE, ask = FALSE))
+check("L15 a file that exists, overwrite = FALSE, where the session cannot ask: the stop names the path and both ways out; overwrite = TRUE and a new name pass",
+      is.null(.lo$val) &&
+        grepl(paste0("jtable(): this file already exists:\n  ", .jst_norm_path(.lf), "\n",
+                     "To keep the file, save under another file name.\n",
+                     "To replace it, add overwrite = TRUE to the call, then run it again."),
+              .lo$txt, fixed = TRUE) &&
+        isTRUE(.lo2$val) && isTRUE(.lo3$val))
+
+# A single file holding two tables: numbered in order, a paragraph between.
+.l2f <- file.path(.td, "two.docx")
+.jst_docx_pack(.jst_docx_parts(list(.j2, .j1), .jst_style_apa), .l2f)
+.l2x <- file.path(.td, "x2"); unlink(.l2x, recursive = TRUE)
+invisible(utils::unzip(.l2f, exdir = .l2x))
+.l2d <- paste(readLines(file.path(.l2x, "word", "document.xml"), warn = FALSE,
+                        encoding = "UTF-8"), collapse = "\n")
+check("L16 two tables in one file: two SEQ fields cached 1 and 2, two tables each holding its caption and notes, one empty paragraph between them so Word keeps them apart",
+      .ltag(.l2d, "w:tbl")[["open"]] == 2L &&
+        lengths(regmatches(.l2d, gregexpr("SEQ Table", .l2d))) == 2L &&
+        grepl("<w:t xml:space=\"preserve\">2</w:t>", .l2d, fixed = TRUE) &&
+        lengths(regmatches(.l2d, gregexpr("</w:tbl><w:p><w:pPr><w:spacing [^>]*/></w:pPr></w:p><w:tbl>", .l2d))) == 1L &&
+        !grepl("</w:tbl><w:p><w:pPr><w:spacing [^>]*/></w:pPr><w:r>", .l2d))
+
+# A built table given back to jtable(): previewed and written as it is.
+.lb <- res(jtable(.j2, file = file.path(.td, "built.docx"), overwrite = TRUE))
+.lbx <- file.path(.td, "xb"); unlink(.lbx, recursive = TRUE)
+invisible(utils::unzip(file.path(.td, "built.docx"), exdir = .lbx))
+.lb2 <- res(jtable(list(.j2, .j1), file = file.path(.td, "built2.docx"), overwrite = TRUE))
+.lb2x <- file.path(.td, "xb2"); unlink(.lb2x, recursive = TRUE)
+invisible(utils::unzip(file.path(.td, "built2.docx"), exdir = .lb2x))
+.lb2d <- paste(readLines(file.path(.lb2x, "word", "document.xml"), warn = FALSE,
+                         encoding = "UTF-8"), collapse = "\n")
+.lb3 <- res(jtable(list(.j2, .j0), print = FALSE))
+.lb4 <- res(jtable(.j2, title = "New", print = FALSE))
+check("L17 a built table given to jtable() is previewed and written as it is, the same file; a list of two is previewed as Tables 1 and 2 and written to one file; a table beside a result, or with a title, stops",
+      identical(sub("Table written to.*$", "", .lb$txt),
+                sub("Table written to.*$", "", .l1$txt)) && inherits(.lb$val, "jst_table") &&
+        identical(unname(tools::md5sum(file.path(.lbx, "word", "document.xml"))),
+                  unname(tools::md5sum(file.path(.lx, "word", "document.xml")))) &&
+        grepl("^Table 1\n", .lb2$txt) && grepl("\nTable 2\nDescriptive Statistics\n", .lb2$txt) &&
+        grepl("\nTables written to", .lb2$txt) && length(.lb2$val) == 2L &&
+        .ltag(.lb2d, "w:tbl")[["open"]] == 2L &&
+        is.null(.lb3$val) &&
+        grepl("jtable() takes built tables or saved results in one", .lb3$txt, fixed = TRUE) &&
+        is.null(.lb4$val) &&
+        grepl("belong to the", .lb4$txt, fixed = TRUE) && grepl("keeps its own.", .lb4$txt, fixed = TRUE))
+
+# =============================================================================
+# M. output.dir: the setting, and where jtable() writes
+# =============================================================================
+cat("\n--- M. output.dir ---\n")
+
+.entry_od <- getOption(".jst_options_output_dir")
+options(.jst_options_output_dir = NULL)
+.m0 <- .strip_ansi(suppressMessages(utils::capture.output(joptions())))
+check("M01 the full panel has seven rows: Output folder after Data folder, 'Working directory' when unset",
+      identical(.m0[1:8], c("Options Settings",
+                            "Missing-value convention: None selected",
+                            "SPSS-style missing value codes: -99, -98, -97",
+                            "Data folder: Working directory",
+                            "Output folder: Working directory",
+                            "Correlation layout: wide",
+                            "Missing-value detail: per_code",
+                            "Message width: 76")))
+
+.mo <- file.path(.td, "Tables"); unlink(.mo, recursive = TRUE)
+.m1 <- res(joptions(output.dir = .mo))
+check("M02 joptions(output.dir = ) creates the folder, echoes the one slot and notes the folder, in jsave()'s data.dir form; the setting is stored under its own key",
+      dir.exists(.mo) &&
+        identical(.strip_ansi(strsplit(.m1$txt, "\n", fixed = TRUE)[[1]])[1:4],
+                  c("Options Settings", paste0("Output folder: ", .mo),
+                    "Run joptions() to see all settings.", "")) &&
+        any(grepl(paste0("Created the output folder:\n  ", .mo), vapply(.seen, `[[`, "", "text"), fixed = TRUE)) &&
+        identical(getOption(".jst_options_output_dir"), .mo) &&
+        ".jst_options_output_dir" %in% .jst_session_option_keys)
+
+.m3 <- res(jtable(.j0, file = "bare.docx", print = FALSE))
+.m3b <- res(jtable(.j0, file = file.path(.td, "elsewhere.docx"), print = FALSE))
+check("M03 a bare file name goes in the output folder; a path with a folder goes where it says",
+      file.exists(file.path(.mo, "bare.docx")) &&
+        file.exists(file.path(.td, "elsewhere.docx")) && !file.exists(file.path(.mo, "elsewhere.docx")))
+
+unlink(.mo, recursive = TRUE)
+.m4 <- res(jtable(.j0, file = "again.docx", print = FALSE))
+check("M04 an output folder removed after it was set is created again at the write, with the note",
+      dir.exists(.mo) && file.exists(file.path(.mo, "again.docx")) &&
+        any(grepl(paste0("Created the output folder:\n  ", .mo), vapply(.seen, `[[`, "", "text"), fixed = TRUE)))
+
+.m5 <- res(jtable(.j0, file = file.path(.td, "no_such_folder", "t.docx"), print = FALSE))
+check("M05 a path whose folder does not exist stops before anything is written",
+      is.null(.m5$val) &&
+        grepl(paste0("jtable(): the folder does not exist:\n  ", .jst_norm_path(file.path(.td, "no_such_folder"))),
+              .m5$txt, fixed = TRUE))
+
+.m6 <- res(joptions(output.dir = NULL))
+.m6b <- res(joptions(output.dir = "NULL"))
+.m6c <- res(joptions(output.dir = 42))
+.m6d <- res(joptions(output.dir = Tables))
+check("M06 output.dir = NULL clears the folder (and \"\" would); the typo guard, a value that is not a string, and a folder typed bare stop as data.dir's do",
+      is.null(getOption(".jst_options_output_dir")) &&
+        grepl("Output folder: Working directory", .m6$txt, fixed = TRUE) &&
+        grepl("joptions(): output.dir = \"NULL\" looks like a typo.", .m6b$txt, fixed = TRUE) &&
+        grepl("joptions(): output.dir must be a single character string,", .m6c$txt, fixed = TRUE) &&
+        grepl("joptions(): Tables is not in quotes.\noutput.dir = takes a folder name in quotes:", .m6d$txt, fixed = TRUE) &&
+        grepl("  joptions(output.dir = \"Tables\")", .m6d$txt, fixed = TRUE))
+
+options(.jst_options_output_dir = .entry_od)
+unlink(.td, recursive = TRUE)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # The analyses above raise notes and warnings of their own (a seems-
