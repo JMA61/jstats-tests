@@ -22,10 +22,20 @@
 #           tabs, marks and note row; the paragraph placements, a report
 #           style's fills and grid, landscape auto, the minus sign; the
 #           overwrite gate; a built table given back); and the output.dir
-#           setting. Later Slate T builds add their sections here.
+#           setting.
+#           (N-T) build 2 (S401, v0.9.271): style files -- the reader, the
+#           folders searched, based.on, every stop and the note on a newer
+#           file's settings; jstyle()'s list, printout and save.as; the
+#           frequency table from jfreq() results (the cells computed here
+#           from the data, the preview pinned whole, the Word file pinned by
+#           its checksum); the style and style.dir settings; a style's
+#           settings given in the call; open =; a bare file name written
+#           where it was asked to be. Later Slate T builds add their
+#           sections here.
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.270, 2026-10-29 (S400) -- 107/107 on the WORKSTATION;
-#           the S400 EDIT block below holds the stamp. Prior: v0.9.269,
+# LAST VERIFIED: v0.9.271, 2026-10-29 (S401) -- 141/141 on the WORKSTATION;
+#           the S401 EDIT block below holds the stamp. Prior: v0.9.270,
+#           2026-10-29 (S400) -- 107/107 (the S400 EDIT block); v0.9.269,
 #           2026-10-28 (S399) -- 56/56 on the WORKSTATION through
 #           receive_all() ("ALL BATTERIES GREEN (12 run, 3407 checks)"; R
 #           CMD check 0 errors, 0 warnings, 0 notes), matching the sandbox
@@ -42,14 +52,87 @@
 #           condition an analysis raises), the user's objects put back.
 #           Setup also forces the missing-value convention UNSET (no call
 #           here leans on it) and the diagnostics setting off, both handed
-#           back at the foot.
+#           back at the foot; since S401 the style and the style folder
+#           unset as well, and R_USER_DATA_DIR (which section N points at a
+#           temporary folder) put back as it was.
 # DATA:     the shipped community dataset (.jst_get_package_dataset()), the
 #           standing fixture community_phase2_data.rds, and small frames
-#           built here for what neither holds.
+#           built here for what neither holds; the style files N-T read are
+#           written here, into temporary folders removed at the foot.
 # EXPECTED VALUES are computed here from the data, not read from the
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S401 EDIT (v0.9.271, 2026-10-29): Capability Slate T, build 2. SECTIONS N-T
+#           ADDED, 34 checks (141 in all). (N) style files: the settings'
+#           spec beside the apa list; every form a file is read in (a
+#           byte-order mark, two too, Windows line ends, comments, quoted
+#           values, a color with its #, a color name); the folders searched
+#           in order, the first winning; based.on chains; a style not found,
+#           a loop, every stop in a file, the did-you-mean on a near miss,
+#           a wrong value after the line that set it; a newer jstats's file,
+#           its unknown settings skipped in one note. (O) jstyle(): the
+#           list, the printout with each inherited setting's source, save.as
+#           (a complete copy, its stamps, the per-user folder created), its
+#           stops. (P) the frequency table from jfreq() results: the label
+#           rows and indented categories, n and % of all cases computed here
+#           from the data, missing.rows in its three modes, the codes and
+#           blank cells, several results in one table with role headings,
+#           the N note, the stops, the preview pinned whole, the Word file
+#           read for its rows and pinned by checksum, a column of numbers
+#           centered under its head. (Q) joptions(style =, style.dir =):
+#           the panel's two rows, the folder created, the style read as
+#           jtable() would, the stops (a call that stops creating no
+#           folder it names), the reset. (R) a style's settings in
+#           the call: the type's section outranks the file; the stops. (S)
+#           open =. (T) a bare file name written into the working directory
+#           or a relative output folder (the S401 defect: until S401 the
+#           Word writer named its temporary file relative to the zip root,
+#           and the table was never written). RE-PINNED: I07 (the style
+#           object's layers), J12 (the stop on a jcorr() result names
+#           jfreq() as well), J14 (a style not found), L10 (document.xml: the
+#           decimal tabs center the block of numbers under its head), M01
+#           (the full panel has nine rows). MUTATION MAP (S401; 53
+#           one-change mutants of tables.R, options.R and zzz.R, each red;
+#           by the first check that reds): a layer's section skipped I07; a
+#           file named apa.jstyle shadowing the built-in I07; the layers
+#           read last to first N02; comments kept N02; a color's # read as a
+#           comment N02; color names not converted N02; the byte-order mark
+#           kept N02; a choice read case-sensitively N02; thresholds not
+#           put largest first N02; based.on falling back to nothing N02;
+#           the per-user folder before the working directory N03; a later
+#           folder's file listed beside the first N03; the cycle check
+#           removed N05; a setting given twice, the last winning N06; a
+#           section opened twice N06; based.on in a section N06; a newer
+#           format read anyway N06; no did-you-mean on a near miss N07; an
+#           unknown setting skipped whatever the file's version N07; a
+#           number's range not checked N08; a whole number not required
+#           N08; a column named twice N08; the newer stamp ignored N09; the
+#           skipped settings out of the file's order N09; the source marks
+#           dropped O02; the saved file without its notes O03, or its
+#           written.by stamp O03; the per-user folder not created O04;
+#           save.as = "apa" allowed O05; the combined Missing row dropped
+#           P01; categories not indented P01; a category named by its code
+#           despite its label P01; percent of the valid cases P02; the
+#           call's settings read after the file's P03; system missing not
+#           named Missing in the each mode P03; the N note whatever the
+#           pools P06; a variable in two results P07; a named list of one
+#           result losing its heading J08; a variable's label row set in
+#           italics P09; the decimal tabs at the right-hand limit L10; the
+#           Style row missing from the panel M01; zzz.R without the style
+#           key Q01; style.dir not created Q02; a folder the call names
+#           created before the style check Q02; joptions(style =) not
+#           checked Q03; the reset leaving the style Q05; a head italic
+#           whatever its label R01; print() redrawing in the default style
+#           R01; a general setting in the call R02; another type's setting
+#           in the call R02; open = TRUE without file = S01; the opener used
+#           in a script S01; the temporary file named relative again T01.
+#           LAST VERIFIED: v0.9.271, 2026-10-29 (S401) -- 141/141 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3492 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE (no question asked), and entered dirty.
 # S400 EDIT (v0.9.270, 2026-10-29): Capability Slate T, build 1. SECTIONS I-M
 #           ADDED, 51 checks (107 in all). (I) the number formats: the
 #           decimals, thousands separators, the minus sign, the leading zero
@@ -146,10 +229,18 @@ stopifnot(exists("jload", mode = "function"))
                                               ".jst_missing_notice_shown")),
                         getOption)
 
+# The style and its folder (S401), and the per-user folder's location
+# (R_USER_DATA_DIR, which section N points at a temporary folder).
+.entry_style     <- getOption(".jst_options_style")
+.entry_style_dir <- getOption(".jst_options_style_dir")
+.entry_udd       <- Sys.getenv("R_USER_DATA_DIR", unset = NA)
+
 .pin_width <- 76L
 options(.jst_options_message_width = .pin_width)
 # No call here names or leans on a convention: the slot is forced UNSET.
 options(.jst_options_missing_convention = NULL)
+# Nor on a style of the session's own: the apa default, no style folder.
+options(.jst_options_style = NULL, .jst_options_style_dir = NULL)
 
 # The data. tp2 is the standing fixture; tcm the shipped community dataset.
 jload("E:/00 R Projects/00_jstats_test_data/datasets/community_phase2_data.rds",
@@ -789,7 +880,8 @@ check("I07 the built-in apa style: a key is read from the table type's section, 
         identical(.jst_style_key(.jst_style_apa, "descriptives", "caption.form"), "apa") &&
         inherits(tryCatch(.jst_style_key(.jst_style_apa, "descriptives", "no.such.key"),
                           error = function(e) e), "error") &&
-        identical(.jst_style_resolve("APA"), .jst_style_apa))
+        inherits(.jst_style_resolve("APA"), "jst_style") &&
+        identical(.jst_style_resolve("APA")$layers[[1]][-1], .jst_style_apa))
 
 # =============================================================================
 # J. The descriptives table's structure, from a jdesc() result
@@ -946,14 +1038,14 @@ check("J11 an item with no name stops with the example; a value that is not a li
         grepl("markers = takes a named list of variable names,", .j11b$txt, fixed = TRUE) &&
         grepl("markers = list(\"Mean-centered\" = c(Age, Income))", .j11b$txt, fixed = TRUE))
 
-.j12 <- res(jtable(.a1, print = FALSE))
+.j12 <- res(jtable(res(jcorr(tcm, Age, Income))$val, print = FALSE))
 .j12b <- res(jtable(tcm, print = FALSE))
 .j12c <- res(jtable(list(.j0, .a1), print = FALSE))
 .j12d <- res(jtable(list(), print = FALSE))
 check("J12 a result of another kind stops, naming its function; a data frame is not a result; results of two kinds in one list stop; an empty list stops",
       is.null(.j12$val) &&
-        grepl("jtable() does not yet make a table from a jfreq() result.", .j12$txt, fixed = TRUE) &&
-        grepl("It makes a table from a jdesc() result.", .j12$txt, fixed = TRUE) &&
+        grepl("jtable() does not yet make a table from a jcorr() result.", .j12$txt, fixed = TRUE) &&
+        grepl("It makes a table from a jdesc() or jfreq() result.", .j12$txt, fixed = TRUE) &&
         is.null(.j12b$val) &&
         grepl("jtable() takes a saved result -- what an analysis function", .j12b$txt, fixed = TRUE) &&
         grepl("  d1 <- jdesc(community, Age, Income)", .j12b$txt, fixed = TRUE) &&
@@ -989,7 +1081,7 @@ check("J14 the front door: an unused input, the pointer for notes =, a bare word
         grepl("jtable(): apa is not in quotes.\nstyle = takes a style name in quotes:",
               .j14c$txt, fixed = TRUE) &&
         grepl("  jtable(.j0, style = \"apa\", print = FALSE)", .j14c$txt, fixed = TRUE) &&
-        grepl("`style` must be \"apa\".", .j14d$txt, fixed = TRUE) &&
+        grepl("jtable(): no style named \"journal\" was found.", .j14d$txt, fixed = TRUE) &&
         grepl("jtable(): Table1.docx is not in quotes.\nfile = takes a file name in quotes:",
               .j14e$txt, fixed = TRUE) &&
         grepl("  jtable(.j0, file = \"Table1.docx\", print = FALSE)", .j14e$txt, fixed = TRUE) &&
@@ -1184,8 +1276,11 @@ check("L09 the page: A4 portrait with one-inch margins; the styles part sets Tim
         grepl("w:styleId=\"Normal\"", .lsty, fixed = TRUE) && grepl("w:styleId=\"Caption\"", .lsty, fixed = TRUE))
 
 # The XML pinned whole: a build that changes the writer re-pins these.
+# S401 (v0.9.271): document.xml re-pinned for the decimal tabs, which center
+# each column's block of numbers (every one of the 20 stops 20 twips to the
+# left in this table; nothing else in the part moved).
 check("L10 document.xml and styles.xml pinned by their checksums",
-      identical(unname(tools::md5sum(file.path(.lx, "word", "document.xml"))), "06cb16b3a55ddcdeb85d749d960d9db2") &&
+      identical(unname(tools::md5sum(file.path(.lx, "word", "document.xml"))), "dfe328f1530d3aa51da7c818279388aa") &&
         identical(unname(tools::md5sum(file.path(.lx, "word", "styles.xml"))), "48761045aed48494802a638a03d41c3e"))
 
 # The caption and the notes as PARAGRAPHS (the alternative placement), the
@@ -1314,15 +1409,17 @@ cat("\n--- M. output.dir ---\n")
 .entry_od <- getOption(".jst_options_output_dir")
 options(.jst_options_output_dir = NULL)
 .m0 <- .strip_ansi(suppressMessages(utils::capture.output(joptions())))
-check("M01 the full panel has seven rows: Output folder after Data folder, 'Working directory' when unset",
-      identical(.m0[1:8], c("Options Settings",
-                            "Missing-value convention: None selected",
-                            "SPSS-style missing value codes: -99, -98, -97",
-                            "Data folder: Working directory",
-                            "Output folder: Working directory",
-                            "Correlation layout: wide",
-                            "Missing-value detail: per_code",
-                            "Message width: 76")))
+check("M01 the full panel has nine rows (two since S401): Output folder after Data folder, 'Working directory' when unset",
+      identical(.m0[1:10], c("Options Settings",
+                             "Missing-value convention: None selected",
+                             "SPSS-style missing value codes: -99, -98, -97",
+                             "Data folder: Working directory",
+                             "Output folder: Working directory",
+                             "Style: apa",
+                             "Style folder: Not set",
+                             "Correlation layout: wide",
+                             "Missing-value detail: per_code",
+                             "Message width: 76")))
 
 .mo <- file.path(.td, "Tables"); unlink(.mo, recursive = TRUE)
 .m1 <- res(joptions(output.dir = .mo))
@@ -1367,6 +1464,648 @@ check("M06 output.dir = NULL clears the folder (and \"\" would); the typo guard,
 
 options(.jst_options_output_dir = .entry_od)
 unlink(.td, recursive = TRUE)
+
+# =============================================================================
+# N. Style files: the reader, the lookup, based.on (build 2, S401)
+# =============================================================================
+cat("\n--- N. Style files ---\n")
+
+# Every style this battery reads is written into a folder of its own, set
+# as the style folder; the per-user folder is pointed at a temporary one
+# (R_USER_DATA_DIR), so nothing is written into the user's own folders.
+# All three are handed back at the foot.
+.ns <- file.path(tempdir(), "tables_check_styles"); unlink(.ns, recursive = TRUE)
+dir.create(.ns)
+.nu <- file.path(tempdir(), "tables_check_user"); unlink(.nu, recursive = TRUE)
+Sys.setenv(R_USER_DATA_DIR = .nu)
+.nud <- tools::R_user_dir("jstats", "data")
+options(.jst_options_style = NULL, .jst_options_style_dir = .ns)
+.wsty <- function(name, ..., dir = .ns) {
+  p <- file.path(dir, paste0(name, ".jstyle"))
+  writeBin(charToRaw(enc2utf8(paste0(paste(c(...), collapse = "\n"), "\n"))), p)
+  invisible(p)
+}
+.nf1 <- res(jfreq(tcm, Education, Region, Smoker))$val
+
+check("N01 the settings' spec and the built-in apa list name the same settings in every part, in one order, and every apa value passes its own check unchanged",
+      identical(names(.jst_style_spec), names(.jst_style_apa)) &&
+        all(vapply(names(.jst_style_apa), function(p)
+          identical(names(.jst_style_spec[[p]]), names(.jst_style_apa[[p]])), logical(1))) &&
+        all(unlist(lapply(names(.jst_style_apa), function(p) {
+          vapply(names(.jst_style_apa[[p]]), function(k) {
+            v <- .jst_style_apa[[p]][[k]]
+            identical(.jst_style_check_value(k, .jst_style_spec[[p]][[k]], v, p, "jtable"), v)
+          }, logical(1))
+        }))))
+
+# A file in every form the reader takes: a byte-order mark, Windows line
+# ends, a comment line and a comment after a value, a value in quotes
+# holding a #, a color with its #, a color by name, keys, sections and
+# choices in any case, a list with a quoted item, a general setting set in
+# a section.
+writeBin(c(as.raw(c(0xef, 0xbb, 0xbf)), charToRaw(paste0(
+  "# my journal\r\nformat = 1\r\nFont = Garamond   # the face\r\n",
+  "header.fill = #1f3864\r\nrule.color = navy\r\nnote.label = \"Notes: #1\"\r\n",
+  "CAPTION.FORM = Journal\r\n\r\n[Frequencies]\r\ncolumns = n, \"valid.percent\"\r\n",
+  "stars = .05, .1\r\nmissing.label = Not answered\r\n"))),
+  file.path(.ns, "forms.jstyle"))
+.n2 <- res(.jst_style_resolve("forms"))$val
+# A second byte-order mark: R itself drops the first in a UTF-8 session
+# (and keeps it in a session that is not UTF-8); the reader drops what is
+# left at the start of the first line, here the second.
+writeBin(c(as.raw(c(0xef, 0xbb, 0xbf, 0xef, 0xbb, 0xbf)), charToRaw("font = Garamond\n")),
+         file.path(.ns, "bom2.jstyle"))
+.n2b <- res(.jst_style_resolve("bom2"))$val
+check("N02 a style file is read in every form: the byte-order mark (a second one too) and Windows line ends, comments, a quoted value holding a #, a color with its # and one by name, any case in a key, a section or a choice, a list with a quoted item, thresholds put largest first, a general setting set in a section for that type only",
+      inherits(.n2, "jst_style") && identical(.n2$name, "forms") &&
+        identical(.jst_style_key(.n2b, "general", "font"), "Garamond") &&
+        identical(.jst_style_key(.n2, "general", "font"), "Garamond") &&
+        identical(.jst_style_key(.n2, "general", "header.fill"), "1F3864") &&
+        identical(.jst_style_key(.n2, "general", "rule.color"), "000080") &&
+        identical(.jst_style_key(.n2, "general", "note.label"), "Notes: #1") &&
+        identical(.jst_style_key(.n2, "general", "caption.form"), "journal") &&
+        identical(.jst_style_key(.n2, "frequencies", "columns"), c("n", "valid.percent")) &&
+        identical(.jst_style_key(.n2, "frequencies", "stars"), c(0.1, 0.05)) &&
+        identical(.jst_style_key(.n2, "descriptives", "stars"), c(0.05, 0.01, 0.001)) &&
+        identical(.jst_style_key(.n2, "frequencies", "missing.label"), "Not answered") &&
+        identical(.jst_style_key(.n2, "descriptives", "columns"), c("n", "mean", "sd", "min", "max")) &&
+        identical(.jst_style_key_source(.n2, "general", "font"), "forms.jstyle") &&
+        identical(.jst_style_key_source(.n2, "general", "size"), "apa"))
+
+# The lookup: the style folder, then the working directory, then the
+# per-user folder; the first folder holding a name wins, its case aside;
+# "apa" is always the built-in.
+.wsty("dupe", "font = A")
+dir.create(.nud, recursive = TRUE)
+.wsty("dupe", "font = B", dir = .nud)
+.wsty("useronly", "font = U", dir = .nud)
+.wsty("apa", "font = Shadow")
+.nwd <- file.path(tempdir(), "tables_check_wd"); unlink(.nwd, recursive = TRUE); dir.create(.nwd)
+.wsty("wdonly", "font = W", dir = .nwd)
+.wsty("useronly", "font = W2", dir = .nwd)
+.n3 <- local({
+  old <- setwd(.nwd); on.exit(setwd(old))
+  list(dupe  = .jst_style_key(.jst_style_resolve("dupe"), "general", "font"),
+       DUPE  = .jst_style_key(.jst_style_resolve("DUPE"), "general", "font"),
+       ext   = .jst_style_key(.jst_style_resolve("dupe.jstyle"), "general", "font"),
+       wd    = .jst_style_key(.jst_style_resolve("wdonly"), "general", "font"),
+       wduse = .jst_style_key(.jst_style_resolve("useronly"), "general", "font"),
+       path  = .jst_style_key(.jst_style_resolve(file.path(.nud, "dupe")), "general", "font"),
+       pathx = .jst_style_key(.jst_style_resolve(file.path(.nud, "dupe.jstyle")), "general", "font"),
+       apa   = .jst_style_key(.jst_style_resolve("APA"), "general", "font"),
+       files = names(.jst_style_files()))
+})
+.n3u <- .jst_style_key(.jst_style_resolve("useronly"), "general", "font")
+check("N03 a name is looked for in the style folder, then the working directory, then the per-user folder, the first holding it winning and its case aside; a name given with .jstyle is the name; a path is read as given, .jstyle added; \"apa\" is always the built-in, an apa.jstyle passed over",
+      identical(.n3$dupe, "A") && identical(.n3$DUPE, "A") && identical(.n3$ext, "A") &&
+        identical(.n3$wd, "W") && identical(.n3$wduse, "W2") && identical(.n3u, "U") &&
+        identical(.n3$path, "B") && identical(.n3$pathx, "B") &&
+        identical(.n3$apa, "Times New Roman") &&
+        !"apa" %in% .n3$files && sum(tolower(.n3$files) == "dupe") == 1L)
+
+# based.on: a chain, each layer read in turn; the derived file's general
+# part outranks the base's section (the reference, Part 3.2).
+.wsty("base2", "font = Arial", "[frequencies]", "missing.rows = none", "percent.decimals = 2")
+.wsty("derived", "based.on = base2", "caption.form = report", "percent.decimals = 0")
+.n4 <- res(.jst_style_resolve("derived"))$val
+check("N04 based.on chains: a setting comes from the file, else the style it is based on, else apa; the derived file's general part outranks the base file's section; each layer names its source",
+      identical(vapply(.n4$layers, `[[`, character(1), "source"),
+                c("derived.jstyle", "base2.jstyle", "apa")) &&
+        identical(.jst_style_key(.n4, "general", "caption.form"), "report") &&
+        identical(.jst_style_key(.n4, "general", "font"), "Arial") &&
+        identical(.jst_style_key(.n4, "frequencies", "missing.rows"), "none") &&
+        identical(.jst_style_key(.n4, "frequencies", "percent.decimals"), 0) &&
+        identical(.jst_style_key(.n4, "descriptives", "percent.decimals"), 0) &&
+        identical(.jst_style_key(.n4, "general", "size"), 12) &&
+        identical(.jst_style_key_source(.n4, "frequencies", "missing.rows"), "base2.jstyle"))
+
+# The stops, each with what the user wrote as its subject.
+.wsty("cyc1", "based.on = cyc2"); .wsty("cyc2", "based.on = cyc1"); .wsty("me", "based.on = me")
+.wsty("nobase", "based.on = elsewhere")
+.n5a <- res(jtable(.nf1, style = "dupee", print = FALSE))
+.n5b <- res(jtable(.nf1, style = "nonesuch", print = FALSE))
+.n5c <- res(jtable(.nf1, style = "cyc1", print = FALSE))
+.n5d <- res(jtable(.nf1, style = "me", print = FALSE))
+.n5e <- res(jtable(.nf1, style = "nobase", print = FALSE))
+.n5f <- res(jtable(.nf1, style = file.path(.ns, "x.txt"), print = FALSE))
+.n5g <- res(jtable(.nf1, style = file.path(.ns, "absent"), print = FALSE))
+check("N05 a style not found: a near name offered with the call that uses it, else the styles found named; a loop of based.on, and a style based on itself; based.on naming no style; a path with another extension; a path to no file",
+      is.null(.n5a$val) &&
+        grepl("jtable(): no style named \"dupee\" was found.\nDid you mean \"dupe\"?\n  jtable(.nf1, style = \"dupe\", print = FALSE)", .n5a$txt, fixed = TRUE) &&
+        grepl("jtable(): no style named \"nonesuch\" was found.\nThe styles found are \"apa\",", .n5b$txt, fixed = TRUE) &&
+        grepl("jstyle() lists them and the folders searched.", .n5b$txt, fixed = TRUE) &&
+        grepl("jtable(): cyc1.jstyle is based on cyc2.jstyle, which is based", .n5c$txt, fixed = TRUE) &&
+        grepl("on cyc1.jstyle.\nA style cannot be based on itself.", .n5c$txt, fixed = TRUE) &&
+        grepl("jtable(): me.jstyle is based on me.jstyle.\nA style cannot be based on itself.", .n5d$txt, fixed = TRUE) &&
+        grepl("jtable(): line 1 of nobase.jstyle sets based.on = elsewhere, and no\nstyle of that name was found.\nThe styles found are \"apa\",", .n5e$txt, fixed = TRUE) &&
+        grepl(paste0("jtable(): style = names a file ending in .txt, not .jstyle:\n  ",
+                     file.path(.ns, "x.txt")), .n5f$txt, fixed = TRUE) &&
+        grepl(paste0("jtable(): File not found:\n", .jst_norm_path(file.path(.ns, "absent.jstyle"))), .n5g$txt, fixed = TRUE))
+
+.wsty("notset", "# a note", "font Arial")
+.wsty("twice", "font = A", "size = 11", "font = B")
+.wsty("twosec", "[frequencies]", "columns = n", "[descriptives]", "columns = n", "[frequencies]", "missing.rows = none")
+.wsty("ownsec", "[frequencies]", "based.on = apa")
+.wsty("fmtbad", "format = one"); .wsty("fmtnew", "format = 2")
+.n6 <- lapply(c("notset", "twice", "twosec", "ownsec", "fmtbad", "fmtnew"),
+              function(s) res(jtable(.nf1, style = s, print = FALSE)))
+check("N06 a line that is not a setting; a setting given twice in a section, and a section opened twice; based.on in a section; a format that is not a whole number, and one newer than this version reads",
+      all(vapply(.n6, function(r) is.null(r$val), logical(1))) &&
+        grepl("jtable(): line 2 of notset.jstyle is not a setting:\n  font Arial\nA setting is a name, an equals sign and a value, for example:\n  font = Times New Roman", .n6[[1]]$txt, fixed = TRUE) &&
+        grepl("jtable(): line 3 of twice.jstyle sets font again\n(line 1 set it first).\nSet each setting once in a section.", .n6[[2]]$txt, fixed = TRUE) &&
+        grepl("jtable(): line 5 of twosec.jstyle opens [frequencies] again\n(line 1 opened it first).\nPut a section's settings under one heading.", .n6[[3]]$txt, fixed = TRUE) &&
+        grepl("jtable(): line 2 of ownsec.jstyle sets based.on in [frequencies].\nbased.on goes at the top of the file, before the first section.", .n6[[4]]$txt, fixed = TRUE) &&
+        grepl("jtable(): line 1 of fmtbad.jstyle sets format = one.\n`format` must be a whole number.", .n6[[5]]$txt, fixed = TRUE) &&
+        grepl("jtable(): fmtnew.jstyle is in style-file format 2, which this\nversion of jstats (", .n6[[6]]$txt, fixed = TRUE) &&
+        grepl("Update jstats with jupdate().", .n6[[6]]$txt, fixed = TRUE))
+
+.wsty("typo", "[frequencies]", "colums = n")
+.wsty("unkn", "[frequencies]", "colwidth = 5")
+.wsty("unkg", "fontface = Arial")
+.wsty("secnear", "[frequncies]", "columns = n")
+.wsty("secunk", "[regression]", "columns = b")
+.n7 <- lapply(c("typo", "unkn", "unkg", "secnear", "secunk"),
+              function(s) res(jtable(.nf1, style = s, print = FALSE)))
+check("N07 a setting or a section this version does not have: a near miss gets the did-you-mean; any other names both causes and the settings, or the sections, there are",
+      all(vapply(.n7, function(r) is.null(r$val), logical(1))) &&
+        grepl("jtable(): line 2 of typo.jstyle sets colums, which is not a setting\nof [frequencies].\nDid you mean columns?", .n7[[1]]$txt, fixed = TRUE) &&
+        grepl("jtable(): line 2 of unkn.jstyle sets colwidth, which is not a\nsetting jstats has.\nIt may be misspelled, or it may be from a newer version of jstats", .n7[[2]]$txt, fixed = TRUE) &&
+        grepl("The settings of [frequencies] are title, columns, stub.label, n.label,", .n7[[2]]$txt, fixed = TRUE) &&
+        grepl("A general setting may be set there too.", .n7[[2]]$txt, fixed = TRUE) &&
+        grepl("The general settings are font, size, paper,", .n7[[3]]$txt, fixed = TRUE) &&
+        grepl("jtable(): line 1 of secnear.jstyle opens [frequncies], which is not\na section of a style.\nDid you mean [frequencies]?", .n7[[4]]$txt, fixed = TRUE) &&
+        grepl("The sections are [descriptives] and [frequencies].", .n7[[5]]$txt, fixed = TRUE))
+
+.wsty("vchoice", "rules = box"); .wsty("vnum", "size = 100"); .wsty("vint", "decimals = 2.5")
+.wsty("vcol", "header.fill = notacolor"); .wsty("vcol2", "rule.color = none")
+.wsty("vcols", "[frequencies]", "columns = n, median"); .wsty("vdup", "[descriptives]", "columns = n, n")
+.wsty("vstars", "stars = .05, 2"); .wsty("vtext", "font = \"\"")
+.n8 <- lapply(c("vchoice", "vnum", "vint", "vcol", "vcol2", "vcols", "vdup", "vstars", "vtext"),
+              function(s) res(jtable(.nf1, style = s, print = FALSE)))
+check("N08 a wrong value stops after the line that set it, with what the setting takes: a choice in the house form, a number's range, a whole number, a color (none where the setting allows it), the columns a table type has, the thresholds, text that may not be empty",
+      all(vapply(.n8, function(r) is.null(r$val), logical(1))) &&
+        grepl("jtable(): line 1 of vchoice.jstyle sets rules = box.\n`rules` must be \"apa\", \"grid\", \"outer\", or \"none\".", .n8[[1]]$txt, fixed = TRUE) &&
+        grepl("`size` must be a number from 6 to 72.", .n8[[2]]$txt, fixed = TRUE) &&
+        grepl("`decimals` must be a whole number from 0 to 6.", .n8[[3]]$txt, fixed = TRUE) &&
+        grepl("`header.fill` must be \"none\", a color name such as \"navy\", or six hex digits\nsuch as \"1F3864\".", .n8[[4]]$txt, fixed = TRUE) &&
+        grepl("`rule.color` must be a color name such as \"navy\" or six hex digits such", .n8[[5]]$txt, fixed = TRUE) &&
+        !grepl("or or", .n8[[5]]$txt, fixed = TRUE) &&
+        grepl("`columns` must be columns of a frequency table, each named once: \"n\",\n\"percent\", \"valid.percent\", or \"cumulative\".", .n8[[6]]$txt, fixed = TRUE) &&
+        grepl("`columns` must be columns of a descriptives table, each named once: \"n\",", .n8[[7]]$txt, fixed = TRUE) &&
+        grepl("`stars` must be one to three p-values between 0 and 1, for example .05,", .n8[[8]]$txt, fixed = TRUE) &&
+        grepl("`font` must be text, not empty.", .n8[[9]]$txt, fixed = TRUE))
+
+# A file a newer jstats wrote: what this version does not have is passed
+# over with one note naming it in the file's order; a near miss still
+# stops, and says the file is newer.
+.wsty("newer", "written.by = jstats 99.0.0", "caption.color = red", "caption.form = journal",
+      "[frequencies]", "colwidth = 5", "[regression]", "columns = b")
+.wsty("newtypo", "written.by = jstats 99.0.0", "[frequencies]", "colums = n")
+.n9 <- res(jtable(.nf1, style = "newer", print = FALSE))
+.n9b <- res(jtable(.nf1, style = "newtypo", print = FALSE))
+.n9n <- Filter(function(s) grepl("newer.jstyle was written by", s$text, fixed = TRUE), .seen)
+check("N09 a file a newer jstats wrote: its unknown settings and sections are skipped, one note naming each in the file's order with both versions and jupdate(); the table is built from the rest; a near miss there still stops, saying the file is newer",
+      inherits(.n9$val, "jst_table") &&
+        identical(.jst_style_key(.n9$val$style, "general", "caption.form"), "journal") &&
+        length(.n9n) >= 1L &&
+        grepl(paste0("newer.jstyle was written by jstats 99.0.0, and this is jstats ",
+                     .jst_jstats_version(), ".\nThese settings are from the newer version and were skipped:"),
+              .n9n[[1]]$text, fixed = TRUE) &&
+        grepl("caption.color, [frequencies] colwidth, [regression].", gsub("\n", " ", .n9n[[1]]$text), fixed = TRUE) &&
+        grepl("Update jstats with jupdate() to use them.", .n9n[[1]]$text, fixed = TRUE) &&
+        is.null(.n9b$val) &&
+        grepl("Did you mean columns?\nnewtypo.jstyle was written by jstats 99.0.0, newer than this", .n9b$txt, fixed = TRUE))
+
+# =============================================================================
+# O. jstyle(): the list, the settings, save.as
+# =============================================================================
+cat("\n--- O. jstyle() ---\n")
+
+.o1 <- res(jstyle())
+.o1l <- .strip_ansi(strsplit(.o1$txt, "\n", fixed = TRUE)[[1]])
+check("O01 jstyle() lists the built-in apa style (the default) and every style file found once, the first folder winning, then the folders searched in order with what each is; the styles are returned",
+      identical(.o1l[1], "Styles") &&
+        any(grepl("^  apa +built into jstats \\(the default\\)$", .o1l)) &&
+        any(grepl(paste0("^  dupe +", .jst_norm_path(file.path(.ns, "dupe.jstyle")), "$"), .o1l)) &&
+        sum(grepl("^  dupe ", .o1l)) == 1L &&
+        any(grepl(paste0("^  useronly +", .jst_norm_path(file.path(.nud, "useronly.jstyle")), "$"), .o1l)) &&
+        any(.o1l == "jstats looks for a style file in these folders, in this order:") &&
+        any(.o1l == paste0("  ", .jst_norm_path(.ns), " (the style folder)")) &&
+        any(.o1l == paste0("  ", .jst_norm_path(getwd()), " (the working directory)")) &&
+        any(.o1l == paste0("  ", .jst_norm_path(.nud), " (your jstats folder)")) &&
+        is.data.frame(.o1$val) && identical(.o1$val$name[1], "apa") && is.na(.o1$val$path[1]))
+
+.o2 <- res(jstyle("derived"))
+.o2l <- .strip_ansi(strsplit(.o2$txt, "\n", fixed = TRUE)[[1]])
+.o2a <- .strip_ansi(strsplit(res(jstyle("apa"))$txt, "\n", fixed = TRUE)[[1]])
+check("O02 jstyle(name) prints every setting in the style file's own form, the general part first and then each section; a setting the file does not set says where it comes from; the header names the file and the chain; jstyle(\"apa\") marks nothing",
+      identical(.o2l[1], "Style: derived") &&
+        identical(.o2l[2], paste0("  ", .jst_norm_path(file.path(.ns, "derived.jstyle")))) &&
+        identical(.o2l[3], "  based on base2, then apa") &&
+        any(grepl("^caption.form += report$", .o2l)) &&
+        any(grepl("^font += Arial +# from base2$", .o2l)) &&
+        any(grepl("^size += 12 +# from apa$", .o2l)) &&
+        any(grepl("^stars += \\.05, \\.01, \\.001 +# from apa$", .o2l)) &&
+        any(.o2l == "[descriptives]") && any(.o2l == "[frequencies]") &&
+        any(grepl("^missing.rows += none +# from base2$", .o2l)) &&
+        identical(.o2a[2], "  built into jstats") && !any(grepl("# from", .o2a, fixed = TRUE)) &&
+        inherits(.o2$val, "jst_style"))
+
+.o3 <- res(jstyle("apa", save.as = "copyapa"))
+.o3f <- file.path(.ns, "copyapa.jstyle")
+.o3t <- readLines(.o3f, encoding = "UTF-8", warn = FALSE)
+.o3s <- .jst_style_resolve("copyapa")
+.o3same <- all(unlist(lapply(names(.jst_style_apa), function(p) vapply(names(.jst_style_spec[[p]]), function(k)
+  identical(.jst_style_key(.o3s, p, k), .jst_style_key(.jst_style_resolve("apa"), p, k)), logical(1)))))
+check("O03 jstyle(\"apa\", save.as = ) writes <name>.jstyle into the style folder: its header, the format and written.by stamps and based.on = apa, then every setting of every part after a note on what it does; read back, every setting is apa's; the written line names the file",
+      file.exists(.o3f) &&
+        identical(.o3t[1], "# copyapa.jstyle: a jstats table style.") &&
+        identical(.o3t[3], "# jstyle(\"copyapa\") prints the settings jstats reads from it.") &&
+        "format     = 1" %in% .o3t &&
+        paste0("written.by = jstats ", .jst_jstats_version()) %in% .o3t &&
+        "based.on   = apa" %in% .o3t &&
+        all(c("[descriptives]", "[frequencies]") %in% .o3t) &&
+        identical(.o3t[match("font = Times New Roman", .o3t) - 1L], "# the typeface of every cell, caption and note") &&
+        "stars = .05, .01, .001" %in% .o3t && "percent.label = %" %in% .o3t &&
+        sum(grepl("^[a-z][a-z.]* = ", .o3t) & !grepl("^(format|written.by|based.on) ", .o3t)) ==
+          sum(lengths(lapply(.jst_style_spec, names))) &&
+        .o3same &&
+        grepl(paste0("Style written to ", .jst_norm_path(.o3f)), gsub("\\s+", " ", .o3$txt), fixed = TRUE))
+
+.o4 <- res(jstyle("derived", save.as = "copyderived"))
+.o4s <- .jst_style_resolve("copyderived")
+.o4same <- all(unlist(lapply(names(.jst_style_apa), function(p) vapply(names(.jst_style_spec[[p]]), function(k)
+  identical(.jst_style_key(.o4s, p, k), .jst_style_key(.n4, p, k)), logical(1)))))
+options(.jst_options_style_dir = NULL)
+unlink(.nud, recursive = TRUE)
+.o4u <- res(jstyle("apa", save.as = "tousr"))
+options(.jst_options_style_dir = .ns)
+check("O04 a copy of a style based on others holds every setting it gives, so it reads the same alone; with no style folder set, the copy goes into the per-user folder, which is created for it",
+      .o4same && identical(length(.o4s$layers), 2L) &&
+        file.exists(file.path(.nud, "tousr.jstyle")) &&
+        grepl(paste0("Style written to ", .jst_norm_path(file.path(.nud, "tousr.jstyle"))),
+              gsub("\\s+", " ", .o4u$txt), fixed = TRUE))
+
+.o5 <- lapply(list(quote(jstyle("apa", save.as = "apa")),
+                   quote(jstyle("apa", save.as = "x.txt")),
+                   quote(jstyle("apa", save.as = "a:b")),
+                   quote(jstyle("apa", save.as = file.path(.ns, "nofolder", "x"))),
+                   # A file that exists, where the session cannot ask: the gate
+                   # jstyle() calls, called with ask = FALSE, so the check
+                   # neither asks nor depends on the session (S380).
+                   quote(.jst_table_overwrite_gate(.o3f, FALSE, ask = FALSE,
+                                                   fn = "jstyle", noun = "style")),
+                   quote(jstyle(save.as = 3)),
+                   quote(jstyle(copyapa)),
+                   quote(jstyle("apa", save.as = cpy)),
+                   quote(jstyle("apa", folder = "x"))),
+              function(e) res(eval(e)))
+.o5b <- res(jstyle("apa", save.as = "copyapa", overwrite = TRUE))
+check("O05 save.as stops: the built-in's name, another extension, a name a file cannot have, a folder that does not exist, a file that exists where the session cannot ask, a value that is not a name; bare words get the pointer; an unused input; overwrite = TRUE replaces",
+      all(vapply(.o5, function(r) is.null(r$val), logical(1))) &&
+        grepl("jstyle(): \"apa\" is the name of jstats's built-in style.\nGive the copy another name, for example:\n  jstyle(\"apa\", save.as = \"myjournal\")", .o5[[1]]$txt, fixed = TRUE) &&
+        grepl("jstyle(): save.as = names a file ending in .txt, not .jstyle, which\njstyle() adds:\n  save.as = \"x\"", .o5[[2]]$txt, fixed = TRUE) &&
+        grepl("jstyle(): \"a:b\" cannot be a file's name.\nUse letters, digits, spaces, dashes, or underscores.", .o5[[3]]$txt, fixed = TRUE) &&
+        grepl("jstyle(): the folder does not exist:", .o5[[4]]$txt, fixed = TRUE) &&
+        grepl("jstyle(): this file already exists:", .o5[[5]]$txt, fixed = TRUE) &&
+        grepl("To replace it, add overwrite = TRUE to the call, then run it again.", .o5[[5]]$txt, fixed = TRUE) &&
+        grepl("jstyle(): `save.as` must be a name in quotes, for example:\n  save.as = \"myjournal\"", .o5[[6]]$txt, fixed = TRUE) &&
+        grepl("jstyle(): copyapa is not in quotes.\nA style name goes in quotes:\n  jstyle(\"copyapa\")", .o5[[7]]$txt, fixed = TRUE) &&
+        grepl("jstyle(): cpy is not in quotes.\nsave.as = takes a name in quotes:\n  jstyle(\"apa\", save.as = \"cpy\")", .o5[[8]]$txt, fixed = TRUE) &&
+        grepl("jstyle(): unused input: folder", .o5[[9]]$txt, fixed = TRUE) &&
+        identical(.o5b$val, .o3f))
+
+# =============================================================================
+# P. The frequency table, from jfreq() results
+# =============================================================================
+cat("\n--- P. The frequency table ---\n")
+
+.pd <- file.path(tempdir(), "tables_check_freq"); unlink(.pd, recursive = TRUE); dir.create(.pd)
+.p0 <- res(jtable(.nf1, print = FALSE))$val
+.pcnt <- function(v) {          # a variable's counts, computed from the data
+  x <- tcm[[v]]; na <- c(attr(x, "na_values", exact = TRUE))
+  x <- as.numeric(x)
+  list(valid = table(factor(x[!is.na(x) & !(x %in% na)])),
+       miss = sum(is.na(x) | x %in% na), n = length(x))
+}
+.pc <- .pcnt("Education")
+.prow <- function(t, lab) t$rows[[which(vapply(t$rows, `[[`, "", "label") == lab)[1]]]
+check("P01 jtable() on a jfreq() result: the stub and the apa columns n and %, n italic; each variable's label a row of its own (plain, the variable level, no cells), its categories indented under it by their value labels, a Missing row last where the variable has missing data",
+      inherits(.p0, "jst_table") && identical(.p0$type, "frequencies") &&
+        identical(.p0$columns$key, c("stub", "n", "percent")) &&
+        identical(.p0$columns$label, c("Variable", "n", "%")) &&
+        identical(.p0$columns$italic, c(FALSE, TRUE, FALSE)) &&
+        identical(vapply(.p0$rows, `[[`, "", "label"),
+                  c("Highest education level", "Some high school", "High school graduate",
+                    "Some college", "Bachelor's degree", "Graduate degree", "Missing",
+                    "Region of residence", "North", "South", "East", "West",
+                    "Current smoker", "No", "Yes", "Missing")) &&
+        identical(vapply(.p0$rows, `[[`, "", "kind")[c(1, 2, 8, 13)], c("heading", "data", "heading", "heading")) &&
+        identical(.p0$rows[[1]]$level, "variable") && length(.p0$rows[[1]]$cells) == 0L &&
+        identical(vapply(.p0$rows, `[[`, integer(1), "indent"),
+                  c(0L, rep(1L, 6), 0L, rep(1L, 4), 0L, 1L, 1L, 1L)))
+
+check("P02 the cells: n the count and % the percentage of all cases at one decimal, computed here from the data; the Missing row counts every declared and system-missing case; each variable's rows add up to N and to 100",
+      identical(vapply(.p0$rows[2:7], function(r) r$cells$n, ""),
+                c(as.character(as.integer(.pc$valid)), as.character(.pc$miss))) &&
+        identical(vapply(.p0$rows[2:7], function(r) r$cells$percent, ""),
+                  sprintf("%.1f", 100 * c(as.integer(.pc$valid), .pc$miss) / .pc$n)) &&
+        isTRUE(all.equal(sum(vapply(.p0$rows[2:7], function(r) r$raw$percent, 0)), 100)) &&
+        sum(vapply(.p0$rows[2:7], function(r) r$raw$n, 0)) == 103 &&
+        identical(.prow(.p0, "West")$cells$percent, sprintf("%.1f", 100 * sum(as.numeric(tcm$Region) == 4) / 103)) &&
+        identical(.p0$notes$general, "*N* = 103."))
+
+.p3e <- res(jtable(.nf1, missing.rows = "each", columns = c("n", "percent", "valid.percent", "cumulative"), print = FALSE))$val
+.p3n <- res(jtable(.nf1, missing.rows = "none", print = FALSE))$val
+.p3s <- local({
+  w <- data.frame(Q = haven::labelled(c(1, 2, 2, NA, 1, -9), labels = c(Yes = 1, No = 2)))
+  w$Q <- haven::labelled_spss(c(1, 2, 2, NA, 1, -9), labels = c(Yes = 1, No = 2), na_values = -9)
+  attr(w$Q, "label") <- "Question"
+  res(jtable(res(jfreq(w, Q))$val, missing.rows = "each", print = FALSE))$val
+})
+check("P03 missing.rows = each lists each missing value by its label, its code where it has none, and the cells with no value as Missing; the valid and cumulative percentages are blank on them; none leaves them out",
+      identical(vapply(.p3e$rows[2:8], `[[`, "", "label"),
+                c("Some high school", "High school graduate", "Some college", "Bachelor's degree",
+                  "Graduate degree", "Refused", "Don't know")) &&
+        identical(.p3e$columns$label, c("Variable", "n", "%", "Valid %", "Cumulative %")) &&
+        identical(.prow(.p3e, "Refused")$cells$valid.percent, "") &&
+        identical(.prow(.p3e, "Refused")$cells$cumulative, "") &&
+        identical(.prow(.p3e, "Graduate degree")$cells$cumulative, "100.0") &&
+        !"Missing" %in% vapply(.p3n$rows, `[[`, "", "label") && length(.p3n$rows) == 14L &&
+        identical(vapply(.p3s$rows, `[[`, "", "label"), c("Question", "Yes", "No", "-9", "Missing")))
+
+.p4 <- local({
+  w <- data.frame(T = c("b", "a", "", "a", "b", "b"), N = c(3, 1, 3, 3, 1, 2),
+                  stringsAsFactors = FALSE)
+  w$L <- haven::labelled(c(1, 1, 2, 1, 2, 2), labels = c(One = 1, Two = 2, Three = 3))
+  res(jtable(res(jfreq(w, T, N, L))$val, print = FALSE))$val
+})
+check("P04 a category with no label is named by its code; a text variable's blank cells are its <blank> category; a labelled value no case holds is a zero row",
+      identical(vapply(.p4$rows, `[[`, "", "label"),
+                c("T", "<blank>", "a", "b", "N", "1", "2", "3", "L", "One", "Two", "Three")) &&
+        identical(.prow(.p4, "Three")$cells$n, "0") && identical(.prow(.p4, "Three")$cells$percent, "0.0"))
+
+.pf2 <- res(jfreq(tcm, Volunteer, OwnsHome))$val
+.p5a <- res(jtable(list(.nf1, .pf2), print = FALSE))$val
+.p5b <- res(jtable(list("Background" = .nf1, "Household" = .pf2), print = FALSE))$val
+.p5c <- res(jtable(.nf1, headings = list("Schooling" = Education, "Other" = c(Region, Smoker)),
+                   markers = list("Self-reported" = Smoker), print = FALSE))$val
+.p5d <- res(jtable(list("Outcome" = .nf1), print = FALSE))$val
+.p5e <- res(jtable(list("Outcome" = .j0), print = FALSE))$val
+check("P05 several jfreq() results stack into one table; a named list's names, or headings =, give role headings (italic group rows) with the variables' rows indented under them and their categories under those; markers = marks a variable's row; a named list of one result gives its heading too, for both table types",
+      identical(sum(vapply(.p5a$rows, function(r) identical(r$level, "variable"), logical(1))), 5L) &&
+        identical(.p5b$rows[[1]]$label, "Background") && identical(.p5b$rows[[1]]$level, "group") &&
+        identical(.p5b$rows[[2]]$indent, 1L) && identical(.p5b$rows[[3]]$indent, 2L) &&
+        identical(.prow(.p5b, "Household")$level, "group") &&
+        identical(vapply(.p5c$rows, `[[`, "", "label")[c(1, 2, 9)],
+                  c("Schooling", "Highest education level", "Other")) &&
+        identical(.prow(.p5c, "Current smoker")$marks, "a") &&
+        identical(.p5c$notes$specific, list(list(mark = "a", text = "Self-reported"))) &&
+        identical(.p5d$rows[[1]]$label, "Outcome") && identical(.p5e$rows[[1]]$label, "Outcome"))
+
+.p6 <- res(jtable(list(.nf1, res(jfreq(tcm, Volunteer, subset = Age > 40))$val), print = FALSE))$val
+.p7a <- res(jtable(list(.nf1, res(jfreq(tcm, Education))$val), print = FALSE))
+.p7b <- local({ old <- .nf1; attr(old, "jstats_version") <- NULL; res(jtable(old, print = FALSE)) })
+.p7c <- res(jtable(list(.nf1, .j0), print = FALSE))
+check("P06 the N note: variables from one pool of cases open the note on N; results from different pools give no N",
+      length(.p6$notes$general) == 0L)
+check("P07 a variable in two results stops (a table lists each once, in both table types); a jfreq() result made before the fields existed names its version; results of two kinds in one list stop",
+      is.null(.p7a$val) &&
+        grepl("jtable(): Education is in more than one of the results.\nA table lists each variable once.", .p7a$txt, fixed = TRUE) &&
+        grepl("jtable(): Age is in more than one of the results.",
+              res(jtable(list(res(jdesc(tcm, Age))$val, res(jdesc(tcm, Age, Income))$val),
+                         print = FALSE))$txt, fixed = TRUE) &&
+        is.null(.p7b$val) &&
+        grepl("jtable(): this jfreq() result was made by an earlier version of\njstats, before the fields a table needs were stored.", .p7b$txt, fixed = TRUE) &&
+        is.null(.p7c$val) && grepl("(jfreq() and jdesc()) in one table.", .p7c$txt, fixed = TRUE))
+
+.p8 <- res(jtable(.nf1))
+.p8l <- strsplit(.p8$txt, "\n", fixed = TRUE)[[1]]
+check("P08 the preview, pinned whole: the caption, the rules, each variable's label and its categories indented, the numbers on the decimal point, the note",
+      identical(.p8l, c(
+        "Table 1", "Frequency Distributions",
+        "---------------------------------",
+        "Variable                  n    %",
+        "---------------------------------",
+        "Highest education level",
+        "  Some high school       23  22.3",
+        "  High school graduate   18  17.5",
+        "  Some college           25  24.3",
+        "  Bachelor's degree      13  12.6",
+        "  Graduate degree        18  17.5",
+        "  Missing                 6   5.8",
+        "Region of residence",
+        "  North                  27  26.2",
+        "  South                  20  19.4",
+        "  East                   31  30.1",
+        "  West                   25  24.3",
+        "Current smoker",
+        "  No                     65  63.1",
+        "  Yes                    33  32.0",
+        "  Missing                 5   4.9",
+        "---------------------------------",
+        "Note. N = 103.")))
+
+.p9f <- file.path(.pd, "Table2.docx")
+.p9 <- res(jtable(.nf1, file = .p9f, overwrite = TRUE, print = FALSE))
+.p9x <- file.path(.pd, "x"); invisible(utils::unzip(.p9f, exdir = .p9x))
+.p9d <- paste(readLines(file.path(.p9x, "word", "document.xml"), warn = FALSE, encoding = "UTF-8"),
+              collapse = "\n")
+.p9tabs <- as.integer(regmatches(.p9d, gregexpr("(?<=w:val=\"decimal\" w:pos=\")[0-9]+", .p9d, perl = TRUE))[[1]])
+check("P09 the Word file: 19 rows (the caption, the header, three variable rows spanning the table, plain and unindented, thirteen category rows indented 180 twips, the note); the n and % heads; every number on a decimal tab",
+      .ltag(.p9d, "w:tr")[["open"]] == 19L &&
+        lengths(regmatches(.p9d, gregexpr("<w:gridSpan w:val=\"3\"/>", .p9d))) == 5L &&
+        grepl("<w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">Highest education level</w:t>", .p9d, fixed = TRUE) &&
+        !grepl("<w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">Region of residence", .p9d, fixed = TRUE) &&
+        lengths(regmatches(.p9d, gregexpr("<w:ind w:left=\"180\"/>", .p9d))) == 13L &&
+        grepl("<w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">n</w:t>", .p9d, fixed = TRUE) &&
+        grepl("<w:t xml:space=\"preserve\">%</w:t>", .p9d, fixed = TRUE) &&
+        length(.p9tabs) == 26L)
+
+# The block of numbers centered under its head (S401): under a head wider
+# than its numbers the decimal tab sits near the middle, never at the
+# right-hand limit build 1 used for every column.
+.p10 <- res(jtable(.nf1, columns = c("n", "cumulative"), missing.rows = "none", print = FALSE))$val
+.p10w <- .jst_docx_widths(.p10, .p10$style)
+.p10t <- .jst_docx_decimal_tabs(.p10, .p10w, 12, 108L)
+.p10inner <- .p10w[3] - 216L
+.p10tail <- .jst_docx_text_width(".3", 12, digits = TRUE)
+.p10head <- .jst_docx_text_width("100", 12, digits = TRUE)
+check("P10 a column of numbers is centered under its head: under the wide Cumulative % head the decimal tab sits at the middle of the block, short of the right-hand limit; a column as wide as its numbers keeps its tab short of the cell's edge",
+      identical(.p10t[3], as.integer(floor((.p10inner + .p10head - .p10tail) / 2))) &&
+        .p10t[3] < .p10inner - .p10tail - 40L &&
+        .p10t[2] <= .p10w[2] - 216L - .jst_docx_text_width("", 12, TRUE) - 40L)
+
+check("P11 document.xml of the frequency table pinned by its checksum",
+      identical(unname(tools::md5sum(file.path(.p9x, "word", "document.xml"))), "1b50a0ddc36ac3451e325969e9cb935e"))
+
+# =============================================================================
+# Q. joptions(style = , style.dir = )
+# =============================================================================
+cat("\n--- Q. joptions(style =, style.dir =) ---\n")
+
+options(.jst_options_style = NULL, .jst_options_style_dir = NULL)
+.q0 <- .strip_ansi(suppressMessages(utils::capture.output(joptions())))
+check("Q01 the full panel has nine rows: Style and Style folder after Output folder, apa and Not set when unset; both settings are session keys",
+      identical(.q0[1:10], c("Options Settings",
+                             "Missing-value convention: None selected",
+                             "SPSS-style missing value codes: -99, -98, -97",
+                             "Data folder: Working directory",
+                             "Output folder: Working directory",
+                             "Style: apa",
+                             "Style folder: Not set",
+                             "Correlation layout: wide",
+                             "Missing-value detail: per_code",
+                             "Message width: 76")) &&
+        all(c(".jst_options_style", ".jst_options_style_dir") %in% .jst_session_option_keys))
+
+.qd <- file.path(tempdir(), "tables_check_qstyles"); unlink(.qd, recursive = TRUE)
+.q2 <- res(joptions(style.dir = .qd))
+check("Q02 joptions(style.dir = ) creates the folder, echoes the one slot and notes the folder in the data.dir form; stored under its own key",
+      dir.exists(.qd) &&
+        identical(.strip_ansi(strsplit(.q2$txt, "\n", fixed = TRUE)[[1]])[1:4],
+                  c("Options Settings", paste0("Style folder: ", .qd),
+                    "Run joptions() to see all settings.", "")) &&
+        any(grepl(paste0("Created the style folder:\n  ", .qd), vapply(.seen, `[[`, "", "text"), fixed = TRUE)) &&
+        identical(getOption(".jst_options_style_dir"), .qd))
+
+.wsty("house", "caption.form = report", dir = .qd)
+.q3 <- res(joptions(style = "house"))
+.q3t <- res(jtable(.nf1, print = FALSE))$val
+.q3q <- .strip_ansi(suppressMessages(utils::capture.output(joptions("style"))))
+.q3n <- res(joptions(style = "huose"))
+.q3m <- res(joptions(style = "nowhere"))
+# A call that stops changes nothing (S338): the folders it names are not
+# created, the style check coming before them (S401).
+.q3u  <- file.path(.ns, c("unmade_style_folder", "unmade_output_folder"))
+.q3r0 <- list(getOption(".jst_options_style_dir"), getOption(".jst_options_output_dir"))
+.q3r  <- res(joptions(style.dir = .q3u[1], output.dir = .q3u[2], style = "nowhere"))
+.q3r1 <- list(getOption(".jst_options_style_dir"), getOption(".jst_options_output_dir"))
+.q3k <- getOption(".jst_options_style")
+.q3a <- res(joptions(style = "APA")); .q3ak <- getOption(".jst_options_style")
+.q3both <- res(joptions(style.dir = .ns, style = "derived")); .q3bk <- getOption(".jst_options_style")
+check("Q03 joptions(style = ) reads the style as jtable() would and echoes it; jtable() then makes its tables in it; a query shows it; a style not found stops with nothing set and no folder the call names created, a near name offered with the joptions() line; \"APA\" is stored as \"apa\"; a call setting both reads the style in its new folder",
+      grepl("Style: house", .q3$txt, fixed = TRUE) &&
+        identical(.jst_style_key(.q3t$style, "general", "caption.form"), "report") &&
+        identical(.q3q[1:2], c("Options Settings", "Style: house")) &&
+        grepl("joptions(): no style named \"huose\" was found.\nDid you mean \"house\"?\n  joptions(style = \"house\")", .q3n$txt, fixed = TRUE) &&
+        grepl("joptions(): no style named \"nowhere\" was found.", .q3m$txt, fixed = TRUE) &&
+        grepl("joptions(): no style named \"nowhere\" was found.", .q3r$txt, fixed = TRUE) &&
+        !any(dir.exists(.q3u)) && identical(.q3r1, .q3r0) &&
+        identical(.q3k, "house") && identical(.q3ak, "apa") &&
+        identical(.q3bk, "derived") && identical(getOption(".jst_options_style_dir"), .ns))
+
+.q4 <- res(joptions(style.dir = NULL))
+.q4b <- res(joptions(style.dir = "NULL"))
+.q4c <- res(joptions(style.dir = 42))
+.q4d <- res(joptions(style.dir = Styles))
+.q4e <- res(joptions(style = myjournal))
+.q4f <- res(joptions(style = 42))
+check("Q04 style.dir = NULL clears it; the typo guard, a value that is not a string and a folder typed bare stop as output.dir's do; a style typed bare gets the pointer, and a value that is not a name stops",
+      is.null(getOption(".jst_options_style_dir")) &&
+        grepl("Style folder: Not set", .q4$txt, fixed = TRUE) &&
+        grepl("joptions(): style.dir = \"NULL\" looks like a typo.", .q4b$txt, fixed = TRUE) &&
+        grepl("joptions(): style.dir must be a single character string,", .q4c$txt, fixed = TRUE) &&
+        grepl("joptions(): Styles is not in quotes.\nstyle.dir = takes a folder name in quotes:", .q4d$txt, fixed = TRUE) &&
+        grepl("joptions(): myjournal is not in quotes.\nstyle = takes a style name in quotes:\n  joptions(style = \"myjournal\")", .q4e$txt, fixed = TRUE) &&
+        grepl("joptions(): `style` must be a style name in quotes, for example:\n  style = \"apa\"", .q4f$txt, fixed = TRUE))
+
+options(.jst_options_style_dir = .ns, .jst_options_style = "derived")
+.q5 <- .strip_ansi(suppressMessages(utils::capture.output(joptions(NULL))))
+options(.jst_options_message_width = .pin_width)   # the reset cleared the pin
+check("Q05 the joptions(NULL) reset clears the style and the style folder",
+      is.null(getOption(".jst_options_style")) && is.null(getOption(".jst_options_style_dir")) &&
+        "Style: apa" %in% .q5 && "Style folder: Not set" %in% .q5)
+options(.jst_options_style_dir = .ns)
+
+# =============================================================================
+# R. A style's settings in the call
+# =============================================================================
+cat("\n--- R. The call's settings ---\n")
+
+.wsty("cols2", "[descriptives]", "columns = n, mean", "mean.label = Mean")
+.r1 <- res(jtable(.j0, style = "cols2", columns = c("mean", "sd"), print = FALSE))$val
+.r1p <- res(print(.r1))
+# A table built under a style with the journal's caption prints in it.
+.r1j <- res(print(res(jtable(.nf1, style = "forms", print = FALSE))$val))
+check("R01 a setting of the table type's section in the call outranks the file: the call's columns, the file's label; a word in a symbol's place is set upright, apa's SD still italic; the table keeps its style and the call's setting, so print() shows them again",
+      identical(.r1$columns$key, c("stub", "mean", "sd")) &&
+        identical(.r1$columns$label, c("Variable", "Mean", "SD")) &&
+        identical(.r1$columns$italic, c(FALSE, FALSE, TRUE)) &&
+        identical(.r1$style$layers[[1]]$source, "the call") &&
+        grepl("\nVariable                         Mean        SD\n", .r1p$txt, fixed = TRUE) &&
+        startsWith(.r1j$txt, "Table 1. Frequency Distributions\n"))
+
+.r2 <- lapply(list(quote(jtable(.j0, missing.rows = "none", print = FALSE)),
+                   quote(jtable(.j0, font = "Arial", print = FALSE)),
+                   quote(jtable(.j0, font = "Arial", size = 10, print = FALSE)),
+                   quote(jtable(.j0, colums = "n", print = FALSE)),
+                   quote(jtable(.nf1, columns = c("n", "mean"), print = FALSE)),
+                   quote(jtable(.nf1, missing.rows = none, print = FALSE)),
+                   quote(jtable(.nf1, missing.label = Absent, print = FALSE)),
+                   quote(jtable(.nf1, missing.rows = TRUE, print = FALSE)),
+                   quote(jtable(.p0, columns = "n", print = FALSE))),
+              function(e) res(eval(e)))
+check("R02 the call's settings stopped: one of another table type's; a general setting, or two; a name near a setting's (the did-you-mean); a wrong value with what it takes; a bare word with the pointer; a value of the wrong kind; a setting given with a built table",
+      all(vapply(.r2, function(r) is.null(r$val), logical(1))) &&
+        grepl("jtable(): missing.rows = is a setting of a frequency table, and this\ntable is a descriptives table.", .r2[[1]]$txt, fixed = TRUE) &&
+        grepl("jtable(): font = is one of a style's general settings, which a call\ncannot change.\nSet it in a style file, for example a copy of apa:\n  jstyle(\"apa\", save.as = \"mystyle\")", .r2[[2]]$txt, fixed = TRUE) &&
+        grepl("jtable(): font = and size = are general settings of a style, which a\ncall cannot change.\nSet them in a style file,", .r2[[3]]$txt, fixed = TRUE) &&
+        grepl("jtable(): 'colums' is not valid.\nDid you mean `columns`?", .r2[[4]]$txt, fixed = TRUE) &&
+        grepl("jtable(): `columns` must be columns of a frequency table, each named\nonce: \"n\", \"percent\", \"valid.percent\", or \"cumulative\".", .r2[[5]]$txt, fixed = TRUE) &&
+        grepl("jtable(): none is not in quotes.\nmissing.rows = takes its value in quotes:\n  jtable(.nf1, missing.rows = \"none\", print = FALSE)", .r2[[6]]$txt, fixed = TRUE) &&
+        grepl("jtable(): Absent is not in quotes.\nmissing.label = takes text in quotes:", .r2[[7]]$txt, fixed = TRUE) &&
+        grepl("jtable(): `missing.rows` must be \"combined\", \"each\", or \"none\".", .r2[[8]]$txt, fixed = TRUE) &&
+        grepl("jtable(): headings =, markers =, title =, note =, style =, and a\nstyle's settings belong to the call that builds a table from a result; a\nbuilt table keeps its own.", .r2[[9]]$txt, fixed = TRUE))
+
+# =============================================================================
+# S. open = TRUE
+# =============================================================================
+cat("\n--- S. open = ---\n")
+
+.s1 <- res(jtable(.nf1, open = TRUE, print = FALSE))
+.s1b <- res(jtable(.nf1, open = "yes", print = FALSE))
+.s2 <- local({
+  got <- character(0)
+  rec <- function(u) got <<- c(got, u)
+  a <- .jst_table_open(.p9f, TRUE, ask = TRUE, browse = rec)
+  b <- .jst_table_open(.p9f, TRUE, ask = FALSE, browse = rec)
+  c <- .jst_table_open(.p9f, FALSE, ask = TRUE, browse = rec)
+  list(a = a, b = b, c = c, got = got)
+})
+check("S01 open = TRUE needs file =, the call given back with one; open = must be TRUE or FALSE; the file is handed to the opener only when open = TRUE and the session can show it, never in a script",
+      is.null(.s1$val) &&
+        grepl("jtable(): open = TRUE opens the file jtable() writes, so it needs\nfile = as well, for example:\n  jtable(.nf1, open = TRUE, print = FALSE, file = \"Table1.docx\")", .s1$txt, fixed = TRUE) &&
+        grepl("jtable(): `open` must be TRUE or FALSE.", .s1b$txt, fixed = TRUE) &&
+        isTRUE(.s2$a) && isFALSE(.s2$b) && isFALSE(.s2$c) &&
+        identical(.s2$got, normalizePath(.p9f, winslash = "/")))
+
+# =============================================================================
+# T. A bare file name, and a relative output folder (S401 defect)
+# =============================================================================
+cat("\n--- T. Where a bare name is written ---\n")
+
+# Until S401 a bare file name with no output folder set -- the taught form,
+# file = "Table1.docx" -- and a file in a relative output folder were never
+# written: zip::zip() changes into its own folder to pack the parts, and the
+# temporary file's relative name was made there.
+.tw <- file.path(tempdir(), "tables_check_bare"); unlink(.tw, recursive = TRUE); dir.create(.tw)
+.t1 <- local({
+  old <- setwd(.tw); on.exit(setwd(old))
+  od <- getOption(".jst_options_output_dir"); on.exit(options(.jst_options_output_dir = od), add = TRUE)
+  options(.jst_options_output_dir = NULL)
+  a <- res(jtable(.nf1, file = "Bare.docx", print = FALSE))
+  options(.jst_options_output_dir = "Rel")
+  dir.create("Rel")
+  b <- res(jtable(.nf1, file = "InRel.docx", print = FALSE))
+  list(a = a, b = b, f1 = file.exists("Bare.docx"), f2 = file.exists(file.path("Rel", "InRel.docx")),
+       left = list.files(".", pattern = "^jtable_", recursive = TRUE))
+})
+check("T01 a bare file name with no output folder set is written into the working directory, and one with a relative output folder into it; no temporary file is left",
+      isTRUE(.t1$f1) && isTRUE(.t1$f2) && length(.t1$left) == 0L &&
+        inherits(.t1$a$val, "jst_table") && inherits(.t1$b$val, "jst_table"))
+
+unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw), recursive = TRUE)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # The analyses above raise notes and warnings of their own (a seems-
@@ -1453,6 +2192,9 @@ options(.jst_default_data               = .entry_default_data)
 options(.jst_options_missing_convention = .entry_convention)
 options(.jst_output_level               = .entry_output_level)
 options(.jst_output_toggles             = .entry_output_toggles)
+options(.jst_options_style              = .entry_style)
+options(.jst_options_style_dir          = .entry_style_dir)
+if (is.na(.entry_udd)) Sys.unsetenv("R_USER_DATA_DIR") else Sys.setenv(R_USER_DATA_DIR = .entry_udd)
 options(.entry_stores)
 
 # --- Verdict -----------------------------------------------------------------

@@ -10,6 +10,20 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S401 EDIT (v0.9.271, 2026-10-29): N75 RE-PINNED. Capability Slate T,
+#           build 2: joptions() gains the style and style.dir slots (the
+#           default style of a publication table, and a folder of style
+#           files), so the full panel has NINE rows -- "Style: apa" and
+#           "Style folder: Not set" after the Output folder row -- and the
+#           session's options two more keys, .jst_options_style and
+#           .jst_options_style_dir (.entry75, .rows75; N75a-N75e read nine
+#           rows). No check added: 926 checks still.
+#           LAST VERIFIED: v0.9.271, 2026-10-29 (S401) -- 926/926 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3492 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty.
 # S400 EDIT (v0.9.270, 2026-10-29): N75 RE-PINNED. Capability Slate T,
 #           build 1: joptions() gains the output.dir slot (the folder
 #           jtable() writes into), so the full panel has SEVEN rows --
@@ -6713,16 +6727,21 @@ rm(d74, both74, .note74, .x74, .frames74, n74_st, .echo74, .nudge74, .n_df74,
                     .jst_options_missing_convention_codes = NULL,
                     .jst_options_data_dir = NULL,
                     .jst_options_output_dir = NULL,
+                    .jst_options_style = NULL,
+                    .jst_options_style_dir = NULL,
                     .jst_options_corr_layout = NULL,
                     .jst_options_missing_detail = NULL)
 # Seven rows since S400 (v0.9.270): the Output folder row, output.dir's,
-# after the Data folder row.
+# after the Data folder row. Nine since S401 (v0.9.271): the Style and
+# Style folder rows after it.
 .rows75 <- function(conv) c(
   "Options Settings",
   paste0("Missing-value convention: ", conv),
   "SPSS-style missing value codes: -99, -98, -97",
   "Data folder: Working directory",
   "Output folder: Working directory",
+  "Style: apa",
+  "Style folder: Not set",
   "Correlation layout: wide",
   "Missing-value detail: per_code",
   "Message width: 76",
@@ -6732,7 +6751,7 @@ rm(d74, both74, .note74, .x74, .frames74, n74_st, .echo74, .nudge74, .n_df74,
 # A setting call's environment-scan notice prints after that blank, and this
 # battery's workspace is full of frames for it to name.
 .echo75 <- function(x) x[seq_len(match("", x))]
-check("N75a with no convention chosen the full panel has seven rows, the codes row second",
+check("N75a with no convention chosen the full panel has nine rows, the codes row second",
       identical(.pan75(joptions()), .rows75("None selected")))
 options(.jst_options_missing_convention = "stata")
 check("N75b ... under a Stata-style setting",
@@ -6746,9 +6765,9 @@ check("N75d ... and under an SPSS-style setting, as before",
 options(.jst_options_missing_convention = "stata")
 .p75e <- .pan75(joptions(NULL))
 options(.jst_options_message_width = .pin_width)   # the reset cleared the pin
-check("N75e the joptions(NULL) reset prints the seven rows too",
-      identical(.p75e[1:7], .rows75("None selected")[1:7]) &&
-      startsWith(.p75e[8], "Message width: ") && identical(length(.p75e), 9L))
+check("N75e the joptions(NULL) reset prints the nine rows too",
+      identical(.p75e[1:9], .rows75("None selected")[1:9]) &&
+      startsWith(.p75e[10], "Message width: ") && identical(length(.p75e), 11L))
 check("N75f a setting call's echo still leaves the codes out under a Stata-style setting",
       identical(.echo75(.pan75(joptions(missing.convention = "stata"))),
                 c("Options Settings", "Missing-value convention: Stata-style",

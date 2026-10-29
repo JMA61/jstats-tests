@@ -94,6 +94,16 @@
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S401 (v0.9.271; Capability Slate T, build 2). SECTION 1's full
+#           panel RE-PINNED from a capture: NINE rows, the Style and Style
+#           folder rows -- joptions(style = ) and joptions(style.dir = ),
+#           the style a publication table is made in and a folder of style
+#           files -- after the Output folder row. On the PENDING line. No
+#           other section shows the full panel.
+# LAST VERIFIED: v0.9.271, 2026-10-29 (S401) -- Section 1 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (12 run, 3492 checks).
 # EDITED:   S400 (v0.9.270; Capability Slate T, build 1). SECTION 1's full
 #           panel RE-PINNED from a capture (fill.R): SEVEN rows, the Output
 #           folder row -- joptions(output.dir = ), the folder jtable()
@@ -1478,18 +1488,22 @@ joptions("missing.convention.codes")
 
 joptions()
 
-# Expected: under the red "Options Settings" title, SEVEN rows and no
+# Expected: under the red "Options Settings" title, NINE rows and no
 # pointer -- the SPSS codes row second, under a SAS-style setting; the
 # Output folder row (S400, v0.9.270: the folder jtable() writes into) after
-# the Data folder row:
+# the Data folder row, then the Style and Style folder rows (S401,
+# v0.9.271: the style a publication table is made in, and a folder of
+# style files):
 #   Missing-value convention: SAS-style
 #   SPSS-style missing value codes: -99, -98, -97
 #   Data folder: Working directory
 #   Output folder: Working directory
+#   Style: apa
+#   Style folder: Not set
 #   Correlation layout: wide
 #   Missing-value detail: per_code
 #   Message width: 76
-# (Rows three to six are the defaults; they show your own settings if
+# (Rows three to eight are the defaults; they show your own settings if
 # you have changed them. The width is this walk's pin.)
 # Things to look at: does the codes row read as an SPSS setting waiting to
 # be used, or as a contradiction of "SAS-style" above it?
