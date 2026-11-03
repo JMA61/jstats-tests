@@ -10,6 +10,16 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S403 EDIT (v0.9.272, 2026-11-03): N75 RE-PINNED. Capability Slate T,
+#           build 3, rider R50: the panel's style row reads "Publication
+#           style: apa" where it read "Style: apa" (.rows75; N75a-N75e read
+#           the nine rows as before). No check added: 926 checks still.
+#           LAST VERIFIED: v0.9.272, 2026-11-03 (S403) -- 926/926 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3530 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, and once with
+#           interactive() TRUE.
 # S401 EDIT (v0.9.271, 2026-10-29): N75 RE-PINNED. Capability Slate T,
 #           build 2: joptions() gains the style and style.dir slots (the
 #           default style of a publication table, and a folder of style
@@ -6733,14 +6743,15 @@ rm(d74, both74, .note74, .x74, .frames74, n74_st, .echo74, .nudge74, .n_df74,
                     .jst_options_missing_detail = NULL)
 # Seven rows since S400 (v0.9.270): the Output folder row, output.dir's,
 # after the Data folder row. Nine since S401 (v0.9.271): the Style and
-# Style folder rows after it.
+# Style folder rows after it; the Style row reads "Publication style"
+# since S403 (v0.9.272; ruling R50).
 .rows75 <- function(conv) c(
   "Options Settings",
   paste0("Missing-value convention: ", conv),
   "SPSS-style missing value codes: -99, -98, -97",
   "Data folder: Working directory",
   "Output folder: Working directory",
-  "Style: apa",
+  "Publication style: apa",
   "Style folder: Not set",
   "Correlation layout: wide",
   "Missing-value detail: per_code",

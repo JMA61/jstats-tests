@@ -12,9 +12,33 @@
 #           setting changed in the call, open = TRUE; and the style files
 #           (ruling R46) -- jstyle()'s list, a saved copy of apa, a short
 #           journal file based on apa and its settings printed, Tables 1
-#           and 2 made in it and written to one file. Each later build of
-#           Slate T adds its table's section.
+#           and 2 made in it and written to one file. Build 3 (S403): the
+#           regression table (Jeff's Table 3: four nested models side by
+#           side, the Constant, a dummy-coded variable's categories by
+#           their value labels with the reference named, R2), its
+#           logistic twin, the settings a call changes (the Gelman
+#           column, the fit rows, the reference in the note), and both
+#           tables in the journal's style. Each later build of Slate T
+#           adds its table's section.
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S403 (v0.9.272; Capability Slate T, build 3). SECTIONS 4, 5 AND
+#           6 ADDED, on the PENDING line, their Expected blocks filled by
+#           running (fill.R). SECTION 3 RE-PINNED: the journal file gains
+#           leading.zero = never and a [regression] section (the Gelman
+#           column in the last model, s.e. for SE), and jstyle()'s printout
+#           shows n.position where note.n stood (ruling R51) and the
+#           [regression] and [logistic] sections; on the PENDING line.
+#           SECTION 2 on the PENDING line for its Word file: its stub
+#           column is a little narrower (set by the category rows; a
+#           variable's label row spans the table), the preview unchanged
+#           and its Expected block as it was. Sections 5 and 6 carry NEEDS
+#           lines, derived by running (harness.R derive). A fit row's
+#           cell spans its model's columns, its value on b's point
+#           (Session 403: the df after an F had widened b).
+# LAST VERIFIED: v0.9.272, 2026-11-03 (S403) -- Sections 2-6 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (12 run, 3530 checks).
 # EDITED:   S401 (v0.9.271; Capability Slate T, build 2). SECTIONS 2 AND 3
 #           ADDED, on the PENDING line; their Expected blocks filled by
 #           running (fill.R), a path that holds the session's temporary
@@ -270,8 +294,11 @@ jtable(f1, missing.rows = "each",
 # A style file holds a journal's conventions (ruling R46). This section
 # lists the styles, saves a complete copy of apa (the "Save TableLook As"
 # step), then writes a short file for your journal -- based on apa, setting
-# only what differs, as you would in Notepad -- and makes Tables 1 and 2 in
-# it, one Word file holding both. The walk keeps its style files in a
+# only what differs, as you would in Notepad; since S403 the zero before
+# the point dropped on every number and, for its regression tables, the
+# Gelman column in the last model and "s.e." for SE -- and makes Tables 1
+# and 2 in it, one Word file holding both (Section 6 makes Tables 3 and 4
+# in it). The walk keeps its style files in a
 # folder of the session's temporary folder, set as the style folder and
 # cleared at the end of the section, so nothing is written into your own
 # folders. A path on the screen that holds this session's temporary
@@ -322,7 +349,7 @@ cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 16L,
 #   # comes from the style based.on names.
 #
 #   format     = 1
-#   written.by = jstats 0.9.271
+#   written.by = jstats 0.9.272
 #   based.on   = apa
 #
 #   # The general settings: the look of every table.
@@ -340,13 +367,18 @@ writeLines(c("# myjournal.jstyle -- the journal's conventions",
              "based.on = apa",
              "caption.form = journal     # \"Table 1.\" and the title on one line",
              "marks = symbols            # daggers for the notes on rows",
+             "leading.zero = never       # the zero before the point dropped everywhere",
              "",
              "[descriptives]",
              "columns = mean, sd, min, max",
              "mean.label = Mean",
              "sd.label = Std Dev.",
              "min.label = Minimum",
-             "max.label = Maximum"),
+             "max.label = Maximum",
+             "",
+             "[regression]",
+             "columns.last = beta.gelman # the Gelman column in the last model only",
+             "se.label = s.e."),
            file.path(.walk_styles, "myjournal.jstyle"))
 jstyle("myjournal")
 
@@ -370,9 +402,9 @@ jstyle("myjournal")
 #   note.label       = Note.            # from apa
 #   note.position    = row              # from apa
 #   note.size        = 12               # from apa
-#   note.n           = yes              # from apa
+#   n.position       = note             # from apa
 #   decimals         = 2                # from apa
-#   leading.zero     = no               # from apa
+#   leading.zero     = never
 #   p.format         = exact            # from apa
 #   p.decimals       = 3                # from apa
 #   stars            = .05, .01, .001   # from apa
@@ -406,11 +438,56 @@ jstyle("myjournal")
 #   missing.label       = Missing                  # from apa
 #   variable.headings   = plain                    # from apa
 #   group.headings      = italic                   # from apa
+#
+#   [regression]
+#   title             = Regression Coefficients Predicting {outcome}  # from apa
+#   columns           = b, se, beta, p              # from apa
+#   columns.last      = beta.gelman
+#   stub.label        = Predictor                   # from apa
+#   b.label           = b                           # from apa
+#   se.label          = s.e.
+#   beta.label        = β                           # from apa
+#   p.label           = p                           # from apa
+#   t.label           = t                           # from apa
+#   ci.label          = 95% CI                      # from apa
+#   beta.gelman.label = β*                          # from apa
+#   ci.style          = one                         # from apa
+#   intercept         = yes                         # from apa
+#   intercept.label   = Constant                    # from apa
+#   fit.rows          = r2                          # from apa
+#   reference         = row                         # from apa
+#   reference.label   = reference                   # from apa
+#   variable.headings = plain                       # from apa
+#   group.headings    = italic                      # from apa
+#
+#   [logistic]
+#   title             = Logistic Regression Coefficients Predicting {outcome}  # from apa
+#   columns           = b, se, or, p                # from apa
+#   columns.last      = none                        # from apa
+#   stub.label        = Predictor                   # from apa
+#   b.label           = b                           # from apa
+#   se.label          = SE                          # from apa
+#   or.label          = OR                          # from apa
+#   p.label           = p                           # from apa
+#   wald.label        = Wald                        # from apa
+#   ci.label          = 95% CI for OR               # from apa
+#   beta.gelman.label = β*                          # from apa
+#   ci.style          = one                         # from apa
+#   intercept         = yes                         # from apa
+#   intercept.label   = Constant                    # from apa
+#   fit.rows          = chisq, nagelkerke           # from apa
+#   reference         = row                         # from apa
+#   reference.label   = reference                   # from apa
+#   variable.headings = plain                       # from apa
+#   group.headings    = italic                      # from apa
 
 # Things to look at:
 #   - the settings myjournal sets, unmarked; every other "# from apa" --
-#     the file names no [frequencies] section, so the frequency table takes
-#     apa's, in the journal's caption form;
+#     the file names no [frequencies] or [logistic] section, so those
+#     tables take apa's, in the journal's caption form;
+#   - n.position (ruling R51) where note.n stood: note | title | none;
+#   - the [regression] and [logistic] sections (build 3), every key with
+#     apa's value but the two the file sets;
 #   - the printout is itself a style file's form: a line can be copied
 #     into the file.
 
@@ -490,6 +567,277 @@ joptions(style.dir = NULL, quiet = TRUE)
 # style what you have it"): a style's name is its file's name, so renaming
 # myjournal.jstyle renames the style.
 
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 4 -- Table 3: four nested regression models, the preview and the Word file ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Jeff's Table 3 (the Table Layer Reference, Part 4.1; the S402 sketch,
+# built at S403): four nested models of wellbeing on tdat, side by side.
+# Region is dummy-coded (jdummy()), Education treated as numeric
+# (jnumeric()), and jcomplete() set over the largest model's variables,
+# so every model is fit on the same 92 cases. The models are fit quietly;
+# the table is what this section is for. First the preview, under the apa
+# style: a spanner over each model's four columns (b, SE, beta, p), the
+# Constant first, the predictors in the models' order, Region's categories
+# indented under its label with the reference category named after it,
+# R2 under each model's b. Then the same table in Word, opened by jtable().
+
+jdummy(Region)
+jnumeric(Education)
+jcomplete(WellbeingScore, Volunteer, Age, Smoker, Region, Education,
+          CommuteTime)
+m1 <- jlm(WellbeingScore ~ Age, print = FALSE)
+m2 <- jlm(WellbeingScore ~ Age + Smoker + Region, print = FALSE)
+m3 <- jlm(WellbeingScore ~ Age + Smoker + Region + Education, print = FALSE)
+m4 <- jlm(WellbeingScore ~ Age + Smoker + Region + Education + CommuteTime,
+          print = FALSE)
+t3 <- jtable(list(m1, m2, m3, m4))
+
+# Expected:
+#   Table 1
+#   Regression Coefficients Predicting Wellbeing score (0-100)
+#   -----------------------------------------------------------------------------------------------------------------------------------------------
+#                                                    Model 1                   Model 2                   Model 3                   Model 4
+#   Predictor                                  b     SE    β     p      b     SE     β     p      b     SE     β     p       b     SE     β     p
+#   -----------------------------------------------------------------------------------------------------------------------------------------------
+#   Constant                                 36.19  4.07       <.001  37.10  4.67        <.001  20.97  4.45        <.001  21.01   5.07        <.001
+#   Age (years)                               0.37  0.10  .38  <.001   0.38  0.10   .39  <.001   0.40  0.08   .41  <.001   0.40   0.08   .41  <.001
+#   Current smoker                                                     1.84  2.41   .08   .446   3.88  1.97   .16   .052   3.88   2.00   .16   .056
+#   Region of residence (reference = North)
+#     South                                                           -3.97  3.42  -.14   .248  -0.98  2.80  -.03   .727  -0.98   2.81  -.03   .728
+#     East                                                            -1.68  3.05  -.07   .584   0.48  2.48   .02   .847   0.49   2.52   .02   .848
+#     West                                                            -3.63  3.25  -.13   .268  -3.40  2.63  -.13   .199  -3.40   2.65  -.13   .203
+#   Highest education level                                                                      4.65  0.68   .56  <.001   4.65   0.69   .56  <.001
+#   Daily commute time (minutes)                                                                                          -0.001  0.08   .00   .987
+#   R²                                         .14                      .16                       .46                       .46
+#   -----------------------------------------------------------------------------------------------------------------------------------------------
+#   Note. N = 92.
+
+# Things to look at (the preview):
+#   - the title from the style's template, naming the outcome by its
+#     variable label as written (ruling R49: "Predicting", never
+#     "dependent variable"); the stub head "Predictor";
+#   - "Model 1" to "Model 4" centered over their columns (a named list,
+#     jtable(list("Baseline" = m1, "Full" = m4)), puts the names there);
+#   - the heads: b, SE and p (italic in the file), beta (upright: a Greek
+#     letter, APA's rule);
+#   - the Constant first, its beta cell empty; the predictors in the
+#     order they enter the models; a model's missing predictor a blank;
+#   - Region: its label as a row, "(reference = North)" after it, South,
+#     East and West indented under it, named by their value labels; the
+#     0/1 variable Smoker as one row under its own label ("Current
+#     smoker");
+#   - the numbers: b and SE at two decimals with the zero, beta and p
+#     without it (APA's rule for a statistic bounded by 1), p's floor
+#     "<.001" hanging left of the point; CommuteTime's b, which rounds to
+#     0.00, printed as -0.001 so its sign and size show;
+#   - R2 under each model's b, without a zero; "Note. N = 92."
+
+walk_file4 <- file.path(tempdir(), "Table3.docx")
+jtable(t3, file = walk_file4, overwrite = TRUE, print = FALSE, open = TRUE)
+
+# Things to look at (in Word):
+#   - the file opens with no repair prompt, on a LANDSCAPE page: the
+#     table is wider than a portrait page (landscape = auto);
+#   - the table FITTED to the page: its number columns lose half their
+#     padding, then the font steps down a point at a time (12, 11, 10, 9)
+#     until the table fits -- no number wraps; the caption keeps 12 pt,
+#     the note steps down with the table; a table that fits needs none of
+#     this;
+#   - the spanner row: "Model 1" to "Model 4", each over its four columns,
+#     a rule under each; the rule above them is the table's top rule;
+#   - b, SE and p italic in the heads, beta upright; R2 an italic R with
+#     a superscript 2;
+#   - "Region of residence (reference = North)" spanning the table, the
+#     three categories indented under it;
+#   - every column on its decimal point; the minus sign on the negative
+#     coefficients; "-0.001" for CommuteTime;
+#   - R2 on the b column's point, in a cell that spans the model's four
+#     columns (click into it): an F's df would run on under SE and beta
+#     instead of widening b;
+#   - "Note. N = 92." as the last row.
+# Try: Insert > Table of Figures lists "Table 1" with its title.
+
+# The settings a call can change for this table (your S402 answers): the
+# Gelman column in the last model only (columns.last), every fit row --
+# adjusted R2, F with its df, delta R2 and its F test, N -- and the
+# reference category named in the note instead of after the label. A
+# style file sets the same keys for every table it makes (Section 6).
+jtable(list(m1, m2, m3, m4), columns.last = "beta.gelman",
+       fit.rows = c("r2", "adj.r2", "f", "delta.r2", "f.change", "n"),
+       reference = "note")
+
+# Expected:
+#   Table 1
+#   Regression Coefficients Predicting Wellbeing score (0-100)
+#   -------------------------------------------------------------------------------------------------------------------------------------------
+#                                         Model 1                   Model 2                   Model 3                       Model 4
+#   Predictor                       b     SE    β     p      b     SE     β     p      b     SE     β     p       b     SE     β     p      β*
+#   -------------------------------------------------------------------------------------------------------------------------------------------
+#   Constant                      36.19  4.07       <.001  37.10  4.67        <.001  20.97  4.45        <.001  21.01   5.07        <.001
+#   Age (years)                    0.37  0.10  .38  <.001   0.38  0.10   .39  <.001   0.40  0.08   .41  <.001   0.40   0.08   .41  <.001   9.51
+#   Current smoker                                          1.84  2.41   .08   .446   3.88  1.97   .16   .052   3.88   2.00   .16   .056   3.88
+#   Region of residence
+#     South                                                -3.97  3.42  -.14   .248  -0.98  2.80  -.03   .727  -0.98   2.81  -.03   .728  -0.98
+#     East                                                 -1.68  3.05  -.07   .584   0.48  2.48   .02   .847   0.49   2.52   .02   .848   0.49
+#     West                                                 -3.63  3.25  -.13   .268  -3.40  2.63  -.13   .199  -3.40   2.65  -.13   .203  -3.40
+#   Highest education level                                                           4.65  0.68   .56  <.001   4.65   0.69   .56  <.001  13.08
+#   Daily commute time (minutes)                                                                               -0.001  0.08   .00   .987  -0.03
+#   R²                              .14                      .16                       .46                       .46
+#   Adjusted R²                     .13                      .11                       .42                       .42
+#   F                             14.74 (1, 90)             3.36 (5, 86)             12.10 (6, 85)             10.25 (7, 84)
+#   ΔR²                                                      .02                       .30                       .00
+#   ΔF                                                      0.59 (4, 86)             46.84 (1, 85)              0.00 (1, 84)
+#   N                             92                       92                        92                        92
+#   -------------------------------------------------------------------------------------------------------------------------------------------
+#   Note. N = 92. Reference category for Region of residence: North. β* = Gelman's
+#   (2008) standardized coefficient: each continuous predictor divided by two
+#   standard deviations, each binary predictor kept at 0 and 1.
+
+# Things to look at:
+#   - beta* in Model 4 only, defined in the general note (Gelman's
+#     standardization, as ?jlm describes it);
+#   - the fit rows: F with its df in parentheses, delta R2 from Model 2 on
+#     (each model holds the one before it, on the same cases), the F test
+#     of each delta R2 with its df, N under every model;
+#   - "Reference category for Region of residence: North." in the note,
+#     and nothing after Region's label.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 5 -- Table 4: the logistic twin, four models of volunteering ----
+# NEEDS: 4
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# The same four models with Volunteer as the outcome, through jlogistic():
+# the same builder, with the odds ratio in place of beta and the model
+# chi-square and Nagelkerke's R2 as the fit rows (Section 4 set the
+# registrations and the complete-cases filter, so N = 92 here too).
+
+g1 <- jlogistic(Volunteer ~ Age, print = FALSE)
+g2 <- jlogistic(Volunteer ~ Age + Smoker + Region, print = FALSE)
+g3 <- jlogistic(Volunteer ~ Age + Smoker + Region + Education, print = FALSE)
+g4 <- jlogistic(Volunteer ~ Age + Smoker + Region + Education + CommuteTime,
+                print = FALSE)
+t4 <- jtable(list(g1, g2, g3, g4))
+
+# Expected:
+#   Table 1
+#   Logistic Regression Coefficients Predicting Volunteered in past year
+#   ---------------------------------------------------------------------------------------------------------------------------------------------
+#                                                    Model 1                  Model 2                   Model 3                   Model 4
+#   Predictor                                  b     SE    OR     p     b     SE    OR     p     b     SE    OR     p      b     SE    OR     p
+#   ---------------------------------------------------------------------------------------------------------------------------------------------
+#   Constant                                 -1.95  0.82  0.14  .017  -1.65  0.91  0.19  .070  -3.97  1.23  0.02   .001  -4.71  1.39  0.01  <.001
+#   Age (years)                               0.05  0.02  1.05  .016   0.05  0.02  1.05  .021   0.05  0.02  1.06   .011   0.05  0.02  1.05   .013
+#   Current smoker                                                    -0.05  0.46  0.95  .908   0.22  0.51  1.25   .665   0.30  0.52  1.35   .563
+#   Region of residence (reference = North)
+#     South                                                           -0.90  0.67  0.41  .175  -0.66  0.72  0.52   .357  -0.64  0.73  0.53   .375
+#     East                                                            -0.26  0.58  0.77  .650  -0.08  0.62  0.92   .895  -0.18  0.63  0.83   .769
+#     West                                                             0.05  0.62  1.05  .941   0.06  0.67  1.06   .932   0.01  0.68  1.01   .994
+#   Highest education level                                                                     0.61  0.18  1.84  <.001   0.63  0.19  1.88  <.001
+#   Daily commute time (minutes)                                                                                          0.02  0.02  1.02   .223
+#   Model χ²                                  6.37 (1)                 8.87 (5)                21.52 (6)                 23.03 (7)
+#   Nagelkerke R²                              .09                      .12                      .28                       .30
+#   ---------------------------------------------------------------------------------------------------------------------------------------------
+#   Note. N = 92.
+
+# Things to look at (the preview):
+#   - the title "Logistic Regression Coefficients Predicting ..." with the
+#     outcome's label;
+#   - the columns b, SE, OR, p per model -- OR the odds ratio, exp(b),
+#     with its zero kept (it is not bounded by 1); the Constant's OR
+#     shown as jlogistic() prints it;
+#   - the fit rows: "Model chi-square" with its df in parentheses, then
+#     Nagelkerke R2; the Wald statistic, the CI for the odds ratio, the
+#     Gelman column, Cox and Snell R2, -2 log likelihood, AIC and N are
+#     available through columns = and fit.rows =, and each can be left
+#     out (ruling R53).
+
+walk_file5 <- file.path(tempdir(), "Table4.docx")
+jtable(t4, file = walk_file5, overwrite = TRUE, print = FALSE, open = TRUE)
+
+# Things to look at (in Word): as Table 3 -- landscape, fitted, OR italic
+# in the heads, "Model chi-square" with the Greek letter and a superscript 2.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 6 -- Tables 3 and 4 in the journal's style, one Word file ----
+# NEEDS: 3, 5
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# The journal file Section 3 wrote (myjournal.jstyle in the walk's style
+# folder: the one-line caption, daggers, the zero before the point dropped
+# on every number, the Gelman column in the last model, "s.e." for SE)
+# applied to the four regression models and the four logistic models, both
+# tables written to one Word file. The style folder is set again here
+# (Section 3 cleared it at its end).
+
+joptions(style.dir = .walk_styles, quiet = TRUE)
+t3j <- jtable(list(m1, m2, m3, m4), style = "myjournal")
+
+# Expected:
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#   ------------------------------------------------------------------------------------------------------------------------------------------------------
+#                                                    Model 1                   Model 2                   Model 3                       Model 4
+#   Predictor                                  b    s.e.   β     p      b    s.e.    β     p      b    s.e.    β     p       b    s.e.    β     p      β*
+#   ------------------------------------------------------------------------------------------------------------------------------------------------------
+#   Constant                                 36.19  4.07       <.001  37.10  4.67        <.001  20.97  4.45        <.001  21.01   5.07        <.001
+#   Age (years)                                .37   .10  .38  <.001    .38   .10   .39  <.001    .40   .08   .41  <.001    .40    .08   .41  <.001   9.51
+#   Current smoker                                                     1.84  2.41   .08   .446   3.88  1.97   .16   .052   3.88   2.00   .16   .056   3.88
+#   Region of residence (reference = North)
+#     South                                                           -3.97  3.42  -.14   .248   -.98  2.80  -.03   .727   -.98   2.81  -.03   .728   -.98
+#     East                                                            -1.68  3.05  -.07   .584    .48  2.48   .02   .847    .49   2.52   .02   .848    .49
+#     West                                                            -3.63  3.25  -.13   .268  -3.40  2.63  -.13   .199  -3.40   2.65  -.13   .203  -3.40
+#   Highest education level                                                                      4.65   .68   .56  <.001   4.65    .69   .56  <.001  13.08
+#   Daily commute time (minutes)                                                                                           -.001   .08   .00   .987   -.03
+#   R²                                         .14                      .16                       .46                       .46
+#   ------------------------------------------------------------------------------------------------------------------------------------------------------
+#   Note. N = 92. β* = Gelman's (2008) standardized coefficient: each continuous
+#   predictor divided by two standard deviations, each binary predictor kept
+#   at 0 and 1.
+
+t4j <- jtable(list(g1, g2, g3, g4), style = "myjournal")
+
+# Expected:
+#   Table 1. Logistic Regression Coefficients Predicting Volunteered in past year
+#   -------------------------------------------------------------------------------------------------------------------------------------------
+#                                                    Model 1                 Model 2                  Model 3                   Model 4
+#   Predictor                                  b     SE   OR     p     b     SE   OR     p     b     SE    OR     p      b     SE    OR     p
+#   -------------------------------------------------------------------------------------------------------------------------------------------
+#   Constant                                 -1.95  .82   .14  .017  -1.65  .91   .19  .070  -3.97  1.23   .02   .001  -4.71  1.39   .01  <.001
+#   Age (years)                                .05  .02  1.05  .016    .05  .02  1.05  .021    .05   .02  1.06   .011    .05   .02  1.05   .013
+#   Current smoker                                                    -.05  .46   .95  .908    .22   .51  1.25   .665    .30   .52  1.35   .563
+#   Region of residence (reference = North)
+#     South                                                           -.90  .67   .41  .175   -.66   .72   .52   .357   -.64   .73   .53   .375
+#     East                                                            -.26  .58   .77  .650   -.08   .62   .92   .895   -.18   .63   .83   .769
+#     West                                                             .05  .62  1.05  .941    .06   .67  1.06   .932    .01   .68  1.01   .994
+#   Highest education level                                                                    .61   .18  1.84  <.001    .63   .19  1.88  <.001
+#   Daily commute time (minutes)                                                                                         .02   .02  1.02   .223
+#   Model χ²                                  6.37 (1)                8.87 (5)               21.52 (6)                 23.03 (7)
+#   Nagelkerke R²                              .09                     .12                     .28                       .30
+#   -------------------------------------------------------------------------------------------------------------------------------------------
+#   Note. N = 92.
+
+# Things to look at (the previews):
+#   - "Table 1. Regression Coefficients ..." on one line;
+#   - no zero before the point anywhere: ".37" for a b, ".10" for an SE
+#     (the journal's form), where apa keeps it on b and SE;
+#   - "s.e." in SE's place (upright: a word, not the symbol);
+#   - beta* in Model 4 only, and its sentence in the note -- the file's
+#     [regression] section, so every regression table it makes has it;
+#   - the logistic table takes apa's [logistic] settings in the journal's
+#     caption form and number form (the file sets no [logistic] section).
+
+walk_file6 <- file.path(tempdir(), "Tables_myjournal_models.docx")
+jtable(list(t3j, t4j), file = walk_file6, overwrite = TRUE, print = FALSE,
+       open = TRUE)
+joptions(style.dir = NULL, quiet = TRUE)
+
+# Things to look at (in Word):
+#   - two tables, "Table 1." and "Table 2." then the titles on one line,
+#     two empty lines between the tables (your S401 request);
+#   - each fitted to the landscape page as in Sections 4 and 5;
+#   - ".37", ".10", beta*, s.e. as in the previews.
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations
