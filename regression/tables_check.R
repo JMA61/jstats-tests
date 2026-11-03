@@ -43,11 +43,21 @@
 #           heads, landscape in the call); the preview pinned whole; the
 #           Word file read for its spanners, heads, spanning fit cells
 #           and fit to the landscape page and pinned by checksum;
-#           jstyle()'s [regression] and [logistic] sections. Later Slate
-#           T builds add their sections here.
+#           jstyle()'s [regression] and [logistic] sections.
+#           (AA-AJ) build 4 (S405, v0.9.273): the correlation, t-test,
+#           ANOVA, crosstab and reliability tables from jcorr(), jt(),
+#           jaov(), jcrosstab() and jalpha() results (rulings R54 and R55,
+#           the eight S404 leans) -- their columns, spanners, cells (computed
+#           here from the data with base R), notes and stops; the filter
+#           sentence in every table type; heads with markup; the five
+#           previews pinned whole; the Word file of the five (ruling R55's
+#           fit and landscape test, the cells set centered); the stops that
+#           named jtable() twice; jstyle()'s five new sections. Build 5 adds
+#           its sections here.
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.272, 2026-11-03 (S403) -- 179/179 on the WORKSTATION;
-#           the S403 EDIT block below holds the stamp. Prior: v0.9.271,
+# LAST VERIFIED: v0.9.273, 2026-11-04 (S405) -- 223/223 on the WORKSTATION;
+#           the S405 EDIT block below holds the stamp. Prior: v0.9.272,
+#           2026-11-03 (S403) -- 179/179 (the S403 EDIT block); v0.9.271,
 #           2026-10-29 (S401) -- 141/141 (the S401 EDIT block); v0.9.270,
 #           2026-10-29 (S400) -- 107/107 (the S400 EDIT block); v0.9.269,
 #           2026-10-28 (S399) -- 56/56 on the WORKSTATION through
@@ -77,6 +87,126 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S405 EDIT (v0.9.273, 2026-11-03): Capability Slate T, build 4. SECTIONS
+#           AA-AJ ADDED, 44 checks (223 in all). (AA) the general changes:
+#           the five new sections in the apa list and the spec, filter.note
+#           (28 general settings), nine result classes read into nine
+#           sections; the heads (V italic; chi2, eta2 and alpha upright; a
+#           head with the light markup set by it); a filter in words -- the
+#           variable's label, the mathematical signs, a constant on the left
+#           read the other way round, a code by its value label, and and or
+#           with parentheses where they mix, the minus sign -- and as typed
+#           where it cannot be put into words; the filter sentence in every
+#           table type, a stored jsubset() and subset = joined by and;
+#           filter.note = no; results filtered differently; a cell set
+#           centered and a number's parts. (AB) the correlation table: the
+#           matrix computed here from the variables' cases (each r once
+#           below the diagonal with its stars, an em dash on the diagonal),
+#           each variable's n, M and SD, the pairwise ns, one N, a Spearman
+#           table's sentence, the options, the stops. (AC) the t-test table:
+#           the columns and spanners, the cells computed here (each group's
+#           M and SD, Student's t, p, Cohen's d on the pooled SD), the
+#           groups' ns, a df column where the df differ (Welch's at two
+#           decimals), each group's n, the mean difference and its CI, the
+#           Welch and paired sentences, n.position = title, group.spanner =
+#           no, the stops (two grouping variables, two kinds, an outcome
+#           twice, headings =, another table type's setting, a column the
+#           table lacks). (AD) the ANOVA table: F, p and eta2 computed here
+#           from base R's aov(), the df column as text, the groups' ns
+#           varying (a group's one n where it does not), F's df in the head
+#           when shared, a Welch analysis. (AE) the crosstab: each
+#           variable's label row carrying chi2, df, p and V computed here by
+#           chisq.test() without Yates's correction, the categories' n and
+#           column percentages, the Total, N by variable, percent.base row
+#           and total, total = no, test.columns = none, stars on chi2, a
+#           result made with chisq = TRUE, the stops, V on a 4 x 5 table.
+#           (AF) the reliability table: the items by their labels, M, SD,
+#           item-total r and alpha if item deleted computed here on the
+#           filtered complete cases, the note (N, the filter, alpha, the
+#           definition), two scales under their names with their alphas, N
+#           by scale, markers =, alpha = no and item.total.note = no, an
+#           item in two results. (AG) the five previews pinned whole (the
+#           S404 sketch's tables). (AH) the Word file of the five tables:
+#           numbered on the SEQ field, landscape for the four-group ANOVA
+#           table, the other four portrait at 12 points; ruling R55's order
+#           on the item table (half padding, then two-line labels, at 12
+#           points) and its landscape test; heads with markup in the file;
+#           the em dash and the df centered with no tab; the font steps and
+#           the last resort; the checksum; the stub's two-line floor; every
+#           column of numbers holding its block, the decimal stop with room
+#           for the widest whole part on its left and the widest tail on its
+#           right (AH08, the rebuild's check). (AI)
+#           no stop names jtable() twice (the (S403) item), each of the
+#           seven reworded stops reached. (AJ) jstyle()'s printout and a
+#           saved copy with the five sections; a style file's [ttest] and
+#           [crosstab] sections in use, filter.note = no in its general
+#           part. RE-PINNED: J12 (every class has a table, so the default
+#           method's stop is reached directly; its new words), J13, J14,
+#           L17, P07 and V11 (the (S403) rewording: jtable() named once),
+#           N07 and N09 (the sections list; [metaanalysis] for the unknown
+#           section, since [anova] is a section now), O03 (a setting's name
+#           may hold a digit: eta2.label), P06 (the frequency table's note
+#           names its filter), U01 (the nine table types), Y04 (ruling R55:
+#           Table 3 fits at 10 points, its stub narrowed below its width
+#           there and not below its floor; 9 before) and Y05 (the
+#           checksum); at the rebuild AH06 (the correlation table's first
+#           column wider). MUTATION MAP (S405; 62 one-change mutants of
+#           tables.R and utils.R, each red; by the first check that reds):
+#           a number column held to its widest cell AH06 (and AH08); the
+#           decimal stop let left of the whole part AH08; an em dash
+#           off the diagonal AB02; the upper triangle filled AB02; r with
+#           its zero AB02; r without stars AB02; one N whatever the pairs
+#           AB03; the Spearman sentence's words AB04; columns = none ignored
+#           AB04; M from the SD AB03; two jcorr() results allowed AB05; df
+#           never in the head AC01; the t head without its markup AC01; the
+#           grouping variable's spanner off AC01; the variable's name in
+#           the title AC01; Welch's df whole AC03; N for n in the groups'
+#           sentence AC02; d without its sign AC02; the paired dz as d
+#           AC04; n for N in the title AC04; two grouping variables allowed
+#           AC05; "with missing data" whatever the filters AA06; the Welch
+#           sentence for Student's tests AA06; the ANOVA's df a number
+#           column AD01; eta2 with its zero AD01; one n written as a range
+#           AD03 (SURVIVED the first round; AD03 written for it); row
+#           percentages for column AE02; Yates's correction AE01; V with its
+#           zero AE01; the test off the label row AE01; V without the
+#           smaller dimension AE05; the Total's percentage of all cases
+#           under row percentages AE03; two column variables allowed AE04;
+#           different categories allowed AE04; an item by its name AF01;
+#           item-total r with its zero AF01; a scale's alpha dropped AF03;
+#           "Set" for "Scale" AF03; Cronbach's sentence beside several
+#           scales AF03; item.total.note ignored AF03; >= written as typed
+#           AA03; a constant on the left not read the other way round AA03;
+#           a code for its value label AA03; no parentheses where and and or
+#           mix AA03; & for and AA05; filter.note ignored AA06; the
+#           per-filter sentence without "for" P06; a condition not put into
+#           words written empty AA04; a plain cell not centered AH04, or on
+#           a tab AH04; a cell with no digit taken as a number AA07; the
+#           stub's floor at half its width alone AH07 (SURVIVED the first
+#           round; AH07 written for it); the font stepped before a label
+#           wraps Y04; the pad not halved at the font steps Y04; landscape
+#           by the natural width AH01; the font steps ending at 9 points
+#           AH05; a head's markup ignored in the file AH04; the preview's
+#           heads with their markup AG02; the wrapper's name = value pair
+#           ASCII-only AG05; the reliability class unread AA01; V upright
+#           AA02; the S403 wording back J12.
+#           FIRST DELIVERY of v0.9.273: 222/222 on the WORKSTATION through
+#           receive_all() ("ALL BATTERIES GREEN (12 run, 3573 checks)"; R CMD
+#           check 0 errors, 0 warnings, 0 notes); on the walk Jeff found the
+#           correlation table's decimal tab off in Word ("I assume due to the
+#           3 asterisks"): its first column was as wide as its widest cell,
+#           .62***, leaving no room for the minus of -.07 left of the stop,
+#           and Word pushed -.07 off the point (the journal Table 3's Model 4
+#           b column the same: -3.40 beside -.001). REBUILT under the same
+#           version (S400's precedent): a column of numbers holds its block,
+#           the stop is never left of the whole part; AH08 added (red on the
+#           first delivery's code), AH06 re-pinned.
+#           LAST VERIFIED: v0.9.273, 2026-11-04 (S405), the rebuild --
+#           223/223 on the WORKSTATION through receive_all() ("ALL BATTERIES
+#           GREEN (12 run, 3574 checks)"; R CMD check 0 errors, 0 warnings,
+#           0 notes), matching the sandbox plain, under the RStudio-handler
+#           stand-in, each again with a Windows-length temp path, once with
+#           interactive() TRUE (no question asked), and entered dirty plain
+#           and under the handlers (nothing added, removed or changed).
 # S403 EDIT (v0.9.272, 2026-11-03): Capability Slate T, build 3. SECTIONS U-Y
 #           ADDED, 38 checks (179 in all). (U) the general changes: the
 #           [regression] and [logistic] sections in the apa list and the
@@ -1141,19 +1271,20 @@ check("J11 an item with no name stops with the example; a value that is not a li
         grepl("markers = takes a named list of variable names,", .j11b$txt, fixed = TRUE) &&
         grepl("markers = list(\"Mean-centered\" = c(Age, Income))", .j11b$txt, fixed = TRUE))
 
-.j12 <- res(jtable(res(jcorr(tcm, Age, Income))$val, print = FALSE))
+# S405: every result class has its table, so the default method's stop is
+# reached only by an object of some other class (called here directly).
+.j12 <- res(.jst_table_build.default(structure(list(), class = "jst_other"), .jst_style_apa))
 .j12b <- res(jtable(tcm, print = FALSE))
 .j12c <- res(jtable(list(.j0, .a1), print = FALSE))
 .j12d <- res(jtable(list(), print = FALSE))
-check("J12 a result of another kind stops, naming its function; a data frame is not a result; results of two kinds in one list stop; an empty list stops",
+check("J12 an object of no result class stops at the builders' default, naming every function a table is made from (S405: every class has its table; the S403 wording, the name once); a data frame is not a result; results of two kinds in one list stop; an empty list stops",
       is.null(.j12$val) &&
-        grepl("jtable() does not yet make a table from a jcorr() result.", .j12$txt, fixed = TRUE) &&
-        grepl("It makes a table from a jdesc(), jfreq(), jlm(), or jlogistic() result.", .j12$txt, fixed = TRUE) &&
+        grepl("jtable(): no table is made from this kind of result yet.\nTables are made from jdesc(), jfreq(), jcorr(), jt(), jaov(), jcrosstab(),\njalpha(), jlm(), and jlogistic() results.", .j12$txt, fixed = TRUE) &&
         is.null(.j12b$val) &&
-        grepl("jtable() takes a saved result -- what an analysis function", .j12b$txt, fixed = TRUE) &&
+        grepl("jtable(): a table is made from a saved result -- what an analysis", .j12b$txt, fixed = TRUE) &&
         grepl("  d1 <- jdesc(community, Age, Income)", .j12b$txt, fixed = TRUE) &&
         is.null(.j12c$val) &&
-        grepl("(jdesc() and jfreq()) in one table.", .j12c$txt, fixed = TRUE) &&
+        grepl("jtable(): results of different kinds (jdesc() and jfreq()) cannot\nshare a table yet.\nGive the results of one kind at a time.", .j12c$txt, fixed = TRUE) &&
         is.null(.j12d$val) && grepl("the list given to jtable() is empty.", .j12d$txt, fixed = TRUE))
 
 .j13 <- res(jtable(.d1, print = FALSE))
@@ -1163,7 +1294,7 @@ check("J12 a result of another kind stops, naming its function; a data frame is 
                  res(jtable(old, print = FALSE)) })
 check("J13 a grouped jdesc(by =) result stops in this build; a result without the fields names the version that made it, or 'an earlier version' with no stamp",
       is.null(.j13$val) &&
-        grepl("does not yet make a table from a grouped", .j13$txt, fixed = TRUE) &&
+        grepl("jtable(): no table is made from a grouped jdesc() result\n(one made with by =) yet.", .j13$txt, fixed = TRUE) &&
         is.null(.j13o$val) &&
         grepl("this jdesc() result was made by jstats 0.9.200, before the", .j13o$txt, fixed = TRUE) &&
         grepl("Run the analysis again, then jtable() on the new result.", .j13o$txt, fixed = TRUE) &&
@@ -1188,7 +1319,7 @@ check("J14 the front door: an unused input, the pointer for notes =, a bare word
         grepl("jtable(): Table1.docx is not in quotes.\nfile = takes a file name in quotes:",
               .j14e$txt, fixed = TRUE) &&
         grepl("  jtable(.j0, file = \"Table1.docx\", print = FALSE)", .j14e$txt, fixed = TRUE) &&
-        grepl("jtable(): jtable() writes Word files, so the file name needs the", .j14f$txt, fixed = TRUE) &&
+        grepl("jtable(): the file name needs the .docx extension (a Word file),\nfor example:", .j14f$txt, fixed = TRUE) &&
         grepl("  file = \"Table1.docx\"", .j14f$txt, fixed = TRUE) &&
         grepl("`overwrite` must be TRUE or FALSE.", .j14g$txt, fixed = TRUE) &&
         grepl("`title` must be a single quoted string.", .j14h$txt, fixed = TRUE))
@@ -1503,7 +1634,7 @@ check("L17 a built table given to jtable() is previewed and written as it is, th
         grepl("\nTables written to", .lb2$txt) && length(.lb2$val) == 2L &&
         .ltag(.lb2d, "w:tbl")[["open"]] == 2L &&
         is.null(.lb3$val) &&
-        grepl("jtable() takes built tables or saved results in one", .lb3$txt, fixed = TRUE) &&
+        grepl("jtable(): built tables and saved results cannot be given\nin one call.\nBuild each result into a table first, then give the tables together.", .lb3$txt, fixed = TRUE) &&
         is.null(.lb4$val) &&
         grepl("belong to the", .lb4$txt, fixed = TRUE) && grepl("keeps its own.", .lb4$txt, fixed = TRUE))
 
@@ -1729,7 +1860,7 @@ check("N06 a line that is not a setting; a setting given twice in a section, and
 .wsty("unkn", "[frequencies]", "colwidth = 5")
 .wsty("unkg", "fontface = Arial")
 .wsty("secnear", "[frequncies]", "columns = n")
-.wsty("secunk", "[anova]", "columns = f")   # S403: [regression] is a section now
+.wsty("secunk", "[metaanalysis]", "columns = f")   # S403: [regression] is a section now; S405: [anova] too
 .n7 <- lapply(c("typo", "unkn", "unkg", "secnear", "secunk"),
               function(s) res(jtable(.nf1, style = s, print = FALSE)))
 check("N07 a setting or a section this version does not have: a near miss gets the did-you-mean; any other names both causes and the settings, or the sections, there are",
@@ -1740,7 +1871,7 @@ check("N07 a setting or a section this version does not have: a near miss gets t
         grepl("A general setting may be set there too.", .n7[[2]]$txt, fixed = TRUE) &&
         grepl("The general settings are font, size, paper,", .n7[[3]]$txt, fixed = TRUE) &&
         grepl("jtable(): line 1 of secnear.jstyle opens [frequncies], which is not\na section of a style.\nDid you mean [frequencies]?", .n7[[4]]$txt, fixed = TRUE) &&
-        grepl("The sections are [descriptives], [frequencies], [regression],\nand [logistic].", .n7[[5]]$txt, fixed = TRUE))
+        grepl("The sections are [descriptives], [frequencies], [regression], [logistic],\n[correlation], [ttest], [anova], [crosstab], and [reliability].", .n7[[5]]$txt, fixed = TRUE))
 
 .wsty("vchoice", "rules = box"); .wsty("vnum", "size = 100"); .wsty("vint", "decimals = 2.5")
 .wsty("vcol", "header.fill = notacolor"); .wsty("vcol2", "rule.color = none")
@@ -1765,7 +1896,7 @@ check("N08 a wrong value stops after the line that set it, with what the setting
 # over with one note naming it in the file's order; a near miss still
 # stops, and says the file is newer.
 .wsty("newer", "written.by = jstats 99.0.0", "caption.color = red", "caption.form = journal",
-      "[frequencies]", "colwidth = 5", "[anova]", "columns = f")   # S403: [anova] for [regression]
+      "[frequencies]", "colwidth = 5", "[metaanalysis]", "columns = f")   # S403: [anova] for [regression]; S405: [metaanalysis] for [anova]
 .wsty("newtypo", "written.by = jstats 99.0.0", "[frequencies]", "colums = n")
 .n9 <- res(jtable(.nf1, style = "newer", print = FALSE))
 .n9b <- res(jtable(.nf1, style = "newtypo", print = FALSE))
@@ -1777,7 +1908,7 @@ check("N09 a file a newer jstats wrote: its unknown settings and sections are sk
         grepl(paste0("newer.jstyle was written by jstats 99.0.0, and this is jstats ",
                      .jst_jstats_version(), ".\nThese settings are from the newer version and were skipped:"),
               .n9n[[1]]$text, fixed = TRUE) &&
-        grepl("caption.color, [frequencies] colwidth, [anova].", gsub("\n", " ", .n9n[[1]]$text), fixed = TRUE) &&
+        grepl("caption.color, [frequencies] colwidth, [metaanalysis].", gsub("\n", " ", .n9n[[1]]$text), fixed = TRUE) &&
         grepl("Update jstats with jupdate() to use them.", .n9n[[1]]$text, fixed = TRUE) &&
         is.null(.n9b$val) &&
         grepl("Did you mean columns?\nnewtypo.jstyle was written by jstats 99.0.0, newer than this", .n9b$txt, fixed = TRUE))
@@ -1833,7 +1964,7 @@ check("O03 jstyle(\"apa\", save.as = ) writes <name>.jstyle into the style folde
         all(c("[descriptives]", "[frequencies]") %in% .o3t) &&
         identical(.o3t[match("font = Times New Roman", .o3t) - 1L], "# the typeface of every cell, caption and note") &&
         "stars = .05, .01, .001" %in% .o3t && "percent.label = %" %in% .o3t &&
-        sum(grepl("^[a-z][a-z.]* = ", .o3t) & !grepl("^(format|written.by|based.on) ", .o3t)) ==
+        sum(grepl("^[a-z][a-z0-9.]* = ", .o3t) & !grepl("^(format|written.by|based.on) ", .o3t)) ==
           sum(lengths(lapply(.jst_style_spec, names))) &&
         .o3same &&
         grepl(paste0("Style written to ", .jst_norm_path(.o3f)), gsub("\\s+", " ", .o3$txt), fixed = TRUE))
@@ -1973,8 +2104,8 @@ check("P05 several jfreq() results stack into one table; a named list's names, o
 .p7a <- res(jtable(list(.nf1, res(jfreq(tcm, Education))$val), print = FALSE))
 .p7b <- local({ old <- .nf1; attr(old, "jstats_version") <- NULL; res(jtable(old, print = FALSE)) })
 .p7c <- res(jtable(list(.nf1, .j0), print = FALSE))
-check("P06 the N note: variables from one pool of cases open the note on N; results from different pools give no N",
-      length(.p6$notes$general) == 0L)
+check("P06 the N note: variables from one pool of cases open the note on N; results from different pools give no N (since S405 the filter sentence names the result a subset = filtered)",
+      identical(.p6$notes$general, "Only cases with Age (years) > 40 are included for Volunteered in past year."))
 check("P07 a variable in two results stops (a table lists each once, in both table types); a jfreq() result made before the fields existed names its version; results of two kinds in one list stop",
       is.null(.p7a$val) &&
         grepl("jtable(): Education is in more than one of the results.\nA table lists each variable once.", .p7a$txt, fixed = TRUE) &&
@@ -1983,7 +2114,7 @@ check("P07 a variable in two results stops (a table lists each once, in both tab
                          print = FALSE))$txt, fixed = TRUE) &&
         is.null(.p7b$val) &&
         grepl("jtable(): this jfreq() result was made by an earlier version of\njstats, before the fields a table needs were stored.", .p7b$txt, fixed = TRUE) &&
-        is.null(.p7c$val) && grepl("(jfreq() and jdesc()) in one table.", .p7c$txt, fixed = TRUE))
+        is.null(.p7c$val) && grepl("jtable(): results of different kinds (jfreq() and jdesc()) cannot\nshare a table yet.\nGive the results of one kind at a time.", .p7c$txt, fixed = TRUE))
 
 .p8 <- res(jtable(.nf1))
 .p8l <- strsplit(.p8$txt, "\n", fixed = TRUE)[[1]]
@@ -2221,7 +2352,8 @@ cat("\n--- U. The style and the formats, build 3 ---\n")
 
 check("U01 the apa list and the spec have [regression] and [logistic] sections, their columns and labels, and the general n.position (note | title | none, in note.n's place) and leading.zero's third value",
       all(c("regression", "logistic") %in% names(.jst_style_apa)) &&
-        identical(names(.jst_style_type_nouns), c("descriptives", "frequencies", "regression", "logistic")) &&
+        identical(names(.jst_style_type_nouns), c("descriptives", "frequencies", "regression", "logistic",
+                                                  "correlation", "ttest", "anova", "crosstab", "reliability")) &&
         identical(.jst_style_apa$regression$columns, c("b", "se", "beta", "p")) &&
         identical(.jst_style_apa$logistic$columns, c("b", "se", "or", "p")) &&
         identical(.jst_style_spec$regression$columns$cols, c("b", "se", "beta", "p", "t", "ci", "beta.gelman")) &&
@@ -2548,8 +2680,8 @@ check("V11 the stops: headings = on a model; markers = naming no predictor, the 
       all(vapply(.v11, function(r) is.null(r$val), logical(1))) &&
         grepl("jtable(): headings = puts the variables of a descriptives or\nfrequency table under role headings; a regression table lists the predictors\nin the models' order.", .v11[[1]]$txt, fixed = TRUE) &&
         grepl("jtable(): markers = names Incom, which is not among the variables of\nthe result.\nThe result holds Age, Smoker, Region, Education, and CommuteTime.", .v11[[2]]$txt, fixed = TRUE) &&
-        grepl("results of different kinds\n(jlm() and jlogistic()) in one table.", .v11[[3]]$txt, fixed = TRUE) &&
-        grepl("jtable(): jtable() does not yet put models of different outcomes\n(WellbeingScore and Volunteer) in one table.\nGive it the models of one outcome at a time.", .v11[[4]]$txt, fixed = TRUE) &&
+        grepl("jtable(): results of different kinds (jlm() and jlogistic()) cannot\nshare a table yet.\nGive the results of one kind at a time.", .v11[[3]]$txt, fixed = TRUE) &&
+        grepl("jtable(): models of different outcomes\n(WellbeingScore and Volunteer) cannot share a table yet.\nGive the models of one outcome at a time.", .v11[[4]]$txt, fixed = TRUE) &&
         grepl("jtable(): this jlm() result was made by an earlier version of\njstats, before the fields a table needs were stored.\nRun the analysis again, then jtable() on the new result.", .v11[[5]]$txt, fixed = TRUE) &&
         grepl(paste0("jtable(): this jlm() result was made by jstats ", .jst_jstats_version(), ", before the\nfields a table needs were stored."), .v11[[6]]$txt, fixed = TRUE) &&
         grepl("jtable(): `fit.rows` must be columns of a regression table, each\nnamed once: \"r2\", \"adj.r2\", \"f\", \"delta.r2\", \"f.change\", or \"n\"; or \"none\".", .v11[[7]]$txt, fixed = TRUE) &&
@@ -2808,16 +2940,22 @@ check("Y03 the page: four models turn the page under landscape = auto, and the t
   # A table one twip too wide for its page at the full pad: the pad step
   # alone fits it, at 12 points, each number column 60 twips narrower.
   pad <- .jst_docx_fit(tb, .jst_style_apa, sum(nat) - 1L)
+  # Ruling R55 (S405): the labels wrap onto two lines before the font
+  # steps down, so the fit stops at 10 points with the stub narrowed below
+  # its width there, never below its floor.
+  w10 <- .jst_docx_widths(tb, .jst_style_apa, size = 10, pad = 60L)
   list(ok = ok, size = fit$size, nat = sum(nat), note = fit$note_size,
-       pad_size = pad$size, pad_sum = sum(pad$widths), pad_expect = sum(nat) - 60L * 16L)
+       pad_size = pad$size, pad_sum = sum(pad$widths), pad_expect = sum(nat) - 60L * 16L,
+       stub = fit$widths[1], stub10 = w10[1], floor10 = .jst_docx_stub_floor(tb, 10, w10[1]))
 })
-check("Y04 the fitted table: its natural width passes the landscape page, the fit steps the font down to 9 points (the notes with it) and keeps every number column as wide as its widest cell at that size with the margins, the file's grid the fit's; a table one twip too wide loses half its pad and keeps its size",
-      isTRUE(.y4$ok) && identical(.y4$size, 9) && .y4$nat > 16838L - 2880L &&
+check("Y04 the fitted table: its natural width passes the landscape page; under ruling R55 the fit wraps the labels before it steps the font, so it stops at 10 points (the notes with it; 9 before S405), the stub narrowed below its width there and not below its floor, every number column as wide as its widest cell at that size with the margins, the file's grid the fit's; a table one twip too wide loses half its pad and keeps its size",
+      isTRUE(.y4$ok) && identical(.y4$size, 10) && .y4$nat > 16838L - 2880L &&
+        .y4$stub < .y4$stub10 && .y4$stub >= .y4$floor10 &&
         identical(.y4$note, .y4$size) &&
         identical(.y4$pad_size, 12) && identical(.y4$pad_sum, .y4$pad_expect))
 
 check("Y05 document.xml of the regression table pinned by its checksum",
-      identical(unname(tools::md5sum(file.path(.yx, "word", "document.xml"))), "976e5c152219a150128b62dee651f3ab"))
+      identical(unname(tools::md5sum(file.path(.yx, "word", "document.xml"))), "e64493ce5cde89b9d89150043992c26f"))
 
 # n.position = title in the file: the N inside the italic apa title set
 # upright; in a journal caption, italic.
@@ -2882,7 +3020,858 @@ check("Y08 the R2 row: five cells, each number cell spanning its model's four co
 
 invisible(res(jcomplete(clear.all = TRUE)))
 
-unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd), recursive = TRUE)
+# =============================================================================
+# AA. Build 4's general changes: the five new sections, heads with markup,
+#     the filter sentence, the cells set centered
+# =============================================================================
+cat("\n--- AA. The general changes (build 4) ---\n")
+
+.aad <- file.path(tempdir(), "tables_check_b4"); unlink(.aad, recursive = TRUE); dir.create(.aad)
+
+check("AA01 the apa list and the spec hold the five new sections after logistic -- correlation, ttest, anova, crosstab, reliability -- each naming the same settings in the same order; filter.note joins the general settings (28), yes | no; jtable() reads nine result classes into the nine sections",
+      identical(names(.jst_style_apa), c("general", "descriptives", "frequencies", "regression",
+                                         "logistic", "correlation", "ttest", "anova", "crosstab",
+                                         "reliability")) &&
+        identical(names(.jst_style_spec), names(.jst_style_apa)) &&
+        all(vapply(names(.jst_style_apa), function(s) {
+          identical(names(.jst_style_apa[[s]]), names(.jst_style_spec[[s]]))
+        }, logical(1))) &&
+        length(.jst_style_apa$general) == 28L &&
+        identical(.jst_style_apa$general$filter.note, "yes") &&
+        identical(.jst_style_spec$general$filter.note$choices, c("yes", "no")) &&
+        identical(unname(.jst_table_types),
+                  c("descriptives", "frequencies", "regression", "logistic", "correlation",
+                    "ttest", "anova", "crosstab", "reliability")) &&
+        identical(names(.jst_table_types),
+                  c("jst_desc", "jst_freq", "jst_lm", "jst_logistic", "jst_corr",
+                    "jst_ttest", "jst_anova", "jst_crosstab", "jst_alpha")))
+
+check("AA02 the heads: V (Cramer's V) italic as a symbol; chi2, eta2 and alpha if item deleted upright (Greek letters); a head that carries the light markup is set by it -- *t*(101) and Item-total *r* -- the console showing it bare",
+      "v" %in% .jst_tbl_italic_heads &&
+        !any(c("chisq", "eta2", "alpha.if.deleted", "item.total") %in% .jst_tbl_italic_heads) &&
+        isTRUE(.jst_tbl_markup("*t*(101)")) && isTRUE(.jst_tbl_markup("Item-total *r*")) &&
+        !isTRUE(.jst_tbl_markup("Mean difference")) &&
+        identical(.jst_table_strip_markup(c("*t*(101)", "Item-total *r*", "*F*(3, 99)")),
+                  c("t(101)", "Item-total r", "F(3, 99)")))
+
+# The filter in words: labels from the data, the signs as characters, a
+# code compared by == or %in% as its value label; anything else as typed.
+.aal <- function(v) attr(tcm[[v]], "label", exact = TRUE)
+.aavl <- function(v, code) {
+  l <- attr(tcm[[v]], "labels", exact = TRUE); names(l)[unname(l) == code]
+}
+.aaw <- function(cond, data = tcm) .jst_table_filter_words(cond, data)
+check("AA03 a filter in words: a variable by its label, >=, <= and != as the mathematical signs, a constant on the left read the other way round, a code compared by == or != or %in% (a c() or a range) as its value label, & and | as and and or with parentheses where they mix, a negative value with the minus sign",
+      identical(.aaw("Age >= 30")$text, paste(.aal("Age"), "\u2265", "30")) &&
+        identical(.aaw("30 <= Age")$text, paste(.aal("Age"), "\u2265", "30")) &&
+        identical(.aaw("Age <= 60")$text, paste(.aal("Age"), "\u2264", "60")) &&
+        identical(.aaw("Smoker == 0")$text, paste(.aal("Smoker"), "=", .aavl("Smoker", 0))) &&
+        identical(.aaw("Smoker != 1")$text, paste(.aal("Smoker"), "\u2260", .aavl("Smoker", 1))) &&
+        identical(.aaw("Region %in% c(1, 3)")$text,
+                  paste(.aal("Region"), "=", .aavl("Region", 1), "or", .aavl("Region", 3))) &&
+        identical(.aaw("Region %in% 2:4")$text,
+                  paste0(.aal("Region"), " = ", .aavl("Region", 2), ", ", .aavl("Region", 3),
+                         ", or ", .aavl("Region", 4))) &&
+        identical(.aaw("Age > 30 & Smoker == 0")$text,
+                  paste(.aal("Age"), "> 30 and", .aal("Smoker"), "=", .aavl("Smoker", 0))) &&
+        identical(.aaw("Age > 30 | Smoker == 0 & Volunteer == 1")$text,
+                  paste0(.aal("Age"), " > 30 or (", .aal("Smoker"), " = ", .aavl("Smoker", 0),
+                         " and ", .aal("Volunteer"), " = ", .aavl("Volunteer", 1), ")")) &&
+        isTRUE(.aaw("Age > 30 | Smoker == 0")$or) && !isTRUE(.aaw("Age > 30 & Smoker == 0")$or) &&
+        identical(.aaw("Income > -50")$text, paste(.aal("Income"), ">", "\u221250")))
+
+check("AA04 a filter it cannot put into words is written as typed: a function of a variable, a workspace object, a name the data do not hold, a value that is not typed, and any condition when there are no data to read labels from",
+      identical(.aaw("nchar(RespondentID) > 3")$text, "nchar(RespondentID) > 3") &&
+        identical(.aaw("Age > cutoff")$text, "Age > cutoff") &&
+        identical(.aaw("Agee > 3")$text, "Agee > 3") &&
+        identical(.aaw("Age > 30 & Smoker == x")$text, "Age > 30 & Smoker == x") &&
+        identical(.aaw("Age >= 30", NULL)$text, "Age >= 30"))
+
+# The filter sentence, in every table type: a stored jsubset() and the
+# call's subset =, joined by "and", after N.
+.aa5 <- local({
+  invisible(res(jsubset(tcm, Age >= 30)))
+  r <- list(
+    desc = res(jdesc(tcm, Income))$val,
+    freq = res(jfreq(tcm, Region))$val,
+    lm   = res(jlm(WellbeingScore ~ Age, tcm))$val,
+    lg   = res(jlogistic(Volunteer ~ Age, tcm))$val,
+    corr = res(jcorr(tcm, Age, Income))$val,
+    tt   = res(jt(Income ~ Volunteer, tcm))$val,
+    aov  = res(jaov(Income ~ Region, tcm))$val,
+    xt   = res(jcrosstab(Smoker ~ Volunteer, tcm))$val,
+    alp  = res(jalpha(tcm, Environment1, Environment3, Environment4))$val,
+    both = res(jt(Income ~ Volunteer, tcm, subset = Smoker == 0))$val)
+  invisible(res(jsubset(clear.all = TRUE)))
+  r
+})
+.aa5g <- lapply(.aa5, function(x) res(jtable(x, print = FALSE))$val$notes$general)
+.aa5s <- paste0("Only cases with ", .aal("Age"), " \u2265 30 are included.")
+check("AA05 the filter sentence in every table type -- descriptives, frequencies, regression, logistic, correlation, t test, ANOVA, crosstab, reliability -- after N, written from the stored jsubset(); with subset = in the call as well, the two joined by and",
+      all(vapply(.aa5g[1:9], function(g) .aa5s %in% g, logical(1))) &&
+        identical(.aa5g$desc[1:2], c(paste0("*N* = ", sum(tcm$Age >= 30), "."), .aa5s)) &&
+        identical(which(.aa5g$tt == .aa5s), 2L) &&
+        paste0("Only cases with ", .aal("Age"), " \u2265 30 and ", .aal("Smoker"), " = ",
+               .aavl("Smoker", 0), " are included.") %in% .aa5g$both)
+
+.aa6 <- res(local({
+  s <- .jst_style_apa; s$general$filter.note <- "no"
+  a <- .jst_table_build_groups(list(.aa5$tt), s)$notes$general
+  t1 <- res(jt(Age ~ Volunteer, tcm, subset = Region == 2))$val
+  t2 <- res(jt(Income ~ Volunteer, tcm))$val
+  b <- res(jtable(list(t1, t2), print = FALSE))$val$notes$general
+  v <- as.numeric(tcm$Volunteer); inc <- as.numeric(haven::zap_missing(tcm$Income))
+  s2 <- as.numeric(tcm$Region) == 2
+  lo <- c(min(sum(v == 0 & s2), sum(v == 0 & !is.na(inc))), min(sum(v == 1 & s2), sum(v == 1 & !is.na(inc))))
+  hi <- c(max(sum(v == 0 & s2), sum(v == 0 & !is.na(inc))), max(sum(v == 1 & s2), sum(v == 1 & !is.na(inc))))
+  list(a = a, b = b, lo = lo, hi = hi)
+}))$val
+check("AA06 filter.note = no leaves the sentence out; results filtered differently get a sentence naming each filter's results, and the groups' ns vary without the words \"with missing data\"",
+      !any(grepl("Only cases", .aa6$a, fixed = TRUE)) &&
+        identical(.aa6$b, c(paste0("Group *n*s vary: No, ", .aa6$lo[1], " to ", .aa6$hi[1],
+                                   "; Yes, ", .aa6$lo[2], " to ", .aa6$hi[2], "."),
+                            paste0("Only cases with ", .aal("Region"), " = ", .aavl("Region", 2),
+                                   " are included for ", .aal("Age"), "."))))
+
+check("AA07 a cell set centered rather than on a decimal tab: one with no digit (an em dash) or any cell of a text column (an ANOVA's df); a number's parts split at its point, a cell with no point all head",
+      identical(.jst_tbl_plain_cell(c("\u2014", ".62***", "", "3, 99")), c(TRUE, FALSE, FALSE, FALSE)) &&
+        identical(.jst_tbl_plain_cell(c("3, 99", "3, 93"), "text"), c(TRUE, TRUE)) &&
+        identical(.jst_docx_num_parts(c("12", "\u2212.07", "\u2014", "<.001")),
+                  list(head = c("12", "\u2212", "\u2014", "<"), tail = c("", ".07", "", ".001"))))
+
+# =============================================================================
+# AB. The correlation table, from a jcorr() result
+# =============================================================================
+cat("\n--- AB. The correlation table ---\n")
+
+.abv <- c("WellbeingScore", "Income", "Age", "CommuteTime")
+.ab  <- res(jcorr(tcm, WellbeingScore, Income, Age, CommuteTime))$val
+.abt <- res(jtable(.ab, print = FALSE))$val
+.abz <- data.frame(lapply(tcm[.abv], function(x) as.numeric(haven::zap_missing(x))))
+.abr <- stats::cor(.abz, use = "pairwise.complete.obs")
+.abn <- outer(1:4, 1:4, Vectorize(function(i, j) sum(stats::complete.cases(.abz[[i]], .abz[[j]]))))
+.abp <- outer(1:4, 1:4, Vectorize(function(i, j) {
+  if (i == j) NA_real_ else stats::cor.test(.abz[[i]], .abz[[j]])$p.value
+}))
+.abf <- function(x) gsub("-", "\u2212", sub("^(-?)0\\.", "\\1.", sprintf("%.2f", x)), fixed = TRUE)
+.abs <- function(p) if (p < .001) "***" else if (p < .01) "**" else if (p < .05) "*" else ""
+.abl <- vapply(.abv, .aal, "")
+check("AB01 the columns: the stub Variable, then n, M and SD (italic), then one column per variable headed 1 to 4 (upright); the rows numbered, each variable by its label",
+      inherits(.abt, "jst_table") && identical(.abt$type, "correlation") &&
+        identical(.abt$columns$key, c("stub", "n", "mean", "sd", "r1", "r2", "r3", "r4")) &&
+        identical(.abt$columns$label, c("Variable", "n", "M", "SD", "1", "2", "3", "4")) &&
+        identical(.abt$columns$italic, c(FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE)) &&
+        identical(vapply(.abt$rows, `[[`, "", "label"), paste0(1:4, ". ", unname(.abl))) &&
+        identical(.abt$caption$title, "Descriptive Statistics and Correlations for Study Variables"))
+
+check("AB02 the matrix: each correlation once below the diagonal, computed here from the variables' cases (declared missing values out), at two decimals without its zero, with its stars; an em dash on the diagonal; the upper triangle empty",
+      all(vapply(1:4, function(i) {
+        cells <- unlist(.abt$rows[[i]]$cells[paste0("r", 1:4)])
+        want <- vapply(1:4, function(j) {
+          if (i == j) "\u2014" else if (j < i) paste0(.abf(.abr[i, j]), .abs(.abp[i, j])) else ""
+        }, "")
+        identical(unname(cells), want)
+      }, logical(1))) &&
+        isTRUE(all.equal(.abt$rows[[4]]$raw$r1, .abr[4, 1])))
+
+check("AB03 each variable's n, M and SD on its own cases, computed here; the mean and SD with the thousands separator; the general note gives the range of the pairwise ns when they differ; the stars' legend under it",
+      all(vapply(1:4, function(i) {
+        x <- .abz[[i]][!is.na(.abz[[i]])]
+        c1 <- .abt$rows[[i]]$cells
+        identical(c1$n, as.character(length(x))) &&
+          identical(c1$mean, formatC(mean(x), format = "f", digits = 2, big.mark = ",")) &&
+          identical(c1$sd, formatC(stats::sd(x), format = "f", digits = 2, big.mark = ","))
+      }, logical(1))) &&
+        identical(.abt$notes$general,
+                  paste0("Pairwise *n*s range from ", min(.abn[lower.tri(.abn)]), " to ",
+                         max(.abn[lower.tri(.abn)]), ".")) &&
+        identical(.abt$notes$probability, "**p* < .05. ***p* < .01. ****p* < .001."))
+
+.ab4 <- res(local({
+  c2 <- res(jcorr(tcm, Age, WellbeingScore, CommuteTime, method = "spearman"))$val
+  list(one = res(jtable(c2, print = FALSE))$val,
+       none = res(jtable(.ab, columns = "none", lower.triangle = "no", r.stars = "no",
+                         print = FALSE))$val,
+       nometh = res(jtable(c2, method.note = "no", print = FALSE))$val,
+       ttl = local({ s <- .jst_style_apa; s$general$n.position <- "title"
+                     .jst_table_build_corr(list(.ab), s)$caption$title }))
+}))$val
+check("AB04 one N when every pair shares it; a Spearman table says so in its note (method.note = no leaves it out); columns = none leaves out n, M and SD, lower.triangle = no fills both triangles, r.stars = no drops the stars and their legend; n.position = title puts the pairwise range after the title",
+      identical(.ab4$one$notes$general, c("*N* = 103.", "Correlations are Spearman rank correlations.")) &&
+        identical(.ab4$nometh$notes$general, "*N* = 103.") &&
+        identical(.ab4$none$columns$key, c("stub", "r1", "r2", "r3", "r4")) &&
+        identical(.ab4$none$rows[[1]]$cells$r2, .abf(.abr[1, 2])) &&
+        identical(.ab4$none$rows[[2]]$cells$r1, .abf(.abr[2, 1])) &&
+        identical(.ab4$none$notes$probability, character(0)) &&
+        identical(.ab4$ttl, paste0("Descriptive Statistics and Correlations for Study Variables (pairwise *n*s ",
+                                   min(.abn[lower.tri(.abn)]), " to ", max(.abn[lower.tri(.abn)]), ")")))
+
+.ab5a <- res(jtable(list(.ab, .ab), print = FALSE))
+.ab5b <- res(jtable(.ab, headings = list(A = Age), print = FALSE))
+.ab5c <- res(jtable(.ab, markers = list("Mean-centered" = Income), print = FALSE))$val
+check("AB05 each jcorr() result a table of its own (ruling R54): two stop; headings = stops; markers = marks a variable's row",
+      is.null(.ab5a$val) &&
+        grepl("[error] jtable(): each jcorr() result is a table of its own, and one call\nmakes one table.\nGive one jcorr() result at a time; to correlate more variables, name them in\none jcorr() call.", .ab5a$txt, fixed = TRUE) &&
+        is.null(.ab5b$val) &&
+        grepl("[error] jtable(): headings = puts the variables of a descriptives or\nfrequency table under role headings; a correlation table lists its variables\nin the result's order.", .ab5b$txt, fixed = TRUE) &&
+        identical(.ab5c$rows[[2]]$marks, "a") &&
+        identical(.ab5c$notes$specific, list(list(mark = "a", text = "Mean-centered"))))
+
+# =============================================================================
+# AC. The t-test table, from jt() results
+# =============================================================================
+cat("\n--- AC. The t-test table ---\n")
+
+.acv <- c("WellbeingScore", "Age", "CommuteTime")
+.ac  <- lapply(.acv, function(o) res(jt(stats::as.formula(paste(o, "~ Volunteer")), tcm))$val)
+.act <- res(jtable(.ac, print = FALSE))$val
+.acg <- as.numeric(tcm$Volunteer)
+.ace <- lapply(.acv, function(o) {
+  y <- as.numeric(haven::zap_missing(tcm[[o]]))
+  a <- y[.acg == 0 & !is.na(y)]; b <- y[.acg == 1 & !is.na(y)]
+  tt <- stats::t.test(a, b, var.equal = TRUE)
+  sp <- sqrt(((length(a) - 1) * stats::var(a) + (length(b) - 1) * stats::var(b)) /
+               (length(a) + length(b) - 2))
+  list(n = c(length(a), length(b)), m = c(mean(a), mean(b)), s = c(stats::sd(a), stats::sd(b)),
+       t = unname(tt$statistic), df = unname(tt$parameter), p = tt$p.value,
+       d = (mean(a) - mean(b)) / sp)
+})
+.acn <- function(x) gsub("-", "\u2212", sprintf("%.2f", x), fixed = TRUE)
+.acp <- function(p) if (p < .001) "<.001" else sub("^0", "", sprintf("%.3f", p))
+check("AC01 one row per outcome by its label, under the grouping variable's label over the groups, each group's value label over its M and SD (italic); t with its df in the head (*t*(101), shared by every row), p and d; the title names the grouping variable",
+      inherits(.act, "jst_table") && identical(.act$type, "ttest") &&
+        identical(.act$columns$key, c("stub", "g1.mean", "g1.sd", "g2.mean", "g2.sd", "t", "p", "d")) &&
+        identical(.act$columns$label, c("Variable", "M", "SD", "M", "SD", "*t*(101)", "p", "d")) &&
+        identical(.act$columns$italic, c(FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE)) &&
+        identical(lapply(.act$spanners, function(s) vapply(s, function(z) paste(z$label, z$from, z$to), "")),
+                  list(paste(.aal("Volunteer"), 2, 5),
+                       c(paste(.aavl("Volunteer", 0), 2, 3), paste(.aavl("Volunteer", 1), 4, 5)))) &&
+        identical(vapply(.act$rows, `[[`, "", "label"), unname(vapply(.acv, .aal, ""))) &&
+        identical(.act$caption$title, paste("Means, Standard Deviations, and t Tests by", .aal("Volunteer"))))
+
+check("AC02 the cells, computed here from the data: each group's M and SD; Student's t, its p exact without the zero, and Cohen's d on the pooled SD with its zero (the first group's mean minus the second's); the groups' ns in the general note",
+      all(vapply(seq_along(.acv), function(i) {
+        e <- .ace[[i]]; c1 <- .act$rows[[i]]$cells
+        identical(unname(unlist(c1[c("g1.mean", "g1.sd", "g2.mean", "g2.sd")])),
+                  .acn(c(e$m[1], e$s[1], e$m[2], e$s[2]))) &&
+          identical(c1$t, .acn(e$t)) && identical(c1$p, .acp(e$p)) && identical(c1$d, .acn(e$d)) &&
+          isTRUE(all.equal(.act$rows[[i]]$raw$t, e$t)) && e$df == 101
+      }, logical(1))) &&
+        identical(.act$notes$general,
+                  paste0("*n* = ", .ace[[1]]$n[1], " (", .aavl("Volunteer", 0), ") and ",
+                         .ace[[1]]$n[2], " (", .aavl("Volunteer", 1), ").")))
+
+.ac3 <- local({
+  ti <- res(jt(Income ~ Volunteer, tcm))$val
+  tw <- res(jt(WellbeingScore ~ Volunteer, tcm, welch = TRUE))$val
+  y <- as.numeric(haven::zap_missing(tcm$Income))
+  list(t = res(jtable(list(.ac[[2]], ti, tw), columns = c("n", "mean", "sd", "t", "p", "d", "diff", "ci"),
+                      ci.style = "two", print = FALSE))$val,
+       one = res(jtable(list(.ac[[2]]), columns = c("mean", "sd", "t", "p", "ci"), print = FALSE))$val,
+       inc_df = unname(stats::t.test(y[.acg == 0], y[.acg == 1], var.equal = TRUE)$parameter),
+       wdf = unname(stats::t.test(as.numeric(tcm$WellbeingScore)[.acg == 0],
+                                  as.numeric(tcm$WellbeingScore)[.acg == 1])$parameter))
+})
+check("AC03 rows of different df get a df column (Welch's at two decimals) and t its plain head; each group's n under it with columns = n; the mean difference and its CI in two columns under the 95% CI spanner; a Welch test said in the note; ci.style one brackets the CI",
+      identical(.ac3$t$columns$key, c("stub", "g1.n", "g1.mean", "g1.sd", "g2.n", "g2.mean", "g2.sd",
+                                      "t", "df", "p", "d", "diff", "ci.lower", "ci.upper")) &&
+        identical(.ac3$t$columns$label[8:14], c("t", "df", "p", "d", "Mean difference", "LL", "UL")) &&
+        identical(.ac3$t$columns$italic[8:9], c(TRUE, TRUE)) &&
+        identical(vapply(.ac3$t$rows, function(r) r$cells$df, ""),
+                  c("101", as.character(.ac3$inc_df), sprintf("%.2f", .ac3$wdf))) &&
+        identical(vapply(.ac3$t$spanners[[2]], `[[`, "", "label"), c("No", "Yes", "95% CI")) &&
+        identical(.ac3$t$notes$general,
+                  paste0("The *t* test for ", .aal("WellbeingScore"),
+                         " did not assume equal variances (Welch's *t* test).")) &&
+        grepl("^\\[\u2212[0-9]+\\.[0-9]{2}, \u2212[0-9]+\\.[0-9]{2}\\]$", .ac3$one$rows[[1]]$cells$ci))
+
+.ac4 <- res(local({
+  w <- data.frame(Y = c(12, 15, 11, 18, 14, 16, 10, 19, 13, 17, 12, 20), G = rep(c(1, 2), 6))
+  tp <- res(jt(Y ~ G, w, paired = TRUE))$val
+  s <- .jst_style_apa; s$general$n.position <- "title"
+  list(p = res(jtable(tp, print = FALSE))$val$notes$general,
+       pn = res(jtable(tp, test.note = "no", print = FALSE))$val$notes$general,
+       ttl = .jst_table_build_groups(.ac, s)$caption$title,
+       nosp = res(jtable(.ac, group.spanner = "no", title = "My {group}", print = FALSE))$val)
+}))$val
+check("AC04 a paired test said in the note, d named as dz (test.note = no leaves it out); n.position = title puts N after the title; group.spanner = no drops the grouping variable's label, the groups' spanners kept; a title given in the call is the call's",
+      identical(.ac4$p, c("*n* = 6 (1) and 6 (2).",
+                          "The *t* test is a paired-samples test; *d* is Cohen's *d*z, computed from the differences.")) &&
+        identical(.ac4$pn, "*n* = 6 (1) and 6 (2).") &&
+        identical(.ac4$ttl, paste("Means, Standard Deviations, and t Tests by", .aal("Volunteer"), "(*N* = 103)")) &&
+        length(.ac4$nosp$spanners) == 1L &&
+        identical(vapply(.ac4$nosp$spanners[[1]], `[[`, "", "label"), c("No", "Yes")) &&
+        identical(.ac4$nosp$caption$title, "My {group}"))
+
+.ac5 <- list(
+  grp  = res(jtable(list(.ac[[1]], res(jt(Income ~ Smoker, tcm))$val), print = FALSE)),
+  kind = res(jtable(list(.ac[[1]], res(jaov(Age ~ Region, tcm))$val), print = FALSE)),
+  twice = res(jtable(list(.ac[[2]], .ac[[2]]), print = FALSE)),
+  head = res(jtable(.ac[[1]], headings = list(A = WellbeingScore), print = FALSE)),
+  set  = res(jtable(.ac[[1]], total = "no", print = FALSE)),
+  cols = res(jtable(.ac[[1]], columns = c("t", "f"), print = FALSE)))
+check("AC05 the stops: results of two grouping variables (ruling R54: until build 5), results of two kinds, an outcome twice, headings =, another table type's setting, a column the t-test table does not have",
+      all(vapply(.ac5, function(x) is.null(x$val), logical(1))) &&
+        grepl("[error] jtable(): jt() results of different grouping variables\n(Volunteer and Smoker) cannot share a table yet.\nGive the results of one grouping variable at a time.", .ac5$grp$txt, fixed = TRUE) &&
+        grepl("[error] jtable(): results of different kinds (jt() and jaov()) cannot share\na table yet.\nGive the results of one kind at a time.", .ac5$kind$txt, fixed = TRUE) &&
+        grepl("[error] jtable(): Age is in more than one of the results.\nA table lists each variable once.", .ac5$twice$txt, fixed = TRUE) &&
+        grepl("[error] jtable(): headings = puts the variables of a descriptives or\nfrequency table under role headings; a t-test table lists its outcomes in\nthe order given.", .ac5$head$txt, fixed = TRUE) &&
+        grepl("[error] jtable(): total = is a setting of a crosstab, and this table is a\nt-test table.", .ac5$set$txt, fixed = TRUE) &&
+        grepl("[error] jtable(): `columns` must be columns of a t-test table, each named\nonce: \"n\", \"mean\", \"sd\", \"t\", \"p\", \"d\", \"diff\", or \"ci\".", .ac5$cols$txt, fixed = TRUE))
+
+# =============================================================================
+# AD. The ANOVA table, from jaov() results
+# =============================================================================
+cat("\n--- AD. The ANOVA table ---\n")
+
+.adv <- c("WellbeingScore", "Education", "CommuteTime")
+.ad  <- lapply(.adv, function(o) res(jaov(stats::as.formula(paste(o, "~ Region")), tcm))$val)
+.adt <- res(jtable(.ad, print = FALSE))$val
+.adg <- as.numeric(tcm$Region)
+.ade <- lapply(.adv, function(o) {
+  y <- as.numeric(haven::zap_missing(tcm[[o]])); ok <- !is.na(y)
+  f <- stats::aov(y[ok] ~ factor(.adg[ok])); tb <- summary(f)[[1]]
+  list(n = as.vector(table(factor(.adg[ok], levels = 1:4))),
+       m = as.vector(tapply(y[ok], factor(.adg[ok], levels = 1:4), mean)),
+       s = as.vector(tapply(y[ok], factor(.adg[ok], levels = 1:4), stats::sd)),
+       f = tb[["F value"]][1], df = tb[["Df"]], p = tb[["Pr(>F)"]][1],
+       eta2 = tb[["Sum Sq"]][1] / sum(tb[["Sum Sq"]]))
+})
+check("AD01 one row per outcome: each region's M and SD under its value label, in code order, under the grouping variable's label; F, a df column (the rows' df differ), p and eta2 (the Greek letter, upright), computed here from base R's aov(); the df column is text, centered",
+      inherits(.adt, "jst_table") && identical(.adt$type, "anova") &&
+        identical(.adt$columns$key, c("stub", paste0("g", rep(1:4, each = 2), c(".mean", ".sd")),
+                                      "f", "df", "p", "eta2")) &&
+        identical(.adt$columns$label[10:13], c("F", "df", "p", "\u03b7\u00b2")) &&
+        identical(.adt$columns$italic[10:13], c(TRUE, TRUE, TRUE, FALSE)) &&
+        identical(.adt$columns$kind[11], "text") &&
+        identical(vapply(.adt$spanners[[2]], `[[`, "", "label"),
+                  unname(vapply(1:4, function(k) .aavl("Region", k), ""))) &&
+        all(vapply(seq_along(.adv), function(i) {
+          e <- .ade[[i]]; c1 <- .adt$rows[[i]]$cells
+          identical(unname(unlist(c1[paste0("g", 1:4, ".mean")])), .acn(e$m)) &&
+            identical(unname(unlist(c1[paste0("g", 1:4, ".sd")])), .acn(e$s)) &&
+            identical(c1$f, .acn(e$f)) && identical(c1$df, paste0(e$df[1], ", ", e$df[2])) &&
+            identical(c1$p, .acp(e$p)) && identical(c1$eta2, sub("^0", "", sprintf("%.2f", e$eta2)))
+        }, logical(1))) &&
+        identical(.adt$caption$title,
+                  paste("Means, Standard Deviations, and One-Way Analyses of Variance by", .aal("Region"))))
+
+.ad2 <- res(local({
+  lo <- apply(sapply(.ade, `[[`, "n"), 1, min); hi <- apply(sapply(.ade, `[[`, "n"), 1, max)
+  rng <- ifelse(lo == hi, lo, paste(lo, "to", hi))
+  list(shared = res(jtable(list(.ad[[1]], .ad[[3]]), print = FALSE))$val,
+       want = paste0("Group *n*s vary with missing data: ",
+                     paste0(vapply(1:4, function(k) .aavl("Region", k), ""), ", ", rng, collapse = "; "), "."),
+       welch = res(jtable(res(jaov(WellbeingScore ~ Region, tcm, welch = TRUE))$val, print = FALSE))$val)
+}))$val
+check("AD02 the groups' ns vary with missing data: each region's range in the note; rows sharing their df put them in F's head (*F*(3, 99), no df column); a Welch analysis said in the note, its df at two decimals in the head",
+      identical(.adt$notes$general, .ad2$want) &&
+        identical(.ad2$shared$columns$label[10], "*F*(3, 99)") &&
+        !"df" %in% .ad2$shared$columns$key &&
+        identical(.ad2$shared$notes$general, "*n* = 27 (North), 20 (South), 31 (East), and 25 (West).") &&
+        grepl("^\\*F\\*\\(3, [0-9]+\\.[0-9]{2}\\)$", .ad2$welch$columns$label[10]) &&
+        identical(.ad2$welch$notes$general[2],
+                  "The analysis of variance did not assume equal variances (Welch's *F* test)."))
+
+.ad3 <- res(local({
+  t2 <- res(jtable(list(.ad[[1]], res(jaov(Income ~ Region, tcm))$val), print = FALSE))$val
+  inc <- as.numeric(haven::zap_missing(tcm$Income))
+  n1 <- as.vector(table(factor(.adg, levels = 1:4)))
+  n2 <- as.vector(table(factor(.adg[!is.na(inc)], levels = 1:4)))
+  lo <- pmin(n1, n2); hi <- pmax(n1, n2)
+  list(t = t2, same = any(lo == hi),
+       want = paste0("Group *n*s vary with missing data: ",
+                     paste0(vapply(1:4, function(k) .aavl("Region", k), ""), ", ",
+                            ifelse(lo == hi, lo, paste(lo, "to", hi)), collapse = "; "), "."))
+}))$val
+check("AD03 where the groups' ns vary, a group whose n is the same in every row is given its one n, the others their ranges (computed here)",
+      isTRUE(.ad3$same) && identical(.ad3$t$notes$general, .ad3$want))
+
+# =============================================================================
+# AE. The crosstab, from jcrosstab() results
+# =============================================================================
+cat("\n--- AE. The crosstab ---\n")
+
+.aev <- c("Smoker", "OwnsHome", "Region")
+.ae  <- lapply(.aev, function(o) res(jcrosstab(stats::as.formula(paste(o, "~ Volunteer")), tcm))$val)
+.aet <- res(jtable(.ae, print = FALSE))$val
+.aee <- lapply(.aev, function(o) {
+  y <- as.numeric(haven::zap_missing(tcm[[o]])); ok <- !is.na(y)
+  lv <- sort(unique(y[ok]))
+  obs <- table(factor(y[ok], levels = lv), factor(.acg[ok], levels = c(0, 1)))
+  ct <- suppressWarnings(stats::chisq.test(obs, correct = FALSE))
+  N <- sum(obs)
+  list(obs = unclass(obs), lv = lv, N = N, x2 = unname(ct$statistic), df = unname(ct$parameter),
+       p = ct$p.value, v = sqrt(unname(ct$statistic) / (N * (min(dim(obs)) - 1))))
+})
+.aepc <- function(x) sprintf("%.1f", x)
+check("AE01 each row variable's label a row of its own carrying its test -- chi2, df, p and V, computed here by chisq.test() without Yates's correction, chi2 at two decimals with its zero, V without -- its categories indented under it by their value labels; the grouping variable's label over the groups, each over n and %, then the Total",
+      inherits(.aet, "jst_table") && identical(.aet$type, "crosstab") &&
+        identical(.aet$columns$key, c("stub", "g1.n", "g1.percent", "g2.n", "g2.percent", "tot.n",
+                                      "tot.percent", "chisq", "df", "p", "v")) &&
+        identical(.aet$columns$label, c("Variable", "n", "%", "n", "%", "n", "%", "\u03c7\u00b2", "df", "p", "V")) &&
+        identical(.aet$columns$italic, c(FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE)) &&
+        identical(lapply(.aet$spanners, function(s) vapply(s, `[[`, "", "label")),
+                  list(.aal("Volunteer"), c("No", "Yes", "Total"))) &&
+        identical(vapply(.aet$rows, `[[`, "", "label"),
+                  c(.aal("Smoker"), "No", "Yes", .aal("OwnsHome"), "Yes", "No", .aal("Region"),
+                    "North", "South", "East", "West")) &&
+        identical(vapply(.aet$rows, `[[`, integer(1), "indent"), c(0L, 1L, 1L, 0L, 1L, 1L, 0L, 1L, 1L, 1L, 1L)) &&
+        all(vapply(1:3, function(i) {
+          e <- .aee[[i]]; r <- .aet$rows[[c(1, 4, 7)[i]]]
+          identical(r$level, "variable") &&
+            identical(unname(unlist(r$cells[c("chisq", "df", "p", "v")])),
+                      c(sprintf("%.2f", e$x2), as.character(e$df), .acp(e$p), sub("^0", "", sprintf("%.2f", e$v)))) &&
+            identical(r$cells$g1.n, "")
+        }, logical(1))))
+
+check("AE02 the cells, computed here: each category's n in each group, its percentage within the group at one decimal (column percentages), the Total's n and percentage of all cases; N differs by variable in the note, equal Ns grouped",
+      all(vapply(1:3, function(i) {
+        e <- .aee[[i]]; first <- c(2, 5, 8)[i]
+        all(vapply(seq_along(e$lv), function(a) {
+          c1 <- .aet$rows[[first + a - 1L]]$cells
+          identical(c(c1$g1.n, c1$g2.n), as.character(e$obs[a, ])) &&
+            identical(c(c1$g1.percent, c1$g2.percent), .aepc(100 * e$obs[a, ] / colSums(e$obs))) &&
+            identical(c1$tot.n, as.character(sum(e$obs[a, ]))) &&
+            identical(c1$tot.percent, .aepc(100 * sum(e$obs[a, ]) / e$N))
+        }, logical(1)))
+      }, logical(1))) &&
+        identical(.aet$notes$general,
+                  paste0("*N* differs by variable: ", .aee[[1]]$N, " (", .aal("Smoker"), "), ",
+                         .aee[[2]]$N, " (", .aal("OwnsHome"), " and ", .aal("Region"), ").")) &&
+        identical(.aet$caption$title, paste("Frequencies and Percentages by", .aal("Volunteer"))))
+
+.ae3 <- local({
+  e <- .aee[[2]]
+  list(row   = res(jtable(.ae[[2]], percent.base = "row", print = FALSE))$val,
+       notot = res(jtable(.ae[[2]], total = "no", print = FALSE))$val,
+       tot   = res(jtable(.ae[[2]], percent.base = "total", test.columns = "none", print = FALSE))$val,
+       st    = res(jtable(.ae[[2]], test.columns = c("chisq", "df", "v"), print = FALSE))$val,
+       chi   = res(jcrosstab(OwnsHome ~ Volunteer, tcm, chisq = TRUE))$val,
+       e = e)
+})
+.ae3st <- res(local({ s <- .jst_style_apa; s$general$p.format <- "stars"
+                      .jst_table_build_crosstab(list(.ae[[2]]), s) }))$val
+check("AE03 percent.base = row (each category's percentages within it, its Total 100) and total (of all cases); total = no drops the Total; test.columns = none drops the test; a test with no p column carries its stars under p.format = stars; a result made with chisq = TRUE gives the test jcrosstab() reported",
+      identical(c(.ae3$row$rows[[2]]$cells$g1.percent, .ae3$row$rows[[2]]$cells$g2.percent,
+                  .ae3$row$rows[[2]]$cells$tot.percent),
+                c(.aepc(100 * .ae3$e$obs[1, ] / sum(.ae3$e$obs[1, ])), "100.0")) &&
+        identical(.ae3$notot$columns$key, c("stub", "g1.n", "g1.percent", "g2.n", "g2.percent", "chisq", "df", "p", "v")) &&
+        identical(vapply(.ae3$notot$spanners[[2]], `[[`, "", "label"), c("No", "Yes")) &&
+        identical(.ae3$tot$columns$key, c("stub", "g1.n", "g1.percent", "g2.n", "g2.percent", "tot.n", "tot.percent")) &&
+        identical(.ae3$tot$rows[[2]]$cells$g1.percent, .aepc(100 * .ae3$e$obs[1, 1] / .ae3$e$N)) &&
+        identical(.ae3$st$rows[[1]]$cells$chisq, sprintf("%.2f", .ae3$e$x2)) &&
+        identical(.ae3st$rows[[1]]$cells$p, "*") &&
+        isTRUE(all.equal(unname(.ae3$chi$chi_square), .ae3$e$x2)) &&
+        identical(res(jtable(.ae3$chi, print = FALSE))$val$rows[[1]]$cells,
+                  res(jtable(.ae[[2]], print = FALSE))$val$rows[[1]]$cells))
+
+.ae4 <- list(
+  col = res(jtable(list(.ae[[1]], res(jcrosstab(Smoker ~ OwnsHome, tcm))$val), print = FALSE)),
+  cat = res(jtable(list(res(jcrosstab(Smoker ~ Region, tcm))$val,
+                        res(jcrosstab(OwnsHome ~ Region, tcm, subset = Region != 4))$val), print = FALSE)))
+check("AE04 the stops: crosstabs of two column variables (ruling R54: until build 5), and of one column variable whose categories differ",
+      is.null(.ae4$col$val) && is.null(.ae4$cat$val) &&
+        grepl("[error] jtable(): jcrosstab() results with different column variables\n(Volunteer and OwnsHome) cannot share a table yet.\nGive the results of one column variable at a time.", .ae4$col$txt, fixed = TRUE) &&
+        grepl("[error] jtable(): the jcrosstab() results hold different categories of\nRegion (North, South, East, and West; North, South, and East).\nGive the results whose column variable has the same categories at a time.", .ae4$cat$txt, fixed = TRUE))
+
+.ae5 <- res(local({
+  r <- res(jcrosstab(Region ~ Education, tcm))$val
+  y <- as.numeric(tcm$Region); x <- as.numeric(haven::zap_missing(tcm$Education)); ok <- !is.na(x)
+  obs <- table(y[ok], x[ok]); ct <- suppressWarnings(stats::chisq.test(obs, correct = FALSE))
+  list(t = res(jtable(r, print = FALSE))$val, df = unname(ct$parameter),
+       v = sqrt(unname(ct$statistic) / (sum(obs) * (min(dim(obs)) - 1))))
+}))$val
+check("AE05 Cramer's V on a table of more than two columns divides chi2 by N times the smaller dimension less one (computed here on a 4 x 5 table); the five groups and the Total across the top",
+      identical(.ae5$t$rows[[1]]$cells$v, sub("^0", "", sprintf("%.2f", .ae5$v))) &&
+        identical(.ae5$t$rows[[1]]$cells$df, as.character(.ae5$df)) &&
+        identical(length(.ae5$t$spanners[[2]]), 6L))
+
+# =============================================================================
+# AF. The reliability table, from jalpha() results
+# =============================================================================
+cat("\n--- AF. The reliability table ---\n")
+
+tre <- tcm
+tre$Environment2R <- res(jrecode(tre, Environment2, map = "1=5; 2=4; 3=3; 4=2; 5=1"))$val
+attr(tre$Environment2R, "label") <- "Concern about the environment is exaggerated (reversed)."
+.afv <- c("Environment1", "Environment2R", "Environment3", "Environment4", "Environment5")
+invisible(res(jsubset(tre, Age >= 30)))
+.af  <- res(jalpha(tre, Environment1, Environment2R, Environment3, Environment4, Environment5))$val
+invisible(res(jsubset(clear.all = TRUE)))
+.aft <- res(jtable(.af, print = FALSE))$val
+.afe <- res(local({
+  x <- data.frame(lapply(tre[.afv], function(v) as.numeric(haven::zap_missing(v))))
+  x <- x[tre$Age >= 30, ]; x <- x[stats::complete.cases(x), ]
+  k <- ncol(x); tot <- rowSums(x)
+  alpha <- function(m) (ncol(m) / (ncol(m) - 1)) * (1 - sum(apply(m, 2, stats::var)) / stats::var(rowSums(m)))
+  list(N = nrow(x), m = colMeans(x), s = apply(x, 2, stats::sd),
+       r = vapply(1:k, function(i) stats::cor(x[[i]], tot - x[[i]]), 0),
+       ad = vapply(1:k, function(i) alpha(x[, -i]), 0), a = alpha(x))
+}))$val
+.afb <- function(x) sub("^0", "", sprintf("%.2f", x))
+check("AF01 one row per item by its label (the item's wording), under the stub Item; M and SD (italic), item-total r (its head with markup) and alpha if item deleted (upright), computed here on the filtered complete cases: the correlation with the sum of the other items, alpha without the item, each without its zero",
+      inherits(.aft, "jst_table") && identical(.aft$type, "reliability") &&
+        identical(.aft$columns$key, c("stub", "mean", "sd", "item.total", "alpha.if.deleted")) &&
+        identical(.aft$columns$label, c("Item", "M", "SD", "Item-total *r*", "\u03b1 if item deleted")) &&
+        identical(.aft$columns$italic, c(FALSE, TRUE, TRUE, FALSE, FALSE)) &&
+        identical(vapply(.aft$rows, `[[`, "", "label"),
+                  unname(vapply(.afv, function(v) attr(tre[[v]], "label", exact = TRUE), ""))) &&
+        all(vapply(seq_along(.afv), function(i) {
+          c1 <- .aft$rows[[i]]$cells
+          identical(c(c1$mean, c1$sd), .acn(c(.afe$m[i], .afe$s[i]))) &&
+            identical(c1$item.total, .afb(.afe$r[i])) && identical(c1$alpha.if.deleted, .afb(.afe$ad[i]))
+        }, logical(1))) &&
+        identical(.aft$caption$title, "Item Statistics and Reliability"))
+
+check("AF02 the general note: N, the filter, Cronbach's alpha computed here, and what item-total r is",
+      identical(.aft$notes$general,
+                c(paste0("*N* = ", .afe$N, "."), paste0("Only cases with ", .aal("Age"), " \u2265 30 are included."),
+                  paste0("Cronbach's \u03b1 = ", .afb(.afe$a), "."),
+                  "Item-total *r* is each item's correlation with the sum of the other items.")))
+
+.af3 <- local({
+  a1 <- res(jalpha(tre, Environment1, Environment2R, Environment3))$val
+  a2 <- res(jalpha(tre, Environment4, Environment5))$val
+  n1 <- sum(stats::complete.cases(data.frame(lapply(tre[.afv[1:3]], function(v) {
+    as.numeric(haven::zap_missing(v))
+  }))))
+  list(a1 = a1, a2 = a2, n1 = n1,
+       two = res(jtable(list("Concern" = a1, "Action" = a2),
+                        markers = list("Reverse-scored" = Environment2R), print = FALSE))$val,
+       bare = res(jtable(list(a1, a2), alpha = "no", item.total.note = "no", print = FALSE))$val,
+       twice = res(jtable(list(a1, a1), print = FALSE)))
+})
+check("AF03 several scales stack, each under its name with its alpha (a named list's names; Scale 1, Scale 2 when unnamed), the items indented; N by scale where the scales' Ns differ; markers = marks an item; alpha = no and item.total.note = no leave the alphas and the definition out; an item in two results stops",
+      identical(vapply(.af3$two$rows, `[[`, "", "label")[c(1, 5)],
+                c(paste0("Concern (\u03b1 = ", .afb(.af3$a1$alpha), ")"),
+                  paste0("Action (\u03b1 = ", .afb(.af3$a2$alpha), ")"))) &&
+        identical(vapply(.af3$two$rows, `[[`, "", "kind")[c(1, 2, 5)], c("heading", "data", "heading")) &&
+        identical(vapply(.af3$two$rows, `[[`, integer(1), "indent")[c(1, 2, 5, 6)], c(0L, 1L, 0L, 1L)) &&
+        identical(.af3$two$rows[[3]]$marks, "a") &&
+        identical(.af3$two$notes$general[1],
+                  paste0("*N* differs by scale: ", .af3$n1, " (Concern), 103 (Action).")) &&
+        !any(grepl("Cronbach", .af3$two$notes$general)) &&
+        identical(vapply(.af3$bare$rows, `[[`, "", "label")[c(1, 5)], c("Scale 1", "Scale 2")) &&
+        identical(.af3$bare$notes$general,
+                  paste0("*N* differs by scale: ", .af3$n1, " (Scale 1), 103 (Scale 2).")) &&
+        is.null(.af3$twice$val) &&
+        grepl("[error] jtable(): Environment1, Environment2R, and Environment3 are in more\nthan one of the results.\nA table lists each variable once.", .af3$twice$txt, fixed = TRUE))
+
+# =============================================================================
+# AG. The previews of the five tables, pinned whole
+# =============================================================================
+cat("\n--- AG. The five previews ---\n")
+
+.ag1_pin <- c(
+  "Table 1",
+  "Descriptive Statistics and Correlations for Study Variables",
+  "----------------------------------------------------------------------------------",
+  "Variable                          n       M          SD        1       2     3   4",
+  "----------------------------------------------------------------------------------",
+  "1. Wellbeing score (0-100)       103      50.89      11.48     \u2014",
+  "2. Annual income (USD)            97  49,855.67  17,427.22   .62***    \u2014",
+  "3. Age (years)                   103      40.65      11.62   .34***  .29**   \u2014",
+  "4. Daily commute time (minutes)  103      30.74      12.68  -.07     .01    .07  \u2014",
+  "----------------------------------------------------------------------------------",
+  "Note. Pairwise ns range from 97 to 103.",
+  "*p < .05. **p < .01. ***p < .001.")
+.ag2_pin <- c(
+  "Table 1",
+  "Means, Standard Deviations, and t Tests by Volunteered in past year",
+  "-----------------------------------------------------------------------------",
+  "                               Volunteered in past year",
+  "                                   No            Yes",
+  "Variable                        M      SD     M      SD   t(101)    p     d",
+  "-----------------------------------------------------------------------------",
+  "Wellbeing score (0-100)       47.46  11.70  54.67  10.06   -3.34  .001  -0.66",
+  "Age (years)                   37.41  11.24  44.22  11.07   -3.10  .003  -0.61",
+  "Daily commute time (minutes)  29.35  11.16  32.27  14.13   -1.17  .246  -0.23",
+  "-----------------------------------------------------------------------------",
+  "Note. n = 54 (No) and 49 (Yes).")
+.ag3_pin <- c(
+  "Table 1",
+  "Means, Standard Deviations, and One-Way Analyses of Variance by Region of residence",
+  "------------------------------------------------------------------------------------------------------------",
+  "                                                Region of residence",
+  "                                  North         South         East          West",
+  "Variable                        M      SD     M      SD     M      SD     M      SD     F     df     p    \u03b7\u00b2",
+  "------------------------------------------------------------------------------------------------------------",
+  "Wellbeing score (0-100)       52.96  10.15  48.15  14.74  50.94   9.94  50.80  11.92  0.67  3, 99  .574  .02",
+  "Highest education level        3.04   1.40   2.47   1.22   2.79   1.45   3.00   1.57  0.69  3, 93  .558  .02",
+  "Daily commute time (minutes)  29.00  14.15  28.20   7.98  33.39  13.35  31.36  13.24  0.90  3, 99  .442  .03",
+  "------------------------------------------------------------------------------------------------------------",
+  "Note. Group ns vary with missing data: North, 26 to 27; South, 19 to 20;",
+  "East, 29 to 31; West, 23 to 25.")
+.ag4_pin <- c(
+  "Table 1",
+  "Frequencies and Percentages by Volunteered in past year",
+  "----------------------------------------------------------------------------",
+  "                     Volunteered in past year",
+  "                          No           Yes       Total",
+  "Variable               n      %     n     %     n    %    \u03c7\u00b2   df    p    V",
+  "----------------------------------------------------------------------------",
+  "Current smoker                                           0.04   1  .834  .02",
+  "  No                   34    65.4   31   67.4  65  66.3",
+  "  Yes                  18    34.6   15   32.6  33  33.7",
+  "Owns home                                                5.95   1  .015  .24",
+  "  Yes                  19    35.2   29   59.2  48  46.6",
+  "  No                   35    64.8   20   40.8  55  53.4",
+  "Region of residence                                      2.89   3  .409  .17",
+  "  North                14    25.9   13   26.5  27  26.2",
+  "  South                13    24.1    7   14.3  20  19.4",
+  "  East                 17    31.5   14   28.6  31  30.1",
+  "  West                 10    18.5   15   30.6  25  24.3",
+  "----------------------------------------------------------------------------",
+  "Note. N differs by variable: 98 (Current smoker), 103",
+  "(Owns home and Region of residence).")
+.ag5_pin <- c(
+  "Table 1",
+  "Item Statistics and Reliability",
+  "-----------------------------------------------------------------------------------------------------",
+  "Item                                                        M    SD   Item-total r  \u03b1 if item deleted",
+  "-----------------------------------------------------------------------------------------------------",
+  "Climate change is a serious threat.                       3.15  1.16           .67                .80",
+  "Concern about the environment is exaggerated (reversed).  3.15  1.19           .72                .79",
+  "Government should do more for the environment.            3.10  1.27           .74                .78",
+  "I would pay more for environmentally friendly products.   3.39  1.22           .71                .79",
+  "Pollution is a major cause of public health problems.     2.74  1.45           .44                .87",
+  "-----------------------------------------------------------------------------------------------------",
+  "Note. N = 72. Only cases with Age (years) \u2265 30 are included.",
+  "Cronbach's \u03b1 = .84. Item-total r is each item's correlation with the sum of",
+  "the other items.")
+
+.agl <- function(x) strsplit(x$txt, "\n", fixed = TRUE)[[1]]
+.ag1 <- res(print(.abt)); .ag2 <- res(print(.act)); .ag3 <- res(print(.adt))
+.ag4 <- res(print(.aet)); .ag5 <- res(print(.aft))
+check("AG01 the correlation table's preview, pinned whole (the S404 sketch's Table 1): the numbered rows, n, M and SD, the matrix on its points with each r's stars hanging right, an em dash centered on the diagonal, the pairwise ns and the stars' legend",
+      identical(.agl(.ag1), .ag1_pin) && endsWith(.ag1$txt, "***p < .001.\n"))
+check("AG02 the t-test table's preview, pinned whole (Table 2): the grouping variable's label over the groups, each group over its M and SD, t(101) in the head, the minus as a hyphen, the groups' ns in the note",
+      identical(.agl(.ag2), .ag2_pin) && endsWith(.ag2$txt, "49 (Yes).\n"))
+check("AG03 the ANOVA table's preview, pinned whole (Table 3): four regions, the df column centered, eta2 without its zero, the groups' ns varying with missing data",
+      identical(.agl(.ag3), .ag3_pin) && endsWith(.ag3$txt, "West, 23 to 25.\n"))
+check("AG04 the crosstab's preview, pinned whole (Table 4): each variable's label row carrying its test, its categories indented, n and % under each group and the Total, N differing by variable",
+      identical(.agl(.ag4), .ag4_pin) && endsWith(.ag4$txt, "Region of residence).\n"))
+check("AG05 the item table's preview, pinned whole (Table 5): the items by their wording, item-total r and alpha if item deleted without the zero, N, the filter, alpha and the definition in the note -- the alpha's \"= .84\" kept on one line by the prose wrapper (S405: a name = value pair starting with a letter of any script)",
+      identical(.agl(.ag5), .ag5_pin) && endsWith(.ag5$txt, "the other items.\n"))
+
+# =============================================================================
+# AH. The Word file of the five tables: ruling R55's fit and landscape test,
+#     heads with markup, the cells set centered
+# =============================================================================
+cat("\n--- AH. The Word file of the five tables ---\n")
+
+.ahx <- function(f, sub) {
+  if (!file.exists(f)) return("")
+  x <- file.path(.aad, sub); unlink(x, recursive = TRUE); invisible(utils::unzip(f, exdir = x))
+  paste(readLines(file.path(x, "word", "document.xml"), warn = FALSE, encoding = "UTF-8"), collapse = "\n")
+}
+.ahsz <- function(d) sort(unique(regmatches(d, gregexpr("(?<=<w:sz w:val=\")[0-9]+", d, perl = TRUE))[[1]]))
+.ahland <- function(d) isTRUE(grepl("w:orient=\"landscape\"", regmatches(d, regexpr("<w:sectPr>.*?</w:sectPr>", d)), fixed = TRUE))
+.ah1 <- local({
+  f <- file.path(.aad, "Five.docx")
+  w <- res(jtable(list(.abt, .act, .adt, .aet, .aft), file = f, overwrite = TRUE, print = FALSE))
+  d <- .ahx(f, "x5")
+  f4 <- file.path(.aad, "Four.docx")
+  invisible(res(jtable(list(.abt, .act, .aet, .aft), file = f4, overwrite = TRUE, print = FALSE)))
+  d4 <- .ahx(f4, "x4")
+  list(w = w, d = d, d4 = d4, f = f)
+})
+.ahpos <- function(d, titles) vapply(titles, function(t) regexpr(t, d, fixed = TRUE)[1], 1L)
+check("AH01 one file of the five tables: five tables in order, numbered 1 to 5 on Word's SEQ field, the titles with {group} filled; landscape because the four-group ANOVA table cannot fit portrait (ruling R55), every cell at 12 points; the other four alone fit portrait at 12 points",
+      file.exists(.ah1$f) && length(.ah1$w$val) == 5L &&
+        lengths(regmatches(.ah1$d, gregexpr("<w:tbl>", .ah1$d, fixed = TRUE))) == 5L &&
+        identical(regmatches(.ah1$d, gregexpr("(?<=<w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:rPr><w:b/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">)[0-9]+", .ah1$d, perl = TRUE))[[1]],
+                  as.character(1:5)) &&
+        local({
+          pos <- .ahpos(.ah1$d, c("Descriptive Statistics and Correlations for Study Variables",
+                                  paste("Means, Standard Deviations, and t Tests by", .aal("Volunteer")),
+                                  paste("One-Way Analyses of Variance by", .aal("Region")),
+                                  paste("Frequencies and Percentages by", .aal("Volunteer")),
+                                  "Item Statistics and Reliability"))
+          all(pos > 0L) && !is.unsorted(pos)
+        }) &&
+        .ahland(.ah1$d) && identical(.ahsz(.ah1$d), "24") &&
+        !.ahland(.ah1$d4) && identical(.ahsz(.ah1$d4), "24"))
+
+.ah2 <- res(local({
+  s <- .jst_style_apa; page <- .jst_docx_page("a4", FALSE)$text
+  nat <- .jst_docx_widths(.aft, s); w60 <- .jst_docx_widths(.aft, s, size = 12, pad = 60L)
+  fit <- .jst_docx_fit(.aft, s, page)
+  two <- max(vapply(vapply(.aft$rows, `[[`, "", "label"), function(l) {
+    w <- strsplit(l, " ", fixed = TRUE)[[1]]; m <- length(w)
+    if (m < 2L) return(.jst_docx_text_width(l, 12))
+    min(vapply(seq_len(m - 1L), function(k) {
+      max(.jst_docx_text_width(paste(w[seq_len(k)], collapse = " "), 12),
+          .jst_docx_text_width(paste(w[(k + 1L):m], collapse = " "), 12))
+    }, 0))
+  }, 0))
+  one <- max(vapply(vapply(.aft$rows, `[[`, "", "label"), .jst_docx_text_width, 0, size = 12))
+  list(page = page, nat = sum(nat), w60 = w60, fit = fit, two = two, one = one)
+}))$val
+check("AH02 ruling R55's order on the item table: wider than the portrait page at its natural width, it loses half its padding, then its stub narrows so the items take two lines -- each fits on two lines of the stub less its margins, the longest no longer on one -- and the font stays at 12 points, the table within the page",
+      .ah2$nat > .ah2$page && sum(.ah2$w60) > .ah2$page &&
+        identical(.ah2$fit$size, 12) && sum(.ah2$fit$widths) <= .ah2$page &&
+        identical(.ah2$fit$widths[-1], .ah2$w60[-1]) &&
+        .ah2$fit$widths[1] < .ah2$w60[1] && .ah2$fit$widths[1] >= 2160L &&
+        .ah2$two + 216L <= .ah2$fit$widths[1] && .ah2$one + 216L > .ah2$fit$widths[1])
+
+.ah3 <- res(local({
+  fa <- file.path(.aad, "Items.docx"); fy <- file.path(.aad, "ItemsL.docx"); fv <- file.path(.aad, "Anova.docx")
+  invisible(res(jtable(.aft, file = fa, overwrite = TRUE, print = FALSE)))
+  invisible(res(jtable(.af, file = fy, landscape = "yes", overwrite = TRUE, print = FALSE)))
+  invisible(res(jtable(.adt, file = fv, overwrite = TRUE, print = FALSE)))
+  da <- .ahx(fa, "xa"); dy <- .ahx(fy, "xy"); dv <- .ahx(fv, "xv")
+  page_p <- .jst_docx_page("a4", FALSE)$text
+  num <- sum(.jst_docx_widths(.adt, .jst_style_apa, size = 12, pad = 60L)[-1])
+  floor <- .jst_docx_stub_floor(.adt, 12, .jst_docx_widths(.adt, .jst_style_apa, size = 12, pad = 60L)[1])
+  list(da = da, dy = dy, dv = dv, narrow = num + floor, page_p = page_p)
+}))$val
+check("AH03 landscape = auto (ruling R55) turns the page only when the table cannot fit portrait with half padding and its labels on two lines: the item table (wider than portrait at its natural width) stays portrait, the four-group ANOVA table turns landscape at 12 points; landscape = yes in the call turns any table",
+      !.ahland(.ah3$da) && identical(.ahsz(.ah3$da), "24") &&
+        .ah3$narrow > .ah3$page_p && .ahland(.ah3$dv) && identical(.ahsz(.ah3$dv), "24") &&
+        .ahland(.ah3$dy))
+
+.ah4 <- res(local({
+  tr <- regmatches(.ah1$d, gregexpr("<w:tr>.*?</w:tr>", .ah1$d))[[1]]
+  cells <- function(row) regmatches(row, gregexpr("<w:tc>(?:(?!</w:tc>).)*?</w:tc>", row, perl = TRUE))[[1]]
+  pick <- function(pat) { for (row in tr) for (cl in cells(row)) if (grepl(pat, cl, fixed = TRUE)) return(cl); NA_character_ }
+  list(t = pick("(101)</w:t>"), r = pick(">Item-total </w:t>"), dash = pick(">\u2014</w:t>"),
+       df = pick(">3, 93</w:t>"), num = pick(">.62***</w:t>"))
+}))$val
+check("AH04 heads with markup in the file: t italic and (101) upright in one head, Item-total upright and r italic; a cell with no digit (the em dash) and the ANOVA's df cells centered with no tab stop; a number keeps its decimal tab",
+      grepl("<w:r><w:rPr><w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">t</w:t></w:r><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">(101)</w:t></w:r>", .ah4$t, fixed = TRUE) &&
+        grepl("<w:t xml:space=\"preserve\">Item-total </w:t></w:r><w:r><w:rPr><w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">r</w:t>", .ah4$r, fixed = TRUE) &&
+        grepl("<w:jc w:val=\"center\"/>", .ah4$dash, fixed = TRUE) && !grepl("<w:tabs>", .ah4$dash, fixed = TRUE) &&
+        grepl("<w:jc w:val=\"center\"/>", .ah4$df, fixed = TRUE) && !grepl("<w:tabs>", .ah4$df, fixed = TRUE) &&
+        grepl("<w:tab w:val=\"decimal\"", .ah4$num, fixed = TRUE) && !grepl("<w:jc ", .ah4$num, fixed = TRUE))
+
+.ah5 <- res(local({
+  s <- .jst_style_apa
+  narrow <- .jst_docx_fit(.adt, s, 3000L)
+  list(sizes = list(.jst_docx_fit_sizes(12), .jst_docx_fit_sizes(10.5), .jst_docx_fit_sizes(8)),
+       narrow = narrow)
+}))$val
+check("AH05 the font steps a point at a time to 8 points (from a size between points, to the point below first); a page too narrow even at 8 points gets the stub at an inch and a half and every column in proportion, within the page",
+      identical(.ah5$sizes, list(c(12, 11, 10, 9, 8), c(10.5, 10, 9, 8), 8)) &&
+        identical(.ah5$narrow$size, 8) && sum(.ah5$narrow$widths) <= 3000L &&
+        identical(.ah5$narrow$note_size, 8))
+
+check("AH06 document.xml of the five tables pinned by its checksum",
+      identical(unname(tools::md5sum(file.path(.aad, "x5", "word", "document.xml"))), "f0e53bd93bb644d96c2f05cc232b3a96"))
+
+.ah7 <- res(local({
+  tb <- .aft
+  tb$rows[[1]]$label <- "Environmentallyconsciousconsumerpreferenceindex (reversed)"
+  w1 <- .jst_docx_widths(tb, .jst_style_apa, size = 12, pad = 60L)[1]
+  list(floor = .jst_docx_stub_floor(tb, 12, w1), w1 = w1,
+       word = .jst_docx_text_width("Environmentallyconsciousconsumerpreferenceindex", 12) + 216L)
+}))$val
+check("AH07 the stub's floor keeps every label on two lines (ruling R55): a label whose words cannot split into two lines of half the stub's width sets the floor at its own two-line width",
+      !is.null(.ah7) && .ah7$word > ceiling(.ah7$w1 / 2) && .ah7$floor >= .ah7$word &&
+        .ah7$floor <= .ah7$w1)
+
+# Every column of numbers holds its block -- the widest whole part and the
+# widest tail, from whichever cells have them -- so the decimal stop leaves
+# room on both sides (the S405 rebuild: in Word, the correlation table's
+# "-.07" sat off the point under ".62***", and a journal regression
+# column's "-3.40" beside "-.001").
+.ah8 <- res(local({
+  sj <- .jst_style_apa; sj$general$leading.zero <- "never"
+  tj <- .jst_table_build_models(list(.vm1, .vm2, .vm3, .vm4), sj)
+  room <- function(tb, st, size, pad) {
+    w    <- .jst_docx_widths(tb, st, size = size, pad = pad)
+    tabs <- .jst_docx_decimal_tabs(tb, w, size, 108L)
+    all(vapply(seq_len(nrow(tb$columns))[-1L], function(j) {
+      k <- tb$columns$key[j]
+      cells <- vapply(tb$rows, function(r) { x <- r$cells[[k]]; if (is.null(x)) "" else x }, "")
+      keep  <- !.jst_tbl_plain_cell(cells, tb$columns$kind[j])
+      spans <- vapply(tb$rows, .jst_docx_spans_from, logical(1), j = j)
+      pt <- .jst_docx_num_parts(cells)
+      hw <- .jst_docx_text_width(pt$head[keep], size, TRUE)
+      tw <- .jst_docx_text_width(pt$tail[keep & !spans], size, TRUE)
+      tabs[j] >= hw && tabs[j] + tw <= w[j] - 216L
+    }, logical(1)))
+  }
+  tbs <- list(.abt, .act, .adt, .aet, .aft, .x1$val, .v4, tj)
+  sts <- c(rep(list(.jst_style_apa), 7L), list(sj))
+  ok  <- mapply(function(tb, st) {
+    all(vapply(list(c(12, 120), c(12, 60), c(10, 60), c(9, 60), c(8, 60)),
+               function(sp) room(tb, st, sp[1], sp[2]), logical(1)))
+  }, tbs, sts)
+  w <- .jst_docx_widths(.abt, .jst_style_apa); w[5] <- 1036L
+  t1 <- regmatches(.ah1$d, regexpr("<w:tbl>.*?</w:tbl>", .ah1$d))
+  g  <- as.integer(regmatches(t1, gregexpr("(?<=<w:gridCol w:w=\")[0-9]+", t1, perl = TRUE))[[1]])
+  tr <- regmatches(t1, gregexpr("<w:tr>.*?</w:tr>", t1))[[1]]
+  rw <- tr[grep(">4. Daily commute time (minutes)</w:t>", tr, fixed = TRUE)[1]]
+  c5 <- regmatches(rw, gregexpr("<w:tc>(?:(?!</w:tc>).)*?</w:tc>", rw, perl = TRUE))[[1]][5]
+  list(ok = ok, narrow = .jst_docx_decimal_tabs(.abt, w, 12, 108L)[5],
+       minus = .jst_docx_text_width("\u2212", 12), tail = .jst_docx_text_width(".62***", 12),
+       pos = as.integer(sub(".*w:pos=\"([0-9]+)\".*", "\\1", c5)), g5 = g[5],
+       txt = grepl(">\u2212.07</w:t>", c5, fixed = TRUE))
+}))$val
+check("AH08 every column of numbers holds its block, the decimal stop leaving room for the widest whole part on its left and the widest tail on its right -- in the five tables, Table 3 and its form with no zeros, at every size the fit tries; in the file, the correlation table's first column holds the minus of -.07 and the stars of .62*** (the S405 rebuild); and a column too narrow for its block keeps its stop right of the whole part",
+      !is.null(.ah8) && all(.ah8$ok) && .ah8$narrow >= .ah8$minus && isTRUE(.ah8$txt) &&
+        .ah8$pos >= .ah8$minus && .ah8$pos + .ah8$tail <= .ah8$g5 - 216L)
+
+# =============================================================================
+# AI. The (S403) repeated-name rewording: the function named once
+# =============================================================================
+cat("\n--- AI. The stops name jtable() once ---\n")
+
+.ai <- vapply(.seen, `[[`, "", "text")
+check("AI01 no recorded stop reads \"jtable(): jtable()\" (the S403 item: the emitter's prefix and the text both naming the function); each of the seven reworded stops was reached in its new words",
+      length(.ai) > 0L && !any(grepl("jtable(): jtable()", .ai, fixed = TRUE)) &&
+        all(vapply(c("jtable(): no table is made from this kind of result yet.",
+                     "jtable(): the file name needs the .docx extension (a Word file),",
+                     "jtable(): built tables and saved results cannot be given",
+                     "jtable(): a table is made from a saved result -- what an analysis",
+                     "jtable(): results of different kinds (",
+                     "jtable(): models of different outcomes",
+                     "jtable(): no table is made from a grouped jdesc() result"),
+                   function(p) any(grepl(p, .ai, fixed = TRUE)), logical(1))))
+
+# =============================================================================
+# AJ. jstyle(): the five sections; a style file's sections in use
+# =============================================================================
+cat("\n--- AJ. jstyle() and the five sections ---\n")
+
+.aj1 <- .strip_ansi(res(jstyle("apa"))$txt)
+.aj1f <- local({ p <- res(jstyle("apa", save.as = file.path(.aad, "copy4")))$val
+                 f <- file.path(.aad, "copy4.jstyle")
+                 if (file.exists(f)) readLines(f, encoding = "UTF-8") else character(0) })
+check("AJ01 jstyle(\"apa\") prints the five sections after [logistic], in order, and filter.note among the general settings; a saved copy writes them with their notes and the lists, and reads back",
+      grepl("(?s)\\[logistic\\]\n.*\n\\[correlation\\]\n.*\n\\[ttest\\]\n.*\n\\[anova\\]\n.*\n\\[crosstab\\]\n.*\n\\[reliability\\]\n", .aj1, perl = TRUE) &&
+        grepl("\nfilter.note      = yes\n", .aj1, fixed = TRUE) &&
+        grepl("\n[crosstab]\ntitle             = Frequencies and Percentages by {group}\ncolumns           = n, percent\ntotal             = yes\npercent.base      = column\ntest.columns      = chisq, df, p, v\n", .aj1, fixed = TRUE) &&
+        all(c("[correlation]", "[ttest]", "[anova]", "[crosstab]", "[reliability]") %in% .aj1f) &&
+        "filter.note = yes" %in% .aj1f && "test.columns = chisq, df, p, v" %in% .aj1f &&
+        "item.total.label = Item-total *r*" %in% .aj1f &&
+        inherits(res(jtable(.af, style = file.path(.aad, "copy4"), print = FALSE))$val, "jst_table"))
+
+.wsty("b4", "filter.note = no", "[ttest]", "columns = n, mean, sd, t, p", "stub.label = Outcome",
+      "[crosstab]", "total = no", "percent.base = row", dir = .aad)
+.aj2 <- local({
+  st <- file.path(.aad, "b4")
+  list(t  = res(jtable(.ac, style = st, print = FALSE))$val,
+       x  = res(jtable(.ae, style = st, print = FALSE))$val,
+       xc = res(jtable(.ae, style = st, total = "yes", print = FALSE))$val,
+       f  = res(jtable(.aa5$tt, style = st, columns = c("mean", "sd", "t", "p"), print = FALSE))$val,
+       fn = local({
+         inc <- as.numeric(haven::zap_missing(tcm$Income)); ok <- tcm$Age >= 30 & !is.na(inc)
+         paste0("*n* = ", sum(ok & .acg == 0), " (No) and ", sum(ok & .acg == 1), " (Yes).")
+       }))
+})
+check("AJ02 a style file's [ttest] and [crosstab] sections in use: each group's n before its M and SD, d left out, the stub head Outcome; the crosstab without its Total, its percentages within each category; the call outranks the file; filter.note = no in the file's general part leaves the filter sentence out",
+      identical(.aj2$t$columns$key, c("stub", "g1.n", "g1.mean", "g1.sd", "g2.n", "g2.mean", "g2.sd", "t", "p")) &&
+        identical(.aj2$t$columns$label[c(1, 8)], c("Outcome", "*t*(101)")) &&
+        !"tot.n" %in% .aj2$x$columns$key &&
+        identical(.aj2$x$rows[[2]]$cells$g1.percent,
+                  .aepc(100 * .aee[[1]]$obs[1, 1] / sum(.aee[[1]]$obs[1, ]))) &&
+        "tot.n" %in% .aj2$xc$columns$key &&
+        identical(.aj2$f$notes$general, .aj2$fn))
+
+unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad), recursive = TRUE)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # The analyses above raise notes and warnings of their own (a seems-

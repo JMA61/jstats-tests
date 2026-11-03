@@ -18,9 +18,51 @@
 #           their value labels with the reference named, R2), its
 #           logistic twin, the settings a call changes (the Gelman
 #           column, the fit rows, the reference in the note), and both
-#           tables in the journal's style. Each later build of Slate T
-#           adds its table's section.
+#           tables in the journal's style. Build 4 (S405): the
+#           correlation, t-test, ANOVA, crosstab and item tables (rulings
+#           R54 and R55, the eight S404 leans) previewed, written to one
+#           Word file, and the item table on a page of its own; Table 3
+#           refitted under ruling R55. Build 5 adds its section.
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S405 (v0.9.273; Capability Slate T, build 4). SECTION 7 ADDED,
+#           on the PENDING line, its Expected blocks filled by running
+#           (fill.R): build 4's five tables previewed and written to one
+#           Word file, then the item table on its own (ruling R55's labels
+#           on two lines on a portrait page). It works on a copy of tdat,
+#           d7, so the settings Sections 4-6 leave on tdat do not reach it
+#           in a straight run (no NEEDS, derived by running). SECTION 3
+#           RE-PINNED, on the PENDING line: jstyle() prints filter.note and
+#           the five new sections, and the saved copy's stamp reads 0.9.273
+#           -- its Expected blocks refilled by running, the paths written as
+#           <tempdir>, <working directory> and <your jstats folder> as at
+#           S401. SECTION 4 on the PENDING line: its Word file refitted
+#           under ruling R55 (10 pt, "Daily commute time (minutes)" on two
+#           lines, where it was 9 pt), its prose on the fit and the
+#           landscape test re-pinned; the preview unchanged. SECTIONS 5 AND
+#           6 RE-PINNED MECHANICALLY under ruling R55, off the PENDING line:
+#           their Word files are refitted by the same rule; no Expected
+#           block or prose changed. Every section captured on v0.9.272 and
+#           on this build and compared (harness.R dump): Sections 1, 2, 4,
+#           5 and 6 print the same, Section 3 as above. AT THE REBUILD (same
+#           version): Sections 6 and 7 on the PENDING line again for their
+#           Word files -- a column of numbers now holds its block, the
+#           widest whole part and the widest tail from whichever cells have
+#           them -- each with a bullet saying where to look; no Expected
+#           block changed (every Word file written by the walk compared
+#           before and after: only those two differ).
+# LAST VERIFIED: v0.9.273, 2026-11-04 (S405), the rebuild -- Sections 6 and 7
+#           WALKED on the WORKSTATION by Jeff through receive_all() ("walked,
+#           all okay"): every number on its point in Word; PENDING back to
+#           none; R CMD check 0 errors, 0 warnings, 0 notes; ALL BATTERIES
+#           GREEN (12 run, 3574 checks).
+# LAST VERIFIED: v0.9.273, 2026-11-03 (S405), first delivery -- Sections 3, 4
+#           and 7 WALKED on the WORKSTATION by Jeff through receive_all()
+#           ("walked, all okay"), save one finding in Section 7's file: the
+#           correlation table's decimal tab off ("I assume due to the 3
+#           asterisks"). The rebuild fixes it and the same fault in Section
+#           6's journal Table 3; Sections 6 and 7 pending. R CMD check 0
+#           errors, 0 warnings, 0 notes; ALL BATTERIES GREEN (12 run, 3573
+#           checks).
 # EDITED:   S403 (v0.9.272; Capability Slate T, build 3). SECTIONS 4, 5 AND
 #           6 ADDED, on the PENDING line, their Expected blocks filled by
 #           running (fill.R). SECTION 3 RE-PINNED: the journal file gains
@@ -349,7 +391,7 @@ cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 16L,
 #   # comes from the style based.on names.
 #
 #   format     = 1
-#   written.by = jstats 0.9.272
+#   written.by = jstats 0.9.273
 #   based.on   = apa
 #
 #   # The general settings: the look of every table.
@@ -414,6 +456,7 @@ jstyle("myjournal")
 #   landscape        = auto             # from apa
 #   line.spacing     = single           # from apa
 #   percent.decimals = 1                # from apa
+#   filter.note      = yes              # from apa
 #
 #   [descriptives]
 #   title          = Descriptive Statistics  # from apa
@@ -480,14 +523,90 @@ jstyle("myjournal")
 #   reference.label   = reference                   # from apa
 #   variable.headings = plain                       # from apa
 #   group.headings    = italic                      # from apa
+#
+#   [correlation]
+#   title          = Descriptive Statistics and Correlations for Study Variables  # from apa
+#   columns        = n, mean, sd                 # from apa
+#   stub.label     = Variable                    # from apa
+#   n.label        = n                           # from apa
+#   mean.label     = M                           # from apa
+#   sd.label       = SD                          # from apa
+#   lower.triangle = yes                         # from apa
+#   r.stars        = yes                         # from apa
+#   method.note    = yes                         # from apa
+#
+#   [ttest]
+#   title         = Means, Standard Deviations, and t Tests by {group}  # from apa
+#   columns       = mean, sd, t, p, d           # from apa
+#   stub.label    = Variable                    # from apa
+#   n.label       = n                           # from apa
+#   mean.label    = M                           # from apa
+#   sd.label      = SD                          # from apa
+#   t.label       = t                           # from apa
+#   df.label      = df                          # from apa
+#   p.label       = p                           # from apa
+#   d.label       = d                           # from apa
+#   diff.label    = Mean difference             # from apa
+#   ci.label      = 95% CI                      # from apa
+#   ci.style      = one                         # from apa
+#   group.spanner = yes                         # from apa
+#   test.note     = yes                         # from apa
+#
+#   [anova]
+#   title         = Means, Standard Deviations, and One-Way Analyses of Variance by {group}  # from apa
+#   columns       = mean, sd, f, p, eta2        # from apa
+#   stub.label    = Variable                    # from apa
+#   n.label       = n                           # from apa
+#   mean.label    = M                           # from apa
+#   sd.label      = SD                          # from apa
+#   f.label       = F                           # from apa
+#   df.label      = df                          # from apa
+#   p.label       = p                           # from apa
+#   eta2.label    = η²                          # from apa
+#   group.spanner = yes                         # from apa
+#   test.note     = yes                         # from apa
+#
+#   [crosstab]
+#   title             = Frequencies and Percentages by {group}  # from apa
+#   columns           = n, percent                  # from apa
+#   total             = yes                         # from apa
+#   percent.base      = column                      # from apa
+#   test.columns      = chisq, df, p, v             # from apa
+#   stub.label        = Variable                    # from apa
+#   n.label           = n                           # from apa
+#   percent.label     = %                           # from apa
+#   total.label       = Total                       # from apa
+#   chisq.label       = χ²                          # from apa
+#   df.label          = df                          # from apa
+#   p.label           = p                           # from apa
+#   v.label           = V                           # from apa
+#   group.spanner     = yes                         # from apa
+#   variable.headings = plain                       # from apa
+#
+#   [reliability]
+#   title                  = Item Statistics and Reliability  # from apa
+#   columns                = mean, sd, item.total, alpha.if.deleted  # from apa
+#   stub.label             = Item                        # from apa
+#   mean.label             = M                           # from apa
+#   sd.label               = SD                          # from apa
+#   item.total.label       = Item-total *r*              # from apa
+#   alpha.if.deleted.label = α if item deleted           # from apa
+#   alpha                  = yes                         # from apa
+#   item.total.note        = yes                         # from apa
+#   group.headings         = italic                      # from apa
 
 # Things to look at:
 #   - the settings myjournal sets, unmarked; every other "# from apa" --
 #     the file names no [frequencies] or [logistic] section, so those
 #     tables take apa's, in the journal's caption form;
 #   - n.position (ruling R51) where note.n stood: note | title | none;
+#     filter.note (build 4), yes | no: the filter sentence in a table's
+#     note;
 #   - the [regression] and [logistic] sections (build 3), every key with
 #     apa's value but the two the file sets;
+#   - the five sections build 4 adds, after [logistic]: [correlation],
+#     [ttest], [anova], [crosstab] and [reliability], each key with apa's
+#     value (their names are Claude's calls, for this walk);
 #   - the printout is itself a style file's form: a line can be copied
 #     into the file.
 
@@ -639,10 +758,13 @@ jtable(t3, file = walk_file4, overwrite = TRUE, print = FALSE, open = TRUE)
 
 # Things to look at (in Word):
 #   - the file opens with no repair prompt, on a LANDSCAPE page: the
-#     table is wider than a portrait page (landscape = auto);
-#   - the table FITTED to the page: its number columns lose half their
-#     padding, then the font steps down a point at a time (12, 11, 10, 9)
-#     until the table fits -- no number wraps; the caption keeps 12 pt,
+#     table cannot fit a portrait page even with its labels on two lines
+#     (landscape = auto, ruling R55);
+#   - the table FITTED to the page (ruling R55, S405): its number columns
+#     lose half their padding, then a label may wrap onto two lines, then
+#     the font steps down a point at a time -- here to 10 pt, with "Daily
+#     commute time (minutes)" on two lines (9 pt with every label on one
+#     line before this build); no number wraps; the caption keeps 12 pt,
 #     the note steps down with the table; a table that fits needs none of
 #     this;
 #   - the spanner row: "Model 1" to "Model 4", each over its four columns,
@@ -837,7 +959,232 @@ joptions(style.dir = NULL, quiet = TRUE)
 #   - two tables, "Table 1." and "Table 2." then the titles on one line,
 #     two empty lines between the tables (your S401 request);
 #   - each fitted to the landscape page as in Sections 4 and 5;
-#   - ".37", ".10", beta*, s.e. as in the previews.
+#   - ".37", ".10", beta*, s.e. as in the previews;
+#   - Table 1, Model 4's b column: 21.01 and -3.40 on the point with the
+#     rest (the S405 rebuild: the column now holds -3.40's whole part
+#     beside -.001's tail; Word had pushed both off the point).
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 7 -- Build 4's five tables: correlations, t tests, ANOVAs, crosstabs, items; one Word file ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Build 4 (S405): the five table types the S404 sketch drew, as your S404
+# answers settled them (rulings R54 and R55, the eight leans), each from
+# results of tdat. Results share a table when they share its columns
+# (ruling R54): three t tests of one grouping variable stack a row per
+# outcome, as do three ANOVAs and three crosstabs; a jcorr() result is a
+# table of its own. First the five previews, then the five tables in one
+# Word file, then the item table on its own. The section works on a copy
+# of tdat, d7, so the settings Sections 4 to 6 leave on tdat (the
+# complete-cases filter, the registrations) do not reach it when the file
+# is run straight through.
+
+d7 <- tdat
+c1 <- jcorr(d7, WellbeingScore, Income, Age, CommuteTime, print = FALSE)
+t5 <- jtable(c1)
+# Expected:
+#   Table 1
+#   Descriptive Statistics and Correlations for Study Variables
+#   ----------------------------------------------------------------------------------
+#   Variable                          n       M          SD        1       2     3   4
+#   ----------------------------------------------------------------------------------
+#   1. Wellbeing score (0-100)       103      50.89      11.48     —
+#   2. Annual income (USD)            97  49,855.67  17,427.22   .62***    —
+#   3. Age (years)                   103      40.65      11.62   .34***  .29**   —
+#   4. Daily commute time (minutes)  103      30.74      12.68  -.07     .01    .07  —
+#   ----------------------------------------------------------------------------------
+#   Note. Pairwise ns range from 97 to 103.
+#   *p < .05. **p < .01. ***p < .001.
+
+# Things to look at:
+#   - APA's sample form: the variables numbered, each one's n, M and SD on
+#     its own cases (Annual income has 97), then a column per variable
+#     headed 1 to 4;
+#   - each correlation once, below the diagonal, without the zero (r is
+#     bounded by 1), its stars hanging right of the point; an em dash
+#     centered on the diagonal; the upper triangle empty;
+#   - "Pairwise ns range from 97 to 103." (one N when every pair shares
+#     it), then the stars' legend.
+
+tt1 <- jt(WellbeingScore ~ Volunteer, d7, print = FALSE)
+tt2 <- jt(Age ~ Volunteer, d7, print = FALSE)
+tt3 <- jt(CommuteTime ~ Volunteer, d7, print = FALSE)
+t6 <- jtable(list(tt1, tt2, tt3))
+# Expected:
+#   Table 1
+#   Means, Standard Deviations, and t Tests by Volunteered in past year
+#   -----------------------------------------------------------------------------
+#                                  Volunteered in past year
+#                                      No            Yes
+#   Variable                        M      SD     M      SD   t(101)    p     d
+#   -----------------------------------------------------------------------------
+#   Wellbeing score (0-100)       47.46  11.70  54.67  10.06   -3.34  .001  -0.66
+#   Age (years)                   37.41  11.24  44.22  11.07   -3.10  .003  -0.61
+#   Daily commute time (minutes)  29.35  11.16  32.27  14.13   -1.17  .246  -0.23
+#   -----------------------------------------------------------------------------
+#   Note. n = 54 (No) and 49 (Yes).
+
+# Things to look at:
+#   - the title names the grouping variable by its label (the {group}
+#     placeholder); the stub head "Variable";
+#   - "Volunteered in past year" over the groups, each group's value label
+#     over its M and SD;
+#   - t with its df in the head, "t(101)" (in the file the t italic, the
+#     df upright), since every row shares them -- rows whose df differ get
+#     a df column; then p, and Cohen's d with its zero (d is not bounded
+#     by 1), its sign the first group's mean minus the second's, as jt()
+#     prints it;
+#   - the groups' ns in the note: "n = 54 (No) and 49 (Yes)."
+
+jnumeric(d7, Education)
+# Expected:
+#   Numeric registration set for 'Education' in d7.
+#   Note: this registration is stored for this session only.
+#   To keep it across sessions, save the data frame in R format (.rds):
+#     jsave(d7, "d7.rds")
+#
+#   Next session, load that file to restore the registration:
+#     jload("d7.rds")
+
+a1 <- jaov(WellbeingScore ~ Region, d7, print = FALSE)
+a2 <- jaov(Education ~ Region, d7, print = FALSE)
+a3 <- jaov(CommuteTime ~ Region, d7, print = FALSE)
+t7 <- jtable(list(a1, a2, a3))
+# Expected:
+#   Table 1
+#   Means, Standard Deviations, and One-Way Analyses of Variance by Region of residence
+#   ------------------------------------------------------------------------------------------------------------
+#                                                   Region of residence
+#                                     North         South         East          West
+#   Variable                        M      SD     M      SD     M      SD     M      SD     F     df     p    η²
+#   ------------------------------------------------------------------------------------------------------------
+#   Wellbeing score (0-100)       52.96  10.15  48.15  14.74  50.94   9.94  50.80  11.92  0.67  3, 99  .574  .02
+#   Highest education level        3.04   1.40   2.47   1.22   2.79   1.45   3.00   1.57  0.69  3, 93  .558  .02
+#   Daily commute time (minutes)  29.00  14.15  28.20   7.98  33.39  13.35  31.36  13.24  0.90  3, 99  .442  .03
+#   ------------------------------------------------------------------------------------------------------------
+#   Note. Group ns vary with missing data: North, 26 to 27; South, 19 to 20; East,
+#   29 to 31; West, 23 to 25.
+
+# Things to look at:
+#   - the same frame for four regions, each region's M and SD under its
+#     value label, in code order;
+#   - Highest education level as an outcome: registered as numeric above
+#     (jnumeric()), so jaov() takes it without its seems-categorical
+#     warning;
+#   - F, then a df column -- the education level's missing cases give it
+#     3, 93 where the others have 3, 99 -- the df centered in their cells;
+#     then p, and eta2 (the Greek letter, upright) without the zero;
+#   - "Group ns vary with missing data:" and each region's range.
+
+x1 <- jcrosstab(Smoker ~ Volunteer, d7, print = FALSE)
+x2 <- jcrosstab(OwnsHome ~ Volunteer, d7, print = FALSE)
+x3 <- jcrosstab(Region ~ Volunteer, d7, print = FALSE)
+t8 <- jtable(list(x1, x2, x3))
+# Expected:
+#   Table 1
+#   Frequencies and Percentages by Volunteered in past year
+#   ----------------------------------------------------------------------------
+#                        Volunteered in past year
+#                             No           Yes       Total
+#   Variable               n      %     n     %     n    %    χ²   df    p    V
+#   ----------------------------------------------------------------------------
+#   Current smoker                                           0.04   1  .834  .02
+#     No                   34    65.4   31   67.4  65  66.3
+#     Yes                  18    34.6   15   32.6  33  33.7
+#   Owns home                                                5.95   1  .015  .24
+#     Yes                  19    35.2   29   59.2  48  46.6
+#     No                   35    64.8   20   40.8  55  53.4
+#   Region of residence                                      2.89   3  .409  .17
+#     North                14    25.9   13   26.5  27  26.2
+#     South                13    24.1    7   14.3  20  19.4
+#     East                 17    31.5   14   28.6  31  30.1
+#     West                 10    18.5   15   30.6  25  24.3
+#   ----------------------------------------------------------------------------
+#   Note. N differs by variable: 98 (Current smoker), 103
+#   (Owns home and Region of residence).
+
+# Things to look at:
+#   - each row variable's label a row of its own, its categories indented
+#     under it by their value labels (Table 2's form);
+#   - "Volunteered in past year" over the groups, each group over n and %,
+#     then the Total; the percentages are WITHIN each group (column
+#     percentages) -- jcrosstab() prints row percentages by default, so its
+#     console table can show other figures;
+#   - the chi-square test on each variable's label row: chi2 (the Greek
+#     letter, upright), df, p and Cramer's V, computed from the stored
+#     counts -- the Pearson test jcrosstab(chisq = TRUE) reports, though
+#     these results were made without it;
+#   - "N differs by variable:" with equal Ns grouped (Current smoker has
+#     five declared missing values).
+
+d7$Environment2R <- 6 - as.numeric(d7$Environment2)
+attr(d7$Environment2R, "label") <-
+  "Concern about the environment is exaggerated (reversed)."
+jsubset(d7, Age >= 30)
+# Expected:
+#   jsubset activated for d7: Age >= 30
+
+r1 <- jalpha(d7, Environment1, Environment2R, Environment3, Environment4,
+             Environment5, print = FALSE)
+t9 <- jtable(r1)
+# Expected:
+#   Table 1
+#   Item Statistics and Reliability
+#   -----------------------------------------------------------------------------------------------------
+#   Item                                                        M    SD   Item-total r  α if item deleted
+#   -----------------------------------------------------------------------------------------------------
+#   Climate change is a serious threat.                       3.15  1.16           .67                .80
+#   Concern about the environment is exaggerated (reversed).  3.15  1.19           .72                .79
+#   Government should do more for the environment.            3.10  1.27           .74                .78
+#   I would pay more for environmentally friendly products.   3.39  1.22           .71                .79
+#   Pollution is a major cause of public health problems.     2.74  1.45           .44                .87
+#   -----------------------------------------------------------------------------------------------------
+#   Note. N = 72. Only cases with Age (years) ≥ 30 are included.
+#   Cronbach's α = .84. Item-total r is each item's correlation with the sum of the
+#   other items.
+
+# Things to look at:
+#   - the stub head "Item", each item named by its label (its wording);
+#     M and SD; "Item-total r" (the r italic in the file) and "alpha if
+#     item deleted" (the Greek letter, upright), both without the zero;
+#   - the note: N, then the filter in words -- "Only cases with Age
+#     (years) >= 30 are included.", the sign one character -- then
+#     Cronbach's alpha and what item-total r is (the console keeps
+#     "alpha = .84" on one line);
+#   - several scales in a named list stack, each under its name with its
+#     alpha: jtable(list("Concern" = ra, "Action" = rb)).
+
+jsubset(d7, NULL)
+# Expected:
+#   jsubset cleared for d7 (had: Age >= 30).
+
+walk_file7 <- file.path(tempdir(), "Tables_build4.docx")
+jtable(list(t5, t6, t7, t8, t9), file = walk_file7, overwrite = TRUE,
+       print = FALSE, open = TRUE)
+
+# Things to look at (in Word):
+#   - five tables, "Table 1" to "Table 5", two empty lines between them;
+#   - a LANDSCAPE page: the ANOVA table, four groups wide, cannot fit a
+#     portrait page even with its labels on two lines (ruling R55's test),
+#     and one file has one page orientation; the other four fit portrait;
+#   - the heads with markup: "t(101)" with the t italic and "(101)"
+#     upright; "Item-total r" with the r italic; eta2, chi2 and alpha
+#     upright; n, M, SD, p, d, F, df and V italic;
+#   - the em dashes centered in their cells, and the ANOVA's df ("3, 99")
+#     centered; every number on its decimal point, a negative one's minus
+#     sign hanging left;
+#   - Table 1's first column: -.07's point under .62***'s and .34***'s
+#     (the S405 rebuild: the column now holds the minus left of the point
+#     and the three stars right of it);
+#   - Table 5's note with the filter sentence, the sign as one character.
+
+walk_file7b <- file.path(tempdir(), "Table_items.docx")
+jtable(t9, file = walk_file7b, overwrite = TRUE, print = FALSE, open = TRUE)
+
+# Things to look at (in Word): the item table on its own, PORTRAIT at 12
+# pt. With its items on one line it is wider than a portrait page, so
+# under ruling R55 its padding halves and its stub narrows until each item
+# takes two lines -- no smaller font and no landscape page.
+
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations

@@ -1,0 +1,78 @@
+SKETCH -- not package output: the five tables built by hand, drawn by the
+v0.9.272 preview writer (Session 404).
+
+Table 1
+Descriptive Statistics and Correlations for Study Variables
+------------------------------------------------------------------------------------
+Variable                          n       M          SD        1        2      3   4
+------------------------------------------------------------------------------------
+1. Wellbeing score (0-100)       103      50.89      11.48  —
+2. Annual income (USD)            97  49,855.67  17,427.22   .62***  —
+3. Age (years)                   103      40.65      11.62   .34***   .29**  —
+4. Daily commute time (minutes)  103      30.74      12.68  -.07      .01     .07  —
+------------------------------------------------------------------------------------
+Note. Pairwise ns range from 97 to 103.
+*p < .05. **p < .01. ***p < .001.
+
+Table 2
+Means, Standard Deviations, and t Tests by Volunteered in past year
+-----------------------------------------------------------------------------
+                               Volunteered in past year
+                                   No            Yes
+Variable                        M      SD     M      SD   t(101)    p     d
+-----------------------------------------------------------------------------
+Wellbeing score (0-100)       47.46  11.70  54.67  10.06   -3.34  .001  -0.66
+Age (years)                   37.41  11.24  44.22  11.07   -3.10  .003  -0.61
+Daily commute time (minutes)  29.35  11.16  32.27  14.13   -1.17  .246  -0.23
+-----------------------------------------------------------------------------
+Note. n = 54 (No) and 49 (Yes).
+
+Table 3
+Means, Standard Deviations, and One-Way Analyses of Variance by Region of residence
+------------------------------------------------------------------------------------------------------------
+                                                Region of residence
+                                  North         South         East          West
+Variable                        M      SD     M      SD     M      SD     M      SD     F     df     p    η²
+------------------------------------------------------------------------------------------------------------
+Wellbeing score (0-100)       52.96  10.15  48.15  14.74  50.94   9.94  50.80  11.92  0.67  3, 99  .574  .02
+Highest education level        3.04   1.40   2.47   1.22   2.79   1.45   3.00   1.57  0.69  3, 93  .558  .02
+Daily commute time (minutes)  29.00  14.15  28.20   7.98  33.39  13.35  31.36  13.24  0.90  3, 99  .442  .03
+------------------------------------------------------------------------------------------------------------
+Note. Group ns vary with missing data: North, 26 to 27; South, 19 to 20; East, 29 to 31;
+West, 23 to 25.
+
+Table 4
+Frequencies and Percentages by Volunteered in past year
+----------------------------------------------------------------------
+                     Volunteered in past year
+                        No        Yes      Total
+Variable              n    %    n    %    n    %    χ²   df    p    V
+----------------------------------------------------------------------
+Current smoker                                     0.04   1  .834  .02
+  No                 34  65.4  31  67.4  65  66.3
+  Yes                18  34.6  15  32.6  33  33.7
+Owns home                                          5.95   1  .015  .24
+  Yes                19  35.2  29  59.2  48  46.6
+  No                 35  64.8  20  40.8  55  53.4
+Region of residence                                2.89   3  .409  .17
+  North              14  25.9  13  26.5  27  26.2
+  South              13  24.1   7  14.3  20  19.4
+  East               17  31.5  14  28.6  31  30.1
+  West               10  18.5  15  30.6  25  24.3
+----------------------------------------------------------------------
+Note. N differs by variable: 98 (Current smoker), 103 (Owns home and Region of residence).
+
+Table 5
+Item Statistics and Reliability
+-----------------------------------------------------------------------------------------------------
+Item                                                        M    SD   Item-total r  α if item deleted
+-----------------------------------------------------------------------------------------------------
+Climate change is a serious threat.                       3.15  1.16           .67                .80
+Concern about the environment is exaggerated (reversed).  3.15  1.19           .72                .79
+Government should do more for the environment.            3.10  1.27           .74                .78
+I would pay more for environmentally friendly products.   3.39  1.22           .71                .79
+Pollution is a major cause of public health problems.     2.74  1.45           .44                .87
+-----------------------------------------------------------------------------------------------------
+Note. N = 72. Only cases with Age (years) ≥ 30 are included. Cronbach's α = .84. Item-total r is
+each item's correlation with the sum of the other items.
+
