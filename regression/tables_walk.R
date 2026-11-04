@@ -22,8 +22,48 @@
 #           correlation, t-test, ANOVA, crosstab and item tables (rulings
 #           R54 and R55, the eight S404 leans) previewed, written to one
 #           Word file, and the item table on a page of its own; Table 3
-#           refitted under ruling R55. Build 5 adds its section.
+#           refitted under ruling R55. Build 5 (S406): the report jtable()
+#           prints in place of the table (ruling R57) and print() showing a
+#           kept table; one call, one table (ruling R56) and the lines its
+#           stop offers; tables written together, each on the page it
+#           needs, as one object; a short style file from jstyle().
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S406 (v0.9.274; Capability Slate T, build 5). SECTIONS 8 AND 9
+#           ADDED, on the PENDING line, their Expected blocks filled by
+#           running (fill.R). Section 8: ruling R57's report in its forms
+#           (no file; at joutput("full") the note giving the call that
+#           writes and the lines that keep and print the table; a file
+#           written, then replaced), print() showing a kept table, ruling
+#           R56's stop for results that cannot share a table and its lines
+#           run as they stand, tables written together each on the page it
+#           needs (a landscape page between portrait ones) and printed as
+#           one object, the note on tables that could have been one, and
+#           R56's other stops (what keeps results apart in each table type,
+#           a setting no table takes, title = on a list that stops).
+#           Section 9: a short style file from jstyle(save.as =) with
+#           settings, a table made in it, and every stop of jstyle()'s
+#           settings. The new messages' wording is Claude's. SECTION 3 on the
+#           PENDING line: the complete copy's head says how to edit the file
+#           and gives each setting a "# takes:" line (two more lines shown,
+#           n = 18). SECTIONS 1, 2, 4, 5, 6 AND 7 RE-PINNED MECHANICALLY
+#           under ruling R57, off the PENDING line: jtable() prints its
+#           report where it printed the table, so each table a section shows
+#           is printed with print() after it (R57's form; every preview as
+#           it was), every Expected block refilled by running, and the prose
+#           that named the old behavior reworded. Section 7's Word file
+#           holds the ANOVA table on a landscape page of its own between
+#           portrait pages (S406: each table gets the page it needs; ruled
+#           with R56, the S406 item 4), its bullet reworded. Every section
+#           captured on v0.9.273 and on this build and compared. Setup
+#           now pins the message width at 76 (the report is prose, which
+#           follows the console's width) and the foot hands it back.
+# LAST VERIFIED: v0.9.274, 2026-11-04 (S406) -- Sections 3, 8 and 9 WALKED on
+#           the WORKSTATION by Jeff through receive_all() ("walked, all
+#           okay"); PENDING back to none; R CMD check 0 errors, 0 warnings,
+#           0 notes; ALL BATTERIES GREEN (12 run, 3605 checks). Sandbox:
+#           harness.R verify, 9 of 9 sections in three orders under
+#           rewalk(); NEEDS derived by running (5: 4; 6: 3, 5; none for 8
+#           and 9).
 # EDITED:   S405 (v0.9.273; Capability Slate T, build 4). SECTION 7 ADDED,
 #           on the PENDING line, its Expected blocks filled by running
 #           (fill.R): build 4's five tables previewed and written to one
@@ -124,6 +164,13 @@
 # library(jstats) (installed) -- never both in one session.
 stopifnot(exists("jload", mode = "function"))
 
+# WIDTH (S406): since S406 jtable() prints a report (ruling R57) -- prose,
+# which follows the console's width as every message does -- so the walk
+# pins the message width at 76, as the other walks do, and hands back the
+# entering value at the foot.
+.entry_message_width <- getOption(".jst_options_message_width")
+options(.jst_options_message_width = 76L)
+
 # Load what THIS file needs -- jload(), never readRDS(); absolute path per
 # JStats_Testing_File_Conventions.txt.
 jload("E:/00 R Projects/00_jstats_test_data/datasets/community.rds",
@@ -142,12 +189,14 @@ jdummy(clear.all = TRUE)
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Jeff's Table 1 (the Table Layer Reference, Part 4.1): four variables of
 # tdat under three role headings, two of them mean-centered (a specific
-# note), a title and a general note of the user's. First the preview: a
-# facsimile of the Word table, under the apa style -- two caption lines,
-# the three rules, the heads centered over their columns, the labels
-# indented under their headings, the numbers aligned on the decimal point,
-# the notes under the bottom rule. Then the same table written to a .docx
-# in the temporary folder and opened in Word.
+# note), a title and a general note of the user's. jtable() reports what it
+# made (since S406, ruling R57: the table's number and title, what it holds
+# and its page, and that no file was written); print(t1) then shows the
+# preview: a facsimile of the Word table, under the apa style -- two
+# caption lines, the three rules, the heads centered over their columns,
+# the labels indented under their headings, the numbers aligned on the
+# decimal point, the notes under the bottom rule. Then the same table
+# written to a .docx in the temporary folder and opened in Word.
 
 d1 <- jdesc(WellbeingScore, Income, Age, CommuteTime, print = FALSE)
 t1 <- jtable(d1,
@@ -157,8 +206,13 @@ t1 <- jtable(d1,
              markers  = list("Mean-centered" = c(Income, Age)),
              title    = "Descriptive Statistics for Study Variables",
              note     = "Wellbeing is scored from 0 to 100.")
+print(t1)
 
 # Expected:
+#   Table 1. Descriptive Statistics for Study Variables
+#     4 variables under 3 headings, on a portrait page.
+#   No file was written.
+#
 #   Table 1
 #   Descriptive Statistics for Study Variables
 #   -------------------------------------------------------------------------
@@ -193,9 +247,8 @@ t1 <- jtable(d1,
 #     note "^a Mean-centered." on its own line under the general note;
 #   - the general note: "Note. N = 103." then your sentence.
 
-# The same table to a Word file, opened in Word. The preview is off here
-# (print = FALSE) so the block above is the one preview; the file is what
-# this call is for.
+# The same table to a Word file, opened in Word. print = FALSE leaves out
+# jtable()'s report here; the file is what this call is for.
 walk_file <- file.path(tempdir(), "Table1.docx")
 jtable(t1, file = walk_file, overwrite = TRUE, print = FALSE)
 if (interactive()) utils::browseURL(walk_file)
@@ -232,13 +285,19 @@ if (interactive()) utils::browseURL(walk_file)
 # on a row of its own and its categories indented under it, with n and the
 # percentage of ALL cases. Education and Smoker hold declared missing
 # values (Refused, Don't know), so each closes on one Missing row, and every
-# variable adds up to N = 103 and to 100 percent. First the preview; then
-# the same table in Word, opened by jtable() itself (open = TRUE).
+# variable adds up to N = 103 and to 100 percent. First jtable()'s report
+# and the preview print(t2) shows; then the same table in Word, opened by
+# jtable() itself (open = TRUE).
 
 f1 <- jfreq(Education, Region, Smoker, print = FALSE)
 t2 <- jtable(f1)
+print(t2)
 
 # Expected:
+#   Table 1. Frequency Distributions
+#     3 variables, on a portrait page.
+#   No file was written.
+#
 #   Table 1
 #   Frequency Distributions
 #   ---------------------------------
@@ -292,11 +351,16 @@ jtable(t2, file = walk_file2, overwrite = TRUE, print = FALSE, open = TRUE)
 # The call can change a setting of the table's own section (your S401
 # okay): here every missing value on its own row by its label, and the
 # valid and cumulative percentages beside n and %. The style is not
-# touched; the next call is back to apa's settings.
-jtable(f1, missing.rows = "each",
-       columns = c("n", "percent", "valid.percent", "cumulative"))
+# touched; the next call is back to apa's settings. print() shows the table
+# jtable() returns, after its report.
+print(jtable(f1, missing.rows = "each",
+             columns = c("n", "percent", "valid.percent", "cumulative")))
 
 # Expected:
+#   Table 1. Frequency Distributions
+#     3 variables, on a portrait page.
+#   No file was written.
+#
 #   Table 1
 #   Frequency Distributions
 #   --------------------------------------------------------
@@ -378,32 +442,38 @@ jstyle()
 #     there).
 
 jstyle("apa", save.as = "apa_copy")
-cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 16L,
+cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 18L,
               encoding = "UTF-8"), sep = "\n")
 
 # Expected:
-#   Style written to <tempdir>/walk_styles/apa_copy.jstyle
+#   Style written to
+#   <tempdir>/walk_styles/apa_copy.jstyle
 #
 #   # apa_copy.jstyle: a jstats table style.
-#   # Change a value after its = sign and save the file;
-#   # jstyle("apa_copy") prints the settings jstats reads from it.
-#   # A line that starts with # is a note. A setting the file leaves out
-#   # comes from the style based.on names.
+#   # Every setting jstats has is below, each after a note saying what it
+#   # does and what it takes. Change only the values after the = signs; do
+#   # not add, rename or remove a setting or a section. A line that starts
+#   # with # is a note. jstyle("apa_copy") checks the file and names any value
+#   # it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.273
+#   written.by = jstats 0.9.274
 #   based.on   = apa
 #
 #   # The general settings: the look of every table.
 #   # the typeface of every cell, caption and note
+#   # takes: any text
 #   font = Times New Roman
 #   # the text size, in points
+#   # takes: a number from 6 to 72
 #   size = 12
-#   # the page the file opens on: a4 | letter
 
 # Things to look at: the file's head as Notepad shows it -- what the file
-# is, the two stamped lines and based.on, then each setting under a line
-# saying what it does (every setting of every table type follows).
+# is and, since S406, how to edit it (change only the values; never add,
+# rename or remove a setting or a section), the two stamped lines and
+# based.on, then each setting under its note on what it does and, since
+# S406, a "# takes:" line saying what it takes (every setting of every
+# table type follows).
 
 writeLines(c("# myjournal.jstyle -- the journal's conventions",
              "based.on = apa",
@@ -618,8 +688,13 @@ t1j <- jtable(d1, style = "myjournal",
               markers  = list("Mean-centered" = c(Income, Age)),
               title    = "Descriptive Statistics for Study Variables",
               note     = "Wellbeing is scored from 0 to 100.")
+print(t1j)
 
 # Expected:
+#   Table 1. Descriptive Statistics for Study Variables
+#     4 variables under 3 headings, on a portrait page.
+#   No file was written.
+#
 #   Table 1. Descriptive Statistics for Study Variables
 #   ----------------------------------------------------------------------
 #   Variable                           Mean     Std Dev.  Minimum  Maximum
@@ -637,8 +712,13 @@ t1j <- jtable(d1, style = "myjournal",
 
 f1 <- jfreq(Education, Region, Smoker, print = FALSE)
 t2j <- jtable(f1, style = "myjournal")
+print(t2j)
 
 # Expected:
+#   Table 1. Frequency Distributions
+#     3 variables, on a portrait page.
+#   No file was written.
+#
 #   Table 1. Frequency Distributions
 #   ---------------------------------
 #   Variable                  n    %
@@ -696,11 +776,12 @@ joptions(style.dir = NULL, quiet = TRUE)
 # Region is dummy-coded (jdummy()), Education treated as numeric
 # (jnumeric()), and jcomplete() set over the largest model's variables,
 # so every model is fit on the same 92 cases. The models are fit quietly;
-# the table is what this section is for. First the preview, under the apa
-# style: a spanner over each model's four columns (b, SE, beta, p), the
-# Constant first, the predictors in the models' order, Region's categories
-# indented under its label with the reference category named after it,
-# R2 under each model's b. Then the same table in Word, opened by jtable().
+# the table is what this section is for. First jtable()'s report, then the
+# preview print(t3) shows, under the apa style: a spanner over each model's
+# four columns (b, SE, beta, p), the Constant first, the predictors in the
+# models' order, Region's categories indented under its label with the
+# reference category named after it, R2 under each model's b. Then the
+# same table in Word, opened by jtable().
 
 jdummy(Region)
 jnumeric(Education)
@@ -712,8 +793,14 @@ m3 <- jlm(WellbeingScore ~ Age + Smoker + Region + Education, print = FALSE)
 m4 <- jlm(WellbeingScore ~ Age + Smoker + Region + Education + CommuteTime,
           print = FALSE)
 t3 <- jtable(list(m1, m2, m3, m4))
+print(t3)
 
 # Expected:
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#     4 models side by side, on a landscape page, its text at 10 pt, long labels
+#     on two lines.
+#   No file was written.
+#
 #   Table 1
 #   Regression Coefficients Predicting Wellbeing score (0-100)
 #   -----------------------------------------------------------------------------------------------------------------------------------------------
@@ -786,11 +873,15 @@ jtable(t3, file = walk_file4, overwrite = TRUE, print = FALSE, open = TRUE)
 # adjusted R2, F with its df, delta R2 and its F test, N -- and the
 # reference category named in the note instead of after the label. A
 # style file sets the same keys for every table it makes (Section 6).
-jtable(list(m1, m2, m3, m4), columns.last = "beta.gelman",
-       fit.rows = c("r2", "adj.r2", "f", "delta.r2", "f.change", "n"),
-       reference = "note")
+print(jtable(list(m1, m2, m3, m4), columns.last = "beta.gelman",
+             fit.rows = c("r2", "adj.r2", "f", "delta.r2", "f.change", "n"),
+             reference = "note"))
 
 # Expected:
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#     4 models side by side, on a landscape page, its text at 9 pt.
+#   No file was written.
+#
 #   Table 1
 #   Regression Coefficients Predicting Wellbeing score (0-100)
 #   -------------------------------------------------------------------------------------------------------------------------------------------
@@ -813,9 +904,9 @@ jtable(list(m1, m2, m3, m4), columns.last = "beta.gelman",
 #   ΔF                                                      0.59 (4, 86)             46.84 (1, 85)              0.00 (1, 84)
 #   N                             92                       92                        92                        92
 #   -------------------------------------------------------------------------------------------------------------------------------------------
-#   Note. N = 92. Reference category for Region of residence: North. β* = Gelman's
-#   (2008) standardized coefficient: each continuous predictor divided by two
-#   standard deviations, each binary predictor kept at 0 and 1.
+#   Note. N = 92. Reference category for Region of residence: North. β* =
+#   Gelman's (2008) standardized coefficient: each continuous predictor divided
+#   by two standard deviations, each binary predictor kept at 0 and 1.
 
 # Things to look at:
 #   - beta* in Model 4 only, defined in the general note (Gelman's
@@ -842,8 +933,15 @@ g3 <- jlogistic(Volunteer ~ Age + Smoker + Region + Education, print = FALSE)
 g4 <- jlogistic(Volunteer ~ Age + Smoker + Region + Education + CommuteTime,
                 print = FALSE)
 t4 <- jtable(list(g1, g2, g3, g4))
+print(t4)
 
 # Expected:
+#   Table 1. Logistic Regression Coefficients Predicting Volunteered
+#   in past year
+#     4 models side by side, on a landscape page, its text at 11 pt, long labels
+#     on two lines.
+#   No file was written.
+#
 #   Table 1
 #   Logistic Regression Coefficients Predicting Volunteered in past year
 #   ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -896,8 +994,13 @@ jtable(t4, file = walk_file5, overwrite = TRUE, print = FALSE, open = TRUE)
 
 joptions(style.dir = .walk_styles, quiet = TRUE)
 t3j <- jtable(list(m1, m2, m3, m4), style = "myjournal")
+print(t3j)
 
 # Expected:
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#     4 models side by side, on a landscape page, its text at 9 pt.
+#   No file was written.
+#
 #   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
 #   ------------------------------------------------------------------------------------------------------------------------------------------------------
 #                                                    Model 1                   Model 2                   Model 3                       Model 4
@@ -919,8 +1022,15 @@ t3j <- jtable(list(m1, m2, m3, m4), style = "myjournal")
 #   at 0 and 1.
 
 t4j <- jtable(list(g1, g2, g3, g4), style = "myjournal")
+print(t4j)
 
 # Expected:
+#   Table 1. Logistic Regression Coefficients Predicting Volunteered
+#   in past year
+#     4 models side by side, on a landscape page, its text at 11 pt, long labels
+#     on two lines.
+#   No file was written.
+#
 #   Table 1. Logistic Regression Coefficients Predicting Volunteered in past year
 #   -------------------------------------------------------------------------------------------------------------------------------------------
 #                                                    Model 1                 Model 2                  Model 3                   Model 4
@@ -972,8 +1082,9 @@ joptions(style.dir = NULL, quiet = TRUE)
 # results of tdat. Results share a table when they share its columns
 # (ruling R54): three t tests of one grouping variable stack a row per
 # outcome, as do three ANOVAs and three crosstabs; a jcorr() result is a
-# table of its own. First the five previews, then the five tables in one
-# Word file, then the item table on its own. The section works on a copy
+# table of its own. First the five tables, each reported by jtable() and
+# shown by print(), then the five in one Word file, then the item table on
+# its own. The section works on a copy
 # of tdat, d7, so the settings Sections 4 to 6 leave on tdat (the
 # complete-cases filter, the registrations) do not reach it when the file
 # is run straight through.
@@ -981,7 +1092,12 @@ joptions(style.dir = NULL, quiet = TRUE)
 d7 <- tdat
 c1 <- jcorr(d7, WellbeingScore, Income, Age, CommuteTime, print = FALSE)
 t5 <- jtable(c1)
+print(t5)
 # Expected:
+#   Table 1. Descriptive Statistics and Correlations for Study Variables
+#     4 variables, on a portrait page, long labels on two lines.
+#   No file was written.
+#
 #   Table 1
 #   Descriptive Statistics and Correlations for Study Variables
 #   ----------------------------------------------------------------------------------
@@ -1009,7 +1125,12 @@ tt1 <- jt(WellbeingScore ~ Volunteer, d7, print = FALSE)
 tt2 <- jt(Age ~ Volunteer, d7, print = FALSE)
 tt3 <- jt(CommuteTime ~ Volunteer, d7, print = FALSE)
 t6 <- jtable(list(tt1, tt2, tt3))
+print(t6)
 # Expected:
+#   Table 1. Means, Standard Deviations, and t Tests by Volunteered in past year
+#     3 outcomes by Volunteer, on a portrait page, long labels on two lines.
+#   No file was written.
+#
 #   Table 1
 #   Means, Standard Deviations, and t Tests by Volunteered in past year
 #   -----------------------------------------------------------------------------
@@ -1049,7 +1170,13 @@ a1 <- jaov(WellbeingScore ~ Region, d7, print = FALSE)
 a2 <- jaov(Education ~ Region, d7, print = FALSE)
 a3 <- jaov(CommuteTime ~ Region, d7, print = FALSE)
 t7 <- jtable(list(a1, a2, a3))
+print(t7)
 # Expected:
+#   Table 1. Means, Standard Deviations, and One-Way Analyses of Variance by
+#   Region of residence
+#     3 outcomes by Region, on a landscape page.
+#   No file was written.
+#
 #   Table 1
 #   Means, Standard Deviations, and One-Way Analyses of Variance by Region of residence
 #   ------------------------------------------------------------------------------------------------------------
@@ -1061,8 +1188,8 @@ t7 <- jtable(list(a1, a2, a3))
 #   Highest education level        3.04   1.40   2.47   1.22   2.79   1.45   3.00   1.57  0.69  3, 93  .558  .02
 #   Daily commute time (minutes)  29.00  14.15  28.20   7.98  33.39  13.35  31.36  13.24  0.90  3, 99  .442  .03
 #   ------------------------------------------------------------------------------------------------------------
-#   Note. Group ns vary with missing data: North, 26 to 27; South, 19 to 20; East,
-#   29 to 31; West, 23 to 25.
+#   Note. Group ns vary with missing data: North, 26 to 27; South, 19 to 20;
+#   East, 29 to 31; West, 23 to 25.
 
 # Things to look at:
 #   - the same frame for four regions, each region's M and SD under its
@@ -1079,7 +1206,12 @@ x1 <- jcrosstab(Smoker ~ Volunteer, d7, print = FALSE)
 x2 <- jcrosstab(OwnsHome ~ Volunteer, d7, print = FALSE)
 x3 <- jcrosstab(Region ~ Volunteer, d7, print = FALSE)
 t8 <- jtable(list(x1, x2, x3))
+print(t8)
 # Expected:
+#   Table 1. Frequencies and Percentages by Volunteered in past year
+#     3 variables by Volunteer, on a portrait page.
+#   No file was written.
+#
 #   Table 1
 #   Frequencies and Percentages by Volunteered in past year
 #   ----------------------------------------------------------------------------
@@ -1126,7 +1258,12 @@ jsubset(d7, Age >= 30)
 r1 <- jalpha(d7, Environment1, Environment2R, Environment3, Environment4,
              Environment5, print = FALSE)
 t9 <- jtable(r1)
+print(t9)
 # Expected:
+#   Table 1. Item Statistics and Reliability
+#     1 scale of 5 items, on a portrait page, long labels on two lines.
+#   No file was written.
+#
 #   Table 1
 #   Item Statistics and Reliability
 #   -----------------------------------------------------------------------------------------------------
@@ -1139,8 +1276,8 @@ t9 <- jtable(r1)
 #   Pollution is a major cause of public health problems.     2.74  1.45           .44                .87
 #   -----------------------------------------------------------------------------------------------------
 #   Note. N = 72. Only cases with Age (years) ≥ 30 are included.
-#   Cronbach's α = .84. Item-total r is each item's correlation with the sum of the
-#   other items.
+#   Cronbach's α = .84. Item-total r is each item's correlation with the sum of
+#   the other items.
 
 # Things to look at:
 #   - the stub head "Item", each item named by its label (its wording);
@@ -1163,9 +1300,11 @@ jtable(list(t5, t6, t7, t8, t9), file = walk_file7, overwrite = TRUE,
 
 # Things to look at (in Word):
 #   - five tables, "Table 1" to "Table 5", two empty lines between them;
-#   - a LANDSCAPE page: the ANOVA table, four groups wide, cannot fit a
-#     portrait page even with its labels on two lines (ruling R55's test),
-#     and one file has one page orientation; the other four fit portrait;
+#   - the ANOVA table, Table 3, on a LANDSCAPE page of its own: four groups
+#     wide, it cannot fit a portrait page even with its labels on two lines
+#     (ruling R55's test). Since S406 each table gets the page it needs, so
+#     Tables 1 and 2 sit on a portrait page before it and Tables 4 and 5 on
+#     one after it (until S406 one landscape page held all five);
 #   - the heads with markup: "t(101)" with the t italic and "(101)"
 #     upright; "Item-total r" with the r italic; eta2, chi2 and alpha
 #     upright; n, M, SD, p, d, F, df and V italic;
@@ -1187,6 +1326,425 @@ jtable(t9, file = walk_file7b, overwrite = TRUE, print = FALSE, open = TRUE)
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 8 -- What jtable() prints, and one call makes one table (rulings R56 and R57) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Build 5 (S406). Ruling R57: jtable() prints a report in place of the
+# table -- each table's number and title, what it holds and the page it is
+# on (turned, its text stepped down, its long labels on two lines, as the
+# Word file has them), then where the file went -- and print() shows a kept
+# table in the console, as base R prints any object. Ruling R56: one call
+# makes one table, so results that cannot share a table stop, and the stop
+# gives the lines that make each table and write them to one file. Tables
+# written together come back as one object, each on the page it needs. The
+# section works on a copy of tdat, d8, so the settings Sections 4 to 6
+# leave on tdat do not reach it.
+
+d8 <- tdat
+s8 <- jdesc(d8, WellbeingScore, Income, Age, print = FALSE)
+k8 <- jlm(WellbeingScore ~ Age + Income, d8, print = FALSE)
+v8 <- jaov(CommuteTime ~ Region, d8, print = FALSE)
+
+# Render 1 -- a table with no file: the report, and that no file was written.
+jtable(s8)
+# Expected:
+#   Table 1. Descriptive Statistics
+#     3 variables, on a portrait page.
+#   No file was written.
+
+# Render 2 -- the same call at joutput("full"): a note after the report gives
+# the call with file = added, and the lines that keep the table and print it.
+joutput("full", quiet = TRUE)
+jtable(s8)
+joutput(NULL, quiet = TRUE)
+# Expected:
+#   Table 1. Descriptive Statistics
+#     3 variables, on a portrait page.
+#   No file was written.
+#   Note: to write the table to a Word file, add file = to the call:
+#     jtable(s8, file = "Table1.docx")
+#   To see the table here, keep it with <- and print it:
+#     t1 <- jtable(s8)
+#     print(t1)
+
+# Render 3 -- those lines: the table kept, then printed.
+t1 <- jtable(s8)
+print(t1)
+# Expected:
+#   Table 1. Descriptive Statistics
+#     3 variables, on a portrait page.
+#   No file was written.
+#
+#   Table 1
+#   Descriptive Statistics
+#   ------------------------------------------------------------------
+#   Variable                  n       M          SD       Min     Max
+#   ------------------------------------------------------------------
+#   Wellbeing score (0-100)  103      50.89      11.48      25      81
+#   Annual income (USD)       97  49,855.67  17,427.22  14,000  93,000
+#   Age (years)              103      40.65      11.62      18      71
+#   ------------------------------------------------------------------
+#   Note. N = 103.
+
+# Render 4 -- a file written, then written over: the report says where it
+# went, and the second time that it replaced the file.
+walk_file8 <- file.path(tempdir(), "Table8.docx")
+unlink(walk_file8)
+jtable(k8, file = walk_file8)
+jtable(k8, file = walk_file8, overwrite = TRUE)
+# Expected:
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#     1 model, on a portrait page.
+#   Table written to <tempdir>/Table8.docx
+#
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#     1 model, on a portrait page.
+#   Table written to <tempdir>/Table8.docx
+#   It replaced the file that was there.
+
+# Render 5 -- results that cannot share a table (ruling R56). The stop gives
+# a line for each table and one that writes them to one file, keeping the
+# call's file = and overwrite =. t1 is taken (Render 3 kept a table under
+# it), so the lines name the tables tab1 and tab2 rather than replace it.
+walk_file8b <- file.path(tempdir(), "Tables8.docx")
+unlink(walk_file8b)
+try(jtable(list(s8, k8), file = walk_file8b, overwrite = TRUE))
+# Expected:
+#   Error : jtable(): results of different kinds (jdesc() and jlm()) cannot
+#   share a table.
+#   Make each table in a call of its own, then give the tables together to write
+#   them to one file:
+#     tab1 <- jtable(s8)
+#     tab2 <- jtable(k8)
+#     jtable(list(tab1, tab2), file = walk_file8b, overwrite = TRUE)
+
+# Render 6 -- the stop's lines, run as they stand.
+tab1 <- jtable(s8)
+tab2 <- jtable(k8)
+jtable(list(tab1, tab2), file = walk_file8b, overwrite = TRUE)
+# Expected:
+#   Table 1. Descriptive Statistics
+#     3 variables, on a portrait page.
+#   No file was written.
+#
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#     1 model, on a portrait page.
+#   No file was written.
+#
+#   Table 1. Descriptive Statistics
+#     3 variables, on a portrait page.
+#   Table 2. Regression Coefficients Predicting Wellbeing score (0-100)
+#     1 model, on a portrait page.
+#   2 tables written to
+#   <tempdir>/Tables8.docx
+
+# Render 7 -- each table on the page it needs: the four-group ANOVA table
+# turns landscape; written between the other two, it gets a landscape page
+# of its own. The three come back as one object, opened in Word.
+tab3 <- jtable(v8)
+walk_file8c <- file.path(tempdir(), "Tables8_pages.docx")
+unlink(walk_file8c)
+doc8 <- jtable(list(tab1, tab3, tab2), file = walk_file8c, overwrite = TRUE,
+               open = TRUE)
+# Expected:
+#   Table 1. Means, Standard Deviations, and One-Way Analyses of Variance by
+#   Region of residence
+#     1 outcome by Region, on a landscape page.
+#   No file was written.
+#
+#   Table 1. Descriptive Statistics
+#     3 variables, on a portrait page.
+#   Table 2. Means, Standard Deviations, and One-Way Analyses of Variance by
+#   Region of residence
+#     1 outcome by Region, on a landscape page.
+#   Table 3. Regression Coefficients Predicting Wellbeing score (0-100)
+#     1 model, on a portrait page.
+#   3 tables written to
+#   <tempdir>/Tables8_pages.docx
+
+# Render 8 -- the object printed: every table, numbered as in the file.
+print(doc8)
+# Expected:
+#   Table 1
+#   Descriptive Statistics
+#   ------------------------------------------------------------------
+#   Variable                  n       M          SD       Min     Max
+#   ------------------------------------------------------------------
+#   Wellbeing score (0-100)  103      50.89      11.48      25      81
+#   Annual income (USD)       97  49,855.67  17,427.22  14,000  93,000
+#   Age (years)              103      40.65      11.62      18      71
+#   ------------------------------------------------------------------
+#   Note. N = 103.
+#
+#   Table 2
+#   Means, Standard Deviations, and One-Way Analyses of Variance by Region of residence
+#   --------------------------------------------------------------------------------------------------------
+#                                                  Region of residence
+#                                     North        South         East          West
+#   Variable                        M      SD     M     SD     M      SD     M      SD   F(3, 99)    p    η²
+#   --------------------------------------------------------------------------------------------------------
+#   Daily commute time (minutes)  29.00  14.15  28.20  7.98  33.39  13.35  31.36  13.24      0.90  .442  .03
+#   --------------------------------------------------------------------------------------------------------
+#   Note. n = 27 (North), 20 (South), 31 (East), and 25 (West).
+#
+#   Table 3
+#   Regression Coefficients Predicting Wellbeing score (0-100)
+#   -------------------------------------------------
+#   Predictor               b        SE     β     p
+#   -------------------------------------------------
+#   Constant             24.81    3.75          <.001
+#   Age (years)           0.18    0.08     .18   .030
+#   Annual income (USD)   0.0004  0.00006  .56  <.001
+#   R²                     .41
+#   -------------------------------------------------
+#   Note. N = 97.
+
+# Render 9 -- at joutput("full"), tables written together that could have
+# been one table: a note names them, with the line that makes them one.
+s8b <- jdesc(d8, CommuteTime, print = FALSE)
+tab4 <- jtable(s8b, print = FALSE)
+joutput("full", quiet = TRUE)
+jtable(list(tab1, tab4), file = walk_file8b, overwrite = TRUE)
+joutput(NULL, quiet = TRUE)
+# Expected:
+#   Table 1. Descriptive Statistics
+#     3 variables, on a portrait page.
+#   Table 2. Descriptive Statistics
+#     1 variable, on a portrait page.
+#   2 tables written to
+#   <tempdir>/Tables8.docx
+#   It replaced the file that was there.
+#   Note: Tables 1 and 2 are descriptives tables and could be one table:
+#     jtable(list(s8, s8b))
+
+# Render 10 -- what else keeps results apart, each in its own words: t tests
+# of different grouping variables, ANOVAs of different groups, crosstabs of
+# different column variables, two jcorr() results. t1, tab1 and tab2 are
+# all taken now, so the lines name the tables table1 and table2.
+tt8a <- jt(Income ~ Volunteer, d8, print = FALSE)
+tt8b <- jt(Age ~ Smoker, d8, print = FALSE)
+try(jtable(list(tt8a, tt8b)))
+v8b <- jaov(CommuteTime ~ Region, d8, subset = Region != 4, print = FALSE)
+try(jtable(list(v8, v8b)))
+x8a <- jcrosstab(Smoker ~ Volunteer, d8, print = FALSE)
+x8b <- jcrosstab(Smoker ~ Region, d8, print = FALSE)
+try(jtable(list(x8a, x8b)))
+c8a <- jcorr(d8, Age, Income, print = FALSE)
+c8b <- jcorr(d8, Age, WellbeingScore, print = FALSE)
+try(jtable(list(c8a, c8b)))
+# Expected:
+#   Error : jtable(): jt() results of different grouping variables
+#   (Volunteer and Smoker) cannot share a table.
+#   Make each table in a call of its own, then give the tables together to write
+#   them to one file:
+#     table1 <- jtable(tt8a)
+#     table2 <- jtable(tt8b)
+#     jtable(list(table1, table2), file = "Tables.docx")
+#   Error : jtable(): the jaov() results compare different groups of Region
+#   (North, South, East, and West; North, South, and East), so they cannot
+#   share a table.
+#   Make each table in a call of its own, then give the tables together to write
+#   them to one file:
+#     table1 <- jtable(v8)
+#     table2 <- jtable(v8b)
+#     jtable(list(table1, table2), file = "Tables.docx")
+#   Error : jtable(): jcrosstab() results with different column variables
+#   (Volunteer and Region) cannot share a table.
+#   Make each table in a call of its own, then give the tables together to write
+#   them to one file:
+#     table1 <- jtable(x8a)
+#     table2 <- jtable(x8b)
+#     jtable(list(table1, table2), file = "Tables.docx")
+#   Error : jtable(): each jcorr() result is a table of its own.
+#   To correlate more variables in one table, name them in one jcorr() call.
+#   Make each table in a call of its own, then give the tables together to write
+#   them to one file:
+#     table1 <- jtable(c8a)
+#     table2 <- jtable(c8b)
+#     jtable(list(table1, table2), file = "Tables.docx")
+
+# Render 11 -- a table type's setting that none of the tables takes stops on
+# its own; title = (or note =, headings =, markers =) names one table, so
+# the stop ends saying where it goes.
+f8 <- jfreq(d8, Smoker, print = FALSE)
+try(jtable(list(s8, f8), fit.rows = "r2"))
+try(jtable(list(s8, k8), title = "Study Variables"))
+# Expected:
+#   Error : jtable(): fit.rows = is a setting of a regression table and a
+#   logistic regression table, and none of these results makes one.
+#   Error : jtable(): results of different kinds (jdesc() and jlm()) cannot
+#   share a table.
+#   Make each table in a call of its own, then give the tables together to write
+#   them to one file:
+#     table1 <- jtable(s8)
+#     table2 <- jtable(k8)
+#     jtable(list(table1, table2), file = "Tables.docx")
+#   title = names one table: add it to that table's line.
+
+# Things to look at:
+#   - Render 1: two lines for the table -- "Table 1." and its title, then
+#     indented what it holds and its page -- and "No file was written."; no
+#     table in the console. Enough to say what the call made?
+#   - Render 2: the note at joutput("full") only -- the call with file =
+#     added, then t1 <- and print(t1). At the standard level nothing is
+#     said beyond the report (Render 1).
+#   - Render 3: print(t1) shows the preview the calls above showed until
+#     this build; typing t1 alone does the same.
+#   - Render 4: "Table written to" and the path, and the second time "It
+#     replaced the file that was there." on a line of its own.
+#   - Render 5: the stop names what keeps the results apart (no "yet": one
+#     call makes one table), then the three lines: tab1 and tab2, since t1
+#     is in the workspace; the writing line keeps file = and overwrite =.
+#   - Render 6: the lines run: two reports, then the document's -- both
+#     tables numbered, "2 tables written to".
+#   - Render 7: tab3's report says "on a landscape page"; the document's
+#     report gives each table its page. In Word: Table 1 on a portrait
+#     page, Table 2 (the ANOVA) on a landscape page of its own, Table 3 on
+#     a portrait page again.
+#   - Render 8: the three previews, "Table 1" to "Table 3".
+#   - Render 9: the note at the foot -- Tables 1 and 2 are descriptives
+#     tables of different variables, so they could be one table, and the
+#     line that makes it names the results, not the tables.
+#   - Render 10: each stop's first sentence says what keeps the results
+#     apart in that table type's terms -- the groups by their value
+#     labels, a set for each result -- and the corr stop says how to put
+#     more variables in one table; the lines below as in Render 5.
+#   - Render 11: the setting's stop names the table types that take it;
+#     the title stop ends on where title = goes.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 9 -- A short style file from jstyle(): only the settings that differ ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Build 5 (S406; your answers to item 6). jstyle(save.as =) given settings
+# writes a SHORT file -- the settings given, based on the style copied --
+# where a call with none writes the complete copy (Section 3). A general
+# setting goes by its name; a table type's goes in a list named for its
+# section, since several sections share a name (columns, fit.rows). The
+# file's head says what it holds and how to edit it, each setting carries
+# its note and a "# takes:" line, and ?jstyle_settings lists every
+# setting. The walk writes into a folder of the session's temporary
+# folder; a table is made in a copy of tdat, d9.
+
+.walk_styles9 <- file.path(tempdir(), "walk_styles9")
+unlink(.walk_styles9, recursive = TRUE); dir.create(.walk_styles9)
+d9 <- tdat
+
+# Render 1 -- two general settings and a regression setting: the short file.
+jstyle(save.as = file.path(.walk_styles9, "short"), size = 11,
+       header.fill = "lightblue", regression = list(fit.rows = c("r2", "n")))
+cat(readLines(file.path(.walk_styles9, "short.jstyle"), encoding = "UTF-8"),
+    sep = "\n")
+# Expected:
+#   Style written to
+#   <tempdir>/walk_styles9/short.jstyle
+#
+#   # short.jstyle: a jstats table style, based on apa.
+#   # It holds only the settings that differ; every other setting comes from
+#   # the style based.on names. ?jstyle_settings lists every setting and what
+#   # it takes. Change only the values after the = signs, or add a setting
+#   # from that list. jstyle("short") checks the file and names any value
+#   # it cannot use.
+#
+#   format     = 1
+#   written.by = jstats 0.9.274
+#   based.on   = apa
+#
+#   # the text size, in points
+#   # takes: a number from 6 to 72
+#   size = 11
+#   # a color filling the header cells, or none
+#   # takes: a color name such as lightblue, or six hex digits such as ADD8E6;
+#   #   or none
+#   header.fill = lightblue
+#
+#   [regression]
+#   # the fit rows under the predictors, in order: r2, adj.r2, f,
+#   # delta.r2 (nested models), f.change (its F test), n, or none
+#   # takes: one or more of r2, adj.r2, f, delta.r2, f.change, n, in order,
+#   #   separated by commas; or none
+#   fit.rows = r2, n
+
+# Render 2 -- a table made in it: the N row its fit.rows asks for.
+k9 <- jlm(WellbeingScore ~ Age + Income, d9, print = FALSE)
+t9s <- jtable(k9, style = file.path(.walk_styles9, "short.jstyle"))
+print(t9s)
+# Expected:
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#     1 model, on a portrait page.
+#   No file was written.
+#
+#   Table 1
+#   Regression Coefficients Predicting Wellbeing score (0-100)
+#   -------------------------------------------------
+#   Predictor               b        SE     β     p
+#   -------------------------------------------------
+#   Constant             24.81    3.75          <.001
+#   Age (years)           0.18    0.08     .18   .030
+#   Annual income (USD)   0.0004  0.00006  .56  <.001
+#   R²                     .41
+#   N                    97
+#   -------------------------------------------------
+#   Note. N = 97.
+
+# Render 3 -- a table type's setting given bare stops with the call
+# rewritten; settings without save.as = stop with it added.
+try(jstyle(save.as = file.path(.walk_styles9, "short2"),
+           fit.rows = c("r2", "n")))
+try(jstyle(size = 11))
+# Expected:
+#   Error : jstyle(): fit.rows = is a setting of a regression table and a
+#   logistic regression table, so it goes in a list named for its section,
+#   for example:
+#     jstyle(save.as = file.path(.walk_styles9, "short2"),
+#         regression = list(fit.rows = c("r2", "n")))
+#   Error : jstyle(): a style's settings are written to a new style file, so
+#   they need save.as =, for example:
+#     jstyle(size = 11, save.as = "mystyle")
+
+# Render 4 -- the other stops: a section given other than a list of named
+# settings, a name the section does not hold (near one: did you mean; far:
+# the section's settings), a setting given twice, a near-miss argument.
+try(jstyle(save.as = file.path(.walk_styles9, "s3"), regression = "r2"))
+try(jstyle(save.as = file.path(.walk_styles9, "s3"),
+           regression = list(fit.row = "r2")))
+try(jstyle(save.as = file.path(.walk_styles9, "s3"),
+           crosstab = list(zzz = "no")))
+try(jstyle(save.as = file.path(.walk_styles9, "s3"), size = 11, size = 12))
+try(jstyle(save.as = file.path(.walk_styles9, "s3"), sise = 11))
+# Expected:
+#   Error : jstyle(): regression = takes a list of the section's settings, each
+#   named, for example:
+#     regression = list(columns = c("b", "se", "beta", "p"))
+#   Error : jstyle(): fit.row is not a setting of [regression].
+#   Did you mean fit.rows?
+#   Error : jstyle(): zzz is not a setting of [crosstab].
+#   The settings of [crosstab] are title, columns, total, percent.base,
+#   test.columns, stub.label, n.label, percent.label, total.label, chisq.label,
+#   df.label, p.label, v.label, group.spanner, and variable.headings.
+#   A general setting may be set there too.
+#   Error : jstyle(): size = is given twice.
+#   Give each setting once.
+#   Error : jstyle(): 'sise' is not valid.
+#   Did you mean `size`?
+
+# Things to look at:
+#   - Render 1: the head -- based on apa, only the settings that differ,
+#     ?jstyle_settings for the rest, change the values or add a setting
+#     from that list; the stamps and based.on; then size and header.fill
+#     with their notes, and [regression] with fit.rows. lightblue as you
+#     typed it.
+#   - Render 2: the N row under R2, as the file asks; the table's text at
+#     11 points and its header filled light blue in Word (the preview cannot
+#     show either).
+#   - Render 3: fit.rows belongs to the regression and logistic sections,
+#     so the stop moves it into regression = list(...) and gives the call
+#     that runs; the second stop adds save.as =.
+#   - Render 4: each stop says what to give instead -- the list form with
+#     one of the section's own settings, the setting meant, the section's
+#     settings in full, each setting once, the argument meant.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # <Free-form notes from the most recent walk: anything that looked off,
@@ -1199,5 +1757,8 @@ jtable(t9, file = walk_file7b, overwrite = TRUE, print = FALSE, open = TRUE)
 # the file back repeatedly. Ending on executable code gives it somewhere to
 # stop. Keep this line at the foot of every walkthrough, below the Observations
 # block.
+
+# Hand back the message width Setup pinned (S406).
+options(.jst_options_message_width = .entry_message_width)
 
 cat("\n--- End of tables_walk.R ---\n")

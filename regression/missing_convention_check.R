@@ -10,6 +10,17 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S406 EDIT (v0.9.274, 2026-11-04): N92g RE-PINNED. Capability Slate T,
+#           build 5: the orientation (jai() and the startup text) gains
+#           the table layer's bullets, so its version is 3.9 where it was
+#           3.8. No check added: 926 checks still.
+#           LAST VERIFIED: v0.9.274, 2026-11-04 (S406) -- 926/926 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3605 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once with
+#           interactive() TRUE, and entered dirty (nothing added, removed
+#           or changed).
 # S403 EDIT (v0.9.272, 2026-11-03): N75 RE-PINNED. Capability Slate T,
 #           build 3, rider R50: the panel's style row reads "Publication
 #           style: apa" where it read "Style: apa" (.rows75; N75a-N75e read
@@ -10712,7 +10723,8 @@ rm(.spd91, .x91, .e91, .qd91, .qe91, .qf91, .qg91, .qh91, .hb91, .conv91, .calls
 #      real writers with interactive() and the question stubbed.
 #   F  SKILL.md's AI-assistant paragraph is set to the body's width without
 #      its prefix -- the same words, a first line no longer 24 characters
-#      short (the S207 item); the orientation version is 3.8.
+#      short (the S207 item); the orientation version is 3.9 (3.8 until
+#      S406, when the table layer's bullets joined).
 #   G  the .RData redirect in one voice, typed or bare, and a bare name
 #      finds x.RData on a case-sensitive file system (the S219 item's
 #      finding 6, and a defect on the same surface found building it).
@@ -10806,7 +10818,7 @@ check("N92f jai(\"machine\") declined: a new SKILL.md keeps the line about anoth
                 grepl("To write to a different folder", m1, fixed = TRUE) &&
                 identical(m2, "Nothing was written.\n") }))
 # --- F: SKILL.md's paragraph ---------------------------------------------------------
-check("N92g SKILL.md's AI-assistant paragraph: the standard paragraph's words without the prefix, set to the body's width (first line 60+, none over 76); the standard text keeps the prefix; version 3.8",
+check("N92g SKILL.md's AI-assistant paragraph: the standard paragraph's words without the prefix, set to the body's width (first line 60+, none over 76); the standard text keeps the prefix; version 3.9 (3.8 until S406)",
       local({ std <- .jst_orientation_body(); i <- grep("^Note for AI assistants: ", std)
               j <- min(which(std == "")[which(std == "") > i]) - 1L
               mac <- .jst_orientation_text("STAMP", "machine")
@@ -10820,7 +10832,7 @@ check("N92g SKILL.md's AI-assistant paragraph: the standard paragraph's words wi
                 !any(grepl("Note for AI assistants", mac, fixed = TRUE)) &&
                 any(grepl("^Note for AI assistants: jstats is newer",
                           .jst_orientation_text("STAMP", "standard"))) &&
-                identical(.jst_orientation_version, "3.8") }))
+                identical(.jst_orientation_version, "3.9") }))
 # --- G: the .RData redirect -----------------------------------------------------------
 save(.S92, file = "y92.RData"); save(.S92, file = "z92.rda")
 check("N92h the .RData redirect in one voice: typed (pinned whole) and bare -- the bare name finds y92.RData, as typed on a case-sensitive file system",

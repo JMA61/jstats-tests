@@ -50,7 +50,28 @@
 #           registrations giving the lines that set them again (Section 42),
 #           and jrelabel() keeping the labels of declared missing values
 #           (Section 43; ruling R37).
+#           Since S406 jsave() and jload() given a saved result or a table
+#           jtable() built: base R's saveRDS() and readRDS() offered as
+#           lines that run (Section 44).
 # ORIGIN:   S229
+# EDITED:   S406 (v0.9.274; Capability Slate T, build 5). SECTION 44 ADDED, on
+#           the PENDING line, its Expected blocks filled by running (fill.R):
+#           jsave() given a saved result, a built table and tables written
+#           together, jload() given an .rds file holding a result, each
+#           offering base R's saveRDS() and readRDS() (the (Session 128)
+#           item, decided at the build; Jeff: "yes to your recommendations
+#           and rider"); the wording is Claude's. SECTION 10 on the
+#           PENDING line: the orientation jai() prints is version 3.9 --
+#           the table layer's bullet, the first bullet's line on keeping a
+#           result for jtable(), and saveRDS() in the save line -- its
+#           heading line and notes updated; its Expected is prose, unchanged.
+# LAST VERIFIED: v0.9.274, 2026-11-04 (S406) -- Sections 10 and 44 WALKED on
+#           the WORKSTATION by Jeff through receive_all() ("walked, all
+#           okay"); PENDING back to none; R CMD check 0 errors, 0 warnings,
+#           0 notes; ALL BATTERIES GREEN (12 run, 3605 checks). Sandbox:
+#           NEEDS derived by running, 44 sections (2: 1; 7: 6; 8: 6; 9: 8;
+#           10: 9), 167 of 168 Expected blocks found (Section 9's prose
+#           block, as before).
 # EDITED:   S395 (v0.9.267; Fix Slate 30, the second build -- the S393 message
 #           pass's accepts, with rulings R40-R44 and the (S393) parenthetical
 #           lean, Jeff, S393 and S395). SECTIONS 5, 17, 19, 20, 34, 37 AND 41
@@ -1557,7 +1578,7 @@ invisible(jdeclare_missing(plain_df2, Rating, codes = c(Refused = -99),
 # Expected: NEITHER form -- just the cross-session jsave tip. The change has
 # already landed on the frame, so saving is the only next rung.
 
-cat("\n--- the jai orientation body (v3.8) ---\n")
+cat("\n--- the jai orientation body (v3.9) ---\n")
 jai()
 
 # Expected, in the bullet beginning "Analysis functions print their results":
@@ -1569,10 +1590,25 @@ jai()
 #   - modify = TRUE now comes FIRST and is marked as the taught form
 #   - the assignment form is still present (an assistant has to recognize it
 #     in your code) but is now clearly secondary
-#   - the version stamp reads v3.8 (S357: SKILL.md's AI-assistant paragraph
-#     set to the body's width, Section 20; the console and AGENTS.md text
-#     is unchanged). If it still says 3.7, the orientation bump did not
-#     land.
+#   - the version stamp reads v3.9 (S406: the table layer, below; v3.8 at
+#     S357 set SKILL.md's AI-assistant paragraph to the body's width,
+#     Section 20). If it still says 3.8, the orientation bump did not land.
+#
+# S406 (v3.9, Capability Slate T, build 5): read the body for the table
+# layer -- the wording is Claude's:
+#   - the bullet "Analysis functions print their results directly." now
+#     says to keep a result with <- (m1 <- jlm(...)) to make a publication
+#     table of it with jtable(), or to pass it to another package;
+#   - a new bullet, "Publication tables come from `jtable()` on kept
+#     results": the Word file, one call one table, several written to one
+#     file, jtable()'s report and print(t1), the styles (apa or a .jstyle
+#     file), jstyle()'s copy and check, ?jstyle_settings, and how to change
+#     a style -- values only, colors by name or six hex digits;
+#   - the save line names base R's saveRDS() and readRDS() for a kept
+#     result or table.
+# Things to look at: would an assistant reading the new bullet write a
+# working jtable() call, and leave a style file's settings and sections
+# alone when asked to change a style?
 #
 # S283 (v3.7): the retired-vocabulary finding this file carried since S268
 # is CLOSED. Read the body for these, all in the S283 rewrite:
@@ -5440,6 +5476,76 @@ rm(e43)
 #     declared (it had been removed).
 #   - Render 3: one note per set of labels kept, one blank line apart; in
 #     the one-variable form the note comes before the reminder.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 44 -- jsave() and jload() given a saved result or a built table (S406) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# ADDED S406 (v0.9.274; Capability Slate T, build 5 -- the (Session 128)
+# item, decided at the build; Jeff: "yes to your recommendations and
+# rider"). No jstats function saves a result: base R's saveRDS() keeps any
+# R object and readRDS() reads it back, as ?jtable shows. jsave() saves
+# data frames and jload() loads them; given a saved result or a table
+# jtable() built, jsave() said only that it was not a data frame and
+# jload() that the file did not contain one. Each now says what it was
+# given and offers base R's lines, which run as printed; a built table is
+# first offered its Word file. The wording is Claude's. The assertion side
+# is tables_check.R AO04.
+.wd44 <- getwd(); setwd(.walkdir)
+unlink(c("m44.rds", "t44.rds"))
+d44 <- data.frame(y = c(3, 5, 4, 6, 8, 7, 9, 8), x = 1:8)
+m44 <- jlm(y ~ x, d44, print = FALSE)
+t44 <- jtable(m44, print = FALSE)
+doc44 <- jtable(list(t44, t44), print = FALSE)
+
+# Render 1 -- jsave() given a result, a built table, then tables written
+# together.
+try(jsave(m44, "m44.rds"))
+try(jsave(t44, "t44.rds"))
+try(jsave(doc44, "doc44.rds"))
+# Expected:
+#   Error : jsave(): 'm44' is a jlm() result, not a data frame.
+#   To keep it for a later session, save it with base R:
+#     saveRDS(m44, "m44.rds")
+#   Then read it back with:
+#     m44 <- readRDS("m44.rds")
+#   Error : jsave(): 't44' is a table jtable() built, not a data frame.
+#   To write it to a Word file:
+#     jtable(t44, file = "t44.docx")
+#   To keep it for a later session, save it with base R:
+#     saveRDS(t44, "t44.rds")
+#   Then read it back with:
+#     t44 <- readRDS("t44.rds")
+#   Error : jsave(): 'doc44' is a set of tables jtable() put together, not a
+#   data frame.
+#   To write it to a Word file:
+#     jtable(doc44, file = "doc44.docx")
+#   To keep it for a later session, save it with base R:
+#     saveRDS(doc44, "doc44.rds")
+#   Then read it back with:
+#     doc44 <- readRDS("doc44.rds")
+
+# Render 2 -- the result saved with saveRDS(), as the stop says; jload()
+# given the file, and readRDS() reading it back.
+saveRDS(m44, "m44.rds")
+try(jload("m44.rds"))
+m44b <- readRDS("m44.rds")
+class(m44b)
+# Expected:
+#   Error : jload(): m44.rds holds a jlm() result, not a data frame.
+#   jload() loads data frames; read it back with base R:
+#     m44 <- readRDS("m44.rds")
+#   [1] "jst_lm"
+unlink(c("m44.rds", "t44.rds"))
+setwd(.wd44)
+
+# Things to look at:
+#   - Render 1: what was given, named -- "a jlm() result", "a table
+#     jtable() built", "a set of tables jtable() put together" -- then the
+#     base R lines that keep it: saveRDS() into the file the call named,
+#     readRDS() to read it back under the same name; a table first offered
+#     its Word file.
+#   - Render 2: jload() says what the file holds and gives the readRDS()
+#     line; class() shows the result read back as it was saved.
 
 # --- End marker --------------------------------------------------------------
 # A real statement, deliberately last: stepping through with Ctrl+Enter, RStudio

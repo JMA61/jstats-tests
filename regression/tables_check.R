@@ -52,11 +52,22 @@
 #           sentence in every table type; heads with markup; the five
 #           previews pinned whole; the Word file of the five (ruling R55's
 #           fit and landscape test, the cells set centered); the stops that
-#           named jtable() twice; jstyle()'s five new sections. Build 5 adds
-#           its sections here.
+#           named jtable() twice; jstyle()'s five new sections.
+#           (AK-AO) build 5 (S406, v0.9.274; rulings R56 and R57): one call
+#           makes one table -- the stops for results that cannot share a
+#           table, the lines they offer (run here as they stand), the names
+#           that never replace an object; the report jtable() prints in
+#           place of the table, its page checked against the Word file;
+#           tables written together as one object, printed numbered, spliced
+#           into a list, each on the page it needs; jstyle(save.as =) with
+#           settings writing a short file, read back, based on a path, and
+#           its stops; the "# takes:" notes; the exports, the
+#           ?jstyle_settings page, the orientation's tables bullet; jsave()
+#           and jload() given a result or a built table.
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.273, 2026-11-04 (S405) -- 223/223 on the WORKSTATION;
-#           the S405 EDIT block below holds the stamp. Prior: v0.9.272,
+# LAST VERIFIED: v0.9.274, 2026-11-04 (S406) -- 254/254 on the WORKSTATION;
+#           the S406 EDIT block below holds the stamp. Prior: v0.9.273,
+#           2026-11-04 (S405) -- 223/223 (the S405 EDIT block); v0.9.272,
 #           2026-11-03 (S403) -- 179/179 (the S403 EDIT block); v0.9.271,
 #           2026-10-29 (S401) -- 141/141 (the S401 EDIT block); v0.9.270,
 #           2026-10-29 (S400) -- 107/107 (the S400 EDIT block); v0.9.269,
@@ -87,6 +98,99 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S406 EDIT (v0.9.274, 2026-11-04): Capability Slate T, build 5. SECTIONS
+#           AK-AO ADDED, 31 checks (254 in all). (AK) ruling R56, one call
+#           makes one table: results of different kinds stop with no "yet";
+#           models of different outcomes, t tests of different grouping
+#           variables, ANOVAs comparing different groups, crosstabs of
+#           different column variables or categories, two jcorr() results --
+#           each in its own words; the lines given grouped, in the order of
+#           each table's first result, a named list's names on its line, a
+#           list in a variable offered by place, an expression kept first on
+#           a line of its own; style = on every line, a table type's setting
+#           on the lines that take it, file =, overwrite =, landscape = and
+#           print = on the writing line; a setting no table takes; title =,
+#           note = and headings = said to belong on a table's line; the
+#           lines run as they stand (AK07); each table built first, so a
+#           result that cannot make one stops in its own words; the names
+#           that never replace an object; the builders' internal guards.
+#           (AL) ruling R57, the report: a table with no file, at the
+#           standard level and at "full" (the note with the call that
+#           writes and the lines that keep and print); written, then
+#           replaced; built tables written together; the page named checked
+#           against the file (orientation from the section, the size from
+#           the runs) for four tables; the note on tables that could have
+#           been one (models of one outcome whatever predictors they share;
+#           not tables holding a variable twice, nor correlation tables;
+#           without the line for results from an expression; nothing at the
+#           standard level). (AM) tables written together: one object
+#           (class jst_tables), printed numbered; written again; spliced
+#           into a list; each table on the page it needs, a landscape
+#           section of its own between portrait ones; landscape = in the
+#           writing call sets every page; a table's own landscape travels;
+#           tables of one orientation share a section; the writing call's
+#           landscape checked, any other setting refused. (AN) jstyle()
+#           with settings: the short file pinned whole; read back and used;
+#           based on a path; a general setting in a section's list; the
+#           stops (a section's setting given bare, the call rewritten;
+#           settings without save.as =; a section not a list of named
+#           settings; a name no section holds; twice; a near-miss argument;
+#           a value a setting does not take), none writing; the rewritten
+#           call run; a complete copy's "# takes:" notes. (AO) jtable() and
+#           jstyle() exported, print() for tables written together; the
+#           ?jstyle_settings page (ASCII, every setting); the orientation's
+#           tables bullet (version 3.9); jsave() and jload() given a result
+#           or a built table. RE-PINNED (ruling R57: jtable() prints a
+#           report, the table only through print()): J12 (ruling R56's stop,
+#           without "yet", with its lines; .tn gives the names), K01, K03,
+#           K04, K06, L01, L14, P08 and X01 (the report, or the table
+#           through print()), L17 (the tables written together returned as
+#           one object), O03 (the copy's head and its "# takes:" notes), P07,
+#           V11, AB05, AC05 and AE04 (ruling R56's stops in place of the
+#           build-4 ones), AH01 and AH06 (the ANOVA table on a landscape
+#           section of its own, the checksum). MUTATION MAP (S406; 49
+#           one-change mutants of tables.R, utils.R and io.R, each red; by
+#           the first check that reds): "yet" back J12; each result a table
+#           of its own J08 (the battery halts in Y's setup, 18 red before
+#           it); the tables in key order P07; a named list's names dropped
+#           AK02; a group by place without c() AK03; the expression's line
+#           dropped AK03; style = left off AK04; a section's setting on every
+#           line AK04; landscape = left off the writing line AK04; the call's
+#           file = lost AK04; the no-taker stop gone AK05; "it" and "them"
+#           swapped AK05; "grouping variables" as "groups" AC05; the dry
+#           build skipped AK08; the caller's frame unread AK09; the last
+#           fallback names AK09; the count's noun singular K03; "No file was
+#           written." dropped K03; print(t1) dropped from the note AL01;
+#           "replaced" on every write AL02; "N tables" as "Tables" L17; the
+#           orientation reversed K03; the size named at the style's own
+#           AL04; the labels clause reversed AL04; models held to the
+#           duplicate rule AL05; correlation tables hinted AL05; the hint at
+#           every level AL05; the tables returned as a plain list L17; every
+#           preview numbered 1 AM01; a document in a list not spliced AM02;
+#           no section break between orientations AH01; a break between
+#           every table L16; the writing call's landscape ignored AK07; the
+#           document's style read for every table's page AM04; landscape
+#           unchecked with built tables AM05; a general setting dropped from
+#           the short file AN01; based.on by name when given by path AN03; a
+#           color written as hex AN01; "for example" and ":" swapped AN04;
+#           the last section taking a value AN04; settings without save.as =
+#           accepted AN05; a setting twice accepted AN05; the takes notes at
+#           80 columns O03; the general section off the help page AO02;
+#           orientation 3.8 AO03; the skill description without jtable and
+#           jstyle AO03; jsave()'s branch gone AO04; jload()'s branch gone
+#           AO04; a table's Word line dropped AO04.
+#           LAST VERIFIED: v0.9.274, 2026-11-04 (S406) -- 254/254 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3605 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path (which found three
+#           checks that wanted "written to" and the path on one line), once
+#           with interactive() TRUE (no question asked), and entered dirty
+#           plain and under the handlers, t1, tab1 and results among the
+#           dirt (nothing added, removed or changed); and a one-go
+#           receive_all() in the sandbox with the dev tools as the
+#           workstation has them (the S400 rule: the build registers
+#           print.jst_tables).
 # S405 EDIT (v0.9.273, 2026-11-03): Capability Slate T, build 4. SECTIONS
 #           AA-AJ ADDED, 44 checks (223 in all). (AA) the general changes:
 #           the five new sections in the apa list and the spec, filter.note
@@ -1273,18 +1377,24 @@ check("J11 an item with no name stops with the example; a value that is not a li
 
 # S405: every result class has its table, so the default method's stop is
 # reached only by an object of some other class (called here directly).
+# S406: the names of the tables a split stop offers lines for -- t1, t2,
+# ... unless the workspace already holds one (a dirty entry), then tab1, ...
+.tn <- .jst_table_line_names(5L, globalenv())
 .j12 <- res(.jst_table_build.default(structure(list(), class = "jst_other"), .jst_style_apa))
 .j12b <- res(jtable(tcm, print = FALSE))
 .j12c <- res(jtable(list(.j0, .a1), print = FALSE))
 .j12d <- res(jtable(list(), print = FALSE))
-check("J12 an object of no result class stops at the builders' default, naming every function a table is made from (S405: every class has its table; the S403 wording, the name once); a data frame is not a result; results of two kinds in one list stop; an empty list stops",
+check("J12 an object of no result class stops at the builders' default, naming every function a table is made from (S405: every class has its table; the S403 wording, the name once); a data frame is not a result; results of two kinds in one list stop -- since S406 (ruling R56) without \"yet\", with the lines that make each table and write them to one file, the call's print = kept; an empty list stops",
       is.null(.j12$val) &&
         grepl("jtable(): no table is made from this kind of result yet.\nTables are made from jdesc(), jfreq(), jcorr(), jt(), jaov(), jcrosstab(),\njalpha(), jlm(), and jlogistic() results.", .j12$txt, fixed = TRUE) &&
         is.null(.j12b$val) &&
         grepl("jtable(): a table is made from a saved result -- what an analysis", .j12b$txt, fixed = TRUE) &&
         grepl("  d1 <- jdesc(community, Age, Income)", .j12b$txt, fixed = TRUE) &&
         is.null(.j12c$val) &&
-        grepl("jtable(): results of different kinds (jdesc() and jfreq()) cannot\nshare a table yet.\nGive the results of one kind at a time.", .j12c$txt, fixed = TRUE) &&
+        grepl(paste0("jtable(): results of different kinds (jdesc() and jfreq()) cannot\nshare a table.\n", "Make each table in a call of its own, then give the tables together to write\nthem to one file:\n",
+                     "  ", .tn[1], " <- jtable(.j0)\n  ", .tn[2], " <- jtable(.a1)\n",
+                     "  jtable(list(", .tn[1], ", ", .tn[2], "), file = \"Tables.docx\", print = FALSE)"),
+              .j12c$txt, fixed = TRUE) &&
         is.null(.j12d$val) && grepl("the list given to jtable() is empty.", .j12d$txt, fixed = TRUE))
 
 .j13 <- res(jtable(.d1, print = FALSE))
@@ -1335,15 +1445,18 @@ check("J15 a nested analysis call, jtable(jdesc(...)), runs with its output disc
 # =============================================================================
 cat("\n--- K. The preview ---\n")
 
-.k1 <- res(jtable(.j0,
-                  headings = list("Dependent variable"    = WellbeingScore,
-                                  "Independent variables" = c(Income, Age),
-                                  "Control variable"      = CommuteTime),
-                  markers  = list("Mean-centered" = c(Income, Age)),
-                  title    = "Descriptive Statistics for Study Variables",
-                  note     = "Wellbeing is scored from 0 to 100."))
+# S406 (ruling R57): jtable() reports what it made, and print() on the
+# table shows the replica -- .k1 is the replica, .k1r the report.
+.k1r <- res(jtable(.j0,
+                   headings = list("Dependent variable"    = WellbeingScore,
+                                   "Independent variables" = c(Income, Age),
+                                   "Control variable"      = CommuteTime),
+                   markers  = list("Mean-centered" = c(Income, Age)),
+                   title    = "Descriptive Statistics for Study Variables",
+                   note     = "Wellbeing is scored from 0 to 100."))
+.k1 <- res(print(.k1r$val))
 .k1l <- strsplit(.k1$txt, "\n", fixed = TRUE)[[1]]
-check("K01 the preview, pinned whole: the two caption lines, the rules, the header, the headings and the indented rows, the notes, one blank line at the end",
+check("K01 the preview -- print() on the table, since jtable() reports (ruling R57, S406) -- pinned whole: the two caption lines, the rules, the header, the headings and the indented rows, the notes, one blank line at the end",
       endsWith(.k1$txt, "Mean-centered.\n") && identical(.k1l, c(
         "Table 1",
         "Descriptive Statistics for Study Variables",
@@ -1368,8 +1481,11 @@ check("K02 the numbers align on the decimal point: the M column's points sit in 
         identical(nchar(.k1l[3]), nchar(.k1l[5])) && identical(nchar(.k1l[3]), nchar(.k1l[13])))
 
 .k3 <- res(print(.j2))
-check("K03 print() on the table reprints the preview, the same text",
-      identical(.k3$txt, .k1$txt))
+check("K03 jtable() prints its report, not the table (ruling R57, S406): the number and title, what the table holds and its page, that no file was written; print() on a table built the same way shows the same replica",
+      identical(.k1r$txt, paste0("Table 1. Descriptive Statistics for Study Variables\n",
+                                 "  4 variables under 3 headings, on a portrait page.\n",
+                                 "No file was written.\n")) &&
+        identical(.k3$txt, .k1$txt))
 
 .k4a <- res(jtable(.j0, print = FALSE))
 invisible(utils::capture.output(suppressMessages(joutput("silent"))))
@@ -1377,10 +1493,12 @@ invisible(utils::capture.output(suppressMessages(joutput("silent"))))
 .k4c <- res(jtable(.j0, print = TRUE))
 invisible(utils::capture.output(suppressMessages(joutput(NULL))))
 options(.jst_options_message_width = .pin_width)
-check("K04 print = FALSE prints nothing; under joutput(\"silent\") the default prints nothing and print = TRUE prints; the table is returned either way",
+check("K04 print = FALSE prints nothing; under joutput(\"silent\") the default prints nothing and print = TRUE prints the report (S406, ruling R57); the table is returned either way",
       identical(.k4a$txt, "") && inherits(.k4a$val, "jst_table") &&
         identical(.k4b$txt, "") && inherits(.k4b$val, "jst_table") &&
-        grepl("^Table 1\nDescriptive Statistics\n", .k4c$txt))
+        identical(.k4c$txt, paste0("Table 1. Descriptive Statistics\n",
+                                   "  4 variables, on a portrait page.\n",
+                                   "No file was written.\n")))
 
 .k5 <- res(jtable(.j0, note = "Centered at the *mean*."))$val
 .k5l <- .jst_table_note_lines(.k5, .jst_style_apa, plain = TRUE)
@@ -1397,7 +1515,7 @@ check("K05 the note markup: *italic* and ^superscript^ are kept for the Word wri
 # under the centered head, the head's spare space on the left.
 .k6 <- local({
   w <- data.frame(x = 1:9); attr(w$x, "label") <- "x"
-  res(jtable(res(jdesc(w, x))$val))
+  res(print(jtable(res(jdesc(w, x))$val, print = FALSE)))
 })
 .k6l <- strsplit(.k6$txt, "\n", fixed = TRUE)[[1]]
 check("K06 a number column narrower than its head: the values right-aligned under the centered head",
@@ -1426,12 +1544,14 @@ invisible(utils::unzip(.lf, exdir = .lx))
                          encoding = "UTF-8"), collapse = "\n")
 .lsty <- paste(readLines(file.path(.lx, "word", "styles.xml"), warn = FALSE,
                          encoding = "UTF-8"), collapse = "\n")
-check("L01 file = writes a .docx: a zip of the five parts, the content types first; the written line follows the preview",
+check("L01 file = writes a .docx: a zip of the five parts, the content types first; the written line follows the report (S406, ruling R57)",
       file.exists(.lf) &&
         identical(.lz$Name, c("[Content_Types].xml", "_rels/.rels",
                               "word/_rels/document.xml.rels", "word/document.xml",
                               "word/styles.xml")) &&
-        grepl("^a Mean-centered.\n\nTable written to", .l1$txt, fixed = TRUE) &&
+        startsWith(.l1$txt, paste0("Table 1. Descriptive Statistics for Study Variables\n",
+                                   "  4 variables under 3 headings, on a portrait page.\n",
+                                   "Table written to")) &&
         grepl(paste0("Table written to ", .jst_norm_path(.lf)),
               gsub("\\s+", " ", .l1$txt), fixed = TRUE))
 
@@ -1582,8 +1702,8 @@ invisible(utils::unzip(file.path(.td, "neg.docx"), exdir = .lnx))
 check("L14 a negative value: the minus sign (U+2212) in the file's cells, a hyphen in the preview; Min and Max keep the data's two places",
       grepl(paste0("<w:t xml:space=\"preserve\">", "\u2212", "2.88</w:t>"), .lnd, fixed = TRUE) &&
         grepl(paste0("<w:t xml:space=\"preserve\">", "\u2212", "4.75</w:t>"), .lnd, fixed = TRUE) &&
-        !grepl("\u2212", .lnt$txt, fixed = TRUE) &&
-        grepl("Change    4  -2.88  1.56  -4.75  -1.25", .lnt$txt, fixed = TRUE))
+        !grepl("\u2212", res(print(.lnt$val))$txt, fixed = TRUE) &&
+        grepl("Change    4  -2.88  1.56  -4.75  -1.25", res(print(.lnt$val))$txt, fixed = TRUE))
 
 # The overwrite gate, where the session cannot ask.
 .lo <- res(.jst_table_overwrite_gate(.lf, overwrite = FALSE, ask = FALSE))
@@ -1625,13 +1745,15 @@ invisible(utils::unzip(file.path(.td, "built2.docx"), exdir = .lb2x))
                          encoding = "UTF-8"), collapse = "\n")
 .lb3 <- res(jtable(list(.j2, .j0), print = FALSE))
 .lb4 <- res(jtable(.j2, title = "New", print = FALSE))
-check("L17 a built table given to jtable() is previewed and written as it is, the same file; a list of two is previewed as Tables 1 and 2 and written to one file; a table beside a result, or with a title, stops",
+check("L17 a built table given to jtable() is reported and written as it is, the same file; a list of two is reported as Tables 1 and 2, written to one file and returned together as one object (S406); a table beside a result, or with a title, stops",
       identical(sub("Table written to.*$", "", .lb$txt),
                 sub("Table written to.*$", "", .l1$txt)) && inherits(.lb$val, "jst_table") &&
         identical(unname(tools::md5sum(file.path(.lbx, "word", "document.xml"))),
                   unname(tools::md5sum(file.path(.lx, "word", "document.xml")))) &&
-        grepl("^Table 1\n", .lb2$txt) && grepl("\nTable 2\nDescriptive Statistics\n", .lb2$txt) &&
-        grepl("\nTables written to", .lb2$txt) && length(.lb2$val) == 2L &&
+        grepl("^Table 1. Descriptive Statistics for Study Variables\n", .lb2$txt) &&
+        grepl("\nTable 2. Descriptive Statistics\n", .lb2$txt) &&
+        grepl("\n2 tables written to", .lb2$txt) && length(.lb2$val) == 2L &&
+        inherits(.lb2$val, "jst_tables") &&
         .ltag(.lb2d, "w:tbl")[["open"]] == 2L &&
         is.null(.lb3$val) &&
         grepl("jtable(): built tables and saved results cannot be given\nin one call.\nBuild each result into a table first, then give the tables together.", .lb3$txt, fixed = TRUE) &&
@@ -1954,15 +2076,20 @@ check("O02 jstyle(name) prints every setting in the style file's own form, the g
 .o3s <- .jst_style_resolve("copyapa")
 .o3same <- all(unlist(lapply(names(.jst_style_apa), function(p) vapply(names(.jst_style_spec[[p]]), function(k)
   identical(.jst_style_key(.o3s, p, k), .jst_style_key(.jst_style_resolve("apa"), p, k)), logical(1)))))
-check("O03 jstyle(\"apa\", save.as = ) writes <name>.jstyle into the style folder: its header, the format and written.by stamps and based.on = apa, then every setting of every part after a note on what it does; read back, every setting is apa's; the written line names the file",
+check("O03 jstyle(\"apa\", save.as = ) writes <name>.jstyle into the style folder: its header (since S406 saying to change values only, for a person or an AI assistant), the format and written.by stamps and based.on = apa, then every setting of every part after a note on what it does and one on what it takes (S406); read back, every setting is apa's; the written line names the file",
       file.exists(.o3f) &&
         identical(.o3t[1], "# copyapa.jstyle: a jstats table style.") &&
-        identical(.o3t[3], "# jstyle(\"copyapa\") prints the settings jstats reads from it.") &&
+        identical(.o3t[2], "# Every setting jstats has is below, each after a note saying what it") &&
+        identical(.o3t[5], "# with # is a note. jstyle(\"copyapa\") checks the file and names any value") &&
         "format     = 1" %in% .o3t &&
         paste0("written.by = jstats ", .jst_jstats_version()) %in% .o3t &&
         "based.on   = apa" %in% .o3t &&
         all(c("[descriptives]", "[frequencies]") %in% .o3t) &&
-        identical(.o3t[match("font = Times New Roman", .o3t) - 1L], "# the typeface of every cell, caption and note") &&
+        identical(.o3t[match("font = Times New Roman", .o3t) - 2:1],
+                  c("# the typeface of every cell, caption and note", "# takes: any text")) &&
+        identical(.o3t[match("header.fill = none", .o3t) - 2:1],
+                  c("# takes: a color name such as lightblue, or six hex digits such as ADD8E6;",
+                    "#   or none")) &&
         "stars = .05, .01, .001" %in% .o3t && "percent.label = %" %in% .o3t &&
         sum(grepl("^[a-z][a-z0-9.]* = ", .o3t) & !grepl("^(format|written.by|based.on) ", .o3t)) ==
           sum(lengths(lapply(.jst_style_spec, names))) &&
@@ -2106,7 +2233,7 @@ check("P05 several jfreq() results stack into one table; a named list's names, o
 .p7c <- res(jtable(list(.nf1, .j0), print = FALSE))
 check("P06 the N note: variables from one pool of cases open the note on N; results from different pools give no N (since S405 the filter sentence names the result a subset = filtered)",
       identical(.p6$notes$general, "Only cases with Age (years) > 40 are included for Volunteered in past year."))
-check("P07 a variable in two results stops (a table lists each once, in both table types); a jfreq() result made before the fields existed names its version; results of two kinds in one list stop",
+check("P07 a variable in two results stops (a table lists each once, in both table types); a jfreq() result made before the fields existed names its version; results of two kinds in one list stop, with the lines that make each table (S406, ruling R56)",
       is.null(.p7a$val) &&
         grepl("jtable(): Education is in more than one of the results.\nA table lists each variable once.", .p7a$txt, fixed = TRUE) &&
         grepl("jtable(): Age is in more than one of the results.",
@@ -2114,11 +2241,14 @@ check("P07 a variable in two results stops (a table lists each once, in both tab
                          print = FALSE))$txt, fixed = TRUE) &&
         is.null(.p7b$val) &&
         grepl("jtable(): this jfreq() result was made by an earlier version of\njstats, before the fields a table needs were stored.", .p7b$txt, fixed = TRUE) &&
-        is.null(.p7c$val) && grepl("jtable(): results of different kinds (jfreq() and jdesc()) cannot\nshare a table yet.\nGive the results of one kind at a time.", .p7c$txt, fixed = TRUE))
+        is.null(.p7c$val) &&
+        grepl(paste0("jtable(): results of different kinds (jfreq() and jdesc()) cannot\nshare a table.\n", "Make each table in a call of its own, then give the tables together to write\nthem to one file:\n",
+                     "  ", .tn[1], " <- jtable(.nf1)\n  ", .tn[2], " <- jtable(.j0)\n",
+                     "  jtable(list(", .tn[1], ", ", .tn[2], "), file = \"Tables.docx\", print = FALSE)"), .p7c$txt, fixed = TRUE))
 
-.p8 <- res(jtable(.nf1))
+.p8 <- res(print(jtable(.nf1, print = FALSE)))
 .p8l <- strsplit(.p8$txt, "\n", fixed = TRUE)[[1]]
-check("P08 the preview, pinned whole: the caption, the rules, each variable's label and its categories indented, the numbers on the decimal point, the note",
+check("P08 the preview (print() on the table, S406), pinned whole: the caption, the rules, each variable's label and its categories indented, the numbers on the decimal point, the note",
       identical(.p8l, c(
         "Table 1", "Frequency Distributions",
         "---------------------------------",
@@ -2676,12 +2806,16 @@ invisible(res(jcomplete(tcm, WellbeingScore, Volunteer, Age, Smoker, Region, Edu
                     quote(jtable(.vm4, landscape = "sideways", print = FALSE)),
                     quote(jtable(.vm4, missing.rows = "none", print = FALSE))),
                function(e) res(eval(e)))
-check("V11 the stops: headings = on a model; markers = naming no predictor, the predictors listed; jlm() and jlogistic() results in one list; two outcomes; a result with no stamp, and one made before dummy_groups carried codes, each naming its version; a wrong fit.rows value, none among the choices; none typed bare, the pointer; landscape typed bare, and a wrong value; another type's setting",
+check("V11 the stops: headings = on a model; markers = naming no predictor, the predictors listed; jlm() and jlogistic() results in one list, and two outcomes (since S406 with the lines that make each table, ruling R56); a result with no stamp, and one made before dummy_groups carried codes, each naming its version; a wrong fit.rows value, none among the choices; none typed bare, the pointer; landscape typed bare, and a wrong value; another type's setting",
       all(vapply(.v11, function(r) is.null(r$val), logical(1))) &&
         grepl("jtable(): headings = puts the variables of a descriptives or\nfrequency table under role headings; a regression table lists the predictors\nin the models' order.", .v11[[1]]$txt, fixed = TRUE) &&
         grepl("jtable(): markers = names Incom, which is not among the variables of\nthe result.\nThe result holds Age, Smoker, Region, Education, and CommuteTime.", .v11[[2]]$txt, fixed = TRUE) &&
-        grepl("jtable(): results of different kinds (jlm() and jlogistic()) cannot\nshare a table yet.\nGive the results of one kind at a time.", .v11[[3]]$txt, fixed = TRUE) &&
-        grepl("jtable(): models of different outcomes\n(WellbeingScore and Volunteer) cannot share a table yet.\nGive the models of one outcome at a time.", .v11[[4]]$txt, fixed = TRUE) &&
+        grepl(paste0("jtable(): results of different kinds (jlm() and jlogistic()) cannot\nshare a table.\n", "Make each table in a call of its own, then give the tables together to write\nthem to one file:\n",
+                     "  ", .tn[1], " <- jtable(.vm1)\n  ", .tn[2], " <- jtable(.vg1)\n",
+                     "  jtable(list(", .tn[1], ", ", .tn[2], "), file = \"Tables.docx\", print = FALSE)"), .v11[[3]]$txt, fixed = TRUE) &&
+        grepl(paste0("jtable(): models of different outcomes\n(WellbeingScore and Volunteer) cannot share a table.\n", "Make each table in a call of its own, then give the tables together to write\nthem to one file:\n",
+                     "  ", .tn[1], " <- jtable(.vm1)\n  ", .tn[2], " <- jtable(res(jlm(Volunteer ~ Age, tcm))$val)\n",
+                     "  jtable(list(", .tn[1], ", ", .tn[2], "), file = \"Tables.docx\", print = FALSE)"), .v11[[4]]$txt, fixed = TRUE) &&
         grepl("jtable(): this jlm() result was made by an earlier version of\njstats, before the fields a table needs were stored.\nRun the analysis again, then jtable() on the new result.", .v11[[5]]$txt, fixed = TRUE) &&
         grepl(paste0("jtable(): this jlm() result was made by jstats ", .jst_jstats_version(), ", before the\nfields a table needs were stored."), .v11[[6]]$txt, fixed = TRUE) &&
         grepl("jtable(): `fit.rows` must be columns of a regression table, each\nnamed once: \"r2\", \"adj.r2\", \"f\", \"delta.r2\", \"f.change\", or \"n\"; or \"none\".", .v11[[7]]$txt, fixed = TRUE) &&
@@ -2815,9 +2949,9 @@ check("W03 jtable() on a jlogistic() result takes the logistic section's setting
 # =============================================================================
 cat("\n--- X. The preview ---\n")
 
-.x1 <- res(jtable(list(.vm1, .vm2, .vm3, .vm4)))
+.x1 <- res(print(jtable(list(.vm1, .vm2, .vm3, .vm4), print = FALSE)))
 .x1l <- strsplit(.x1$txt, "\n", fixed = TRUE)[[1]]
-check("X01 the preview, pinned whole (the S402 sketch's Table 3): the caption, the model spanners centered over their columns, the heads, the Constant, the rows and the indented categories, every column on the point (a beta with no zero under a b with one, a p's floor hanging left), R2 under b, the note",
+check("X01 the preview (print() on the table, S406), pinned whole (the S402 sketch's Table 3): the caption, the model spanners centered over their columns, the heads, the Constant, the rows and the indented categories, every column on the point (a beta with no zero under a b with one, a p's floor hanging left), R2 under b, the note",
       identical(.x1l, c(
         "Table 1",
         "Regression Coefficients Predicting Wellbeing score (0-100)",
@@ -3209,9 +3343,12 @@ check("AB04 one N when every pair shares it; a Spearman table says so in its not
 .ab5a <- res(jtable(list(.ab, .ab), print = FALSE))
 .ab5b <- res(jtable(.ab, headings = list(A = Age), print = FALSE))
 .ab5c <- res(jtable(.ab, markers = list("Mean-centered" = Income), print = FALSE))$val
-check("AB05 each jcorr() result a table of its own (ruling R54): two stop; headings = stops; markers = marks a variable's row",
+check("AB05 each jcorr() result a table of its own (ruling R54): two stop, with the lines that make each table (S406, ruling R56); headings = stops; markers = marks a variable's row",
       is.null(.ab5a$val) &&
-        grepl("[error] jtable(): each jcorr() result is a table of its own, and one call\nmakes one table.\nGive one jcorr() result at a time; to correlate more variables, name them in\none jcorr() call.", .ab5a$txt, fixed = TRUE) &&
+        grepl(paste0("[error] jtable(): each jcorr() result is a table of its own.\n",
+                     "To correlate more variables in one table, name them in one jcorr() call.\n", "Make each table in a call of its own, then give the tables together to write\nthem to one file:\n",
+                     "  ", .tn[1], " <- jtable(.ab)\n  ", .tn[2], " <- jtable(.ab)\n",
+                     "  jtable(list(", .tn[1], ", ", .tn[2], "), file = \"Tables.docx\", print = FALSE)"), .ab5a$txt, fixed = TRUE) &&
         is.null(.ab5b$val) &&
         grepl("[error] jtable(): headings = puts the variables of a descriptives or\nfrequency table under role headings; a correlation table lists its variables\nin the result's order.", .ab5b$txt, fixed = TRUE) &&
         identical(.ab5c$rows[[2]]$marks, "a") &&
@@ -3310,10 +3447,14 @@ check("AC04 a paired test said in the note, d named as dz (test.note = no leaves
   head = res(jtable(.ac[[1]], headings = list(A = WellbeingScore), print = FALSE)),
   set  = res(jtable(.ac[[1]], total = "no", print = FALSE)),
   cols = res(jtable(.ac[[1]], columns = c("t", "f"), print = FALSE)))
-check("AC05 the stops: results of two grouping variables (ruling R54: until build 5), results of two kinds, an outcome twice, headings =, another table type's setting, a column the t-test table does not have",
+check("AC05 the stops: results of two grouping variables and results of two kinds (ruling R56, S406: one call makes one table; the stop gives the lines that make each), an outcome twice, headings =, another table type's setting, a column the t-test table does not have",
       all(vapply(.ac5, function(x) is.null(x$val), logical(1))) &&
-        grepl("[error] jtable(): jt() results of different grouping variables\n(Volunteer and Smoker) cannot share a table yet.\nGive the results of one grouping variable at a time.", .ac5$grp$txt, fixed = TRUE) &&
-        grepl("[error] jtable(): results of different kinds (jt() and jaov()) cannot share\na table yet.\nGive the results of one kind at a time.", .ac5$kind$txt, fixed = TRUE) &&
+        grepl(paste0("[error] jtable(): jt() results of different grouping variables\n(Volunteer and Smoker) cannot share a table.\n", "Make each table in a call of its own, then give the tables together to write\nthem to one file:\n",
+                     "  ", .tn[1], " <- jtable(.ac[[1]])\n  ", .tn[2], " <- jtable(res(jt(Income ~ Smoker, tcm))$val)\n",
+                     "  jtable(list(", .tn[1], ", ", .tn[2], "), file = \"Tables.docx\", print = FALSE)"), .ac5$grp$txt, fixed = TRUE) &&
+        grepl(paste0("[error] jtable(): results of different kinds (jt() and jaov()) cannot\nshare a table.\n", "Make each table in a call of its own, then give the tables together to write\nthem to one file:\n",
+                     "  ", .tn[1], " <- jtable(.ac[[1]])\n  ", .tn[2], " <- jtable(res(jaov(Age ~ Region, tcm))$val)\n",
+                     "  jtable(list(", .tn[1], ", ", .tn[2], "), file = \"Tables.docx\", print = FALSE)"), .ac5$kind$txt, fixed = TRUE) &&
         grepl("[error] jtable(): Age is in more than one of the results.\nA table lists each variable once.", .ac5$twice$txt, fixed = TRUE) &&
         grepl("[error] jtable(): headings = puts the variables of a descriptives or\nfrequency table under role headings; a t-test table lists its outcomes in\nthe order given.", .ac5$head$txt, fixed = TRUE) &&
         grepl("[error] jtable(): total = is a setting of a crosstab, and this table is a\nt-test table.", .ac5$set$txt, fixed = TRUE) &&
@@ -3470,10 +3611,16 @@ check("AE03 percent.base = row (each category's percentages within it, its Total
   col = res(jtable(list(.ae[[1]], res(jcrosstab(Smoker ~ OwnsHome, tcm))$val), print = FALSE)),
   cat = res(jtable(list(res(jcrosstab(Smoker ~ Region, tcm))$val,
                         res(jcrosstab(OwnsHome ~ Region, tcm, subset = Region != 4))$val), print = FALSE)))
-check("AE04 the stops: crosstabs of two column variables (ruling R54: until build 5), and of one column variable whose categories differ",
+check("AE04 the stops: crosstabs of two column variables, and of one column variable whose categories differ (ruling R56, S406: with the lines that make each table)",
       is.null(.ae4$col$val) && is.null(.ae4$cat$val) &&
-        grepl("[error] jtable(): jcrosstab() results with different column variables\n(Volunteer and OwnsHome) cannot share a table yet.\nGive the results of one column variable at a time.", .ae4$col$txt, fixed = TRUE) &&
-        grepl("[error] jtable(): the jcrosstab() results hold different categories of\nRegion (North, South, East, and West; North, South, and East).\nGive the results whose column variable has the same categories at a time.", .ae4$cat$txt, fixed = TRUE))
+        grepl(paste0("[error] jtable(): jcrosstab() results with different column variables\n(Volunteer and OwnsHome) cannot share a table.\n", "Make each table in a call of its own, then give the tables together to write\nthem to one file:\n",
+                     "  ", .tn[1], " <- jtable(.ae[[1]])\n  ", .tn[2], " <- jtable(res(jcrosstab(Smoker ~ OwnsHome, tcm))$val)\n",
+                     "  jtable(list(", .tn[1], ", ", .tn[2], "), file = \"Tables.docx\", print = FALSE)"), .ae4$col$txt, fixed = TRUE) &&
+        grepl(paste0("[error] jtable(): the jcrosstab() results hold different categories of\n",
+                     "Region (North, South, East, and West; North, South, and East), so they\n",
+                     "cannot share a table.\n", "Make each table in a call of its own, then give the tables together to write\nthem to one file:\n",
+                     "  ", .tn[1], " <- jtable(res(jcrosstab(Smoker ~ Region, tcm))$val)\n  ", .tn[2], " <- jtable(res(jcrosstab(OwnsHome ~ Region, tcm, subset = Region != 4))$val)\n",
+                     "  jtable(list(", .tn[1], ", ", .tn[2], "), file = \"Tables.docx\", print = FALSE)"), .ae4$cat$txt, fixed = TRUE))
 
 .ae5 <- res(local({
   r <- res(jcrosstab(Region ~ Education, tcm))$val
@@ -3678,7 +3825,7 @@ cat("\n--- AH. The Word file of the five tables ---\n")
   list(w = w, d = d, d4 = d4, f = f)
 })
 .ahpos <- function(d, titles) vapply(titles, function(t) regexpr(t, d, fixed = TRUE)[1], 1L)
-check("AH01 one file of the five tables: five tables in order, numbered 1 to 5 on Word's SEQ field, the titles with {group} filled; landscape because the four-group ANOVA table cannot fit portrait (ruling R55), every cell at 12 points; the other four alone fit portrait at 12 points",
+check("AH01 one file of the five tables: five tables in order, numbered 1 to 5 on Word's SEQ field, the titles with {group} filled; the four-group ANOVA table, which cannot fit portrait (ruling R55), on a landscape page of its own between portrait pages for the two tables before it and the two after (S406: each table gets the page it needs; until then one landscape page held all five), every cell at 12 points; the other four alone fit portrait at 12 points",
       file.exists(.ah1$f) && length(.ah1$w$val) == 5L &&
         lengths(regmatches(.ah1$d, gregexpr("<w:tbl>", .ah1$d, fixed = TRUE))) == 5L &&
         identical(regmatches(.ah1$d, gregexpr("(?<=<w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:rPr><w:b/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">)[0-9]+", .ah1$d, perl = TRUE))[[1]],
@@ -3691,7 +3838,9 @@ check("AH01 one file of the five tables: five tables in order, numbered 1 to 5 o
                                   "Item Statistics and Reliability"))
           all(pos > 0L) && !is.unsorted(pos)
         }) &&
-        .ahland(.ah1$d) && identical(.ahsz(.ah1$d), "24") &&
+        identical(grepl("landscape", regmatches(.ah1$d, gregexpr("<w:sectPr><w:pgSz[^/]*/>", .ah1$d))[[1]],
+                        fixed = TRUE), c(FALSE, TRUE, FALSE)) &&
+        identical(.ahsz(.ah1$d), "24") &&
         !.ahland(.ah1$d4) && identical(.ahsz(.ah1$d4), "24"))
 
 .ah2 <- res(local({
@@ -3757,8 +3906,9 @@ check("AH05 the font steps a point at a time to 8 points (from a size between po
         identical(.ah5$narrow$size, 8) && sum(.ah5$narrow$widths) <= 3000L &&
         identical(.ah5$narrow$note_size, 8))
 
+# Re-pinned S406: the ANOVA table on a landscape section of its own.
 check("AH06 document.xml of the five tables pinned by its checksum",
-      identical(unname(tools::md5sum(file.path(.aad, "x5", "word", "document.xml"))), "f0e53bd93bb644d96c2f05cc232b3a96"))
+      identical(unname(tools::md5sum(file.path(.aad, "x5", "word", "document.xml"))), "30201e232734bff94885abc7c3a57700"))
 
 .ah7 <- res(local({
   tb <- .aft
@@ -3871,7 +4021,597 @@ check("AJ02 a style file's [ttest] and [crosstab] sections in use: each group's 
         "tot.n" %in% .aj2$xc$columns$key &&
         identical(.aj2$f$notes$general, .aj2$fn))
 
-unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad), recursive = TRUE)
+# =============================================================================
+# AK. One call makes one table (ruling R56)
+# =============================================================================
+cat("\n--- AK. One call makes one table ---\n")
+
+# The results of build 5's sections, on the shipped community dataset (Region
+# still dummy-coded and Education numeric from section V; nothing filtered).
+.akd <- file.path(tempdir(), "tables_check_b5"); unlink(.akd, recursive = TRUE); dir.create(.akd)
+.akd1 <- res(jdesc(tcm, Age, Income))$val
+.akd2 <- res(jdesc(tcm, WellbeingScore))$val
+.akd3 <- res(jdesc(tcm, CommuteTime))$val
+.akm1 <- res(jlm(WellbeingScore ~ Age, tcm))$val
+.akm2 <- res(jlm(Income ~ Age, tcm))$val
+.akm3 <- res(jlm(WellbeingScore ~ Age + Income, tcm))$val
+.akf1 <- res(jfreq(tcm, Smoker))$val
+.akc1 <- res(jcorr(tcm, Age, Income))$val
+.akc2 <- res(jcorr(tcm, Age, WellbeingScore))$val
+.akt1 <- res(jt(Income ~ Volunteer, tcm))$val
+.akt2 <- res(jt(Age ~ Smoker, tcm))$val
+.aka1 <- res(jaov(WellbeingScore ~ Region, tcm))$val
+.aka2 <- res(jaov(WellbeingScore ~ Region, tcm, subset = Region != 4))$val
+.akx1 <- res(jcrosstab(Smoker ~ Volunteer, tcm))$val
+.akx2 <- res(jcrosstab(Smoker ~ Region, tcm))$val
+.akx3 <- res(jcrosstab(Smoker ~ Region, tcm, subset = Region != 4))$val
+# The names the offered lines give the tables: t1, t2, ... unless the
+# workspace already holds one (AK09 checks the choice itself), and the name
+# a line gives a list typed as an expression.
+.akn <- tryCatch(.jst_table_line_names(2L, globalenv()), error = function(e) c("t1", "t2"))
+.akb <- tryCatch(.jst_table_line_names(0L, globalenv(), stem = c("res", "results", "res_list")),
+                 error = function(e) "res")
+# The stop's middle and its writing line, as every R56 stop gives them.
+.akmid <- paste0("Make each table in a call of its own, then give the tables together to write\n",
+                 "them to one file:\n")
+.akw <- paste0("  jtable(list(", .akn[1], ", ", .akn[2], "), file = \"Tables.docx\")")
+
+.ak1 <- res(jtable(list(.akd1, .akm1)))
+check("AK01 results of different kinds stop (ruling R56: one call makes one table), naming the functions, with no \"yet\"; the stop gives the line that makes each table and the line that writes them to one file; nothing is returned",
+      identical(.ak1$txt, paste0("[error] jtable(): results of different kinds (jdesc() and jlm()) cannot\n",
+                                 "share a table.\n", .akmid,
+                                 "  ", .akn[1], " <- jtable(.akd1)\n",
+                                 "  ", .akn[2], " <- jtable(.akm1)\n", .akw)) &&
+        is.null(.ak1$val) && !grepl("yet", .ak1$txt, fixed = TRUE))
+
+.ak2 <- res(jtable(list(.akm1, .akm2, .akm3)))
+.ak3 <- res(jtable(list(A = .akm1, B = .akm3, .akm2)))
+check("AK02 models of different outcomes stop; the results that can share a table are grouped on one line, the tables in the order of each one's first result; a named list's names ride on the line",
+      identical(.ak2$txt, paste0("[error] jtable(): models of different outcomes (WellbeingScore and Income)\n",
+                                 "cannot share a table.\n", .akmid,
+                                 "  ", .akn[1], " <- jtable(list(.akm1, .akm3))\n",
+                                 "  ", .akn[2], " <- jtable(.akm2)\n", .akw)) &&
+        grepl(paste0("\n  ", .akn[1], " <- jtable(list(\"A\" = .akm1, \"B\" = .akm3))\n  ",
+                     .akn[2], " <- jtable(.akm2)\n"), .ak3$txt, fixed = TRUE))
+
+.akres <- list(.akm1, .akm2, .akm3)
+.ak4 <- res(jtable(.akres))
+.ak4e <- res(jtable(c(list(.akd1), list(.akm1))))
+check("AK03 a list held in a variable is offered by place (a single result by [[ ]], a group by [c( )]); a list typed as an expression is kept first on a line of its own, under a name the workspace does not hold",
+      grepl(paste0("\n  ", .akn[1], " <- jtable(.akres[c(1, 3)])\n  ",
+                   .akn[2], " <- jtable(.akres[[2]])\n", .akw), .ak4$txt, fixed = TRUE) &&
+        endsWith(.ak4e$txt, paste0("them to one file:\n",
+                                   "  ", .akb, " <- c(list(.akd1), list(.akm1))\n",
+                                   "  ", .akn[1], " <- jtable(", .akb, "[[1]])\n",
+                                   "  ", .akn[2], " <- jtable(", .akb, "[[2]])\n", .akw)))
+
+.ak5f <- file.path(.akd, "Out.docx")
+.ak5 <- res(jtable(list(.akm1, .akd1, .akm3), style = "apa", fit.rows = c("r2", "n"),
+                   landscape = "yes", file = .ak5f, overwrite = TRUE, print = FALSE))
+check("AK04 the call's settings ride on the lines: style = on every table's line, a table type's setting on the lines of the tables that take it, and file =, overwrite =, landscape = and print = on the line that writes; the stopped call writes nothing",
+      grepl(paste0("\n  ", .akn[1], " <- jtable(list(.akm1, .akm3), style = \"apa\", fit.rows = c(\"r2\", \"n\"))\n",
+                   "  ", .akn[2], " <- jtable(.akd1, style = \"apa\")\n",
+                   "  jtable(list(", .akn[1], ", ", .akn[2], "), file = .ak5f, overwrite = TRUE, landscape = \"yes\", print = FALSE)"),
+            gsub("\n {6}", " ", .ak5$txt), fixed = TRUE) &&
+        !file.exists(.ak5f))
+
+.ak6 <- res(jtable(list(.akd1, .akf1), fit.rows = "r2"))
+.ak7a <- res(jtable(list(.akd1, .akm1), title = "Ages", note = "From the survey."))
+.ak7b <- res(jtable(list(.akd1, .akm1), headings = list(Demographics = Age)))
+check("AK05 a table type's setting that none of the tables takes stops on its own; title = and note = (or headings =) name one table, and the stop ends saying to put them on that table's line",
+      identical(.ak6$txt, paste0("[error] jtable(): fit.rows = is a setting of a regression table and a\n",
+                                 "logistic regression table, and none of these results makes one.")) &&
+        endsWith(.ak7a$txt, paste0(.akw, "\ntitle = and note = name one table: add them to that table's line.")) &&
+        endsWith(.ak7b$txt, paste0(.akw, "\nheadings = names one table: add it to that table's line.")))
+
+.ak8t <- res(jtable(list(.akt1, .akt2)))
+.ak8a <- res(jtable(list(.aka1, .aka2)))
+.ak8x <- res(jtable(list(.akx1, .akx2)))
+.ak8y <- res(jtable(list(.akx2, .akx3)))
+.ak8c <- res(jtable(list(.akc1, .akc2)))
+check("AK06 what keeps the results apart, in each table type's words: t tests of different grouping variables; ANOVAs of one grouping variable comparing different groups (each set by its value labels); crosstabs of different column variables, and of one holding different categories; two jcorr() results, each a table of its own, with how to correlate more variables in one table",
+      startsWith(.ak8t$txt, paste0("[error] jtable(): jt() results of different grouping variables\n",
+                                   "(Volunteer and Smoker) cannot share a table.\n", .akmid)) &&
+        startsWith(.ak8a$txt, paste0("[error] jtable(): the jaov() results compare different groups of Region\n",
+                                     "(North, South, East, and West; North, South, and East), so they cannot\n",
+                                     "share a table.\n", .akmid)) &&
+        startsWith(.ak8x$txt, paste0("[error] jtable(): jcrosstab() results with different column variables\n",
+                                     "(Volunteer and Region) cannot share a table.\n", .akmid)) &&
+        startsWith(.ak8y$txt, paste0("[error] jtable(): the jcrosstab() results hold different categories of\n",
+                                     "Region (North, South, East, and West; North, South, and East), so they\n",
+                                     "cannot share a table.\n", .akmid)) &&
+        identical(.ak8c$txt, paste0("[error] jtable(): each jcorr() result is a table of its own.\n",
+                                    "To correlate more variables in one table, name them in one jcorr() call.\n",
+                                    .akmid,
+                                    "  ", .akn[1], " <- jtable(.akc1)\n",
+                                    "  ", .akn[2], " <- jtable(.akc2)\n", .akw)))
+
+# A written file's document part, unzipped into a folder of its own.
+.alx <- function(f) {
+  if (!file.exists(f)) return("")
+  x <- file.path(.akd, paste0("x_", tools::file_path_sans_ext(basename(f))))
+  unlink(x, recursive = TRUE); invisible(utils::unzip(f, exdir = x))
+  paste(readLines(file.path(x, "word", "document.xml"), warn = FALSE, encoding = "UTF-8"), collapse = "\n")
+}
+
+# The lines a stop offers run as they stand: AK04's, each evaluated in a
+# fresh environment (the workspace's objects in reach, its names untouched).
+.aklines <- function(txt, after = "them to one file:$") {
+  ls <- strsplit(txt, "\n", fixed = TRUE)[[1]]
+  at <- grep(after, ls)
+  if (!length(at)) return(character(0))
+  ls <- ls[-seq_len(at[1L])]
+  out <- character(0)
+  for (l in ls[grepl("^  ", ls)]) {
+    if (grepl("^ {6}", l) && length(out)) out[length(out)] <- paste(out[length(out)], trimws(l))
+    else out <- c(out, trimws(l))
+  }
+  out
+}
+.ak9 <- local({
+  e <- new.env(parent = globalenv())
+  ran <- lapply(.aklines(.ak5$txt), function(l) res(eval(parse(text = l)[[1]], envir = e)))
+  list(ran = ran, e = e, d = .alx(.ak5f))
+})
+check("AK07 the offered lines run as they stand: each table's line builds its table (the models' with the N row its setting asked for), and the writing line writes both to one file, every page landscape, Table 1 the models and Table 2 the descriptives",
+      length(.ak9$ran) == 3L &&
+        !any(vapply(.ak9$ran, function(r) startsWith(r$txt, "[error]"), logical(1))) &&
+        inherits(get(.akn[1], envir = .ak9$e), "jst_table") &&
+        identical(tail(vapply(get(.akn[1], envir = .ak9$e)$rows, `[[`, "", "label"), 2), c("*R*\u00b2", "*N*")) &&
+        file.exists(.ak5f) &&
+        lengths(regmatches(.ak9$d, gregexpr("<w:tbl>", .ak9$d, fixed = TRUE))) == 2L &&
+        all(grepl("w:orient=\"landscape\"", regmatches(.ak9$d, gregexpr("<w:sectPr>.*?</w:sectPr>", .ak9$d))[[1]], fixed = TRUE)) &&
+        regexpr("Regression Coefficients Predicting", .ak9$d, fixed = TRUE) <
+          regexpr("Descriptive Statistics", .ak9$d, fixed = TRUE))
+
+.akold <- .akm1; if (!is.null(.akold)) attr(.akold, "jstats_version") <- NULL
+.ak10 <- res(jtable(list(.akd1, .akold)))
+check("AK08 before the stop gives its lines, each table is built: a result that cannot make a table stops in its own words, so no offered line would stop again",
+      startsWith(.ak10$txt, "[error] jtable(): this jlm() result was made by an earlier version of\n") &&
+        !grepl("cannot share a table", .ak10$txt, fixed = TRUE))
+
+.ak11 <- local({
+  e1 <- new.env(parent = emptyenv()); assign("t1", 1, envir = e1)
+  e3 <- new.env(parent = emptyenv())
+  for (nm in c("t1", "t2", "tab1", "tab2", "table1", "table2")) assign(nm, 1, envir = e3)
+  n1 <- tryCatch(.jst_table_line_names(2L, e1), error = function(e) NA_character_)
+  n3 <- tryCatch(.jst_table_line_names(2L, e3), error = function(e) NA_character_)
+  inner <- local({ t1 <- 3; res(jtable(list(.akd1, .akm1))) })
+  list(n1 = n1, n3 = n3, inner = inner)
+})
+check("AK09 the offered names never replace an object: t1 held in the caller's frame moves the names on (tab1, then table1), every stem taken gives table_1; a stop raised where t1 exists offers no t1",
+      !identical(.ak11$n1, c("t1", "t2")) &&
+        !any(vapply(.ak11$n1, exists, logical(1), envir = globalenv(), inherits = FALSE)) &&
+        identical(.ak11$n3, c("table_1", "table_2")) &&
+        grepl("them to one file:\n", .ak11$inner$txt, fixed = TRUE) &&
+        !grepl("\n  t1 <- ", .ak11$inner$txt, fixed = TRUE))
+
+.ak12 <- vapply(list(
+  quote(.jst_table_build_corr(list(.akc1, .akc2), .jst_style_apa)),
+  quote(.jst_table_build_groups(list(.aka1, .aka2), .jst_style_apa)),
+  quote(.jst_table_build_groups(list(.akt1, .akt2), .jst_style_apa)),
+  quote(.jst_table_build_crosstab(list(.akx1, .akx2), .jst_style_apa)),
+  quote(.jst_table_build_models(list(.akm1, .akm2), .jst_style_apa))),
+  function(ex) tryCatch({ eval(ex); "built" }, error = function(e) conditionMessage(e)), "")
+check("AK10 each builder still refuses results that cannot share its table, as an internal stop (jtable() never sends it them)",
+      identical(.ak12, c(".jst_table_build_corr(): one jcorr() result per table",
+                         ".jst_table_build_groups(): results of different groups",
+                         ".jst_table_build_groups(): results of different groups",
+                         ".jst_table_build_crosstab(): results of different column variables",
+                         ".jst_table_build_models(): models of different outcomes")))
+
+# =============================================================================
+# AL. What jtable() prints: the report, not the table (ruling R57)
+# =============================================================================
+cat("\n--- AL. The report ---\n")
+
+.aln0 <- length(.seen)
+.al1 <- res(jtable(.akd1))
+.al1n <- length(.seen) - .aln0
+invisible(utils::capture.output(suppressMessages(joutput("full"))))
+.aln0 <- length(.seen)
+.al2 <- res(jtable(.akd1))
+.al2n <- .seen[-seq_len(.aln0)]
+invisible(utils::capture.output(suppressMessages(joutput(NULL))))
+check("AL01 a table with no file: the report -- its number and title, what it holds and its page, and that no file was written -- in place of the table; at joutput(\"full\") a note gives the call with file = and the lines that keep the table and print it",
+      identical(.al1$txt, paste0("Table 1. Descriptive Statistics\n",
+                                 "  2 variables, on a portrait page.\n",
+                                 "No file was written.\n")) &&
+        .al1n == 0L && inherits(.al1$val, "jst_table") &&
+        identical(.al2$txt, .al1$txt) && length(.al2n) == 1L &&
+        identical(sub("\n$", "", .al2n[[1]]$text),
+                  paste0("Note: to write the table to a Word file, add file = to the call:\n",
+                         "  jtable(.akd1, file = \"Table1.docx\")\n",
+                         "To see the table here, keep it with <- and print it:\n",
+                         "  t1 <- jtable(.akd1)\n",
+                         "  print(t1)")))
+
+.al3f <- file.path(.akd, "One.docx")
+.al3a <- res(jtable(.akm3, file = .al3f))
+.al3b <- res(jtable(.akm3, file = .al3f, overwrite = TRUE))
+.al3h <- "Table 1. Regression Coefficients Predicting Wellbeing score (0-100)\n  1 model, on a portrait page.\n"
+check("AL02 a table written: the report, then where the file went; written again over it, the report says it replaced the file that was there",
+      startsWith(.al3a$txt, paste0(.al3h, "Table written to")) &&
+        identical(gsub("\\s+", " ", sub(.al3h, "", .al3a$txt, fixed = TRUE)),
+                  paste0("Table written to ", .jst_norm_path(.al3f), " ")) &&
+        startsWith(.al3b$txt, paste0(.al3h, "Table written to")) &&
+        endsWith(.al3b$txt, "\nIt replaced the file that was there.\n") &&
+        !grepl("replaced", .al3a$txt, fixed = TRUE))
+
+.alA <- res(jtable(.akd1, print = FALSE))$val
+.alB <- res(jtable(.akd2, print = FALSE))$val
+.alC <- res(jtable(.akm1, print = FALSE))$val
+.alD <- res(jtable(.akm3, print = FALSE))$val
+.al4f <- file.path(.akd, "Four.docx")
+.al4 <- res(jtable(list(.alA, .alB, .alC, .alD), file = .al4f, print = TRUE))
+check("AL03 built tables written together: each table's lines numbered as in the file, then how many tables went to the file",
+      startsWith(.al4$txt, paste0("Table 1. Descriptive Statistics\n",
+                                  "  2 variables, on a portrait page.\n",
+                                  "Table 2. Descriptive Statistics\n",
+                                  "  1 variable, on a portrait page.\n",
+                                  "Table 3. Regression Coefficients Predicting Wellbeing score (0-100)\n",
+                                  "  1 model, on a portrait page.\n",
+                                  "Table 4. Regression Coefficients Predicting Wellbeing score (0-100)\n",
+                                  "  1 model, on a portrait page.\n",
+                                  "4 tables written to")) &&
+        grepl(paste0("4 tables written to ", .jst_norm_path(.al4f)), gsub("\\s+", " ", .al4$txt), fixed = TRUE))
+
+# The page the report names is the page the file has: orientation from the
+# section, the text size from the cells' runs.
+.alsz <- function(d) sort(unique(regmatches(d, gregexpr("(?<=<w:sz w:val=\")[0-9]+", d, perl = TRUE))[[1]]))
+.al5 <- local({
+  f1 <- file.path(.akd, "Anova.docx"); f2 <- file.path(.akd, "Models.docx"); f3 <- file.path(.akd, "AnovaP.docx")
+  r1 <- res(jtable(.adt, file = f1, overwrite = TRUE))
+  r2 <- res(jtable(list(.vm1, .vm2, .vm3, .vm4), file = f2, overwrite = TRUE))
+  r3 <- res(jtable(.adt, file = f3, overwrite = TRUE, landscape = "no"))
+  f4 <- file.path(.akd, "Items.docx")
+  r4 <- res(jtable(.aft, file = f4, overwrite = TRUE))
+  list(r1 = r1, r2 = r2, r3 = r3, r4 = r4, d1 = .alx(f1), d2 = .alx(f2), d3 = .alx(f3), d4 = .alx(f4))
+})
+check("AL04 the page in the report is the file's: the four-group ANOVA table on a landscape page at 12 points; the four models on a landscape page, their text at 10 points and their long labels on two lines; the ANOVA table forced portrait at 8 points, its labels on two lines; the item table at 12 points, its long labels on two lines (no size named: it is the style's)",
+      startsWith(.al5$r1$txt, paste0("Table 1. Means, Standard Deviations, and One-Way Analyses of Variance by\n",
+                                     "Region of residence\n",
+                                     "  3 outcomes by Region, on a landscape page.\n")) &&
+        grepl("w:orient=\"landscape\"", .al5$d1, fixed = TRUE) && identical(.alsz(.al5$d1), "24") &&
+        startsWith(.al5$r2$txt, paste0("Table 1. Regression Coefficients Predicting Wellbeing score (0-100)\n",
+                                       "  4 models side by side, on a landscape page, its text at 10 pt, long labels\n",
+                                       "  on two lines.\n")) &&
+        grepl("w:orient=\"landscape\"", .al5$d2, fixed = TRUE) && "20" %in% .alsz(.al5$d2) &&
+        startsWith(.al5$r3$txt, paste0("Table 1. Means, Standard Deviations, and One-Way Analyses of Variance by\n",
+                                       "Region of residence\n",
+                                       "  3 outcomes by Region, on a portrait page, its text at 8 pt, long labels on\n",
+                                       "  two lines.\n")) &&
+        !grepl("w:orient=\"landscape\"", .al5$d3, fixed = TRUE) && "16" %in% .alsz(.al5$d3) &&
+        grepl("^Table 1\\. Item Statistics and Reliability\n  [^\n]*, on a portrait page, long labels on two\n?\\s*lines\\.\n", .al5$r4$txt) &&
+        !grepl(" pt", .al5$r4$txt, fixed = TRUE) &&
+        !grepl("w:orient=\"landscape\"", .al5$d4, fixed = TRUE) && identical(.alsz(.al5$d4), "24"))
+
+.alE <- res(jtable(c(list(.akd2), list(.akd3)), print = FALSE))$val
+.alF <- res(jtable(.akd1, print = FALSE))$val
+.alc <- res(jcorr(tcm, WellbeingScore, CommuteTime))$val   # no variable shared with .akc1
+invisible(utils::capture.output(suppressMessages(joutput("full"))))
+.aln0 <- length(.seen)
+.al6 <- res(jtable(list(.alA, .alB, .alC, .alD), file = .al4f, overwrite = TRUE))
+.al6n <- .seen[-seq_len(.aln0)]
+.aln0 <- length(.seen)
+.al6b <- res(jtable(list(.alA, .alE), file = .al4f, overwrite = TRUE))
+.al6bn <- .seen[-seq_len(.aln0)]
+.aln0 <- length(.seen)
+.al6c <- res(jtable(list(.alA, .alF, res(jtable(.akc1, print = FALSE))$val,
+                         res(jtable(.alc, print = FALSE))$val), file = .al4f, overwrite = TRUE))
+.al6cn <- .seen[-seq_len(.aln0)]
+invisible(utils::capture.output(suppressMessages(joutput(NULL))))
+.aln0 <- length(.seen)
+.al6s <- res(jtable(list(.alA, .alB, .alC, .alD), file = .al4f, overwrite = TRUE))
+.al6sn <- length(.seen) - .aln0
+check("AL05 at joutput(\"full\"), tables written together that could have been one table are named, with the line that makes them one; tables whose results came from an expression are named without it; tables holding a variable twice are not, nor correlation tables even of different variables; at the standard level nothing is said",
+      length(.al6n) == 2L &&
+        identical(sub("\n$", "", .al6n[[1]]$text),
+                  "Note: Tables 1 and 2 are descriptives tables and could be one table:\n  jtable(list(.akd1, .akd2))") &&
+        identical(sub("\n$", "", .al6n[[2]]$text),
+                  "Note: Tables 3 and 4 hold models of one outcome and could be one table:\n  jtable(list(.akm1, .akm3))") &&
+        length(.al6bn) == 1L &&
+        identical(sub("\n$", "", .al6bn[[1]]$text),
+                  "Note: Tables 1 and 2 are descriptives tables and could be one table.") &&
+        length(.al6cn) == 0L && .al6sn == 0L &&
+        endsWith(.al6s$txt, "It replaced the file that was there.\n"))
+
+# =============================================================================
+# AM. Tables written together: one object, each table on the page it needs
+# =============================================================================
+cat("\n--- AM. Tables written together ---\n")
+
+.amdoc <- .al4$val
+.amp <- function(t, i) sub("^Table 1\n", paste0("Table ", i, "\n"), res(print(t))$txt)
+.am1 <- res(print(.amdoc))
+check("AM01 the call that writes built tables returns them as one object (class jst_tables), the tables as given; print() shows every table, numbered as in the file",
+      inherits(.amdoc, "jst_tables") && length(.amdoc) == 4L &&
+        identical(unclass(.amdoc), list(.alA, .alB, .alC, .alD)) &&
+        identical(.am1$txt, paste(.amp(.alA, 1), .amp(.alB, 2), .amp(.alC, 3), .amp(.alD, 4), sep = "\n")))
+
+.am2f <- file.path(.akd, "Doc.docx"); .am3f <- file.path(.akd, "Doc5.docx")
+.am2 <- res(jtable(.amdoc, file = .am2f, print = FALSE))
+.am3 <- res(jtable(list(.amdoc, .alE), file = .am3f, print = FALSE))
+.amseq <- function(d) regmatches(d, gregexpr("(?<=<w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:rPr><w:b/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">)[0-9]+", d, perl = TRUE))[[1]]
+check("AM02 the object written again is its tables, numbered 1 to 4 on Word's SEQ field; inside a list it stands for its tables in its place, the list's next table numbered 5",
+      file.exists(.am2f) && identical(.amseq(.alx(.am2f)), as.character(1:4)) &&
+        inherits(.am2$val, "jst_tables") && length(.am2$val) == 4L &&
+        file.exists(.am3f) && identical(.amseq(.alx(.am3f)), as.character(1:5)) &&
+        identical(unclass(.am3$val), list(.alA, .alB, .alC, .alD, .alE)))
+
+.amsect <- function(d) {
+  s <- regmatches(d, gregexpr("<w:sectPr>.*?</w:sectPr>", d))[[1]]
+  vapply(s, function(x) grepl("w:orient=\"landscape\"", x, fixed = TRUE), logical(1), USE.NAMES = FALSE)
+}
+.am4 <- local({
+  fs <- file.path(.akd, paste0("P", 1:5, ".docx"))
+  .alL <- res(jtable(.akd1, landscape = "yes", print = FALSE))$val
+  invisible(res(jtable(list(.alA, .adt, .alB), file = fs[1], print = FALSE)))
+  invisible(res(jtable(list(.alA, .adt, .alB), file = fs[2], print = FALSE, landscape = "no")))
+  invisible(res(jtable(list(.alA, .adt, .alB), file = fs[3], print = FALSE, landscape = "yes")))
+  invisible(res(jtable(list(.alA, .alL, .alB), file = fs[4], print = FALSE)))
+  invisible(res(jtable(list(.alA, .alB, .adt), file = fs[5], print = FALSE)))
+  lapply(fs, .alx)
+})
+.amland <- function(d) {
+  s <- regmatches(d, gregexpr("<w:sectPr>.*?</w:sectPr>", d))[[1]]
+  any(vapply(s, function(x) {
+    w <- as.integer(sub(".*<w:pgSz w:w=\"([0-9]+)\".*", "\\1", x))
+    h <- as.integer(sub(".*w:h=\"([0-9]+)\".*", "\\1", x))
+    grepl("w:orient=\"landscape\"", x, fixed = TRUE) && w > h
+  }, logical(1)))
+}
+check("AM03 each table gets the page it needs: the four-group ANOVA table between two descriptives tables gets a landscape section of its own (its page wider than tall), the others portrait; the ANOVA's title falls between the first section's end and the second's",
+      identical(.amsect(.am4[[1]]), c(FALSE, TRUE, FALSE)) && .amland(.am4[[1]]) &&
+        local({
+          d <- .am4[[1]]
+          ends <- gregexpr("</w:sectPr>", d, fixed = TRUE)[[1]]
+          at <- regexpr("One-Way Analyses of Variance", d, fixed = TRUE)[1]
+          at > ends[1] && at < ends[2]
+        }))
+check("AM04 landscape = in the writing call sets every page (no: one portrait section; yes: one landscape section); a table built with landscape = yes keeps its page among portrait tables; tables side by side on one orientation share a section",
+      identical(.amsect(.am4[[2]]), FALSE) && identical(.amsect(.am4[[3]]), TRUE) &&
+        identical(.amsect(.am4[[4]]), c(FALSE, TRUE, FALSE)) &&
+        identical(.amsect(.am4[[5]]), c(FALSE, TRUE)))
+
+.am5a <- res(jtable(list(.alA, .alB), file = file.path(.akd, "No1.docx"), landscape = "sideways"))
+.am5b <- res(jtable(list(.alA, .alB), file = file.path(.akd, "No2.docx"), fit.rows = "r2"))
+check("AM05 with built tables, landscape = is checked as a style file's value is; any other setting still stops, a built table keeping its own; neither call writes",
+      identical(.am5a$txt, "[error] jtable(): `landscape` must be \"auto\", \"yes\", or \"no\".") &&
+        startsWith(.am5b$txt, "[error] jtable(): headings =, markers =, title =, note =, style =, and a\n") &&
+        !file.exists(file.path(.akd, "No1.docx")) && !file.exists(file.path(.akd, "No2.docx")))
+
+# =============================================================================
+# AN. jstyle(save.as =) with settings: a short style file
+# =============================================================================
+cat("\n--- AN. A short style file ---\n")
+
+.an1f <- file.path(.akd, "mine")
+.an1 <- res(jstyle(save.as = .an1f, size = 11, header.fill = "lightblue",
+                   regression = list(fit.rows = c("r2", "n")),
+                   descriptives = list(columns = c("n", "mean", "sd"))))
+.an1l <- if (file.exists(paste0(.an1f, ".jstyle"))) readLines(paste0(.an1f, ".jstyle"), encoding = "UTF-8") else ""
+check("AN01 settings given to jstyle(save.as =) write a short file, pinned whole: a header saying it holds only the settings that differ, the stamps, based.on naming the style copied, then the general settings, then each section's under its heading (in the file's order), each after its note on what it does and what it takes; a color as typed",
+      identical(.an1l, c("# mine.jstyle: a jstats table style, based on apa.",
+                         "# It holds only the settings that differ; every other setting comes from",
+                         "# the style based.on names. ?jstyle_settings lists every setting and what",
+                         "# it takes. Change only the values after the = signs, or add a setting",
+                         "# from that list. jstyle(\"mine\") checks the file and names any value",
+                         "# it cannot use.",
+                         "",
+                         "format     = 1",
+                         paste0("written.by = jstats ", .jst_jstats_version()),
+                         "based.on   = apa",
+                         "",
+                         "# the text size, in points",
+                         "# takes: a number from 6 to 72",
+                         "size = 11",
+                         "# a color filling the header cells, or none",
+                         "# takes: a color name such as lightblue, or six hex digits such as ADD8E6;",
+                         "#   or none",
+                         "header.fill = lightblue",
+                         "",
+                         "[descriptives]",
+                         "# the columns, in order: n, mean, sd, min, max",
+                         "# takes: one or more of n, mean, sd, min, max, in order, separated by commas",
+                         "columns = n, mean, sd",
+                         "",
+                         "[regression]",
+                         "# the fit rows under the predictors, in order: r2, adj.r2, f,",
+                         "# delta.r2 (nested models), f.change (its F test), n, or none",
+                         "# takes: one or more of r2, adj.r2, f, delta.r2, f.change, n, in order,",
+                         "#   separated by commas; or none",
+                         "fit.rows = r2, n")) &&
+        identical(gsub("\\s+", " ", .an1$txt),
+                  paste0("Style written to ", .jst_norm_path(paste0(.an1f, ".jstyle")), " ")))
+
+.an2p <- .strip_ansi(res(jstyle(paste0(.an1f, ".jstyle")))$txt)
+.an2m <- res(jtable(.akm3, style = paste0(.an1f, ".jstyle"), print = FALSE))$val
+.an2d <- res(jtable(.akd1, style = paste0(.an1f, ".jstyle"), file = file.path(.akd, "Mine.docx"), print = FALSE))$val
+check("AN02 the short file reads back: jstyle() shows its four settings as set there and every other from apa; a table built in it takes them (the regression table's N row, the descriptives table's three columns, its cells at 11 points in the file)",
+      grepl("\nsize             = 11\n", .an2p, fixed = TRUE) &&
+        grepl("\nheader.fill      = ADD8E6\n", .an2p, fixed = TRUE) &&
+        grepl("\ncolumns        = n, mean, sd\n", .an2p, fixed = TRUE) &&
+        grepl("\nfit.rows          = r2, n\n", .an2p, fixed = TRUE) &&
+        grepl("\nfont             = Times New Roman  # from apa\n", .an2p, fixed = TRUE) &&
+        identical(tail(vapply(.an2m$rows, `[[`, "", "label"), 2), c("*R*\u00b2", "*N*")) &&
+        identical(.an2d$columns$key, c("stub", "n", "mean", "sd")) &&
+        "22" %in% .alsz(.alx(file.path(.akd, "Mine.docx"))))
+
+.an3 <- res(jstyle(paste0(.an1f, ".jstyle"), save.as = file.path(.akd, "mine2"), size = 10))
+.an3l <- if (file.exists(file.path(.akd, "mine2.jstyle"))) readLines(file.path(.akd, "mine2.jstyle"), encoding = "UTF-8") else ""
+.an3p <- .strip_ansi(res(jstyle(file.path(.akd, "mine2.jstyle")))$txt)
+.an4 <- res(jstyle(save.as = file.path(.akd, "gs"), regression = list(size = 9)))
+.an4l <- if (file.exists(file.path(.akd, "gs.jstyle"))) readLines(file.path(.akd, "gs.jstyle"), encoding = "UTF-8") else ""
+.an4m <- local({ f <- file.path(.akd, "Gs.docx")
+                 invisible(res(jtable(.akm3, style = file.path(.akd, "gs.jstyle"), file = f, print = FALSE)))
+                 .alsz(.alx(f)) })
+.an4d <- local({ f <- file.path(.akd, "Gsd.docx")
+                 invisible(res(jtable(.akd1, style = file.path(.akd, "gs.jstyle"), file = f, print = FALSE)))
+                 .alsz(.alx(f)) })
+check("AN03 a style given by path is named by its path in based.on, and the copy reads through it (its own size, the first file's fit rows); a general setting given in a section's list is written under that section and changes only that table type",
+      identical(.an3l[1], "# mine2.jstyle: a jstats table style, based on mine.") &&
+        identical(.an3l[10], paste0("based.on   = ", .jst_norm_path(paste0(.an1f, ".jstyle")))) &&
+        identical(tail(.an3l, 3), c("# the text size, in points", "# takes: a number from 6 to 72", "size = 10")) &&
+        grepl("\nsize             = 10\n", .an3p, fixed = TRUE) &&
+        grepl("\nfit.rows          = r2, n", .an3p, fixed = TRUE) &&
+        identical(tail(.an4l, 5), c("", "[regression]", "# the text size, in points",
+                                    "# takes: a number from 6 to 72", "size = 9")) &&
+        "18" %in% .an4m && !"18" %in% .an4d && "24" %in% .an4d)
+
+.an5in <- list.files(.akd)
+.an5x <- file.path(.akd, "x")
+.an5 <- lapply(list(
+  bare1 = quote(jstyle(save.as = .an5x, fit.rows = c("r2", "n"))),
+  bare2 = quote(jstyle(save.as = .an5x, total = "no")),
+  bare3 = quote(jstyle(save.as = .an5x, fit.rows = c("r2", "n"), columns = c("n", "mean"))),
+  nosave1 = quote(jstyle(size = 11)),
+  nosave2 = quote(jstyle("apa", regression = list(fit.rows = "r2"))),
+  list1 = quote(jstyle(save.as = .an5x, regression = "r2")),
+  list2 = quote(jstyle(save.as = .an5x, regression = list("r2"))),
+  sec1 = quote(jstyle(save.as = .an5x, regression = list(fit.row = "r2"))),
+  sec2 = quote(jstyle(save.as = .an5x, regression = list(zzz = "r2"))),
+  twice1 = quote(jstyle(save.as = .an5x, size = 11, size = 12)),
+  twice2 = quote(jstyle(save.as = .an5x, regression = list(fit.rows = "r2", fit.rows = "n"))),
+  near1 = quote(jstyle(save.as = .an5x, fit.row = "r2")),
+  near2 = quote(jstyle(save.as = .an5x, sise = 11)),
+  near3 = quote(jstyle(save.as = .an5x, regresion = list(fit.rows = "r2"))),
+  val1 = quote(jstyle(save.as = .an5x, size = 99)),
+  val2 = quote(jstyle(save.as = .an5x, regression = list(fit.rows = "r9")))),
+  function(ex) res(eval(ex))$txt)
+.an5out <- list.files(.akd)
+check("AN04 a table type's setting given bare stops with the call rewritten, the setting in a list named for its section (\"for example\" where several sections hold it); two such settings move together",
+      identical(.an5$bare1, paste0("[error] jstyle(): fit.rows = is a setting of a regression table and a\n",
+                                   "logistic regression table, so it goes in a list named for its section,\n",
+                                   "for example:\n",
+                                   "  jstyle(save.as = .an5x, regression = list(fit.rows = c(\"r2\", \"n\")))")) &&
+        identical(.an5$bare2, paste0("[error] jstyle(): total = is a setting of a crosstab, so it goes in a list\n",
+                                     "named for its section:\n",
+                                     "  jstyle(save.as = .an5x, crosstab = list(total = \"no\"))")) &&
+        identical(gsub("\n {6}", " ", .an5$bare3),
+                  paste0("[error] jstyle(): fit.rows = and columns = are settings of a table type, so\n",
+                         "each goes in a list named for its section, for example:\n",
+                         "  jstyle(save.as = .an5x, regression = list(fit.rows = c(\"r2\", \"n\")), descriptives = list(columns = c(\"n\", \"mean\")))")))
+check("AN05 settings without save.as = stop with the call given save.as =; a section given other than a list of named settings, a name that is not one of its settings (near: did you mean; far: the section's settings), a setting given twice, a near-miss argument, and a value the setting does not take each stop; none of the stopped calls writes",
+      identical(.an5$nosave1, paste0("[error] jstyle(): a style's settings are written to a new style file, so\n",
+                                     "they need save.as =, for example:\n",
+                                     "  jstyle(size = 11, save.as = \"mystyle\")")) &&
+        identical(.an5$nosave2, paste0("[error] jstyle(): a style's settings are written to a new style file, so\n",
+                                       "they need save.as =, for example:\n",
+                                       "  jstyle(\"apa\", regression = list(fit.rows = \"r2\"), save.as = \"mystyle\")")) &&
+        identical(.an5$list1, paste0("[error] jstyle(): regression = takes a list of the section's settings, each\n",
+                                     "named, for example:\n",
+                                     "  regression = list(columns = c(\"b\", \"se\", \"beta\", \"p\"))")) &&
+        identical(.an5$list2, .an5$list1) &&
+        identical(.an5$sec1, "[error] jstyle(): fit.row is not a setting of [regression].\nDid you mean fit.rows?") &&
+        startsWith(.an5$sec2, "[error] jstyle(): zzz is not a setting of [regression].\nThe settings of [regression] are title, columns, columns.last,") &&
+        endsWith(.an5$sec2, "\nA general setting may be set there too.") &&
+        identical(.an5$twice1, "[error] jstyle(): size = is given twice.\nGive each setting once.") &&
+        identical(.an5$twice2, "[error] jstyle(): regression = names fit.rows twice.\nGive each setting once.") &&
+        identical(.an5$near1, "[error] jstyle(): 'fit.row' is not valid.\nDid you mean `fit.rows`?") &&
+        identical(.an5$near2, "[error] jstyle(): 'sise' is not valid.\nDid you mean `size`?") &&
+        identical(.an5$near3, "[error] jstyle(): 'regresion' is not valid.\nDid you mean `regression`?") &&
+        identical(.an5$val1, "[error] jstyle(): `size` must be a number from 6 to 72.") &&
+        startsWith(.an5$val2, "[error] jstyle(): `fit.rows` must be columns of a regression table, each\n") &&
+        identical(.an5in, .an5out))
+
+.an6 <- local({
+  l <- .aklines(.an5$bare3, after = "for example:$")
+  r <- res(eval(parse(text = l)[[1]]))
+  f <- paste0(.an5x, ".jstyle")
+  list(r = r, l = if (file.exists(f)) readLines(f, encoding = "UTF-8") else "")
+})
+check("AN06 the rewritten call runs as it stands: the short file holds both settings, each under its section",
+      !startsWith(.an6$r$txt, "[error]") &&
+        all(c("[descriptives]", "columns = n, mean", "[regression]", "fit.rows = r2, n") %in% .an6$l) &&
+        which(.an6$l == "[descriptives]") < which(.an6$l == "columns = n, mean") &&
+        which(.an6$l == "[regression]") < which(.an6$l == "fit.rows = r2, n"))
+
+.an7 <- local({
+  invisible(res(jstyle("apa", save.as = file.path(.akd, "full"))))
+  f <- file.path(.akd, "full.jstyle")
+  if (file.exists(f)) readLines(f, encoding = "UTF-8") else ""
+})
+check("AN07 a complete copy: every setting after its \"# takes:\" note, a note running past 76 columns continued on lines opening \"#   \", no comment line wider than 76 columns",
+      local({
+        sets <- grep("^[a-z][a-z0-9.]* *= ", .an7)
+        sets <- sets[!grepl("^(format|written\\.by|based\\.on) ", .an7[sets])]
+        takes <- grep("^# takes: ", .an7)
+        ok_each <- vapply(sets, function(i) {
+          j <- i - 1L
+          while (j > 0L && grepl("^#   ", .an7[j])) j <- j - 1L
+          j > 0L && startsWith(.an7[j], "# takes: ")
+        }, logical(1))
+        length(sets) == length(takes) && all(ok_each) &&
+          all(nchar(grep("^#", .an7, value = TRUE)) <= 76L) &&
+          any(grepl("^#   ", .an7))
+      }))
+
+# =============================================================================
+# AO. Exports, the settings help page, the orientation, and saving a result
+# =============================================================================
+cat("\n--- AO. Exports, help, orientation, saving a result ---\n")
+
+check("AO01 jtable() and jstyle() are exported, and print() has a method for tables written together",
+      all(c("jtable", "jstyle") %in% getNamespaceExports("jstats")) &&
+        !is.null(utils::getS3method("print", "jst_tables", optional = TRUE)))
+
+.ao2 <- tryCatch(.jst_style_settings_rd(), error = function(e) character(0))
+.ao2parts <- names(.jst_style_type_nouns)
+check("AO02 the ?jstyle_settings page, generated from the settings' own notes: plain ASCII, a section for the general settings and one per table type, an entry for every setting",
+      !any(grepl("[^\\x01-\\x7F]", .ao2, perl = TRUE)) &&
+        any(grepl("\\section{General settings}", .ao2, fixed = TRUE)) &&
+        all(vapply(.ao2parts, function(p) any(grepl(paste0("\\section{[", p, "]: "), .ao2, fixed = TRUE)), logical(1))) &&
+        sum(lengths(regmatches(.ao2, gregexpr("\\item{\\code{", .ao2, fixed = TRUE)))) ==
+          sum(lengths(lapply(.jst_style_spec[c("general", .ao2parts)], names))))
+
+.ao3 <- tryCatch(paste(.jst_orientation_body(), collapse = " "), error = function(e) "")
+.ao3 <- gsub(" +", " ", .ao3)
+check("AO03 the orientation (version 3.9) holds the tables -- kept results to jtable(), one call one table, the document call, print(t1), the styles and ?jstyle_settings, values edited only -- in lines no wider than 76 columns; a kept result saved with base R's saveRDS(); the skill's description names jtable and jstyle",
+      identical(.jst_orientation_version, "3.9") &&
+        grepl("- Publication tables come from `jtable()` on kept results:", .ao3, fixed = TRUE) &&
+        grepl("One call makes one table;", .ao3, fixed = TRUE) &&
+        grepl("`jtable(list(t1, t2), file = \"Tables.docx\")`", .ao3, fixed = TRUE) &&
+        grepl("`print(t1)` shows a table in the console", .ao3, fixed = TRUE) &&
+        grepl("`?jstyle_settings` lists them all", .ao3, fixed = TRUE) &&
+        grepl("edit values only -- never add, rename or remove a setting or a section", .ao3, fixed = TRUE) &&
+        grepl("with base R's `saveRDS()` (read it back with `readRDS()`)", .ao3, fixed = TRUE) &&
+        grepl("jtable, jstyle (publication tables in Word and .jstyle table styles)", .jst_skill_description(), fixed = TRUE) &&
+        local({
+          b <- .jst_orientation_body(); i <- grep("^- Publication tables", b)
+          j <- i; while (j < length(b) && nzchar(b[j + 1L])) j <- j + 1L
+          j - i >= 10L && all(nchar(b[i:j]) <= 76L)
+        }))
+
+.ao4f <- file.path(.akd, "m1.rds"); .ao4t <- file.path(.akd, "t1.rds")
+saveRDS(.akm1, .ao4f); saveRDS(.alA, .ao4t)
+.ao4 <- list(
+  m = res(jsave(.akm1, "m1.rds"))$txt,
+  m0 = res(jsave(.akm1))$txt,
+  t = res(jsave(.alA, "t1.rds"))$txt,
+  d = res(jsave(.amdoc, "doc.rds"))$txt,
+  lm = res(jload(.ao4f))$txt,
+  lt = res(jload(.ao4t))$txt)
+check("AO04 jsave() given a result or a built table stops with the base R lines that keep it and read it back, in the file the call named with .rds (else the object's name; a table first offered its Word file); jload() given an .rds file holding one says so, with the line that reads it",
+      identical(.ao4$m, paste0("[error] jsave(): '.akm1' is a jlm() result, not a data frame.\n",
+                               "To keep it for a later session, save it with base R:\n",
+                               "  saveRDS(.akm1, \"m1.rds\")\n",
+                               "Then read it back with:\n",
+                               "  .akm1 <- readRDS(\"m1.rds\")")) &&
+        identical(.ao4$m0, gsub("\"m1.rds\"", "\".akm1.rds\"", .ao4$m, fixed = TRUE)) &&
+        identical(.ao4$t, paste0("[error] jsave(): '.alA' is a table jtable() built, not a data frame.\n",
+                                 "To write it to a Word file:\n",
+                                 "  jtable(.alA, file = \"t1.docx\")\n",
+                                 "To keep it for a later session, save it with base R:\n",
+                                 "  saveRDS(.alA, \"t1.rds\")\n",
+                                 "Then read it back with:\n",
+                                 "  .alA <- readRDS(\"t1.rds\")")) &&
+        startsWith(.ao4$d, "[error] jsave(): '.amdoc' is a set of tables jtable() put together, not a\ndata frame.\n") &&
+        startsWith(.ao4$lm, "[error] jload(): m1.rds holds a jlm() result, not a data frame.\njload() loads data frames; read it back with base R:\n  m1 <- readRDS(\"") &&
+        endsWith(gsub("\\s+", " ", .ao4$lm), "m1.rds\")") &&
+        startsWith(.ao4$lt, "[error] jload(): t1.rds holds a table jtable() built, not a data frame.\n"))
+
+unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd), recursive = TRUE)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # The analyses above raise notes and warnings of their own (a seems-
