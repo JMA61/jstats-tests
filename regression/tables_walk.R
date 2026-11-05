@@ -26,8 +26,73 @@
 #           prints in place of the table (ruling R57) and print() showing a
 #           kept table; one call, one table (ruling R56) and the lines its
 #           stop offers; tables written together, each on the page it
-#           needs, as one object; a short style file from jstyle().
+#           needs, as one object; a short style file from jstyle(). The
+#           release build (S407): two codes that share a value label, in
+#           the console and in a table; the reserved style name; a file
+#           named like the built-in; two tables in two fonts in one file.
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S407 SECOND REBUILD (v0.9.275, the same version; on Jeff's
+#           walk of the first rebuild: Table 2's title on two lines, and
+#           the n and % columns under "How we contacted you"). SECTION 2
+#           on the PENDING line: its Word file's first column as wide as
+#           the longest label, a variable's label row included (the
+#           preview's rule), its notes saying so. SECTIONS 9 AND 10: the
+#           short file's head names the style it is based on ("based on
+#           apa, the style built into jstats"; "any setting not listed
+#           here takes apa's value"); Section 10's Render 6 notes, the
+#           title on one line and the label setting the first column.
+#           Every section refilled on this build and compared: only those
+#           lines moved. Every Word file the walk writes compared with the
+#           first rebuild's: Table2.docx (Section 2) and Tables_myjournal
+#           (Section 3) the stub 46 twips wider, Tables_myjournal_models
+#           (Section 6) 25, TwoFonts.docx (Section 10) as in the render;
+#           the other eight the same.
+# LAST VERIFIED: v0.9.275, 2026-11-05 (S407, the second rebuild) -- Sections
+#           2, 3, 9 and 10 WALKED on the WORKSTATION by Jeff through
+#           receive_all() ("walked, all okay"); PENDING back to none; R CMD
+#           check 0 errors, 0 warnings, 0 notes; ALL BATTERIES GREEN (12
+#           run, 3623 checks). Before it: the first delivery's Section 10
+#           walked to the two findings (TwoFonts.docx's Table 2 wrapping,
+#           the style file's wrapped head), the first rebuild's to the
+#           next two (the title on two lines, the n and % columns under the
+#           label). Sandbox: harness.R verify, 10 of 10 sections in three
+#           orders under rewalk() and by prepare = TRUE; rewalk()'s
+#           scoreboard read the PENDING line (since the first rebuild,
+#           whose ";" inside the note stopped rewalk() on the workstation).
+# EDITED:   S407 REBUILD (v0.9.275, the same version; on Jeff's walk of
+#           the delivery). SECTIONS 3 AND 9 RE-PINNED, on the PENDING
+#           line: a style file's head is its name on a line of its own,
+#           then one sentence a line, and each setting's note and "# takes:"
+#           line is unwrapped (Jeff: "each sentence should be on its own
+#           line"); found by refilling every section on this build, every
+#           other line the same, temporary paths aside. SECTION 10 on the
+#           PENDING line: Render 4 shows myreport.jstyle as written, its
+#           Expected block refilled; Render 6's Word file measured in each
+#           table's font, its notes saying what changed and why the title
+#           still wraps. The Word files of Sections 1, 2, 3, 6 and 7 move a
+#           little (a stub with indented rows 53 twips wider at 12 points,
+#           the indent measured as Word draws it); nothing they print moves.
+# EDITED:   S407 (v0.9.275; the release build, a fix slate). SECTION 10
+#           ADDED, on the PENDING line, its Expected blocks filled by
+#           running (fill.R), its temporary paths shown as <tempdir>:
+#           the (S399) colliding-labels fix -- codes 2 and 3 both "Other"
+#           as two rows in jfreq() under value.id = "labels" and two
+#           groups in jaov(), each shown with its code, and the frequency
+#           table's rows the same way; jstyle(save.as = "report") refused
+#           (a built-in a later version adds) and another name written; a
+#           file named apa.jstyle in the style folder passed over with a
+#           note; two tables built under apa and an Arial style, written to
+#           one Word file, each in its own font. The new messages' wording
+#           is Claude's. SECTIONS 3 AND 9 RE-PINNED MECHANICALLY, off the
+#           PENDING line: the saved copy's stamp reads 0.9.275 (one line
+#           each, found by refilling both sections on this build; every
+#           other line the same, temporary paths aside). Every section
+#           captured on v0.9.274 and on this build and compared: Sections
+#           1-9 identical but for the two stamps. Section 10 clears the
+#           jcomplete() Section 4 leaves on tdat, so it needs no earlier
+#           section. Sandbox: harness.R verify, 10 of 10 sections in three
+#           orders and by prepare = TRUE; NEEDS derived by running (5: 4; 6:
+#           3, 5; none for 10).
 # EDITED:   S406 (v0.9.274; Capability Slate T, build 5). SECTIONS 8 AND 9
 #           ADDED, on the PENDING line, their Expected blocks filled by
 #           running (fill.R). Section 8: ruling R57's report in its forms
@@ -344,6 +409,9 @@ jtable(t2, file = walk_file2, overwrite = TRUE, print = FALSE, open = TRUE)
 #     row, the note as the last, as in Table 1;
 #   - each variable's label a row of its own spanning the table, upright
 #     (not italic: those are role headings), its categories indented;
+#     since the S407 second rebuild the first column as wide as the
+#     longest label, a variable's label included ("Highest education
+#     level"), as in the preview, the n and % columns beside it;
 #   - n in italics in the header, % upright; the numbers on the decimal
 #     point, each column of numbers centered under its head (S401);
 #   - the three rules only.
@@ -449,15 +517,15 @@ cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 18L,
 #   Style written to
 #   <tempdir>/walk_styles/apa_copy.jstyle
 #
-#   # apa_copy.jstyle: a jstats table style.
-#   # Every setting jstats has is below, each after a note saying what it
-#   # does and what it takes. Change only the values after the = signs; do
-#   # not add, rename or remove a setting or a section. A line that starts
-#   # with # is a note. jstyle("apa_copy") checks the file and names any value
-#   # it cannot use.
+#   # apa_copy.jstyle:
+#   # A jstats table style.
+#   # Every setting jstats has is below, each after a note saying what it does and what it takes.
+#   # Change only the values after the = signs; do not add, rename or remove a setting or a section.
+#   # A line that starts with # is a note.
+#   # jstyle("apa_copy") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.274
+#   written.by = jstats 0.9.275
 #   based.on   = apa
 #
 #   # The general settings: the look of every table.
@@ -473,7 +541,10 @@ cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 18L,
 # rename or remove a setting or a section), the two stamped lines and
 # based.on, then each setting under its note on what it does and, since
 # S406, a "# takes:" line saying what it takes (every setting of every
-# table type follows).
+# table type follows). Since the S407 rebuild the head is the file's
+# name on a line of its own, then one sentence a line, none wrapped;
+# a note or a "# takes:" line runs on as long as it needs (until then
+# each was broken at 76 columns).
 
 writeLines(c("# myjournal.jstyle -- the journal's conventions",
              "based.on = apa",
@@ -1638,30 +1709,27 @@ cat(readLines(file.path(.walk_styles9, "short.jstyle"), encoding = "UTF-8"),
 #   Style written to
 #   <tempdir>/walk_styles9/short.jstyle
 #
-#   # short.jstyle: a jstats table style, based on apa.
-#   # It holds only the settings that differ; every other setting comes from
-#   # the style based.on names. ?jstyle_settings lists every setting and what
-#   # it takes. Change only the values after the = signs, or add a setting
-#   # from that list. jstyle("short") checks the file and names any value
-#   # it cannot use.
+#   # short.jstyle:
+#   # A jstats table style, based on apa, the style built into jstats.
+#   # It lists only the settings that differ from apa; any setting not listed here takes apa's value.
+#   # ?jstyle_settings lists every setting and what it takes.
+#   # Change only the values after the = signs, or add a setting from that list.
+#   # jstyle("short") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.274
+#   written.by = jstats 0.9.275
 #   based.on   = apa
 #
 #   # the text size, in points
 #   # takes: a number from 6 to 72
 #   size = 11
 #   # a color filling the header cells, or none
-#   # takes: a color name such as lightblue, or six hex digits such as ADD8E6;
-#   #   or none
+#   # takes: a color name such as lightblue, or six hex digits such as ADD8E6; or none
 #   header.fill = lightblue
 #
 #   [regression]
-#   # the fit rows under the predictors, in order: r2, adj.r2, f,
-#   # delta.r2 (nested models), f.change (its F test), n, or none
-#   # takes: one or more of r2, adj.r2, f, delta.r2, f.change, n, in order,
-#   #   separated by commas; or none
+#   # the fit rows under the predictors, in order: r2, adj.r2, f, delta.r2 (nested models), f.change (its F test), n, or none
+#   # takes: one or more of r2, adj.r2, f, delta.r2, f.change, n, in order, separated by commas; or none
 #   fit.rows = r2, n
 
 # Render 2 -- a table made in it: the N row its fit.rows asks for.
@@ -1732,7 +1800,9 @@ try(jstyle(save.as = file.path(.walk_styles9, "s3"), sise = 11))
 #     ?jstyle_settings for the rest, change the values or add a setting
 #     from that list; the stamps and based.on; then size and header.fill
 #     with their notes, and [regression] with fit.rows. lightblue as you
-#     typed it.
+#     typed it. Since the S407 rebuild the file's name is a line of its
+#     own and each sentence another, none wrapped; header.fill's
+#     "# takes:" and fit.rows' note and "# takes:" are one line each.
 #   - Render 2: the N row under R2, as the file asks; the table's text at
 #     11 points and its header filled light blue in Word (the preview cannot
 #     show either).
@@ -1742,6 +1812,186 @@ try(jstyle(save.as = file.path(.walk_styles9, "s3"), sise = 11))
 #   - Render 4: each stop says what to give instead -- the list form with
 #     one of the section's own settings, the setting meant, the section's
 #     settings in full, each setting once, the argument meant.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 10 -- Two codes with one label, the reserved name, each table's font ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# The release build (S407). Two codes that share a value label -- here 2
+# and 3, both "Other", as a survey that merged two answers might leave
+# them -- are two categories everywhere: their own rows in jfreq(), their
+# own groups in jt(), jaov(), jcrosstab() and jdesc(by =), their own bars
+# in jplot(), their own rows in a table. Where the labels collide the rows
+# show their codes as well, "2: Other" and "3: Other", the form value.id =
+# "both" gives every row; a label no other code shares stays alone (the
+# lean's default). Until v0.9.275 jfreq() under value.id = "labels" counted
+# the two as one row, and the other functions made them one group. Then
+# the style name "report", kept for the built-in report style a later
+# version adds; a file named apa.jstyle, which jstats never reads; and two
+# tables built under two styles, written to one Word file, each in its own
+# font. The section's style files go in a folder of the session's
+# temporary folder, set as the style folder and cleared at the end. The
+# jcomplete() Section 4 sets on tdat is cleared first (its note kept out
+# of the way), so the analyses here print as they would on their own.
+
+suppressMessages(jcomplete(clear.all = TRUE))
+d10 <- data.frame(
+  Contact = haven::labelled(c(1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 1),
+                            c(Phone = 1, Other = 2, Other = 3)),
+  Satisfaction = c(7, 8, 6, 7, 4, 5, 3, 9, 8, 9, 10, 8))
+attr(d10$Contact, "label") <- "How we contacted you"
+attr(d10$Satisfaction, "label") <- "Satisfaction (0-10)"
+
+# Render 1 -- jfreq() under value.id = "labels": a row for each code.
+jfreq(d10, Contact, value.id = "labels")
+# Expected:
+#   Frequencies
+#
+#   12 Cases in the 1 Variable Pool
+#
+#   Contact
+#
+#             Freq  Total %  Valid %  Cum. %
+#   --------  ----  -------  -------  ------
+#   Phone       5     41.67   41.67    41.67
+#   2: Other    3     25.00   25.00    66.67
+#   3: Other    4     33.33   33.33   100.00
+#
+#   Total      12    100.00
+
+# Render 2 -- jaov(): three groups, each with its own mean.
+jaov(Satisfaction ~ Contact, d10, value.id = "labels")
+# Expected:
+#   One-Way ANOVA
+#
+#   Analysis N: 12
+#
+#   Group Descriptives: Satisfaction by Contact
+#   Group     N   Mean    SD   95% CI Lower  95% CI Upper
+#   --------  -  -----  -----  ------------  ------------
+#   Phone     5  7.200  0.837      6.161         8.239
+#   2: Other  3  4.000  1.000      1.516         6.484
+#   3: Other  4  9.000  0.816      7.701        10.299
+#
+#   ANOVA: Satisfaction by Contact
+#   Source    df  Sum of Squares  Mean Square     F      p
+#   --------  --  --------------  -----------  ------  -----
+#   Contact    2      43.200         21.600    28.588  <.001
+#   Residual   9       6.800          0.756
+#   Total     11      50.000
+#
+#   Eta-squared: 0.864
+
+# Render 3 -- the frequency table: the same rows by code and label.
+t10f <- jtable(jfreq(d10, Contact, print = FALSE))
+print(t10f)
+# Expected:
+#   Table 1. Frequency Distributions
+#     1 variable, on a portrait page.
+#   No file was written.
+#
+#   Table 1
+#   Frequency Distributions
+#   -----------------------------
+#   Variable              n    %
+#   -----------------------------
+#   How we contacted you
+#     Phone               5  41.7
+#     2: Other            3  25.0
+#     3: Other            4  33.3
+#   -----------------------------
+#   Note. N = 12.
+
+# Render 4 -- "report" is kept for a built-in style; another name is written.
+.walk_styles10 <- file.path(tempdir(), "walk_styles10")
+unlink(.walk_styles10, recursive = TRUE); dir.create(.walk_styles10)
+joptions(style.dir = .walk_styles10, quiet = TRUE)
+try(jstyle("apa", save.as = "report"))
+jstyle("apa", save.as = "myreport", font = "Arial", size = 11)
+cat(readLines(file.path(.walk_styles10, "myreport.jstyle"), encoding = "UTF-8"),
+    sep = "\n")
+# Expected:
+#   Error : jstyle(): "report" is the name of a built-in style a later version
+#   of jstats adds.
+#   Give the copy another name, for example:
+#     jstyle("apa", save.as = "myreport")
+#   Style written to <tempdir>/walk_styles10/myreport.jstyle
+#
+#   # myreport.jstyle:
+#   # A jstats table style, based on apa, the style built into jstats.
+#   # It lists only the settings that differ from apa; any setting not listed here takes apa's value.
+#   # ?jstyle_settings lists every setting and what it takes.
+#   # Change only the values after the = signs, or add a setting from that list.
+#   # jstyle("myreport") checks the file and names any value it cannot use.
+#
+#   format     = 1
+#   written.by = jstats 0.9.275
+#   based.on   = apa
+#
+#   # the typeface of every cell, caption and note
+#   # takes: any text
+#   font = Arial
+#   # the text size, in points
+#   # takes: a number from 6 to 72
+#   size = 11
+
+# Render 5 -- a file named apa.jstyle in the style folder is not read: the
+# note where a call takes the built-in apa, here as the session's style.
+invisible(file.copy(file.path(.walk_styles10, "myreport.jstyle"),
+                    file.path(.walk_styles10, "apa.jstyle")))
+t10a <- jtable(jdesc(d10, Satisfaction, print = FALSE))
+unlink(file.path(.walk_styles10, "apa.jstyle"))
+# Expected:
+#   This file is not read, since "apa" always names jstats's built-in style:
+#     <tempdir>/walk_styles10/apa.jstyle
+#   To use it, rename it, for example to myapa.jstyle, and use style = "myapa".
+#
+#   Table 1. Descriptive Statistics
+#     1 variable, on a portrait page.
+#   No file was written.
+
+# Render 6 -- two tables, built under two styles, written to one Word file:
+# Table 1 in apa's Times New Roman 12, Table 2 in myreport's Arial 11.
+t10b <- jtable(jfreq(d10, Contact, print = FALSE), style = "myreport")
+jtable(list(t10a, t10b), file = file.path(.walk_styles10, "TwoFonts.docx"),
+       open = TRUE)
+joptions(style.dir = NULL, quiet = TRUE)
+# Expected:
+#   Table 1. Frequency Distributions
+#     1 variable, on a portrait page.
+#   No file was written.
+#
+#   Table 1. Descriptive Statistics
+#     1 variable, on a portrait page.
+#   Table 2. Frequency Distributions
+#     1 variable, on a portrait page.
+#   2 tables written to <tempdir>/walk_styles10/TwoFonts.docx
+
+# Things to look at:
+#   - Render 1: four rows, one per code -- "2: Other" and "3: Other" each
+#     with its own count (3 and 4), "Phone" alone. Before, one "Other" row
+#     of 7.
+#   - Render 2: three groups with their own means (Other on 2 low, Other on
+#     3 high), the same two names with their codes; the F of three groups.
+#   - Render 3: the table's rows the same way -- what a Word table of this
+#     variable shows.
+#   - Render 4: the stop for "report" in the words apa's stop uses, and the
+#     line that runs; myreport written, and the file as Notepad shows it
+#     (the S407 rebuild, on your walk): its name on the first line, then
+#     one sentence a line; each setting's note and "# takes:" line whole.
+#   - Render 5: the note before the report -- the file named, why it is not
+#     read, and the way to use it.
+#   - Render 6 (in Word): Table 1 in Times New Roman 12, Table 2 in Arial
+#     11, caption and notes included. Before, Table 2 came out in Times
+#     with myreport's other settings. Since the S407 rebuilds (your walk:
+#     "How we contacted you", "2: Other" and "3: Other" each wrapped onto
+#     a second line, the title too, and the n and % columns stood under
+#     the label) every label on one line: the columns are measured in the
+#     table's own font, Arial a tenth wider than Times, each category
+#     beside its indent as Word draws it; "How we contacted you" sets the
+#     first column's width, as in the console, the n and % columns beside
+#     it; and "Frequency Distributions" on one line -- a table narrower
+#     than its title widens to it, every column in proportion.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

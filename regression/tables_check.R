@@ -64,9 +64,28 @@
 #           its stops; the "# takes:" notes; the exports, the
 #           ?jstyle_settings page, the orientation's tables bullet; jsave()
 #           and jload() given a result or a built table.
+#           (AP) the release build (S407, v0.9.275): two codes that share a
+#           value label kept apart -- jfreq()'s rows, the groups of jt(),
+#           jaov(), jcrosstab() and jdesc(by =), jplot()'s bars, groups and
+#           panels, the tables' rows -- each shown with its code where the
+#           labels collide; the factor they are made from against
+#           haven::as_factor(); the reserved style name "report"; a file
+#           named apa.jstyle passed over with a note; each table's font in
+#           a document of tables built under two styles; since the S407
+#           rebuild the Word widths measured in each table's font (Times,
+#           Arial, Calibri, any other generously), each indent as Word
+#           draws it, a bold head or label row bold, a label row wider than
+#           its table widening the stub, the fit and the page turned on the
+#           stub's floor in that font; the style files' head and notes
+#           unwrapped; since the second rebuild a label row setting the
+#           stub as the preview does (a fitted stub may narrow past it), a
+#           table narrower than its title widening to it, a short file's
+#           head naming the style it is based on.
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.274, 2026-11-04 (S406) -- 254/254 on the WORKSTATION;
-#           the S406 EDIT block below holds the stamp. Prior: v0.9.273,
+# LAST VERIFIED: v0.9.275, 2026-11-05 (S407, the second rebuild) -- 272/272
+#           on the WORKSTATION; the S407 SECOND REBUILD block below holds
+#           the stamp. Prior: v0.9.274, 2026-11-04 (S406) -- 254/254 (the
+#           S406 EDIT block); v0.9.273,
 #           2026-11-04 (S405) -- 223/223 (the S405 EDIT block); v0.9.272,
 #           2026-11-03 (S403) -- 179/179 (the S403 EDIT block); v0.9.271,
 #           2026-10-29 (S401) -- 141/141 (the S401 EDIT block); v0.9.270,
@@ -98,6 +117,148 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S407 SECOND REBUILD (v0.9.275, the same version, 2026-11-05; on Jeff's
+#           walk of the first: Table 2's title on two lines, the n and %
+#           columns standing under "How we contacted you", and "every
+#           other setting comes from the style based.on names" cryptic).
+#           AP18 ADDED (272 in all); AP15 and AP16 REWRITTEN; P11 and AN01
+#           RE-PINNED. (AP15) a variable's label row sets the stub as a
+#           category does, as the console's preview sets it (Jeff: "should
+#           define the width of that first column"; from S403 the data rows
+#           alone set it -- a call of Claude's, walked then); fitted to a
+#           page too narrow for it, the stub narrows past the label, which
+#           spans the table, at the table's own size -- the two-line floor,
+#           the turn of the page and the report's "long labels on two
+#           lines" all read the categories. (AP16) a label row set bold
+#           sets the stub at its bold width. (AP18) a table narrower than
+#           its title widens to it, every column in proportion, the
+#           remainder to the stub, as far as the page (Jeff: "Frequency
+#           Distributions should be on a single line"); a caption set as a
+#           paragraph widens nothing; the title's width in apa's, the
+#           journal's and the report's caption forms, and the tenth table
+#           of a file measured as Table 10. P11: the stub 46 twips wider
+#           ("Highest education level"), nothing else moved, diffed
+#           against the first rebuild. AN01: the head's second and third
+#           lines, Jeff's wording -- "based on apa, the style built into
+#           jstats" and "It lists only the settings that differ from apa;
+#           any setting not listed here takes apa's value." -- a file based
+#           on another naming it without the clause. The five red on the
+#           first rebuild. MUTATION MAP (the second rebuild; 19 one-change
+#           mutants of tables.R): label rows out of the stub P11; label
+#           rows never bold AP16; the floor, the fit, the page and the
+#           report reading the label rows AP15 (each), the headings
+#           argument ignored AP15; the title's widening off AP18, uncapped
+#           AP18, all to the stub AP18, under a paragraph caption AP18;
+#           apa's title measured bold AP18, the report's upright AP18, the
+#           journal's number dropped AP18, every table measured as Table 1
+#           AP18 (survived until AP18 gained the tenth table); the head's
+#           built-in clause off AN01, the old sentence AN01, the built-in
+#           never named AN01. WORKSTATION, through receive_all(): "R CMD
+#           check: 0 errors, 0 warnings, 0 notes."; "ALL BATTERIES GREEN (12
+#           run, 3623 checks)" -- matching the sandbox (plain, under the
+#           RStudio-handler stand-in, each again with a 35-character temp
+#           path, and interactive; entered dirty plain and under the
+#           handlers, nothing added, removed or changed; a LANG=C install
+#           clean). The first delivery read "ALL BATTERIES GREEN (12 run,
+#           3617 checks)" there.
+# S407 REBUILD (v0.9.275, the same version, 2026-11-05; on Jeff's walk of
+#           the delivery: in TwoFonts.docx Table 2, Arial 11, wrapped "How
+#           we contacted you", "2: Other" and "3: Other", and the style
+#           files' head read poorly, wrapped at 76 columns). AP13-AP17
+#           ADDED, 5 checks (271 in all); L10, P11, O03, AN01, AN03 and AN07
+#           RE-PINNED. (AP13) the widths a table is measured in follow its
+#           font -- Times New Roman's for that face, its kin and none named,
+#           Arial's for Arial and Helvetica, Calibri's for Calibri and
+#           Carlito, any other face at least as wide as all three -- checked
+#           against the faces' published metrics typed here, and the stub's
+#           two-line floor measured in the font. (AP14) a frequency table's
+#           stub in apa and in an Arial 11 style: the widest category beside
+#           its 180-twip indent (until this build measured as two spaces,
+#           about 125 twips at 12 points), the % column and its decimal stop
+#           in the same font. (AP15) a variable's label row wider than the
+#           whole table widens the stub by the difference; one narrower
+#           changes nothing. (AP16) a head set bold measured 8 percent
+#           wider, and a label row set bold. (AP17) an Arial table wider
+#           than its page fitted, and its page turned, on the floor measured
+#           in Arial (pages set between the two measures). L10 and P11: the
+#           stub 53 twips wider (the indent), nothing else in either part
+#           moved, diffed against the delivery. O03, AN01, AN03 and AN07: a
+#           style file's head is its name on a line of its own then one
+#           sentence a line, each note and "# takes:" line unwrapped, a
+#           note's choices one a line (Jeff: "each sentence should be on its
+#           own line"); AN07 also reads ?jstyle_settings joining the same
+#           lines. The eleven red on the S407 delivery. MUTATION MAP (the
+#           rebuild; 24 one-change mutants of tables.R, each anchor found
+#           once): the font lookup ignoring the font AP13, Arial measured as
+#           Times AP13, Calibri as Times AP13 (survived until AP13 gained
+#           Calibri's own widths), any other face as Times AP13, the lookup
+#           case-sensitive K03 (17 red), the em width ignoring its font
+#           AP13, the text width AP14, the widths in Times AP14, the indent
+#           as two spaces L10, the label row's widening off AP15, the bold
+#           allowance off AP16, number-column heads upright AP16, the
+#           decimal stops in Times AP14, the stub floor in Times AP13, the
+#           fit's floor in Times AP17 and the page's AP17 (both survived
+#           until AP17), a bold label row measured upright AP16 (survived
+#           until AP16 gained it); the "# takes:" line wrapped again O03, a
+#           note's choices joined AN07, a note left in its held lines AN01,
+#           the short head's title joined AN01, the complete head's O03, a
+#           head sentence reworded O03, the help page's choices joined by a
+#           space AN07 (survived until AN07 read the help page).
+# S407 EDIT (v0.9.275, 2026-11-05): the release build, a fix slate. SECTION
+#           AP ADDED, 12 checks (266 in all), and N03's fixture cleaned up.
+#           (AP) the (S399) colliding-labels item, on the lean's default:
+#           codes 1 and 2 both labelled "Other" are two rows in jfreq() --
+#           under value.id = "labels" "1: Other" and "2: Other", a label
+#           no other code shares alone -- with Code and Label as the cells
+#           hold them (AP01); two long labels the 40-column cap cuts alike,
+#           a labelled value no case holds sharing a present code's label
+#           (both rows with codes, the empty one 0), and two long text
+#           codes cut alike under "values" (shown whole) (AP02); jt()'s two
+#           groups and its t against base R's (AP03); jaov()'s three groups,
+#           their means, F and post-hoc pairs by code (AP04); jcrosstab()'s
+#           rows and counts by code, jdesc(by =)'s groups (AP05); jplot()'s
+#           bars, by = groups, facet = panels and a jaov() result's boxes,
+#           an older result's too (AP06); .jst_code_factor() against
+#           haven::as_factor() on every labelled column of community, a
+#           live declared missing value, and the last resort (AP07); the
+#           frequency, ANOVA and crosstab tables' rows, heads and n sentence
+#           (AP08). The (S406) reserved name: jstyle(save.as = "report")
+#           refused in any case and with a folder, nothing written (AP09).
+#           The passed-over note, the lean's default: an apa.jstyle in the
+#           style folder named by one note where a call takes the built-in
+#           (jstyle("apa"), jtable() on the session's style) and under
+#           jstyle()'s list, not where a file's based.on reaches apa, a
+#           blank line after it, gone with the file (AP10). The (S406)
+#           per-table font: two tables built under apa and an Arial 11 style,
+#           written together in both orders, read from document.xml -- the
+#           defaults the first table's, the other's font on every run and
+#           paragraph mark and its size on the marks; a single table's file
+#           naming none (AP11); .jst_docx_retype() on a fixed fragment
+#           (AP12). Each of the twelve red on v0.9.274. N03 (S401) wrote an
+#           apa.jstyle into the style folder and left it there; since this
+#           build every later default-style call would print the passed-over
+#           note, so the file is removed after N03, and N03 takes its own
+#           resolution of "APA" through res(). MUTATION MAP (S407; 28
+#           one-change mutants of pipeline-internals.R, classify.R,
+#           descriptives.R, compare.R, plot.R and tables.R, each anchor
+#           found once; by the first check that reds): the formatter's
+#           collision step off AP02; a collision shown by code alone AP01;
+#           jfreq()'s last-resort display off AP02; jfreq()'s display per
+#           case, numeric AP02 and text AP02; the factor's collision naming
+#           off AP06; its last resort off AP07 (survived the first round,
+#           red once AP07 gained the text-code case); jt()'s and jaov()'s
+#           group factor by as_factor() AP03; jcrosstab()'s AP05;
+#           jdesc(by =)'s AP05; jplot()'s variable AP06, by = AP06 and
+#           group-factor fallback AP06; the tables' collision naming AP08;
+#           the frequency table named row by row AP08; the reserved name
+#           unchecked AP09, reworded AP09; the passed-over note off AP10,
+#           fired on a based.on AP10, off the list AP10, without its blank
+#           line AP10, reworded AP10; the font not applied AP11; bare runs
+#           left plain AP12; the marks without a size AP11; the font on
+#           every table L03; the size on every table L04. SURVIVED, by
+#           design: the first of plot.R's two .jst_plot_group_factor()
+#           definitions mutated -- the second, later in the file, is the one
+#           R keeps, so the first is never called (a twin logged at S407).
 # S406 EDIT (v0.9.274, 2026-11-04): Capability Slate T, build 5. SECTIONS
 #           AK-AO ADDED, 31 checks (254 in all). (AK) ruling R56, one call
 #           makes one table: results of different kinds stop with no "yet";
@@ -1633,8 +1794,11 @@ check("L09 the page: A4 portrait with one-inch margins; the styles part sets Tim
 # S401 (v0.9.271): document.xml re-pinned for the decimal tabs, which center
 # each column's block of numbers (every one of the 20 stops 20 twips to the
 # left in this table; nothing else in the part moved).
+# S407 rebuild (v0.9.275): re-pinned -- the stub's indented rows measured
+# with their 180-twip indent, not two spaces, so the stub widens 53 twips;
+# nothing else in the part moved (diffed against the S407 delivery).
 check("L10 document.xml and styles.xml pinned by their checksums",
-      identical(unname(tools::md5sum(file.path(.lx, "word", "document.xml"))), "dfe328f1530d3aa51da7c818279388aa") &&
+      identical(unname(tools::md5sum(file.path(.lx, "word", "document.xml"))), "b2c3731b4e7f3dd1c7370784dff2679e") &&
         identical(unname(tools::md5sum(file.path(.lx, "word", "styles.xml"))), "48761045aed48494802a638a03d41c3e"))
 
 # The caption and the notes as PARAGRAPHS (the alternative placement), the
@@ -1911,7 +2075,7 @@ dir.create(.nud, recursive = TRUE)
        wduse = .jst_style_key(.jst_style_resolve("useronly"), "general", "font"),
        path  = .jst_style_key(.jst_style_resolve(file.path(.nud, "dupe")), "general", "font"),
        pathx = .jst_style_key(.jst_style_resolve(file.path(.nud, "dupe.jstyle")), "general", "font"),
-       apa   = .jst_style_key(.jst_style_resolve("APA"), "general", "font"),
+       apa   = .jst_style_key(res(.jst_style_resolve("APA"))$val, "general", "font"),
        files = names(.jst_style_files()))
 })
 .n3u <- .jst_style_key(.jst_style_resolve("useronly"), "general", "font")
@@ -1921,6 +2085,11 @@ check("N03 a name is looked for in the style folder, then the working directory,
         identical(.n3$path, "B") && identical(.n3$pathx, "B") &&
         identical(.n3$apa, "Times New Roman") &&
         !"apa" %in% .n3$files && sum(tolower(.n3$files) == "dupe") == 1L)
+# The shadow file goes now (S407): since v0.9.275 a call that takes the
+# built-in apa while an apa.jstyle sits in a folder searched says the file
+# is passed over (section AP), which every later default-style call here
+# would print.
+unlink(file.path(.ns, "apa.jstyle"))
 
 # based.on: a chain, each layer read in turn; the derived file's general
 # part outranks the base's section (the reference, Part 3.2).
@@ -2076,11 +2245,13 @@ check("O02 jstyle(name) prints every setting in the style file's own form, the g
 .o3s <- .jst_style_resolve("copyapa")
 .o3same <- all(unlist(lapply(names(.jst_style_apa), function(p) vapply(names(.jst_style_spec[[p]]), function(k)
   identical(.jst_style_key(.o3s, p, k), .jst_style_key(.jst_style_resolve("apa"), p, k)), logical(1)))))
-check("O03 jstyle(\"apa\", save.as = ) writes <name>.jstyle into the style folder: its header (since S406 saying to change values only, for a person or an AI assistant), the format and written.by stamps and based.on = apa, then every setting of every part after a note on what it does and one on what it takes (S406); read back, every setting is apa's; the written line names the file",
+check("O03 jstyle(\"apa\", save.as = ) writes <name>.jstyle into the style folder: its header (since S406 saying to change values only, for a person or an AI assistant; since the S407 rebuild the file's name on a line of its own, then one sentence a line), the format and written.by stamps and based.on = apa, then every setting of every part after a note on what it does and one on what it takes (S406); read back, every setting is apa's; the written line names the file",
       file.exists(.o3f) &&
-        identical(.o3t[1], "# copyapa.jstyle: a jstats table style.") &&
-        identical(.o3t[2], "# Every setting jstats has is below, each after a note saying what it") &&
-        identical(.o3t[5], "# with # is a note. jstyle(\"copyapa\") checks the file and names any value") &&
+        identical(.o3t[1:6], c("# copyapa.jstyle:", "# A jstats table style.",
+                               "# Every setting jstats has is below, each after a note saying what it does and what it takes.",
+                               "# Change only the values after the = signs; do not add, rename or remove a setting or a section.",
+                               "# A line that starts with # is a note.",
+                               "# jstyle(\"copyapa\") checks the file and names any value it cannot use.")) &&
         "format     = 1" %in% .o3t &&
         paste0("written.by = jstats ", .jst_jstats_version()) %in% .o3t &&
         "based.on   = apa" %in% .o3t &&
@@ -2088,8 +2259,8 @@ check("O03 jstyle(\"apa\", save.as = ) writes <name>.jstyle into the style folde
         identical(.o3t[match("font = Times New Roman", .o3t) - 2:1],
                   c("# the typeface of every cell, caption and note", "# takes: any text")) &&
         identical(.o3t[match("header.fill = none", .o3t) - 2:1],
-                  c("# takes: a color name such as lightblue, or six hex digits such as ADD8E6;",
-                    "#   or none")) &&
+                  c("# a color filling the header cells, or none",
+                    "# takes: a color name such as lightblue, or six hex digits such as ADD8E6; or none")) &&
         "stars = .05, .01, .001" %in% .o3t && "percent.label = %" %in% .o3t &&
         sum(grepl("^[a-z][a-z0-9.]* = ", .o3t) & !grepl("^(format|written.by|based.on) ", .o3t)) ==
           sum(lengths(lapply(.jst_style_spec, names))) &&
@@ -2306,8 +2477,14 @@ check("P10 a column of numbers is centered under its head: under the wide Cumula
 # S403 (v0.9.272): re-pinned -- the stub column is set by the data rows'
 # labels alone (a variable's label row spans the table), so Table 2's
 # stub is a little narrower; nothing else in the part moved.
+# S407 rebuild (v0.9.275): re-pinned -- the categories' 180-twip indent
+# measured as written, not as two spaces: the stub 53 twips wider, every
+# cell's width with it; nothing else moved (diffed against the delivery).
+# S407 second rebuild: re-pinned -- the variables' label rows set the stub
+# (Jeff), "Highest education level" the widest: the stub 46 twips wider;
+# nothing else moved (diffed against the first rebuild).
 check("P11 document.xml of the frequency table pinned by its checksum",
-      identical(unname(tools::md5sum(file.path(.p9x, "word", "document.xml"))), "91ddd35f7ff8bb30b28c5c43f4ce5e69"))
+      identical(unname(tools::md5sum(file.path(.p9x, "word", "document.xml"))), "1b50a0ddc36ac3451e325969e9cb935e"))
 
 # =============================================================================
 # Q. joptions(style = , style.dir = )
@@ -4391,13 +4568,13 @@ cat("\n--- AN. A short style file ---\n")
                    regression = list(fit.rows = c("r2", "n")),
                    descriptives = list(columns = c("n", "mean", "sd"))))
 .an1l <- if (file.exists(paste0(.an1f, ".jstyle"))) readLines(paste0(.an1f, ".jstyle"), encoding = "UTF-8") else ""
-check("AN01 settings given to jstyle(save.as =) write a short file, pinned whole: a header saying it holds only the settings that differ, the stamps, based.on naming the style copied, then the general settings, then each section's under its heading (in the file's order), each after its note on what it does and what it takes; a color as typed",
-      identical(.an1l, c("# mine.jstyle: a jstats table style, based on apa.",
-                         "# It holds only the settings that differ; every other setting comes from",
-                         "# the style based.on names. ?jstyle_settings lists every setting and what",
-                         "# it takes. Change only the values after the = signs, or add a setting",
-                         "# from that list. jstyle(\"mine\") checks the file and names any value",
-                         "# it cannot use.",
+check("AN01 settings given to jstyle(save.as =) write a short file, pinned whole: a header (since the S407 rebuild the file's name on a line of its own, then one sentence a line) saying it holds only the settings that differ, the stamps, based.on naming the style copied, then the general settings, then each section's under its heading (in the file's order), each after its note on what it does and what it takes; a color as typed",
+      identical(.an1l, c("# mine.jstyle:",
+                         "# A jstats table style, based on apa, the style built into jstats.",
+                         "# It lists only the settings that differ from apa; any setting not listed here takes apa's value.",
+                         "# ?jstyle_settings lists every setting and what it takes.",
+                         "# Change only the values after the = signs, or add a setting from that list.",
+                         "# jstyle(\"mine\") checks the file and names any value it cannot use.",
                          "",
                          "format     = 1",
                          paste0("written.by = jstats ", .jst_jstats_version()),
@@ -4407,8 +4584,7 @@ check("AN01 settings given to jstyle(save.as =) write a short file, pinned whole
                          "# takes: a number from 6 to 72",
                          "size = 11",
                          "# a color filling the header cells, or none",
-                         "# takes: a color name such as lightblue, or six hex digits such as ADD8E6;",
-                         "#   or none",
+                         "# takes: a color name such as lightblue, or six hex digits such as ADD8E6; or none",
                          "header.fill = lightblue",
                          "",
                          "[descriptives]",
@@ -4417,10 +4593,8 @@ check("AN01 settings given to jstyle(save.as =) write a short file, pinned whole
                          "columns = n, mean, sd",
                          "",
                          "[regression]",
-                         "# the fit rows under the predictors, in order: r2, adj.r2, f,",
-                         "# delta.r2 (nested models), f.change (its F test), n, or none",
-                         "# takes: one or more of r2, adj.r2, f, delta.r2, f.change, n, in order,",
-                         "#   separated by commas; or none",
+                         "# the fit rows under the predictors, in order: r2, adj.r2, f, delta.r2 (nested models), f.change (its F test), n, or none",
+                         "# takes: one or more of r2, adj.r2, f, delta.r2, f.change, n, in order, separated by commas; or none",
                          "fit.rows = r2, n")) &&
         identical(gsub("\\s+", " ", .an1$txt),
                   paste0("Style written to ", .jst_norm_path(paste0(.an1f, ".jstyle")), " ")))
@@ -4450,7 +4624,7 @@ check("AN02 the short file reads back: jstyle() shows its four settings as set t
                  invisible(res(jtable(.akd1, style = file.path(.akd, "gs.jstyle"), file = f, print = FALSE)))
                  .alsz(.alx(f)) })
 check("AN03 a style given by path is named by its path in based.on, and the copy reads through it (its own size, the first file's fit rows); a general setting given in a section's list is written under that section and changes only that table type",
-      identical(.an3l[1], "# mine2.jstyle: a jstats table style, based on mine.") &&
+      identical(.an3l[1:2], c("# mine2.jstyle:", "# A jstats table style, based on mine.")) &&
         identical(.an3l[10], paste0("based.on   = ", .jst_norm_path(paste0(.an1f, ".jstyle")))) &&
         identical(tail(.an3l, 3), c("# the text size, in points", "# takes: a number from 6 to 72", "size = 10")) &&
         grepl("\nsize             = 10\n", .an3p, fixed = TRUE) &&
@@ -4532,20 +4706,32 @@ check("AN06 the rewritten call runs as it stands: the short file holds both sett
   f <- file.path(.akd, "full.jstyle")
   if (file.exists(f)) readLines(f, encoding = "UTF-8") else ""
 })
-check("AN07 a complete copy: every setting after its \"# takes:\" note, a note running past 76 columns continued on lines opening \"#   \", no comment line wider than 76 columns",
+# S407 rebuild (v0.9.275): rewritten -- the notes are no longer wrapped at
+# 76 columns (Jeff, on the S407 walk: "each sentence should be on its own
+# line"); each "# takes:" is one line, each note a line per choice.
+check("AN07 a complete copy: every setting directly after its \"# takes:\" note, each on one line however long, no line opening \"#   \"; a setting's note one line, or one line per choice where it lists them (caption.form's apa, journal and report), a note held in several lines joined (leading.zero's, the longest); ?jstyle_settings joining the same lines, the choices with \"|\"",
       local({
         sets <- grep("^[a-z][a-z0-9.]* *= ", .an7)
         sets <- sets[!grepl("^(format|written\\.by|based\\.on) ", .an7[sets])]
         takes <- grep("^# takes: ", .an7)
-        ok_each <- vapply(sets, function(i) {
-          j <- i - 1L
-          while (j > 0L && grepl("^#   ", .an7[j])) j <- j - 1L
-          j > 0L && startsWith(.an7[j], "# takes: ")
-        }, logical(1))
-        length(sets) == length(takes) && all(ok_each) &&
-          all(nchar(grep("^#", .an7, value = TRUE)) <= 76L) &&
-          any(grepl("^#   ", .an7))
-      }))
+        lz <- match("leading.zero = no", .an7)
+        cf <- match("caption.form = apa", .an7)
+        length(sets) == length(takes) && identical(takes, sets - 1L) &&
+          !any(grepl("^#   ", .an7)) &&
+          identical(.an7[lz - 2L], paste0("# ", paste(.jst_style_spec$general$leading.zero$about,
+                                                      collapse = " "))) &&
+          identical(.an7[cf - 4:2], paste0("# ", .jst_style_spec$general$caption.form$about)) &&
+          max(nchar(.an7)) > 100L
+      }) &&
+        local({
+          # The settings help page joins the same lines: a choice set off
+          # with "|", any other line run on with a space.
+          rd <- paste(.jst_style_settings_rd(), collapse = "\n")
+          grepl("on the next line | journal: bold \"Table 1.\" and the title on one line | report: ",
+                rd, fixed = TRUE) &&
+            grepl("that cannot exceed 1, such as p (.23) | yes keeps it (0.23) | never drops it on every number",
+                  rd, fixed = TRUE)
+        }))
 
 # =============================================================================
 # AO. Exports, the settings help page, the orientation, and saving a result
@@ -4611,7 +4797,438 @@ check("AO04 jsave() given a result or a built table stops with the base R lines 
         endsWith(gsub("\\s+", " ", .ao4$lm), "m1.rds\")") &&
         startsWith(.ao4$lt, "[error] jload(): t1.rds holds a table jtable() built, not a data frame.\n"))
 
-unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd), recursive = TRUE)
+# =============================================================================
+# AP. The release build (S407): two codes with one label; the reserved
+#     style name; a file named like the built-in; each table's font
+# =============================================================================
+cat("\n--- AP. Two codes with one label, the reserved name, the passed-over file, each table's font ---\n")
+
+# Codes 1 and 2 both labelled "Other": each its own row and group, shown
+# with its code where the labels collide (the (S399) item; the lean's
+# default). Expected values come from the codes, never from the package.
+.apw <- data.frame(G = haven::labelled(rep(c(1, 2, 3), each = 4),
+                                       c(Other = 1, Other = 2, Third = 3)),
+                   Y = c(1, 2, 3, 2, 10, 11, 12, 11, 5, 6, 7, 6),
+                   H = rep(c(1, 2), 6))
+.apc <- as.numeric(unclass(.apw$G))
+.apm <- as.numeric(tapply(.apw$Y, .apc, mean))
+
+.ap1 <- lapply(c(labels = "labels", both = "both", values = "values"), function(m)
+  res(jfreq(.apw, G, value.id = m)))
+.ap1v <- lapply(.ap1, function(r) r$val$frequencies$G$valid)
+check("AP01 jfreq(): two codes with one label are two rows, each counted on its own code; under value.id = \"labels\" they show their codes (\"1: Other\", \"2: Other\") and a label no other code shares stays alone; Code and Label as the cells hold them",
+      all(vapply(.ap1v, function(v) identical(as.integer(v$Freq), as.integer(table(.apc))), logical(1))) &&
+        identical(.ap1v$labels$Value, c("1: Other", "2: Other", "Third")) &&
+        identical(.ap1v$both$Value, c("1: Other", "2: Other", "3: Third")) &&
+        identical(.ap1v$values$Value, c("1", "2", "3")) &&
+        identical(as.numeric(.ap1v$labels$Code), c(1, 2, 3)) &&
+        identical(.ap1v$labels$Label, c("Other", "Other", "Third")) &&
+        grepl("\n1: Other +4 ", .ap1$labels$txt) && grepl("\n2: Other +4 ", .ap1$labels$txt))
+
+.apz <- data.frame(Q = haven::labelled(c(1, 1, 1, 2, 2, 3),
+  c("Agree that the policy should be enforced strictly" = 1,
+    "Agree that the policy should be enforced loosely" = 2, Disagree = 3)))
+.ap2 <- res(jfreq(.apz, Q, value.id = "labels"))$val$frequencies$Q$valid
+.aph <- data.frame(K = haven::labelled(c(1, 1, 3, 3), c(Other = 1, Other = 2, Third = 3)))
+.ap2z <- res(jfreq(.aph, K, value.id = "labels"))$val$frequencies$K$valid
+.aplt <- paste("A long text code that runs well past forty columns:", c("one", "two"))
+.apt <- data.frame(T = haven::labelled(.aplt[c(1, 1, 2)], c(First = .aplt[1])))
+.ap2t <- res(jfreq(.apt, T, value.id = "values"))$val$frequencies$T$valid
+check("AP02 jfreq(): two long labels the 40-column cap cuts alike are two rows, each with its code; a labelled value no case holds shares its label with a code that has cases and both rows show their codes, the empty one counted 0; two long text codes the cap cuts alike under value.id = \"values\" are two rows, shown whole",
+      !is.null(.ap2) && identical(as.integer(.ap2$Freq), c(3L, 2L, 1L)) &&
+        startsWith(.ap2$Value[1], "1: Agree that the policy") &&
+        startsWith(.ap2$Value[2], "2: Agree that the policy") &&
+        identical(.ap2$Value[3], "Disagree") &&
+        all(nchar(.ap2$Value, type = "width") <= 40L) &&
+        !is.null(.ap2z) && identical(.ap2z$Value, c("1: Other", "2: Other", "Third")) &&
+        identical(as.integer(.ap2z$Freq), c(2L, 0L, 2L)) &&
+        !is.null(.ap2t) && identical(.ap2t$Value, .aplt) &&
+        identical(as.integer(.ap2t$Freq), c(2L, 1L)))
+
+.apw2 <- .apw[.apc != 3, ]
+.ap3 <- res(jt(Y ~ G, .apw2, value.id = "labels"))
+.ap3t <- stats::t.test(.apw2$Y[.apc[.apc != 3] == 1], .apw2$Y[.apc[.apc != 3] == 2],
+                       var.equal = TRUE)
+check("AP03 jt(): two codes with one label are the test's two groups -- the t of the cases on code 1 against those on code 2 -- each shown with its code, where the test stopped on one category",
+      !is.null(.ap3$val) && !grepl("[error]", .ap3$txt, fixed = TRUE) &&
+        isTRUE(all.equal(as.numeric(.ap3$val$t), as.numeric(.ap3t$statistic))) &&
+        identical(.ap3$val$descriptives$Group, c("1: Other", "2: Other")) &&
+        identical(as.numeric(.ap3$val$descriptives_raw$group_code), c(1, 2)))
+
+.ap4 <- res(jaov(Y ~ G, .apw, value.id = "labels", posthoc = TRUE))
+.ap4b <- res(jaov(Y ~ G, .apw))$val
+.ap4f <- stats::anova(stats::lm(.apw$Y ~ factor(.apc)))
+check("AP04 jaov(): three codes, two sharing a label, are three groups with their own means, each printed beside its own code (the third, \"Third\", was printed as \"2: Other\"); the F is the codes' F; the post-hoc pairs name the codes",
+      !is.null(.ap4$val) &&
+        isTRUE(all.equal(as.numeric(.ap4$val$f), .ap4f[["F value"]][1])) &&
+        identical(.ap4$val$descriptives$Group, c("1: Other", "2: Other", "Third")) &&
+        identical(.ap4b$descriptives$Group, c("1: Other", "2: Other", "3: Third")) &&
+        isTRUE(all.equal(.ap4$val$descriptives_raw$mean, .apm)) &&
+        identical(as.numeric(.ap4$val$descriptives_raw$group_code), c(1, 2, 3)) &&
+        identical(sort(paste(.ap4$val$posthoc$group1_code, .ap4$val$posthoc$group2_code)),
+                  c("2 1", "3 1", "3 2")))
+
+.ap5 <- res(jcrosstab(G ~ H, .apw, value.id = "labels"))
+.ap5d <- res(jdesc(.apw, Y, by = G, value.id = "labels"))
+check("AP05 jcrosstab() and jdesc(by =): a row per code, counted on the codes, its code beside a shared label; the grouped descriptives one group per code with its own mean",
+      !is.null(.ap5$val) &&
+        identical(as.numeric(.ap5$val$row_categories$code), c(1, 2, 3)) &&
+        identical(unname(as.matrix(unclass(.ap5$val$observed))),
+                  unname(as.matrix(unclass(table(.apc, .apw$H))))) &&
+        grepl("\n1: Other ", .ap5$txt) && grepl("\n2: Other ", .ap5$txt) &&
+        !is.null(.ap5d$val) &&
+        identical(as.numeric(.ap5d$val$descriptives_raw$group_code), c(1, 2, 3)) &&
+        isTRUE(all.equal(.ap5d$val$descriptives_raw$mean, .apm)) &&
+        grepl("\n1: Other ", .ap5d$txt) && grepl("\n2: Other ", .ap5d$txt))
+
+.ap6 <- res(jplot(.apw, G))$val
+.ap6b <- res(jplot(.apw, Y, by = G))$val
+.ap6f <- res(jplot(.apw, H, facet = G))$val
+.ap6a <- res(jaov(Y ~ G, .apw, print = FALSE))$val
+.ap6r <- res(jplot(.ap6a))$val
+# A result whose table does not match its groups (one an older version
+# made, here its last row cut) keeps the plot's own names for the groups.
+.ap6o <- .ap6a; .ap6o$descriptives <- .ap6o$descriptives[1:2, ]
+.ap6or <- res(jplot(.ap6o))$val
+.ap6lv <- c("1: Other", "2: Other", "Third")
+check("AP06 jplot(): a bar for each code, a group for each code under by =, a panel for each under facet =, and a box for each in a jaov() result's plot (and in an older result's, by the plot's own names) -- two codes with one label named with their codes",
+      identical(levels(.ap6or$data$group), .ap6lv) &&
+      inherits(.ap6, "ggplot") &&
+        identical(levels(.ap6$data[[1]]), .ap6lv) &&
+        identical(as.integer(table(.ap6$data[[1]])), as.integer(table(.apc))) &&
+        identical(levels(.ap6b$data$by), .ap6lv) &&
+        identical(levels(.ap6f$data$facet), .ap6lv) &&
+        identical(levels(.ap6r$data$group), c("1: Other", "2: Other", "3: Third")) &&
+        identical(as.integer(table(.ap6r$data$group)), as.integer(table(.apc))))
+
+# The factor the analyses make agrees with haven::as_factor() wherever no
+# two codes share a label: every labelled column of community, its
+# declared missing values masked as an analysis masks them; and a declared
+# missing value still live is missing, not a level (haven::as_factor()
+# makes it one).
+.ap7cols <- names(tcm)[vapply(tcm, haven::is.labelled, logical(1))]
+.ap7s <- haven::labelled_spss(c(1, 2, -99, 1), c(A = 1, B = 2, Refused = -99), na_values = -99)
+check("AP07 .jst_code_factor() names a labelled variable's categories as haven::as_factor() does where no two codes share a label (every labelled column of community, declared missing values masked), and a declared missing value still live is missing, not a level",
+      length(.ap7cols) >= 3L &&
+        all(vapply(.ap7cols, function(v) {
+          a <- droplevels(haven::as_factor(haven::zap_missing(tcm[[v]])))
+          b <- .jst_code_factor(tcm[[v]])
+          identical(levels(a), levels(b)) && identical(as.character(a), as.character(b))
+        }, logical(1))) &&
+        identical(levels(.jst_code_factor(.ap7s)), c("A", "B")) &&
+        is.na(.jst_code_factor(.ap7s)[3]) &&
+        # The last resort: a text code that reads as another code's "code:
+        # label" name still makes a category of its own.
+        local({
+          f <- .jst_code_factor(haven::labelled(c("1", "2", "1: X"), c(X = "1", X = "2")))
+          nlevels(f) == 3L && all(as.integer(table(f)) == 1L)
+        }))
+
+.ap8f <- res(jtable(.ap1$labels$val, print = FALSE))$val
+.ap8a <- res(jtable(.ap4b, print = FALSE))$val
+.ap8x <- res(jtable(.ap5$val, print = FALSE))$val
+check("AP08 the tables: a frequency table's rows, an ANOVA table's group heads and its n sentence, and a crosstab's rows name two codes with one label by code and label",
+      identical(vapply(.ap8f$rows, `[[`, "", "label")[-1], c("1: Other", "2: Other", "Third")) &&
+        identical(vapply(.ap8a$spanners[[2]], `[[`, "", "label"), c("1: Other", "2: Other", "Third")) &&
+        identical(.jst_table_note_lines(.ap8a, .ap8a$style, plain = TRUE),
+                  "Note. n = 4 (1: Other), 4 (2: Other), and 4 (Third).") &&
+        identical(vapply(.ap8x$rows, `[[`, "", "label")[-1], c("1: Other", "2: Other", "Third")))
+
+# The reserved name, and a file named like the built-in (the (S406) item
+# and the lean's default: one note where the file is passed over).
+.apd <- file.path(tempdir(), "tables_check_s407"); unlink(.apd, recursive = TRUE); dir.create(.apd)
+options(.jst_options_style_dir = .apd)
+.ap9 <- list(r = res(jstyle("apa", save.as = "report"))$txt,
+             R = res(jstyle("apa", save.as = file.path(.apd, "REPORT"), size = 11))$txt,
+             my = res(jstyle("apa", save.as = "myreport", size = 11))$txt)
+check("AP09 jstyle(save.as =) refuses \"report\", the name of a built-in a later version adds, in any case and with a folder, as it refuses \"apa\", writing nothing; \"myreport\" is written",
+      identical(.ap9$r, paste0("[error] jstyle(): \"report\" is the name of a built-in style a later version\n",
+                               "of jstats adds.\n",
+                               "Give the copy another name, for example:\n",
+                               "  jstyle(\"apa\", save.as = \"myreport\")")) &&
+        identical(.ap9$R, sub("\"report\"", "\"REPORT\"", .ap9$r, fixed = TRUE)) &&
+        !any(grepl("^report\\.jstyle$", list.files(.apd), ignore.case = TRUE)) &&
+        file.exists(file.path(.apd, "myreport.jstyle")))
+
+.wsty("apa", "font = Shadow", dir = .apd)
+.wsty("onapa", "based.on = apa", "size = 11", dir = .apd)
+.apnote <- paste0("This file is not read, since \"apa\" always names jstats's built-in style:\n",
+                  "  ", .jst_norm_path(file.path(.apd, "apa.jstyle")), "\n",
+                  "To use it, rename it, for example to myapa.jstyle, and use style = \"myapa\".")
+# A note is kept off res()'s text (guard 4); .apmsg() reads the notes a
+# call raises as well, leaving res() to record them for the sweep. Both
+# are read without color (a session with jstats.color = TRUE).
+.apmsg <- function(expr) {
+  m <- character(0)
+  r <- res(withCallingHandlers(expr, message = function(c) m <<- c(m, conditionMessage(c))))
+  r$txt <- .strip_ansi(r$txt)
+  c(r, list(msg = .strip_ansi(m)))
+}
+.ap10 <- list(sty = .apmsg(jstyle("apa")), tab = .apmsg(jtable(jdesc(tcm, Age, print = FALSE))),
+              lst = .apmsg(jstyle()), on = .apmsg(.jst_style_resolve("onapa")))
+unlink(file.path(.apd, "apa.jstyle"))
+.ap10x <- .apmsg(jstyle("apa"))
+check("AP10 a file named apa.jstyle in a folder searched is passed over with one note naming it, a blank line after -- where a call names the built-in or takes it as the session's style (jstyle(\"apa\"), jtable()), and under jstyle()'s list -- not where a file's based.on reaches apa; gone with the file",
+      identical(.ap10$sty$msg, paste0(.apnote, "\n")) &&
+        startsWith(.ap10$sty$txt, "\nStyle: apa\n") &&
+        identical(.jst_style_key(.ap10$sty$val, "general", "font"), "Times New Roman") &&
+        identical(.ap10$tab$msg, paste0(.apnote, "\n")) &&
+        startsWith(.ap10$tab$txt, "\nTable 1. ") &&
+        identical(.ap10$lst$msg, paste0(.apnote, "\n")) &&
+        !any(grepl("is not read", .ap10$on$msg, fixed = TRUE)) &&
+        identical(.jst_style_key(.ap10$on$val, "general", "size"), 11) &&
+        !any(grepl("is not read", .ap10x$msg, fixed = TRUE)) &&
+        startsWith(.ap10x$txt, "Style: apa\n"))
+options(.jst_options_style_dir = .ns)
+
+# Each table keeps its own style's font in a document of tables built under
+# two styles (the (S406) item): read from the runs of document.xml.
+.wsty("arial11", "font = Arial", "size = 11", dir = .apd)
+.ap11a <- jtable(jdesc(tcm, Age, Income, print = FALSE), print = FALSE)
+.ap11b <- jtable(jfreq(tcm, Region, print = FALSE), style = file.path(.apd, "arial11.jstyle"),
+                 print = FALSE)
+.apdoc <- function(tabs, f) {
+  p <- file.path(.apd, f)
+  res(jtable(tabs, file = p, print = FALSE, overwrite = TRUE))
+  x <- function(part) {
+    d <- utils::unzip(p, part, exdir = tempfile("apx"))
+    paste(readLines(d, warn = FALSE, encoding = "UTF-8"), collapse = "")
+  }
+  doc <- x("word/document.xml")
+  list(tbl = regmatches(doc, gregexpr("<w:tbl>.*?</w:tbl>", doc, perl = TRUE))[[1]],
+       body = doc,
+       def = regmatches(x("word/styles.xml"), regexpr("(?<=<w:rFonts w:ascii=\")[^\"]+", x("word/styles.xml"), perl = TRUE)))
+}
+.apcount <- function(s, pat) lengths(regmatches(s, gregexpr(pat, s, fixed = TRUE)))
+.ap11 <- .apdoc(list(.ap11a, .ap11b), "two_fonts.docx")
+.ap11r <- .apdoc(list(.ap11b, .ap11a), "two_fonts_r.docx")
+.ap11s <- .apdoc(.ap11a, "one_font.docx")
+.aprf <- function(f) paste0("<w:rFonts w:ascii=\"", f, "\" w:hAnsi=\"", f, "\" w:cs=\"", f,
+                            "\" w:eastAsia=\"", f, "\"/>")
+check("AP11 a document of tables built under two styles: the defaults are the first table's; the other table names its own font on every run and paragraph mark, and its size on the marks that carry none; a table in the document's font names none, as a single table's file names none",
+      length(.ap11$tbl) == 2L && identical(.ap11$def, "Times New Roman") &&
+        !grepl("<w:rFonts", .ap11$tbl[1], fixed = TRUE) &&
+        .apcount(.ap11$tbl[2], "<w:r>") == .apcount(.ap11$tbl[2], paste0("<w:r><w:rPr>", .aprf("Arial"))) &&
+        .apcount(.ap11$tbl[2], "</w:pPr>") == .apcount(.ap11$tbl[2], paste0("<w:rPr>", .aprf("Arial"))) - .apcount(.ap11$tbl[2], "<w:r>") &&
+        !grepl("<w:pPr>(?:(?!</w:pPr>).)*<w:rPr><w:rFonts[^>]*/></w:rPr></w:pPr>", .ap11$tbl[2], perl = TRUE) &&
+        identical(.ap11r$def, "Arial") && !grepl("<w:rFonts", .ap11r$tbl[1], fixed = TRUE) &&
+        .apcount(.ap11r$tbl[2], "<w:r>") == .apcount(.ap11r$tbl[2], paste0("<w:r><w:rPr>", .aprf("Times New Roman"))) &&
+        !grepl("<w:rFonts", .ap11s$body, fixed = TRUE))
+
+.apx <- paste0("<w:p><w:pPr><w:jc w:val=\"left\"/></w:pPr><w:r><w:t>a</w:t></w:r>",
+               "<w:r><w:rPr><w:b/></w:rPr><w:t>b</w:t></w:r></w:p>",
+               "<w:p><w:pPr><w:rPr><w:sz w:val=\"18\"/></w:rPr></w:pPr></w:p>")
+check("AP12 .jst_docx_retype(): nothing to change leaves the XML as it was; a font goes first in every run's properties and every paragraph mark's, a size only on the marks that carry none",
+      identical(.jst_docx_retype(.apx), .apx) &&
+        identical(.jst_docx_retype(.apx, font = "Arial", size = 11),
+                  paste0("<w:p><w:pPr><w:jc w:val=\"left\"/><w:rPr>", .aprf("Arial"),
+                         "<w:sz w:val=\"22\"/><w:szCs w:val=\"22\"/></w:rPr></w:pPr>",
+                         "<w:r><w:rPr>", .aprf("Arial"), "</w:rPr><w:t>a</w:t></w:r>",
+                         "<w:r><w:rPr>", .aprf("Arial"), "<w:b/></w:rPr><w:t>b</w:t></w:r></w:p>",
+                         "<w:p><w:pPr><w:rPr>", .aprf("Arial"), "<w:sz w:val=\"18\"/></w:rPr></w:pPr></w:p>")) &&
+        identical(.jst_docx_retype(.apx, size = 11),
+                  sub("<w:pPr><w:jc w:val=\"left\"/></w:pPr>",
+                      "<w:pPr><w:jc w:val=\"left\"/><w:rPr><w:sz w:val=\"22\"/><w:szCs w:val=\"22\"/></w:rPr></w:pPr>",
+                      .apx, fixed = TRUE)))
+
+# The Word file's widths in the table's own font (the S407 rebuild, on
+# Jeff's walk: an Arial 11 table measured in Times wrapped its labels).
+# Expected widths come from the faces' published metrics, typed here in
+# thousandths of an em -- Times Roman for Times New Roman, Helvetica for
+# Arial -- never from the package's own tables.
+.aptimes <- c(a = 444, b = 500, c = 444, d = 500, e = 444, f = 333, g = 500, h = 500,
+              i = 278, j = 278, k = 500, l = 278, m = 778, n = 500, o = 500, p = 500,
+              q = 500, r = 333, s = 389, t = 278, u = 500, v = 500, w = 722, x = 500,
+              y = 500, z = 444, " " = 250, A = 722, B = 667, C = 667, D = 722,
+              F = 556, N = 722, R = 667, S = 556, T = 611, V = 722, Y = 722,
+              "%" = 833, "0" = 500, "1" = 500, ":" = 278,
+              "." = 250, "3" = 500)
+.aphelv <- c(a = 556, b = 556, c = 500, d = 556, e = 556, f = 278, g = 556, h = 556,
+             i = 222, j = 222, k = 500, l = 222, m = 833, n = 556, o = 556, p = 556,
+             q = 556, r = 333, s = 500, t = 278, u = 556, v = 500, w = 722, x = 500,
+             y = 500, z = 500, " " = 278, A = 667, B = 667, C = 722, D = 722,
+             F = 611, N = 722, R = 722, S = 667, T = 611, V = 667, Y = 667,
+             "%" = 889, "1" = 556,
+             "." = 278, "3" = 556)
+.apem <- function(s, tab) sum(tab[strsplit(s, "")[[1]]]) / 1000
+# A text's width in twips as the writer measures it: its ems, 6 percent
+# more, at the size's 20 twips a point (bold 8 percent more again).
+.aptw <- function(s, tab, pt, bold = 1) ceiling(.apem(s, tab) * 1.06 * pt * 20 * bold)
+.wsty("ar11", "font = Arial", "size = 11", dir = .apd)
+.wsty("boldhead", "header.bold = yes", dir = .apd)
+.apq <- data.frame(Q1 = haven::labelled(c(1, 1, 2, 3, 3, 3),
+                                        c("Strongly disagree" = 1, Neutral = 2,
+                                          "Strongly agree" = 3)),
+                   C = haven::labelled(c(1, 1, 2, 2, 2, 1), c(A = 1, B = 2)),
+                   S = haven::labelled(c(1, 1, 2, 2, 2, 1), c(Yes = 1, No = 2)),
+                   L = haven::labelled(c(1, 2, 2, 1, 2, 2), c("Reached by the agency through the post" = 1,
+                                                     Phone = 2)))
+attr(.apq$Q1, "label") <- "Q1"
+attr(.apq$C, "label") <- "Contact method used by the agency to reach you"
+.apgrid <- function(tbl, f) {
+  p <- file.path(.apd, f)
+  res(jtable(tbl, file = p, print = FALSE, overwrite = TRUE))
+  x <- utils::unzip(p, "word/document.xml", exdir = tempfile("apg"))
+  d <- paste(readLines(x, warn = FALSE, encoding = "UTF-8"), collapse = "")
+  list(g = as.integer(regmatches(d, gregexpr("(?<=<w:gridCol w:w=\")[0-9]+", d, perl = TRUE))[[1]]),
+       tabs = as.integer(unique(regmatches(d, gregexpr("(?<=<w:tab w:val=\"decimal\" w:pos=\")[0-9]+", d, perl = TRUE))[[1]])))
+}
+.apq1 <- res(jfreq(.apq, Q1, print = FALSE))$val
+.apqC <- res(jfreq(.apq, C, print = FALSE))$val
+.ap13t <- res(jtable(.apq1, print = FALSE))$val
+.ap13a <- res(jtable(.apq1, style = file.path(.apd, "ar11.jstyle"), print = FALSE))$val
+.ap13L <- res(jtable(res(jfreq(.apq, L, print = FALSE))$val, print = FALSE))$val
+.ap13fw <- res(lapply(list(none = NULL, empty = "", tnr = "Times New Roman", t = " times ",
+                           ls = "Liberation Serif", ar = "ARIAL", hv = "Helvetica",
+                           ca = "Calibri", cr = "carlito", vd = "Verdana"),
+                      function(f) .jst_docx_font_widths(f)))$val
+check("AP13 the widths a table is measured in follow its font: Times New Roman's for that face, its kin and no font named (as before); Arial's for Arial and Helvetica, in any case; Calibri's (its own metrics, as Carlito gives them) for Calibri and Carlito; for any other face each character at least as wide as in all three; a text measured in Arial as its Helvetica metrics give; the stub's two-line floor measured in the font too",
+      identical(as.numeric(.ap13fw$none), as.numeric(.jst_docx_char_widths)) &&
+        identical(attr(.ap13fw$none, "other"), 500) &&
+        all(vapply(.ap13fw[c("empty", "tnr", "t", "ls")], identical, logical(1), .ap13fw$none)) &&
+        identical(.ap13fw$ar, .ap13fw$hv) && identical(.ap13fw$ca, .ap13fw$cr) &&
+        !identical(.ap13fw$ar, .ap13fw$none) && !identical(.ap13fw$ca, .ap13fw$ar) &&
+        all(.ap13fw$ar[names(.aphelv)] == .aphelv) && all(.ap13fw$none[names(.aptimes)] == .aptimes) &&
+        all(.ap13fw$ca[c("a", "e", "n", "o", "3", "%")] == c(479, 498, 525, 527, 507, 715)) &&
+        all(.ap13fw$vd[names(.ap13fw$none)] >= pmax(.ap13fw$none, .ap13fw$ar[names(.ap13fw$none)],
+                                                    .ap13fw$ca[names(.ap13fw$none)])) &&
+        isTRUE(all.equal(.jst_docx_em_width("Strongly disagree", "Arial"),
+                         .apem("Strongly disagree", .aphelv) * 1.06)) &&
+        isTRUE(all.equal(.jst_docx_em_width("Strongly disagree"),
+                         .apem("Strongly disagree", .aptimes) * 1.06)) &&
+        .jst_docx_stub_floor(.ap13L, 11, 4000L, font = "Arial") >
+          .jst_docx_stub_floor(.ap13L, 11, 4000L) &&
+        .jst_docx_stub_floor(.ap13L, 11, 4000L) > 2160L)
+
+.ap14t <- .apgrid(.ap13t, "q1_times.docx")
+.ap14a <- .apgrid(.ap13a, "q1_arial.docx")
+.ap14x <- function(tab, pt) {
+  w <- max(.aptw("33.3", tab, pt), .aptw("%", tab, pt)) + 216 + 120
+  inner <- w - 216
+  head <- .aptw("33", tab, pt); tail <- .aptw(".3", tab, pt)
+  c(width = w, tab = max(head, min(inner - tail - 40, floor((inner + head - tail) / 2))))
+}
+check("AP14 the Word file measures each label in the table's font beside its indent as written (180 twips a level; until this build two spaces): the stub of a frequency table in apa and in an Arial 11 style holds its widest category, the % column its numbers, its decimal stop placed from the same widths",
+      identical(.ap14t$g[1], as.integer(.aptw("Strongly disagree", .aptimes, 12) + 180 + 216)) &&
+        identical(.ap14a$g[1], as.integer(.aptw("Strongly disagree", .aphelv, 11) + 180 + 216)) &&
+        identical(.ap14t$g[3], as.integer(.ap14x(.aptimes, 12)[["width"]])) &&
+        identical(.ap14a$g[3], as.integer(.ap14x(.aphelv, 11)[["width"]])) &&
+        as.integer(.ap14x(.aptimes, 12)[["tab"]]) %in% .ap14t$tabs &&
+        as.integer(.ap14x(.aphelv, 11)[["tab"]]) %in% .ap14a$tabs &&
+        !(as.integer(.ap14x(.aptimes, 11)[["tab"]]) %in% .ap14a$tabs))
+
+.ap15 <- .apgrid(res(jtable(.apqC, print = FALSE))$val, "c_times.docx")
+.ap15t <- res(jtable(.apqC, print = FALSE))$val
+.ap15n <- .ap15t; .ap15n$rows <- Filter(function(r) !identical(r$kind, "heading"), .ap15n$rows)
+# Fitted to a page too narrow for the label: the label row spans the
+# table, so the stub narrows past it at the table's own size (the floor
+# and the report read the data rows); and a page between the data rows'
+# measure and the label's keeps the table portrait.
+.ap15s <- .jst_table_style(.ap15t, "apa")
+.ap15o <- sum(.jst_docx_widths(.ap15t, .ap15s, size = 12, pad = 60L)[-1L])
+.ap15f <- res(.jst_docx_fit(.ap15t, .ap15s, .ap15o + 2500L))$val
+.ap15r <- res(.jst_table_page_text(.ap15t, list(landscape = FALSE, fit = .ap15f,
+                                                style = .ap15s, size0 = 12)))$val
+.ap15x <- res(local({
+  x <- .ap15t; k <- 0L
+  repeat {
+    k <- k + 1L
+    x$columns$label[3] <- strrep("x", k)
+    w <- .jst_docx_widths(x, .ap15s, size = 12, pad = 60L)
+    if (sum(w[-1L]) >= .jst_docx_page("a4", FALSE)$text - 1800L || k > 300L) break
+  }
+  list(tbl = x, w = w, lay = .jst_docx_layout(list(x), .jst_style_resolve("apa")))
+}))$val
+check("AP15 a variable's label row sets the first column's width as a category's does, as the console's preview sets it (Jeff, on the S407 walk: the label \"should define the width of that first column\"): the stub as wide as the label, the n and % columns beside it as in AP14; in a table fitted to its page the label row spans the table, so the stub narrows past it at the table's size, the report not saying labels wrap, the two-line floor and the turn of the page read from the categories",
+      identical(.ap15$g[1], as.integer(.aptw("Contact method used by the agency to reach you", .aptimes, 12) + 216)) &&
+        identical(.ap15$g[-1], .ap14t$g[-1]) &&
+        identical(.jst_docx_stub_floor(.ap15t, 12, 4000L), .jst_docx_stub_floor(.ap15n, 12, 4000L)) &&
+        identical(.ap15f$size, 12) && identical(.ap15f$widths[1L], 2500L) &&
+        identical(.ap15r, "on a portrait page") &&
+        sum(.ap15x$w[-1L]) + .ap15x$w[1L] > .jst_docx_page("a4", FALSE)$text &&
+        isFALSE(.ap15x$lay[[1]]$landscape))
+
+.ap16 <- .apgrid(res(jtable(.apq1, style = file.path(.apd, "boldhead.jstyle"), print = FALSE))$val,
+                 "q1_bold.docx")
+.wsty("boldvar", "[frequencies]", "variable.headings = bold", dir = .apd)
+.ap16v <- .apgrid(res(jtable(.apqC, style = file.path(.apd, "boldvar.jstyle"), print = FALSE))$val,
+                  "c_bold.docx")
+check("AP16 a header set bold is measured bold, about 8 percent wider: the n column, set by its head, widens; the same table in apa keeps the upright width; a variable's label row set bold sets the stub at its bold width",
+      identical(.ap16$g[2], as.integer(.aptw("n", .aptimes, 12, bold = 1.08) + 216 + 120)) &&
+        identical(.ap14t$g[2], as.integer(.aptw("n", .aptimes, 12) + 216 + 120)) &&
+        .ap16$g[2] > .ap14t$g[2] &&
+        identical(.ap16v$g[1], as.integer(.aptw("Contact method used by the agency to reach you",
+                                                .aptimes, 12, bold = 1.08) + 216)))
+
+# A table narrower than its title widens to it (the title is the table's
+# first row under caption.position = row), every column in proportion, as
+# far as the page; under caption.position = paragraph nothing moves.
+.wsty("parcap", "caption.position = paragraph", dir = .apd)
+.ap18s <- res(jfreq(.apq, S, print = FALSE))$val
+.ap18 <- .apgrid(res(jtable(.ap18s, print = FALSE))$val, "s_row.docx")
+.ap18p <- .apgrid(res(jtable(.ap18s, style = file.path(.apd, "parcap.jstyle"), print = FALSE))$val,
+                  "s_par.docx")
+.ap18L <- .apgrid(res(jtable(.ap18s, title = paste(rep("Frequency Distributions", 6), collapse = " "),
+                             print = FALSE))$val, "s_long.docx")
+.ap18nat <- as.integer(c(.aptw("Variable", .aptimes, 12) + 216, .aptw("n", .aptimes, 12) + 336,
+                         .aptw("33.3", .aptimes, 12) + 336))
+.ap18to <- as.integer(.aptw("Frequency Distributions", .aptimes, 12) + 216)
+.wsty("jcap", "caption.form = journal", dir = .apd)
+.wsty("rcap", "caption.form = report", dir = .apd)
+.ap18t <- res(jtable(.ap18s, print = FALSE))$val
+.ap18cw <- res(vapply(c(apa = "apa", journal = file.path(.apd, "jcap.jstyle"),
+                        report = file.path(.apd, "rcap.jstyle")),
+                      function(s) .jst_docx_caption_width(.ap18t, .jst_style_resolve(s), 1L),
+                      integer(1)))$val
+# Ten tables in one file: the tenth is measured with its own number.
+.ap18j <- res(jtable(.ap18s, style = file.path(.apd, "jcap.jstyle"), print = FALSE))$val
+.ap18ten <- res(.jst_docx_layout(rep(list(.ap18j), 10L), .jst_style_resolve("apa")))$val
+check("AP18 a table narrower than its title widens to keep the title on one line (Jeff, on the S407 walk: \"Frequency Distributions should be on a single line\"): every column in proportion, the rounding's remainder to the stub; a title wider than the page widens it to the page and wraps there; a caption set as a paragraph widens nothing; the title's width in each caption form (apa's title under its bold number, the journal's bold number and title on one line, the report's all bold), the tenth table of a file measured as Table 10)",
+      identical(.ap18p$g, .ap18nat) &&
+        .ap18to > sum(.ap18nat) &&
+        identical(sum(.ap18$g), .ap18to) &&
+        identical(.ap18$g[-1], as.integer(floor(.ap18nat[-1] * .ap18to / sum(.ap18nat)))) &&
+        identical(sum(.ap18L$g), .jst_docx_page("a4", FALSE)$text) &&
+        identical(unname(.ap18cw), as.integer(c(
+          .ap18to,
+          .aptw("Table 1.", .aptimes, 12, bold = 1.08) + .aptw(" Frequency Distributions", .aptimes, 12) + 216,
+          .aptw("Table 1: Frequency Distributions", .aptimes, 12, bold = 1.08) + 216))) &&
+        identical(sum(.ap18ten[[10]]$fit$widths),
+                  as.integer(.aptw("Table 10.", .aptimes, 12, bold = 1.08) +
+                               .aptw(" Frequency Distributions", .aptimes, 12) + 216)) &&
+        identical(sum(.ap18ten[[1]]$fit$widths), unname(.ap18cw[["journal"]])))
+
+# A table wider than its page: the stub's two-line floor, measured in the
+# table's font, decides the size it is fitted at and whether it turns the
+# page (R55). The page widths are set here between the floor measured in
+# Arial and the floor measured in Times, so the two measures part.
+.ap17t <- res(jtable(res(jfreq(.apq, L, print = FALSE))$val,
+                     style = file.path(.apd, "ar11.jstyle"), print = FALSE))$val
+.ap17s <- .jst_table_style(.ap17t, "apa")
+.ap17w <- .jst_docx_widths(.ap17t, .ap17s, size = 11, pad = 60L)
+.ap17fa <- res(.jst_docx_stub_floor(.ap17t, 11, .ap17w[1L], font = "Arial"))$val
+.ap17ft <- res(.jst_docx_stub_floor(.ap17t, 11, .ap17w[1L]))$val
+.ap17f <- res(.jst_docx_fit(.ap17t, .ap17s, sum(.ap17w[-1L]) + as.integer((.ap17fa + .ap17ft) / 2)))$val
+.ap17x <- res(local({
+  x <- .ap17t; k <- 0L
+  repeat {
+    k <- k + 1L
+    x$columns$label[3] <- strrep("x", k)
+    w <- .jst_docx_widths(x, .ap17s, size = 11, pad = 60L)
+    if (sum(w[-1L]) >= .jst_docx_page("a4", FALSE)$text - as.integer((.ap17fa + .ap17ft) / 2) ||
+        k > 200L) break
+  }
+  list(tbl = x, w = w)
+}))$val
+.ap17l <- res(.jst_docx_layout(list(.ap17x$tbl), .jst_style_resolve("apa")))$val
+check("AP17 an Arial table wider than its page is fitted with its stub's floor measured in Arial: on a page between the two measures it steps down to 10 points, where a Times measure would keep 11; and on a portrait page that only the Arial measure overflows it turns the page",
+      .ap17fa > .ap17ft &&
+        identical(.ap17f$size, 10) &&
+        sum(.ap17x$w[-1L]) + .ap17fa > .jst_docx_page("a4", FALSE)$text &&
+        sum(.ap17x$w[-1L]) + .ap17ft <= .jst_docx_page("a4", FALSE)$text &&
+        isTRUE(.ap17l[[1]]$landscape))
+
+unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd), recursive = TRUE)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # The analyses above raise notes and warnings of their own (a seems-
