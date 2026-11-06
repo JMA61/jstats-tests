@@ -54,6 +54,20 @@
 #           jtable() built: base R's saveRDS() and readRDS() offered as
 #           lines that run (Section 44).
 # ORIGIN:   S229
+# EDITED:   S409 (v0.9.276; Capability Slate U, build 1). SECTION 10 on the
+#           PENDING line: the orientation jai() prints is version 3.10 --
+#           the tables bullet names the two built-in styles, teaches the
+#           short copy beside the complete one and jstyle(open = TRUE),
+#           and gives the style files' one editing rule (the
+#           presentation review's entry 7) -- its heading line and notes
+#           updated; its Expected is prose, unchanged.
+# LAST VERIFIED: v0.9.276, 2026-11-06 (S409) -- Section 10 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (12 run, 3638 checks). Sandbox: 44 of 44
+#           sections under rewalk() in three orders and by prepare = TRUE;
+#           167 of 168 Expected blocks found (Section 9's prose block, as
+#           before).
 # EDITED:   S406 (v0.9.274; Capability Slate T, build 5). SECTION 44 ADDED, on
 #           the PENDING line, its Expected blocks filled by running (fill.R):
 #           jsave() given a saved result, a built table and tables written
@@ -1578,7 +1592,7 @@ invisible(jdeclare_missing(plain_df2, Rating, codes = c(Refused = -99),
 # Expected: NEITHER form -- just the cross-session jsave tip. The change has
 # already landed on the frame, so saving is the only next rung.
 
-cat("\n--- the jai orientation body (v3.9) ---\n")
+cat("\n--- the jai orientation body (v3.10) ---\n")
 jai()
 
 # Expected, in the bullet beginning "Analysis functions print their results":
@@ -1590,9 +1604,29 @@ jai()
 #   - modify = TRUE now comes FIRST and is marked as the taught form
 #   - the assignment form is still present (an assistant has to recognize it
 #     in your code) but is now clearly secondary
-#   - the version stamp reads v3.9 (S406: the table layer, below; v3.8 at
-#     S357 set SKILL.md's AI-assistant paragraph to the body's width,
-#     Section 20). If it still says 3.8, the orientation bump did not land.
+#   - the version stamp reads v3.10 (S409: the tables bullet, below; v3.9
+#     at S406, the table layer; v3.8 at S357 set SKILL.md's AI-assistant
+#     paragraph to the body's width, Section 20). If it still says 3.9,
+#     the orientation bump did not land.
+#
+# S409 (v3.10, Capability Slate U, build 1; the presentation review's
+# entry 7) -- the wording is Claude's. The tables bullet:
+#   - names the two built-in styles, "apa" for a journal or "report" for a
+#     report, beside a .jstyle text file;
+#   - teaches both copies: jstyle("report", save.as = "myagency") writes
+#     every setting, and jstyle("report", save.as = "mine", font =
+#     "Calibri") a short file holding only the settings given (v3.9 taught
+#     the complete copy alone);
+#   - adds jstyle("myagency", open = TRUE), which opens the file in the
+#     editor;
+#   - gives the style files' one editing rule: edit its values, or add to
+#     a short file a setting from ?jstyle_settings; do not invent a
+#     setting, and do not rename a setting or a section (v3.9 said never
+#     to add, rename or remove one, where a short file's head allowed
+#     adding one).
+# Things to look at: does the rule read as the files' heads give it
+# (tables_walk.R Sections 3 and 9), and would an assistant reading the
+# bullet copy report for an agency's style and edit only its values?
 #
 # S406 (v3.9, Capability Slate T, build 5): read the body for the table
 # layer -- the wording is Claude's:

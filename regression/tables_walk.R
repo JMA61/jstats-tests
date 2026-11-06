@@ -30,7 +30,66 @@
 #           release build (S407): two codes that share a value label, in
 #           the console and in a table; the reserved style name; a file
 #           named like the built-in; two tables in two fonts in one file.
+#           Capability Slate U's build 1 (S409): the built-in report style
+#           -- its settings, tables in it, a short file based on it turning
+#           on the three new looks, a complete copy's head with the block
+#           for an AI assistant, open = TRUE, the built-in names; the
+#           styles folder at the package root and the gallery's three
+#           files, banded, bar and us, written, listed, printed, opened and
+#           used in one Word file.
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S409 (v0.9.276; Capability Slate U, build 1, the look layer).
+#           SECTIONS 11 AND 12 ADDED, on the PENDING line, their Expected
+#           blocks filled by running (fill.R, under a Windows-length
+#           temporary folder; the paths written as <tempdir>, <working
+#           directory> and <your jstats folder>, the styles folder as it
+#           is). Section 11, the built-in report style (ruling R58): its
+#           settings printed; three tables in it, the regression's preview
+#           printed; a short file based on it turning on the three new
+#           looks (a teal caption bar following the header, each
+#           variable's row filled, banding, no rules, Calibri), its text
+#           printed; the four tables in one Word file, Report.docx, opened;
+#           a complete copy's head, with the block for an AI assistant and
+#           based.on = report; open = TRUE (myagency.jstyle opened, the two
+#           built-ins' stops); "report" refused as a copy's name and a
+#           report.jstyle passed over with the note. Section 12, the styles
+#           folder at the package root, E:/00 R Projects/jstats/styles
+#           (made if absent, silently), set as the style folder: the
+#           gallery's three files, banded, bar and us, written from the
+#           walk's text (each replacing a file of its name -- Jeff's S408
+#           banded.jstyle among them); listed; bar's settings printed by
+#           source (bar, then report, then apa); the three opened in the
+#           editor; the same three crosstabs in report and in each written
+#           to one Word file, Gallery.docx, opened; the session's style
+#           folder put back. The new settings' names, values and notes,
+#           the colors, the heads' wording and the gallery files are
+#           Claude's calls. SECTIONS 3, 9 AND 10 RE-PINNED, on the PENDING
+#           line (wording of Claude's, walked): jstyle()'s list shows
+#           report; the complete copy's head gives the editing rule in its
+#           one wording and the block for an AI assistant (n = 23 shows
+#           the settings n = 18 did); myjournal's printout shows the three
+#           new settings; the short file's head names "a style built into
+#           jstats" and gives the same rule; Section 10's stop for "report"
+#           and its passed-over note say "built into jstats", and its two
+#           written-to lines now break where a Windows temporary path
+#           breaks them (the S407 fill had used the sandbox's short one).
+#           Every walk captured on v0.9.275 and on this build and compared
+#           (harness.R dump): tables_walk.R Sections 3, 9 and 10 and
+#           modify_form_walk.R Section 10 alone printed differently; the
+#           other seven walks identical. NEEDS derived by running (5: 4; 6:
+#           3, 5; none for 11 and 12, whose Word files go in folders made
+#           fresh at each section's start, so a second run prints no
+#           "replaced" line).
+# LAST VERIFIED: v0.9.276, 2026-11-06 (S409) -- Sections 3, 9, 10, 11 and 12
+#           WALKED on the WORKSTATION by Jeff through receive_all() ("walked,
+#           all okay"); PENDING back to none; R CMD check 0 errors, 0
+#           warnings, 0 notes; ALL BATTERIES GREEN (12 run, 3638 checks) on
+#           the receive after the rebuild (tables_check.R's AQ13; the first
+#           receive read 286/287). His notes on the walk are in the
+#           Observations block. Sandbox: harness.R verify, 12 of 12 sections
+#           in three orders under rewalk() and by prepare = TRUE; the 54
+#           Expected blocks found in a separate capture with the
+#           placeholders filled; rewalk()'s scoreboard read the PENDING line.
 # EDITED:   S407 SECOND REBUILD (v0.9.275, the same version; on Jeff's
 #           walk of the first rebuild: Table 2's title on two lines, and
 #           the n and % columns under "How we contacted you"). SECTION 2
@@ -495,7 +554,8 @@ jstyle()
 
 # Expected:
 #   Styles
-#     apa  built into jstats (the default)
+#     apa     built into jstats (the default)
+#     report  built into jstats
 #
 #   jstats looks for a style file in these folders, in this order:
 #     <tempdir>/walk_styles (the style folder)
@@ -503,14 +563,15 @@ jstyle()
 #     <your jstats folder> (your jstats folder, not created yet)
 
 # Things to look at:
-#   - apa, built in and the default; no style file yet;
+#   - apa, built in and the default, and since S409 report, built in too
+#     (Section 11); no style file yet;
 #   - the three folders searched, in order: the style folder just set,
 #     your working directory, and your jstats folder (R's per-user folder
 #     for the package, which jstats creates only when you save a style
 #     there).
 
 jstyle("apa", save.as = "apa_copy")
-cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 18L,
+cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 23L,
               encoding = "UTF-8"), sep = "\n")
 
 # Expected:
@@ -520,12 +581,17 @@ cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 18L,
 #   # apa_copy.jstyle:
 #   # A jstats table style.
 #   # Every setting jstats has is below, each after a note saying what it does and what it takes.
-#   # Change only the values after the = signs; do not add, rename or remove a setting or a section.
+#   # Change only the values after the = signs; do not invent a setting, and do not rename a setting or a section.
 #   # A line that starts with # is a note.
 #   # jstyle("apa_copy") checks the file and names any value it cannot use.
+#   #
+#   # To an AI assistant asked to edit this file so tables look like an example:
+#   # Change only the values after the = signs, using only the values each setting's "# takes:" line allows.
+#   # Keep every other line as it is, and return the whole file.
+#   # Then say what the example has that these settings cannot make, rather than inventing a setting for it.
 #
 #   format     = 1
-#   written.by = jstats 0.9.275
+#   written.by = jstats 0.9.276
 #   based.on   = apa
 #
 #   # The general settings: the look of every table.
@@ -537,14 +603,23 @@ cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 18L,
 #   size = 12
 
 # Things to look at: the file's head as Notepad shows it -- what the file
-# is and, since S406, how to edit it (change only the values; never add,
-# rename or remove a setting or a section), the two stamped lines and
-# based.on, then each setting under its note on what it does and, since
-# S406, a "# takes:" line saying what it takes (every setting of every
-# table type follows). Since the S407 rebuild the head is the file's
-# name on a line of its own, then one sentence a line, none wrapped;
-# a note or a "# takes:" line runs on as long as it needs (until then
-# each was broken at 76 columns).
+# is and, since S406, how to edit it, the two stamped lines and based.on,
+# then each setting under its note on what it does and, since S406, a "#
+# takes:" line saying what it takes (every setting of every table type
+# follows). Since the S407 rebuild the head is the file's name on a line
+# of its own, then one sentence a line, none wrapped; a note or a "#
+# takes:" line runs on as long as it needs (until then each was broken at
+# 76 columns). Since S409 (the review's entry 7) the editing rule is one
+# wording, here, in the short file's head (Section 9) and in jai()'s
+# orientation: "do not invent a setting, and do not rename a setting or a
+# section" (it said "do not add, rename or remove a setting or a
+# section", where the short file allows adding one from ?jstyle_settings);
+# and a block under it is addressed to an AI assistant asked to make the
+# tables look like an example -- values only, from the "# takes:" lines,
+# the whole file back, and what the settings cannot make said rather than
+# a setting invented (the AI route's first piece; the second is the
+# prompt in ?jstyle). Five more head lines, so n = 23 shows the same
+# settings as before.
 
 writeLines(c("# myjournal.jstyle -- the journal's conventions",
              "based.on = apa",
@@ -570,34 +645,37 @@ jstyle("myjournal")
 #     <tempdir>/walk_styles/myjournal.jstyle
 #     based on apa
 #
-#   font             = Times New Roman  # from apa
-#   size             = 12               # from apa
-#   paper            = a4               # from apa
-#   caption.form     = journal
-#   caption.position = row              # from apa
-#   caption.size     = 12               # from apa
-#   header.fill      = none             # from apa
-#   header.text      = 000000           # from apa
-#   header.bold      = no               # from apa
-#   band.fill        = none             # from apa
-#   rules            = apa              # from apa
-#   rule.color       = 000000           # from apa
-#   note.label       = Note.            # from apa
-#   note.position    = row              # from apa
-#   note.size        = 12               # from apa
-#   n.position       = note             # from apa
-#   decimals         = 2                # from apa
-#   leading.zero     = never
-#   p.format         = exact            # from apa
-#   p.decimals       = 3                # from apa
-#   stars            = .05, .01, .001   # from apa
-#   marks            = symbols
-#   minus            = true             # from apa
-#   thousands        = comma            # from apa
-#   landscape        = auto             # from apa
-#   line.spacing     = single           # from apa
-#   percent.decimals = 1                # from apa
-#   filter.note      = yes              # from apa
+#   font              = Times New Roman  # from apa
+#   size              = 12               # from apa
+#   paper             = a4               # from apa
+#   caption.form      = journal
+#   caption.position  = row              # from apa
+#   caption.size      = 12               # from apa
+#   caption.fill      = none             # from apa
+#   header.fill       = none             # from apa
+#   header.text       = 000000           # from apa
+#   header.bold       = no               # from apa
+#   band.fill         = none             # from apa
+#   heading.fill      = none             # from apa
+#   rules             = apa              # from apa
+#   rule.color        = 000000           # from apa
+#   note.label        = Note.            # from apa
+#   note.label.italic = yes              # from apa
+#   note.position     = row              # from apa
+#   note.size         = 12               # from apa
+#   n.position        = note             # from apa
+#   decimals          = 2                # from apa
+#   leading.zero      = never
+#   p.format          = exact            # from apa
+#   p.decimals        = 3                # from apa
+#   stars             = .05, .01, .001   # from apa
+#   marks             = symbols
+#   minus             = true             # from apa
+#   thousands         = comma            # from apa
+#   landscape         = auto             # from apa
+#   line.spacing      = single           # from apa
+#   percent.decimals  = 1                # from apa
+#   filter.note       = yes              # from apa
 #
 #   [descriptives]
 #   title          = Descriptive Statistics  # from apa
@@ -748,6 +826,10 @@ jstyle("myjournal")
 #   - the five sections build 4 adds, after [logistic]: [correlation],
 #     [ttest], [anova], [crosstab] and [reliability], each key with apa's
 #     value (their names are Claude's calls, for this walk);
+#   - since S409 three more general settings, each beside its kin and off
+#     in apa: caption.fill = none after caption.size, heading.fill = none
+#     after band.fill, note.label.italic = yes after note.label (the
+#     looks Section 11 shows);
 #   - the printout is itself a style file's form: a line can be copied
 #     into the file.
 
@@ -1710,14 +1792,14 @@ cat(readLines(file.path(.walk_styles9, "short.jstyle"), encoding = "UTF-8"),
 #   <tempdir>/walk_styles9/short.jstyle
 #
 #   # short.jstyle:
-#   # A jstats table style, based on apa, the style built into jstats.
+#   # A jstats table style, based on apa, a style built into jstats.
 #   # It lists only the settings that differ from apa; any setting not listed here takes apa's value.
 #   # ?jstyle_settings lists every setting and what it takes.
-#   # Change only the values after the = signs, or add a setting from that list.
+#   # Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.
 #   # jstyle("short") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.275
+#   written.by = jstats 0.9.276
 #   based.on   = apa
 #
 #   # the text size, in points
@@ -1798,7 +1880,10 @@ try(jstyle(save.as = file.path(.walk_styles9, "s3"), sise = 11))
 # Things to look at:
 #   - Render 1: the head -- based on apa, only the settings that differ,
 #     ?jstyle_settings for the rest, change the values or add a setting
-#     from that list; the stamps and based.on; then size and header.fill
+#     from that list; since S409 "a style built into jstats" (there are
+#     two) and the editing rule in the complete copy's words, "do not
+#     invent a setting, and do not rename a setting or a section" (Section
+#     3); the stamps and based.on; then size and header.fill
 #     with their notes, and [regression] with fit.rows. lightblue as you
 #     typed it. Since the S407 rebuild the file's name is a line of its
 #     own and each sentence another, none wrapped; header.fill's
@@ -1826,8 +1911,9 @@ try(jstyle(save.as = file.path(.walk_styles9, "s3"), sise = 11))
 # "both" gives every row; a label no other code shares stays alone (the
 # lean's default). Until v0.9.275 jfreq() under value.id = "labels" counted
 # the two as one row, and the other functions made them one group. Then
-# the style name "report", kept for the built-in report style a later
-# version adds; a file named apa.jstyle, which jstats never reads; and two
+# the style name "report", kept at S407 for the built-in report style,
+# which v0.9.276 adds (Section 11); a file named apa.jstyle, which jstats
+# never reads; and two
 # tables built under two styles, written to one Word file, each in its own
 # font. The section's style files go in a folder of the session's
 # temporary folder, set as the style folder and cleared at the end. The
@@ -1902,7 +1988,8 @@ print(t10f)
 #   -----------------------------
 #   Note. N = 12.
 
-# Render 4 -- "report" is kept for a built-in style; another name is written.
+# Render 4 -- "report" names a style built into jstats; another name is
+# written.
 .walk_styles10 <- file.path(tempdir(), "walk_styles10")
 unlink(.walk_styles10, recursive = TRUE); dir.create(.walk_styles10)
 joptions(style.dir = .walk_styles10, quiet = TRUE)
@@ -1911,21 +1998,21 @@ jstyle("apa", save.as = "myreport", font = "Arial", size = 11)
 cat(readLines(file.path(.walk_styles10, "myreport.jstyle"), encoding = "UTF-8"),
     sep = "\n")
 # Expected:
-#   Error : jstyle(): "report" is the name of a built-in style a later version
-#   of jstats adds.
+#   Error : jstyle(): "report" is the name of a style built into jstats.
 #   Give the copy another name, for example:
 #     jstyle("apa", save.as = "myreport")
-#   Style written to <tempdir>/walk_styles10/myreport.jstyle
+#   Style written to
+#   <tempdir>/walk_styles10/myreport.jstyle
 #
 #   # myreport.jstyle:
-#   # A jstats table style, based on apa, the style built into jstats.
+#   # A jstats table style, based on apa, a style built into jstats.
 #   # It lists only the settings that differ from apa; any setting not listed here takes apa's value.
 #   # ?jstyle_settings lists every setting and what it takes.
-#   # Change only the values after the = signs, or add a setting from that list.
+#   # Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.
 #   # jstyle("myreport") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.275
+#   written.by = jstats 0.9.276
 #   based.on   = apa
 #
 #   # the typeface of every cell, caption and note
@@ -1942,7 +2029,7 @@ invisible(file.copy(file.path(.walk_styles10, "myreport.jstyle"),
 t10a <- jtable(jdesc(d10, Satisfaction, print = FALSE))
 unlink(file.path(.walk_styles10, "apa.jstyle"))
 # Expected:
-#   This file is not read, since "apa" always names jstats's built-in style:
+#   This file is not read, since "apa" always names a style built into jstats:
 #     <tempdir>/walk_styles10/apa.jstyle
 #   To use it, rename it, for example to myapa.jstyle, and use style = "myapa".
 #
@@ -1965,7 +2052,8 @@ joptions(style.dir = NULL, quiet = TRUE)
 #     1 variable, on a portrait page.
 #   Table 2. Frequency Distributions
 #     1 variable, on a portrait page.
-#   2 tables written to <tempdir>/walk_styles10/TwoFonts.docx
+#   2 tables written to
+#   <tempdir>/walk_styles10/TwoFonts.docx
 
 # Things to look at:
 #   - Render 1: four rows, one per code -- "2: Other" and "3: Other" each
@@ -1979,6 +2067,9 @@ joptions(style.dir = NULL, quiet = TRUE)
 #     line that runs; myreport written, and the file as Notepad shows it
 #     (the S407 rebuild, on your walk): its name on the first line, then
 #     one sentence a line; each setting's note and "# takes:" line whole.
+#     Since S409 report is built in (Section 11): the stop says so, where
+#     it named "a later version", and the head says "a style built into
+#     jstats" and gives the complete copy's editing rule (Section 3).
 #   - Render 5: the note before the report -- the file named, why it is not
 #     read, and the way to use it.
 #   - Render 6 (in Word): Table 1 in Times New Roman 12, Table 2 in Arial
@@ -1995,10 +2086,778 @@ joptions(style.dir = NULL, quiet = TRUE)
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 11 -- The built-in report style, three new looks, jstyle(open = TRUE) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Capability Slate U, build 1 (S409; ruling R58). jstats has a second
+# built-in style, report, the plain look the report style manuals share,
+# based on apa: Arial 10, the caption 10 and the note 9, "Table 1:" and
+# the title on one line, a light grey bold header, apa's three rules, the
+# zero before the point kept (your lean: most of the guidance writes it),
+# an upright "Note:", and each variable's label row bold. Three new general
+# settings give the looks an agency's own file turns on, all three off in
+# both built-ins: caption.fill (a fill on the caption row -- a color, or
+# header to take the header's fill and its text color), heading.fill (a
+# fill on each variable's label row) and note.label.italic. A complete
+# copy's head now carries a block for an AI assistant (the AI route's
+# first piece; the second is the prompt in ?jstyle), and open = TRUE opens
+# a style's file in the editor in place of printing its settings (RULED
+# S406). The new settings' names, values and notes, the colors and the
+# wording are Claude's calls. The style files go in a folder of the
+# session's temporary folder, set as the style folder and cleared at the
+# end; the tables are made from d11, a copy of tdat.
+
+.walk_styles11 <- file.path(tempdir(), "walk_styles11")
+unlink(.walk_styles11, recursive = TRUE); dir.create(.walk_styles11)
+joptions(style.dir = .walk_styles11, quiet = TRUE)
+d11 <- tdat
+
+# Render 1 -- report's settings: its own unmarked, every other apa's.
+jstyle("report")
+# Expected:
+#   Style: report
+#     built into jstats
+#     based on apa
+#
+#   font              = Arial
+#   size              = 10
+#   paper             = a4              # from apa
+#   caption.form      = report
+#   caption.position  = row             # from apa
+#   caption.size      = 10
+#   caption.fill      = none            # from apa
+#   header.fill       = D9D9D9
+#   header.text       = 000000          # from apa
+#   header.bold       = yes
+#   band.fill         = none            # from apa
+#   heading.fill      = none            # from apa
+#   rules             = apa             # from apa
+#   rule.color        = 000000          # from apa
+#   note.label        = Note:
+#   note.label.italic = no
+#   note.position     = row             # from apa
+#   note.size         = 9
+#   n.position        = note            # from apa
+#   decimals          = 2               # from apa
+#   leading.zero      = yes
+#   p.format          = exact           # from apa
+#   p.decimals        = 3               # from apa
+#   stars             = .05, .01, .001  # from apa
+#   marks             = letters         # from apa
+#   minus             = true            # from apa
+#   thousands         = comma           # from apa
+#   landscape         = auto            # from apa
+#   line.spacing      = single          # from apa
+#   percent.decimals  = 1               # from apa
+#   filter.note       = yes             # from apa
+#
+#   [descriptives]
+#   title          = Descriptive Statistics  # from apa
+#   columns        = n, mean, sd, min, max   # from apa
+#   stub.label     = Variable                # from apa
+#   n.label        = n                       # from apa
+#   mean.label     = M                       # from apa
+#   sd.label       = SD                      # from apa
+#   min.label      = Min                     # from apa
+#   max.label      = Max                     # from apa
+#   group.headings = italic                  # from apa
+#
+#   [frequencies]
+#   title               = Frequency Distributions  # from apa
+#   columns             = n, percent               # from apa
+#   stub.label          = Variable                 # from apa
+#   n.label             = n                        # from apa
+#   percent.label       = %                        # from apa
+#   valid.percent.label = Valid %                  # from apa
+#   cumulative.label    = Cumulative %             # from apa
+#   missing.rows        = combined                 # from apa
+#   missing.label       = Missing                  # from apa
+#   variable.headings   = bold
+#   group.headings      = italic                   # from apa
+#
+#   [regression]
+#   title             = Regression Coefficients Predicting {outcome}  # from apa
+#   columns           = b, se, beta, p              # from apa
+#   columns.last      = none                        # from apa
+#   stub.label        = Predictor                   # from apa
+#   b.label           = b                           # from apa
+#   se.label          = SE                          # from apa
+#   beta.label        = β                           # from apa
+#   p.label           = p                           # from apa
+#   t.label           = t                           # from apa
+#   ci.label          = 95% CI                      # from apa
+#   beta.gelman.label = β*                          # from apa
+#   ci.style          = one                         # from apa
+#   intercept         = yes                         # from apa
+#   intercept.label   = Constant                    # from apa
+#   fit.rows          = r2                          # from apa
+#   reference         = row                         # from apa
+#   reference.label   = reference                   # from apa
+#   variable.headings = bold
+#   group.headings    = italic                      # from apa
+#
+#   [logistic]
+#   title             = Logistic Regression Coefficients Predicting {outcome}  # from apa
+#   columns           = b, se, or, p                # from apa
+#   columns.last      = none                        # from apa
+#   stub.label        = Predictor                   # from apa
+#   b.label           = b                           # from apa
+#   se.label          = SE                          # from apa
+#   or.label          = OR                          # from apa
+#   p.label           = p                           # from apa
+#   wald.label        = Wald                        # from apa
+#   ci.label          = 95% CI for OR               # from apa
+#   beta.gelman.label = β*                          # from apa
+#   ci.style          = one                         # from apa
+#   intercept         = yes                         # from apa
+#   intercept.label   = Constant                    # from apa
+#   fit.rows          = chisq, nagelkerke           # from apa
+#   reference         = row                         # from apa
+#   reference.label   = reference                   # from apa
+#   variable.headings = bold
+#   group.headings    = italic                      # from apa
+#
+#   [correlation]
+#   title          = Descriptive Statistics and Correlations for Study Variables  # from apa
+#   columns        = n, mean, sd                 # from apa
+#   stub.label     = Variable                    # from apa
+#   n.label        = n                           # from apa
+#   mean.label     = M                           # from apa
+#   sd.label       = SD                          # from apa
+#   lower.triangle = yes                         # from apa
+#   r.stars        = yes                         # from apa
+#   method.note    = yes                         # from apa
+#
+#   [ttest]
+#   title         = Means, Standard Deviations, and t Tests by {group}  # from apa
+#   columns       = mean, sd, t, p, d           # from apa
+#   stub.label    = Variable                    # from apa
+#   n.label       = n                           # from apa
+#   mean.label    = M                           # from apa
+#   sd.label      = SD                          # from apa
+#   t.label       = t                           # from apa
+#   df.label      = df                          # from apa
+#   p.label       = p                           # from apa
+#   d.label       = d                           # from apa
+#   diff.label    = Mean difference             # from apa
+#   ci.label      = 95% CI                      # from apa
+#   ci.style      = one                         # from apa
+#   group.spanner = yes                         # from apa
+#   test.note     = yes                         # from apa
+#
+#   [anova]
+#   title         = Means, Standard Deviations, and One-Way Analyses of Variance by {group}  # from apa
+#   columns       = mean, sd, f, p, eta2        # from apa
+#   stub.label    = Variable                    # from apa
+#   n.label       = n                           # from apa
+#   mean.label    = M                           # from apa
+#   sd.label      = SD                          # from apa
+#   f.label       = F                           # from apa
+#   df.label      = df                          # from apa
+#   p.label       = p                           # from apa
+#   eta2.label    = η²                          # from apa
+#   group.spanner = yes                         # from apa
+#   test.note     = yes                         # from apa
+#
+#   [crosstab]
+#   title             = Frequencies and Percentages by {group}  # from apa
+#   columns           = n, percent                  # from apa
+#   total             = yes                         # from apa
+#   percent.base      = column                      # from apa
+#   test.columns      = chisq, df, p, v             # from apa
+#   stub.label        = Variable                    # from apa
+#   n.label           = n                           # from apa
+#   percent.label     = %                           # from apa
+#   total.label       = Total                       # from apa
+#   chisq.label       = χ²                          # from apa
+#   df.label          = df                          # from apa
+#   p.label           = p                           # from apa
+#   v.label           = V                           # from apa
+#   group.spanner     = yes                         # from apa
+#   variable.headings = bold
+#
+#   [reliability]
+#   title                  = Item Statistics and Reliability  # from apa
+#   columns                = mean, sd, item.total, alpha.if.deleted  # from apa
+#   stub.label             = Item                        # from apa
+#   mean.label             = M                           # from apa
+#   sd.label               = SD                          # from apa
+#   item.total.label       = Item-total *r*              # from apa
+#   alpha.if.deleted.label = α if item deleted           # from apa
+#   alpha                  = yes                         # from apa
+#   item.total.note        = yes                         # from apa
+#   group.headings         = italic                      # from apa
+
+# Render 2 -- three tables in report: descriptives, frequencies, and a
+# regression with a dummy-coded variable, whose preview is printed.
+t11a <- jtable(jdesc(d11, WellbeingScore, Income, Age, print = FALSE),
+               style = "report")
+t11b <- jtable(jfreq(d11, Education, Region, print = FALSE), style = "report")
+m11 <- jlm(WellbeingScore ~ Age + Income + Region, d11, categorical = Region,
+           print = FALSE)
+t11c <- jtable(m11, style = "report")
+print(t11c)
+# Expected:
+#   Table 1. Descriptive Statistics
+#     3 variables, on a portrait page.
+#   No file was written.
+#
+#   Table 1. Frequency Distributions
+#     2 variables, on a portrait page.
+#   No file was written.
+#
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#     1 model, on a portrait page.
+#   No file was written.
+#
+#   Table 1: Regression Coefficients Predicting Wellbeing score (0-100)
+#   ------------------------------------------------------------------------
+#   Predictor                                   b        SE      β       p
+#   ------------------------------------------------------------------------
+#   Constant                                 27.31    3.91            <0.001
+#   Age (years)                               0.19    0.08      0.19   0.021
+#   Annual income (USD)                       0.0004  0.00005   0.57  <0.001
+#   Region of residence (reference = North)
+#     South                                  -5.45    2.76     -0.18   0.051
+#     East                                   -3.65    2.38     -0.15   0.128
+#     West                                   -4.90    2.55     -0.18   0.058
+#   R²                                        0.44
+#   ------------------------------------------------------------------------
+#   Note: N = 97.
+
+# Render 3 -- the three new looks in a short file based on report: a teal
+# bar behind the caption, taking the header's fill and its white text, a
+# light fill on each variable's row, banding, no rules, Calibri.
+jstyle("report", save.as = "teal", font = "Calibri", header.fill = "0E5A5F",
+       header.text = "FFFFFF", caption.fill = "header",
+       heading.fill = "D3E3E5", band.fill = "EAF2F3", rules = "none")
+cat(readLines(file.path(.walk_styles11, "teal.jstyle"), encoding = "UTF-8"),
+    sep = "\n")
+# Expected:
+#   Style written to
+#   <tempdir>/walk_styles11/teal.jstyle
+#
+#   # teal.jstyle:
+#   # A jstats table style, based on report, a style built into jstats.
+#   # It lists only the settings that differ from report; any setting not listed here takes report's value.
+#   # ?jstyle_settings lists every setting and what it takes.
+#   # Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.
+#   # jstyle("teal") checks the file and names any value it cannot use.
+#
+#   format     = 1
+#   written.by = jstats 0.9.276
+#   based.on   = report
+#
+#   # the typeface of every cell, caption and note
+#   # takes: any text
+#   font = Calibri
+#   # a color filling the header cells, or none
+#   # takes: a color name such as lightblue, or six hex digits such as ADD8E6; or none
+#   header.fill = 0E5A5F
+#   # the color of the header's text
+#   # takes: a color name such as lightblue, or six hex digits such as ADD8E6
+#   header.text = FFFFFF
+#   # a color filling the caption row (caption.position = row), header for the header's fill and text color, or none
+#   # takes: a color name such as lightblue, or six hex digits such as ADD8E6; or header, or none
+#   caption.fill = header
+#   # a color filling each variable's label row (the rows variable.headings sets), or none
+#   # takes: a color name such as lightblue, or six hex digits such as ADD8E6; or none
+#   heading.fill = D3E3E5
+#   # a color filling every other data row, or none
+#   # takes: a color name such as lightblue, or six hex digits such as ADD8E6; or none
+#   band.fill = EAF2F3
+#   # apa: rules above and below the header and under the table
+#   # grid: every cell | outer: a box | none
+#   # takes: one of apa | grid | outer | none
+#   rules = none
+
+# Render 4 -- two crosstabs in teal, then the four tables in one Word file.
+t11d <- jtable(list(jcrosstab(Smoker ~ Volunteer, d11, print = FALSE),
+                    jcrosstab(Region ~ Volunteer, d11, print = FALSE)),
+               style = "teal")
+jtable(list(t11a, t11b, t11c, t11d),
+       file = file.path(.walk_styles11, "Report.docx"), overwrite = TRUE,
+       open = TRUE)
+# Expected:
+#   Table 1. Frequencies and Percentages by Volunteered in past year
+#     2 variables by Volunteer, on a portrait page.
+#   No file was written.
+#
+#   Table 1. Descriptive Statistics
+#     3 variables, on a portrait page.
+#   Table 2. Frequency Distributions
+#     2 variables, on a portrait page.
+#   Table 3. Regression Coefficients Predicting Wellbeing score (0-100)
+#     1 model, on a portrait page.
+#   Table 4. Frequencies and Percentages by Volunteered in past year
+#     2 variables by Volunteer, on a portrait page.
+#   4 tables written to
+#   <tempdir>/walk_styles11/Report.docx
+
+# Render 5 -- a complete copy of report: the head, with the block for an
+# AI assistant, and based.on = report.
+jstyle("report", save.as = "myagency")
+cat(readLines(file.path(.walk_styles11, "myagency.jstyle"), n = 23L,
+              encoding = "UTF-8"), sep = "\n")
+# Expected:
+#   Style written to
+#   <tempdir>/walk_styles11/myagency.jstyle
+#
+#   # myagency.jstyle:
+#   # A jstats table style.
+#   # Every setting jstats has is below, each after a note saying what it does and what it takes.
+#   # Change only the values after the = signs; do not invent a setting, and do not rename a setting or a section.
+#   # A line that starts with # is a note.
+#   # jstyle("myagency") checks the file and names any value it cannot use.
+#   #
+#   # To an AI assistant asked to edit this file so tables look like an example:
+#   # Change only the values after the = signs, using only the values each setting's "# takes:" line allows.
+#   # Keep every other line as it is, and return the whole file.
+#   # Then say what the example has that these settings cannot make, rather than inventing a setting for it.
+#
+#   format     = 1
+#   written.by = jstats 0.9.276
+#   based.on   = report
+#
+#   # The general settings: the look of every table.
+#   # the typeface of every cell, caption and note
+#   # takes: any text
+#   font = Arial
+#   # the text size, in points
+#   # takes: a number from 6 to 72
+#   size = 10
+
+# Render 6 -- open = TRUE: myagency.jstyle opens in the editor, a tab beside
+# this file, and nothing is printed; the built-in styles have no file to
+# open, whether named or the session's style.
+jstyle("myagency", open = TRUE)
+try(jstyle("report", open = TRUE))
+try(jstyle(open = TRUE))
+# Expected:
+#   Error : jstyle(): "report" is built into jstats, so it has no file to open.
+#   Save a copy to open, for example:
+#     jstyle("report", save.as = "myreport", open = TRUE)
+#   Error : jstyle(): "apa" is built into jstats, so it has no file to open.
+#   Save a copy to open, for example:
+#     jstyle("apa", save.as = "myjournal", open = TRUE)
+
+# Render 7 -- report cannot be a copy's name, and a report.jstyle in a
+# folder searched is passed over, with a note under jstyle()'s list.
+try(jstyle("apa", save.as = "report"))
+invisible(file.copy(file.path(.walk_styles11, "teal.jstyle"),
+                    file.path(.walk_styles11, "report.jstyle")))
+jstyle()
+unlink(file.path(.walk_styles11, "report.jstyle"))
+joptions(style.dir = NULL, quiet = TRUE)
+# Expected:
+#   Error : jstyle(): "report" is the name of a style built into jstats.
+#   Give the copy another name, for example:
+#     jstyle("apa", save.as = "myreport")
+#   Styles
+#     apa       built into jstats (the default)
+#     report    built into jstats
+#     myagency  <tempdir>/walk_styles11/myagency.jstyle
+#     teal      <tempdir>/walk_styles11/teal.jstyle
+#
+#   jstats looks for a style file in these folders, in this order:
+#     <tempdir>/walk_styles11 (the style folder)
+#     <working directory> (the working directory)
+#     <your jstats folder> (your jstats folder, not created yet)
+#
+#   This file is not read, since "report" always names a style built
+#   into jstats:
+#     <tempdir>/walk_styles11/report.jstyle
+#   To use it, rename it, for example to myreport.jstyle, and
+#   use style = "myreport".
+
+# Things to look at:
+#   - Render 1: report's own settings unmarked -- font Arial, size 10,
+#     caption.form report, caption.size 10, header.fill D9D9D9,
+#     header.bold yes, note.label "Note:", note.label.italic no, note.size
+#     9, leading.zero yes, and variable.headings bold in [frequencies],
+#     [regression], [logistic] and [crosstab]; every other "# from apa",
+#     the new caption.fill and heading.fill among them (none). "based on
+#     apa" under its name.
+#   - Render 2: each table's report line; the preview in report's form --
+#     "Table 1:" and the title on one line, the zero kept on b, beta, p and
+#     R squared (0.19, 0.021, <0.001, 0.44: your lean 1), "Note:".
+#   - Render 3: the short file's head -- "based on report, a style built
+#     into jstats", only what differs from report, the editing rule in the
+#     complete copy's words with adding a setting from ?jstyle_settings
+#     allowed; the three new settings' notes and "# takes:" lines --
+#     caption.fill takes a color, header or none.
+#   - Render 4 (in Word): Tables 1 to 3 in report -- Arial 10, "Table 1:"
+#     and the title bold on one line at 10 points, the header filled light
+#     grey and bold, apa's three rules, each variable's label row bold
+#     (Table 2's two variables, Table 3's Region of residence), the zero
+#     kept, "Note:" upright at 9 points. Table 4 in teal: Calibri, a teal
+#     bar behind "Table 4:" and its title, the text white as the header's
+#     is, the header teal and bold, each variable's row on a light teal
+#     fill, every other data row shaded, no rules.
+#   - Render 5: the complete copy's head -- the editing rule, then the
+#     block for an AI assistant; based.on = report, since the copy is of
+#     report (a copy of apa says apa; your default on lean 2).
+#   - Render 6: a tab with myagency.jstyle opens and nothing prints; the
+#     two stops give the line that saves a copy and opens it -- myreport
+#     for report, myjournal for apa, the session's style (your default on
+#     lean 3).
+#   - Render 7: the stop in the words apa's stop uses; the list shows
+#     myagency and teal, and the note names report.jstyle as passed over,
+#     with the way to use it.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 12 -- The styles folder and the gallery's files: banded, bar and us ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Capability Slate U, build 1 (S409; the S408 decisions). The style
+# gallery the guides' How-To page will hold (LOCKED S408): short files
+# based on report, each named for a look -- banded, bar and us -- written
+# here from the text below into the styles folder at the package's root,
+# E:/00 R Projects/jstats/styles (made if absent; git and the build ignore
+# it). The section writes only those three file names there, each
+# replacing a file of its name: your S408 banded.jstyle, based on apa, is
+# replaced by the gallery's. It sets the folder as the style folder, lists
+# the styles, prints one file's settings, opens the three in the editor,
+# writes the same table in report and in each to one Word file, and puts
+# back the style folder the session had. The files' text, colors and
+# heads are Claude's calls; each head says what the file follows and that
+# the source's other rules are the author's. The Word file goes in a
+# folder of the session's temporary folder.
+
+.styles12 <- "E:/00 R Projects/jstats/styles"
+.entry_style_dir12 <- getOption(".jst_options_style_dir")
+.walk_out12 <- file.path(tempdir(), "walk_tables12")
+unlink(.walk_out12, recursive = TRUE); dir.create(.walk_out12)
+if (!dir.exists(.styles12)) dir.create(.styles12, recursive = TRUE)
+joptions(style.dir = .styles12)
+# Expected:
+#   Options Settings
+#   Style folder: E:/00 R Projects/jstats/styles
+#   Run joptions() to see all settings.
+
+# Render 1 -- the three files, written from this text, then the list.
+writeLines(c(
+  "# banded.jstyle:",
+  "# A jstats table style, based on report, a style built into jstats.",
+  "# It shades every other data row under report's grey header, the zebra shading the Australian Government Style Manual allows for long tables.",
+  "# The manual's other rules, such as the order of a table's notes, are the author's to follow.",
+  "# It lists only the settings that differ from report; any setting not listed here takes report's value.",
+  "# ?jstyle_settings lists every setting and what it takes.",
+  "# Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.",
+  "# jstyle(\"banded\") checks the file and names any value it cannot use.",
+  "",
+  "based.on  = report",
+  "band.fill = F2F2F2    # light grey on every other data row"),
+  file.path(.styles12, "banded.jstyle"))
+writeLines(c(
+  "# bar.jstyle:",
+  "# A jstats table style, based on report, a style built into jstats.",
+  "# It sets the caption on a dark bar that runs into the header, both with white text, fills each variable's row and every other data row in light grey, and draws no rules: the look of many research institutes' reports, in a grey for an institute's own color to replace.",
+  "# The institute's other rules, such as its font and its source line, are the author's to follow.",
+  "# It lists only the settings that differ from report; any setting not listed here takes report's value.",
+  "# ?jstyle_settings lists every setting and what it takes.",
+  "# Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.",
+  "# jstyle(\"bar\") checks the file and names any value it cannot use.",
+  "",
+  "based.on     = report",
+  "header.fill  = 404040    # dark grey: put the institute's color here",
+  "header.text  = FFFFFF    # white",
+  "caption.fill = header    # the caption bar takes the header's fill and text color",
+  "heading.fill = D9D9D9    # light grey on each variable's row",
+  "band.fill    = F2F2F2    # lighter grey on every other data row",
+  "rules        = none"),
+  file.path(.styles12, "bar.jstyle"))
+writeLines(c(
+  "# us.jstyle:",
+  "# A jstats table style, based on report, a style built into jstats.",
+  "# It follows the table guidelines of the US National Center for Education Statistics (NCES Statistical Standard 5-4 and its Guidelines for Tabular Presentations): \"Table 1.\" and the title on one line, the label NOTE:, and no zero before a decimal that cannot be greater than 1, such as a p value or a correlation.",
+  "# The guidelines' other rules, such as footnotes before the NOTE and a SOURCE: line last, are the author's to follow.",
+  "# It lists only the settings that differ from report; any setting not listed here takes report's value.",
+  "# ?jstyle_settings lists every setting and what it takes.",
+  "# Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.",
+  "# jstyle(\"us\") checks the file and names any value it cannot use.",
+  "",
+  "based.on     = report",
+  "caption.form = journal    # \"Table 1.\" and the title on one line",
+  "note.label   = NOTE:",
+  "leading.zero = no         # no zero before p or a correlation; b keeps it"),
+  file.path(.styles12, "us.jstyle"))
+jstyle()
+# Expected:
+#   Styles
+#     apa     built into jstats (the default)
+#     report  built into jstats
+#     banded  E:/00 R Projects/jstats/styles/banded.jstyle
+#     bar     E:/00 R Projects/jstats/styles/bar.jstyle
+#     us      E:/00 R Projects/jstats/styles/us.jstyle
+#
+#   jstats looks for a style file in these folders, in this order:
+#     E:/00 R Projects/jstats/styles (the style folder)
+#     <working directory> (the working directory)
+#     <your jstats folder> (your jstats folder, not created yet)
+
+# Render 2 -- bar's settings: its own unmarked, then report's and apa's,
+# each marked with the style it comes from.
+jstyle("bar")
+# Expected:
+#   Style: bar
+#     E:/00 R Projects/jstats/styles/bar.jstyle
+#     based on report, then apa
+#
+#   font              = Arial           # from report
+#   size              = 10              # from report
+#   paper             = a4              # from apa
+#   caption.form      = report          # from report
+#   caption.position  = row             # from apa
+#   caption.size      = 10              # from report
+#   caption.fill      = header
+#   header.fill       = 404040
+#   header.text       = FFFFFF
+#   header.bold       = yes             # from report
+#   band.fill         = F2F2F2
+#   heading.fill      = D9D9D9
+#   rules             = none
+#   rule.color        = 000000          # from apa
+#   note.label        = Note:           # from report
+#   note.label.italic = no              # from report
+#   note.position     = row             # from apa
+#   note.size         = 9               # from report
+#   n.position        = note            # from apa
+#   decimals          = 2               # from apa
+#   leading.zero      = yes             # from report
+#   p.format          = exact           # from apa
+#   p.decimals        = 3               # from apa
+#   stars             = .05, .01, .001  # from apa
+#   marks             = letters         # from apa
+#   minus             = true            # from apa
+#   thousands         = comma           # from apa
+#   landscape         = auto            # from apa
+#   line.spacing      = single          # from apa
+#   percent.decimals  = 1               # from apa
+#   filter.note       = yes             # from apa
+#
+#   [descriptives]
+#   title          = Descriptive Statistics  # from apa
+#   columns        = n, mean, sd, min, max   # from apa
+#   stub.label     = Variable                # from apa
+#   n.label        = n                       # from apa
+#   mean.label     = M                       # from apa
+#   sd.label       = SD                      # from apa
+#   min.label      = Min                     # from apa
+#   max.label      = Max                     # from apa
+#   group.headings = italic                  # from apa
+#
+#   [frequencies]
+#   title               = Frequency Distributions  # from apa
+#   columns             = n, percent               # from apa
+#   stub.label          = Variable                 # from apa
+#   n.label             = n                        # from apa
+#   percent.label       = %                        # from apa
+#   valid.percent.label = Valid %                  # from apa
+#   cumulative.label    = Cumulative %             # from apa
+#   missing.rows        = combined                 # from apa
+#   missing.label       = Missing                  # from apa
+#   variable.headings   = bold                     # from report
+#   group.headings      = italic                   # from apa
+#
+#   [regression]
+#   title             = Regression Coefficients Predicting {outcome}  # from apa
+#   columns           = b, se, beta, p              # from apa
+#   columns.last      = none                        # from apa
+#   stub.label        = Predictor                   # from apa
+#   b.label           = b                           # from apa
+#   se.label          = SE                          # from apa
+#   beta.label        = β                           # from apa
+#   p.label           = p                           # from apa
+#   t.label           = t                           # from apa
+#   ci.label          = 95% CI                      # from apa
+#   beta.gelman.label = β*                          # from apa
+#   ci.style          = one                         # from apa
+#   intercept         = yes                         # from apa
+#   intercept.label   = Constant                    # from apa
+#   fit.rows          = r2                          # from apa
+#   reference         = row                         # from apa
+#   reference.label   = reference                   # from apa
+#   variable.headings = bold                        # from report
+#   group.headings    = italic                      # from apa
+#
+#   [logistic]
+#   title             = Logistic Regression Coefficients Predicting {outcome}  # from apa
+#   columns           = b, se, or, p                # from apa
+#   columns.last      = none                        # from apa
+#   stub.label        = Predictor                   # from apa
+#   b.label           = b                           # from apa
+#   se.label          = SE                          # from apa
+#   or.label          = OR                          # from apa
+#   p.label           = p                           # from apa
+#   wald.label        = Wald                        # from apa
+#   ci.label          = 95% CI for OR               # from apa
+#   beta.gelman.label = β*                          # from apa
+#   ci.style          = one                         # from apa
+#   intercept         = yes                         # from apa
+#   intercept.label   = Constant                    # from apa
+#   fit.rows          = chisq, nagelkerke           # from apa
+#   reference         = row                         # from apa
+#   reference.label   = reference                   # from apa
+#   variable.headings = bold                        # from report
+#   group.headings    = italic                      # from apa
+#
+#   [correlation]
+#   title          = Descriptive Statistics and Correlations for Study Variables  # from apa
+#   columns        = n, mean, sd                 # from apa
+#   stub.label     = Variable                    # from apa
+#   n.label        = n                           # from apa
+#   mean.label     = M                           # from apa
+#   sd.label       = SD                          # from apa
+#   lower.triangle = yes                         # from apa
+#   r.stars        = yes                         # from apa
+#   method.note    = yes                         # from apa
+#
+#   [ttest]
+#   title         = Means, Standard Deviations, and t Tests by {group}  # from apa
+#   columns       = mean, sd, t, p, d           # from apa
+#   stub.label    = Variable                    # from apa
+#   n.label       = n                           # from apa
+#   mean.label    = M                           # from apa
+#   sd.label      = SD                          # from apa
+#   t.label       = t                           # from apa
+#   df.label      = df                          # from apa
+#   p.label       = p                           # from apa
+#   d.label       = d                           # from apa
+#   diff.label    = Mean difference             # from apa
+#   ci.label      = 95% CI                      # from apa
+#   ci.style      = one                         # from apa
+#   group.spanner = yes                         # from apa
+#   test.note     = yes                         # from apa
+#
+#   [anova]
+#   title         = Means, Standard Deviations, and One-Way Analyses of Variance by {group}  # from apa
+#   columns       = mean, sd, f, p, eta2        # from apa
+#   stub.label    = Variable                    # from apa
+#   n.label       = n                           # from apa
+#   mean.label    = M                           # from apa
+#   sd.label      = SD                          # from apa
+#   f.label       = F                           # from apa
+#   df.label      = df                          # from apa
+#   p.label       = p                           # from apa
+#   eta2.label    = η²                          # from apa
+#   group.spanner = yes                         # from apa
+#   test.note     = yes                         # from apa
+#
+#   [crosstab]
+#   title             = Frequencies and Percentages by {group}  # from apa
+#   columns           = n, percent                  # from apa
+#   total             = yes                         # from apa
+#   percent.base      = column                      # from apa
+#   test.columns      = chisq, df, p, v             # from apa
+#   stub.label        = Variable                    # from apa
+#   n.label           = n                           # from apa
+#   percent.label     = %                           # from apa
+#   total.label       = Total                       # from apa
+#   chisq.label       = χ²                          # from apa
+#   df.label          = df                          # from apa
+#   p.label           = p                           # from apa
+#   v.label           = V                           # from apa
+#   group.spanner     = yes                         # from apa
+#   variable.headings = bold                        # from report
+#
+#   [reliability]
+#   title                  = Item Statistics and Reliability  # from apa
+#   columns                = mean, sd, item.total, alpha.if.deleted  # from apa
+#   stub.label             = Item                        # from apa
+#   mean.label             = M                           # from apa
+#   sd.label               = SD                          # from apa
+#   item.total.label       = Item-total *r*              # from apa
+#   alpha.if.deleted.label = α if item deleted           # from apa
+#   alpha                  = yes                         # from apa
+#   item.total.note        = yes                         # from apa
+#   group.headings         = italic                      # from apa
+
+# Render 3 -- the three files opened in the editor, three tabs, nothing
+# printed. Each is opened, then checked: a value jstats cannot use would
+# stop, naming its line, with the file already open to put it right.
+jstyle("banded", open = TRUE)
+jstyle("bar", open = TRUE)
+jstyle("us", open = TRUE)
+
+# Render 4 -- the same three crosstabs in report and in each of the three,
+# written to one Word file and opened; then the style folder put back.
+d12 <- tdat
+x12 <- list(jcrosstab(Smoker ~ Volunteer, d12, print = FALSE),
+            jcrosstab(OwnsHome ~ Volunteer, d12, print = FALSE),
+            jcrosstab(Region ~ Volunteer, d12, print = FALSE))
+g12a <- jtable(x12, style = "report", print = FALSE,
+               title = "Frequencies and Percentages by Volunteering (report)")
+g12b <- jtable(x12, style = "banded", print = FALSE,
+               title = "Frequencies and Percentages by Volunteering (banded)")
+g12c <- jtable(x12, style = "bar", print = FALSE,
+               title = "Frequencies and Percentages by Volunteering (bar)")
+g12d <- jtable(x12, style = "us", print = FALSE,
+               title = "Frequencies and Percentages by Volunteering (us)")
+jtable(list(g12a, g12b, g12c, g12d),
+       file = file.path(.walk_out12, "Gallery.docx"), overwrite = TRUE,
+       open = TRUE)
+joptions(style.dir = .entry_style_dir12, quiet = TRUE)
+# Expected:
+#   Table 1. Frequencies and Percentages by Volunteering (report)
+#     3 variables by Volunteer, on a portrait page.
+#   Table 2. Frequencies and Percentages by Volunteering (banded)
+#     3 variables by Volunteer, on a portrait page.
+#   Table 3. Frequencies and Percentages by Volunteering (bar)
+#     3 variables by Volunteer, on a portrait page.
+#   Table 4. Frequencies and Percentages by Volunteering (us)
+#     3 variables by Volunteer, on a portrait page.
+#   4 tables written to
+#   <tempdir>/walk_tables12/Gallery.docx
+
+# Things to look at:
+#   - the folder set as the style folder (made first, silently, if it was
+#     not there);
+#   - Render 1: banded, bar and us from the folder, after the two built-in
+#     styles (any other file of yours there is listed too); the folders
+#     searched, the styles folder first;
+#   - Render 2: "based on report, then apa" under the file's path; bar's
+#     six settings unmarked; "# from report" on report's own (font, size,
+#     caption.form and the rest it sets); "# from apa" on everything else;
+#   - Render 3 (in the editor): each file as Notepad shows it -- its name,
+#     what it follows, that the source's other rules are the author's,
+#     then the short file's lines on what it lists and how to edit it (the
+#     words jstyle() writes), then its settings, each with a short note;
+#   - Render 4 (in Word): the same table four times. (report) as built in.
+#     (banded) every other data row shaded light grey. (bar) a dark grey
+#     bar behind the caption, running into the header, the text white;
+#     each variable's row light grey, every other data row lighter, no
+#     rules. (us) "Table 4." and the title on one line, the note's label
+#     NOTE:, p and V without the zero while the chi-square keeps it;
+#   - at the end the style folder the session had is put back. To keep the
+#     styles folder set in every session of this project, put
+#     joptions(style.dir = "styles") after library(jstats) at the top of
+#     your script, or in the project's .Rprofile: a name with no folder is
+#     read from the working directory, the project's folder. jstats does
+#     not look in a styles folder by itself (S408), so that line is what
+#     sets it.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # <Free-form notes from the most recent walk: anything that looked off,
 # wording worth an mv review, follow-ups. Dated entries, newest first.>
+#
+# 2026-11-06 (S409; Sections 3 and 9-12, "walked, all okay"). For the next
+# build, riders: a blank line after each setting in the files jstyle()
+# writes, none between a setting's notes and the setting (Jeff: "I think it
+# will read better if there was a blank line after each of the actual
+# settings (but not between the comments and the setting)"); the shading
+# at the top of some report tables, left for later (Jeff: "let's let that
+# alone for now and address it later"). Asked on the walk: N after the
+# title -- a setting since S403, n.position = title, which the preview
+# follows too; apa's default and so report's is the note (ruling R51,
+# S401: "with a default to what you're saying is the APA sample's
+# placement"), and N's place is the presentation review's entry 3, a
+# ruling. And the two lines of TwoFonts.docx's captions -- apa's
+# caption.form, APA 7's form, which myreport inherits from apa;
+# caption.form = journal or report puts "Table 1" and the title on one
+# line, as the built-in report style does.
 
 
 # --- End marker --------------------------------------------------------------

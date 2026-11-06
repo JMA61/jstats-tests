@@ -81,10 +81,25 @@
 #           stub as the preview does (a fitted stub may narrow past it), a
 #           table narrower than its title widening to it, a short file's
 #           head naming the style it is based on.
+#           (AQ) Capability Slate U's build 1 (S409, v0.9.276; ruling R58):
+#           the built-in report style -- its values and layers, its
+#           printout, a regression table in it (the preview pinned whole,
+#           the Word file read); the three new general settings, their
+#           checks and their looks in the Word file (the caption bar
+#           following the header, each variable's label row filled, the
+#           note label upright or italic); an empty note label; the stars
+#           legend under leading.zero; the built-in names refused as a
+#           copy's and a report.jstyle passed over; a complete copy's head
+#           with the block for an AI assistant and based.on naming report;
+#           a short copy of report's head; jstyle(open = TRUE) through a
+#           stand-in opener; Fix Slate V's dummy rows cut alike at 40
+#           columns; the settings help page giving report's values.
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.275, 2026-11-05 (S407, the second rebuild) -- 272/272
-#           on the WORKSTATION; the S407 SECOND REBUILD block below holds
-#           the stamp. Prior: v0.9.274, 2026-11-04 (S406) -- 254/254 (the
+# LAST VERIFIED: v0.9.276, 2026-11-06 (S409, the rebuild) -- 287/287 on the
+#           WORKSTATION; the S409 REBUILD block below holds the stamp.
+#           Prior: v0.9.275, 2026-11-05 (S407, the second rebuild) --
+#           272/272 (the S407 SECOND REBUILD block); v0.9.274, 2026-11-04
+#           (S406) -- 254/254 (the
 #           S406 EDIT block); v0.9.273,
 #           2026-11-04 (S405) -- 223/223 (the S405 EDIT block); v0.9.272,
 #           2026-11-03 (S403) -- 179/179 (the S403 EDIT block); v0.9.271,
@@ -117,6 +132,117 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S409 REBUILD (v0.9.276, the same version, 2026-11-06; on Jeff's receive:
+#           "tables_check.R FAIL 286/287 -- failed: AQ13", every other
+#           battery green, R CMD check clean). AQ13's stand-in recorded the
+#           path the package hands to the opener as given; the check
+#           expects it normalized, as the opener gives it to the editor. In
+#           the sandbox tempdir() is already in that form; on Windows a path
+#           built from it holds backslashes (and can hold short 8.3 names),
+#           so the two differed there alone. The stand-in now records
+#           normalizePath(path, winslash = "/"); the package is unchanged.
+#           Reproduced in the sandbox first, with a temporary folder reached
+#           through a symlink (AQ13 red, every other check green, its other
+#           parts holding), then 287/287 the same way; plain, under the
+#           RStudio-handler stand-in, each with a 35-character temp path,
+#           interactive (no question asked) and entered dirty (nothing
+#           added, removed or changed): 287/287 each. The mutants that red
+#           AQ13 (report's open = not stopped, the editor opened where the
+#           session cannot show it, open = TRUE printing the settings) run
+#           again: AQ13 red for each. WORKSTATION, through receive_all() on
+#           the rebuild: "R CMD check: 0 errors, 0 warnings, 0 notes.";
+#           "ALL BATTERIES GREEN (12 run, 3638 checks)" -- matching the
+#           sandbox (plain, under the RStudio-handler stand-in, each again
+#           with a 35-character temp path, and interactive; entered dirty
+#           plain and under the handlers, nothing added, removed or
+#           changed; a LANG=C install clean). The first delivery read
+#           "run_all.R: NOT GREEN", tables_check.R 286/287 (AQ13), there.
+# S409 EDIT (v0.9.276, 2026-11-06): Capability Slate U's build 1, the look
+#           layer. SECTION AQ ADDED, 15 checks (287 in all); O03, O05,
+#           Y07, AA01, AJ01, AN01, AN02, AN03, AO03, AP09 and AP10
+#           RE-PINNED. (AQ01) report a built-in style, a short style based
+#           on apa: its layers, report then apa, no file; its ten values
+#           (Arial 10, the caption 10 and the note 9, the report caption
+#           form, a D9D9D9 bold header, the zero kept, an upright "Note:")
+#           and the bold variable rows of its four sections, every other
+#           setting apa's -- each read through .jst_style_key() against
+#           apa's; no name kept for a built-in to come. (AQ02) the three
+#           new general settings, caption.fill, heading.fill and
+#           note.label.italic, placed beside their kin and off in apa;
+#           their checks (caption.fill takes header, in any case), the stop
+#           for a wrong value, a file setting each. (AQ03) jstyle("report")
+#           printed as built into jstats and based on apa, its own settings
+#           unmarked. (AQ04) the caption bar in the Word file: header takes
+#           the header's fill and sets every caption run in the header's
+#           text color, a color fills and leaves the text black, a caption
+#           set as a paragraph untouched, report none. (AQ05) heading.fill
+#           on each variable's label row and nowhere else -- a frequency
+#           table's, a crosstab's across its test cells, a regression's
+#           dummy-coded variable. (AQ06) the note's label upright under
+#           report, italic under apa, in the run and the marked-up line.
+#           (AQ07) an empty note.label: no label and no asterisks, in the
+#           line, the preview and the Word file. (AQ08) the stars legend
+#           keeping the zero under leading.zero = yes, as the cells do.
+#           (AQ09) a regression table in report: the preview pinned whole,
+#           the Word file's font, sizes, fills and bold. (AQ10) the
+#           built-in names refused as a copy's, the line offered copying
+#           the call's own style; a report.jstyle passed over with one
+#           note; report typed bare. (AQ11) a complete copy's head pinned
+#           whole, the block for an AI assistant included; based.on report
+#           for a copy of report or of a file based on it, apa otherwise;
+#           each read back as the style it copied. (AQ12) a short copy of
+#           report's head. (AQ13) jstyle(open = TRUE) through a stand-in
+#           for the editor -- a trace() on .jst_style_open() that records
+#           the path and sets ask to FALSE, so nothing opens in the
+#           workstation's interactive receive, removed on exit: a style
+#           named, by path, the session's style, with save.as, a file it
+#           cannot use opened and then stopped; the two built-ins' stops,
+#           a name found nowhere, open = neither TRUE nor FALSE; the opener
+#           run only when open = TRUE and the session can show it. (AQ14)
+#           Fix Slate V: a reference and a category the 40-column cap cuts
+#           alike show their codes in jlm()'s header and rows, in both
+#           results' dummy_groups and in the filter stop. (AQ15)
+#           ?jstyle_settings gives report's value beside apa's where they
+#           differ. RE-PINNED: O03 (the complete copy's head: the editing
+#           rule's one wording and the AI block), O05 (apa's stop, "a style
+#           built into jstats", its line naming myapa), AP09 (report's
+#           stop), AP10 (the passed-over note), AN01 (the short head), AO03
+#           (the orientation, 3.10: both built-ins, the short call, open =
+#           TRUE, the editing rule), AA01 (31 general settings), Y07, AJ01,
+#           AN02 and AN03 (the printout's columns one place wider, for
+#           note.label.italic).
+#           The section's setup runs through .aqtry() (guard 3), so a build
+#           without one of its pieces reds the checks that read it rather
+#           than halting the battery: the first run against v0.9.275
+#           halted at AQ01's setup. Against v0.9.275 the battery reads
+#           261/287, each of the fifteen AQ checks red with the eleven
+#           re-pinned. MUTATION MAP (S409; 30 one-change mutants of
+#           tables.R, models.R and utils.R, each anchor found once, run
+#           detached; by the checks that red): report's font apa's AQ01;
+#           its leading.zero no AQ01, AQ08; its note label apa's AQ01,
+#           AQ06; its crosstab rows plain AQ01; apa's layer read before
+#           report's AQ01 (and eight more); the caption bar never filled
+#           AQ04, its text not the header's color AQ04, its runs uncolored
+#           AQ04; role headings filled AQ05; every data row filled AQ05;
+#           the label always italic AQ06; an empty label left as asterisks
+#           AQ07; the legend dropping the zero always AQ08; header taken
+#           by every color setting AQ02; report allowed as a copy's name
+#           AP09, AQ10; the passed-over note reworded AP10, AQ10; the AI
+#           block reworded O03, AQ11, dropped O03, AQ11; a copy of report
+#           based on apa AQ11; the short head's old article AN01, AQ12;
+#           report's open = not stopped AQ13; open = TRUE printing the
+#           settings AQ13; the editor opened in a session that cannot show
+#           it AQ13 (on the first round it opened a real one and the
+#           battery hung, so AQ13's stand-in now replaces the opener as
+#           well as the session test); report's values off the help page
+#           AQ15; dummy_groups' labels, the header's reference and a
+#           coefficient row each formatted one at a time AQ14; the
+#           absent-category note's categories formatted one at a time AQ14
+#           (survived the first round, red once AQ14 gained the note); the
+#           orientation version not bumped AO03, the short call not taught
+#           AO03. Fix Slate V's second item removed the first of plot.R's
+#           two .jst_plot_group_factor() definitions, the dead one the
+#           S407 round left SURVIVED by design.
 # S407 SECOND REBUILD (v0.9.275, the same version, 2026-11-05; on Jeff's
 #           walk of the first: Table 2's title on two lines, the n and %
 #           columns standing under "How we contacted you", and "every
@@ -2245,13 +2371,18 @@ check("O02 jstyle(name) prints every setting in the style file's own form, the g
 .o3s <- .jst_style_resolve("copyapa")
 .o3same <- all(unlist(lapply(names(.jst_style_apa), function(p) vapply(names(.jst_style_spec[[p]]), function(k)
   identical(.jst_style_key(.o3s, p, k), .jst_style_key(.jst_style_resolve("apa"), p, k)), logical(1)))))
-check("O03 jstyle(\"apa\", save.as = ) writes <name>.jstyle into the style folder: its header (since S406 saying to change values only, for a person or an AI assistant; since the S407 rebuild the file's name on a line of its own, then one sentence a line), the format and written.by stamps and based.on = apa, then every setting of every part after a note on what it does and one on what it takes (S406); read back, every setting is apa's; the written line names the file",
+check("O03 jstyle(\"apa\", save.as = ) writes <name>.jstyle into the style folder: its header (since S406 saying to change values only, for a person or an AI assistant; since the S407 rebuild the file's name on a line of its own, then one sentence a line; since S409 the editing rule worded as the short file's and a block for an AI assistant asked to match an example), the format and written.by stamps and based.on = apa, then every setting of every part after a note on what it does and one on what it takes (S406); read back, every setting is apa's; the written line names the file",
       file.exists(.o3f) &&
-        identical(.o3t[1:6], c("# copyapa.jstyle:", "# A jstats table style.",
-                               "# Every setting jstats has is below, each after a note saying what it does and what it takes.",
-                               "# Change only the values after the = signs; do not add, rename or remove a setting or a section.",
-                               "# A line that starts with # is a note.",
-                               "# jstyle(\"copyapa\") checks the file and names any value it cannot use.")) &&
+        identical(.o3t[1:11], c("# copyapa.jstyle:", "# A jstats table style.",
+                                "# Every setting jstats has is below, each after a note saying what it does and what it takes.",
+                                "# Change only the values after the = signs; do not invent a setting, and do not rename a setting or a section.",
+                                "# A line that starts with # is a note.",
+                                "# jstyle(\"copyapa\") checks the file and names any value it cannot use.",
+                                "#",
+                                "# To an AI assistant asked to edit this file so tables look like an example:",
+                                "# Change only the values after the = signs, using only the values each setting's \"# takes:\" line allows.",
+                                "# Keep every other line as it is, and return the whole file.",
+                                "# Then say what the example has that these settings cannot make, rather than inventing a setting for it.")) &&
         "format     = 1" %in% .o3t &&
         paste0("written.by = jstats ", .jst_jstats_version()) %in% .o3t &&
         "based.on   = apa" %in% .o3t &&
@@ -2298,7 +2429,7 @@ check("O04 a copy of a style based on others holds every setting it gives, so it
 .o5b <- res(jstyle("apa", save.as = "copyapa", overwrite = TRUE))
 check("O05 save.as stops: the built-in's name, another extension, a name a file cannot have, a folder that does not exist, a file that exists where the session cannot ask, a value that is not a name; bare words get the pointer; an unused input; overwrite = TRUE replaces",
       all(vapply(.o5, function(r) is.null(r$val), logical(1))) &&
-        grepl("jstyle(): \"apa\" is the name of jstats's built-in style.\nGive the copy another name, for example:\n  jstyle(\"apa\", save.as = \"myjournal\")", .o5[[1]]$txt, fixed = TRUE) &&
+        grepl("jstyle(): \"apa\" is the name of a style built into jstats.\nGive the copy another name, for example:\n  jstyle(\"apa\", save.as = \"myapa\")", .o5[[1]]$txt, fixed = TRUE) &&
         grepl("jstyle(): save.as = names a file ending in .txt, not .jstyle, which\njstyle() adds:\n  save.as = \"x\"", .o5[[2]]$txt, fixed = TRUE) &&
         grepl("jstyle(): \"a:b\" cannot be a file's name.\nUse letters, digits, spaces, dashes, or underscores.", .o5[[3]]$txt, fixed = TRUE) &&
         grepl("jstyle(): the folder does not exist:", .o5[[4]]$txt, fixed = TRUE) &&
@@ -3295,7 +3426,7 @@ check("Y06 n.position = title in the file: apa's italic title carries (N = 103) 
 check("Y07 jstyle(\"apa\") prints the [regression] and [logistic] sections after [frequencies], n.position in note.n's place; a saved copy writes them with their notes, columns.last and fit.rows as none and the lists",
       grepl("(?s)\\[frequencies\\]\n.*\\[regression\\]\ntitle             = Regression Coefficients Predicting \\{outcome\\}\ncolumns           = b, se, beta, p\ncolumns.last      = none\n", .y7, perl = TRUE) &&
         grepl("(?s)\\[logistic\\]\n.*\nfit.rows          = chisq, nagelkerke\n", .y7, perl = TRUE) &&
-        grepl("\nn.position       = note\n", .y7, fixed = TRUE) && !grepl("note.n", .y7, fixed = TRUE) &&
+        grepl("\nn.position        = note\n", .y7, fixed = TRUE) && !grepl("note.n", .y7, fixed = TRUE) &&
         "[regression]" %in% .y7f && "[logistic]" %in% .y7f &&
         any(grepl("^# A regression table, from jlm\\(\\) results\\.$", .y7f)) &&
         "fit.rows = r2" %in% .y7f && "columns.last = none" %in% .y7f &&
@@ -3339,7 +3470,7 @@ cat("\n--- AA. The general changes (build 4) ---\n")
 
 .aad <- file.path(tempdir(), "tables_check_b4"); unlink(.aad, recursive = TRUE); dir.create(.aad)
 
-check("AA01 the apa list and the spec hold the five new sections after logistic -- correlation, ttest, anova, crosstab, reliability -- each naming the same settings in the same order; filter.note joins the general settings (28), yes | no; jtable() reads nine result classes into the nine sections",
+check("AA01 the apa list and the spec hold the five new sections after logistic -- correlation, ttest, anova, crosstab, reliability -- each naming the same settings in the same order (since S409 31 general settings, with caption.fill, heading.fill and note.label.italic); filter.note joins the general settings (28), yes | no; jtable() reads nine result classes into the nine sections",
       identical(names(.jst_style_apa), c("general", "descriptives", "frequencies", "regression",
                                          "logistic", "correlation", "ttest", "anova", "crosstab",
                                          "reliability")) &&
@@ -3347,7 +3478,7 @@ check("AA01 the apa list and the spec hold the five new sections after logistic 
         all(vapply(names(.jst_style_apa), function(s) {
           identical(names(.jst_style_apa[[s]]), names(.jst_style_spec[[s]]))
         }, logical(1))) &&
-        length(.jst_style_apa$general) == 28L &&
+        length(.jst_style_apa$general) == 31L &&
         identical(.jst_style_apa$general$filter.note, "yes") &&
         identical(.jst_style_spec$general$filter.note$choices, c("yes", "no")) &&
         identical(unname(.jst_table_types),
@@ -4169,7 +4300,7 @@ cat("\n--- AJ. jstyle() and the five sections ---\n")
                  if (file.exists(f)) readLines(f, encoding = "UTF-8") else character(0) })
 check("AJ01 jstyle(\"apa\") prints the five sections after [logistic], in order, and filter.note among the general settings; a saved copy writes them with their notes and the lists, and reads back",
       grepl("(?s)\\[logistic\\]\n.*\n\\[correlation\\]\n.*\n\\[ttest\\]\n.*\n\\[anova\\]\n.*\n\\[crosstab\\]\n.*\n\\[reliability\\]\n", .aj1, perl = TRUE) &&
-        grepl("\nfilter.note      = yes\n", .aj1, fixed = TRUE) &&
+        grepl("\nfilter.note       = yes\n", .aj1, fixed = TRUE) &&
         grepl("\n[crosstab]\ntitle             = Frequencies and Percentages by {group}\ncolumns           = n, percent\ntotal             = yes\npercent.base      = column\ntest.columns      = chisq, df, p, v\n", .aj1, fixed = TRUE) &&
         all(c("[correlation]", "[ttest]", "[anova]", "[crosstab]", "[reliability]") %in% .aj1f) &&
         "filter.note = yes" %in% .aj1f && "test.columns = chisq, df, p, v" %in% .aj1f &&
@@ -4570,10 +4701,10 @@ cat("\n--- AN. A short style file ---\n")
 .an1l <- if (file.exists(paste0(.an1f, ".jstyle"))) readLines(paste0(.an1f, ".jstyle"), encoding = "UTF-8") else ""
 check("AN01 settings given to jstyle(save.as =) write a short file, pinned whole: a header (since the S407 rebuild the file's name on a line of its own, then one sentence a line) saying it holds only the settings that differ, the stamps, based.on naming the style copied, then the general settings, then each section's under its heading (in the file's order), each after its note on what it does and what it takes; a color as typed",
       identical(.an1l, c("# mine.jstyle:",
-                         "# A jstats table style, based on apa, the style built into jstats.",
+                         "# A jstats table style, based on apa, a style built into jstats.",
                          "# It lists only the settings that differ from apa; any setting not listed here takes apa's value.",
                          "# ?jstyle_settings lists every setting and what it takes.",
-                         "# Change only the values after the = signs, or add a setting from that list.",
+                         "# Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.",
                          "# jstyle(\"mine\") checks the file and names any value it cannot use.",
                          "",
                          "format     = 1",
@@ -4603,11 +4734,11 @@ check("AN01 settings given to jstyle(save.as =) write a short file, pinned whole
 .an2m <- res(jtable(.akm3, style = paste0(.an1f, ".jstyle"), print = FALSE))$val
 .an2d <- res(jtable(.akd1, style = paste0(.an1f, ".jstyle"), file = file.path(.akd, "Mine.docx"), print = FALSE))$val
 check("AN02 the short file reads back: jstyle() shows its four settings as set there and every other from apa; a table built in it takes them (the regression table's N row, the descriptives table's three columns, its cells at 11 points in the file)",
-      grepl("\nsize             = 11\n", .an2p, fixed = TRUE) &&
-        grepl("\nheader.fill      = ADD8E6\n", .an2p, fixed = TRUE) &&
+      grepl("\nsize              = 11\n", .an2p, fixed = TRUE) &&
+        grepl("\nheader.fill       = ADD8E6\n", .an2p, fixed = TRUE) &&
         grepl("\ncolumns        = n, mean, sd\n", .an2p, fixed = TRUE) &&
         grepl("\nfit.rows          = r2, n\n", .an2p, fixed = TRUE) &&
-        grepl("\nfont             = Times New Roman  # from apa\n", .an2p, fixed = TRUE) &&
+        grepl("\nfont              = Times New Roman  # from apa\n", .an2p, fixed = TRUE) &&
         identical(tail(vapply(.an2m$rows, `[[`, "", "label"), 2), c("*R*\u00b2", "*N*")) &&
         identical(.an2d$columns$key, c("stub", "n", "mean", "sd")) &&
         "22" %in% .alsz(.alx(file.path(.akd, "Mine.docx"))))
@@ -4627,7 +4758,7 @@ check("AN03 a style given by path is named by its path in based.on, and the copy
       identical(.an3l[1:2], c("# mine2.jstyle:", "# A jstats table style, based on mine.")) &&
         identical(.an3l[10], paste0("based.on   = ", .jst_norm_path(paste0(.an1f, ".jstyle")))) &&
         identical(tail(.an3l, 3), c("# the text size, in points", "# takes: a number from 6 to 72", "size = 10")) &&
-        grepl("\nsize             = 10\n", .an3p, fixed = TRUE) &&
+        grepl("\nsize              = 10\n", .an3p, fixed = TRUE) &&
         grepl("\nfit.rows          = r2, n", .an3p, fixed = TRUE) &&
         identical(tail(.an4l, 5), c("", "[regression]", "# the text size, in points",
                                     "# takes: a number from 6 to 72", "size = 9")) &&
@@ -4753,14 +4884,18 @@ check("AO02 the ?jstyle_settings page, generated from the settings' own notes: p
 
 .ao3 <- tryCatch(paste(.jst_orientation_body(), collapse = " "), error = function(e) "")
 .ao3 <- gsub(" +", " ", .ao3)
-check("AO03 the orientation (version 3.9) holds the tables -- kept results to jtable(), one call one table, the document call, print(t1), the styles and ?jstyle_settings, values edited only -- in lines no wider than 76 columns; a kept result saved with base R's saveRDS(); the skill's description names jtable and jstyle",
-      identical(.jst_orientation_version, "3.9") &&
+check("AO03 the orientation (version 3.10; 3.9 until S409) holds the tables -- kept results to jtable(), one call one table, the document call, print(t1), the two built-in styles, the complete copy and the short call, open = TRUE, ?jstyle_settings, the editing rule the file heads give -- in lines no wider than 76 columns; a kept result saved with base R's saveRDS(); the skill's description names jtable and jstyle",
+      identical(.jst_orientation_version, "3.10") &&
         grepl("- Publication tables come from `jtable()` on kept results:", .ao3, fixed = TRUE) &&
         grepl("One call makes one table;", .ao3, fixed = TRUE) &&
         grepl("`jtable(list(t1, t2), file = \"Tables.docx\")`", .ao3, fixed = TRUE) &&
         grepl("`print(t1)` shows a table in the console", .ao3, fixed = TRUE) &&
-        grepl("`?jstyle_settings` lists them all", .ao3, fixed = TRUE) &&
-        grepl("edit values only -- never add, rename or remove a setting or a section", .ao3, fixed = TRUE) &&
+        grepl("the built-in `\"apa\"` for a journal or `\"report\"` for a report, or a `.jstyle` text file.", .ao3, fixed = TRUE) &&
+        grepl("`jstyle(\"report\", save.as = \"myagency\")` writes a copy holding every setting", .ao3, fixed = TRUE) &&
+        grepl("`jstyle(\"report\", save.as = \"mine\", font = \"Calibri\")` a short file holding only the settings given.", .ao3, fixed = TRUE) &&
+        grepl("`jstyle(\"myagency\", open = TRUE)` opens it in the editor", .ao3, fixed = TRUE) &&
+        grepl("`?jstyle_settings` lists every setting", .ao3, fixed = TRUE) &&
+        grepl("edit its values, or add to a short file a setting from that list; do not invent a setting, and do not rename a setting or a section.", .ao3, fixed = TRUE) &&
         grepl("with base R's `saveRDS()` (read it back with `readRDS()`)", .ao3, fixed = TRUE) &&
         grepl("jtable, jstyle (publication tables in Word and .jstyle table styles)", .jst_skill_description(), fixed = TRUE) &&
         local({
@@ -4941,9 +5076,8 @@ options(.jst_options_style_dir = .apd)
 .ap9 <- list(r = res(jstyle("apa", save.as = "report"))$txt,
              R = res(jstyle("apa", save.as = file.path(.apd, "REPORT"), size = 11))$txt,
              my = res(jstyle("apa", save.as = "myreport", size = 11))$txt)
-check("AP09 jstyle(save.as =) refuses \"report\", the name of a built-in a later version adds, in any case and with a folder, as it refuses \"apa\", writing nothing; \"myreport\" is written",
-      identical(.ap9$r, paste0("[error] jstyle(): \"report\" is the name of a built-in style a later version\n",
-                               "of jstats adds.\n",
+check("AP09 jstyle(save.as =) refuses \"report\" -- reserved at S407 for a built-in to come, built in since S409 -- in any case and with a folder, as it refuses \"apa\", writing nothing; \"myreport\" is written",
+      identical(.ap9$r, paste0("[error] jstyle(): \"report\" is the name of a style built into jstats.\n",
                                "Give the copy another name, for example:\n",
                                "  jstyle(\"apa\", save.as = \"myreport\")")) &&
         identical(.ap9$R, sub("\"report\"", "\"REPORT\"", .ap9$r, fixed = TRUE)) &&
@@ -4952,7 +5086,7 @@ check("AP09 jstyle(save.as =) refuses \"report\", the name of a built-in a later
 
 .wsty("apa", "font = Shadow", dir = .apd)
 .wsty("onapa", "based.on = apa", "size = 11", dir = .apd)
-.apnote <- paste0("This file is not read, since \"apa\" always names jstats's built-in style:\n",
+.apnote <- paste0("This file is not read, since \"apa\" always names a style built into jstats:\n",
                   "  ", .jst_norm_path(file.path(.apd, "apa.jstyle")), "\n",
                   "To use it, rename it, for example to myapa.jstyle, and use style = \"myapa\".")
 # A note is kept off res()'s text (guard 4); .apmsg() reads the notes a
@@ -5228,7 +5362,419 @@ check("AP17 an Arial table wider than its page is fitted with its stub's floor m
         sum(.ap17x$w[-1L]) + .ap17ft <= .jst_docx_page("a4", FALSE)$text &&
         isTRUE(.ap17l[[1]]$landscape))
 
-unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd), recursive = TRUE)
+# =============================================================================
+# AQ. Capability Slate U, build 1 (S409): the built-in report style, the three
+#     new looks, jstyle(open = TRUE), the file heads, Fix Slate V
+# =============================================================================
+cat("\n--- AQ. The report style, the new looks, open =, the heads ---\n")
+
+.aqd <- file.path(tempdir(), "tables_check_s409"); unlink(.aqd, recursive = TRUE); dir.create(.aqd)
+# Work outside check() (guard 3): a build without one of these pieces reds
+# its checks rather than halting the battery.
+.aqtry <- function(expr) tryCatch(expr, error = function(e) NULL)
+.aqf  <- res(jfreq(tcm, Smoker, Region, print = FALSE))$val
+.aqx  <- res(jcrosstab(Smoker ~ Volunteer, tcm, print = FALSE))$val
+.aqm  <- res(jlm(WellbeingScore ~ Age + Region, tcm, categorical = Region, print = FALSE))$val
+.aqc  <- res(jcorr(tcm, WellbeingScore, Age, Income, print = FALSE))$val
+.aqdx <- function(f) {
+  if (!file.exists(f)) return("")
+  x <- file.path(.aqd, paste0("x_", tools::file_path_sans_ext(basename(f))))
+  unlink(x, recursive = TRUE); invisible(utils::unzip(f, exdir = x))
+  list(doc = paste(readLines(file.path(x, "word", "document.xml"), warn = FALSE,
+                             encoding = "UTF-8"), collapse = ""),
+       sty = paste(readLines(file.path(x, "word", "styles.xml"), warn = FALSE,
+                             encoding = "UTF-8"), collapse = ""))
+}
+.aqrows <- function(doc) regmatches(doc, gregexpr("<w:tr>.*?</w:tr>", doc, perl = TRUE))[[1]]
+.aqrow  <- function(rows, text) rows[grep(paste0(">", text, "<"), rows, fixed = TRUE)[1]]
+.aqfill <- function(x) regmatches(x, gregexpr("(?<=w:fill=\")[0-9A-F]{6}", x, perl = TRUE))[[1]]
+
+# The report style, resolved: its layers and every setting against apa's.
+.aq1 <- res(.jst_style_resolve("report"))$val
+.aq1own <- c(font = "Arial", size = "10", caption.form = "report", caption.size = "10",
+             header.fill = "D9D9D9", header.bold = "yes", note.label = "Note:",
+             note.label.italic = "no", note.size = "9", leading.zero = "yes")
+.aq1diff <- .aqtry(local({
+  out <- character(0)
+  for (p in c("general", names(.jst_style_type_nouns))) {
+    for (k in names(.jst_style_spec[[p]])) {
+      if (!identical(.jst_style_key(.aq1, p, k), .jst_style_key(.jst_style_apa, p, k))) {
+        out <- c(out, paste0(p, ":", k))
+      }
+    }
+  }
+  out
+}))
+check("AQ01 report is a built-in style, a short style based on apa (its layers report, then apa; no file): Arial 10, the caption 10 and the note 9, the report caption form, a D9D9D9 bold header, the zero kept, an upright \"Note:\", each variable's label row bold -- and every other setting apa's, the three new looks off; no name is kept for a built-in to come",
+      identical(names(.jst_style_builtin()), c("apa", "report")) &&
+        identical(.jst_style_reserved, character(0)) &&
+        inherits(.aq1, "jst_style") && is.na(.aq1$path) &&
+        identical(vapply(.aq1$layers, function(L) L$source, ""), c("report", "apa")) &&
+        all(vapply(names(.aq1own), function(k) {
+          identical(as.character(.jst_style_key(.aq1, "general", k)), .aq1own[[k]])
+        }, logical(1))) &&
+        all(vapply(c("frequencies", "regression", "logistic", "crosstab"), function(p) {
+          identical(.jst_style_key(.aq1, p, "variable.headings"), "bold")
+        }, logical(1))) &&
+        identical(sort(.aq1diff),
+                  sort(c(paste0("general:", names(.aq1own)),
+                         paste0(c("frequencies", "regression", "logistic", "crosstab"),
+                                ":variable.headings")))) &&
+        identical(.jst_style_key(.aq1, "general", "caption.fill"), "none") &&
+        identical(.jst_style_key(.aq1, "general", "heading.fill"), "none") &&
+        identical(.jst_style_key(.aq1, "general", "rules"), "apa") &&
+        identical(.jst_style_key(.aq1, "general", "band.fill"), "none"))
+
+# The three new settings: their place, their values in apa, what each takes.
+.aq2sp <- .jst_style_spec$general
+.aq2 <- .aqtry(list(
+  hdr  = res(.jst_style_check_value("caption.fill", .aq2sp$caption.fill, "Header", "general", "jtable"))$val,
+  nav  = res(.jst_style_check_value("caption.fill", .aq2sp$caption.fill, "navy", "general", "jtable"))$val,
+  hex  = res(.jst_style_check_value("heading.fill", .aq2sp$heading.fill, "#d3e3e5", "general", "jtable"))$val,
+  bad1 = res(.jst_style_check_value("heading.fill", .aq2sp$heading.fill, "header", "general", "jtable"))$txt,
+  bad2 = res(.jst_style_check_value("caption.fill", .aq2sp$caption.fill, "teal2", "general", "jtable"))$txt,
+  bad3 = res(.jst_style_check_value("note.label.italic", .aq2sp$note.label.italic, "maybe", "general", "jtable"))$txt,
+  tk1  = .jst_style_takes(.aq2sp$caption.fill),
+  tk2  = .jst_style_takes(.aq2sp$heading.fill),
+  ab   = vapply(c("caption.fill", "heading.fill", "note.label.italic"), function(k) {
+           paste(.jst_style_about_lines(.aq2sp[[k]]$about), collapse = " | ")
+         }, "")))
+.wsty("aqfile", "based.on = report", "caption.fill = header", "heading.fill = lightblue",
+      "note.label.italic = yes", dir = .aqd)
+.aq2f <- res(.jst_style_resolve(file.path(.aqd, "aqfile.jstyle")))$val
+check("AQ02 three new general settings, placed beside their kin -- caption.fill after caption.size, heading.fill after band.fill, note.label.italic after note.label -- none, none and yes in apa: caption.fill takes a color, header (any case) or none, heading.fill a color or none, note.label.italic yes or no; a wrong value stops with what the setting takes; a file sets each",
+      identical(names(.jst_style_apa$general)[match(c("caption.size", "caption.fill"), names(.jst_style_apa$general))],
+                c("caption.size", "caption.fill")) &&
+        identical(diff(match(c("caption.size", "caption.fill", "band.fill", "heading.fill", "note.label", "note.label.italic"),
+                             names(.jst_style_apa$general)))[c(1, 3, 5)], c(1L, 1L, 1L)) &&
+        identical(unname(unlist(.jst_style_apa$general[c("caption.fill", "heading.fill", "note.label.italic")])),
+                  c("none", "none", "yes")) &&
+        identical(.aq2$hdr, "header") && identical(.aq2$nav, "000080") && identical(.aq2$hex, "D3E3E5") &&
+        identical(.aq2$bad1, "[error] jtable(): `heading.fill` must be \"none\", a color name such as\n\"navy\", or six hex digits such as \"1F3864\".") &&
+        identical(.aq2$bad2, "[error] jtable(): `caption.fill` must be \"none\", \"header\", a color name such\nas \"navy\", or six hex digits such as \"1F3864\".") &&
+        identical(.aq2$bad3, "[error] jtable(): `note.label.italic` must be \"yes\" or \"no\".") &&
+        identical(.aq2$tk1, "a color name such as lightblue, or six hex digits such as ADD8E6; or header, or none") &&
+        identical(.aq2$tk2, "a color name such as lightblue, or six hex digits such as ADD8E6; or none") &&
+        identical(unname(.aq2$ab), c("a color filling the caption row (caption.position = row), header for the header's fill and text color, or none", "a color filling each variable's label row (the rows variable.headings sets), or none", "the note's label in italics, as APA sets it: yes | no")) &&
+        identical(.jst_style_key(.aq2f, "general", "caption.fill"), "header") &&
+        identical(.jst_style_key(.aq2f, "general", "heading.fill"), "ADD8E6") &&
+        identical(.jst_style_key(.aq2f, "general", "note.label.italic"), "yes"))
+
+# jstyle("report"): built into jstats, based on apa; its own settings shown
+# as its own, every other marked as apa's.
+.aq3 <- .strip_ansi(res(jstyle("report"))$txt)
+.aq3l <- strsplit(.aq3, "\n", fixed = TRUE)[[1]]
+check("AQ03 jstyle(\"report\") prints the style as built into jstats and based on apa, its own settings unmarked and every other marked as apa's",
+      identical(.aq3l[1:4], c("Style: report", "  built into jstats", "  based on apa", "")) &&
+        all(c("font              = Arial", "size              = 10", "caption.form      = report", "caption.size      = 10", "header.fill       = D9D9D9", "header.bold       = yes", "note.label        = Note:", "note.label.italic = no", "note.size         = 9", "leading.zero      = yes") %in% .aq3l) &&
+        all(c("paper             = a4              # from apa", "header.text       = 000000          # from apa", "rules             = apa             # from apa") %in% .aq3l) &&
+        sum(grepl("# from apa$", .aq3l)) == 136L)
+
+# The caption bar: caption.fill = header takes the header's fill and text
+# color; a color fills the bar and leaves the text; a caption set as a
+# paragraph is not filled; none (report, apa) fills nothing.
+.wsty("aqbar", "based.on = report", "caption.fill = header", "header.fill = 0E5A5F",
+      "header.text = FFFFFF", dir = .aqd)
+.wsty("aqcol", "based.on = report", "caption.fill = F2F2F2", dir = .aqd)
+.wsty("aqpar", "based.on = report", "caption.fill = header", "header.fill = 0E5A5F",
+      "header.text = FFFFFF", "caption.position = paragraph", dir = .aqd)
+.aq4 <- .aqtry(lapply(c(bar = "aqbar", col = "aqcol", par = "aqpar", rep = "report"), function(s) {
+  f <- file.path(.aqd, paste0("cap_", s, ".docx"))
+  st <- if (s == "report") "report" else file.path(.aqd, paste0(s, ".jstyle"))
+  invisible(res(jtable(.aqf, style = st, file = f, print = FALSE)))
+  d <- .aqdx(f)$doc
+  first <- .aqrows(d)[1]
+  cap <- if (grepl("SEQ Table", first, fixed = TRUE)) first
+         else regmatches(d, regexpr("<w:p><w:pPr><w:pStyle w:val=\"Caption\"/>.*?</w:p>", d, perl = TRUE))
+  list(cap = cap, row = grepl("SEQ Table", first, fixed = TRUE),
+       fills = .aqfill(cap),
+       colors = unique(regmatches(cap, gregexpr("(?<=<w:color w:val=\")[0-9A-F]{6}", cap, perl = TRUE))[[1]]),
+       runs = lengths(regmatches(cap, gregexpr("<w:r>", cap, fixed = TRUE))),
+       colored = lengths(regmatches(cap, gregexpr("<w:color w:val=", cap, fixed = TRUE))))
+}))
+check("AQ04 the caption bar in the Word file: caption.fill = header fills the caption row with the header's fill and sets every caption run in the header's text color; a color fills the row and leaves the text black; a caption set as a paragraph is not filled, nor its text colored; report fills none",
+      .aq4$bar$row && identical(.aq4$bar$fills, "0E5A5F") && identical(.aq4$bar$colors, "FFFFFF") &&
+        .aq4$bar$colored == .aq4$bar$runs &&
+        .aq4$col$row && identical(.aq4$col$fills, "F2F2F2") && length(.aq4$col$colors) == 0L &&
+        !.aq4$par$row && length(.aq4$par$cap) == 1L && length(.aq4$par$fills) == 0L &&
+        length(.aq4$par$colors) == 0L &&
+        .aq4$rep$row && length(.aq4$rep$fills) == 0L && length(.aq4$rep$colors) == 0L)
+
+# heading.fill: each variable's label row -- a frequency table's, a
+# crosstab's (with its test, every cell), a regression's dummy-coded
+# variable -- and never a role heading, a category or the header.
+.wsty("aqhead", "based.on = report", "heading.fill = D3E3E5", dir = .aqd)
+.aq5 <- .aqtry(local({
+  st <- file.path(.aqd, "aqhead.jstyle"); f <- file.path(.aqd, "head.docx")
+  t1 <- res(jtable(.aqf, headings = list(Habits = Smoker, Place = Region), style = st,
+                   print = FALSE))$val
+  t2 <- res(jtable(.aqx, style = st, print = FALSE))$val
+  t3 <- res(jtable(.aqm, style = st, print = FALSE))$val
+  invisible(res(jtable(list(t1, t2, t3), file = f, print = FALSE)))
+  tbls <- regmatches(.aqdx(f)$doc, gregexpr("<w:tbl>.*?</w:tbl>", .aqdx(f)$doc, perl = TRUE))[[1]]
+  r1 <- .aqrows(tbls[1]); r2 <- .aqrows(tbls[2]); r3 <- .aqrows(tbls[3])
+  list(lab = .aqfill(.aqrow(r1, "Current smoker")), lab2 = .aqfill(.aqrow(r1, "Region of residence")),
+       role = .aqfill(.aqrow(r1, "Habits")), cat = .aqfill(.aqrow(r1, "No")),
+       hdr = .aqfill(.aqrow(r1, "Variable")),
+       xlab = .aqfill(.aqrow(r2, "Current smoker")),
+       xcells = lengths(regmatches(.aqrow(r2, "Current smoker"),
+                                   gregexpr("<w:tc>", .aqrow(r2, "Current smoker"), fixed = TRUE))),
+       xcat = .aqfill(utils::tail(r2[grep(">Yes<", r2, fixed = TRUE)], 1L)),
+       mlab = .aqfill(r3[grep("Region of residence", r3, fixed = TRUE)[1]]),
+       mcat = .aqfill(.aqrow(r3, "South")))
+}))
+check("AQ05 heading.fill fills each variable's label row -- a frequency table's (both variables), a crosstab's with its test across every cell, a regression's dummy-coded variable -- and no role heading, category or header row",
+      identical(.aq5$lab, "D3E3E5") && identical(.aq5$lab2, "D3E3E5") &&
+        length(.aq5$role) == 0L && length(.aq5$cat) == 0L &&
+        identical(unique(.aq5$hdr), "D9D9D9") &&
+        identical(.aq5$xlab, rep("D3E3E5", .aq5$xcells)) && .aq5$xcells > 5L &&
+        length(.aq5$xcat) == 0L &&
+        identical(.aq5$mlab, "D3E3E5") && length(.aq5$mcat) == 0L)
+
+# The note's label: upright under report, italic under apa; the console's
+# line the same text.
+.aq6 <- .aqtry(lapply(c(apa = "apa", report = "report"), function(s) {
+  t <- res(jtable(.aqm, style = s, print = FALSE))$val
+  f <- file.path(.aqd, paste0("note_", s, ".docx"))
+  invisible(res(jtable(t, file = f, print = FALSE)))
+  d <- .aqdx(f)$doc
+  run <- regmatches(d, regexpr("<w:r><w:rPr>[^>]*(<w:[a-zA-Z]+[^>]*/>)*</w:rPr><w:t xml:space=\"preserve\">Note[.:] ?</w:t></w:r>", d, perl = TRUE))
+  list(lines = .jst_table_note_lines(t, .jst_table_style(t, s)),
+       plain = .jst_table_note_lines(t, .jst_table_style(t, s), plain = TRUE),
+       run = run)
+}))
+check("AQ06 the note's label: report's \"Note:\" upright (note.label.italic = no), apa's \"Note.\" in italics, in the Word file's run and in the marked-up line; the console's line the same words",
+      identical(.aq6$apa$lines, "*Note.* *N* = 103.") &&
+        identical(.aq6$report$lines, "Note: *N* = 103.") &&
+        identical(.aq6$apa$plain, "Note. N = 103.") &&
+        identical(.aq6$report$plain, "Note: N = 103.") &&
+        length(.aq6$apa$run) == 1L && grepl("<w:i/>", .aq6$apa$run, fixed = TRUE) &&
+        length(.aq6$report$run) == 1L && !grepl("<w:i/>", .aq6$report$run, fixed = TRUE))
+
+# An empty label is no label: until S409 a pair of asterisks was left,
+# "** N = 103." -- printed as marks in the Word file and the console.
+.wsty("aqnolab", "note.label = \"\"", dir = .aqd)
+.aq7 <- .aqtry(local({
+  t <- res(jtable(.aqm, style = file.path(.aqd, "aqnolab.jstyle"), print = FALSE))$val
+  f <- file.path(.aqd, "nolab.docx")
+  invisible(res(jtable(t, file = f, print = FALSE)))
+  d <- .aqdx(f)$doc
+  list(lines = .jst_table_note_lines(t, .jst_table_style(t, "apa")),
+       prev = .strip_ansi(res(print(t))$txt),
+       stars = grepl(">\\*", d) || grepl("\\*<", d))
+}))
+check("AQ07 an empty note.label gives no label: the general note opens on N in the marked-up line, the preview and the Word file, with no asterisk left",
+      identical(.aq7$lines, "*N* = 103.") &&
+        grepl("\nN = 103.\n", .aq7$prev, fixed = TRUE) &&
+        !grepl("*", .aq7$prev, fixed = TRUE) && !.aq7$stars)
+
+# The stars legend follows leading.zero, as the cells do.
+.aq8 <- .aqtry(list(yes = .jst_tbl_stars_legend(c(0.05, 0.01, 0.001), "yes"),
+             no = .jst_tbl_stars_legend(c(0.05, 0.01, 0.001), "no"),
+             never = .jst_tbl_stars_legend(c(0.05, 0.01, 0.001), "never"),
+             dflt = .jst_tbl_stars_legend(c(0.05, 0.01, 0.001)),
+             rep = res(jtable(.aqc, style = "report", print = FALSE))$val$notes$probability,
+             apa = res(jtable(.aqc, print = FALSE))$val$notes$probability))
+check("AQ08 the stars legend keeps the zero under leading.zero = yes, as the cells do (\"*p < 0.05.\" under report), and drops it under no (apa) and never",
+      identical(.aq8$yes, "**p* < 0.05. ***p* < 0.01. ****p* < 0.001.") &&
+        identical(.aq8$no, "**p* < .05. ***p* < .01. ****p* < .001.") &&
+        identical(.aq8$never, .aq8$no) && identical(.aq8$dflt, .aq8$no) &&
+        identical(.aq8$rep, .aq8$yes) && identical(.aq8$apa, .aq8$no))
+
+# A report table: the preview pinned whole, and the Word file's look.
+.aq9t <- res(jtable(.aqm, style = "report", print = FALSE))$val
+.aq9p <- .strip_ansi(res(print(.aq9t))$txt)
+.aq9x <- .aqtry(local({ f <- file.path(.aqd, "report_m.docx")
+                 invisible(res(jtable(.aq9t, file = f, print = FALSE))); .aqdx(f) }))
+.aq9r <- .aqtry(.aqrows(.aq9x$doc))
+check("AQ09 a regression table under report: the preview pinned whole (\"Table 1:\" and the title on one line, the zero kept on b, beta, p and R2, \"Note:\"); in the Word file Arial at 10 points, the caption's runs at 10 and bold, the note's at 9, the header filled D9D9D9 and bold, the variable's label row bold",
+      identical(.aq9p, "Table 1: Regression Coefficients Predicting Wellbeing score (0-100)\n-------------------------------------------------------------------\nPredictor                                  b     SE     \u03b2       p\n-------------------------------------------------------------------\nConstant                                 38.91  4.23         <0.001\nAge (years)                               0.36  0.09   0.36  <0.001\nRegion of residence (reference = North)\n  South                                  -5.50  3.20  -0.19   0.088\n  East                                   -1.87  2.85  -0.08   0.513\n  West                                   -3.69  3.03  -0.14   0.226\nR\u00b2                                        0.15\n-------------------------------------------------------------------\nNote: N = 103.\n") &&
+        grepl("<w:rFonts w:ascii=\"Arial\" w:hAnsi=\"Arial\" w:cs=\"Arial\" w:eastAsia=\"Arial\"/>", .aq9x$sty, fixed = TRUE) &&
+        grepl("<w:sz w:val=\"20\"/>", .aq9x$sty, fixed = TRUE) &&
+        grepl("<w:r><w:rPr><w:b/><w:sz w:val=\"20\"/><w:szCs w:val=\"20\"/></w:rPr><w:t xml:space=\"preserve\">Table </w:t></w:r>", .aq9r[1], fixed = TRUE) &&
+        grepl("<w:r><w:rPr><w:sz w:val=\"18\"/><w:szCs w:val=\"18\"/></w:rPr><w:t xml:space=\"preserve\">Note: </w:t></w:r>", .aq9x$doc, fixed = TRUE) &&
+        identical(unique(.aqfill(.aqrow(.aq9r, "Predictor"))), "D9D9D9") &&
+        grepl("<w:b/>", .aqrow(.aq9r, "Predictor"), fixed = TRUE) &&
+        grepl("<w:r><w:rPr><w:b/><w:sz w:val=\"20\"/><w:szCs w:val=\"20\"/></w:rPr><w:t xml:space=\"preserve\">Region of residence</w:t></w:r>",
+              .aq9r[grep("Region of residence", .aq9r, fixed = TRUE)[1]], fixed = TRUE))
+
+# A built-in's name: no copy takes it, in any case or folder, and nothing is
+# written; a file of report's name in a folder searched is passed over with
+# the note apa's file gets; a bare report gets the pointer.
+.aq10 <- list(r = res(jstyle("apa", save.as = "report"))$txt,
+              R = res(jstyle("report", save.as = file.path(.aqd, "REPORT"), size = 11))$txt,
+              a = res(jstyle("report", save.as = "apa"))$txt,
+              bare1 = res(jstyle(report))$txt,
+              bare2 = res(jtable(.aqf, style = report))$txt)
+.aq10d <- file.path(.aqd, "shadow"); dir.create(.aq10d)
+.wsty("report", "font = Shadow", dir = .aq10d)
+.aq10n <- .aqtry(local({
+  options(.jst_options_style_dir = .aq10d); on.exit(options(.jst_options_style_dir = NULL))
+  list(sty = .apmsg(jstyle("report")), tab = .apmsg(jtable(.aqf, style = "report")),
+       lst = .apmsg(jstyle()))
+}))
+.aq10note <- sub("@PATH@", .jst_norm_path(file.path(.aq10d, "report.jstyle")), "This file is not read, since \"report\" always names a style built\ninto jstats:\n  @PATH@\nTo use it, rename it, for example to myreport.jstyle, and\nuse style = \"myreport\".",
+                 fixed = TRUE)
+check("AQ10 save.as refuses \"report\" and \"apa\" as names of styles built into jstats -- in any case and with a folder, the line offered copying the call's own style -- writing nothing; a report.jstyle in a folder searched is passed over with one note where a call names the built-in and under jstyle()'s list; report typed bare gets the pointer in jstyle() and jtable()",
+      identical(.aq10$r, "[error] jstyle(): \"report\" is the name of a style built into jstats.\nGive the copy another name, for example:\n  jstyle(\"apa\", save.as = \"myreport\")") &&
+        identical(.aq10$R, "[error] jstyle(): \"REPORT\" is the name of a style built into jstats.\nGive the copy another name, for example:\n  jstyle(\"report\", save.as = \"myreport\")") &&
+        identical(.aq10$a, "[error] jstyle(): \"apa\" is the name of a style built into jstats.\nGive the copy another name, for example:\n  jstyle(\"report\", save.as = \"myapa\")") &&
+        !any(grepl("^(report|apa)\\.jstyle$", list.files(.aqd), ignore.case = TRUE)) &&
+        identical(.aq10$bare1, "[error] jstyle(): report is not in quotes.\nA style name goes in quotes:\n  jstyle(\"report\")") &&
+        identical(.aq10$bare2, "[error] jtable(): report is not in quotes.\nstyle = takes a style name in quotes:\n  jtable(.aqf, style = \"report\")") &&
+        identical(.aq10n$sty$msg, paste0(.aq10note, "\n")) &&
+        identical(.jst_style_key(.aq10n$sty$val, "general", "font"), "Arial") &&
+        identical(.aq10n$tab$msg, paste0(.aq10note, "\n")) &&
+        identical(.aq10n$lst$msg, paste0(.aq10note, "\n")))
+
+# The complete copy: its head, with the block for an AI assistant; based.on
+# the built-in its style reaches first; read back, every setting as copied.
+.wsty("onrep", "based.on = report", "size = 11", dir = .aqd)
+.wsty("onapa", "size = 11", dir = .aqd)
+.aq11 <- .aqtry(lapply(c(report = "report", apa = "apa", onrep = file.path(.aqd, "onrep.jstyle"),
+                  onapa = file.path(.aqd, "onapa.jstyle")), function(s) {
+  nm <- paste0("full_", basename(tools::file_path_sans_ext(s)))
+  invisible(res(jstyle(s, save.as = file.path(.aqd, nm))))
+  f <- file.path(.aqd, paste0(nm, ".jstyle"))
+  l <- if (file.exists(f)) readLines(f, encoding = "UTF-8") else ""
+  back <- res(.jst_style_resolve(f))$val
+  from <- res(.jst_style_resolve(s))$val
+  same <- !is.null(back) && all(unlist(lapply(c("general", names(.jst_style_type_nouns)), function(p) {
+    vapply(names(.jst_style_spec[[p]]), function(k) {
+      identical(.jst_style_key(back, p, k), .jst_style_key(from, p, k))
+    }, logical(1))
+  })))
+  list(l = l, same = same)
+}))
+check("AQ11 a complete copy's head says to change values only and holds a block for an AI assistant asked to match an example, pinned whole; based.on names report for a copy of report or of a file based on it, apa otherwise; each copy reads back with every setting as the style it copied",
+      identical(.aq11$report$l[1:11], c("# full_report.jstyle:", "# A jstats table style.", "# Every setting jstats has is below, each after a note saying what it does and what it takes.", "# Change only the values after the = signs; do not invent a setting, and do not rename a setting or a section.", "# A line that starts with # is a note.", "# jstyle(\"full_report\") checks the file and names any value it cannot use.", "#", "# To an AI assistant asked to edit this file so tables look like an example:", "# Change only the values after the = signs, using only the values each setting's \"# takes:\" line allows.", "# Keep every other line as it is, and return the whole file.", "# Then say what the example has that these settings cannot make, rather than inventing a setting for it.")) &&
+        identical(.aq11$report$l[12:16], c("", "format     = 1", paste0("written.by = jstats ", .jst_jstats_version()),
+                                           "based.on   = report", "")) &&
+        identical(.aq11$onrep$l[15], "based.on   = report") &&
+        identical(.aq11$apa$l[15], "based.on   = apa") &&
+        identical(.aq11$onapa$l[15], "based.on   = apa") &&
+        all(vapply(.aq11, function(x) isTRUE(x$same), logical(1))) &&
+        all(c("caption.fill = none", "heading.fill = none", "note.label.italic = no") %in% .aq11$report$l) &&
+        all(c("caption.fill = none", "heading.fill = none", "note.label.italic = yes") %in% .aq11$apa$l) &&
+        all(c("# a color filling the caption row (caption.position = row), header for the header's fill and text color, or none", "# takes: a color name such as lightblue, or six hex digits such as ADD8E6; or header, or none", "# a color filling each variable's label row (the rows variable.headings sets), or none", "# takes: a color name such as lightblue, or six hex digits such as ADD8E6; or none", "# the note's label in italics, as APA sets it: yes | no", "# takes: one of yes | no") %in% .aq11$apa$l))
+
+# The short file's head: a built-in base is "a style built into jstats";
+# the editing rule the complete copy's, adding a setting from the list
+# allowed.
+.aq12 <- .aqtry(local({
+  invisible(res(jstyle("report", save.as = file.path(.aqd, "short_rep"), font = "Calibri")))
+  readLines(file.path(.aqd, "short_rep.jstyle"), encoding = "UTF-8")
+}))
+check("AQ12 a short copy of report: its head names report as a style built into jstats and gives the editing rule worded as the complete copy's, adding a setting from ?jstyle_settings allowed; based.on = report",
+      identical(.aq12[1:6], c("# short_rep.jstyle:", "# A jstats table style, based on report, a style built into jstats.", "# It lists only the settings that differ from report; any setting not listed here takes report's value.", "# ?jstyle_settings lists every setting and what it takes.", "# Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.", "# jstyle(\"short_rep\") checks the file and names any value it cannot use.")) &&
+        identical(.aq12[7:10], c("", "format     = 1", paste0("written.by = jstats ", .jst_jstats_version()),
+                                 "based.on   = report")))
+
+# jstyle(open = TRUE). The opener and the session test stand in here: a
+# trace on .jst_style_open() records the file it is handed and sets the
+# session as one that cannot open, so no editor opens in an interactive
+# run either.
+.wsty("aqopen", "based.on = report", "size = 11", dir = .aqd)
+.wsty("aqbad", "based.on = report", "heading.fill = header", dir = .aqd)
+.aq13 <- .aqtry(local({
+  rec <- new.env(); rec$got <- character(0)
+  suppressMessages(trace(".jst_style_open", where = asNamespace("jstats"), print = FALSE,
+                         tracer = bquote({
+                           # The path as the editor would receive it: on
+                           # Windows one built from tempdir() holds
+                           # backslashes (Session 409, the workstation's red).
+                           assign("got", c(get("got", envir = .(rec)),
+                                           normalizePath(path, winslash = "/", mustWork = FALSE)),
+                                  envir = .(rec))
+                           ask <- FALSE
+                           edit <- function(...) invisible(NULL)
+                         })))
+  on.exit(suppressMessages(untrace(".jst_style_open", where = asNamespace("jstats"))))
+  options(.jst_options_style_dir = .aqd)
+  on.exit(options(.jst_options_style_dir = NULL), add = TRUE)
+  out <- list(path = res(jstyle(file.path(.aqd, "aqopen.jstyle"), open = TRUE)),
+              name = res(jstyle("aqopen", open = TRUE)),
+              sess = local({ options(.jst_options_style = "aqopen")
+                             on.exit(options(.jst_options_style = NULL))
+                             res(jstyle(open = TRUE)) }),
+              save = res(jstyle(save.as = file.path(.aqd, "w1"), size = 11, open = TRUE)),
+              bad  = res(jstyle("aqbad", open = TRUE)),
+              rep  = res(jstyle("report", open = TRUE)),
+              apa  = res(jstyle(open = TRUE)),
+              none = res(jstyle("nosuch", open = TRUE)),
+              flag = res(jstyle("aqopen", open = "yes")))
+  out$got <- rec$got
+  out
+}))
+.aq13o <- .aqtry(local({
+  got <- character(0); rec <- function(p) got <<- c(got, p)
+  f <- file.path(.aqd, "aqopen.jstyle")
+  list(a = .jst_style_open(f, TRUE, ask = TRUE, edit = rec),
+       b = .jst_style_open(f, TRUE, ask = FALSE, edit = rec),
+       c = .jst_style_open(f, FALSE, ask = TRUE, edit = rec),
+       d = .jst_style_open_file(f, ask = TRUE, edit = rec),
+       got = got)
+}))
+check("AQ13 jstyle(open = TRUE) hands the style's file to the editor and prints no settings -- named, by path, or the session's style when none is named; with save.as the file just written; a file it cannot use opened first, then its stop -- while a built-in stops with the line that saves a copy and opens it, a name found nowhere stops, and open = must be TRUE or FALSE; the opener runs only when open = TRUE and the session can show it",
+      identical(.aq13$got, normalizePath(file.path(.aqd, c("aqopen.jstyle", "aqopen.jstyle", "aqopen.jstyle",
+                                                           "w1.jstyle", "aqbad.jstyle")), winslash = "/")) &&
+        identical(.aq13$path$txt, "") && inherits(.aq13$path$val, "jst_style") &&
+        identical(.aq13$name$txt, "") && identical(.aq13$sess$txt, "") &&
+        identical(gsub("\\s+", " ", .aq13$save$txt),
+                  paste0("Style written to ", .jst_norm_path(file.path(.aqd, "w1.jstyle")), " ")) &&
+        identical(.aq13$bad$txt, "[error] jstyle(): line 2 of aqbad.jstyle sets heading.fill = header.\n`heading.fill` must be \"none\", a color name such as \"navy\", or six hex\ndigits such as \"1F3864\".") &&
+        identical(.aq13$rep$txt, "[error] jstyle(): \"report\" is built into jstats, so it has no file to open.\nSave a copy to open, for example:\n  jstyle(\"report\", save.as = \"myreport\", open = TRUE)") &&
+        identical(.aq13$apa$txt, "[error] jstyle(): \"apa\" is built into jstats, so it has no file to open.\nSave a copy to open, for example:\n  jstyle(\"apa\", save.as = \"myjournal\", open = TRUE)") &&
+        startsWith(.aq13$none$txt, "[error] jstyle(): no style named \"nosuch\" was found.") &&
+        identical(.aq13$flag$txt, "[error] jstyle(): `open` must be TRUE or FALSE.") &&
+        isTRUE(.aq13o$a) && isFALSE(.aq13o$b) && isFALSE(.aq13o$c) &&
+        inherits(.aq13o$d, "jst_style") &&
+        identical(.aq13o$got, rep(normalizePath(file.path(.aqd, "aqopen.jstyle"), winslash = "/"), 2L)))
+
+# Fix Slate V: a dummy-coded variable whose labels the 40-column cap cuts
+# alike -- its categories formatted in one call, so the reference and the
+# row show their codes, a label no other code shares alone; in jlm() and
+# jlogistic(), in dummy_groups, and in the stop naming one category left.
+.aqw <- data.frame(
+  Y = c(52, 61, 47, 55, 44, 63, 58, 49, 51, 66, 45, 57, 60, 48, 53,
+        62, 46, 59, 50, 64, 43, 56, 54, 65, 42, 58, 52, 61, 47, 55),
+  B = rep(c(0, 1, 1, 0, 1, 0), 5),
+  G = haven::labelled(rep(1:3, 10),
+                      stats::setNames(1:3, c("Agree that the policy should be enforced strictly",
+                                             "Agree that the policy should be enforced loosely",
+                                             "Disagree"))))
+.aq14k <- length(.seen)
+.aq14 <- list(lm = res(jlm(Y ~ G, .aqw, categorical = G, value.id = "labels")),
+              lg = res(jlogistic(B ~ G, .aqw, categorical = G, value.id = "labels")),
+              one = res(jlm(Y ~ G, .aqw, categorical = G, value.id = "labels", subset = G == 2)),
+              abs = res(jlm(Y ~ G + X, transform(.aqw, X = ifelse(unclass(G) == 2, NA, seq_along(Y))),
+                            categorical = G, value.id = "labels")))
+.aq14n <- vapply(utils::tail(.seen, length(.seen) - .aq14k), function(s) gsub("\\s+", " ", s$text), "")
+check("AQ14 Fix Slate V: under value.id = \"labels\" a reference and a category whose long labels the 40-column cap cuts alike show their codes -- the header's reference, the coefficient rows, a jlm() and a jlogistic() result's dummy_groups labels, the stop naming the one category a filter left, and the note on a category the analysis sample lacks -- while a label no other code shares stays alone",
+      grepl("G (ref = 1: Agree that the policy should be en...)", .aq14$lm$txt, fixed = TRUE) &&
+        grepl("\n  2: Agree that the policy should be en...", .aq14$lm$txt, fixed = TRUE) &&
+        grepl("\n  Disagree ", .aq14$lm$txt, fixed = TRUE) &&
+        identical(.aq14$lm$val$dummy_groups$G$labels, c("1: Agree that the policy should be en...", "2: Agree that the policy should be en...", "Disagree")) &&
+        identical(.aq14$lg$val$dummy_groups$G$labels, c("1: Agree that the policy should be en...", "2: Agree that the policy should be en...", "Disagree")) &&
+        grepl("G (ref = 1: Agree that the policy should be en...)", .aq14$lg$txt, fixed = TRUE) &&
+        grepl("one category of G (2: Agree that the policy should be en...)", gsub("\n", " ", .aq14$one$txt), fixed = TRUE) &&
+        any(grepl("G's category 2: Agree that the policy should be en... has no cases in the analysis sample", .aq14n, fixed = TRUE)))
+
+# ?jstyle_settings gives report's value beside apa's where they differ.
+.aq15 <- tryCatch(paste(.jst_style_settings_rd(), collapse = "\n"), error = function(e) "")
+check("AQ15 the settings help page gives report's value beside apa's where they differ (font, the caption and the note, leading.zero, a variable's label row) and none where they agree; the three new settings are listed",
+      grepl("In apa: \\code{Times New Roman}; in report: \\code{Arial}.}", .aq15, fixed = TRUE) &&
+        grepl("In apa: \\code{yes}; in report: \\code{no}.}", .aq15, fixed = TRUE) &&
+        grepl("In apa: \\code{plain}; in report: \\code{bold}.}", .aq15, fixed = TRUE) &&
+        grepl("\\item{\\code{decimals}}{the decimal places of a statistic, such as a mean. Takes a whole number from 0 to 6. In apa: \\code{2}.}", .aq15, fixed = TRUE) &&
+        all(vapply(c("caption.fill", "heading.fill", "note.label.italic"), function(k) {
+          grepl(paste0("\\item{\\code{", k, "}}"), .aq15, fixed = TRUE)
+        }, logical(1))) &&
+        !any(grepl("[^\\x01-\\x7F]", .aq15, perl = TRUE)))
+
+options(.jst_options_style_dir = NULL, .jst_options_style = NULL)
+
+unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd), recursive = TRUE)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # The analyses above raise notes and warnings of their own (a seems-
