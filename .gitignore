@@ -10,3 +10,5 @@
 
 # Console captures kept beside the scripts are local working files.
 /regression/cap_*.txt
+
+/regression/Claude outputs/
