@@ -37,7 +37,50 @@
 #           styles folder at the package root and the gallery's three
 #           files, banded, bar and us, written, listed, printed, opened and
 #           used in one Word file.
+#           Capability Slate U's build 2 (S410): ruling R59, N after the title
+#           by default in apa and report -- in the preview, the report and the
+#           Word caption -- and the ns that vary within a table in the note; a
+#           blank line after each setting in the files jstyle() writes.
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S410 (v0.9.277; Capability Slate U, build 2: ruling R59 and the
+#           (S409) blank-line item). SECTION 13 ADDED, on the PENDING line,
+#           its Expected blocks filled by running (fill.R, under a
+#           Windows-length temporary folder; the paths written as <tempdir>):
+#           N after the title in apa and in report, in the preview, the report
+#           and the Word file; the ns that vary, in the note -- two models
+#           whose Ns differ, a correlation table's pairwise ns, a t test's
+#           groups of different sizes and of one size (Claude's call); a short
+#           file setting n.position = note, printed as written, and a table
+#           made in it; a complete copy where the general settings end and
+#           [descriptives] begins. SECTIONS 3 AND 11 on the PENDING line for
+#           one call of Claude's: a blank line under the general settings'
+#           heading note in a complete copy's head (under each section's too,
+#           Section 13); their heads printed with n = 25 where n = 23 stood,
+#           so the same settings show. RE-PINNED MECHANICALLY, off the PENDING
+#           line (the Build Procedure's rule for a ruled layout), every
+#           section's Expected blocks refilled by running: N after the title
+#           where it opened the note, a note gone where N was all it held, a
+#           report line or a note rewrapped (Sections 1-12, ruling R59); a
+#           blank line after each setting in the files Sections 3, 9, 10 and
+#           11 print, and the gallery files Section 12 writes set out the same
+#           way (Jeff's words, the (S409) item); n.position = title in the
+#           printouts of Sections 3, 11 and 12; the stamp 0.9.277; Section 4's
+#           first block filled with #@SKIP after its setup calls, as before.
+#           The prose naming N's old place rewritten (Sections 1, 2, 3, 4, 7,
+#           9, 10 and 11; Section 12's editor note gains the blank lines).
+#           Every walk captured on v0.9.276 and on this build and compared
+#           (harness.R dump): tables_walk.R alone printed differently, in all
+#           twelve sections; modify_form_walk.R only in Section 10's
+#           orientation version line, which no block pins;
+#           missing_convention_walk.R identical.
+# LAST VERIFIED: v0.9.277, 2026-11-07 (S410) -- Sections 3, 11 and 13 WALKED
+#           on the WORKSTATION by Jeff through receive_all() ("walked, all
+#           okay"); PENDING back to none; R CMD check 0 errors, 0 warnings, 0
+#           notes; ALL BATTERIES GREEN (12 run, 3645 checks). Sandbox:
+#           harness.R verify, 13 of 13 sections in three orders under rewalk()
+#           and by prepare = TRUE; the 64 Expected blocks found in a separate
+#           capture with the placeholders filled; rewalk()'s scoreboard read
+#           the PENDING line.
 # EDITED:   S409 (v0.9.276; Capability Slate U, build 1, the look layer).
 #           SECTIONS 11 AND 12 ADDED, on the PENDING line, their Expected
 #           blocks filled by running (fill.R, under a Windows-length
@@ -333,12 +376,12 @@ t1 <- jtable(d1,
 print(t1)
 
 # Expected:
-#   Table 1. Descriptive Statistics for Study Variables
+#   Table 1. Descriptive Statistics for Study Variables (N = 103)
 #     4 variables under 3 headings, on a portrait page.
 #   No file was written.
 #
 #   Table 1
-#   Descriptive Statistics for Study Variables
+#   Descriptive Statistics for Study Variables (N = 103)
 #   -------------------------------------------------------------------------
 #   Variable                         n       M          SD       Min     Max
 #   -------------------------------------------------------------------------
@@ -350,7 +393,7 @@ print(t1)
 #   Control variable
 #     Daily commute time (minutes)  103      30.74      12.68       5      58
 #   -------------------------------------------------------------------------
-#   Note. N = 103. Wellbeing is scored from 0 to 100.
+#   Note. Wellbeing is scored from 0 to 100.
 #   ^a Mean-centered.
 
 # Things to look at (the preview):
@@ -369,7 +412,9 @@ print(t1)
 #   - the marks: ^a after the two mean-centered labels (the caret says
 #     "superscript"; the file sets a real superscript a), and the specific
 #     note "^a Mean-centered." on its own line under the general note;
-#   - the general note: "Note. N = 103." then your sentence.
+#   - since S410 (ruling R59, your words on build 1's walk) N after the
+#     title, "(N = 103)", where it opened the general note;
+#   - the general note: "Note." then your sentence.
 
 # The same table to a Word file, opened in Word. print = FALSE leaves out
 # jtable()'s report here; the file is what this call is for.
@@ -379,10 +424,12 @@ if (interactive()) utils::browseURL(walk_file)
 
 # Things to look at (in Word):
 #   - the file opens with no repair prompt;
-#   - "Table 1" in bold, the title in italics on the next line, INSIDE the
-#     table as its first row -- click into it and the table's row handle
-#     shows; select the table and the caption and notes come with it (the
-#     SEQ field: References > Insert Table of Figures lists it);
+#   - "Table 1" in bold, the title in italics on the next line, "(N = 103)"
+#     after it with the N upright (a symbol inside italic type is set
+#     upright), INSIDE the table as its first row -- click into it and the
+#     table's row handle shows; select the table and the caption and notes
+#     come with it (the SEQ field: References > Insert Table of Figures
+#     lists it);
 #   - the three rules only -- above the heads, under them, under the last
 #     row -- no vertical rules, none around the caption or the notes; Times
 #     New Roman 12 throughout;
@@ -392,7 +439,7 @@ if (interactive()) utils::browseURL(walk_file)
 #     tab stop in every number cell; the thing to check closely);
 #   - the minus sign where a value is negative (none here), the thousands
 #     separators, the superscript a on the two labels;
-#   - "Note." in italics, N in italics, your sentence, then the specific
+#   - "Note." in italics, your sentence, then the specific
 #     note on its own line with its superscript a -- the table's last row,
 #     under the bottom rule;
 #   - the page: A4, portrait, one-inch margins; the table sized to its
@@ -418,12 +465,12 @@ t2 <- jtable(f1)
 print(t2)
 
 # Expected:
-#   Table 1. Frequency Distributions
+#   Table 1. Frequency Distributions (N = 103)
 #     3 variables, on a portrait page.
 #   No file was written.
 #
 #   Table 1
-#   Frequency Distributions
+#   Frequency Distributions (N = 103)
 #   ---------------------------------
 #   Variable                  n    %
 #   ---------------------------------
@@ -444,7 +491,6 @@ print(t2)
 #     Yes                    33  32.0
 #     Missing                 5   4.9
 #   ---------------------------------
-#   Note. N = 103.
 
 # Things to look at (the preview):
 #   - each variable's label flush left on a row of its own (in the file a
@@ -454,7 +500,8 @@ print(t2)
 #   - the Missing rows: Education's 6 (3 Refused, 3 Don't know) and
 #     Smoker's 5, so each variable's n adds up to 103 and its % to 100;
 #     Region has no missing data and no Missing row;
-#   - the default title, "Frequency Distributions", and the note on N.
+#   - the default title, "Frequency Distributions", with N after it,
+#     "(N = 103)", and no note: N was all it held (ruling R59, S410).
 
 # The same table to a Word file, opened in Word by jtable() (open = TRUE
 # opens only in an interactive session, so a script or a knit opens
@@ -464,8 +511,8 @@ jtable(t2, file = walk_file2, overwrite = TRUE, print = FALSE, open = TRUE)
 
 # Things to look at (in Word):
 #   - the file opens with no repair prompt, and Word is opened for you;
-#   - the caption ("Table 1" bold, the title italic below it) as the first
-#     row, the note as the last, as in Table 1;
+#   - the caption ("Table 1" bold, the title italic below it, "(N = 103)"
+#     after it) as the first row, as in Table 1; no note row;
 #   - each variable's label a row of its own spanning the table, upright
 #     (not italic: those are role headings), its categories indented;
 #     since the S407 second rebuild the first column as wide as the
@@ -484,12 +531,12 @@ print(jtable(f1, missing.rows = "each",
              columns = c("n", "percent", "valid.percent", "cumulative")))
 
 # Expected:
-#   Table 1. Frequency Distributions
+#   Table 1. Frequency Distributions (N = 103)
 #     3 variables, on a portrait page.
 #   No file was written.
 #
 #   Table 1
-#   Frequency Distributions
+#   Frequency Distributions (N = 103)
 #   --------------------------------------------------------
 #   Variable                  n    %   Valid %  Cumulative %
 #   --------------------------------------------------------
@@ -511,7 +558,6 @@ print(jtable(f1, missing.rows = "each",
 #     Yes                    33  32.0     33.7         100.0
 #     Refused                 5   4.9
 #   --------------------------------------------------------
-#   Note. N = 103.
 
 # Things to look at:
 #   - Refused and Don't know as rows of their own, under Education and
@@ -571,7 +617,7 @@ jstyle()
 #     there).
 
 jstyle("apa", save.as = "apa_copy")
-cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 23L,
+cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 25L,
               encoding = "UTF-8"), sep = "\n")
 
 # Expected:
@@ -591,13 +637,15 @@ cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 23L,
 #   # Then say what the example has that these settings cannot make, rather than inventing a setting for it.
 #
 #   format     = 1
-#   written.by = jstats 0.9.276
+#   written.by = jstats 0.9.277
 #   based.on   = apa
 #
 #   # The general settings: the look of every table.
+#
 #   # the typeface of every cell, caption and note
 #   # takes: any text
 #   font = Times New Roman
+#
 #   # the text size, in points
 #   # takes: a number from 6 to 72
 #   size = 12
@@ -618,8 +666,12 @@ cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 23L,
 # tables look like an example -- values only, from the "# takes:" lines,
 # the whole file back, and what the settings cannot make said rather than
 # a setting invented (the AI route's first piece; the second is the
-# prompt in ?jstyle). Five more head lines, so n = 23 shows the same
-# settings as before.
+# prompt in ?jstyle). Five more head lines, so n = 23 showed the same
+# settings as before. Since S410 (the S409 item, your words on build 1's
+# walk) a blank line after each setting, none between a setting's notes
+# and the setting, and one under the general settings' heading note
+# (Claude's call, so the heading stands apart from font's notes): n = 25
+# shows what n = 23 did.
 
 writeLines(c("# myjournal.jstyle -- the journal's conventions",
              "based.on = apa",
@@ -663,7 +715,7 @@ jstyle("myjournal")
 #   note.label.italic = yes              # from apa
 #   note.position     = row              # from apa
 #   note.size         = 12               # from apa
-#   n.position        = note             # from apa
+#   n.position        = title            # from apa
 #   decimals          = 2                # from apa
 #   leading.zero      = never
 #   p.format          = exact            # from apa
@@ -818,7 +870,8 @@ jstyle("myjournal")
 #   - the settings myjournal sets, unmarked; every other "# from apa" --
 #     the file names no [frequencies] or [logistic] section, so those
 #     tables take apa's, in the journal's caption form;
-#   - n.position (ruling R51) where note.n stood: note | title | none;
+#   - n.position (ruling R51) where note.n stood: note | title | none,
+#     apa's title since S410 (ruling R59);
 #     filter.note (build 4), yes | no: the filter sentence in a table's
 #     note;
 #   - the [regression] and [logistic] sections (build 3), every key with
@@ -844,11 +897,11 @@ t1j <- jtable(d1, style = "myjournal",
 print(t1j)
 
 # Expected:
-#   Table 1. Descriptive Statistics for Study Variables
+#   Table 1. Descriptive Statistics for Study Variables (N = 103)
 #     4 variables under 3 headings, on a portrait page.
 #   No file was written.
 #
-#   Table 1. Descriptive Statistics for Study Variables
+#   Table 1. Descriptive Statistics for Study Variables (N = 103)
 #   ----------------------------------------------------------------------
 #   Variable                           Mean     Std Dev.  Minimum  Maximum
 #   ----------------------------------------------------------------------
@@ -860,7 +913,7 @@ print(t1j)
 #   Control variable
 #     Daily commute time (minutes)      30.74      12.68        5       58
 #   ----------------------------------------------------------------------
-#   Note. N = 103. Wellbeing is scored from 0 to 100.
+#   Note. Wellbeing is scored from 0 to 100.
 #   † Mean-centered.
 
 f1 <- jfreq(Education, Region, Smoker, print = FALSE)
@@ -868,11 +921,11 @@ t2j <- jtable(f1, style = "myjournal")
 print(t2j)
 
 # Expected:
-#   Table 1. Frequency Distributions
+#   Table 1. Frequency Distributions (N = 103)
 #     3 variables, on a portrait page.
 #   No file was written.
 #
-#   Table 1. Frequency Distributions
+#   Table 1. Frequency Distributions (N = 103)
 #   ---------------------------------
 #   Variable                  n    %
 #   ---------------------------------
@@ -893,10 +946,10 @@ print(t2j)
 #     Yes                    33  32.0
 #     Missing                 5   4.9
 #   ---------------------------------
-#   Note. N = 103.
 
 # Things to look at (the previews):
-#   - "Table 1. Descriptive Statistics for Study Variables" on one line;
+#   - "Table 1. Descriptive Statistics for Study Variables (N = 103)" on
+#     one line;
 #   - Table 1's columns Mean, Std Dev., Minimum and Maximum, no n;
 #   - the dagger in place of ^a, on the two labels and in the note;
 #   - Table 2 as in Section 2, its caption on one line.
@@ -949,13 +1002,13 @@ t3 <- jtable(list(m1, m2, m3, m4))
 print(t3)
 
 # Expected:
-#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100) (N = 92)
 #     4 models side by side, on a landscape page, its text at 10 pt, long labels
 #     on two lines.
 #   No file was written.
 #
 #   Table 1
-#   Regression Coefficients Predicting Wellbeing score (0-100)
+#   Regression Coefficients Predicting Wellbeing score (0-100) (N = 92)
 #   -----------------------------------------------------------------------------------------------------------------------------------------------
 #                                                    Model 1                   Model 2                   Model 3                   Model 4
 #   Predictor                                  b     SE    β     p      b     SE     β     p      b     SE     β     p       b     SE     β     p
@@ -971,7 +1024,6 @@ print(t3)
 #   Daily commute time (minutes)                                                                                          -0.001  0.08   .00   .987
 #   R²                                         .14                      .16                       .46                       .46
 #   -----------------------------------------------------------------------------------------------------------------------------------------------
-#   Note. N = 92.
 
 # Things to look at (the preview):
 #   - the title from the style's template, naming the outcome by its
@@ -991,7 +1043,8 @@ print(t3)
 #     without it (APA's rule for a statistic bounded by 1), p's floor
 #     "<.001" hanging left of the point; CommuteTime's b, which rounds to
 #     0.00, printed as -0.001 so its sign and size show;
-#   - R2 under each model's b, without a zero; "Note. N = 92."
+#   - R2 under each model's b, without a zero; "(N = 92)" after the title
+#     (ruling R59, S410), and no note: N was all it held.
 
 walk_file4 <- file.path(tempdir(), "Table3.docx")
 jtable(t3, file = walk_file4, overwrite = TRUE, print = FALSE, open = TRUE)
@@ -1004,9 +1057,9 @@ jtable(t3, file = walk_file4, overwrite = TRUE, print = FALSE, open = TRUE)
 #     lose half their padding, then a label may wrap onto two lines, then
 #     the font steps down a point at a time -- here to 10 pt, with "Daily
 #     commute time (minutes)" on two lines (9 pt with every label on one
-#     line before this build); no number wraps; the caption keeps 12 pt,
-#     the note steps down with the table; a table that fits needs none of
-#     this;
+#     line before this build); no number wraps; the caption keeps 12 pt
+#     (a note steps down with the table; this one has none since S410); a
+#     table that fits needs none of this;
 #   - the spanner row: "Model 1" to "Model 4", each over its four columns,
 #     a rule under each; the rule above them is the table's top rule;
 #   - b, SE and p italic in the heads, beta upright; R2 an italic R with
@@ -1018,7 +1071,8 @@ jtable(t3, file = walk_file4, overwrite = TRUE, print = FALSE, open = TRUE)
 #   - R2 on the b column's point, in a cell that spans the model's four
 #     columns (click into it): an F's df would run on under SE and beta
 #     instead of widening b;
-#   - "Note. N = 92." as the last row.
+#   - "(N = 92)" after the title, the N upright in the italic line; no
+#     note row (ruling R59, S410).
 # Try: Insert > Table of Figures lists "Table 1" with its title.
 
 # The settings a call can change for this table (your S402 answers): the
@@ -1031,12 +1085,12 @@ print(jtable(list(m1, m2, m3, m4), columns.last = "beta.gelman",
              reference = "note"))
 
 # Expected:
-#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100) (N = 92)
 #     4 models side by side, on a landscape page, its text at 9 pt.
 #   No file was written.
 #
 #   Table 1
-#   Regression Coefficients Predicting Wellbeing score (0-100)
+#   Regression Coefficients Predicting Wellbeing score (0-100) (N = 92)
 #   -------------------------------------------------------------------------------------------------------------------------------------------
 #                                         Model 1                   Model 2                   Model 3                       Model 4
 #   Predictor                       b     SE    β     p      b     SE     β     p      b     SE     β     p       b     SE     β     p      β*
@@ -1057,9 +1111,9 @@ print(jtable(list(m1, m2, m3, m4), columns.last = "beta.gelman",
 #   ΔF                                                      0.59 (4, 86)             46.84 (1, 85)              0.00 (1, 84)
 #   N                             92                       92                        92                        92
 #   -------------------------------------------------------------------------------------------------------------------------------------------
-#   Note. N = 92. Reference category for Region of residence: North. β* =
-#   Gelman's (2008) standardized coefficient: each continuous predictor divided
-#   by two standard deviations, each binary predictor kept at 0 and 1.
+#   Note. Reference category for Region of residence: North. β* = Gelman's
+#   (2008) standardized coefficient: each continuous predictor divided by two
+#   standard deviations, each binary predictor kept at 0 and 1.
 
 # Things to look at:
 #   - beta* in Model 4 only, defined in the general note (Gelman's
@@ -1089,14 +1143,14 @@ t4 <- jtable(list(g1, g2, g3, g4))
 print(t4)
 
 # Expected:
-#   Table 1. Logistic Regression Coefficients Predicting Volunteered
-#   in past year
+#   Table 1. Logistic Regression Coefficients Predicting Volunteered in past
+#   year (N = 92)
 #     4 models side by side, on a landscape page, its text at 11 pt, long labels
 #     on two lines.
 #   No file was written.
 #
 #   Table 1
-#   Logistic Regression Coefficients Predicting Volunteered in past year
+#   Logistic Regression Coefficients Predicting Volunteered in past year (N = 92)
 #   ---------------------------------------------------------------------------------------------------------------------------------------------
 #                                                    Model 1                  Model 2                   Model 3                   Model 4
 #   Predictor                                  b     SE    OR     p     b     SE    OR     p     b     SE    OR     p      b     SE    OR     p
@@ -1113,7 +1167,6 @@ print(t4)
 #   Model χ²                                  6.37 (1)                 8.87 (5)                21.52 (6)                 23.03 (7)
 #   Nagelkerke R²                              .09                      .12                      .28                       .30
 #   ---------------------------------------------------------------------------------------------------------------------------------------------
-#   Note. N = 92.
 
 # Things to look at (the preview):
 #   - the title "Logistic Regression Coefficients Predicting ..." with the
@@ -1150,11 +1203,11 @@ t3j <- jtable(list(m1, m2, m3, m4), style = "myjournal")
 print(t3j)
 
 # Expected:
-#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100) (N = 92)
 #     4 models side by side, on a landscape page, its text at 9 pt.
 #   No file was written.
 #
-#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100) (N = 92)
 #   ------------------------------------------------------------------------------------------------------------------------------------------------------
 #                                                    Model 1                   Model 2                   Model 3                       Model 4
 #   Predictor                                  b    s.e.   β     p      b    s.e.    β     p      b    s.e.    β     p       b    s.e.    β     p      β*
@@ -1170,7 +1223,7 @@ print(t3j)
 #   Daily commute time (minutes)                                                                                           -.001   .08   .00   .987   -.03
 #   R²                                         .14                      .16                       .46                       .46
 #   ------------------------------------------------------------------------------------------------------------------------------------------------------
-#   Note. N = 92. β* = Gelman's (2008) standardized coefficient: each continuous
+#   Note. β* = Gelman's (2008) standardized coefficient: each continuous
 #   predictor divided by two standard deviations, each binary predictor kept
 #   at 0 and 1.
 
@@ -1178,13 +1231,13 @@ t4j <- jtable(list(g1, g2, g3, g4), style = "myjournal")
 print(t4j)
 
 # Expected:
-#   Table 1. Logistic Regression Coefficients Predicting Volunteered
-#   in past year
+#   Table 1. Logistic Regression Coefficients Predicting Volunteered in past
+#   year (N = 92)
 #     4 models side by side, on a landscape page, its text at 11 pt, long labels
 #     on two lines.
 #   No file was written.
 #
-#   Table 1. Logistic Regression Coefficients Predicting Volunteered in past year
+#   Table 1. Logistic Regression Coefficients Predicting Volunteered in past year (N = 92)
 #   -------------------------------------------------------------------------------------------------------------------------------------------
 #                                                    Model 1                 Model 2                  Model 3                   Model 4
 #   Predictor                                  b     SE   OR     p     b     SE   OR     p     b     SE    OR     p      b     SE    OR     p
@@ -1201,7 +1254,6 @@ print(t4j)
 #   Model χ²                                  6.37 (1)                8.87 (5)               21.52 (6)                 23.03 (7)
 #   Nagelkerke R²                              .09                     .12                     .28                       .30
 #   -------------------------------------------------------------------------------------------------------------------------------------------
-#   Note. N = 92.
 
 # Things to look at (the previews):
 #   - "Table 1. Regression Coefficients ..." on one line;
@@ -1413,12 +1465,12 @@ r1 <- jalpha(d7, Environment1, Environment2R, Environment3, Environment4,
 t9 <- jtable(r1)
 print(t9)
 # Expected:
-#   Table 1. Item Statistics and Reliability
+#   Table 1. Item Statistics and Reliability (N = 72)
 #     1 scale of 5 items, on a portrait page, long labels on two lines.
 #   No file was written.
 #
 #   Table 1
-#   Item Statistics and Reliability
+#   Item Statistics and Reliability (N = 72)
 #   -----------------------------------------------------------------------------------------------------
 #   Item                                                        M    SD   Item-total r  α if item deleted
 #   -----------------------------------------------------------------------------------------------------
@@ -1428,18 +1480,17 @@ print(t9)
 #   I would pay more for environmentally friendly products.   3.39  1.22           .71                .79
 #   Pollution is a major cause of public health problems.     2.74  1.45           .44                .87
 #   -----------------------------------------------------------------------------------------------------
-#   Note. N = 72. Only cases with Age (years) ≥ 30 are included.
-#   Cronbach's α = .84. Item-total r is each item's correlation with the sum of
-#   the other items.
+#   Note. Only cases with Age (years) ≥ 30 are included. Cronbach's α = .84.
+#   Item-total r is each item's correlation with the sum of the other items.
 
 # Things to look at:
 #   - the stub head "Item", each item named by its label (its wording);
 #     M and SD; "Item-total r" (the r italic in the file) and "alpha if
 #     item deleted" (the Greek letter, upright), both without the zero;
-#   - the note: N, then the filter in words -- "Only cases with Age
-#     (years) >= 30 are included.", the sign one character -- then
-#     Cronbach's alpha and what item-total r is (the console keeps
-#     "alpha = .84" on one line);
+#   - "(N = 72)" after the title (ruling R59, S410); the note: the filter
+#     in words -- "Only cases with Age (years) >= 30 are included.", the
+#     sign one character -- then Cronbach's alpha and what item-total r is
+#     (the console keeps "alpha = .84" on one line);
 #   - several scales in a named list stack, each under its name with its
 #     alpha: jtable(list("Concern" = ra, "Action" = rb)).
 
@@ -1500,7 +1551,7 @@ v8 <- jaov(CommuteTime ~ Region, d8, print = FALSE)
 # Render 1 -- a table with no file: the report, and that no file was written.
 jtable(s8)
 # Expected:
-#   Table 1. Descriptive Statistics
+#   Table 1. Descriptive Statistics (N = 103)
 #     3 variables, on a portrait page.
 #   No file was written.
 
@@ -1510,7 +1561,7 @@ joutput("full", quiet = TRUE)
 jtable(s8)
 joutput(NULL, quiet = TRUE)
 # Expected:
-#   Table 1. Descriptive Statistics
+#   Table 1. Descriptive Statistics (N = 103)
 #     3 variables, on a portrait page.
 #   No file was written.
 #   Note: to write the table to a Word file, add file = to the call:
@@ -1523,12 +1574,12 @@ joutput(NULL, quiet = TRUE)
 t1 <- jtable(s8)
 print(t1)
 # Expected:
-#   Table 1. Descriptive Statistics
+#   Table 1. Descriptive Statistics (N = 103)
 #     3 variables, on a portrait page.
 #   No file was written.
 #
 #   Table 1
-#   Descriptive Statistics
+#   Descriptive Statistics (N = 103)
 #   ------------------------------------------------------------------
 #   Variable                  n       M          SD       Min     Max
 #   ------------------------------------------------------------------
@@ -1536,7 +1587,6 @@ print(t1)
 #   Annual income (USD)       97  49,855.67  17,427.22  14,000  93,000
 #   Age (years)              103      40.65      11.62      18      71
 #   ------------------------------------------------------------------
-#   Note. N = 103.
 
 # Render 4 -- a file written, then written over: the report says where it
 # went, and the second time that it replaced the file.
@@ -1545,11 +1595,11 @@ unlink(walk_file8)
 jtable(k8, file = walk_file8)
 jtable(k8, file = walk_file8, overwrite = TRUE)
 # Expected:
-#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
 #     1 model, on a portrait page.
 #   Table written to <tempdir>/Table8.docx
 #
-#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
 #     1 model, on a portrait page.
 #   Table written to <tempdir>/Table8.docx
 #   It replaced the file that was there.
@@ -1575,17 +1625,17 @@ tab1 <- jtable(s8)
 tab2 <- jtable(k8)
 jtable(list(tab1, tab2), file = walk_file8b, overwrite = TRUE)
 # Expected:
-#   Table 1. Descriptive Statistics
+#   Table 1. Descriptive Statistics (N = 103)
 #     3 variables, on a portrait page.
 #   No file was written.
 #
-#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
 #     1 model, on a portrait page.
 #   No file was written.
 #
-#   Table 1. Descriptive Statistics
+#   Table 1. Descriptive Statistics (N = 103)
 #     3 variables, on a portrait page.
-#   Table 2. Regression Coefficients Predicting Wellbeing score (0-100)
+#   Table 2. Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
 #     1 model, on a portrait page.
 #   2 tables written to
 #   <tempdir>/Tables8.docx
@@ -1604,12 +1654,12 @@ doc8 <- jtable(list(tab1, tab3, tab2), file = walk_file8c, overwrite = TRUE,
 #     1 outcome by Region, on a landscape page.
 #   No file was written.
 #
-#   Table 1. Descriptive Statistics
+#   Table 1. Descriptive Statistics (N = 103)
 #     3 variables, on a portrait page.
 #   Table 2. Means, Standard Deviations, and One-Way Analyses of Variance by
 #   Region of residence
 #     1 outcome by Region, on a landscape page.
-#   Table 3. Regression Coefficients Predicting Wellbeing score (0-100)
+#   Table 3. Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
 #     1 model, on a portrait page.
 #   3 tables written to
 #   <tempdir>/Tables8_pages.docx
@@ -1618,7 +1668,7 @@ doc8 <- jtable(list(tab1, tab3, tab2), file = walk_file8c, overwrite = TRUE,
 print(doc8)
 # Expected:
 #   Table 1
-#   Descriptive Statistics
+#   Descriptive Statistics (N = 103)
 #   ------------------------------------------------------------------
 #   Variable                  n       M          SD       Min     Max
 #   ------------------------------------------------------------------
@@ -1626,7 +1676,6 @@ print(doc8)
 #   Annual income (USD)       97  49,855.67  17,427.22  14,000  93,000
 #   Age (years)              103      40.65      11.62      18      71
 #   ------------------------------------------------------------------
-#   Note. N = 103.
 #
 #   Table 2
 #   Means, Standard Deviations, and One-Way Analyses of Variance by Region of residence
@@ -1640,7 +1689,7 @@ print(doc8)
 #   Note. n = 27 (North), 20 (South), 31 (East), and 25 (West).
 #
 #   Table 3
-#   Regression Coefficients Predicting Wellbeing score (0-100)
+#   Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
 #   -------------------------------------------------
 #   Predictor               b        SE     β     p
 #   -------------------------------------------------
@@ -1649,7 +1698,6 @@ print(doc8)
 #   Annual income (USD)   0.0004  0.00006  .56  <.001
 #   R²                     .41
 #   -------------------------------------------------
-#   Note. N = 97.
 
 # Render 9 -- at joutput("full"), tables written together that could have
 # been one table: a note names them, with the line that makes them one.
@@ -1659,9 +1707,9 @@ joutput("full", quiet = TRUE)
 jtable(list(tab1, tab4), file = walk_file8b, overwrite = TRUE)
 joutput(NULL, quiet = TRUE)
 # Expected:
-#   Table 1. Descriptive Statistics
+#   Table 1. Descriptive Statistics (N = 103)
 #     3 variables, on a portrait page.
-#   Table 2. Descriptive Statistics
+#   Table 2. Descriptive Statistics (N = 103)
 #     1 variable, on a portrait page.
 #   2 tables written to
 #   <tempdir>/Tables8.docx
@@ -1799,12 +1847,13 @@ cat(readLines(file.path(.walk_styles9, "short.jstyle"), encoding = "UTF-8"),
 #   # jstyle("short") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.276
+#   written.by = jstats 0.9.277
 #   based.on   = apa
 #
 #   # the text size, in points
 #   # takes: a number from 6 to 72
 #   size = 11
+#
 #   # a color filling the header cells, or none
 #   # takes: a color name such as lightblue, or six hex digits such as ADD8E6; or none
 #   header.fill = lightblue
@@ -1819,12 +1868,12 @@ k9 <- jlm(WellbeingScore ~ Age + Income, d9, print = FALSE)
 t9s <- jtable(k9, style = file.path(.walk_styles9, "short.jstyle"))
 print(t9s)
 # Expected:
-#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
 #     1 model, on a portrait page.
 #   No file was written.
 #
 #   Table 1
-#   Regression Coefficients Predicting Wellbeing score (0-100)
+#   Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
 #   -------------------------------------------------
 #   Predictor               b        SE     β     p
 #   -------------------------------------------------
@@ -1834,7 +1883,6 @@ print(t9s)
 #   R²                     .41
 #   N                    97
 #   -------------------------------------------------
-#   Note. N = 97.
 
 # Render 3 -- a table type's setting given bare stops with the call
 # rewritten; settings without save.as = stop with it added.
@@ -1884,11 +1932,13 @@ try(jstyle(save.as = file.path(.walk_styles9, "s3"), sise = 11))
 #     two) and the editing rule in the complete copy's words, "do not
 #     invent a setting, and do not rename a setting or a section" (Section
 #     3); the stamps and based.on; then size and header.fill
-#     with their notes, and [regression] with fit.rows. lightblue as you
+#     with their notes, and [regression] with fit.rows, since S410 a blank
+#     line after each setting but the last (the S409 item). lightblue as you
 #     typed it. Since the S407 rebuild the file's name is a line of its
 #     own and each sentence another, none wrapped; header.fill's
 #     "# takes:" and fit.rows' note and "# takes:" are one line each.
-#   - Render 2: the N row under R2, as the file asks; the table's text at
+#   - Render 2: the N row under R2, as the file asks, and since S410 N
+#     after the title (ruling R59); the table's text at
 #     11 points and its header filled light blue in Word (the preview cannot
 #     show either).
 #   - Render 3: fit.rows belongs to the regression and logistic sections,
@@ -1972,12 +2022,12 @@ jaov(Satisfaction ~ Contact, d10, value.id = "labels")
 t10f <- jtable(jfreq(d10, Contact, print = FALSE))
 print(t10f)
 # Expected:
-#   Table 1. Frequency Distributions
+#   Table 1. Frequency Distributions (N = 12)
 #     1 variable, on a portrait page.
 #   No file was written.
 #
 #   Table 1
-#   Frequency Distributions
+#   Frequency Distributions (N = 12)
 #   -----------------------------
 #   Variable              n    %
 #   -----------------------------
@@ -1986,7 +2036,6 @@ print(t10f)
 #     2: Other            3  25.0
 #     3: Other            4  33.3
 #   -----------------------------
-#   Note. N = 12.
 
 # Render 4 -- "report" names a style built into jstats; another name is
 # written.
@@ -2012,12 +2061,13 @@ cat(readLines(file.path(.walk_styles10, "myreport.jstyle"), encoding = "UTF-8"),
 #   # jstyle("myreport") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.276
+#   written.by = jstats 0.9.277
 #   based.on   = apa
 #
 #   # the typeface of every cell, caption and note
 #   # takes: any text
 #   font = Arial
+#
 #   # the text size, in points
 #   # takes: a number from 6 to 72
 #   size = 11
@@ -2033,7 +2083,7 @@ unlink(file.path(.walk_styles10, "apa.jstyle"))
 #     <tempdir>/walk_styles10/apa.jstyle
 #   To use it, rename it, for example to myapa.jstyle, and use style = "myapa".
 #
-#   Table 1. Descriptive Statistics
+#   Table 1. Descriptive Statistics (N = 12)
 #     1 variable, on a portrait page.
 #   No file was written.
 
@@ -2044,13 +2094,13 @@ jtable(list(t10a, t10b), file = file.path(.walk_styles10, "TwoFonts.docx"),
        open = TRUE)
 joptions(style.dir = NULL, quiet = TRUE)
 # Expected:
-#   Table 1. Frequency Distributions
+#   Table 1. Frequency Distributions (N = 12)
 #     1 variable, on a portrait page.
 #   No file was written.
 #
-#   Table 1. Descriptive Statistics
+#   Table 1. Descriptive Statistics (N = 12)
 #     1 variable, on a portrait page.
-#   Table 2. Frequency Distributions
+#   Table 2. Frequency Distributions (N = 12)
 #     1 variable, on a portrait page.
 #   2 tables written to
 #   <tempdir>/walk_styles10/TwoFonts.docx
@@ -2073,7 +2123,8 @@ joptions(style.dir = NULL, quiet = TRUE)
 #   - Render 5: the note before the report -- the file named, why it is not
 #     read, and the way to use it.
 #   - Render 6 (in Word): Table 1 in Times New Roman 12, Table 2 in Arial
-#     11, caption and notes included. Before, Table 2 came out in Times
+#     11, caption included (since S410 N is after each title, so neither
+#     table has a note). Before, Table 2 came out in Times
 #     with myreport's other settings. Since the S407 rebuilds (your walk:
 #     "How we contacted you", "2: Other" and "3: Other" each wrapped onto
 #     a second line, the title too, and the n and % columns stood under
@@ -2081,8 +2132,8 @@ joptions(style.dir = NULL, quiet = TRUE)
 #     table's own font, Arial a tenth wider than Times, each category
 #     beside its indent as Word draws it; "How we contacted you" sets the
 #     first column's width, as in the console, the n and % columns beside
-#     it; and "Frequency Distributions" on one line -- a table narrower
-#     than its title widens to it, every column in proportion.
+#     it; and "Frequency Distributions (N = 12)" on one line -- a table
+#     narrower than its title widens to it, every column in proportion.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -2136,7 +2187,7 @@ jstyle("report")
 #   note.label.italic = no
 #   note.position     = row             # from apa
 #   note.size         = 9
-#   n.position        = note            # from apa
+#   n.position        = title           # from apa
 #   decimals          = 2               # from apa
 #   leading.zero      = yes
 #   p.format          = exact           # from apa
@@ -2297,19 +2348,19 @@ m11 <- jlm(WellbeingScore ~ Age + Income + Region, d11, categorical = Region,
 t11c <- jtable(m11, style = "report")
 print(t11c)
 # Expected:
-#   Table 1. Descriptive Statistics
+#   Table 1. Descriptive Statistics (N = 103)
 #     3 variables, on a portrait page.
 #   No file was written.
 #
-#   Table 1. Frequency Distributions
+#   Table 1. Frequency Distributions (N = 103)
 #     2 variables, on a portrait page.
 #   No file was written.
 #
-#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
 #     1 model, on a portrait page.
 #   No file was written.
 #
-#   Table 1: Regression Coefficients Predicting Wellbeing score (0-100)
+#   Table 1: Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
 #   ------------------------------------------------------------------------
 #   Predictor                                   b        SE      β       p
 #   ------------------------------------------------------------------------
@@ -2322,7 +2373,6 @@ print(t11c)
 #     West                                   -4.90    2.55     -0.18   0.058
 #   R²                                        0.44
 #   ------------------------------------------------------------------------
-#   Note: N = 97.
 
 # Render 3 -- the three new looks in a short file based on report: a teal
 # bar behind the caption, taking the header's fill and its white text, a
@@ -2344,27 +2394,33 @@ cat(readLines(file.path(.walk_styles11, "teal.jstyle"), encoding = "UTF-8"),
 #   # jstyle("teal") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.276
+#   written.by = jstats 0.9.277
 #   based.on   = report
 #
 #   # the typeface of every cell, caption and note
 #   # takes: any text
 #   font = Calibri
+#
 #   # a color filling the header cells, or none
 #   # takes: a color name such as lightblue, or six hex digits such as ADD8E6; or none
 #   header.fill = 0E5A5F
+#
 #   # the color of the header's text
 #   # takes: a color name such as lightblue, or six hex digits such as ADD8E6
 #   header.text = FFFFFF
+#
 #   # a color filling the caption row (caption.position = row), header for the header's fill and text color, or none
 #   # takes: a color name such as lightblue, or six hex digits such as ADD8E6; or header, or none
 #   caption.fill = header
+#
 #   # a color filling each variable's label row (the rows variable.headings sets), or none
 #   # takes: a color name such as lightblue, or six hex digits such as ADD8E6; or none
 #   heading.fill = D3E3E5
+#
 #   # a color filling every other data row, or none
 #   # takes: a color name such as lightblue, or six hex digits such as ADD8E6; or none
 #   band.fill = EAF2F3
+#
 #   # apa: rules above and below the header and under the table
 #   # grid: every cell | outer: a box | none
 #   # takes: one of apa | grid | outer | none
@@ -2382,11 +2438,11 @@ jtable(list(t11a, t11b, t11c, t11d),
 #     2 variables by Volunteer, on a portrait page.
 #   No file was written.
 #
-#   Table 1. Descriptive Statistics
+#   Table 1. Descriptive Statistics (N = 103)
 #     3 variables, on a portrait page.
-#   Table 2. Frequency Distributions
+#   Table 2. Frequency Distributions (N = 103)
 #     2 variables, on a portrait page.
-#   Table 3. Regression Coefficients Predicting Wellbeing score (0-100)
+#   Table 3. Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
 #     1 model, on a portrait page.
 #   Table 4. Frequencies and Percentages by Volunteered in past year
 #     2 variables by Volunteer, on a portrait page.
@@ -2396,7 +2452,7 @@ jtable(list(t11a, t11b, t11c, t11d),
 # Render 5 -- a complete copy of report: the head, with the block for an
 # AI assistant, and based.on = report.
 jstyle("report", save.as = "myagency")
-cat(readLines(file.path(.walk_styles11, "myagency.jstyle"), n = 23L,
+cat(readLines(file.path(.walk_styles11, "myagency.jstyle"), n = 25L,
               encoding = "UTF-8"), sep = "\n")
 # Expected:
 #   Style written to
@@ -2415,13 +2471,15 @@ cat(readLines(file.path(.walk_styles11, "myagency.jstyle"), n = 23L,
 #   # Then say what the example has that these settings cannot make, rather than inventing a setting for it.
 #
 #   format     = 1
-#   written.by = jstats 0.9.276
+#   written.by = jstats 0.9.277
 #   based.on   = report
 #
 #   # The general settings: the look of every table.
+#
 #   # the typeface of every cell, caption and note
 #   # takes: any text
 #   font = Arial
+#
 #   # the text size, in points
 #   # takes: a number from 6 to 72
 #   size = 10
@@ -2478,24 +2536,30 @@ joptions(style.dir = NULL, quiet = TRUE)
 #     the new caption.fill and heading.fill among them (none). "based on
 #     apa" under its name.
 #   - Render 2: each table's report line; the preview in report's form --
-#     "Table 1:" and the title on one line, the zero kept on b, beta, p and
-#     R squared (0.19, 0.021, <0.001, 0.44: your lean 1), "Note:".
+#     "Table 1:" and the title on one line, N after it since S410 (ruling
+#     R59), the zero kept on b, beta, p and R squared (0.19, 0.021,
+#     <0.001, 0.44: your lean 1); no note, N having been all it held.
 #   - Render 3: the short file's head -- "based on report, a style built
 #     into jstats", only what differs from report, the editing rule in the
 #     complete copy's words with adding a setting from ?jstyle_settings
 #     allowed; the three new settings' notes and "# takes:" lines --
-#     caption.fill takes a color, header or none.
+#     caption.fill takes a color, header or none; since S410 a blank line
+#     after each setting but the last.
 #   - Render 4 (in Word): Tables 1 to 3 in report -- Arial 10, "Table 1:"
 #     and the title bold on one line at 10 points, the header filled light
 #     grey and bold, apa's three rules, each variable's label row bold
 #     (Table 2's two variables, Table 3's Region of residence), the zero
-#     kept, "Note:" upright at 9 points. Table 4 in teal: Calibri, a teal
-#     bar behind "Table 4:" and its title, the text white as the header's
-#     is, the header teal and bold, each variable's row on a light teal
-#     fill, every other data row shaded, no rules.
+#     kept; since S410 N after each title and no note, N having been all
+#     their notes held. Table 4 in teal: Calibri, a teal bar behind "Table
+#     4:" and its title, the text white as the header's is, the header teal
+#     and bold, each variable's row on a light teal fill, every other data
+#     row shaded, no rules; its note, the Ns that differ by variable, after
+#     "Note:" upright at 9 points.
 #   - Render 5: the complete copy's head -- the editing rule, then the
 #     block for an AI assistant; based.on = report, since the copy is of
-#     report (a copy of apa says apa; your default on lean 2).
+#     report (a copy of apa says apa; your default on lean 2). Since S410
+#     a blank line under the general settings' heading note and after
+#     font, as in Section 3, so n = 25 shows what n = 23 did.
 #   - Render 6: a tab with myagency.jstyle opens and nothing prints; the
 #     two stops give the line that saves a copy and opens it -- myreport
 #     for report, myjournal for apa, the session's style (your default on
@@ -2546,6 +2610,7 @@ writeLines(c(
   "# jstyle(\"banded\") checks the file and names any value it cannot use.",
   "",
   "based.on  = report",
+  "",
   "band.fill = F2F2F2    # light grey on every other data row"),
   file.path(.styles12, "banded.jstyle"))
 writeLines(c(
@@ -2559,11 +2624,17 @@ writeLines(c(
   "# jstyle(\"bar\") checks the file and names any value it cannot use.",
   "",
   "based.on     = report",
+  "",
   "header.fill  = 404040    # dark grey: put the institute's color here",
+  "",
   "header.text  = FFFFFF    # white",
+  "",
   "caption.fill = header    # the caption bar takes the header's fill and text color",
+  "",
   "heading.fill = D9D9D9    # light grey on each variable's row",
+  "",
   "band.fill    = F2F2F2    # lighter grey on every other data row",
+  "",
   "rules        = none"),
   file.path(.styles12, "bar.jstyle"))
 writeLines(c(
@@ -2577,8 +2648,11 @@ writeLines(c(
   "# jstyle(\"us\") checks the file and names any value it cannot use.",
   "",
   "based.on     = report",
+  "",
   "caption.form = journal    # \"Table 1.\" and the title on one line",
+  "",
   "note.label   = NOTE:",
+  "",
   "leading.zero = no         # no zero before p or a correlation; b keeps it"),
   file.path(.styles12, "us.jstyle"))
 jstyle()
@@ -2621,7 +2695,7 @@ jstyle("bar")
 #   note.label.italic = no              # from report
 #   note.position     = row             # from apa
 #   note.size         = 9               # from report
-#   n.position        = note            # from apa
+#   n.position        = title           # from apa
 #   decimals          = 2               # from apa
 #   leading.zero      = yes             # from report
 #   p.format          = exact           # from apa
@@ -2821,7 +2895,9 @@ joptions(style.dir = .entry_style_dir12, quiet = TRUE)
 #   - Render 3 (in the editor): each file as Notepad shows it -- its name,
 #     what it follows, that the source's other rules are the author's,
 #     then the short file's lines on what it lists and how to edit it (the
-#     words jstyle() writes), then its settings, each with a short note;
+#     words jstyle() writes), then its settings, each with a short note,
+#     since S410 a blank line after each but the last, as jstyle() writes
+#     them;
 #   - Render 4 (in Word): the same table four times. (report) as built in.
 #     (banded) every other data row shaded light grey. (bar) a dark grey
 #     bar behind the caption, running into the header, the text white;
@@ -2835,6 +2911,288 @@ joptions(style.dir = .entry_style_dir12, quiet = TRUE)
 #     read from the working directory, the project's folder. jstats does
 #     not look in a styles folder by itself (S408), so that line is what
 #     sets it.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 13 -- N after the title, the ns in the note, a style file's blank lines ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Capability Slate U, build 2 (S410). Ruling R59, from your words on build
+# 1's walk: N, the number of cases, goes after the title by default --
+# apa's n.position is title, and report takes it from apa -- in the
+# preview, in the report jtable() prints and in the Word caption. Where
+# the ns vary within a table they stay in the note, as n.position = note
+# writes them: models side by side whose Ns differ, a correlation table's
+# pairwise ns, the groups of a t test or an ANOVA (the reading you
+# confirmed: "when the Ns differ by variable or model, they go in the note
+# as today"). Groups of one size give theirs in the note too, Claude's
+# call: a t test's table names its groups' ns there whatever their sizes.
+# A style that sets n.position = note puts N back at the head of the note.
+# Then the (S409) item, from your words on the same walk: the files
+# jstyle() writes have a blank line after each setting, none between a
+# setting's notes and the setting; a blank line under each part's heading
+# note is Claude's call. Sections 1-12 were re-pinned for both by running
+# (the header names them). The style files and the Word file go in a
+# folder of the session's temporary folder, set as the style folder and
+# put back at the end; the tables are made from d13, a copy of tdat, and
+# from e13, two groups of six. The jcomplete() Section 4 sets on tdat is
+# cleared first, as in Section 10.
+
+suppressMessages(jcomplete(clear.all = TRUE))
+.walk_styles13 <- file.path(tempdir(), "walk_styles13")
+unlink(.walk_styles13, recursive = TRUE); dir.create(.walk_styles13)
+.entry_style_dir13 <- getOption(".jst_options_style_dir")
+joptions(style.dir = .walk_styles13, quiet = TRUE)
+d13 <- tdat
+e13 <- data.frame(
+  Score = c(12, 15, 11, 18, 14, 16, 10, 19, 13, 17, 12, 20),
+  Group = haven::labelled(rep(c(1, 2), 6), c(Control = 1, Treatment = 2)))
+attr(e13$Score, "label") <- "Score (0-20)"
+attr(e13$Group, "label") <- "Group"
+
+# Render 1 -- one pool of cases: N after the title, in apa and in report.
+t13a <- jtable(jdesc(d13, WellbeingScore, Income, Age, print = FALSE))
+print(t13a)
+# Expected:
+#   Table 1. Descriptive Statistics (N = 103)
+#     3 variables, on a portrait page.
+#   No file was written.
+#
+#   Table 1
+#   Descriptive Statistics (N = 103)
+#   ------------------------------------------------------------------
+#   Variable                  n       M          SD       Min     Max
+#   ------------------------------------------------------------------
+#   Wellbeing score (0-100)  103      50.89      11.48      25      81
+#   Annual income (USD)       97  49,855.67  17,427.22  14,000  93,000
+#   Age (years)              103      40.65      11.62      18      71
+#   ------------------------------------------------------------------
+t13b <- jtable(jfreq(d13, Region, print = FALSE), style = "report")
+print(t13b)
+# Expected:
+#   Table 1. Frequency Distributions (N = 103)
+#     1 variable, on a portrait page.
+#   No file was written.
+#
+#   Table 1: Frequency Distributions (N = 103)
+#   -----------------------------
+#   Variable              n    %
+#   -----------------------------
+#   Region of residence
+#     North              27  26.2
+#     South              20  19.4
+#     East               31  30.1
+#     West               25  24.3
+#   -----------------------------
+
+# Render 2 -- ns that vary within a table, in the note: two models whose
+# Ns differ, then a correlation table's pairwise ns.
+m13a <- jlm(WellbeingScore ~ Age, d13, print = FALSE)
+m13b <- jlm(WellbeingScore ~ Age + Income, d13, print = FALSE)
+t13c <- jtable(list(m13a, m13b))
+print(t13c)
+# Expected:
+#   Note: the models were fit on different numbers of cases
+#   (Model 1: 103; Model 2: 97); the table's note says so.
+#   To fit every model on the same cases, run jcomplete() on the largest model's
+#   variables, then the models again:
+#     jcomplete(d13, WellbeingScore, Age, Income)
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#     2 models side by side, on a portrait page, long labels on two lines.
+#   No file was written.
+#
+#   Table 1
+#   Regression Coefficients Predicting Wellbeing score (0-100)
+#   ---------------------------------------------------------------------------
+#                                 Model 1                     Model 2
+#   Predictor               b     SE    β     p       b        SE     β     p
+#   ---------------------------------------------------------------------------
+#   Constant              37.11  3.90       <.001  24.81    3.75          <.001
+#   Age (years)            0.34  0.09  .34  <.001   0.18    0.08     .18   .030
+#   Annual income (USD)                             0.0004  0.00006  .56  <.001
+#   R²                      .12                      .41
+#   N                    103                       97
+#   ---------------------------------------------------------------------------
+#   Note. N differs by model: 103 (Model 1), 97 (Model 2).
+t13d <- jtable(jcorr(d13, WellbeingScore, Income, Age, print = FALSE))
+print(t13d)
+# Expected:
+#   Table 1. Descriptive Statistics and Correlations for Study Variables
+#     3 variables, on a portrait page.
+#   No file was written.
+#
+#   Table 1
+#   Descriptive Statistics and Correlations for Study Variables
+#   -----------------------------------------------------------------------
+#   Variable                     n       M          SD        1      2    3
+#   -----------------------------------------------------------------------
+#   1. Wellbeing score (0-100)  103      50.89      11.48     —
+#   2. Annual income (USD)       97  49,855.67  17,427.22  .62***    —
+#   3. Age (years)              103      40.65      11.62  .34***  .29**  —
+#   -----------------------------------------------------------------------
+#   Note. Pairwise ns range from 97 to 103.
+#   *p < .05. **p < .01. ***p < .001.
+
+# Render 3 -- a t test's groups, in the note: 54 and 49, then six and six.
+t13e <- jtable(jt(WellbeingScore ~ Volunteer, d13, print = FALSE))
+print(t13e)
+# Expected:
+#   Table 1. Means, Standard Deviations, and t Tests by Volunteered in past year
+#     1 outcome by Volunteer, on a portrait page.
+#   No file was written.
+#
+#   Table 1
+#   Means, Standard Deviations, and t Tests by Volunteered in past year
+#   ------------------------------------------------------------------------
+#                             Volunteered in past year
+#                                 No            Yes
+#   Variable                   M      SD     M      SD   t(101)    p     d
+#   ------------------------------------------------------------------------
+#   Wellbeing score (0-100)  47.46  11.70  54.67  10.06   -3.34  .001  -0.66
+#   ------------------------------------------------------------------------
+#   Note. n = 54 (No) and 49 (Yes).
+t13f <- jtable(jt(Score ~ Group, e13, print = FALSE))
+print(t13f)
+# Expected:
+#   Table 1. Means, Standard Deviations, and t Tests by Group
+#     1 outcome by Group, on a portrait page.
+#   No file was written.
+#
+#   Table 1
+#   Means, Standard Deviations, and t Tests by Group
+#   -----------------------------------------------------------
+#                           Group
+#                   Control     Treatment
+#   Variable        M     SD     M     SD   t(10)    p      d
+#   -----------------------------------------------------------
+#   Score (0-20)  12.00  1.41  17.50  1.87  -5.74  <.001  -3.32
+#   -----------------------------------------------------------
+#   Note. n = 6 (Control) and 6 (Treatment).
+
+# Render 4 -- the six tables in one Word file, opened.
+jtable(list(t13a, t13b, t13c, t13d, t13e, t13f),
+       file = file.path(.walk_styles13, "NAfterTitle.docx"), overwrite = TRUE,
+       open = TRUE)
+# Expected:
+#   Table 1. Descriptive Statistics (N = 103)
+#     3 variables, on a portrait page.
+#   Table 2. Frequency Distributions (N = 103)
+#     1 variable, on a portrait page.
+#   Table 3. Regression Coefficients Predicting Wellbeing score (0-100)
+#     2 models side by side, on a portrait page, long labels on two lines.
+#   Table 4. Descriptive Statistics and Correlations for Study Variables
+#     3 variables, on a portrait page.
+#   Table 5. Means, Standard Deviations, and t Tests by Volunteered in past year
+#     1 outcome by Volunteer, on a portrait page.
+#   Table 6. Means, Standard Deviations, and t Tests by Group
+#     1 outcome by Group, on a portrait page.
+#   6 tables written to
+#   <tempdir>/walk_styles13/NAfterTitle.docx
+
+# Render 5 -- a short file that puts N back in the note, printed as
+# written; then a table made in it.
+jstyle(save.as = "nnote", n.position = "note", size = 11,
+       descriptives = list(columns = c("n", "mean", "sd")))
+cat(readLines(file.path(.walk_styles13, "nnote.jstyle"), encoding = "UTF-8"),
+    sep = "\n")
+# Expected:
+#   Style written to
+#   <tempdir>/walk_styles13/nnote.jstyle
+#
+#   # nnote.jstyle:
+#   # A jstats table style, based on apa, a style built into jstats.
+#   # It lists only the settings that differ from apa; any setting not listed here takes apa's value.
+#   # ?jstyle_settings lists every setting and what it takes.
+#   # Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.
+#   # jstyle("nnote") checks the file and names any value it cannot use.
+#
+#   format     = 1
+#   written.by = jstats 0.9.277
+#   based.on   = apa
+#
+#   # where N, the number of cases, goes: note (the general note opens on it) | title ("(N = 103)" after the title; a table with several ns, such as Ns that differ or a t test's groups, gives them in the note) | none
+#   # takes: one of note | title | none
+#   n.position = note
+#
+#   # the text size, in points
+#   # takes: a number from 6 to 72
+#   size = 11
+#
+#   [descriptives]
+#   # the columns, in order: n, mean, sd, min, max
+#   # takes: one or more of n, mean, sd, min, max, in order, separated by commas
+#   columns = n, mean, sd
+t13g <- jtable(jdesc(d13, WellbeingScore, Income, Age, print = FALSE),
+               style = "nnote")
+print(t13g)
+# Expected:
+#   Table 1. Descriptive Statistics
+#     3 variables, on a portrait page.
+#   No file was written.
+#
+#   Table 1
+#   Descriptive Statistics
+#   --------------------------------------------------
+#   Variable                  n       M          SD
+#   --------------------------------------------------
+#   Wellbeing score (0-100)  103      50.89      11.48
+#   Annual income (USD)       97  49,855.67  17,427.22
+#   Age (years)              103      40.65      11.62
+#   --------------------------------------------------
+#   Note. N = 103.
+
+# Render 6 -- a complete copy where the general settings end and the
+# [descriptives] section begins.
+jstyle("apa", save.as = "full13")
+f13 <- readLines(file.path(.walk_styles13, "full13.jstyle"), encoding = "UTF-8")
+at13 <- grep("^\\[descriptives\\]$", f13)
+cat(f13[(at13 - 4L):(at13 + 9L)], sep = "\n")
+joptions(style.dir = .entry_style_dir13, quiet = TRUE)
+# Expected:
+#   Style written to
+#   <tempdir>/walk_styles13/full13.jstyle
+#
+#   # yes: the general note says which cases a filter kept (jsubset(), subset =) | no
+#   # takes: one of yes | no
+#   filter.note = yes
+#
+#   [descriptives]
+#   # A descriptives table, from jdesc() results.
+#
+#   # the title when the call gives none
+#   # takes: any text
+#   title = Descriptive Statistics
+#
+#   # the columns, in order: n, mean, sd, min, max
+#   # takes: one or more of n, mean, sd, min, max, in order, separated by commas
+#   columns = n, mean, sd, min, max
+
+# Things to look at:
+#   - Render 1: "(N = 103)" after the title, in the report's line and the
+#     preview's, in apa (the title on its own line) and in report
+#     ("Table 1:" and the title on one line); no note under either table,
+#     N having been all it held;
+#   - Render 2: the two models' Ns in the N row and in the note, "N
+#     differs by model: 103 (Model 1), 97 (Model 2).", nothing after the
+#     title; the correlation table's "Pairwise ns range from 97 to 103." in
+#     the note, nothing after the title;
+#   - Render 3: the groups' ns in the note and nothing after the title --
+#     "n = 54 (No) and 49 (Yes)."; and "n = 6 (Control) and 6
+#     (Treatment).", groups of one size (Claude's call; the other way
+#     would put "(N = 12)" after the title and leave no note);
+#   - Render 4 (in Word): Tables 1 and 2 with "(N = 103)" after the title
+#     -- in apa's italic title the N upright (a symbol inside italic type
+#     is set upright), in report's bold upright title the N italic; Tables
+#     3 to 6 with their ns in the note, as in the previews;
+#   - Render 5: the short file -- after the stamps, each setting under its
+#     notes with a blank line after it, none between a setting's notes and
+#     the setting, none at the end, so [descriptives] follows a blank
+#     line; n.position's note in its new words (Claude's); then the table
+#     made in it: nothing after the title, "Note. N = 103." as apa wrote it
+#     until this build;
+#   - Render 6: the complete copy the same way; under "[descriptives]" the
+#     section's heading note, then a blank line (Claude's call: that note
+#     says what the section is for, not what a setting does; the general
+#     settings' heading note has one too, Sections 3 and 11).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

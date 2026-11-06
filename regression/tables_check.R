@@ -94,10 +94,21 @@
 #           a short copy of report's head; jstyle(open = TRUE) through a
 #           stand-in opener; Fix Slate V's dummy rows cut alike at 40
 #           columns; the settings help page giving report's values.
+#           (AR) the small build (S410, v0.9.277; ruling R59): N after the
+#           title by default -- apa's n.position is title, and report inherits
+#           it -- in every table built from one pool of cases; the ns that
+#           vary within a table (models side by side, pairwise correlations, a
+#           crosstab's or a scale's variables, variables from different pools)
+#           and a t test's or an ANOVA's groups, of any sizes, in the note,
+#           exactly as n.position = note writes them; N in the preview's
+#           caption, the report's line and the Word caption; a blank line
+#           after each setting in the files jstyle() writes, none between a
+#           setting's notes and the setting.
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.276, 2026-11-06 (S409, the rebuild) -- 287/287 on the
-#           WORKSTATION; the S409 REBUILD block below holds the stamp.
-#           Prior: v0.9.275, 2026-11-05 (S407, the second rebuild) --
+# LAST VERIFIED: v0.9.277, 2026-11-07 (S410) -- 294/294 on the WORKSTATION;
+#           the S410 EDIT block below holds the stamp. Prior: v0.9.276,
+#           2026-11-06 (S409, the rebuild) -- 287/287 (the S409 REBUILD
+#           block); v0.9.275, 2026-11-05 (S407, the second rebuild) --
 #           272/272 (the S407 SECOND REBUILD block); v0.9.274, 2026-11-04
 #           (S406) -- 254/254 (the
 #           S406 EDIT block); v0.9.273,
@@ -132,6 +143,74 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S410 EDIT (v0.9.277, 2026-11-06): the small build: ruling R59 and the (S409)
+#           blank-line rider. SECTION AR ADDED, 7 checks (294 in all); 55
+#           checks RE-PINNED. (AR01) apa's n.position is title and report
+#           inherits it (ruled at S409, Jeff: "I want it as the default in the
+#           apa style"); the setting's note says a table with several ns gives
+#           them in the note; the settings help page gives title as apa's
+#           value. (AR02) a table from one pool of cases in seven types --
+#           descriptives, frequencies, one linear and one logistic model, a
+#           correlation table whose pairs share N, a crosstab and a scale
+#           whose variables share it -- "(*N* = n)" after the title and no N
+#           in the note; a note style gives the note's form, none neither.
+#           (AR03) ns that vary within a table -- models side by side,
+#           pairwise correlations, crosstab variables, scales, variables from
+#           different pools -- built under apa exactly as under a note style.
+#           (AR04) a t test's or an ANOVA's groups -- of different sizes, of
+#           one size, varying with missing data, four of them, and an n column
+#           -- built under apa exactly as under a note style, nothing after
+#           the title (the reading Jeff confirmed: "when the Ns differ by
+#           variable or model, they go in the note as today"; groups of one
+#           size too, Claude's call); none writes no ns. (AR05) N after the
+#           title in the preview's caption, the report's line and the Word
+#           caption, under apa and under report. (AR06) a complete copy: a
+#           blank line after every setting and after each part's heading note,
+#           none between a setting's notes and the setting, none twice, none
+#           at the end; it reads back as the same file without its blank lines
+#           does, and as apa. (AR07) a short file: a blank line after each
+#           setting but the last, so a section's heading follows one; it reads
+#           back.
+#           RE-PINNED, each value read from the battery run on the build, the
+#           three Word checksums diffed against v0.9.276's document.xml (N
+#           moved into the caption; a note row gone where N was all it held,
+#           and the last row's keep-with-next with it; no width moved). N
+#           after the title and the general note without it -- empty, or the
+#           user's, the filter's or the reference's sentence alone: J03, J06,
+#           J08, K01, K03, K04, K05, L01, L03, L08, L10, L11, L17, P02, P08,
+#           P09, P11, R01, U01, V01, V03, V04, V05, V13, W01, W02, X01, X02,
+#           Y01, Y05, Y07, AA05, AB04, AF01, AF02, AG05, AH06 and AL01-AL04.
+#           AC04: the paired test's ns in the note under apa, as under note.
+#           U06: .jst_table_n_parts()'s new argument, varies. V09: models
+#           whose Ns differ, built under title, give the note build's notes.
+#           AN01: the short file's blank lines. U07, AQ06, AQ07 and AQ09: a
+#           note style named, or a note of the call's own, where the check
+#           reads the note row. AP13-AP18: their fixtures built under a note
+#           style, so the widths they measure are the table's and not its
+#           title's, which since S407 widens a narrower table.
+#           Against v0.9.276 the battery reads 242/294: the 47 re-pinned
+#           checks the new default moves red, with AR01, AR02, AR05, AR06 and
+#           AR07; AR03 and AR04 compare apa's build with a note style's, which
+#           v0.9.276's apa was. MUTATION MAP (S410; 12 one-change mutants of
+#           tables.R, each anchor found once, run detached; by the checks that
+#           red): the title branch blind to varying ns U06, AR03 (and ten
+#           more); the t-test and ANOVA builder writing the groups' ns under
+#           note only AR04 (and eleven more); apa's default back to note AR01,
+#           AR02 (and 44 more); the pools never varying AR03 (and four more);
+#           the models' Ns never differing V09, V10, AR03; the correlation's
+#           never AB01, AB03, AB04, AG01, AH06, AR03; the short writer without
+#           its blank lines AN01, AR07; the complete writer without them AR06;
+#           two blank lines left together AN01, AR06, AR07; a blank line left
+#           at the end AN01, AN03, AR06, AR07; no blank line after a part's
+#           heading note AR06; the title branch writing the note as well U06,
+#           AR02 (and 30 more).
+#           WORKSTATION, through receive_all(): "R CMD check: 0 errors, 0
+#           warnings, 0 notes."; "ALL BATTERIES GREEN (12 run, 3645 checks)"
+#           -- matching the sandbox (plain, under the RStudio-handler
+#           stand-in, each again with a 35-character temp path, interactive,
+#           and with the temporary folder reached through a symlink; entered
+#           dirty plain and under the handlers, nothing added, removed or
+#           changed; a LANG=C install clean).
 # S409 REBUILD (v0.9.276, the same version, 2026-11-06; on Jeff's receive:
 #           "tables_check.R FAIL 286/287 -- failed: AQ13", every other
 #           battery green, R CMD check clean). AQ13's stand-in recorded the
@@ -1556,12 +1635,12 @@ check("J02 the cells: n a count, M and SD at 2 decimals with separators, Min and
         identical(.j1$rows[[2]]$raw$n, length(.jvals("Income"))) &&
         identical(.j1$rows[[1]]$raw$max, max(.jvals("WellbeingScore"))))
 
-check("J03 no headings, no markers: no heading rows, no marks, the type's template title, the general note on N alone",
+check("J03 no headings, no markers: no heading rows, no marks, the type's template title with N after it (ruling R59, S409), no general note",
       !any(vapply(.j1$rows, function(r) identical(r$kind, "heading"), logical(1))) &&
         all(lengths(lapply(.j1$rows, `[[`, "marks")) == 0L) &&
-        identical(.j1$caption$title, "Descriptive Statistics") &&
+        identical(.j1$caption$title, "Descriptive Statistics (*N* = 103)") &&
         is.na(.j1$caption$number) &&
-        identical(.j1$notes$general, "*N* = 103.") &&
+        identical(.j1$notes$general, character(0)) &&
         length(.j1$notes$specific) == 0L && length(.j1$notes$probability) == 0L)
 
 check("J04 headings = puts a heading row before each group, the variables indented under it, in the list's order",
@@ -1608,9 +1687,8 @@ check("J06 markers = marks each named variable's row with the style's letter, in
       identical(.j2$rows[[4]]$marks, "a") && identical(.j2$rows[[5]]$marks, "a") &&
         length(.j2$rows[[2]]$marks) == 0L &&
         identical(.j2$notes$specific, list(list(mark = "a", text = "Mean-centered"))) &&
-        identical(.j2$caption$title, "Descriptive Statistics for Study Variables") &&
-        identical(.j2$notes$general,
-                  c("*N* = 103.", "Wellbeing is scored from 0 to 100.")))
+        identical(.j2$caption$title, "Descriptive Statistics for Study Variables (*N* = 103)") &&
+        identical(.j2$notes$general, "Wellbeing is scored from 0 to 100."))
 
 .j7 <- res(jtable(.j0, markers = list("Mean-centered" = c(Income, Age),
                                       "Log-transformed" = Income),
@@ -1632,7 +1710,8 @@ check("J08 a NAMED list of jdesc() results stacks into one table under the names
                   "Annual income (USD)", "Age (years)")) &&
         identical(vapply(.j8$rows, `[[`, character(1), "kind"),
                   c("heading", "data", "heading", "data", "data")) &&
-        identical(.j8$notes$general, "*N* = 103.") &&
+        identical(.j8$notes$general, character(0)) &&
+        identical(.j8$caption$title, "Descriptive Statistics (*N* = 103)") &&
         length(.j8u$rows) == 3L &&
         all(vapply(.j8u$rows, function(r) identical(r$kind, "data"), logical(1))))
 
@@ -1746,7 +1825,7 @@ cat("\n--- K. The preview ---\n")
 check("K01 the preview -- print() on the table, since jtable() reports (ruling R57, S406) -- pinned whole: the two caption lines, the rules, the header, the headings and the indented rows, the notes, one blank line at the end",
       endsWith(.k1$txt, "Mean-centered.\n") && identical(.k1l, c(
         "Table 1",
-        "Descriptive Statistics for Study Variables",
+        "Descriptive Statistics for Study Variables (N = 103)",
         "-------------------------------------------------------------------------",
         "Variable                         n       M          SD       Min     Max",
         "-------------------------------------------------------------------------",
@@ -1758,7 +1837,7 @@ check("K01 the preview -- print() on the table, since jtable() reports (ruling R
         "Control variable",
         "  Daily commute time (minutes)  103      30.74      12.68       5      58",
         "-------------------------------------------------------------------------",
-        "Note. N = 103. Wellbeing is scored from 0 to 100.",
+        "Note. Wellbeing is scored from 0 to 100.",
         "^a Mean-centered.")))
 
 .k2 <- vapply(c(7, 9, 10, 12), function(i) regexpr(".", .k1l[i], fixed = TRUE), integer(1))
@@ -1769,7 +1848,7 @@ check("K02 the numbers align on the decimal point: the M column's points sit in 
 
 .k3 <- res(print(.j2))
 check("K03 jtable() prints its report, not the table (ruling R57, S406): the number and title, what the table holds and its page, that no file was written; print() on a table built the same way shows the same replica",
-      identical(.k1r$txt, paste0("Table 1. Descriptive Statistics for Study Variables\n",
+      identical(.k1r$txt, paste0("Table 1. Descriptive Statistics for Study Variables (N = 103)\n",
                                  "  4 variables under 3 headings, on a portrait page.\n",
                                  "No file was written.\n")) &&
         identical(.k3$txt, .k1$txt))
@@ -1783,7 +1862,7 @@ options(.jst_options_message_width = .pin_width)
 check("K04 print = FALSE prints nothing; under joutput(\"silent\") the default prints nothing and print = TRUE prints the report (S406, ruling R57); the table is returned either way",
       identical(.k4a$txt, "") && inherits(.k4a$val, "jst_table") &&
         identical(.k4b$txt, "") && inherits(.k4b$val, "jst_table") &&
-        identical(.k4c$txt, paste0("Table 1. Descriptive Statistics\n",
+        identical(.k4c$txt, paste0("Table 1. Descriptive Statistics (N = 103)\n",
                                    "  4 variables, on a portrait page.\n",
                                    "No file was written.\n")))
 
@@ -1791,10 +1870,10 @@ check("K04 print = FALSE prints nothing; under joutput(\"silent\") the default p
 .k5l <- .jst_table_note_lines(.k5, .jst_style_apa, plain = TRUE)
 check("K05 the note markup: *italic* and ^superscript^ are kept for the Word writer and stripped for the preview, a letter mark written ^a",
       identical(.jst_table_note_lines(.k5, .jst_style_apa),
-                c("*Note.* *N* = 103. Centered at the *mean*.")) &&
-        identical(.k5l, "Note. N = 103. Centered at the mean.") &&
+                c("*Note.* Centered at the *mean*.")) &&
+        identical(.k5l, "Note. Centered at the mean.") &&
         identical(.jst_table_note_lines(.j2, .jst_style_apa),
-                  c("*Note.* *N* = 103. Wellbeing is scored from 0 to 100.",
+                  c("*Note.* Wellbeing is scored from 0 to 100.",
                     "^a^ Mean-centered.")) &&
         identical(.jst_table_note_lines(.j2, .jst_style_apa, plain = TRUE)[2], "^a Mean-centered."))
 
@@ -1836,7 +1915,7 @@ check("L01 file = writes a .docx: a zip of the five parts, the content types fir
         identical(.lz$Name, c("[Content_Types].xml", "_rels/.rels",
                               "word/_rels/document.xml.rels", "word/document.xml",
                               "word/styles.xml")) &&
-        startsWith(.l1$txt, paste0("Table 1. Descriptive Statistics for Study Variables\n",
+        startsWith(.l1$txt, paste0("Table 1. Descriptive Statistics for Study Variables (N = 103)\n",
                                    "  4 variables under 3 headings, on a portrait page.\n",
                                    "Table written to")) &&
         grepl(paste0("Table written to ", .jst_norm_path(.lf)),
@@ -1858,11 +1937,11 @@ check("L02 document.xml is one table of 10 rows (the caption row, the header, th
           cells - length(spans) + sum(spans) == 6L
         }, logical(1))))
 
-check("L03 the caption is the table's FIRST ROW (apa's default since the S400 walk): one cell spanning the table with no borders, two paragraphs in it -- the first on Word's SEQ Table field with the cached number 1 in bold, the second the title in italics, kept with the next -- and no caption paragraph outside the table",
+check("L03 the caption is the table's FIRST ROW (apa's default since the S400 walk): one cell spanning the table with no borders, two paragraphs in it -- the first on Word's SEQ Table field with the cached number 1 in bold, the second the title in italics with (N = 103) after it, N upright (ruling R59, S409), kept with the next -- and no caption paragraph outside the table",
       grepl("<w:pStyle w:val=\"Caption\"/><w:keepNext/>", .ldoc, fixed = TRUE) &&
         grepl("<w:instrText xml:space=\"preserve\"> SEQ Table \\* ARABIC </w:instrText>", .ldoc, fixed = TRUE) &&
         grepl("<w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:rPr><w:b/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">1</w:t></w:r>", .ldoc, fixed = TRUE) &&
-        grepl("<w:rPr><w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">Descriptive Statistics for Study Variables</w:t>", .ldoc, fixed = TRUE) &&
+        grepl("<w:rPr><w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">Descriptive Statistics for Study Variables (</w:t></w:r><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">N</w:t></w:r><w:r><w:rPr><w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\"> = 103)</w:t></w:r></w:p>", .ldoc, fixed = TRUE) &&
         regexpr("<w:tbl>", .ldoc, fixed = TRUE) < regexpr("SEQ Table", .ldoc, fixed = TRUE) &&
         !grepl("Caption", sub("<w:tbl>.*$", "", .ldoc), fixed = TRUE) &&
         grepl("^<w:tr><w:trPr><w:cantSplit/><w:tblHeader/></w:trPr><w:tc><w:tcPr><w:tcW w:w=\"[0-9]+\" w:type=\"dxa\"/><w:gridSpan w:val=\"6\"/><w:tcBorders><w:top w:val=\"nil\"/><w:left w:val=\"nil\"/><w:bottom w:val=\"nil\"/><w:right w:val=\"nil\"/></w:tcBorders>",
@@ -1904,8 +1983,8 @@ check("L07 every number sits on a decimal tab stop in its cell, with no tab char
           ok
         }))
 
-check("L08 the notes are the table's LAST ROW, under the bottom rule: the italic Note. and N, the user's sentence, then the specific note with its superscript a; no note paragraph outside the table",
-      grepl("<w:r><w:rPr><w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">Note.</w:t></w:r><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\"> </w:t></w:r><w:r><w:rPr><w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">N</w:t></w:r><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\"> = 103. Wellbeing is scored from 0 to 100.</w:t></w:r>", .ldoc, fixed = TRUE) &&
+check("L08 the notes are the table's LAST ROW, under the bottom rule: the italic Note. and the user's sentence (N after the title since ruling R59, S409), then the specific note with its superscript a; no note paragraph outside the table",
+      grepl("<w:r><w:rPr><w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">Note.</w:t></w:r><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\"> Wellbeing is scored from 0 to 100.</w:t></w:r>", .ldoc, fixed = TRUE) &&
         grepl("<w:vertAlign w:val=\"superscript\"/></w:rPr><w:t xml:space=\"preserve\">a</w:t></w:r><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\"> Mean-centered.</w:t>", .ldoc, fixed = TRUE) &&
         regexpr("Mean-centered.", .ldoc, fixed = TRUE) < regexpr("</w:tbl>", .ldoc, fixed = TRUE) &&
         regexpr("Mean-centered.", .ldoc, fixed = TRUE) > regexpr("Daily commute time", .ldoc, fixed = TRUE) &&
@@ -1923,8 +2002,13 @@ check("L09 the page: A4 portrait with one-inch margins; the styles part sets Tim
 # S407 rebuild (v0.9.275): re-pinned -- the stub's indented rows measured
 # with their 180-twip indent, not two spaces, so the stub widens 53 twips;
 # nothing else in the part moved (diffed against the S407 delivery).
+# S410 (v0.9.277): re-pinned -- N after the title (ruling R59), the note
+# opening on the call's sentence; diffed against the S409 build's part,
+# nothing else moved (no width, no other run). The same holds for P11, Y05
+# and AH06, where a table left with no note loses its note row and its
+# last row the keep-with-next it had for the note.
 check("L10 document.xml and styles.xml pinned by their checksums",
-      identical(unname(tools::md5sum(file.path(.lx, "word", "document.xml"))), "b2c3731b4e7f3dd1c7370784dff2679e") &&
+      identical(unname(tools::md5sum(file.path(.lx, "word", "document.xml"))), "52f55f4cc6657612da7e9756c7abb60a") &&
         identical(unname(tools::md5sum(file.path(.lx, "word", "styles.xml"))), "48761045aed48494802a638a03d41c3e"))
 
 # The caption and the notes as PARAGRAPHS (the alternative placement), the
@@ -1950,7 +2034,7 @@ check("L11 caption.position = paragraph and note.position = paragraph: the capti
         lengths(regmatches(.lrd, gregexpr("<w:tblHeader/>", .lrd))) == 1L &&
         regexpr("SEQ Table", .lrd, fixed = TRUE) < regexpr("<w:tbl>", .lrd, fixed = TRUE) &&
         regexpr("Mean-centered.", .lrd, fixed = TRUE) > regexpr("</w:tbl>", .lrd, fixed = TRUE) &&
-        grepl("<w:t xml:space=\"preserve\">.</w:t></w:r><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\"> Descriptive Statistics</w:t>", .lrd, fixed = TRUE) &&
+        grepl("<w:t xml:space=\"preserve\">.</w:t></w:r><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\"> Descriptive Statistics (</w:t></w:r><w:r><w:rPr><w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">N</w:t></w:r><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\"> = 103)</w:t></w:r></w:p>", .lrd, fixed = TRUE) &&
         grepl("<w:pStyle w:val=\"Caption\"/>", sub("<w:tbl>.*$", "", .lrd), fixed = TRUE))
 
 check("L12 ... symbol marks: the dagger on the marked rows and in the note; a grid draws every edge; the header fill and text colour, bold heads; banded rows; a landscape Letter page",
@@ -2040,8 +2124,8 @@ check("L17 a built table given to jtable() is reported and written as it is, the
                 sub("Table written to.*$", "", .l1$txt)) && inherits(.lb$val, "jst_table") &&
         identical(unname(tools::md5sum(file.path(.lbx, "word", "document.xml"))),
                   unname(tools::md5sum(file.path(.lx, "word", "document.xml")))) &&
-        grepl("^Table 1. Descriptive Statistics for Study Variables\n", .lb2$txt) &&
-        grepl("\nTable 2. Descriptive Statistics\n", .lb2$txt) &&
+        grepl("^Table 1. Descriptive Statistics for Study Variables \\(N = 103\\)\n", .lb2$txt) &&
+        grepl("\nTable 2. Descriptive Statistics \\(N = 103\\)\n", .lb2$txt) &&
         grepl("\n2 tables written to", .lb2$txt) && length(.lb2$val) == 2L &&
         inherits(.lb2$val, "jst_tables") &&
         .ltag(.lb2d, "w:tbl")[["open"]] == 2L &&
@@ -2479,7 +2563,8 @@ check("P02 the cells: n the count and % the percentage of all cases at one decim
         isTRUE(all.equal(sum(vapply(.p0$rows[2:7], function(r) r$raw$percent, 0)), 100)) &&
         sum(vapply(.p0$rows[2:7], function(r) r$raw$n, 0)) == 103 &&
         identical(.prow(.p0, "West")$cells$percent, sprintf("%.1f", 100 * sum(as.numeric(tcm$Region) == 4) / 103)) &&
-        identical(.p0$notes$general, "*N* = 103."))
+        identical(.p0$notes$general, character(0)) &&
+        identical(.p0$caption$title, "Frequency Distributions (*N* = 103)"))
 
 .p3e <- res(jtable(.nf1, missing.rows = "each", columns = c("n", "percent", "valid.percent", "cumulative"), print = FALSE))$val
 .p3n <- res(jtable(.nf1, missing.rows = "none", print = FALSE))$val
@@ -2550,9 +2635,9 @@ check("P07 a variable in two results stops (a table lists each once, in both tab
 
 .p8 <- res(print(jtable(.nf1, print = FALSE)))
 .p8l <- strsplit(.p8$txt, "\n", fixed = TRUE)[[1]]
-check("P08 the preview (print() on the table, S406), pinned whole: the caption, the rules, each variable's label and its categories indented, the numbers on the decimal point, the note",
+check("P08 the preview (print() on the table, S406), pinned whole: the caption with N after the title (ruling R59, S409), the rules, each variable's label and its categories indented, the numbers on the decimal point, no note",
       identical(.p8l, c(
-        "Table 1", "Frequency Distributions",
+        "Table 1", "Frequency Distributions (N = 103)",
         "---------------------------------",
         "Variable                  n    %",
         "---------------------------------",
@@ -2572,8 +2657,7 @@ check("P08 the preview (print() on the table, S406), pinned whole: the caption, 
         "  No                     65  63.1",
         "  Yes                    33  32.0",
         "  Missing                 5   4.9",
-        "---------------------------------",
-        "Note. N = 103.")))
+        "---------------------------------")))
 
 .p9f <- file.path(.pd, "Table2.docx")
 .p9 <- res(jtable(.nf1, file = .p9f, overwrite = TRUE, print = FALSE))
@@ -2581,9 +2665,9 @@ check("P08 the preview (print() on the table, S406), pinned whole: the caption, 
 .p9d <- paste(readLines(file.path(.p9x, "word", "document.xml"), warn = FALSE, encoding = "UTF-8"),
               collapse = "\n")
 .p9tabs <- as.integer(regmatches(.p9d, gregexpr("(?<=w:val=\"decimal\" w:pos=\")[0-9]+", .p9d, perl = TRUE))[[1]])
-check("P09 the Word file: 19 rows (the caption, the header, three variable rows spanning the table, plain and unindented, thirteen category rows indented 180 twips, the note); the n and % heads; every number on a decimal tab",
-      .ltag(.p9d, "w:tr")[["open"]] == 19L &&
-        lengths(regmatches(.p9d, gregexpr("<w:gridSpan w:val=\"3\"/>", .p9d))) == 5L &&
+check("P09 the Word file: 18 rows (the caption, the header, three variable rows spanning the table, plain and unindented, thirteen category rows indented 180 twips; no note row, N after the title since ruling R59, S409); the n and % heads; every number on a decimal tab",
+      .ltag(.p9d, "w:tr")[["open"]] == 18L &&
+        lengths(regmatches(.p9d, gregexpr("<w:gridSpan w:val=\"3\"/>", .p9d))) == 4L &&
         grepl("<w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">Highest education level</w:t>", .p9d, fixed = TRUE) &&
         !grepl("<w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">Region of residence", .p9d, fixed = TRUE) &&
         lengths(regmatches(.p9d, gregexpr("<w:ind w:left=\"180\"/>", .p9d))) == 13L &&
@@ -2615,7 +2699,7 @@ check("P10 a column of numbers is centered under its head: under the wide Cumula
 # (Jeff), "Highest education level" the widest: the stub 46 twips wider;
 # nothing else moved (diffed against the first rebuild).
 check("P11 document.xml of the frequency table pinned by its checksum",
-      identical(unname(tools::md5sum(file.path(.p9x, "word", "document.xml"))), "1b50a0ddc36ac3451e325969e9cb935e"))
+      identical(unname(tools::md5sum(file.path(.p9x, "word", "document.xml"))), "2e3b38dd47a4e3ce8d1331d66d7d51c4"))
 
 # =============================================================================
 # Q. joptions(style = , style.dir = )
@@ -2712,7 +2796,7 @@ check("R01 a setting of the table type's section in the call outranks the file: 
         identical(.r1$columns$italic, c(FALSE, FALSE, TRUE)) &&
         identical(.r1$style$layers[[1]]$source, "the call") &&
         grepl("\nVariable                         Mean        SD\n", .r1p$txt, fixed = TRUE) &&
-        startsWith(.r1j$txt, "Table 1. Frequency Distributions\n"))
+        startsWith(.r1j$txt, "Table 1. Frequency Distributions (N = 103)\n"))
 
 .r2 <- lapply(list(quote(jtable(.j0, missing.rows = "none", print = FALSE)),
                    quote(jtable(.j0, font = "Arial", print = FALSE)),
@@ -2788,7 +2872,7 @@ check("T01 a bare file name with no output folder set is written into the workin
 # =============================================================================
 cat("\n--- U. The style and the formats, build 3 ---\n")
 
-check("U01 the apa list and the spec have [regression] and [logistic] sections, their columns and labels, and the general n.position (note | title | none, in note.n's place) and leading.zero's third value",
+check("U01 the apa list and the spec have [regression] and [logistic] sections, their columns and labels, and the general n.position (note | title | none, in note.n's place; apa's title since ruling R59, S409) and leading.zero's third value",
       all(c("regression", "logistic") %in% names(.jst_style_apa)) &&
         identical(names(.jst_style_type_nouns), c("descriptives", "frequencies", "regression", "logistic",
                                                   "correlation", "ttest", "anova", "crosstab", "reliability")) &&
@@ -2803,7 +2887,7 @@ check("U01 the apa list and the spec have [regression] and [logistic] sections, 
         identical(.jst_style_apa$regression$reference, "row") &&
         identical(.jst_style_apa$regression$intercept.label, "Constant") &&
         is.null(.jst_style_apa$general$note.n) && is.null(.jst_style_spec$general$note.n) &&
-        identical(.jst_style_apa$general$n.position, "note") &&
+        identical(.jst_style_apa$general$n.position, "title") &&
         identical(.jst_style_spec$general$n.position$choices, c("note", "title", "none")) &&
         identical(.jst_style_spec$general$leading.zero$choices, c("yes", "no", "never")) &&
         identical(.jst_style_apa$regression$beta.label, "\u03b2") &&
@@ -2843,15 +2927,22 @@ check("U05 a columns setting that allows none: fit.rows and columns.last take \"
               res(.jst_style_check_value("columns", .jst_style_spec$regression$columns, "none", "regression", "jtable"))$txt, fixed = TRUE))
 
 # The N placement helper (ruling R51).
-check("U06 n.position: note gives the sentence, title the parenthesis after the title, none nothing; a table with no one N gets nothing under any setting",
+check("U06 n.position: note gives the sentence, title the parenthesis after the title, none nothing; under title ns that vary go in the note as note writes them (ruling R59, S409); a table with no one N gets nothing under any setting",
       identical(.jst_table_n_parts("note", "*N* = 92"), list(note = "*N* = 92.", title = "")) &&
         identical(.jst_table_n_parts("title", "*N* = 92"), list(note = character(0), title = " (*N* = 92)")) &&
-        identical(.jst_table_n_parts("title", "*N* differs by model: 1 (a), 2 (b)", "*N* differs by model"),
-                  list(note = character(0), title = " (*N* differs by model)")) &&
+        identical(.jst_table_n_parts("title", "*N* differs by model: 1 (a), 2 (b)", varies = TRUE),
+                  list(note = "*N* differs by model: 1 (a), 2 (b).", title = "")) &&
+        identical(.jst_table_n_parts("note", "*N* differs by model: 1 (a), 2 (b)", varies = TRUE),
+                  .jst_table_n_parts("title", "*N* differs by model: 1 (a), 2 (b)", varies = TRUE)) &&
+        identical(.jst_table_n_parts("none", "*N* differs by model: 1 (a), 2 (b)", varies = TRUE),
+                  list(note = character(0), title = "")) &&
         identical(.jst_table_n_parts("none", "*N* = 92"), list(note = character(0), title = "")) &&
         identical(.jst_table_n_parts("note", NULL), list(note = character(0), title = "")))
 
-.u7 <- res(jtable(.j0, print = FALSE))$val
+# n.position = note set by hand: apa's value is title since ruling R59
+# (S410), which .u7t sets as well, so the check holds whatever apa holds.
+.u7 <- local({ s <- .jst_style_apa; s$general$n.position <- "note"
+               .jst_table_build_desc(list(.j0), s) })
 .u7t <- local({ s <- .jst_style_apa; s$general$n.position <- "title"
                 .jst_table_build_desc(list(.j0), s) })
 .u7n <- local({ s <- .jst_style_apa; s$general$n.position <- "none"
@@ -2919,7 +3010,7 @@ check("V01 four jlm() results side by side: the stub Predictor (ruling R49) then
         length(.v1$spanners) == 1L && length(.v1$spanners[[1]]) == 4L &&
         identical(vapply(.v1$spanners[[1]], `[[`, "", "label"), paste("Model", 1:4)) &&
         identical(.v1$spanners[[1]][[2]]$from, 6L) && identical(.v1$spanners[[1]][[2]]$to, 9L) &&
-        identical(.v1$caption$title, "Regression Coefficients Predicting Wellbeing score (0-100)"))
+        identical(.v1$caption$title, "Regression Coefficients Predicting Wellbeing score (0-100) (*N* = 92)"))
 
 check("V02 the rows: the Constant first, then the predictors in first-appearance order over the models; a dummy-coded variable's label row (plain, the variable level) with its reference category after it and its categories indented under it by their value labels; an unregistered 0/1 variable and a registered numeric one on their own labels; R2 last",
       identical(.v1k, c("Constant", "Age (years)", "Current smoker", "Region of residence",
@@ -2947,7 +3038,7 @@ check("V03 the cells, computed here from base R's fit on the model frame: b and 
         identical(.vrow(.v1, "Age (years)")$cells$m4.beta, .vf2(.vm4$coefficients_raw$beta[.vm4$coefficients_raw$term == "Age"])) &&
         identical(.vrow(.v1, "*R*\u00b2")$cells$m4.b, .vf2(summary(.vfit(.vm4))$r.squared)) &&
         identical(.vrow(.v1, "*R*\u00b2")$cells$m4.se, "") &&
-        identical(.v1$notes$general, "*N* = 92."))
+        identical(.v1$notes$general, character(0)))
 
 .v4 <- res(jtable(list(.vm1, .vm2, .vm3, .vm4), columns.last = "beta.gelman",
                   fit.rows = c("r2", "adj.r2", "f", "delta.r2", "f.change", "n"),
@@ -2973,7 +3064,7 @@ check("V04 columns.last adds the Gelman column to the last model only, headed be
         identical(.vrow(.v4, "*N*")$cells$m2.b, "92") &&
         identical(.vrow(.v4, "Region of residence")$tail, "") &&
         identical(.v4$notes$general,
-                  c("*N* = 92.", "Reference category for Region of residence: North.",
+                  c("Reference category for Region of residence: North.",
                     "\u03b2* = Gelman's (2008) standardized coefficient: each continuous predictor divided by two standard deviations, each binary predictor kept at 0 and 1.")))
 
 .v5 <- res(jtable(.vm4, columns = c("b", "se", "ci", "p"), ci.style = "two", intercept = "no",
@@ -2991,7 +3082,7 @@ check("V05 one model: no model spanner; ci.style = two gives LL and UL under a 9
         !"Constant" %in% vapply(.v5$rows, `[[`, "", "label") &&
         !"*R*\u00b2" %in% vapply(.v5$rows, `[[`, "", "label") &&
         identical(.vrow(.v5, "Region of residence")$tail, "") &&
-        identical(.v5$caption$title, "Model 4 alone") && identical(.v5$notes$general, "*N* = 92."))
+        identical(.v5$caption$title, "Model 4 alone (*N* = 92)") && identical(.v5$notes$general, character(0)))
 
 # A named list gives the model heads; markers = marks a predictor's row
 # or a dummy-coded variable's label row, before its reference.
@@ -3064,14 +3155,14 @@ invisible(res(jcomplete(clear.all = TRUE)))
                 .jst_table_build_models(list(.vh1, .vh2, .vh3), s) })
 .v9e <- res(jtable(list(.vh1, .vh2), fit.rows = c("r2", "delta.r2"), print = FALSE))
 .v9en <- Filter(function(s) grepl("delta R2 row is left out", s$text, fixed = TRUE), .seen)
-check("V09 models with different Ns are built: the N row is added, the general note says N differs by model with each N and its models (equal Ns grouped), the title form says it in two words, fit.rows = none adds no row; the console note names each model's N and gives the jcomplete() line on the largest model's variables, the dummy-coded variable by its own name; delta R2 asked of models on different cases is left out with a note",
+check("V09 models with different Ns are built: the N row is added, the general note says N differs by model with each N and its models (equal Ns grouped), under n.position = title as well, the title carrying no N (ruling R59, S409), fit.rows = none adds no row; the console note names each model's N and gives the jcomplete() line on the largest model's variables, the dummy-coded variable by its own name; delta R2 asked of models on different cases is left out with a note",
       inherits(.v9$val, "jst_table") &&
         identical(tail(vapply(.v9$val$rows, `[[`, "", "label"), 2), c("*R*\u00b2", "*N*")) &&
         identical(unlist(.vrow(.v9$val, "*N*")$cells[c("m1.b", "m2.b", "m3.b")]),
                   c(m1.b = "103", m2.b = "97", m3.b = "92")) &&
         identical(.v9$val$notes$general, "*N* differs by model: 103 (Model 1), 97 (Model 2), 92 (Model 3).") &&
-        identical(.v9t$caption$title, "Regression Coefficients Predicting Wellbeing score (0-100) (*N* differs by model)") &&
-        length(.v9t$notes$general) == 0L &&
+        identical(.v9t$caption$title, "Regression Coefficients Predicting Wellbeing score (0-100)") &&
+        identical(.v9t$notes$general, .v9$val$notes$general) &&
         !"*N*" %in% vapply(.v9z$rows, `[[`, "", "label") &&
         length(.v9n) >= 1L &&
         identical(sub("\n$", "", .v9n[[1]]$text),
@@ -3155,7 +3246,7 @@ check("V13 a style file's [regression] section: columns.last, se.label (upright,
         identical(.vrow(.v13, "Age (years)")$cells$m2.b, sub("^0", "", sprintf("%.2f", .vc4["Age", "Estimate"]))) &&
         identical(.vrow(.v13, "Age (years)")$cells$m2.se, sub("^0", "", sprintf("%.2f", .vc4["Age", "Std. Error"]))) &&
         identical(tail(vapply(.v13$rows, `[[`, "", "label"), 2), c("*R*\u00b2", "*N*")) &&
-        identical(.v13$caption$title, "OLS Regression of Wellbeing score (0-100)"))
+        identical(.v13$caption$title, "OLS Regression of Wellbeing score (0-100) (*N* = 92)"))
 
 # A fit row's cells span their model's columns (Session 403): the span
 # field names each model's columns, c(from, to); a predictor's row has none.
@@ -3202,7 +3293,7 @@ check("W01 two jlogistic() results side by side: the apa columns b, SE, OR (ital
       identical(.w1$type, "logistic") &&
         identical(.w1$columns$label, c("Predictor", rep(c("b", "SE", "OR", "p"), 2))) &&
         identical(.w1$columns$italic, c(FALSE, rep(c(TRUE, TRUE, TRUE, TRUE), 2))) &&
-        identical(.w1$caption$title, "Logistic Regression Coefficients Predicting Volunteered in past year") &&
+        identical(.w1$caption$title, "Logistic Regression Coefficients Predicting Volunteered in past year (*N* = 92)") &&
         identical(.vrow(.w1, "Age (years)")$cells$m2.b, sprintf("%.2f", .wg4["Age", "Estimate"])) &&
         identical(.vrow(.w1, "Age (years)")$cells$m2.or, sprintf("%.2f", exp(.wg4["Age", "Estimate"]))) &&
         identical(.vrow(.w1, "Constant")$cells$m2.or, sprintf("%.2f", exp(.wg4["(Intercept)", "Estimate"]))) &&
@@ -3212,7 +3303,7 @@ check("W01 two jlogistic() results side by side: the apa columns b, SE, OR (ital
                   sprintf("%.2f (%d)", .wg4f$null.deviance - .wg4f$deviance, .wg4f$df.null - .wg4f$df.residual)) &&
         identical(.vrow(.w1, "Nagelkerke *R*\u00b2")$cells$m1.b, .vf2(.vg1$fit_raw$nagelkerke_r2)) &&
         identical(.vrow(.w1, "Nagelkerke *R*\u00b2")$cells$m2.b, .vf2(.vg4$fit_raw$nagelkerke_r2)) &&
-        identical(.w1$notes$general, "*N* = 92."))
+        identical(.w1$notes$general, character(0)))
 
 .w2 <- local({ s <- .jst_style_apa; s$general$p.format <- "stars"; s$general$leading.zero <- "never"
                s$logistic$columns <- c("b", "se", "wald", "or", "ci", "beta.gelman")
@@ -3238,7 +3329,7 @@ check("W02 every logistic column and fit row: Wald (upright) and the CI for the 
         identical(.vrow(.w2, "\u22122 log likelihood")$cells$m2.b, sprintf("%.2f", .wg4f$deviance)) &&
         identical(.vrow(.w2, "AIC")$cells$m2.b, sprintf("%.2f", .wg4f$aic)) &&
         identical(.vrow(.w2, "*N*")$cells$m1.b, "92") &&
-        grepl("^\u03b2\\* = Gelman", .w2$notes$general[2]) &&
+        length(.w2$notes$general) == 1L && grepl("^\u03b2\\* = Gelman", .w2$notes$general[1]) &&
         identical(.w2$notes$probability, "**p* < .05. ***p* < .01. ****p* < .001."))
 
 # Through the front door: a logistic result routes to the logistic section,
@@ -3259,10 +3350,10 @@ cat("\n--- X. The preview ---\n")
 
 .x1 <- res(print(jtable(list(.vm1, .vm2, .vm3, .vm4), print = FALSE)))
 .x1l <- strsplit(.x1$txt, "\n", fixed = TRUE)[[1]]
-check("X01 the preview (print() on the table, S406), pinned whole (the S402 sketch's Table 3): the caption, the model spanners centered over their columns, the heads, the Constant, the rows and the indented categories, every column on the point (a beta with no zero under a b with one, a p's floor hanging left), R2 under b, the note",
+check("X01 the preview (print() on the table, S406), pinned whole (the S402 sketch's Table 3): the caption with N after the title (ruling R59, S409), the model spanners centered over their columns, the heads, the Constant, the rows and the indented categories, every column on the point (a beta with no zero under a b with one, a p's floor hanging left), R2 under b, no note",
       identical(.x1l, c(
         "Table 1",
-        "Regression Coefficients Predicting Wellbeing score (0-100)",
+        "Regression Coefficients Predicting Wellbeing score (0-100) (N = 92)",
         "-----------------------------------------------------------------------------------------------------------------------------------------------",
         "                                                 Model 1                   Model 2                   Model 3                   Model 4",
         "Predictor                                  b     SE    \u03b2     p      b     SE     \u03b2     p      b     SE     \u03b2     p       b     SE     \u03b2     p",
@@ -3277,23 +3368,23 @@ check("X01 the preview (print() on the table, S406), pinned whole (the S402 sket
         "Highest education level                                                                      4.65  0.68   .56  <.001   4.65   0.69   .56  <.001",
         "Daily commute time (minutes)                                                                                          -0.001  0.08   .00   .987",
         "R\u00b2                                         .14                      .16                       .46                       .46",
-        "-----------------------------------------------------------------------------------------------------------------------------------------------",
-        "Note. N = 92.")) &&
-        endsWith(.x1$txt, "Note. N = 92.\n"))
+        "-----------------------------------------------------------------------------------------------------------------------------------------------")) &&
+        endsWith(.x1$txt, "-\n"))
 
 .x2 <- res(print(.v5))
 .x2l <- strsplit(.x2$txt, "\n", fixed = TRUE)[[1]]
 check("X02 one model with the CI in two columns: no model spanner, the 95% CI spanner over LL and UL, no Constant and no fit row; print() reprints it",
       identical(.x2l[1:7], c(
         "Table 1",
-        "Model 4 alone",
+        "Model 4 alone (N = 92)",
         "--------------------------------------------------------------",
         "                                               95% CI",
         "Predictor                        b     SE     LL    UL     p",
         "--------------------------------------------------------------",
         "Age (years)                    0.40   0.08   0.24  0.56  <.001")) &&
         identical(.x2l[9:10], c("Region of residence", "  South                       -0.98   2.81  -6.58  4.61   .728")) &&
-        identical(.x2l[15:16], c("--------------------------------------------------------------", "Note. N = 92.")))
+        identical(.x2l[15], "--------------------------------------------------------------") &&
+        length(.x2l) == 15L)
 
 # The fit rows' values on the b column's point, their df running on under
 # the model's other columns: b is not widened by them (Session 403).
@@ -3319,8 +3410,8 @@ cat("\n--- Y. The Word file ---\n")
 invisible(utils::unzip(.yf, exdir = .yx))
 .yd <- paste(readLines(file.path(.yx, "word", "document.xml"), warn = FALSE, encoding = "UTF-8"), collapse = "\n")
 .ytr <- regmatches(.yd, gregexpr("<w:tr>.*?</w:tr>", .yd))[[1]]
-check("Y01 document.xml: 14 rows -- the caption row, the spanner row (four Model cells spanning four columns each, repeated across pages, a rule above and a rule under each label), the header, the Constant, eight predictor rows, R2, the note; a gridCol per column; the heading row spans the table with its reference after the label",
-      .ltag(.yd, "w:tr")[["open"]] == 14L &&
+check("Y01 document.xml: 13 rows -- the caption row, the spanner row (four Model cells spanning four columns each, repeated across pages, a rule above and a rule under each label), the header, the Constant, eight predictor rows, R2 (no note row: N after the title since ruling R59, S409); a gridCol per column; the heading row spans the table with its reference after the label",
+      .ltag(.yd, "w:tr")[["open"]] == 13L &&
         lengths(regmatches(.yd, gregexpr("<w:gridCol ", .yd))) == 17L &&
         lengths(regmatches(.yd, gregexpr("<w:tblHeader/>", .yd))) == 3L &&
         lengths(regmatches(.ytr[2], gregexpr("<w:gridSpan w:val=\"4\"/>", .ytr[2]))) == 4L &&
@@ -3397,7 +3488,7 @@ check("Y04 the fitted table: its natural width passes the landscape page; under 
         identical(.y4$pad_size, 12) && identical(.y4$pad_sum, .y4$pad_expect))
 
 check("Y05 document.xml of the regression table pinned by its checksum",
-      identical(unname(tools::md5sum(file.path(.yx, "word", "document.xml"))), "e64493ce5cde89b9d89150043992c26f"))
+      identical(unname(tools::md5sum(file.path(.yx, "word", "document.xml"))), "3f61bbc25ae86919a382d9edc33ed43a"))
 
 # n.position = title in the file: the N inside the italic apa title set
 # upright; in a journal caption, italic.
@@ -3423,10 +3514,10 @@ check("Y06 n.position = title in the file: apa's italic title carries (N = 103) 
 .y7 <- .strip_ansi(res(jstyle("apa"))$txt)
 .y7f <- local({ p <- res(jstyle("apa", save.as = file.path(.vd, "copy3")))$val
                 readLines(file.path(.vd, "copy3.jstyle"), encoding = "UTF-8") })
-check("Y07 jstyle(\"apa\") prints the [regression] and [logistic] sections after [frequencies], n.position in note.n's place; a saved copy writes them with their notes, columns.last and fit.rows as none and the lists",
+check("Y07 jstyle(\"apa\") prints the [regression] and [logistic] sections after [frequencies], n.position in note.n's place (title since ruling R59, S409); a saved copy writes them with their notes, columns.last and fit.rows as none and the lists",
       grepl("(?s)\\[frequencies\\]\n.*\\[regression\\]\ntitle             = Regression Coefficients Predicting \\{outcome\\}\ncolumns           = b, se, beta, p\ncolumns.last      = none\n", .y7, perl = TRUE) &&
         grepl("(?s)\\[logistic\\]\n.*\nfit.rows          = chisq, nagelkerke\n", .y7, perl = TRUE) &&
-        grepl("\nn.position        = note\n", .y7, fixed = TRUE) && !grepl("note.n", .y7, fixed = TRUE) &&
+        grepl("\nn.position        = title\n", .y7, fixed = TRUE) && !grepl("note.n", .y7, fixed = TRUE) &&
         "[regression]" %in% .y7f && "[logistic]" %in% .y7f &&
         any(grepl("^# A regression table, from jlm\\(\\) results\\.$", .y7f)) &&
         "fit.rows = r2" %in% .y7f && "columns.last = none" %in% .y7f &&
@@ -3549,9 +3640,11 @@ check("AA04 a filter it cannot put into words is written as typed: a function of
 })
 .aa5g <- lapply(.aa5, function(x) res(jtable(x, print = FALSE))$val$notes$general)
 .aa5s <- paste0("Only cases with ", .aal("Age"), " \u2265 30 are included.")
-check("AA05 the filter sentence in every table type -- descriptives, frequencies, regression, logistic, correlation, t test, ANOVA, crosstab, reliability -- after N, written from the stored jsubset(); with subset = in the call as well, the two joined by and",
+check("AA05 the filter sentence in every table type -- descriptives, frequencies, regression, logistic, correlation, t test, ANOVA, crosstab, reliability -- after N where N is in the note (the groups' ns), else first, N after the title (ruling R59, S409), written from the stored jsubset(); with subset = in the call as well, the two joined by and",
       all(vapply(.aa5g[1:9], function(g) .aa5s %in% g, logical(1))) &&
-        identical(.aa5g$desc[1:2], c(paste0("*N* = ", sum(tcm$Age >= 30), "."), .aa5s)) &&
+        identical(.aa5g$desc, .aa5s) &&
+        identical(res(jtable(.aa5$desc, print = FALSE))$val$caption$title,
+                  paste0("Descriptive Statistics (*N* = ", sum(tcm$Age >= 30), ")")) &&
         identical(which(.aa5g$tt == .aa5s), 2L) &&
         paste0("Only cases with ", .aal("Age"), " \u2265 30 and ", .aal("Smoker"), " = ",
                .aavl("Smoker", 0), " are included.") %in% .aa5g$both)
@@ -3636,17 +3729,19 @@ check("AB03 each variable's n, M and SD on its own cases, computed here; the mea
                          print = FALSE))$val,
        nometh = res(jtable(c2, method.note = "no", print = FALSE))$val,
        ttl = local({ s <- .jst_style_apa; s$general$n.position <- "title"
-                     .jst_table_build_corr(list(.ab), s)$caption$title }))
+                     .jst_table_build_corr(list(.ab), s)[c("caption", "notes")] }))
 }))$val
-check("AB04 one N when every pair shares it; a Spearman table says so in its note (method.note = no leaves it out); columns = none leaves out n, M and SD, lower.triangle = no fills both triangles, r.stars = no drops the stars and their legend; n.position = title puts the pairwise range after the title",
-      identical(.ab4$one$notes$general, c("*N* = 103.", "Correlations are Spearman rank correlations.")) &&
-        identical(.ab4$nometh$notes$general, "*N* = 103.") &&
+check("AB04 one N when every pair shares it, after the title (ruling R59, S409); a Spearman table says so in its note (method.note = no leaves it out); columns = none leaves out n, M and SD, lower.triangle = no fills both triangles, r.stars = no drops the stars and their legend; under n.position = title the pairwise range goes in the note, the title carrying no N (R59)",
+      identical(.ab4$one$notes$general, "Correlations are Spearman rank correlations.") &&
+        identical(.ab4$one$caption$title, "Descriptive Statistics and Correlations for Study Variables (*N* = 103)") &&
+        identical(.ab4$nometh$notes$general, character(0)) &&
         identical(.ab4$none$columns$key, c("stub", "r1", "r2", "r3", "r4")) &&
         identical(.ab4$none$rows[[1]]$cells$r2, .abf(.abr[1, 2])) &&
         identical(.ab4$none$rows[[2]]$cells$r1, .abf(.abr[2, 1])) &&
         identical(.ab4$none$notes$probability, character(0)) &&
-        identical(.ab4$ttl, paste0("Descriptive Statistics and Correlations for Study Variables (pairwise *n*s ",
-                                   min(.abn[lower.tri(.abn)]), " to ", max(.abn[lower.tri(.abn)]), ")")))
+        identical(.ab4$ttl$caption$title, "Descriptive Statistics and Correlations for Study Variables") &&
+        identical(.ab4$ttl$notes$general, paste0("Pairwise *n*s range from ", min(.abn[lower.tri(.abn)]),
+                                                 " to ", max(.abn[lower.tri(.abn)]), ".")))
 
 .ab5a <- res(jtable(list(.ab, .ab), print = FALSE))
 .ab5b <- res(jtable(.ab, headings = list(A = Age), print = FALSE))
@@ -3736,14 +3831,18 @@ check("AC03 rows of different df get a df column (Welch's at two decimals) and t
   s <- .jst_style_apa; s$general$n.position <- "title"
   list(p = res(jtable(tp, print = FALSE))$val$notes$general,
        pn = res(jtable(tp, test.note = "no", print = FALSE))$val$notes$general,
-       ttl = .jst_table_build_groups(.ac, s)$caption$title,
+       ttl = .jst_table_build_groups(.ac, s)[c("caption", "notes")],
+       nte = local({ s$general$n.position <- "note"
+                     .jst_table_build_groups(.ac, s)[c("caption", "notes")] }),
        nosp = res(jtable(.ac, group.spanner = "no", title = "My {group}", print = FALSE))$val)
 }))$val
-check("AC04 a paired test said in the note, d named as dz (test.note = no leaves it out); n.position = title puts N after the title; group.spanner = no drops the grouping variable's label, the groups' spanners kept; a title given in the call is the call's",
+check("AC04 a paired test said in the note, d named as dz (test.note = no leaves it out), the groups' ns in the note under apa's title (ruling R59, S409), equal ns too; n.position = title gives the groups' ns in the note as note does, and no N after the title (R59); group.spanner = no drops the grouping variable's label, the groups' spanners kept; a title given in the call is the call's",
       identical(.ac4$p, c("*n* = 6 (1) and 6 (2).",
                           "The *t* test is a paired-samples test; *d* is Cohen's *d*z, computed from the differences.")) &&
         identical(.ac4$pn, "*n* = 6 (1) and 6 (2).") &&
-        identical(.ac4$ttl, paste("Means, Standard Deviations, and t Tests by", .aal("Volunteer"), "(*N* = 103)")) &&
+        identical(.ac4$ttl$caption$title, paste("Means, Standard Deviations, and t Tests by", .aal("Volunteer"))) &&
+        identical(.ac4$ttl$notes$general, "*n* = 54 (No) and 49 (Yes).") &&
+        identical(.ac4$ttl, .ac4$nte) &&
         length(.ac4$nosp$spanners) == 1L &&
         identical(vapply(.ac4$nosp$spanners[[1]], `[[`, "", "label"), c("No", "Yes")) &&
         identical(.ac4$nosp$caption$title, "My {group}"))
@@ -3977,11 +4076,11 @@ check("AF01 one row per item by its label (the item's wording), under the stub I
           identical(c(c1$mean, c1$sd), .acn(c(.afe$m[i], .afe$s[i]))) &&
             identical(c1$item.total, .afb(.afe$r[i])) && identical(c1$alpha.if.deleted, .afb(.afe$ad[i]))
         }, logical(1))) &&
-        identical(.aft$caption$title, "Item Statistics and Reliability"))
+        identical(.aft$caption$title, paste0("Item Statistics and Reliability (*N* = ", .afe$N, ")")))
 
-check("AF02 the general note: N, the filter, Cronbach's alpha computed here, and what item-total r is",
+check("AF02 the general note: the filter (N after the title since ruling R59, S409), Cronbach's alpha computed here, and what item-total r is",
       identical(.aft$notes$general,
-                c(paste0("*N* = ", .afe$N, "."), paste0("Only cases with ", .aal("Age"), " \u2265 30 are included."),
+                c(paste0("Only cases with ", .aal("Age"), " \u2265 30 are included."),
                   paste0("Cronbach's \u03b1 = ", .afb(.afe$a), "."),
                   "Item-total *r* is each item's correlation with the sum of the other items.")))
 
@@ -4082,7 +4181,7 @@ cat("\n--- AG. The five previews ---\n")
   "(Owns home and Region of residence).")
 .ag5_pin <- c(
   "Table 1",
-  "Item Statistics and Reliability",
+  "Item Statistics and Reliability (N = 72)",
   "-----------------------------------------------------------------------------------------------------",
   "Item                                                        M    SD   Item-total r  \u03b1 if item deleted",
   "-----------------------------------------------------------------------------------------------------",
@@ -4092,9 +4191,8 @@ cat("\n--- AG. The five previews ---\n")
   "I would pay more for environmentally friendly products.   3.39  1.22           .71                .79",
   "Pollution is a major cause of public health problems.     2.74  1.45           .44                .87",
   "-----------------------------------------------------------------------------------------------------",
-  "Note. N = 72. Only cases with Age (years) \u2265 30 are included.",
-  "Cronbach's \u03b1 = .84. Item-total r is each item's correlation with the sum of",
-  "the other items.")
+  "Note. Only cases with Age (years) \u2265 30 are included. Cronbach's \u03b1 = .84.",
+  "Item-total r is each item's correlation with the sum of the other items.")
 
 .agl <- function(x) strsplit(x$txt, "\n", fixed = TRUE)[[1]]
 .ag1 <- res(print(.abt)); .ag2 <- res(print(.act)); .ag3 <- res(print(.adt))
@@ -4107,7 +4205,7 @@ check("AG03 the ANOVA table's preview, pinned whole (Table 3): four regions, the
       identical(.agl(.ag3), .ag3_pin) && endsWith(.ag3$txt, "West, 23 to 25.\n"))
 check("AG04 the crosstab's preview, pinned whole (Table 4): each variable's label row carrying its test, its categories indented, n and % under each group and the Total, N differing by variable",
       identical(.agl(.ag4), .ag4_pin) && endsWith(.ag4$txt, "Region of residence).\n"))
-check("AG05 the item table's preview, pinned whole (Table 5): the items by their wording, item-total r and alpha if item deleted without the zero, N, the filter, alpha and the definition in the note -- the alpha's \"= .84\" kept on one line by the prose wrapper (S405: a name = value pair starting with a letter of any script)",
+check("AG05 the item table's preview, pinned whole (Table 5): N after the title (ruling R59, S409), the items by their wording, item-total r and alpha if item deleted without the zero, the filter, alpha and the definition in the note -- the alpha's \"= .84\" kept on one line by the prose wrapper (S405: a name = value pair starting with a letter of any script)",
       identical(.agl(.ag5), .ag5_pin) && endsWith(.ag5$txt, "the other items.\n"))
 
 # =============================================================================
@@ -4216,7 +4314,7 @@ check("AH05 the font steps a point at a time to 8 points (from a size between po
 
 # Re-pinned S406: the ANOVA table on a landscape section of its own.
 check("AH06 document.xml of the five tables pinned by its checksum",
-      identical(unname(tools::md5sum(file.path(.aad, "x5", "word", "document.xml"))), "30201e232734bff94885abc7c3a57700"))
+      identical(unname(tools::md5sum(file.path(.aad, "x5", "word", "document.xml"))), "79b886ea242ab458ef27c2278637c0ee"))
 
 .ah7 <- res(local({
   tb <- .aft
@@ -4522,7 +4620,7 @@ invisible(utils::capture.output(suppressMessages(joutput("full"))))
 .al2n <- .seen[-seq_len(.aln0)]
 invisible(utils::capture.output(suppressMessages(joutput(NULL))))
 check("AL01 a table with no file: the report -- its number and title, what it holds and its page, and that no file was written -- in place of the table; at joutput(\"full\") a note gives the call with file = and the lines that keep the table and print it",
-      identical(.al1$txt, paste0("Table 1. Descriptive Statistics\n",
+      identical(.al1$txt, paste0("Table 1. Descriptive Statistics (N = 103)\n",
                                  "  2 variables, on a portrait page.\n",
                                  "No file was written.\n")) &&
         .al1n == 0L && inherits(.al1$val, "jst_table") &&
@@ -4537,7 +4635,7 @@ check("AL01 a table with no file: the report -- its number and title, what it ho
 .al3f <- file.path(.akd, "One.docx")
 .al3a <- res(jtable(.akm3, file = .al3f))
 .al3b <- res(jtable(.akm3, file = .al3f, overwrite = TRUE))
-.al3h <- "Table 1. Regression Coefficients Predicting Wellbeing score (0-100)\n  1 model, on a portrait page.\n"
+.al3h <- "Table 1. Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)\n  1 model, on a portrait page.\n"
 check("AL02 a table written: the report, then where the file went; written again over it, the report says it replaced the file that was there",
       startsWith(.al3a$txt, paste0(.al3h, "Table written to")) &&
         identical(gsub("\\s+", " ", sub(.al3h, "", .al3a$txt, fixed = TRUE)),
@@ -4553,13 +4651,14 @@ check("AL02 a table written: the report, then where the file went; written again
 .al4f <- file.path(.akd, "Four.docx")
 .al4 <- res(jtable(list(.alA, .alB, .alC, .alD), file = .al4f, print = TRUE))
 check("AL03 built tables written together: each table's lines numbered as in the file, then how many tables went to the file",
-      startsWith(.al4$txt, paste0("Table 1. Descriptive Statistics\n",
+      startsWith(.al4$txt, paste0("Table 1. Descriptive Statistics (N = 103)\n",
                                   "  2 variables, on a portrait page.\n",
-                                  "Table 2. Descriptive Statistics\n",
+                                  "Table 2. Descriptive Statistics (N = 103)\n",
                                   "  1 variable, on a portrait page.\n",
-                                  "Table 3. Regression Coefficients Predicting Wellbeing score (0-100)\n",
+                                  "Table 3. Regression Coefficients Predicting Wellbeing score\n",
+                                  "(0-100) (N = 103)\n",
                                   "  1 model, on a portrait page.\n",
-                                  "Table 4. Regression Coefficients Predicting Wellbeing score (0-100)\n",
+                                  "Table 4. Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)\n",
                                   "  1 model, on a portrait page.\n",
                                   "4 tables written to")) &&
         grepl(paste0("4 tables written to ", .jst_norm_path(.al4f)), gsub("\\s+", " ", .al4$txt), fixed = TRUE))
@@ -4581,7 +4680,7 @@ check("AL04 the page in the report is the file's: the four-group ANOVA table on 
                                      "Region of residence\n",
                                      "  3 outcomes by Region, on a landscape page.\n")) &&
         grepl("w:orient=\"landscape\"", .al5$d1, fixed = TRUE) && identical(.alsz(.al5$d1), "24") &&
-        startsWith(.al5$r2$txt, paste0("Table 1. Regression Coefficients Predicting Wellbeing score (0-100)\n",
+        startsWith(.al5$r2$txt, paste0("Table 1. Regression Coefficients Predicting Wellbeing score (0-100) (N = 92)\n",
                                        "  4 models side by side, on a landscape page, its text at 10 pt, long labels\n",
                                        "  on two lines.\n")) &&
         grepl("w:orient=\"landscape\"", .al5$d2, fixed = TRUE) && "20" %in% .alsz(.al5$d2) &&
@@ -4590,7 +4689,7 @@ check("AL04 the page in the report is the file's: the four-group ANOVA table on 
                                        "  3 outcomes by Region, on a portrait page, its text at 8 pt, long labels on\n",
                                        "  two lines.\n")) &&
         !grepl("w:orient=\"landscape\"", .al5$d3, fixed = TRUE) && "16" %in% .alsz(.al5$d3) &&
-        grepl("^Table 1\\. Item Statistics and Reliability\n  [^\n]*, on a portrait page, long labels on two\n?\\s*lines\\.\n", .al5$r4$txt) &&
+        grepl("^Table 1\\. Item Statistics and Reliability \\(N = 72\\)\n  [^\n]*, on a portrait page, long labels on two\n?\\s*lines\\.\n", .al5$r4$txt) &&
         !grepl(" pt", .al5$r4$txt, fixed = TRUE) &&
         !grepl("w:orient=\"landscape\"", .al5$d4, fixed = TRUE) && identical(.alsz(.al5$d4), "24"))
 
@@ -4699,7 +4798,7 @@ cat("\n--- AN. A short style file ---\n")
                    regression = list(fit.rows = c("r2", "n")),
                    descriptives = list(columns = c("n", "mean", "sd"))))
 .an1l <- if (file.exists(paste0(.an1f, ".jstyle"))) readLines(paste0(.an1f, ".jstyle"), encoding = "UTF-8") else ""
-check("AN01 settings given to jstyle(save.as =) write a short file, pinned whole: a header (since the S407 rebuild the file's name on a line of its own, then one sentence a line) saying it holds only the settings that differ, the stamps, based.on naming the style copied, then the general settings, then each section's under its heading (in the file's order), each after its note on what it does and what it takes; a color as typed",
+check("AN01 settings given to jstyle(save.as =) write a short file, pinned whole: a header (since the S407 rebuild the file's name on a line of its own, then one sentence a line) saying it holds only the settings that differ, the stamps, based.on naming the style copied, then the general settings, then each section's under its heading (in the file's order), each after its note on what it does and what it takes, a blank line after each setting and none at the end (S410); a color as typed",
       identical(.an1l, c("# mine.jstyle:",
                          "# A jstats table style, based on apa, a style built into jstats.",
                          "# It lists only the settings that differ from apa; any setting not listed here takes apa's value.",
@@ -4714,6 +4813,7 @@ check("AN01 settings given to jstyle(save.as =) write a short file, pinned whole
                          "# the text size, in points",
                          "# takes: a number from 6 to 72",
                          "size = 11",
+                         "",
                          "# a color filling the header cells, or none",
                          "# takes: a color name such as lightblue, or six hex digits such as ADD8E6; or none",
                          "header.fill = lightblue",
@@ -5188,8 +5288,13 @@ check("AP12 .jst_docx_retype(): nothing to change leaves the XML as it was; a fo
 # A text's width in twips as the writer measures it: its ems, 6 percent
 # more, at the size's 20 twips a point (bold 8 percent more again).
 .aptw <- function(s, tab, pt, bold = 1) ceiling(.apem(s, tab) * 1.06 * pt * 20 * bold)
-.wsty("ar11", "font = Arial", "size = 11", dir = .apd)
-.wsty("boldhead", "header.bold = yes", dir = .apd)
+# The width checks below (AP13-AP18) measure labels, numbers and titles;
+# their tables are built with N in the note, as apa built them until
+# ruling R59 (S409, built S410), so the title the S407 rule widens a table
+# to is the template's alone. N after the title is checked in AR.
+.apn <- .wsty("apnote", "n.position = note", dir = .apd)
+.wsty("ar11", "font = Arial", "size = 11", "n.position = note", dir = .apd)
+.wsty("boldhead", "header.bold = yes", "n.position = note", dir = .apd)
 .apq <- data.frame(Q1 = haven::labelled(c(1, 1, 2, 3, 3, 3),
                                         c("Strongly disagree" = 1, Neutral = 2,
                                           "Strongly agree" = 3)),
@@ -5209,9 +5314,9 @@ attr(.apq$C, "label") <- "Contact method used by the agency to reach you"
 }
 .apq1 <- res(jfreq(.apq, Q1, print = FALSE))$val
 .apqC <- res(jfreq(.apq, C, print = FALSE))$val
-.ap13t <- res(jtable(.apq1, print = FALSE))$val
+.ap13t <- res(jtable(.apq1, style = .apn, print = FALSE))$val
 .ap13a <- res(jtable(.apq1, style = file.path(.apd, "ar11.jstyle"), print = FALSE))$val
-.ap13L <- res(jtable(res(jfreq(.apq, L, print = FALSE))$val, print = FALSE))$val
+.ap13L <- res(jtable(res(jfreq(.apq, L, print = FALSE))$val, style = .apn, print = FALSE))$val
 .ap13fw <- res(lapply(list(none = NULL, empty = "", tnr = "Times New Roman", t = " times ",
                            ls = "Liberation Serif", ar = "ARIAL", hv = "Helvetica",
                            ca = "Calibri", cr = "carlito", vd = "Verdana"),
@@ -5251,8 +5356,8 @@ check("AP14 the Word file measures each label in the table's font beside its ind
         as.integer(.ap14x(.aphelv, 11)[["tab"]]) %in% .ap14a$tabs &&
         !(as.integer(.ap14x(.aptimes, 11)[["tab"]]) %in% .ap14a$tabs))
 
-.ap15 <- .apgrid(res(jtable(.apqC, print = FALSE))$val, "c_times.docx")
-.ap15t <- res(jtable(.apqC, print = FALSE))$val
+.ap15 <- .apgrid(res(jtable(.apqC, style = .apn, print = FALSE))$val, "c_times.docx")
+.ap15t <- res(jtable(.apqC, style = .apn, print = FALSE))$val
 .ap15n <- .ap15t; .ap15n$rows <- Filter(function(r) !identical(r$kind, "heading"), .ap15n$rows)
 # Fitted to a page too narrow for the label: the label row spans the
 # table, so the stub narrows past it at the table's own size (the floor
@@ -5284,7 +5389,7 @@ check("AP15 a variable's label row sets the first column's width as a category's
 
 .ap16 <- .apgrid(res(jtable(.apq1, style = file.path(.apd, "boldhead.jstyle"), print = FALSE))$val,
                  "q1_bold.docx")
-.wsty("boldvar", "[frequencies]", "variable.headings = bold", dir = .apd)
+.wsty("boldvar", "n.position = note", "[frequencies]", "variable.headings = bold", dir = .apd)
 .ap16v <- .apgrid(res(jtable(.apqC, style = file.path(.apd, "boldvar.jstyle"), print = FALSE))$val,
                   "c_bold.docx")
 check("AP16 a header set bold is measured bold, about 8 percent wider: the n column, set by its head, widens; the same table in apa keeps the upright width; a variable's label row set bold sets the stub at its bold width",
@@ -5297,19 +5402,19 @@ check("AP16 a header set bold is measured bold, about 8 percent wider: the n col
 # A table narrower than its title widens to it (the title is the table's
 # first row under caption.position = row), every column in proportion, as
 # far as the page; under caption.position = paragraph nothing moves.
-.wsty("parcap", "caption.position = paragraph", dir = .apd)
+.wsty("parcap", "caption.position = paragraph", "n.position = note", dir = .apd)
 .ap18s <- res(jfreq(.apq, S, print = FALSE))$val
-.ap18 <- .apgrid(res(jtable(.ap18s, print = FALSE))$val, "s_row.docx")
+.ap18 <- .apgrid(res(jtable(.ap18s, style = .apn, print = FALSE))$val, "s_row.docx")
 .ap18p <- .apgrid(res(jtable(.ap18s, style = file.path(.apd, "parcap.jstyle"), print = FALSE))$val,
                   "s_par.docx")
 .ap18L <- .apgrid(res(jtable(.ap18s, title = paste(rep("Frequency Distributions", 6), collapse = " "),
-                             print = FALSE))$val, "s_long.docx")
+                             style = .apn, print = FALSE))$val, "s_long.docx")
 .ap18nat <- as.integer(c(.aptw("Variable", .aptimes, 12) + 216, .aptw("n", .aptimes, 12) + 336,
                          .aptw("33.3", .aptimes, 12) + 336))
 .ap18to <- as.integer(.aptw("Frequency Distributions", .aptimes, 12) + 216)
-.wsty("jcap", "caption.form = journal", dir = .apd)
-.wsty("rcap", "caption.form = report", dir = .apd)
-.ap18t <- res(jtable(.ap18s, print = FALSE))$val
+.wsty("jcap", "caption.form = journal", "n.position = note", dir = .apd)
+.wsty("rcap", "caption.form = report", "n.position = note", dir = .apd)
+.ap18t <- res(jtable(.ap18s, style = .apn, print = FALSE))$val
 .ap18cw <- res(vapply(c(apa = "apa", journal = file.path(.apd, "jcap.jstyle"),
                         report = file.path(.apd, "rcap.jstyle")),
                       function(s) .jst_docx_caption_width(.ap18t, .jst_style_resolve(s), 1L),
@@ -5533,27 +5638,31 @@ check("AQ05 heading.fill fills each variable's label row -- a frequency table's 
 
 # The note's label: upright under report, italic under apa; the console's
 # line the same text.
+# A note of the call's own: since ruling R59 (S409, built S410) N goes
+# after the title, which leaves this table's note empty without one.
 .aq6 <- .aqtry(lapply(c(apa = "apa", report = "report"), function(s) {
-  t <- res(jtable(.aqm, style = s, print = FALSE))$val
+  t <- res(jtable(.aqm, style = s, note = "Wellbeing is scored from 0 to 100.", print = FALSE))$val
   f <- file.path(.aqd, paste0("note_", s, ".docx"))
   invisible(res(jtable(t, file = f, print = FALSE)))
   d <- .aqdx(f)$doc
-  run <- regmatches(d, regexpr("<w:r><w:rPr>[^>]*(<w:[a-zA-Z]+[^>]*/>)*</w:rPr><w:t xml:space=\"preserve\">Note[.:] ?</w:t></w:r>", d, perl = TRUE))
+  run <- regmatches(d, regexpr("<w:r><w:rPr>[^>]*(<w:[a-zA-Z]+[^>]*/>)*</w:rPr><w:t xml:space=\"preserve\">Note[.:][^<]*</w:t></w:r>", d, perl = TRUE))
   list(lines = .jst_table_note_lines(t, .jst_table_style(t, s)),
        plain = .jst_table_note_lines(t, .jst_table_style(t, s), plain = TRUE),
        run = run)
 }))
 check("AQ06 the note's label: report's \"Note:\" upright (note.label.italic = no), apa's \"Note.\" in italics, in the Word file's run and in the marked-up line; the console's line the same words",
-      identical(.aq6$apa$lines, "*Note.* *N* = 103.") &&
-        identical(.aq6$report$lines, "Note: *N* = 103.") &&
-        identical(.aq6$apa$plain, "Note. N = 103.") &&
-        identical(.aq6$report$plain, "Note: N = 103.") &&
+      identical(.aq6$apa$lines, "*Note.* Wellbeing is scored from 0 to 100.") &&
+        identical(.aq6$report$lines, "Note: Wellbeing is scored from 0 to 100.") &&
+        identical(.aq6$apa$plain, "Note. Wellbeing is scored from 0 to 100.") &&
+        identical(.aq6$report$plain, "Note: Wellbeing is scored from 0 to 100.") &&
         length(.aq6$apa$run) == 1L && grepl("<w:i/>", .aq6$apa$run, fixed = TRUE) &&
         length(.aq6$report$run) == 1L && !grepl("<w:i/>", .aq6$report$run, fixed = TRUE))
 
 # An empty label is no label: until S409 a pair of asterisks was left,
 # "** N = 103." -- printed as marks in the Word file and the console.
-.wsty("aqnolab", "note.label = \"\"", dir = .aqd)
+# N in the note, as apa put it until ruling R59 (S409, built S410): the
+# *N* markup is what an empty label must not leave stray asterisks beside.
+.wsty("aqnolab", "note.label = \"\"", "n.position = note", dir = .aqd)
 .aq7 <- .aqtry(local({
   t <- res(jtable(.aqm, style = file.path(.aqd, "aqnolab.jstyle"), print = FALSE))$val
   f <- file.path(.aqd, "nolab.docx")
@@ -5582,17 +5691,18 @@ check("AQ08 the stars legend keeps the zero under leading.zero = yes, as the cel
         identical(.aq8$rep, .aq8$yes) && identical(.aq8$apa, .aq8$no))
 
 # A report table: the preview pinned whole, and the Word file's look.
-.aq9t <- res(jtable(.aqm, style = "report", print = FALSE))$val
+.aq9t <- res(jtable(.aqm, style = "report", note = "Wellbeing is scored from 0 to 100.",
+                    print = FALSE))$val
 .aq9p <- .strip_ansi(res(print(.aq9t))$txt)
 .aq9x <- .aqtry(local({ f <- file.path(.aqd, "report_m.docx")
                  invisible(res(jtable(.aq9t, file = f, print = FALSE))); .aqdx(f) }))
 .aq9r <- .aqtry(.aqrows(.aq9x$doc))
 check("AQ09 a regression table under report: the preview pinned whole (\"Table 1:\" and the title on one line, the zero kept on b, beta, p and R2, \"Note:\"); in the Word file Arial at 10 points, the caption's runs at 10 and bold, the note's at 9, the header filled D9D9D9 and bold, the variable's label row bold",
-      identical(.aq9p, "Table 1: Regression Coefficients Predicting Wellbeing score (0-100)\n-------------------------------------------------------------------\nPredictor                                  b     SE     \u03b2       p\n-------------------------------------------------------------------\nConstant                                 38.91  4.23         <0.001\nAge (years)                               0.36  0.09   0.36  <0.001\nRegion of residence (reference = North)\n  South                                  -5.50  3.20  -0.19   0.088\n  East                                   -1.87  2.85  -0.08   0.513\n  West                                   -3.69  3.03  -0.14   0.226\nR\u00b2                                        0.15\n-------------------------------------------------------------------\nNote: N = 103.\n") &&
+      identical(.aq9p, "Table 1: Regression Coefficients Predicting Wellbeing score (0-100) (N = 103)\n-------------------------------------------------------------------\nPredictor                                  b     SE     \u03b2       p\n-------------------------------------------------------------------\nConstant                                 38.91  4.23         <0.001\nAge (years)                               0.36  0.09   0.36  <0.001\nRegion of residence (reference = North)\n  South                                  -5.50  3.20  -0.19   0.088\n  East                                   -1.87  2.85  -0.08   0.513\n  West                                   -3.69  3.03  -0.14   0.226\nR\u00b2                                        0.15\n-------------------------------------------------------------------\nNote: Wellbeing is scored from 0 to 100.\n") &&
         grepl("<w:rFonts w:ascii=\"Arial\" w:hAnsi=\"Arial\" w:cs=\"Arial\" w:eastAsia=\"Arial\"/>", .aq9x$sty, fixed = TRUE) &&
         grepl("<w:sz w:val=\"20\"/>", .aq9x$sty, fixed = TRUE) &&
         grepl("<w:r><w:rPr><w:b/><w:sz w:val=\"20\"/><w:szCs w:val=\"20\"/></w:rPr><w:t xml:space=\"preserve\">Table </w:t></w:r>", .aq9r[1], fixed = TRUE) &&
-        grepl("<w:r><w:rPr><w:sz w:val=\"18\"/><w:szCs w:val=\"18\"/></w:rPr><w:t xml:space=\"preserve\">Note: </w:t></w:r>", .aq9x$doc, fixed = TRUE) &&
+        grepl("<w:r><w:rPr><w:sz w:val=\"18\"/><w:szCs w:val=\"18\"/></w:rPr><w:t xml:space=\"preserve\">Note: Wellbeing is scored from 0 to 100.</w:t></w:r>", .aq9x$doc, fixed = TRUE) &&
         identical(unique(.aqfill(.aqrow(.aq9r, "Predictor"))), "D9D9D9") &&
         grepl("<w:b/>", .aqrow(.aq9r, "Predictor"), fixed = TRUE) &&
         grepl("<w:r><w:rPr><w:b/><w:sz w:val=\"20\"/><w:szCs w:val=\"20\"/></w:rPr><w:t xml:space=\"preserve\">Region of residence</w:t></w:r>",
@@ -5772,9 +5882,198 @@ check("AQ15 the settings help page gives report's value beside apa's where they 
         }, logical(1))) &&
         !any(grepl("[^\\x01-\\x7F]", .aq15, perl = TRUE)))
 
+# =============================================================================
+# AR. S410 (v0.9.277): ruling R59 -- N after the title by default, the ns in
+#     the note where they vary -- and a blank line after each setting in the
+#     files jstyle() writes
+# =============================================================================
+cat("\n--- AR. N after the title (R59), blank lines in style files ---\n")
+
+.ard <- file.path(tempdir(), "tables_check_s410"); unlink(.ard, recursive = TRUE); dir.create(.ard)
+.arn <- .wsty("arnote", "n.position = note", dir = .ard)
+.arz <- .wsty("arnone", "n.position = none", dir = .ard)
+# One table of each type whose cases are one pool, under apa (title) and
+# under a style that puts N in the note.
+.ar2 <- .aqtry(local({
+  rs <- list(desc = res(jdesc(tcm, Age, WellbeingScore))$val,
+             freq = res(jfreq(tcm, Region))$val,
+             reg  = res(jlm(WellbeingScore ~ Age, tcm))$val,
+             logi = res(jlogistic(Volunteer ~ Age, tcm))$val,
+             corr = res(jcorr(tcm, Age, WellbeingScore))$val,
+             xtab = res(jcrosstab(Region ~ Volunteer, tcm))$val,
+             rel  = res(jalpha(tcm, Environment1, Environment3, Environment4))$val)
+  lapply(rs, function(r) list(t = res(jtable(r, print = FALSE))$val,
+                              n = res(jtable(r, style = .arn, print = FALSE))$val,
+                              z = res(jtable(r, style = .arz, print = FALSE))$val))
+}))
+.arN <- function(x) {   # the N a note-style table's note opens on
+  g <- x$n$notes$general[1]; sub("^\\*N\\* = ([0-9,]+)\\.$", "\\1", g)
+}
+check("AR01 apa's n.position is title, and report's, which inherits it (ruling R59, S409); the setting's note says a table with several ns gives them in the note; the settings help page gives title as apa's value, report's the same",
+      identical(.jst_style_apa$general$n.position, "title") &&
+        is.null(.jst_style_report$general$n.position) &&
+        identical(.jst_style_key(.jst_style_resolve("report"), "general", "n.position"), "title") &&
+        identical(.jst_style_about_lines(.jst_style_spec$general$n.position$about),
+                  paste("where N, the number of cases, goes: note (the general note opens on it) |",
+                        "title (\"(N = 103)\" after the title; a table with several ns, such as Ns",
+                        "that differ or a t test's groups, gives them in the note) | none")) &&
+        grepl("\\item{\\code{n.position}}{where N, the number of cases, goes:", paste(.jst_style_settings_rd(), collapse = "\n"),
+              fixed = TRUE) &&
+        grepl("several ns, such as Ns that differ or a t test's groups, gives them in the note) | none. Takes one of note | title | none. In apa: \\code{title}.}",
+              paste(.jst_style_settings_rd(), collapse = "\n"), fixed = TRUE))
+
+check("AR02 a table whose cases are one pool -- descriptives, frequencies, a regression, a logistic regression, a correlation, a crosstab, a reliability table -- puts \"(N = n)\" after its title under apa, and nothing in the note, where n.position = note opens the note on the same N and leaves the title alone; none writes neither",
+      !is.null(.ar2) && all(vapply(.ar2, function(x) {
+        n <- .arN(x)
+        grepl("^[0-9,]+$", n) &&
+          identical(x$t$caption$title, paste0(x$n$caption$title, " (*N* = ", n, ")")) &&
+          identical(x$n$notes$general[1], paste0("*N* = ", n, ".")) &&
+          identical(x$t$notes$general, x$n$notes$general[-1]) &&
+          identical(x$z$caption$title, x$n$caption$title) &&
+          identical(x$z$notes$general, x$n$notes$general[-1])
+      }, logical(1))) &&
+        identical(.arN(.ar2$desc), "103") && identical(.arN(.ar2$xtab), "103"))
+
+# Tables whose ns vary: under title the same as under note.
+.ar3 <- .aqtry(local({
+  pair <- function(r) list(t = res(jtable(r, print = FALSE))$val,
+                           n = res(jtable(r, style = .arn, print = FALSE))$val)
+  list(models = pair(list(.vh1, .vh2, .vh3)),
+       corr   = pair(res(jcorr(tcm, WellbeingScore, Income, Age))$val),
+       xtab   = pair(list(res(jcrosstab(Smoker ~ Volunteer, tcm))$val,
+                          res(jcrosstab(Region ~ Volunteer, tcm))$val)),
+       rel    = pair(list(A = res(jalpha(tcm, Environment1, Environment3))$val,
+                          B = res(jalpha(tcm, Environment4, Environment5,
+                                         subset = Age > 30))$val)),
+       pools  = pair(list(res(jdesc(tcm, Age))$val,
+                          res(jdesc(tcm, WellbeingScore, subset = Age > 30))$val)))
+}))
+check("AR03 a table whose ns vary -- models whose Ns differ, pairwise ns, crosstabs whose Ns differ, scales whose Ns differ -- gives them in the note under apa's title exactly as n.position = note does, the title carrying no N; variables from different pools of cases get no N in either place under either",
+      !is.null(.ar3) &&
+        all(vapply(.ar3, function(x) identical(x$t$caption, x$n$caption) &&
+                                     identical(x$t$notes, x$n$notes), logical(1))) &&
+        startsWith(.ar3$models$t$notes$general[1], "*N* differs by model: ") &&
+        startsWith(.ar3$corr$t$notes$general[1], "Pairwise *n*s range from ") &&
+        startsWith(.ar3$xtab$t$notes$general[1], "*N* differs by variable: ") &&
+        startsWith(.ar3$rel$t$notes$general[1], "*N* differs by scale: ") &&
+        !grepl("*N*", .ar3$pools$t$caption$title, fixed = TRUE) &&
+        !any(grepl("*N*", .ar3$pools$t$notes$general, fixed = TRUE)) &&
+        !any(grepl("(*N*", vapply(.ar3, function(x) x$t$caption$title, ""), fixed = TRUE)))
+
+# t tests and ANOVAs: the groups' ns in the note under title, as under note,
+# whatever the groups' sizes; none after the title.
+.ar4 <- .aqtry(local({
+  w <- data.frame(Y = c(12, 15, 11, 18, 14, 16, 10, 19, 13, 17, 12, 20), G = rep(c(1, 2), 6))
+  attr(w$Y, "label") <- "Y"
+  trip <- function(r, ...) list(t = res(jtable(r, ..., print = FALSE))$val,
+                                n = res(jtable(r, ..., style = .arn, print = FALSE))$val,
+                                z = res(jtable(r, ..., style = .arz, print = FALSE))$val)
+  list(uneq  = trip(res(jt(WellbeingScore ~ Volunteer, tcm))$val),
+       equal = trip(res(jt(Y ~ G, w))$val),
+       vary  = trip(list(res(jt(WellbeingScore ~ Volunteer, tcm))$val,
+                         res(jt(Income ~ Volunteer, tcm))$val)),
+       aov   = trip(res(jaov(Age ~ Region, tcm))$val),
+       ncol  = trip(res(jt(WellbeingScore ~ Volunteer, tcm))$val,
+                    columns = c("n", "mean", "sd", "t", "p", "d")))
+}))
+check("AR04 a t-test or ANOVA table gives its groups' ns in the note under apa's title, exactly as under n.position = note -- groups of different sizes, of one size, ns that vary with missing data, an ANOVA's four groups -- and no N after the title; with each group's n a column, nothing in either place; none writes no ns",
+      !is.null(.ar4) &&
+        all(vapply(.ar4, function(x) identical(x$t$caption, x$n$caption) &&
+                                     identical(x$t$notes, x$n$notes), logical(1))) &&
+        identical(.ar4$uneq$t$notes$general, "*n* = 54 (No) and 49 (Yes).") &&
+        identical(.ar4$equal$t$notes$general, "*n* = 6 (1) and 6 (2).") &&
+        startsWith(.ar4$vary$t$notes$general, "Group *n*s vary with missing data: No, ") &&
+        startsWith(.ar4$aov$t$notes$general, "*n* = ") &&
+        identical(.ar4$ncol$t$notes$general, character(0)) &&
+        !any(grepl("*N*", vapply(.ar4, function(x) x$t$caption$title, ""), fixed = TRUE)) &&
+        all(vapply(.ar4, function(x) length(x$z$notes$general) == 0L &&
+                                     identical(x$z$caption, x$t$caption), logical(1))))
+
+# The writers: the preview, the report, the Word caption under apa and
+# report.
+.ar5 <- .aqtry(local({
+  d1 <- res(jdesc(tcm, Age))$val
+  ta <- res(jtable(d1, print = FALSE))$val
+  tr <- res(jtable(d1, style = "report", print = FALSE))$val
+  f <- file.path(.ard, "r59.docx")
+  invisible(res(jtable(list(ta, tr), file = f, print = FALSE)))
+  x <- utils::unzip(f, "word/document.xml", exdir = file.path(.ard, "x5"))
+  list(pa = .strip_ansi(res(print(ta))$txt), pr = .strip_ansi(res(print(tr))$txt),
+       rep = res(jtable(d1, style = "report"))$txt,
+       doc = paste(readLines(x, warn = FALSE, encoding = "UTF-8"), collapse = ""))
+}))
+# The report table's runs carry Arial in a file whose first table is apa's
+# (Session 407: each table's own font).
+.arf <- "<w:rFonts w:ascii=\"Arial\" w:hAnsi=\"Arial\" w:cs=\"Arial\" w:eastAsia=\"Arial\"/>"
+check("AR05 N after the title in every writer: the preview's title line (N plain), apa's and report's, with no note under the table; jtable()'s report; the Word caption -- apa's italic title with N upright, report's bold one-line caption with N bold italic",
+      !is.null(.ar5) &&
+        startsWith(.ar5$pa, "Table 1\nDescriptive Statistics (N = 103)\n") &&
+        endsWith(.ar5$pa, "Age (years)  103  40.65  11.62   18   71\n----------------------------------------\n") &&
+        startsWith(.ar5$pr, "Table 1: Descriptive Statistics (N = 103)\n") &&
+        !grepl("Note", .ar5$pa, fixed = TRUE) && !grepl("Note", .ar5$pr, fixed = TRUE) &&
+        startsWith(.ar5$rep, "Table 1. Descriptive Statistics (N = 103)\n") &&
+        grepl("<w:t xml:space=\"preserve\">Descriptive Statistics (</w:t></w:r><w:r><w:rPr><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\">N</w:t></w:r><w:r><w:rPr><w:i/><w:sz w:val=\"24\"/><w:szCs w:val=\"24\"/></w:rPr><w:t xml:space=\"preserve\"> = 103)</w:t>", .ar5$doc, fixed = TRUE) &&
+        grepl(paste0("<w:t xml:space=\"preserve\">: Descriptive Statistics (</w:t></w:r><w:r><w:rPr>", .arf,
+                     "<w:b/><w:i/><w:sz w:val=\"20\"/><w:szCs w:val=\"20\"/></w:rPr><w:t xml:space=\"preserve\">N</w:t></w:r><w:r><w:rPr>", .arf,
+                     "<w:b/><w:sz w:val=\"20\"/><w:szCs w:val=\"20\"/></w:rPr><w:t xml:space=\"preserve\"> = 103)</w:t>"), .ar5$doc, fixed = TRUE) &&
+        !grepl(">Note", .ar5$doc, fixed = TRUE))
+
+# The files jstyle() writes: a blank line after each setting, none between
+# a setting's notes and the setting, none twice, none at the end (Session
+# 410; Jeff, on build 1's walk).
+.arset <- function(l) grepl("^[a-z][a-z0-9.]* = ", l) & !grepl("^(format|written\\.by|based\\.on) ", l)
+.arblank <- function(l) {
+  s <- which(.arset(l)); b <- !nzchar(l)
+  list(after = all(vapply(s, function(i) i == length(l) || !nzchar(l[i + 1L]), logical(1))),
+       notes = all(startsWith(l[s - 1L], "# takes: ")),
+       twice = any(b[-1L] & b[-length(b)]),
+       last  = nzchar(l[length(l)]),
+       n_set = length(s), n_blank = sum(b))
+}
+.ar6 <- .aqtry(local({
+  p <- res(jstyle("apa", save.as = file.path(.ard, "arfull")))
+  l <- readLines(file.path(.ard, "arfull.jstyle"), encoding = "UTF-8")
+  q <- file.path(.ard, "arflat.jstyle")   # the same file with no blank line
+  writeLines(l[nzchar(l)], q, useBytes = TRUE)
+  keys <- unlist(lapply(names(.jst_style_spec), function(part) {
+    paste(part, names(.jst_style_spec[[part]]))
+  }))
+  val <- function(st) lapply(keys, function(k) {
+    k <- strsplit(k, " ", fixed = TRUE)[[1]]; .jst_style_key(st, k[1], k[2])
+  })
+  list(l = l, b = .arblank(l), heads = which(grepl("^# (The general settings|An? [A-Za-z -]+ table, from |A crosstab, from )", l)),
+       same = identical(val(.jst_style_resolve(file.path(.ard, "arfull.jstyle"))),
+                        val(.jst_style_resolve(q))),
+       apa = identical(val(.jst_style_resolve(file.path(.ard, "arfull.jstyle"))),
+                       val(.jst_style_resolve("apa"))))
+}))
+check("AR06 a complete copy: a blank line after every setting, none between a setting's notes and the setting, none twice and none at the end; a blank after each part's heading note; one blank line in all for each setting but the last, each part's heading note, the head and the stamps; it reads back as the same file with no blank lines does, and as apa",
+      !is.null(.ar6) && .ar6$b$after && .ar6$b$notes && !.ar6$b$twice && .ar6$b$last &&
+        length(.ar6$heads) == length(.jst_style_spec) &&
+        all(!nzchar(.ar6$l[.ar6$heads + 1L])) &&
+        identical(.ar6$b$n_set, sum(lengths(.jst_style_spec))) &&
+        identical(.ar6$b$n_blank, .ar6$b$n_set - 1L + length(.jst_style_spec) + 2L) &&
+        .ar6$same && .ar6$apa)
+
+.ar7 <- .aqtry(local({
+  invisible(res(jstyle("report", save.as = file.path(.ard, "arshort"), font = "Calibri", size = 11,
+                       crosstab = list(total = "no"), regression = list(fit.rows = c("r2", "n")))))
+  l <- readLines(file.path(.ard, "arshort.jstyle"), encoding = "UTF-8")
+  st <- .jst_style_resolve(file.path(.ard, "arshort.jstyle"))
+  list(l = l, b = .arblank(l),
+       vals = list(.jst_style_key(st, "general", "font"), .jst_style_key(st, "general", "size"),
+                   .jst_style_key(st, "crosstab", "total"), .jst_style_key(st, "regression", "fit.rows")))
+}))
+check("AR07 a short file: a blank line after each of its four settings but the last, none between a setting's notes and the setting, so a section's heading follows its blank line, none twice and none at the end; it reads back",
+      !is.null(.ar7) && .ar7$b$after && .ar7$b$notes && !.ar7$b$twice && .ar7$b$last &&
+        identical(.ar7$b$n_set, 4L) && identical(.ar7$b$n_blank, 2L + 3L) &&
+        identical(.ar7$l[grep("^size = 11$", .ar7$l) + 1:2], c("", "[regression]")) &&
+        identical(.ar7$l[grep("^fit.rows = r2, n$", .ar7$l) + 1:2], c("", "[crosstab]")) &&
+        identical(.ar7$vals, list("Calibri", 11, "no", c("r2", "n"))))
+
 options(.jst_options_style_dir = NULL, .jst_options_style = NULL)
 
-unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd), recursive = TRUE)
+unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd, .ard), recursive = TRUE)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # The analyses above raise notes and warnings of their own (a seems-
