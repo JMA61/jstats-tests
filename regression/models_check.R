@@ -83,6 +83,22 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S416 EDIT (v0.9.280, 2026-11-10): GUARD 6 ADDED (the S415 item, a rider on
+#           Capability Slate U's charts, build 3). The battery draws on a
+#           null device of its own, opened at setup and closed at the foot,
+#           where the device current on entry is made current again; it had
+#           drawn on the session's device (RStudio's Plots pane; Rplots.pdf
+#           under Rscript) and left it open, which run_all.R's device guard,
+#           new this build, names. Its checks' own null devices (.null_dev(), S415) open
+#           and close inside it. No check added or changed.
+#           LAST VERIFIED: v0.9.280, 2026-11-11 (S416) -- 567/567 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3703 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once through a
+#           symlinked temp path, once with interactive() TRUE, once with a
+#           graphics device open (left open and current), and entered
+#           dirty.
 # S415 EDIT (v0.9.279, 2026-11-10): SECTION AJ ADDED, one check (567 in
 #           all). Capability Slate U's charts, build 2, an (S414) rider:
 #           jlogistic()'s "Outcome Encoding" block where "Dependent Variable
@@ -1370,6 +1386,17 @@ options(.jst_options_message_width = .pin_width)
 jsubset(clear.all = TRUE); jcomplete(clear.all = TRUE); joutput(NULL)
 jdummy(clear.all = TRUE)
 juse(NULL)
+
+# --- Guard 6: the graphics devices (S416) ------------------------------------
+# Every chart this battery draws goes to a null device of its own, opened
+# here and closed at the foot, where the device current on entry is made
+# current again. Drawn with no device open, a chart opens the session's own
+# -- RStudio's Plots pane, or Rplots.pdf under Rscript -- and it stays open
+# when the battery ends; run_all.R compares the devices before and after
+# each battery and names the one that left them changed (the S415 item).
+.entry_dev <- grDevices::dev.cur()
+grDevices::pdf(NULL)
+.own_dev <- grDevices::dev.cur()
 
 # --- Check harness -----------------------------------------------------------
 
@@ -7095,6 +7122,11 @@ check("AJ01 jlogistic() names its outcome's coding in an \"Outcome Encoding\" bl
               i <- match("Outcome Encoding", v)
               !is.na(i) && identical(v[i + 1:2], c("  Modeled (1):   Yes", "  Reference (0): No")) &&
                 !any(grepl("Dependent Variable", v, fixed = TRUE)) }))
+
+# Guard 6: this battery's device closed; the device current on entry made
+# current again, when it is still open.
+if (.own_dev %in% grDevices::dev.list()) grDevices::dev.off(.own_dev)
+if (.entry_dev > 1L && .entry_dev %in% grDevices::dev.list()) grDevices::dev.set(.entry_dev)
 
 # --- Verdict -----------------------------------------------------------------
 

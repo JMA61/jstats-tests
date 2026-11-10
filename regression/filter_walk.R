@@ -58,6 +58,29 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S416 EDIT (v0.9.280; Capability Slate U's charts, build 3, with the
+#           (S413) range item riding). G7 AND H1 RE-PINNED by running
+#           (fill.R), each block compared with the one it replaced, and ON
+#           THE PENDING LINE. G7, Render 2: jplot()'s stop for more than two
+#           variables gains a second way on, the 100% stacked bar's line
+#           (the S412 audit's F5; Claude's wording). H1: jdesc() and jfreq()
+#           take a range of variables, Age:Gender, as jalpha(), jmulti() and
+#           jplot() do -- the section had pinned the range as "still not
+#           found, as decided", the S355 scope ("NOT: ranges (Age:Score) or
+#           selection helpers, which stay "not found", loudly"), which the
+#           (S413) item reverses for these two functions; its second call
+#           now prints the three variables' table, a selection helper is
+#           added as the call that still stops, and its prose and Things to
+#           look at say so. The assertion side is filter_check.R Y06 and
+#           AE08 and tables_check.R AU12 and AU15. A capture of every
+#           section of every walk on 0.9.279 and on the build moved only
+#           these two here.
+# LAST VERIFIED: v0.9.280, 2026-11-11 (S416) -- G7 and H1 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay";
+#           "walks look good"); PENDING back to none; R CMD check 0 errors,
+#           0 warnings, 0 notes; ALL BATTERIES GREEN (12 run, 3703 checks).
+#           Sandbox: harness.R verify, 62 of 62 sections; 98 of 98 Expected
+#           blocks; rewalk()'s scoreboard read the PENDING line.
 # S395 EDIT (v0.9.267): FIX SLATE 30, THE SECOND BUILD -- the S393 message
 #           pass's accepts, with rulings R40-R44 and the (S393) parenthetical
 #           lean (Jeff, S393 and S395). C1, F1 AND H1 RE-PINNED MECHANICALLY,
@@ -2101,6 +2124,9 @@ caught(jplot(g7, Score7, Group7, Age7))
 #   To show a variable by the groups of another, add by = to the call,
 #   for example:
 #     jplot(community, Age, by = Region)
+#   To compare several items that share their answer categories, draw a 100%
+#   stacked bar, for example:
+#     jplot(community, Environment1:Environment5, type = "stacked")
 #   Or call jplot() once for each variable.
 
 .ws_g7 <- new.env(parent = baseenv())
@@ -2131,7 +2157,11 @@ rm(.ws_g7, g7)
 #   - Render 2: the old example, jplot(community, Age, Income, by =
 #     Region), itself stopped (two numeric variables want the formula
 #     form). The new one, jplot(community, Age, by = Region), draws Age by
-#     region.
+#     region. Since v0.9.280 (S416; the S412 audit's F5) a second way on,
+#     before the last line: "To compare several items that share their
+#     answer categories, draw a 100% stacked bar, for example:" and
+#     jplot(community, Environment1:Environment5, type = "stacked"), which
+#     runs (tables_walk.R Section 22 shows the chart).
 #   - Render 3: what was typed is the subject (voice Rule AD) -- 1:3, g7x --
 #     the copy's name kept, g7 named as the one data frame in .ws_g7. The
 #     third had been R's own "object 'g7x' not found".
@@ -2819,13 +2849,20 @@ rm(.def_g11, .ws_g11, g11)
 # SECTION H1 -- a c() of names, bare or quoted, in a variable list ----
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # A variable list takes a c() of names, as the tidyverse does; until v0.9.228
-# jdesc(d, c(Age, Gender)) was "c(Age, Gender) was not found". A range and
-# a helper are still not found, as decided. The three single-variable
-# functions take a quoted name now (jrecode(d, "Gender", ...) was refused);
-# a c() of several there stops, naming them.
+# jdesc(d, c(Age, Gender)) was "c(Age, Gender) was not found". SINCE
+# v0.9.280 (S416; the (S413) range item) jdesc() and jfreq() also take a
+# RANGE, Age:Gender -- the variables from Age to Gender in the data frame's
+# order, as jalpha(), jmulti() and jplot() take one. Until then this section
+# pinned the range as "still not found, as decided": the S355 scope, "NOT:
+# ranges (Age:Score) or selection helpers, which stay "not found", loudly",
+# which the item reverses for these two functions. A helper is still not
+# found, and so is a range inside c(). The three single-variable functions
+# take a quoted name (jrecode(d, "Gender", ...) was refused); a c() of
+# several there stops, naming them.
 
 jdesc(d, c(Age, "Gender"))
-caught(jdesc(d, Age:Gender))
+jdesc(d, Age:Gender)
+caught(jdesc(d, starts_with("A")))
 caught(jrecode(d, c(Age, Gender), map = "1=0"))
 
 # Expected:
@@ -2840,7 +2877,21 @@ caught(jrecode(d, c(Age, Gender), map = "1=0"))
 #   Age         12        11       27   62  41.636  11.457
 #   Gender      12        12        1    2   1.500   0.522
 #
-#   Caught: jdesc(): Age:Gender was not found in the d data frame.
+#   Descriptive Statistics
+#
+#   12 Cases in the 3 Variable Pool; 11 Complete on All
+#
+#   Warning: Keep01 seems categorical; descriptive statistics may not
+#   be meaningful.
+#   Warning: Gender seems categorical; descriptive statistics may not
+#   be meaningful.
+#   Variable  Total  Non_missing  Min  Max   Mean     SD
+#   --------  -----  -----------  ---  ---  ------  ------
+#   Age         12        11       27   62  41.636  11.457
+#   Keep01      12        12        0    1   0.500   0.522
+#   Gender      12        12        1    2   1.500   0.522
+#
+#   Caught: jdesc(): starts_with("A") was not found in the d data frame.
 #   Check the spelling.
 #   Caught: jrecode(): only one variable goes after the data frame, and this
 #   call gives Age and Gender.
@@ -2849,8 +2900,14 @@ caught(jrecode(d, c(Age, Gender), map = "1=0"))
 # Things to look at:
 #   - Render 1: both variables described, Age then Gender, from a c() that
 #     mixes a bare name and a quoted one;
-#   - Render 2: the range keeps the not-found stop;
-#   - Render 3: jrecode() names the two variables and says what to do.
+#   - Render 2: the range describes Age, Keep01 and Gender -- every variable
+#     from Age to Gender in the data frame's order -- exactly as naming the
+#     three would (jfreq(d, Keep01:Gender) tabulates the two; endpoints the
+#     wrong way round, jdesc(d, Gender:Age), stop with "Reverse the order:
+#     Age:Gender", as jalpha()'s do). v0.9.279 printed "Caught: jdesc():
+#     Age:Gender was not found in the d data frame." here;
+#   - Render 3: a selection helper keeps the not-found stop;
+#   - Render 4: jrecode() names the two variables and says what to do.
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # SECTION H2 -- a data frame's name in quotes ----

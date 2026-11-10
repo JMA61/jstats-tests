@@ -161,6 +161,28 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S416 EDIT (v0.9.280, 2026-11-10): Y06 AND AE08 RE-PINNED; GUARD 6 ADDED.
+#           Capability Slate U's charts, build 3. Y06: a range in jdesc()'s
+#           and jfreq()'s list names every variable from its first to its
+#           last (the S413 item, a rider), where the check had pinned the
+#           not-found stop the S355 scope kept ("as decided"); the range's
+#           output and conditions are compared with the named variables',
+#           and a helper still stops. AE08: jplot()'s stop for more than two
+#           variables offers the 100% stacked bar of a set of items as well
+#           (the S412 audit's F5), and the offered line is run. GUARD 6:
+#           the battery draws on a null device of its own, opened at setup
+#           and closed at the foot -- it had drawn on the session's device
+#           (RStudio's Plots pane; Rplots.pdf under Rscript) and left it
+#           open, which run_all.R's device guard, new this build, names.
+#           No check added: 671 checks still.
+#           LAST VERIFIED: v0.9.280, 2026-11-11 (S416) -- 671/671 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3703 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once through a
+#           symlinked temp path, once with interactive() TRUE, once with a
+#           graphics device open (left open and current), and entered
+#           dirty.
 # S415 EDIT (v0.9.279, 2026-11-10): AG15b RE-PINNED. Capability Slate U's
 #           charts, build 2, an (S414) rider: jplot()'s stop on a jdesc() or
 #           a jfreq() result names the result by its function ("a jdesc()
@@ -1853,6 +1875,17 @@ d$Condition <- haven::labelled(c(1L, 2L, 1L, 3L, 2L, 1L,
 d$Under40 <- d$Age < 40                  # a genuine TRUE/FALSE column (S290):
                                          # five TRUE, six FALSE, one NA (row 8)
 e <- d                                   # a second frame for the two-frame checks
+
+# --- Guard 6: the graphics devices (S416) ------------------------------------
+# Every chart this battery draws goes to a null device of its own, opened
+# here and closed at the foot, where the device current on entry is made
+# current again. Drawn with no device open, a chart opens the session's own
+# -- RStudio's Plots pane, or Rplots.pdf under Rscript -- and it stays open
+# when the battery ends; run_all.R compares the devices before and after
+# each battery and names the one that left them changed (the S415 item).
+.entry_dev <- grDevices::dev.cur()
+grDevices::pdf(NULL)
+.own_dev <- grDevices::dev.cur()
 
 # --- Check harness -----------------------------------------------------------
 
@@ -5244,9 +5277,11 @@ check("Y04 every list takes it: jfreq(), jscreen(), jcorr(), jalpha(), jsum(), j
 check("Y05 a misspelled name inside the c() is the one named: \"Agee was not found in the d data frame.\"",
       identical(grab(jdesc(d, c(Age, Agee))),
                 "jdesc(): Agee was not found in the d data frame.\nCheck the spelling."))
-check("Y06 a range and a helper keep the not-found stop, as decided",
-      identical(grab(jdesc(d, Age:Gender)),
-                "jdesc(): Age:Gender was not found in the d data frame.\nCheck the spelling.") &&
+check("Y06 a range names every variable from its first to its last, as jalpha() reads one, in jdesc() and jfreq() (S416, the S413 item; until then it kept the not-found stop, the S355 scope); a helper keeps the stop",
+      identical(plines(jdesc(d, Age:Gender)), plines(jdesc(d, Age, Keep01, Gender))) &&
+        identical(grab(jdesc(d, Age:Gender)), grab(jdesc(d, Age, Keep01, Gender))) &&
+        sum(grepl("^(Age|Keep01|Gender) ", plines(jdesc(d, Age:Gender)))) == 3L &&
+        identical(plines(jfreq(d, Keep01:Gender)), plines(jfreq(d, Keep01, Gender))) &&
         identical(grab(jdesc(d, c(Age, starts_with("G")))),
                   "jdesc(): c(Age, starts_with(\"G\")) was not found in the d data frame.\nCheck the spelling."))
 check("Y07 under a juse() default a c() of names the frame has is the frame's variables, with R12's line when the workspace shares a name -- and still the frame's when the workspace holds both names, where R's c() would have joined the two vectors",
@@ -6083,14 +6118,18 @@ check("AE07 jcomplete() and jplot() given a data frame and no variables: one sen
           !errs(eval(parse(text = .ae_last(m2))[[1]], new.env())) &&
           { r <- !errs(eval(parse(text = .ae_last(m1))[[1]], new.env()))
             quiet(jcomplete(community, NULL)); r } }))
-check("AE08 jplot() given three variables: one sentence a line, an example that runs -- the old one, jplot(community, Age, Income, by = Region), stopped for two numeric variables (pinned whole)",
+check("AE08 jplot() given three variables: one sentence a line, two examples that run -- the old one, jplot(community, Age, Income, by = Region), stopped for two numeric variables; since S416 the 100% stacked bar of a set of items is offered as well (pinned whole)",
       { m <- grab(jplot(.ae1, Score, Group, Age))
         identical(m, paste0("jplot(): only 1 or 2 variables can be plotted at once.\n",
                             "To show a variable by the groups of another, add by = to the call,\n",   # S378 wording
                             "for example:\n",
                             "  jplot(community, Age, by = Region)\n",
+                            "To compare several items that share their answer categories, draw a 100%\n",   # S416
+                            "stacked bar, for example:\n",
+                            "  jplot(community, Environment1:Environment5, type = \"stacked\")\n",
                             "Or call jplot() once for each variable.")) &&
           !errs(jplot(community, Age, by = Region)) &&
+          !errs(jplot(community, Environment1:Environment5, type = "stacked")) &&
           errs(jplot(community, Age, Income, by = Region)) })
 check("AE09 jcopy() with no name for the copy, a source that is not a data frame, a source found nowhere: what was typed is the subject, the call on a line of its own, the one data frame in the workspace named (MyData with none), the destination kept (pinned whole; the third was R's \"object 'nofr' not found\")",
       local({ e1 <- .ae_ws(ae1 = .ae1); e0 <- .ae_ws()
@@ -7797,6 +7836,11 @@ check(paste0("P05 no runtime string says DV, IV, dependent or independent variab
       length(.p05_hits) == 0L && any(grepl("`codes` must be", .p04_strings, fixed = TRUE)))
 if (length(.p05_hits) > 0L) for (s in .p05_hits) cat("        says it: ", s, "\n")
 rm(.p04_strings, .p04_hits, .p05_hits)
+
+# Guard 6: this battery's device closed; the device current on entry made
+# current again, when it is still open.
+if (.own_dev %in% grDevices::dev.list()) grDevices::dev.off(.own_dev)
+if (.entry_dev > 1L && .entry_dev %in% grDevices::dev.list()) grDevices::dev.set(.entry_dev)
 
 # --- Verdict -----------------------------------------------------------------
 

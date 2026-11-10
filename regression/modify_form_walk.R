@@ -54,6 +54,18 @@
 #           jtable() built: base R's saveRDS() and readRDS() offered as
 #           lines that run (Section 44).
 # ORIGIN:   S229
+# EDITED:   S416 (v0.9.280; Capability Slate U's charts, build 3). SECTION 10
+#           on the PENDING line: the orientation jai() prints is version
+#           3.11 -- jmulti() named where an analysis is chosen and among the
+#           functions that take variable names, and a new bullet for the
+#           charts (deferred from the charts' build 1) -- its heading line
+#           and notes updated; its Expected is prose, unchanged.
+# LAST VERIFIED: v0.9.280, 2026-11-11 (S416) -- Section 10 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (12 run, 3703 checks). Sandbox: harness.R
+#           verify, 44 of 44 sections; 167 of 168 Expected blocks found
+#           (Section 9's prose block, as before).
 # EDITED:   S409 (v0.9.276; Capability Slate U, build 1). SECTION 10 on the
 #           PENDING line: the orientation jai() prints is version 3.10 --
 #           the tables bullet names the two built-in styles, teaches the
@@ -1592,7 +1604,7 @@ invisible(jdeclare_missing(plain_df2, Rating, codes = c(Refused = -99),
 # Expected: NEITHER form -- just the cross-session jsave tip. The change has
 # already landed on the frame, so saving is the only next rung.
 
-cat("\n--- the jai orientation body (v3.10) ---\n")
+cat("\n--- the jai orientation body (v3.11) ---\n")
 jai()
 
 # Expected, in the bullet beginning "Analysis functions print their results":
@@ -1604,10 +1616,30 @@ jai()
 #   - modify = TRUE now comes FIRST and is marked as the taught form
 #   - the assignment form is still present (an assistant has to recognize it
 #     in your code) but is now clearly secondary
-#   - the version stamp reads v3.10 (S409: the tables bullet, below; v3.9
-#     at S406, the table layer; v3.8 at S357 set SKILL.md's AI-assistant
-#     paragraph to the body's width, Section 20). If it still says 3.9,
-#     the orientation bump did not land.
+#   - the version stamp reads v3.11 (S416: jmulti() and the charts bullet,
+#     below; v3.10 at S409, the tables bullet; v3.9 at S406, the table
+#     layer; v3.8 at S357 set SKILL.md's AI-assistant paragraph to the
+#     body's width, Section 20). If it still says 3.10, the orientation
+#     bump did not land.
+#
+# S416 (v3.11, Capability Slate U's charts, build 3; deferred from the
+# charts' build 1) -- the wording is Claude's:
+#   - the bullet that begins "Choose the analysis function" now ends its
+#     list with "tabulate a tick-all-that-apply question, stored as one
+#     yes/no item per option, with jmulti()", and names jmulti() among the
+#     functions that take variable names instead of a formula;
+#   - a new bullet after the tables bullet, "Draw charts with jplot()":
+#     the chart chosen from the variables (a histogram, a bar chart, a
+#     scatterplot), the three kinds asked for by name -- type = "pie" or
+#     "donut" for one variable of up to six categories, type = "stacked"
+#     for a 100% stacked bar, by by = or of items that share their answer
+#     categories -- a kept result drawn (a model's plots, a jmulti()
+#     result's ranked bar chart), a chart kept with <- written into a Word
+#     file beside built tables, and the look coming from the style's
+#     [plot] settings.
+# Things to look at: would an assistant reading the bullet write a working
+# jplot() call for each kind, and know that a pie is asked for by name?
+# Every call in the bullet runs on community (tables_check.R AU17).
 #
 # S409 (v3.10, Capability Slate U, build 1; the presentation review's
 # entry 7) -- the wording is Claude's. The tables bullet:

@@ -10,6 +10,27 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S416 EDIT (v0.9.280, 2026-11-10): N92g RE-PINNED. Capability Slate U's
+#           charts, build 3: the orientation names jmulti() where an
+#           analysis is chosen and gains a bullet for the charts, and the
+#           skill's description names jmulti and jplot, so its version is
+#           3.11 where it was 3.10. No check added: 926 checks still.
+#           GUARD 6 ADDED (the S415 item): entered with joutput(diagnostics
+#           = TRUE) -- the dirty entry's setting, which a level call leaves
+#           alone -- the battery's models and tests drew their diagnostic
+#           plots on the session's own device and left it open, which
+#           run_all.R's device guard, new this build, would name; it now
+#           draws on a null device of its own, closed at the foot. Found by
+#           the S416 dirty entry, the first to compare the devices before
+#           and after.
+#           LAST VERIFIED: v0.9.280, 2026-11-11 (S416) -- 926/926 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3703 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once through a
+#           symlinked temp path, once with interactive() TRUE, once with a
+#           graphics device open (left open and current), and entered
+#           dirty.
 # S409 EDIT (v0.9.276, 2026-11-06): N92g RE-PINNED. Capability Slate U,
 #           build 1: the orientation's tables bullet names both built-in
 #           styles, teaches the short copy and jstyle(open = TRUE), and
@@ -2034,6 +2055,20 @@ options(.jst_filter = NULL, .jst_complete = NULL, .jst_dummy = NULL,
 .pin_width           <- 76L
 .entry_message_width <- getOption(".jst_options_message_width")
 options(.jst_options_message_width = .pin_width)
+
+# --- Guard 6: the graphics devices (S416) ------------------------------------
+# Every chart this battery draws goes to a null device of its own, opened
+# here and closed at the foot, where the device current on entry is made
+# current again. Drawn with no device open, a chart opens the session's own
+# -- RStudio's Plots pane, or Rplots.pdf under Rscript -- and it stays open
+# when the battery ends; run_all.R compares the devices before and after
+# each battery and names the one that left them changed (the S415 item).
+# This battery draws only when it is entered with joutput(diagnostics =
+# TRUE), which outlives a level call: its models and tests then draw their
+# diagnostic plots.
+.entry_dev <- grDevices::dev.cur()
+grDevices::pdf(NULL)
+.own_dev <- grDevices::dev.cur()
 
 # --- Check harness -----------------------------------------------------------
 
@@ -10830,7 +10865,7 @@ check("N92f jai(\"machine\") declined: a new SKILL.md keeps the line about anoth
                 grepl("To write to a different folder", m1, fixed = TRUE) &&
                 identical(m2, "Nothing was written.\n") }))
 # --- F: SKILL.md's paragraph ---------------------------------------------------------
-check("N92g SKILL.md's AI-assistant paragraph: the standard paragraph's words without the prefix, set to the body's width (first line 60+, none over 76); the standard text keeps the prefix; version 3.10 (3.9 until S409, 3.8 until S406)",
+check("N92g SKILL.md's AI-assistant paragraph: the standard paragraph's words without the prefix, set to the body's width (first line 60+, none over 76); the standard text keeps the prefix; version 3.11 (3.10 until S416, 3.9 until S409, 3.8 until S406)",
       local({ std <- .jst_orientation_body(); i <- grep("^Note for AI assistants: ", std)
               j <- min(which(std == "")[which(std == "") > i]) - 1L
               mac <- .jst_orientation_text("STAMP", "machine")
@@ -10844,7 +10879,7 @@ check("N92g SKILL.md's AI-assistant paragraph: the standard paragraph's words wi
                 !any(grepl("Note for AI assistants", mac, fixed = TRUE)) &&
                 any(grepl("^Note for AI assistants: jstats is newer",
                           .jst_orientation_text("STAMP", "standard"))) &&
-                identical(.jst_orientation_version, "3.10") }))
+                identical(.jst_orientation_version, "3.11") }))
 # --- G: the .RData redirect -----------------------------------------------------------
 save(.S92, file = "y92.RData"); save(.S92, file = "z92.rda")
 check("N92h the .RData redirect in one voice: typed (pinned whole) and bare -- the bare name finds y92.RData, as typed on a case-sensitive file system",
@@ -12374,6 +12409,11 @@ options(.jst_options_message_width = .entry_message_width)
 options(.jst_output_level = .entry_output_level)
 options(.jst_output_toggles = .entry_output_toggles)
 options(.entry_stores)
+
+# Guard 6: this battery's device closed; the device current on entry made
+# current again, when it is still open.
+if (.own_dev %in% grDevices::dev.list()) grDevices::dev.off(.own_dev)
+if (.entry_dev > 1L && .entry_dev %in% grDevices::dev.list()) grDevices::dev.set(.entry_dev)
 
 # --- Verdict -----------------------------------------------------------------
 

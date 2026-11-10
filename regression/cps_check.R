@@ -34,6 +34,21 @@
 #           S382 the listwise note's one sentence (N63); and since S392
 #           the note's count with thousands separators (N64).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S416 EDIT (v0.9.280, 2026-11-10): GUARD 6 ADDED (the S415 item, a rider on
+#           Capability Slate U's charts, build 3). The battery draws on a
+#           null device of its own, opened at setup and closed at the foot,
+#           where the device current on entry is made current again; it had
+#           drawn on the session's device (RStudio's Plots pane; Rplots.pdf
+#           under Rscript) and left it open, which run_all.R's device guard,
+#           new this build, names. No check added or changed.
+#           LAST VERIFIED: v0.9.280, 2026-11-11 (S416) -- 272/272 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3703 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once through a
+#           symlinked temp path, once with interactive() TRUE, once with a
+#           graphics device open (left open and current), and entered
+#           dirty.
 # S395 EDIT (v0.9.267, 2026-10-23): N56r AND N56s RE-PINNED. Fix Slate 30's
 #           second build: the S393 message pass's accepts (Jeff: "okay accept
 #           the rest"; "D1, D2, D3, okay with your recommendation."), rulings
@@ -871,6 +886,17 @@ jload("clinic", name = "d", package = TRUE, overwrite = TRUE, quiet = TRUE)
 d$SocialSupport[1:3] <- NA
 d$StressClean <- d$Stress
 d$StressClean[c(6L, 16L, 25L, 44L)] <- 16L
+
+# --- Guard 6: the graphics devices (S416) ------------------------------------
+# Every chart this battery draws goes to a null device of its own, opened
+# here and closed at the foot, where the device current on entry is made
+# current again. Drawn with no device open, a chart opens the session's own
+# -- RStudio's Plots pane, or Rplots.pdf under Rscript -- and it stays open
+# when the battery ends; run_all.R compares the devices before and after
+# each battery and names the one that left them changed (the S415 item).
+.entry_dev <- grDevices::dev.cur()
+grDevices::pdf(NULL)
+.own_dev <- grDevices::dev.cur()
 
 # --- Check harness -----------------------------------------------------------
 
@@ -3132,6 +3158,11 @@ check("N64a the listwise note's count with the separator: \"would leave 1,037 ca
         s <- "Note: Listwise deletion using jcomplete() would leave 1,037 cases."
         sum(v1 == s) == 1L && sum(v2 == s) == 1L })
 rm(.d64)
+
+# Guard 6: this battery's device closed; the device current on entry made
+# current again, when it is still open.
+if (.own_dev %in% grDevices::dev.list()) grDevices::dev.off(.own_dev)
+if (.entry_dev > 1L && .entry_dev %in% grDevices::dev.list()) grDevices::dev.set(.entry_dev)
 
 # --- Verdict -----------------------------------------------------------------
 

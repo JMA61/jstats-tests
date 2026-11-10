@@ -141,9 +141,29 @@
 #           note; ruling R72's note; the riders (a label kept whole in Word,
 #           the preview's carets, ruling R23's count of a range, jplot()'s
 #           stops on a result it does not draw); the settings page's [plot].
+#           (AU) Capability Slate U's charts, build 3 (S416, v0.9.280;
+#           rulings R66-R68 with R69's titles and R70's segment values, the
+#           S412 audit's F1, F3, F5, F15 and F18, the (S413) range item and
+#           the (S415) items): the three new [plot] settings; the pie and
+#           the donut -- each slice's share computed here from the data, its
+#           place, order and label, the labels spread and wrapped, the
+#           stops and the limit; the ranked bar of a jmulti() result -- its
+#           bars, order, gap, axis and values, its figure and note, the
+#           table and the chart in one file; the 100% stacked bar by its
+#           three routes -- a variable within groups, a set of items (each
+#           percentage computed here on the item's own valid answers), a
+#           crosstab result following the style's percent.base -- its
+#           legend, its values in the segments, its stops; a range in
+#           jplot()'s list and the type's stops; a chart written in another
+#           style drawing its own text and its legend in that look; the
+#           legend's fitting and the text-width estimate; a range in
+#           jdesc() and jfreq(); the data frame's name kept on every result
+#           and read by the lines jtable() and jplot() offer; the
+#           orientation's version 3.11.
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.279, 2026-11-10 (S415) -- 334/334 on the WORKSTATION;
-#           the S415 EDIT block below holds the stamp. Prior: v0.9.278,
+# LAST VERIFIED: v0.9.280, 2026-11-11 (S416) -- 351/351 on the WORKSTATION;
+#           the S416 EDIT block below holds the stamp. Prior: v0.9.279,
+#           2026-11-10 (S415) -- 334/334 (the S415 EDIT block); v0.9.278,
 #           2026-11-08 (S414) -- 315/315 (the S414 EDIT block); v0.9.277,
 #           2026-11-07 (S410) -- 294/294 (the S410 EDIT block); v0.9.276,
 #           2026-11-06 (S409, the rebuild) -- 287/287 (the S409 REBUILD
@@ -165,10 +185,12 @@
 #           regression/run_all.R, which treats a stop() as FAIL.
 # CONTRACT: one printed line per check, a final "RESULT: PASS (n/n)" line,
 #           and stop() if and only if any check failed.
-# GUARDS:   the template's five (_template_check.R): the session handed
+# GUARDS:   the template's six (_template_check.R): the session handed
 #           back, no fixture left by a green run, work outside check() taken
 #           through res(), the message surface swept (res() records every
-#           condition an analysis raises), the user's objects put back.
+#           condition an analysis raises), the user's objects put back, and
+#           since S416 a graphics device of the battery's own, opened at
+#           setup and closed at the foot, the session's left as it was.
 #           Setup also forces the missing-value convention UNSET (no call
 #           here leans on it) and the diagnostics setting off, both handed
 #           back at the foot; since S401 the style and the style folder
@@ -182,6 +204,64 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S416 EDIT (v0.9.280, 2026-11-10): Capability Slate U's charts, build 3 --
+#           the new kinds (rulings R66-R68, with R69's titles and R70's
+#           segment values; the S412 audit's F1, F3, F5, F15 and F18), with
+#           the (S413) range item and the three (S415) items riding. SECTION
+#           AU ADDED, 17 checks (351 in all): AU01 the three new [plot]
+#           settings and their ranges; AU02 the pie and the donut; AU03 a
+#           pie's labels pushed apart, joined by a line, and wrapped to the
+#           room; AU04 the pie's stops, the limit and pie.max; AU05 the
+#           ranked bar of a jmulti() result; AU06 its figure, its note, the
+#           table and the chart in one file; AU07 a 100% stacked bar of a
+#           variable within groups; AU08 values.stacked and values.decimals;
+#           AU09 a set of items; AU10 the stacked bar's stops; AU11 a
+#           crosstab result's stacked bar, under percent.base = row as well;
+#           AU12 a range in jplot()'s list and the type's stops; AU13 a
+#           chart written in another style; AU14 the legend's fitting and
+#           the text-width estimate; AU15 a range in jdesc() and jfreq();
+#           AU16 the data frame's name on every result and in the offered
+#           lines; AU17 the orientation, the skill's description and the
+#           settings page. Each AU check went red on the build before
+#           (v0.9.279), as the four re-pinned checks did and no other, and
+#           on a one-change mutant of its code: 65 mutants, none surviving
+#           (the map in the Testing Conventions at the closeout). The first
+#           round left four standing: AU03 gained a long label where the
+#           room beside the pie is least, AU05 the axis from the printed
+#           value (39.6 prints "40%", the axis to 50); a field of the
+#           stacked bar's counts that no caller read was taken out; and two
+#           mutants were aimed again (one had changed jcorr()'s older line,
+#           one a wording no check pins). RE-PINNED, each value read from
+#           the battery run on the build: AO03 (the orientation's version,
+#           3.11); AQ03 (a complete copy's "# from apa" lines, 158 with the
+#           three new settings); AT16 (ruling R72's jrelabel() line names
+#           the data frame the analysis was run on, where it said MyData);
+#           AT18 (jplot()'s item line the same, and jmulti() among the
+#           results it draws). AT's foot -- its device closed, its fixtures
+#           removed -- moved to the end of AU, which draws on the same
+#           device. THE FIRST RECEIVE, on the workstation's ggplot2 4.0.3,
+#           read AU13 red (350/351; R CMD check clean, every other battery
+#           green): the check read the rows a legend was asked for as
+#           guide$nrow, which ggplot2 3.4.4 holds and ggplot2 3.5 and later
+#           keep in guide$params -- the check's reading, not the package's,
+#           which only passes nrow to guide_legend(). AU13 now reads the
+#           rows from a guide of either shape, proves that reading on a
+#           stand-in of each, and names in its own line the parts not met
+#           when it is red, since the sandbox cannot run that ggplot2; no
+#           source changed. GUARD 6 ADDED (the S415 item): the battery
+#           draws on a null device of its own, opened at setup and closed at
+#           the foot, the device current on entry made current again; it had
+#           left the session's device open, which run_all.R's device guard,
+#           new this build, names.
+#           WORKSTATION, through receive_all(): "R CMD check: 0 errors, 0
+#           warnings, 0 notes."; "ALL BATTERIES GREEN (12 run, 3703 checks)"
+#           at the second run, receive_all(from = "batteries"), with AU13
+#           reading the rows from a guide of either shape (the first read
+#           AU13 red, 350/351, on ggplot2 4.0.3) -- matching the sandbox
+#           (plain, under the RStudio-handler stand-in, each again with a
+#           35-character temp path, interactive with no question asked,
+#           with the temporary folder reached through a symlink, and with a
+#           graphics device open, left open and current; entered dirty).
 # S415 EDIT (v0.9.279, 2026-11-10): Capability Slate U's charts, build 2 --
 #           the figure frame and the look (rulings R63-R65, R69-R72; the S412
 #           audit's F4, F6, F7 and F9), with the (S414) riders. SECTION AT
@@ -1169,6 +1249,17 @@ tsy <- data.frame(
                               na_range = c(-99, -90)),
   Y    = c(12, 15, 11, 18, 14, 16, 10, 19, 13, 17, 12, 20),
   stringsAsFactors = FALSE)
+
+# --- Guard 6: the graphics devices (S416) ------------------------------------
+# Every chart this battery draws goes to a null device of its own, opened
+# here and closed at the foot, where the device current on entry is made
+# current again. Drawn with no device open, a chart opens the session's own
+# -- RStudio's Plots pane, or Rplots.pdf under Rscript -- and it stays open
+# when the battery ends; run_all.R compares the devices before and after
+# each battery and names the one that left them changed (the S415 item).
+.entry_dev <- grDevices::dev.cur()
+grDevices::pdf(NULL)
+.own_dev <- grDevices::dev.cur()
 
 # --- Check harness -----------------------------------------------------------
 
@@ -5170,8 +5261,8 @@ check("AO02 the ?jstyle_settings page, generated from the settings' own notes: p
 
 .ao3 <- tryCatch(paste(.jst_orientation_body(), collapse = " "), error = function(e) "")
 .ao3 <- gsub(" +", " ", .ao3)
-check("AO03 the orientation (version 3.10; 3.9 until S409) holds the tables -- kept results to jtable(), one call one table, the document call, print(t1), the two built-in styles, the complete copy and the short call, open = TRUE, ?jstyle_settings, the editing rule the file heads give -- in lines no wider than 76 columns; a kept result saved with base R's saveRDS(); the skill's description names jtable and jstyle",
-      identical(.jst_orientation_version, "3.10") &&
+check("AO03 the orientation (version 3.11; 3.10 until S416, 3.9 until S409) holds the tables -- kept results to jtable(), one call one table, the document call, print(t1), the two built-in styles, the complete copy and the short call, open = TRUE, ?jstyle_settings, the editing rule the file heads give -- in lines no wider than 76 columns; a kept result saved with base R's saveRDS(); the skill's description names jtable and jstyle",
+      identical(.jst_orientation_version, "3.11") &&
         grepl("- Publication tables come from `jtable()` on kept results:", .ao3, fixed = TRUE) &&
         grepl("One call makes one table;", .ao3, fixed = TRUE) &&
         grepl("`jtable(list(t1, t2), file = \"Tables.docx\")`", .ao3, fixed = TRUE) &&
@@ -5760,11 +5851,11 @@ check("AQ02 three new general settings, placed beside their kin -- caption.fill 
 # as its own, every other marked as apa's.
 .aq3 <- .strip_ansi(res(jstyle("report"))$txt)
 .aq3l <- strsplit(.aq3, "\n", fixed = TRUE)[[1]]
-check("AQ03 jstyle(\"report\") prints the style as built into jstats and based on apa, its own settings unmarked and every other marked as apa's (since S415 its [plot] section too: nine from apa, its font and size its own general ones)",
+check("AQ03 jstyle(\"report\") prints the style as built into jstats and based on apa, its own settings unmarked and every other marked as apa's (since S415 its [plot] section too: twelve from apa since S416's three settings, its font and size its own general ones)",
       identical(.aq3l[1:4], c("Style: report", "  built into jstats", "  based on apa", "")) &&
         all(c("font              = Arial", "size              = 10", "caption.form      = report", "caption.size      = size            # from apa", "header.fill       = D9D9D9", "header.bold       = yes", "note.label        = Note:", "note.label.italic = no", "note.size         = size - 1", "leading.zero      = yes") %in% .aq3l) &&
         all(c("paper             = a4              # from apa", "header.text       = 000000          # from apa", "rules             = apa             # from apa") %in% .aq3l) &&
-        sum(grepl("# from apa$", .aq3l)) == 155L)
+        sum(grepl("# from apa$", .aq3l)) == 158L)
 
 # The caption bar: caption.fill = header takes the header's fill and text
 # color; a color fills the bar and leaves the text; a caption set as a
@@ -7225,11 +7316,11 @@ check("AT15 a figure's note names the filter its chart was drawn under, as a tab
   fg <- nt(res(jtable(pf, print = FALSE)))
   list(a = a, b = b, c0 = c0, c1 = c1, fg = fg, e = e)
 }))
-check("AT16 ruling R72's note, when a table or a figure is made: a variable shown by its name, codes shown without a value label (the line keeping the codes the result labels, \"...\" where a label goes) -- a frequency table's only where some of its codes are labelled, a variable's values with none being what they mean; consequential where the result holds labels, advisory at full where it holds none; a figure's asks for the chart to be drawn again (the S412 audit's F9)",
+check("AT16 ruling R72's note, when a table or a figure is made: a variable shown by its name, codes shown without a value label (the line keeping the codes the result labels, \"...\" where a label goes) -- a frequency table's only where some of its codes are labelled, a variable's values with none being what they mean; consequential where the result holds labels, advisory at full where it holds none; a figure's asks for the chart to be drawn again (the S412 audit's F9); the line names the data frame the result was made from (S416; MyData until then)",
       !is.null(.at16) &&
-        identical(.at16$a, "Note: Table 1 shows Volunteer by its name, having no variable label.\nTo show labels, add them with jrelabel(), then run the analysis again,\nfor example:\n  jrelabel(MyData, Volunteer, var.label = \"...\", modify = TRUE)") &&
+        identical(.at16$a, "Note: Table 1 shows Volunteer by its name, having no variable label.\nTo show labels, add them with jrelabel(), then run the analysis again,\nfor example:\n  jrelabel(d, Volunteer, var.label = \"...\", modify = TRUE)") &&
         identical(length(.at16$b), 1L) &&
-        identical(.at16$b, "Note: Table 1 shows codes 3 and 4 of Edu without value labels.\nTo show labels, add them with jrelabel(), then run the analysis again,\nfor example:\n  jrelabel(MyData, Edu,\n      labels = \"1=Some high school; 2=High school; 3=...; 4=...\",\n      modify = TRUE)") &&
+        identical(.at16$b, "Note: Table 1 shows codes 3 and 4 of Edu without value labels.\nTo show labels, add them with jrelabel(), then run the analysis again,\nfor example:\n  jrelabel(d, Edu,\n      labels = \"1=Some high school; 2=High school; 3=...; 4=...\",\n      modify = TRUE)") &&
         identical(length(.at16$c0), 0L) && identical(length(.at16$c1), 1L) &&
         identical(length(.at16$e), 0L) &&
         startsWith(.at16$c1, "Note: Table 1 shows Y and G by their names, having no variable labels.\nIt shows codes 1 and 2 of G without value labels.") &&
@@ -7271,11 +7362,11 @@ check("AT17 the riders: a label's hyphen is Word's non-breaking hyphen and a par
        gap_1 = .jst_call_gap("jsum", quote(jsum(MyData, Q1)))$what,
        pa = res(jplot(a1))$txt, pd = res(jplot(d1))$txt)
 }))
-check("AT18 the riders: ruling R23's check counts a range, and a c(), as two or more variables for jcorr(), jalpha(), jsum() and javg(), as for jmulti(); jplot() given a jalpha() or a jdesc() result names the result by its function, never its class, and says what a chart is drawn from",
+check("AT18 the riders: ruling R23's check counts a range, and a c(), as two or more variables for jcorr(), jalpha(), jsum() and javg(), as for jmulti(); jplot() given a jalpha() or a jdesc() result names the result by its function, never its class, and says what a chart is drawn from, its line naming the data frame the result was made from (S416; MyData until then)",
       !is.null(.at18) && is.null(.at18$gap_a) && is.null(.at18$gap_c) &&
         identical(.at18$gap_1, "second variable") &&
         startsWith(.at18$pa, "[error] jplot(): a1 is a jalpha() result, which has no chart of its own.\nA chart is drawn from the variables of a data frame, or from a jlm(),") &&
-        endsWith(.at18$pa, "To draw an item, give jplot() the data frame and the item, for example:\n  jplot(MyData, Environment1)") &&
+        endsWith(.at18$pa, "To draw an item, give jplot() the data frame and the item, for example:\n  jplot(tcm, Environment1)") &&
         startsWith(.at18$pd, "[error] jplot(): d1 is a jdesc() result, which has no chart of its own.\nCall jplot() with the data frame instead, for example:"))
 
 # The settings page and the style files carry [plot].
@@ -7294,12 +7385,672 @@ check("AT19 ?jstyle_settings has the [plot] section, each setting with what it t
         "# A chart, from jplot(): its look, and its picture in a Word file." %in% .at19$l &&
         "palette = greys" %in% .at19$l)
 
+# =============================================================================
+# AU. The charts' build 3: the pie and the donut, the ranked bar, the 100%
+#     stacked bar (rulings R66-R68, R69's titles and R70's values for them),
+#     and the riders (S416)
+# =============================================================================
+cat("\n--- AU. The new chart kinds, ranges, a result's data frame name, the riders ---\n")
+
+.aud <- file.path(tempdir(), "tables_check_s416"); unlink(.aud, recursive = TRUE); dir.create(.aud)
+# A layer's geom, the data a layer was given, and what a built chart draws.
+.augeoms <- function(p) unname(vapply(p$layers, function(l) class(l$geom)[1L], ""))
+.aulayer <- function(p, geom) {
+  i <- which(.augeoms(p) == geom)
+  if (length(i)) p$layers[[i[1L]]]$data
+}
+.aufill <- function(p, i = 1L) ggplot2::ggplot_build(p)$data[[i]]$fill
+# The area of a polygon (the shoelace sum), for a slice's share of its pie.
+.auarea <- function(x, y) abs(sum(x * c(y[-1L], y[1L]) - c(x[-1L], x[1L]) * y)) / 2
+# A frame for what community does not hold: a labelled variable of seven
+# categories; three items whose labels share their opening text and whose
+# value labels are one set; two unlabelled items, and a third holding a
+# value the labelled items have no label for; a 25-value number.
+.auw <- local({
+  set.seed(416)
+  n <- 60L
+  trust <- function(opt) haven::labelled(sample(1:4, n, replace = TRUE),
+    labels = c("None" = 1, "A little" = 2, "Some" = 3, "A lot" = 4),
+    label = paste0("Trust in: ", opt))
+  d <- data.frame(
+    Seven = haven::labelled(rep(1:7, length.out = n),
+      labels = stats::setNames(1:7, paste("Kind", LETTERS[1:7])), label = "Kind of work"),
+    TrustPolice = trust("Police"), TrustCourts = trust("Courts"),
+    TrustParl = trust("Parliament"),
+    U1 = rep(c(1, 2, 3), length.out = n), U2 = rep(c(1, 2), length.out = n),
+    U9 = rep(c(1, 2, 9), length.out = n),
+    Many = rep(1:25, length.out = n),
+    Grp = haven::labelled(rep(1:2, each = n / 2), labels = c(Urban = 1, Rural = 2),
+                          label = "Where they live"))
+  d$TrustCourts[c(3, 9)] <- NA
+  d
+})
+
+# The three settings build 3 adds to [plot].
+.au1 <- .aqtry(list(
+  apa = .jst_plot_look("apa")[c("values.stacked", "values.decimals", "pie.max")],
+  rep = .jst_plot_look("report")[c("values.stacked", "values.decimals", "pie.max")],
+  names = names(.jst_style_spec$plot),
+  ok  = c(res(.jst_style_check_value("pie.max", .jst_style_spec$plot$pie.max, "4", "plot", "jtable"))$val,
+          res(.jst_style_check_value("values.decimals", .jst_style_spec$plot$values.decimals, "1", "plot", "jtable"))$val),
+  bad = c(res(.jst_style_check_value("pie.max", .jst_style_spec$plot$pie.max, "7", "plot", "jtable"))$txt,
+          res(.jst_style_check_value("pie.max", .jst_style_spec$plot$pie.max, "1", "plot", "jtable"))$txt,
+          res(.jst_style_check_value("values.decimals", .jst_style_spec$plot$values.decimals, "2", "plot", "jtable"))$txt,
+          res(.jst_style_check_value("values.stacked", .jst_style_spec$plot$values.stacked, "maybe", "plot", "jtable"))$txt)))
+check("AU01 the [plot] section's three new settings, each with a value that draws the charts as ruled: values.stacked no (a 100% stacked bar's percentages inside its segments, ruling R70), values.decimals 0 (0 or 1), pie.max 6 (2 to 6, ruling R66), report taking apa's; they follow values.grouped in the section; a value outside each range is refused",
+      !is.null(.au1) &&
+        identical(.au1$apa, list(values.stacked = "no", values.decimals = 0L, pie.max = 6L)) &&
+        identical(.au1$rep, .au1$apa) &&
+        identical(.au1$names[match("values.grouped", .au1$names) + 1:3],
+                  c("values.stacked", "values.decimals", "pie.max")) &&
+        identical(as.numeric(.au1$ok), c(4, 1)) &&
+        all(startsWith(.au1$bad, "[error] jtable(): ")) &&
+        grepl("`pie.max` must be a whole number from 2 to 6", .au1$bad[1], fixed = TRUE) &&
+        grepl("`pie.max` must be a whole number from 2 to 6", .au1$bad[2], fixed = TRUE) &&
+        grepl("`values.decimals` must be a whole number from 0 to 1", .au1$bad[3], fixed = TRUE) &&
+        grepl("`values.stacked` must be \"no\" or \"yes\"", .au1$bad[4], fixed = TRUE))
+
+# The pie and the donut (ruling R66), read from what the chart draws.
+.au2 <- .aqtry(local({
+  r  <- res(jplot(tcm, Region, type = "pie"))
+  p  <- r$val
+  dn <- res(jplot(tcm, Region, type = "donut"))$val
+  tb <- table(as.integer(unclass(tcm$Region)))
+  labs <- .labs_of(tcm$Region)[names(tb)]
+  pol <- .aulayer(p, "GeomPolygon"); dpol <- .aulayer(dn, "GeomPolygon")
+  by_slice <- function(d) vapply(split(d, d$slice), function(s) .auarea(s$px, s$py), 0)
+  first <- pol[pol$slice == levels(pol$slice)[1L], ]
+  list(txt = .strip_ansi(r$txt), f = .jst_plot_facts(p), fd = .jst_plot_facts(dn),
+       geoms = .augeoms(p), tb = tb, labs = unname(labs),
+       share = by_slice(pol) / pi, dshare = by_slice(dpol) / (pi * 0.75),
+       levels = levels(pol$slice), start = c(first$px[2L], first$py[2L]),
+       side = mean(first$px), text = .aulayer(p, "GeomText")$label,
+       hjust = .aulayer(p, "GeomText")$hjust, fills = unique(.aufill(p)),
+       legend = p$theme$legend.position, axis = inherits(p$theme$axis.text, "element_blank"),
+       hole = range(sqrt(dpol$px^2 + dpol$py^2)))
+}))
+check("AU02 the pie and the donut (ruling R66), asked for by name: one variable as one whole -- a slice for each category with cases, its share of the circle the category's share of the cases (computed here from the data), clockwise from 12 o'clock in the variable's code order, darkest first; each labelled outside it by its value label and whole percentage, no legend and no axes; the donut's hole half the radius; the figure's facts a pie's or a donut's, the title the variable's label, N the cases drawn; the Console title names the chart",
+      !is.null(.au2) && identical(.au2$geoms, c("GeomPolygon", "GeomText")) &&
+        identical(.au2$f$kind, "pie") && identical(.au2$fd$kind, "donut") &&
+        identical(.au2$f$n, 103L) && identical(.au2$f$title, "Region of residence") &&
+        identical(.au2$levels, .au2$labs) &&
+        isTRUE(all.equal(unname(.au2$share), as.numeric(.au2$tb) / sum(.au2$tb), tolerance = 0.002)) &&
+        isTRUE(all.equal(unname(.au2$dshare), as.numeric(.au2$tb) / sum(.au2$tb), tolerance = 0.002)) &&
+        isTRUE(all.equal(.au2$start, c(0, 1))) && .au2$side > 0 &&
+        identical(.au2$text, paste0(.au2$labs, " (", round(100 * as.numeric(.au2$tb) / sum(.au2$tb)), "%)")) &&
+        all(.au2$hjust %in% c(0, 1)) &&
+        identical(toupper(.au2$fills), toupper(.jst_plot_colours(.jst_plot_look("apa"), length(.au2$tb)))) &&
+        identical(.au2$legend, "none") && .au2$axis &&
+        isTRUE(all.equal(.au2$hole, c(0.5, 1))) &&
+        identical(names(.au2$f$data), c("Region", "n", "Percent")) &&
+        identical(.au2$f$data$n, as.integer(.au2$tb)) &&
+        startsWith(.au2$txt, "Pie Chart: Region\n\nAnalysis N: 103"))
+
+# The labels of small slices: pushed apart, joined to their slices, wrapped.
+.au3 <- .aqtry(local({
+  set.seed(3)
+  x <- sample(1:6, 400, replace = TRUE, prob = c(0.3, 0.02, 0.03, 0.02, 0.33, 0.30))
+  d <- data.frame(Job = haven::labelled(x, labels = c(
+    "Employed full time in the private sector" = 1, "Self-employed" = 2,
+    "Unemployed and looking for work" = 3, "Student" = 4,
+    "Retired or permanently unable to work" = 5, "Homemaker or carer" = 6)))
+  p <- res(jplot(d, Job, type = "pie"))$val
+  tx <- .aulayer(p, "GeomText")
+  right <- tx[tx$hjust == 0, ]; right <- right[order(-right$y), ]
+  lines <- lengths(strsplit(right$label, "\n", fixed = TRUE))
+  look <- .jst_plot_look("apa")
+  line_h <- (look$size * 0.8 * 1.15 / 72) / min((look$height - 0.25) / 2.5, (look$width - 0.25) / 3.9)
+  need <- (lines[-nrow(right)] + lines[-1L]) / 2 * line_h
+  sp <- .jst_pie_spread(c(0.5, 0.5, 0.5, -1), rep(0.2, 4), lo = -1.2, hi = 1.2)
+  # Two halves: each label sits at 3 or 9 o'clock, where the room beside
+  # the pie is least, so a long one must go onto shorter lines than 28.
+  d2 <- data.frame(How = haven::labelled(rep(1:2, each = 50), labels = c(
+    "Telephone call to a landline or a mobile phone" = 1,
+    "A letter sent by post to the home address" = 2)))
+  t2   <- .aulayer(res(jplot(d2, How, type = "pie"))$val, "GeomText")
+  fam  <- .jst_plot_family(look$font)
+  room <- (1.95 - 1.14) * min((look$height - 0.25) / 2.5, (look$width - 0.25) / 3.9) - 0.04
+  l2   <- unlist(strsplit(t2$label, "\n", fixed = TRUE))
+  w2   <- .jst_plot_text_in(l2, look$size * 0.8, fam) * .jst_plot_text_trust(fam)[["over"]]
+  list(geoms = .augeoms(p), gaps = -diff(right$y), need = need,
+       side_fits = all(w2 <= room), side_widest = max(nchar(l2)),
+       side_whole = .jst_plot_text_in(gsub("\n", " ", t2$label, fixed = TRUE), look$size * 0.8, fam) > room,
+       widest = max(nchar(unlist(strsplit(tx$label, "\n", fixed = TRUE)))),
+       wrapped = any(grepl("\n", tx$label, fixed = TRUE)),
+       seg = nrow(.aulayer(p, "GeomSegment")), sp = sp)
+}))
+check("AU03 a pie's labels that would collide are pushed apart and joined to their slices by a thin line (ruling R66): three slices of 1 to 3 percent side by side keep their labels a line's height apart, a line drawn to each label that moved; a long label is put on lines that fit the room beside the pie; the spacing itself keeps the labels in order and as near where their slices ask as the room allows",
+      !is.null(.au3) && identical(.au3$geoms, c("GeomPolygon", "GeomSegment", "GeomText")) &&
+        all(.au3$gaps >= .au3$need - 1e-9) && .au3$seg >= 2L &&
+        .au3$wrapped && .au3$widest <= 28L &&
+        isTRUE(.au3$side_fits) && .au3$side_widest < 28L && all(.au3$side_whole) &&
+        isTRUE(all.equal(diff(sort(.au3$sp[1:3])), c(0.22, 0.22))) &&
+        isTRUE(all.equal(mean(.au3$sp[1:3]), 0.5)) && isTRUE(all.equal(.au3$sp[4], -1)))
+
+# The pie's stops, and the style's limit.
+.wsty("aupie4", "[plot]", "pie.max = 4", dir = .aud)
+.wsty("auplain", "[plot]", "values = no", dir = .aud)
+.au4 <- .aqtry(local({
+  k_age <- length(unique(stats::na.omit(as.numeric(tcm$Age))))
+  bar <- res(eval(parse(text = "jplot(tcm, Age, type = \"bar\")")[[1L]]))$val
+  lab <- res(eval(parse(text = "jplot(.auw, Seven, categorical = Seven)")[[1L]]))$val
+  list(lab = .jst_plot_facts(lab)$kind, lab_x = .jst_plot_facts(lab)$data$Seven,
+       two = res(jplot(tcm, Region, Volunteer, type = "pie"))$txt,
+       by  = res(jplot(tcm, Region, by = Volunteer, type = "pie"))$txt,
+       fc  = res(jplot(tcm, Region, facet = Volunteer, type = "donut"))$txt,
+       age = res(jplot(tcm, Age, type = "pie"))$txt, k_age = k_age,
+       seven = res(jplot(.auw, Seven, type = "donut"))$txt,
+       four = res(jplot(tcm, Education, type = "pie", style = file.path(.aud, "aupie4.jstyle")))$txt,
+       six = .jst_plot_facts(res(jplot(tcm, Education, type = "pie"))$val)$kind,
+       plain = .aulayer(res(jplot(tcm, Region, type = "pie", style = file.path(.aud, "auplain.jstyle")))$val, "GeomText")$label,
+       bar = .jst_plot_facts(bar)$kind,
+       stk = .jst_plot_facts(res(eval(parse(text = "jplot(community, Education, by = Region, type = \"stacked\")")[[1L]],
+                                      list(community = tcm)))$val)$kind)
+}))
+check("AU04 the pie's stops (ruling R66): more than one variable; by = and facet =, each pointing to the 100% stacked bar with a line that runs; a variable past the style's limit, its count said as categories or, for a number with no labels, as different values (the S412 audit's F3: one stop, keyed on the count), with the bar-chart line -- categorical = for a labelled variable, whose bars it names by the value labels, type = \"bar\" for a number -- which runs, and jrecode(); never a silent bar chart; pie.max = 4 in a style file stops a five-category variable that apa draws, whatever a jnumeric() registration says of it; values = no leaves the percentages off the labels",
+      !is.null(.au4) &&
+        identical(.au4$two, "[error] jplot(): a pie chart shows one variable, and this call gives Region\nand Volunteer.\nName one variable, and run the call once for each.") &&
+        identical(.au4$by, "[error] jplot(): a pie chart shows one variable as one whole, so it\ntakes no by =.\nTo show a variable within the groups of another, draw a 100% stacked bar,\nfor example:\n  jplot(community, Education, by = Region, type = \"stacked\")") &&
+        identical(.au4$fc, "[error] jplot(): a donut chart shows one variable as one whole, so it takes\nno facet =.\nTo show a variable within the groups of another, draw a 100% stacked bar,\nfor example:\n  jplot(community, Education, by = Region, type = \"stacked\")") &&
+        identical(.au4$age, paste0("[error] jplot(): Age has ", .au4$k_age, " different values.\nA pie chart shows 6 at most.\nDraw a bar chart instead:\n  jplot(tcm, Age, type = \"bar\")\nOr combine categories with jrecode() first, then draw the pie chart.")) &&
+        identical(.au4$seven, "[error] jplot(): Seven has 7 categories.\nA donut chart shows 6 at most.\nDraw a bar chart instead:\n  jplot(.auw, Seven, categorical = Seven)\nOr combine categories with jrecode() first, then draw the donut chart.") &&
+        identical(.au4$four, "[error] jplot(): Education has 5 categories.\nA pie chart shows 4 at most.\nDraw a bar chart instead:\n  jplot(tcm, Education, categorical = Education)\nOr combine categories with jrecode() first, then draw the pie chart.") &&
+        identical(.au4$six, "pie") && identical(.au4$bar, "bar") && identical(.au4$stk, "stacked") &&
+        identical(.au4$lab, "bar") && identical(.au4$lab_x, paste("Kind", LETTERS[1:7])) &&
+        identical(.au4$plain, unname(.labs_of(tcm$Region)[as.character(sort(unique(as.integer(unclass(tcm$Region)))))])))
+
+# The ranked bar of a multiple-response set (ruling R67), from the result.
+.au5 <- .aqtry(local({
+  r <- res(jplot(.as1m))
+  p <- r$val
+  rect <- .aulayer(p, "GeomRect"); tx <- .aulayer(p, "GeomText")
+  xs <- ggplot2::ggplot_build(p)$layout$panel_scales_x[[1L]]
+  box <- res(jmulti(.asv, LegalAid:Financial, none = Housing, print = FALSE))$val
+  pb <- res(jplot(box))$val
+  keep <- res(jplot(res(jmulti(.asv, LegalAid:Housing, rank = FALSE, print = FALSE))$val))$val
+  # The S412 audit's F15: 39.6 percent prints "40%", so its axis ends at 50,
+  # where the next ten above 39.6 itself is 40.
+  f15 <- .jst_build_ranked(data.frame(label = c("A", "B"), percent = c(39.6, 12), n = c(99L, 30L),
+                                      none = c(FALSE, FALSE), stringsAsFactors = FALSE),
+                           look = .jst_plot_look("apa"))
+  list(txt = r$txt, f = .jst_plot_facts(p), geoms = .augeoms(p), rect = rect, tx = tx,
+       f15_lim = as.numeric(ggplot2::ggplot_build(f15)$layout$panel_scales_x[[1L]]$limits),
+       f15_tx = .aulayer(f15, "GeomText")$text,
+       lim = xs$limits, xt = p$labels$x, fills = unique(.aufill(p)),
+       ylab = unname(ggplot2::ggplot_build(p)$layout$panel_scales_y[[1L]]$labels),
+       by = sort(-.aulayer(pb, "GeomRect")$y), bn = .aulayer(pb, "GeomRect")$none,
+       keep = .jst_plot_facts(keep)$data$Option, bad = res(jplot(.as1m, which = "pie"))$txt)
+}))
+check("AU05 jplot() on a jmulti() result draws the ranked bar chart (ruling R67), where build 2 stopped: a horizontal bar per option in the order of the result's table, \"None of these\" last after a gap half a bar's step wide, a survey's own box named by none = and jstats's row alike; each bar its percentage of everyone who answered, the whole percentage at its end; the axis \"Percentage of respondents\", to the next ten above the longest bar's printed value (the S412 audit's F15); one grey; the title the text the labels share; N everyone who answered; rank = FALSE keeps the data frame's order; nothing printed but the chart; no other plot",
+      !is.null(.au5) && identical(.au5$geoms, c("GeomRect", "GeomText")) &&
+        identical(.au5$txt, "") &&
+        identical(.au5$f$kind, "ranked") && identical(as.integer(.au5$f$n), .asx$n) &&
+        identical(.au5$f$title, "Services used") && isTRUE(.au5$f$flip) &&
+        identical(.au5$f$data$Option, c(.as1m$rows_raw$option[1:4], "None of these")) &&
+        identical(.au5$f$data$n, .as1m$rows_raw$n) && identical(.au5$ylab, .au5$f$data$Option) &&
+        isTRUE(all.equal(.au5$rect$percent, .as1m$rows_raw$percent)) &&
+        isTRUE(all.equal(-.au5$rect$y, c(1, 2, 3, 4, 5.5))) &&
+        identical(.au5$tx$text, paste0(round(.as1m$rows_raw$percent), "%")) &&
+        identical(.au5$xt, "Percentage of respondents") &&
+        isTRUE(all.equal(.au5$lim, c(0, 10 * (floor(max(round(.as1m$rows_raw$percent)) / 10) + 1)))) &&
+        isTRUE(all.equal(.au5$f15_lim, c(0, 50))) && identical(.au5$f15_tx, c("40%", "12%")) &&
+        identical(toupper(.au5$fills), "#595959") &&
+        identical(.au5$bn, c(FALSE, FALSE, FALSE, TRUE, TRUE)) &&
+        isTRUE(all.equal(.au5$by, c(1, 2, 3, 4.5, 5.5))) &&
+        identical(.au5$keep[1:4], c("Legal aid", "Counselling", "Financial advice", "Housing")) &&
+        identical(.au5$bad, "[error] jplot(): \"pie\" is not a plot of a jmulti() result.\n`which` must be \"core\", \"all\", or \"bar\"."))
+
+# Its figure: R61's sentence in the note, the confirmed call (the S412
+# audit's F2), a result beside a chart stopped.
+.wsty("aunonote", "[multiresponse]", "choice.note = no", dir = .aud)
+.au6 <- .aqtry(local({
+  p <- res(jplot(.as1m))$val
+  t1 <- res(jtable(.as1m, print = FALSE))$val
+  f <- res(jtable(p, print = FALSE))$val
+  g <- res(jtable(p, style = file.path(.aud, "aunonote.jstyle"), print = FALSE))$val
+  h <- res(jtable(res(jplot(.as1m, style = "report"))$val, print = FALSE))$val
+  out <- file.path(.aud, "set.docx")
+  w <- res(jtable(list(t1, p), file = out))
+  list(cap = f$caption$title, notes = .jst_table_note_lines(f, f$style, plain = TRUE),
+       none = .jst_table_note_lines(g, g$style, plain = TRUE),
+       rep = .jst_table_note_lines(h, h$style, plain = TRUE),
+       rpt = .strip_ansi(res(jtable(p))$txt), w = .strip_ansi(w$txt), x = .atdx(out),
+       mix = res(jtable(list(.as1m, p)))$txt)
+}))
+check("AU06 the ranked bar as a figure: N after the title; the note \"Respondents could choose more than one, so the percentages sum to more than 100.\" (ruling R61's sentence, one home with the table's), left out by the style's choice.note = no; the report names a ranked bar chart; the table and the chart of one set go in one file as the S412 audit's F2 has it -- t <- jtable(m); p <- jplot(m); jtable(list(t, p), file =) -- and the result beside its chart stops with the lines that build the table first",
+      !is.null(.au6) && identical(.au6$cap, paste0("Services used (*N* = ", .asx$n, ")")) &&
+        identical(.au6$notes, "Note. Respondents could choose more than one, so the percentages sum to more than 100.") &&
+        identical(length(.au6$none), 0L) &&
+        identical(.au6$rep, "Note: Respondents could choose more than one, so the percentages sum to more than 100.") &&
+        grepl("  a ranked bar chart, 6 by 4 inches, on a portrait page.", .au6$rpt, fixed = TRUE) &&
+        grepl("1 table and 1 figure written to\\s", .au6$w) &&
+        identical(regmatches(.au6$x$doc, gregexpr("SEQ (Table|Figure)", .au6$x$doc))[[1L]],
+                  c("SEQ Table", "SEQ Figure")) &&
+        "word/media/image1.png" %in% .au6$x$files &&
+        startsWith(.au6$mix, "[error] jtable(): saved results cannot be given beside built tables or\ncharts in one call."))
+
+# The 100% stacked bar of one variable within groups (ruling R68, route b).
+.au7 <- .aqtry(local({
+  r <- res(jplot(tcm, Education, by = Region, type = "stacked"))
+  p <- r$val
+  pr <- res(jplot(tcm, Education, by = Region, type = "stacked", style = "report"))$val
+  ok <- !is.na(tcm$Education) & !is.na(tcm$Region)
+  tb <- table(as.integer(unclass(tcm$Education))[ok], as.integer(unclass(tcm$Region))[ok])
+  col <- 100 * sweep(tb, 2, colSums(tb), "/")
+  rect <- .aulayer(p, "GeomRect")
+  rect <- rect[order(rect$bar, rect$cat), ]
+  ys <- ggplot2::ggplot_build(p)$layout$panel_scales_y[[1L]]
+  fill <- ggplot2::ggplot_build(p)$plot$scales$get_scales("fill")
+  list(txt = .strip_ansi(r$txt), f = .jst_plot_facts(p), geoms = .augeoms(p), n = sum(ok),
+       pct = rect$pct, want = as.numeric(col), bars = levels(rect$bar), cats = levels(rect$cat),
+       sums = tapply(rect$pct, rect$bar, sum), xmax = tapply(rect$xmax, rect$bar, max),
+       ylab = unname(ys$labels), ybreaks = ys$breaks, ytitle = p$labels$y, xtitle = p$labels$x,
+       ltitle = p$labels$fill, leg = c(p$theme$legend.position, pr$theme$legend.position),
+       pal = toupper(unname(fill$palette(length(levels(rect$cat))))),
+       rgrid = c(inherits(pr$theme$panel.grid.major.x, "element_blank"),
+                 inherits(pr$theme$panel.grid.major.y, "element_blank")),
+       raxis = c(inherits(pr$theme$axis.line.x, "element_blank"),
+                 inherits(pr$theme$axis.line.y, "element_blank")))
+}))
+check("AU07 a 100% stacked bar of one variable within groups (ruling R68; its orientation the S412 audit's F1): a horizontal bar for each group of by =, in code order from the top, its segments the variable's categories in code order, dark to light, each the category's percentage of the group's cases with an answer -- the column percentages, computed here from the data -- summing to 100; no values in the segments; the legend above the chart in both built-in styles, its title the variable's label; the bars' axis titled by the grouping variable; the look's gridlines and axis lines turned for bars that run across (report: gridlines at the percentages, the bars' own axis line); the title \"<variable> by <group>\", N the cases drawn",
+      !is.null(.au7) && identical(.au7$geoms, "GeomRect") &&
+        identical(.au7$f$kind, "stacked") && identical(.au7$f$n, .au7$n) && identical(.au7$n, 97L) &&
+        identical(.au7$f$title, "Highest education level by Region of residence") &&
+        isTRUE(all.equal(.au7$pct, .au7$want)) &&
+        isTRUE(all.equal(as.numeric(.au7$sums), rep(100, 4))) &&
+        isTRUE(all.equal(as.numeric(.au7$xmax), rep(100, 4))) &&
+        identical(.au7$bars, unname(.labs_of(tcm$Region)[as.character(1:4)])) &&
+        identical(.au7$cats, unname(.labs_of(tcm$Education)[as.character(1:5)])) &&
+        identical(.au7$ylab, .au7$bars) && isTRUE(all.equal(.au7$ybreaks, -(1:4))) &&
+        identical(.au7$ytitle, "Region of residence") && identical(.au7$xtitle, "Percentage of cases") &&
+        identical(.au7$ltitle, "Highest education level") &&
+        identical(.au7$leg, c("top", "top")) &&
+        identical(.au7$pal, toupper(.jst_plot_colours(.jst_plot_look("apa"), 5))) &&
+        identical(.au7$rgrid, c(FALSE, TRUE)) && identical(.au7$raxis, c(TRUE, FALSE)) &&
+        identical(names(.au7$f$data), c("Region", "Education", "n", "Percent")) &&
+        startsWith(.au7$txt, "100% Stacked Bar Chart: Education by Region\n\nAnalysis N: 97 (6 Excluded)"))
+
+# The values inside the segments (ruling R70), a style's setting.
+.wsty("auvals", "[plot]", "values.stacked = yes", dir = .aud)
+.wsty("audec", "[plot]", "values.stacked = yes", "values.decimals = 1", dir = .aud)
+.au8 <- .aqtry(local({
+  p <- res(jplot(tcm, Education, by = Region, type = "stacked", style = file.path(.aud, "auvals.jstyle")))$val
+  q <- res(jplot(tcm, Education, by = Region, type = "stacked", style = file.path(.aud, "audec.jstyle")))$val
+  rect <- .aulayer(p, "GeomRect"); tx <- .aulayer(p, "GeomText"); tq <- .aulayer(q, "GeomText")
+  b <- ggplot2::ggplot_build(p)
+  ti <- which(.augeoms(p) == "GeomText")
+  seg_fill <- b$data[[1L]]$fill[match(paste(tx$bar, tx$cat), paste(rect$bar, rect$cat))]
+  pie1 <- .aulayer(res(jplot(tcm, Region, type = "pie", style = file.path(.aud, "audec.jstyle")))$val, "GeomText")$label
+  rk1  <- .aulayer(res(jplot(.as1m, style = file.path(.aud, "audec.jstyle")))$val, "GeomText")$text
+  list(geoms = .augeoms(p), n_seg = nrow(rect), small = sum(rect$pct < 6), shown = nrow(tx),
+       lab = tx$label, want = paste0(round(tx$pct), "%"), minp = min(tx$pct),
+       col = toupper(b$data[[ti]]$colour), contrast = .jst_plot_contrast(seg_fill),
+       lab1 = tq$label, want1 = paste0(formatC(round(tq$pct, 1), format = "f", digits = 1), "%"),
+       pie1 = pie1, rk1 = rk1, unit = .jst_plot_contrast(c("#404040", "#D9D9D9", "#12436D", "#FFFFFF")))
+}))
+check("AU08 values.stacked = yes puts each segment's percentage inside it (ruling R70): a whole number, white on the dark segments and black on the light -- whichever stands out more against the segment's own color -- and none in a segment under 6 percent; values.decimals = 1 gives one decimal place there, on a pie's labels and at a ranked bar's end",
+      !is.null(.au8) && identical(.au8$geoms, c("GeomRect", "GeomText")) &&
+        .au8$small >= 1L && identical(.au8$shown, .au8$n_seg - .au8$small) && .au8$minp >= 6 &&
+        identical(.au8$lab, .au8$want) && identical(.au8$col, .au8$contrast) &&
+        all(c("#FFFFFF", "#000000") %in% .au8$col) &&
+        identical(.au8$lab1, .au8$want1) && all(grepl("\\.[0-9]%$", .au8$lab1)) &&
+        all(grepl("\\([0-9]+\\.[0-9]%\\)$", .au8$pie1)) && all(grepl("^[0-9]+\\.[0-9]%$", .au8$rk1)) &&
+        identical(.au8$unit, c("#FFFFFF", "#000000", "#FFFFFF", "#000000")))
+
+# A set of items that share their categories (ruling R68, route a).
+.au9 <- .aqtry(local({
+  r <- res(jplot(tcm, Environment1:Environment5, type = "stacked"))
+  p <- r$val
+  items <- paste0("Environment", 1:5)
+  # is.na() on a labelled variable counts its declared missing values.
+  ns <- vapply(items, function(v) sum(!is.na(tcm[[v]])), 0L)
+  rect <- .aulayer(p, "GeomRect"); rect <- rect[order(rect$bar, rect$cat), ]
+  want <- unlist(lapply(items, function(v) {
+    x <- as.integer(unclass(tcm[[v]]))[!is.na(tcm[[v]])]
+    as.numeric(100 * table(factor(x, levels = 1:5)) / length(x))
+  }))
+  ys <- ggplot2::ggplot_build(p)$layout$panel_scales_y[[1L]]
+  f <- res(jtable(p, print = FALSE))$val
+  tr <- res(jplot(.auw, TrustPolice:TrustParl, type = "stacked"))$val
+  trf <- .jst_plot_facts(tr)
+  list(txt = .strip_ansi(r$txt), f = .jst_plot_facts(p), ns = ns, pct = rect$pct, want = want,
+       ylab = unname(ys$labels), ltitle = p$labels$fill, ytitle = p$labels$y,
+       pool = paste0(nrow(tcm), " Cases in the 5 Variable Pool; ",
+                     sum(rowSums(vapply(items, function(v) is.na(tcm[[v]]), logical(nrow(tcm)))) == 0L),
+                     " Complete on All"),
+       cap = f$caption$title, notes = .jst_table_note_lines(f, f$style, plain = TRUE),
+       rpt = .strip_ansi(res(jtable(p))$txt),
+       tr_title = trf$title, tr_ns = trf$item_ns, tr_n = trf$n,
+       tr_lab = unname(ggplot2::ggplot_build(tr)$layout$panel_scales_y[[1L]]$labels),
+       tr_note = .jst_table_note_lines(res(jtable(tr, print = FALSE))$val, .jst_style_resolve("apa"), plain = TRUE))
+}))
+check("AU09 a 100% stacked bar of a set of items, given as a range (ruling R68, route a): a bar for each item, named by its label, its whole the item's own valid answers -- each percentage computed here from the data -- so the items' ns can differ; the Console's N line the pool's, as jfreq()'s (the S412 audit's F18); no N after the figure's title and \"Item ns range from 91 to 103.\" in its note; the title the text the items' labels share and each bar the rest of its label, else \"Responses by Item\" and the labels; items of one n give N after the title and no sentence",
+      !is.null(.au9) && identical(.au9$f$kind, "stacked") && is.na(.au9$f$n) &&
+        identical(as.integer(.au9$f$item_ns), range(.au9$ns)) && identical(range(.au9$ns), c(91L, 103L)) &&
+        isTRUE(all.equal(.au9$pct, .au9$want)) &&
+        identical(.au9$f$title, "Responses by Item") && is.null(.au9$ltitle) && is.null(.au9$ytitle) &&
+        identical(gsub("\n", " ", .au9$ylab),
+                  vapply(paste0("Environment", 1:5), function(v) attr(tcm[[v]], "label"), "", USE.NAMES = FALSE)) &&
+        identical(.au9$txt, paste0("100% Stacked Bar Chart: Environment1 to Environment5\n\n", .au9$pool, "\n")) &&
+        identical(.au9$cap, "Responses by Item") &&
+        identical(.au9$notes, "Note. Item ns range from 91 to 103.") &&
+        grepl("^Figure 1\\. Responses by Item\n  a 100% stacked bar chart, 6 by 4 inches", .au9$rpt) &&
+        identical(.au9$tr_title, "Trust in") && identical(.au9$tr_lab, c("Police", "Courts", "Parliament")) &&
+        identical(as.integer(.au9$tr_ns), c(58L, 60L)) && is.na(.au9$tr_n) &&
+        identical(.au9$tr_note, "Note. Item ns range from 58 to 60."))
+
+# The item set's stops, the 20-value cap, and what sharing means.
+.au10 <- .aqtry(local({
+  cap_line <- "jplot(.auw, Many, type = \"stacked\", categorical = Many)"
+  list(mix = res(jplot(tcm, Environment1, Volunteer, type = "stacked"))$txt,
+       dup = res(jplot(tcm, Environment1, Environment1, type = "stacked"))$txt,
+       fc  = res(jplot(tcm, Education, facet = Region, type = "stacked"))$txt,
+       by2 = res(jplot(tcm, Education, Volunteer, by = Region, type = "stacked"))$txt,
+       cap = res(jplot(.auw, Many, type = "stacked"))$txt, cap_line = cap_line,
+       runs = .jst_plot_facts(res(eval(parse(text = cap_line)[[1L]]))$val)$kind,
+       un = .jst_plot_facts(res(jplot(.auw, U1, U2, type = "stacked"))$val)$data,
+       one = .jst_plot_facts(res(jplot(tcm, Education, type = "stacked"))$val)[c("kind", "n", "title")],
+       lab_un = .jst_plot_facts(res(jplot(.auw, TrustPolice, U1, type = "stacked"))$val)$data,
+       lab_9 = res(jplot(.auw, TrustPolice, U9, type = "stacked"))$txt)
+}))
+check("AU10 the stacked bar's stops: items that do not share one set of answer categories -- compared by their value labels, an item with none by the values it holds (the S414 lean): it shares when each is a value the labelled items label, and stops when one is not -- with the by = line; an item named twice; facet =, pointing to by =; two variables with by =; a variable of more than 20 values, with the call as typed and categorical =, which runs; one variable alone draws one bar; items with no labels at all share their values between them, each bar on its own cases",
+      !is.null(.au10) &&
+        identical(.au10$mix, "[error] jplot(): Volunteer's categories differ from Environment1's.\nThe items of a 100% stacked bar share one set of answer categories.\nTo show one variable within the groups of another, add by = to the call,\nfor example:\n  jplot(community, Education, by = Region, type = \"stacked\")") &&
+        identical(.au10$dup, "[error] jplot(): Environment1 is named twice.\nName each item once.") &&
+        identical(.au10$fc, "[error] jplot(): facet = is not available for a 100% stacked bar, whose bars\nare the groups.\nName the grouping variable with by =, for example:\n  jplot(community, Education, by = Region, type = \"stacked\")") &&
+        identical(.au10$by2, "[error] jplot(): with by =, a 100% stacked bar shows one variable within\neach group, and this call gives Education and Volunteer.\nName one variable, or leave by = out to compare the items.") &&
+        identical(.au10$cap, paste0("[error] jplot(): Many has 25 different values.\nA 100% stacked bar shows 20 at most.\nTo show every value anyway, name it in categorical =:\n  ", .au10$cap_line)) &&
+        identical(.au10$runs, "stacked") &&
+        identical(unique(.au10$un$Item), c("U1", "U2")) && identical(unique(.au10$un$Response), c("1", "2", "3")) &&
+        identical(.au10$un$n[.au10$un$Item == "U2"], c(30L, 30L, 0L)) &&
+        identical(.au10$one, list(kind = "stacked", n = 97L, title = "Highest education level")) &&
+        identical(unique(.au10$lab_un$Item), c("TrustPolice", "U1")) &&
+        identical(.au10$lab_un$n[.au10$lab_un$Item == "U1"], c(20L, 20L, 20L, 0L)) &&
+        startsWith(.au10$lab_9, "[error] jplot(): U9's categories differ from TrustPolice's.\n"))
+
+# A crosstab result's stacked bar (ruling R68, route c).
+.wsty("aurow", "[crosstab]", "percent.base = row", dir = .aud)
+.au11 <- .aqtry(local({
+  ct <- res(jcrosstab(Education ~ Region, tcm, print = FALSE))$val
+  r  <- res(jplot(ct, which = "stacked"))
+  p  <- r$val; if (!.jst_is_chart(p)) p <- p$stacked
+  by <- res(jplot(tcm, Education, by = Region, type = "stacked"))$val
+  all <- res(jplot(ct, which = "all"))
+  core <- res(jplot(ct))$val
+  rw <- res(jplot(ct, which = "stacked", style = file.path(.aud, "aurow.jstyle")))$val
+  if (!.jst_is_chart(rw)) rw <- rw$stacked
+  key <- function(q) { d <- .aulayer(q, "GeomRect"); d <- d[order(d$bar, d$cat), ]; list(pct = d$pct, bars = levels(d$bar), cats = levels(d$cat)) }
+  rr <- .aulayer(rw, "GeomRect")
+  list(txt = r$txt, a = key(p), b = key(by), f = .jst_plot_facts(p),
+       all_names = names(all$val), all_txt = .strip_ansi(all$txt),
+       core = if (.jst_is_chart(core)) .jst_plot_facts(core)$kind else names(core),
+       row_bars = levels(rr$bar), row_sums = as.numeric(tapply(rr$pct, rr$bar, sum)),
+       row_title = .jst_plot_facts(rw)$title, row_legend = rw$labels$fill,
+       bad = res(jplot(ct, which = "pie"))$txt)
+}))
+check("AU11 a jcrosstab() result's 100% stacked bar, which = \"stacked\" (ruling R68, route c; the S412 audit's F1): a bar for each group -- the column variable -- holding the row variable's distribution, the same percentages as the by = route's chart of the same two variables; \"core\" stays the grouped bar alone and \"all\" draws both, listed; under a style whose [crosstab] percent.base is row, a bar for each category of the row variable, the title and the legend turned with the bars; any other name is not a plot of the result",
+      !is.null(.au11) && identical(.au11$txt, "") &&
+        isTRUE(all.equal(.au11$a$pct, .au11$b$pct)) && identical(.au11$a$bars, .au11$b$bars) &&
+        identical(.au11$a$cats, .au11$b$cats) &&
+        identical(.au11$f$kind, "stacked") && identical(as.integer(.au11$f$n), 97L) &&
+        identical(.au11$f$title, "Highest education level by Region of residence") &&
+        identical(.au11$all_names, c("bar", "stacked")) &&
+        grepl("2 plots produced\n(use the arrow buttons in RStudio's Plots pane to navigate):\n  1. Bar Chart\n  2. 100% Stacked Bar Chart", .au11$all_txt, fixed = TRUE) &&
+        identical(.au11$core, "bar") &&
+        identical(.au11$row_bars, unname(.labs_of(tcm$Education)[as.character(1:5)])) &&
+        isTRUE(all.equal(.au11$row_sums, rep(100, 5))) &&
+        identical(.au11$row_title, "Region of residence by Highest education level") &&
+        identical(.au11$row_legend, "Region of residence") &&
+        identical(.au11$bad, "[error] jplot(): \"pie\" is not a plot of a jcrosstab() result.\n`which` must be \"core\", \"all\", or one or more of \"bar\" and \"stacked\"."))
+
+# A range in jplot()'s list (the S412 audit's F5), and the type's stops.
+.au12 <- .aqtry(local({
+  a <- .jst_plot_facts(res(jplot(tcm, Environment1:Environment2))$val)
+  b <- .jst_plot_facts(res(jplot(tcm, Environment1, Environment2))$val)
+  line <- "jplot(community, Environment1:Environment5, type = \"stacked\")"
+  list(same = identical(a[c("kind", "n", "title", "data")], b[c("kind", "n", "title", "data")]), kind = a$kind,
+       over = res(jplot(tcm, Environment1:Environment5))$txt,
+       runs = .jst_plot_facts(res(eval(parse(text = line)[[1L]], list(community = tcm)))$val)$kind,
+       rev = res(jplot(tcm, Environment5:Environment1, type = "stacked"))$txt,
+       nf = res(jplot(tcm, Environment1:Environment9, type = "stacked"))$txt,
+       fpie = res(jplot(WellbeingScore ~ Region, tcm, type = "pie"))$txt,
+       fhist = res(jplot(WellbeingScore ~ Age, tcm, type = "histogram"))$txt,
+       fstk = res(jplot(Education ~ Region, tcm, type = "stacked"))$txt,
+       fbox = .jst_plot_facts(res(jplot(WellbeingScore ~ Region, tcm, type = "box"))$val)$kind,
+       bad = res(jplot(tcm, Region, type = "pi"))$txt,
+       bare = res(jplot(tcm, Region, type = pie))$txt)
+}))
+check("AU12 jplot()'s list takes a range for every type, as jalpha() does (the S412 audit's F5): Environment1:Environment2 draws what the two names draw; more than two variables with no type = stops, offering the 100% stacked bar with a line that runs; endpoints the wrong way round and one not found stop as jalpha()'s do; a formula with a type it does not draw stops with the call that draws that chart (a formula with type = \"histogram\" had printed a title and NULL); an unknown type lists the nine; a type typed bare gets the pointer to quotes",
+      !is.null(.au12) && .au12$same && identical(.au12$kind, "grouped_bar") &&
+        identical(.au12$over, "[error] jplot(): only 1 or 2 variables can be plotted at once.\nTo show a variable by the groups of another, add by = to the call,\nfor example:\n  jplot(community, Age, by = Region)\nTo compare several items that share their answer categories, draw a 100%\nstacked bar, for example:\n  jplot(community, Environment1:Environment5, type = \"stacked\")\nOr call jplot() once for each variable.") &&
+        identical(.au12$runs, "stacked") &&
+        identical(.au12$rev, "[error] jplot(): In Environment5:Environment1, 'Environment5' comes after\n'Environment1' in the column order of tcm.\nReverse the order: Environment1:Environment5") &&
+        identical(.au12$nf, "[error] jplot(): Environment9 was not found in the tcm data frame.\nCheck the spelling.") &&
+        identical(.au12$fpie, "[error] jplot(): type = \"pie\" is not a chart of a formula, which draws a\nscatterplot or a boxplot.\nFor a pie chart, name the variable after the data frame, for example:\n  jplot(community, Region, type = \"pie\")") &&
+        identical(.au12$fhist, "[error] jplot(): type = \"histogram\" is not a chart of a formula, which draws\na scatterplot or a boxplot.\nFor a histogram, name the variable after the data frame, for example:\n  jplot(community, Age, type = \"histogram\")") &&
+        identical(.au12$fstk, "[error] jplot(): type = \"stacked\" is not a chart of a formula, which draws a\nscatterplot or a boxplot.\nFor a 100% stacked bar, name the variable and its groups after the data\nframe, for example:\n  jplot(community, Education, by = Region, type = \"stacked\")") &&
+        identical(.au12$fbox, "box") &&
+        identical(.au12$bad, "[error] jplot(): Invalid `type` value: \"pi\".\nValid types: \"histogram\", \"density\", \"bar\", \"scatter\", \"box\", \"grouped_bar\",\n\"pie\", \"donut\", \"stacked\".") &&
+        identical(.au12$bare, "[error] jplot(): pie is not in quotes.\ntype = takes a plot type in quotes:\n  jplot(tcm, Region, type = \"pie\")"))
+
+# A chart drawn again in another style: its own text, and the legend's fit.
+.wsty("aubig", "based.on = report", "[plot]", "size = 14", "font = Times New Roman", "palette = 12436D, 28A197", dir = .aud)
+.au13 <- .aqtry(local({
+  big <- .jst_plot_look(file.path(.aud, "aubig.jstyle"))
+  txt <- function(q) { l <- q$layers[[which(.augeoms(q) == "GeomText")[1L]]]; l$aes_params[c("size", "family")] }
+  bar <- res(jplot(tcm, Region))$val
+  pie <- res(jplot(tcm, Region, type = "pie"))$val
+  rk  <- res(jplot(.as1m))$val
+  stk <- res(jplot(tcm, Education, by = Region, type = "stacked"))$val
+  re  <- lapply(list(bar = bar, pie = pie, rk = rk), function(q) txt(.jst_plot_restyle(q, big, device = "png")))
+  rs  <- .jst_plot_restyle(stk, big, device = "png")
+  fill0 <- ggplot2::ggplot_build(stk)$plot$scales$get_scales("fill")
+  fill1 <- ggplot2::ggplot_build(rs)$plot$scales$get_scales("fill")
+  # The rows a legend was asked for. ggplot2 3.5 and later keep a guide's
+  # arguments in guide$params; before that the guide was a list holding
+  # them (the sandbox's 3.4.4). Read from either, and proved on a stand-in
+  # of each shape, since the sandbox cannot run the workstation's ggplot2.
+  rows_of <- function(sc) {
+    g <- sc$guide
+    r <- tryCatch(g$params$nrow, error = function(e) NULL)
+    if (is.null(r)) r <- tryCatch(g$nrow, error = function(e) NULL)
+    if (is.null(r)) NA_integer_ else as.integer(r)
+  }
+  shapes <- c(new = rows_of(list(guide = ggplot2::ggproto("Guide", NULL, params = list(nrow = 2L)))),
+              old = rows_of(list(guide = structure(list(nrow = 2L), class = c("guide", "legend")))),
+              none = rows_of(list(guide = "legend")))
+  f <- file.path(.aud, "restyled.docx")
+  w <- res(jtable(list(bar, pie, rk, stk), style = file.path(.aud, "aubig.jstyle"), file = f, print = FALSE))
+  x <- .atdx(f)
+  list(orig = txt(bar), re = re, want = list(size = 14 * 0.8 / ggplot2::.pt, family = "serif"),
+       rows0 = rows_of(fill0), lab0 = unname(fill0$labels), rows1 = rows_of(fill1), shapes = shapes,
+       lab1 = unname(fill1$labels), pal1 = toupper(unname(fill1$palette(5)))[c(1, 5)],
+       title0 = stk$labels$fill, title1 = rs$labels$fill,
+       kept = identical(.jst_plot_facts(rs)$relook, .jst_plot_facts(stk)$relook),
+       same = identical(.jst_plot_restyle(stk, .jst_plot_look("apa")), stk),
+       err = w$txt, pngs = sum(grepl("^word/media/image[0-9]\\.png$", x$files)),
+       dim = .atpng(file.path(x$dir, "word", "media", "image4.png")))
+}))
+.au13p <- if (is.null(.au13)) c("the fixture stopped" = FALSE) else c(
+  "the text as drawn" = isTRUE(all.equal(.au13$orig$size, 10 * 0.8 / ggplot2::.pt)) &&
+    identical(.au13$orig$family, "sans"),
+  "the text drawn again" = all(vapply(.au13$re, function(r) {
+    isTRUE(all.equal(r$size, .au13$want$size)) && identical(r$family, .au13$want$family)
+  }, logical(1))),
+  "the rows read from a guide of either shape" = identical(.au13$shapes, c(new = 2L, old = 2L, none = NA_integer_)),
+  "the legend as drawn" = identical(.au13$rows0, 2L) && !any(grepl("\n", .au13$lab0, fixed = TRUE)) &&
+    identical(.au13$title0, "Highest education level"),
+  "the legend fitted again" = identical(.au13$rows1, 2L) && any(grepl("\n", .au13$lab1, fixed = TRUE)) &&
+    identical(.au13$title1, "Highest\neducation\nlevel"),
+  "the style's colors" = identical(.au13$pal1, c("#12436D", "#28A197")),
+  "the recipe kept" = isTRUE(.au13$kept),
+  "its own look as it is" = isTRUE(.au13$same),
+  "written with no message" = identical(.au13$err, ""),
+  "four pictures" = identical(.au13$pngs, 4L) && identical(unname(.au13$dim), c(1800, 1200)))
+check(paste0("AU13 a chart written in another style draws its own text in that style's font and size -- a bar's count, a pie's labels, a ranked bar's percentages (the S415 defect: they had kept the look they were drawn in) -- and a 100% stacked bar's legend is fitted again to that look: under larger text its title and then its labels go onto shorter lines, in the style's colors; the chart drawn in its own look comes back as it is; the four figures are written, each picture drawn",
+             if (!all(.au13p)) paste0(" [NOT MET: ", paste(names(.au13p)[!.au13p], collapse = "; "),
+                                      if (!is.null(.au13) && !identical(.au13$err, "")) paste0(" -- it said: ", gsub("\\s*\n\\s*", " ", .au13$err)),
+                                      "]")),
+      all(.au13p))
+rm(.au13p)
+
+# The legend's fit and its reading order; a text's reckoned width.
+.au14 <- .aqtry(local({
+  la <- .jst_plot_look("apa")
+  five <- c("Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree")
+  edu <- unname(.labs_of(tcm$Education)[as.character(1:5)])
+  long <- paste("A category whose label runs on for quite a while, number", 1:5)
+  list(one = .jst_plot_legend_fit(five, NULL, la, room = 5.7),
+       two = .jst_plot_legend_fit(edu, "Highest education level", la, room = 5.7),
+       tight = .jst_plot_legend_fit(edu, "Highest education level", la, room = 5.0),
+       wrap = .jst_plot_legend_fit(long, NULL, la, room = 5.7),
+       few = .jst_plot_legend_fit(long[1:2], NULL, la, room = 5.7)$rows,
+       ord5 = .jst_plot_legend_order(letters[1:5], 2L), ord4 = .jst_plot_legend_order(letters[1:4], 2L),
+       ord1 = .jst_plot_legend_order(letters[1:5], 1L),
+       w = .jst_plot_text_in(c("iiii", "mmmm", "abcd", "abcd\nabcdabcd", ""), 10),
+       mono = .jst_plot_text_in(c("iiii", "mmmm"), 10, "mono"),
+       pt = .jst_plot_text_in("abcd", 20) / .jst_plot_text_in("abcd", 10),
+       trust = list(.jst_plot_text_trust("sans"), .jst_plot_text_trust("Verdana")))
+}))
+check("AU14 a legend above a chart takes one row where its keys fit the room and two when it must (ruling R68); with less room its title goes onto shorter lines before any label does, and its labels only when two rows of them whole still do not fit; two keys are never split; given in the order made here, a two-row legend's keys read along the first row and then the second, the segments' order; a text's width is reckoned from its characters -- narrow letters less than wide ones, the widest line counting, a monospaced face the same for every character, in proportion to the size -- and trusted less for a face that is not one of the three every device draws",
+      !is.null(.au14) && identical(.au14$one$rows, 1L) &&
+        identical(unname(.au14$one$labels), c("Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree")) &&
+        identical(.au14$two$rows, 2L) && !any(grepl("\n", .au14$two$labels, fixed = TRUE)) &&
+        identical(.au14$two$title, "Highest education level") && is.null(.au14$one$title) &&
+        identical(.au14$tight$rows, 2L) && !any(grepl("\n", .au14$tight$labels, fixed = TRUE)) &&
+        identical(.au14$tight$title, "Highest\neducation\nlevel") &&
+        identical(.au14$wrap$rows, 2L) && all(grepl("\n", .au14$wrap$labels, fixed = TRUE)) &&
+        identical(names(.au14$wrap$labels), paste("A category whose label runs on for quite a while, number", 1:5)) &&
+        identical(.au14$few, 1L) &&
+        identical(.au14$ord5, c("a", "d", "b", "e", "c")) && identical(.au14$ord4, c("a", "c", "b", "d")) &&
+        identical(.au14$ord1, letters[1:5]) &&
+        .au14$w[1] < .au14$w[3] && .au14$w[3] < .au14$w[2] &&
+        isTRUE(all.equal(.au14$w[4], 2 * .au14$w[3])) && identical(.au14$w[5], 0) &&
+        isTRUE(all.equal(.au14$mono[1], .au14$mono[2])) && isTRUE(all.equal(.au14$pt, 2)) &&
+        .au14$trust[[2]][["over"]] > .au14$trust[[1]][["over"]] &&
+        .au14$trust[[2]][["under"]] < .au14$trust[[1]][["under"]])
+
+# jdesc() and jfreq() take a range (the S413 item).
+.au15 <- .aqtry(local({
+  strip <- function(x) { attr(x, "jstats_version") <- NULL; x }
+  d1 <- res(jdesc(tcm, Environment1:Environment3))
+  d2 <- res(jdesc(tcm, Environment1, Environment2, Environment3))
+  f1 <- res(jfreq(tcm, Environment1:Environment2))
+  f2 <- res(jfreq(tcm, Environment1, Environment2))
+  old <- getOption(".jst_default_data"); on.exit(options(.jst_default_data = old), add = TRUE)
+  invisible(res(juse(tcm)))
+  dd <- res(jdesc(Environment1:Environment2, print = FALSE))$val
+  invisible(res(juse(NULL)))
+  list(d_same = identical(strip(d1$val), strip(d2$val)) && identical(d1$txt, d2$txt),
+       f_same = identical(strip(f1$val), strip(f2$val)) && identical(f1$txt, f2$txt),
+       mixed = res(jdesc(tcm, Age, Environment4:Environment5, Income, print = FALSE))$val$descriptives_raw$variable,
+       by = unique(res(jdesc(tcm, Environment1:Environment2, by = Region, print = FALSE))$val$descriptives_raw$variable),
+       dflt = dd$descriptives_raw$variable,
+       rev = res(jdesc(tcm, Environment5:Environment1))$txt,
+       frev = res(jfreq(tcm, Environment2:Environment1))$txt,
+       nf = res(jfreq(tcm, Environment1:Environment9))$txt,
+       inc = res(jdesc(tcm, c(Age, Environment1:Environment2)))$txt)
+}))
+check("AU15 jdesc() and jfreq() take a range of variables as jalpha(), jmulti() and jplot() do (the S413 item): A:B gives the result and the output of naming each variable from A to B, alone, beside other names, with by = and under a juse() default; endpoints the wrong way round stop with the range reversed, and one not found with the not-found sentence, each under the function's own name; a range inside c() stays refused (ruling R18: no ranges there)",
+      !is.null(.au15) && .au15$d_same && .au15$f_same &&
+        identical(.au15$mixed, c("Age", "Environment4", "Environment5", "Income")) &&
+        identical(.au15$by, c("Environment1", "Environment2")) &&
+        identical(.au15$dflt, c("Environment1", "Environment2")) &&
+        identical(.au15$rev, "[error] jdesc(): In Environment5:Environment1, 'Environment5' comes after\n'Environment1' in the column order of tcm.\nReverse the order: Environment1:Environment5") &&
+        identical(.au15$frev, "[error] jfreq(): In Environment2:Environment1, 'Environment2' comes after\n'Environment1' in the column order of tcm.\nReverse the order: Environment1:Environment2") &&
+        identical(.au15$nf, "[error] jfreq(): Environment9 was not found in the tcm data frame.\nCheck the spelling.") &&
+        startsWith(.au15$inc, "[error] jdesc(): c(Age, Environment1:Environment2) was not found in the tcm"))
+
+# Every result keeps its data frame's name (the S415 item).
+.au16 <- .aqtry(local({
+  d <- as.data.frame(tcm); attr(d$Volunteer, "label") <- NULL
+  lst <- list(dd = d)
+  W <- d$WellbeingScore
+  nt <- function(expr) {
+    k <- length(.seen); force(expr)
+    tx <- vapply(if (k) .seen[-seq_len(k)] else .seen, `[[`, "", "text")
+    sub("\n$", "", tx[grepl("^Note: (Table|Figure) 1 shows", tx)])
+  }
+  last <- function(x) { l <- strsplit(x, "\n", fixed = TRUE)[[1L]]; l[length(l)] }
+  r <- list(jt = res(jt(WellbeingScore ~ Volunteer, d, print = FALSE))$val,
+            jaov = res(jaov(WellbeingScore ~ Region, d, print = FALSE))$val,
+            jcrosstab = res(jcrosstab(Education ~ Volunteer, d, print = FALSE))$val,
+            jalpha = res(jalpha(d, Environment1:Environment5, print = FALSE))$val,
+            jdesc = res(jdesc(d, Age, print = FALSE))$val,
+            jdesc_by = res(jdesc(d, Age, by = Volunteer, print = FALSE))$val,
+            jfreq = res(jfreq(d, Volunteer, print = FALSE))$val)
+  ex <- res(jt(WellbeingScore ~ Volunteer, d[d$Age > 30, ], print = FALSE))$val
+  pl <- res(jt(WellbeingScore ~ Volunteer, lst$dd, print = FALSE))$val
+  al <- res(jalpha(lst$dd, Environment1:Environment5, print = FALSE))$val
+  ax <- res(jalpha(d[d$Age > 30, ], Environment1:Environment5, print = FALSE))$val
+  list(names = vapply(r, function(x) if (is.null(x$data_name)) NA_character_ else x$data_name, ""),
+       ex = ex$data_name, vec = res(jdesc(W, print = FALSE))$val$data_name,
+       col = res(jfreq(d$Volunteer, print = FALSE))$val$data_name,
+       line = last(nt(res(jtable(r$jt, print = FALSE)))),
+       line_ex = last(nt(res(jtable(ex, print = FALSE)))),
+       line_pl = last(nt(res(jtable(pl, print = FALSE)))),
+       item = last(res(jplot(r$jalpha))$txt), item_pl = last(res(jplot(al))$txt),
+       item_ex = last(res(jplot(ax))$txt),
+       kept = list(.jst_kept_data_name("d"), .jst_kept_data_name("lst$d"),
+                   .jst_kept_data_name("lst$d", place = TRUE), .jst_kept_data_name("d[1, ]", place = TRUE),
+                   .jst_kept_data_name(NULL), .jst_kept_data_name("my data")))
+}))
+check("AU16 every analysis result keeps the data frame as its call named it (the S415 item; jlm()'s since S403): jt(), jaov(), jcrosstab(), jalpha(), jdesc(), grouped or not, and jfreq(); a single vector's result keeps none, a data frame's column its frame's; ruling R72's jrelabel() line and jplot()'s item line name that data frame where they said MyData, and say MyData only where no line could be built on the name -- an expression, and for the line that changes the data frame a place such as lst$d",
+      !is.null(.au16) && all(.au16$names == "d") && identical(length(.au16$names), 7L) &&
+        identical(.au16$ex, "d[d$Age > 30, ]") && is.null(.au16$vec) && identical(.au16$col, "d") &&
+        identical(.au16$line, "  jrelabel(d, Volunteer, var.label = \"...\", modify = TRUE)") &&
+        startsWith(.au16$line_ex, "  jrelabel(MyData, ") && startsWith(.au16$line_pl, "  jrelabel(MyData, ") &&
+        identical(.au16$item, "  jplot(d, Environment1)") &&
+        identical(.au16$item_pl, "  jplot(lst$dd, Environment1)") &&
+        identical(.au16$item_ex, "  jplot(MyData, Environment1)") &&
+        identical(.au16$kept, list("d", NULL, "lst$d", NULL, NULL, NULL)))
+
+# The orientation's lines for jmulti() and the charts; the new settings on
+# the settings page and in a complete copy.
+.au17 <- .aqtry(local({
+  b <- .jst_orientation_body()
+  i <- grep("^- Draw charts with `jplot\\(\\)`", b)
+  j <- i; while (j < length(b) && nzchar(b[j + 1L])) j <- j + 1L
+  flat <- gsub(" +", " ", paste(b[i:j], collapse = " "))
+  calls <- regmatches(flat, gregexpr("`j(plot|table)\\([^`]*\\)`", flat))[[1L]]
+  calls <- gsub("`", "", calls, fixed = TRUE)
+  env <- new.env(parent = globalenv())
+  assign("community", tcm, envir = env)
+  assign("m1", res(jlm(WellbeingScore ~ Age, tcm, print = FALSE))$val, envir = env)
+  assign("mr", .as1m, envir = env)
+  assign("t1", res(jtable(res(jdesc(tcm, Age, print = FALSE))$val, print = FALSE))$val, envir = env)
+  assign("p1", res(jplot(tcm, Region))$val, envir = env)
+  old <- getOption(".jst_options_output_dir"); on.exit(options(.jst_options_output_dir = old), add = TRUE)
+  options(.jst_options_output_dir = .aud)
+  ran <- vapply(calls[calls != "jplot()"], function(cl) {
+    !startsWith(res(eval(parse(text = cl)[[1L]], env))$txt, "[error]")
+  }, logical(1))
+  rd <- paste(.jst_style_settings_rd(), collapse = "\n")
+  invisible(res(jstyle("apa", save.as = file.path(.aud, "aucopy"))))
+  l <- readLines(file.path(.aud, "aucopy.jstyle"), encoding = "UTF-8")
+  list(v = .jst_orientation_version, n = j - i + 1L, wide = max(nchar(b[i:j])), flat = flat,
+       calls = calls, ran = ran, all = gsub(" +", " ", paste(b, collapse = " ")),
+       skill = .jst_skill_description(), rd = rd, l = l,
+       wrote = file.exists(file.path(.aud, "Report.docx")))
+}))
+check("AU17 the orientation (version 3.11; 3.10 until S416) names jmulti() where an analysis is chosen and among the functions that take variable names, and has a bullet for the charts -- jplot() choosing the chart, the three kinds asked for by name, the stacked bar's two calls, a kept result drawn, a chart kept with <- written beside built tables, the look from the style -- in lines no wider than 76 columns, every call in it running on community; the skill's description names jmulti and jplot; ?jstyle_settings and a complete copy carry the three new settings",
+      !is.null(.au17) && identical(.au17$v, "3.11") && .au17$n >= 12L && .au17$wide <= 76L &&
+        grepl("tabulate a tick-all-that-apply question, stored as one yes/no item per option, with `jmulti()`.", .au17$all, fixed = TRUE) &&
+        grepl("`jcorr()`, `jalpha()`, `jmulti()`, `jdesc()`, and `jfreq()` take variable names instead.", .au17$all, fixed = TRUE) &&
+        grepl("`type = \"pie\"` or `type = \"donut\"` for one variable of up to six categories", .au17$flat, fixed = TRUE) &&
+        grepl("`jplot(mr)` a `jmulti()` result's ranked bar chart", .au17$flat, fixed = TRUE) &&
+        identical(length(.au17$ran), 8L) && all(.au17$ran) && .au17$wrote &&
+        grepl("jalpha, jmulti, jdeclare_missing, juse, jsave, jconvert, jplot (charts), jtable, jstyle", .au17$skill, fixed = TRUE) &&
+        grepl("\\item{\\code{values.stacked}}", .au17$rd, fixed = TRUE) &&
+        grepl("\\item{\\code{pie.max}}{the most categories a pie or a donut chart shows; a variable with more stops, with the line that draws a bar chart. Takes a whole number from 2 to 6. In apa: \\code{6}.}", .au17$rd, fixed = TRUE) &&
+        all(c("values.stacked = no", "values.decimals = 0", "pie.max = 6") %in% .au17$l))
+
 grDevices::dev.off(.atdev)
-rm(.atdx, .atpng, .atn, .atdev)
+rm(.atdx, .atpng, .atn, .atdev, .augeoms, .aulayer, .aufill, .auarea)
 
 options(.jst_options_style_dir = NULL, .jst_options_style = NULL)
 
-unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd, .ard, .asd, .atd), recursive = TRUE)
+unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd, .ard, .asd, .atd, .aud), recursive = TRUE)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # The analyses above raise notes and warnings of their own (a seems-
@@ -7390,6 +8141,11 @@ options(.jst_options_style              = .entry_style)
 options(.jst_options_style_dir          = .entry_style_dir)
 if (is.na(.entry_udd)) Sys.unsetenv("R_USER_DATA_DIR") else Sys.setenv(R_USER_DATA_DIR = .entry_udd)
 options(.entry_stores)
+
+# Guard 6: this battery's device closed; the device current on entry made
+# current again, when it is still open.
+if (.own_dev %in% grDevices::dev.list()) grDevices::dev.off(.own_dev)
+if (.entry_dev > 1L && .entry_dev %in% grDevices::dev.list()) grDevices::dev.set(.entry_dev)
 
 # --- Verdict -----------------------------------------------------------------
 

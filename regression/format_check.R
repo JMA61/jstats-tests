@@ -109,6 +109,21 @@
 #           from its values (jlogistic's fit tables, jalpha, jdesc's Mean
 #           and SD, the VIF tables, jscreen's stats columns) and to jt's
 #           Cohen's d line, which had the eta-squared defect.
+# S416 EDIT (v0.9.280, 2026-11-10): GUARD 6 ADDED (the S415 item, a rider on
+#           Capability Slate U's charts, build 3). The battery draws on a
+#           null device of its own, opened at setup and closed at the foot,
+#           where the device current on entry is made current again; it had
+#           drawn on the session's device (RStudio's Plots pane; Rplots.pdf
+#           under Rscript) and left it open, which run_all.R's device guard,
+#           new this build, names. No check added or changed.
+#           LAST VERIFIED: v0.9.280, 2026-11-11 (S416) -- 332/332 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3703 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once through a
+#           symlinked temp path, once with interactive() TRUE, once with a
+#           graphics device open (left open and current), and entered
+#           dirty.
 # S415 EDIT (v0.9.279, 2026-11-10): K10's title names jlogistic()'s block
 #           "Outcome Encoding" (an (S414) rider; Jeff, S414); the check reads
 #           the block's last lines, not its heading, and is unchanged.
@@ -1144,6 +1159,17 @@ options(.jst_options_message_width = 76L)
 jsubset(clear.all = TRUE); jcomplete(clear.all = TRUE); joutput(NULL)
 jdummy(clear.all = TRUE)
 juse(NULL)
+
+# --- Guard 6: the graphics devices (S416) ------------------------------------
+# Every chart this battery draws goes to a null device of its own, opened
+# here and closed at the foot, where the device current on entry is made
+# current again. Drawn with no device open, a chart opens the session's own
+# -- RStudio's Plots pane, or Rplots.pdf under Rscript -- and it stays open
+# when the battery ends; run_all.R compares the devices before and after
+# each battery and names the one that left them changed (the S415 item).
+.entry_dev <- grDevices::dev.cur()
+grDevices::pdf(NULL)
+.own_dev <- grDevices::dev.cur()
 
 # --- Check harness -----------------------------------------------------------
 
@@ -4586,6 +4612,11 @@ check("AB08 one helper for both: jload()'s as.numeric() lines and the date lines
         identical(jstats:::.jst_label_line("x$v", NULL), character(0)))
 rm(list = intersect(c(".ab_d"), ls(all.names = TRUE)))
 
+
+# Guard 6: this battery's device closed; the device current on entry made
+# current again, when it is still open.
+if (.own_dev %in% grDevices::dev.list()) grDevices::dev.off(.own_dev)
+if (.entry_dev > 1L && .entry_dev %in% grDevices::dev.list()) grDevices::dev.set(.entry_dev)
 
 # --- Verdict -----------------------------------------------------------------
 

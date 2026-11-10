@@ -60,7 +60,72 @@
 #           R72's note; the (S414) riders -- the role headings in outcome and
 #           predictor, a label kept whole in Word, the preview's carets -- and
 #           the stops a chart meets.
+#           Capability Slate U's charts, build 3 (S416): the new kinds -- the
+#           pie and the donut (ruling R66), the ranked bar chart of a
+#           multiple-response set drawn from a jmulti() result (R67), the
+#           100% stacked bar of a set of items, of a variable within groups
+#           and of a crosstab result (R68; the S412 audit's F1, F3, F5, F15
+#           and F18), the values inside its segments (R70) -- each in apa
+#           and report, with their stops; the new kinds as figures in one
+#           Word file, and written in another style; the data frame named in
+#           the lines jplot() and jtable() offer from a result (the (S415)
+#           item).
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S416 (v0.9.280; Capability Slate U's charts, build 3: rulings
+#           R66-R68 with R69's titles and R70's segment values, the S412
+#           audit's F1, F3, F5, F15 and F18, and the (S415) riders).
+#           SECTIONS 20 TO 24 ADDED, on the PENDING line, their Expected
+#           blocks filled by running (fill.R, under a Windows-length
+#           temporary folder; the paths written as <tempdir>). Section 20,
+#           the pie and the donut: a pie of Region and a donut of Education;
+#           small slices side by side and a long label; the stops -- two
+#           variables, by =, facet =, a variable past the limit as a number
+#           and as a labelled variable, a style file whose pie.max is 4.
+#           Section 21, the ranked bar: drawn from a kept jmulti() result in
+#           apa and in report; a survey's own "None of these" box in the
+#           data frame's order; the set's table and chart in one Word file;
+#           the figure in report's form. Section 22, the 100% stacked bar: a
+#           set of items given as a range, in apa and report; a variable
+#           within groups by by = and from a crosstab result, the result's
+#           two plots listed; two short style files -- the values inside the
+#           segments to one decimal place, and percent.base = row turning
+#           the crosstab's bars; the stops. Section 23: the five new charts
+#           as figures in one Word file in apa, the same five written in
+#           report, and three in a short file of larger Times New Roman
+#           text (the (S415) defect: a restyled chart's own text had kept
+#           the look it was drawn in). Section 24: jplot()'s item line and
+#           ruling R72's jrelabel() line naming the result's data frame,
+#           MyData only for an expression or, for the jrelabel() line, a
+#           place. The Console titles, the kinds' names, the new settings'
+#           names (values.stacked, values.decimals, pie.max), the legend's
+#           fitting and every message in the five sections are Claude's
+#           calls. RE-PINNED by running, each block compared with the one it
+#           replaced, on the PENDING line: Sections 3, 11 and 12, the style
+#           printouts' three more [plot] lines after values.grouped (Section
+#           3's Things to look at gains a bullet); Sections 13 and 19,
+#           ruling R72's jrelabel() line naming the data frame the analysis
+#           was run on -- e13, d19b, u19 -- where it said MyData (the (S415)
+#           item; a line added to each section's Things to look at), with
+#           the stamp 0.9.280 in the files Sections 3, 11 and 13 print;
+#           Section 19's first two blocks filled with #@SKIP before their
+#           first jtable() call, as before. REFILLED, off the PENDING line:
+#           Sections 9 and 10, for the stamp alone -- "written.by = jstats
+#           0.9.280" where 0.9.277 had stood since S410 -- no other line of
+#           theirs changing. A capture of every section of every walk on
+#           0.9.279 and on the build moved Sections 3, 11, 12, 13 and 19
+#           here (9 and 10 by the stamp alone); G7 and H1 of filter_walk.R
+#           and Section 10 of modify_form_walk.R, re-pinned there; no other
+#           walk.
+# LAST VERIFIED: v0.9.280, 2026-11-11 (S416) -- Sections 3, 11-13 and 19-24
+#           WALKED on the WORKSTATION by Jeff through receive_all() ("walked,
+#           all okay"; "walks look good"); PENDING back to none; R CMD check
+#           0 errors, 0 warnings, 0 notes; ALL BATTERIES GREEN (12 run, 3703
+#           checks) at the second run, the first having read tables_check.R
+#           AU13 red on ggplot2 4.0.3 (the check's reading of a legend's
+#           rows, fixed the same session; no source changed). Sandbox:
+#           harness.R verify, 24 of 24 sections in three orders and by
+#           prepare = TRUE; 112 of 112 Expected blocks; rewalk()'s
+#           scoreboard read the PENDING line.
 # EDITED:   S415 (v0.9.279; Capability Slate U's charts, build 2: rulings
 #           R63-R65, R69-R72 with the S412 audit's F4, F6, F7 and F9, and the
 #           (S414) riders). SECTIONS 17, 18 AND 19 ADDED, on the PENDING line,
@@ -751,7 +816,7 @@ cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 25L,
 #   # Then say what the example has that these settings cannot make, rather than inventing a setting for it.
 #
 #   format     = 1
-#   written.by = jstats 0.9.279
+#   written.by = jstats 0.9.280
 #   based.on   = apa
 #
 #   # The general settings: the look of every table.
@@ -1010,6 +1075,9 @@ jstyle("myjournal")
 #   legend.position = right   # from apa
 #   values          = yes     # from apa
 #   values.grouped  = no      # from apa
+#   values.stacked  = no      # from apa
+#   values.decimals = 0       # from apa
+#   pie.max         = 6       # from apa
 #   width           = 6       # from apa
 #   height          = 4       # from apa
 #   resolution      = 300     # from apa
@@ -1033,6 +1101,9 @@ jstyle("myjournal")
 #     in apa: caption.fill = none after caption.size, heading.fill = none
 #     after band.fill, note.label.italic = yes after note.label (the
 #     looks Section 11 shows);
+#   - since S416 three more [plot] settings, after values.grouped:
+#     values.stacked = no, values.decimals = 0 and pie.max = 6 (the charts
+#     Sections 20 to 22 show; the names are Claude's calls);
 #   - the printout is itself a style file's form: a line can be copied
 #     into the file.
 
@@ -1997,7 +2068,7 @@ cat(readLines(file.path(.walk_styles9, "short.jstyle"), encoding = "UTF-8"),
 #   # jstyle("short") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.277
+#   written.by = jstats 0.9.280
 #   based.on   = apa
 #
 #   # the text size, in points
@@ -2211,7 +2282,7 @@ cat(readLines(file.path(.walk_styles10, "myreport.jstyle"), encoding = "UTF-8"),
 #   # jstyle("myreport") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.277
+#   written.by = jstats 0.9.280
 #   based.on   = apa
 #
 #   # the typeface of every cell, caption and note
@@ -2514,6 +2585,9 @@ jstyle("report")
 #   legend.position = top
 #   values          = yes         # from apa
 #   values.grouped  = no          # from apa
+#   values.stacked  = no          # from apa
+#   values.decimals = 0           # from apa
+#   pie.max         = 6           # from apa
 #   width           = 6           # from apa
 #   height          = 4           # from apa
 #   resolution      = 300         # from apa
@@ -2576,7 +2650,7 @@ cat(readLines(file.path(.walk_styles11, "teal.jstyle"), encoding = "UTF-8"),
 #   # jstyle("teal") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.279
+#   written.by = jstats 0.9.280
 #   based.on   = report
 #
 #   # the typeface of every cell, caption and note
@@ -2653,7 +2727,7 @@ cat(readLines(file.path(.walk_styles11, "myagency.jstyle"), n = 25L,
 #   # Then say what the example has that these settings cannot make, rather than inventing a setting for it.
 #
 #   format     = 1
-#   written.by = jstats 0.9.279
+#   written.by = jstats 0.9.280
 #   based.on   = report
 #
 #   # The general settings: the look of every table.
@@ -3059,6 +3133,9 @@ jstyle("bar")
 #   legend.position = top         # from report
 #   values          = yes         # from apa
 #   values.grouped  = no          # from apa
+#   values.stacked  = no          # from apa
+#   values.decimals = 0           # from apa
+#   pie.max         = 6           # from apa
 #   width           = 6           # from apa
 #   height          = 4           # from apa
 #   resolution      = 300         # from apa
@@ -3276,7 +3353,7 @@ print(t13f)
 #   Note: Table 1 shows Group by its name, having no variable label.
 #   To show labels, add them with jrelabel(), then run the analysis again,
 #   for example:
-#     jrelabel(MyData, Group, var.label = "...", modify = TRUE)
+#     jrelabel(e13, Group, var.label = "...", modify = TRUE)
 #   Table 1. Means, Standard Deviations, and t Tests by Group
 #     1 outcome by Group, on a portrait page.
 #   The table was made in R; no Word file was asked for.
@@ -3330,7 +3407,7 @@ cat(readLines(file.path(.walk_styles13, "nnote.jstyle"), encoding = "UTF-8"),
 #   # jstyle("nnote") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.279
+#   written.by = jstats 0.9.280
 #   based.on   = apa
 #
 #   # where N, the number of cases, goes: note (the general note opens on it) | title ("(N = 103)" after the title; a table with several ns, such as Ns that differ or a t test's groups, gives them in the note) | none
@@ -3402,7 +3479,9 @@ joptions(style.dir = .entry_style_dir13, quiet = TRUE)
 #   - Render 3: the groups' ns in the note and nothing after the title --
 #     "n = 54 (No) and 49 (Yes)."; and "n = 6 (Control) and 6
 #     (Treatment).", groups of one size (Claude's call; the other way
-#     would put "(N = 12)" after the title and leave no note);
+#     would put "(N = 12)" after the title and leave no note); over the
+#     second table ruling R72's note, its jrelabel() line naming e13, the
+#     data frame the t test was run on, since S416 (it said MyData);
 #   - Render 4 (in Word): Tables 1 and 2 with "(N = 103)" after the title
 #     -- in apa's italic title the N upright (a symbol inside italic type
 #     is set upright), in report's bold upright title the N italic; Tables
@@ -4271,7 +4350,7 @@ joutput(NULL, quiet = TRUE)
 #   Note: Table 1 shows Volunteer by its name, having no variable label.
 #   To show labels, add them with jrelabel(), then run the analysis again,
 #   for example:
-#     jrelabel(MyData, Volunteer, var.label = "...", modify = TRUE)
+#     jrelabel(d19b, Volunteer, var.label = "...", modify = TRUE)
 #   Table 1. Means, Standard Deviations, and t Tests by Volunteer
 #     1 outcome by Volunteer, on a portrait page.
 #   The table was made in R; no Word file was asked for.
@@ -4293,7 +4372,7 @@ joutput(NULL, quiet = TRUE)
 #   It shows codes 1 and 2 of Group without value labels.
 #   To show labels, add them with jrelabel(), then run the analysis again,
 #   for example:
-#     jrelabel(MyData, Score, var.label = "...", modify = TRUE)
+#     jrelabel(u19, Score, var.label = "...", modify = TRUE)
 #   Table 1. Means, Standard Deviations, and t Tests by Group
 #     1 outcome by Group, on a portrait page.
 #   The table was made in R; no Word file was asked for.
@@ -4361,7 +4440,9 @@ try(jtable(list(jt(WellbeingScore ~ Volunteer, d19, print = FALSE), p19c)))
 #     two pdf files beside it; the file list; Figure 1's sheet -- Region,
 #     n and Percent, a row a region;
 #   - Render 2: "Note: Table 1 shows Volunteer by its name, having no
-#     variable label." with its jrelabel() line, before the report; the
+#     variable label." with its jrelabel() line, before the report -- the
+#     line naming the data frame the analysis was run on since S416 (d19b
+#     here, u19 in the advisory note; it said MyData, the (S415) item); the
 #     figure's note saying "draw the chart again"; nothing for the frame with
 #     no labels at the standard level, then at "full" the advisory note
 #     naming Score and Group and Group's codes 1 and 2;
@@ -4371,6 +4452,592 @@ try(jtable(list(jt(WellbeingScore ~ Volunteer, d19, print = FALSE), p19c)))
 #   - Render 4: each stop's first line naming what was typed, then what a
 #     chart takes, or where its settings go, or the lines that make the
 #     table and write both.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 20 -- The pie and the donut (ruling R66) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Capability Slate U's charts, build 3 (S416). Ruling R66: a pie or a donut
+# is drawn only when asked for by name, type = "pie" or type = "donut", of
+# one variable as one whole -- a slice for each category with cases, a
+# declared missing value out of the whole -- and of six categories at most,
+# a [plot] setting (pie.max, 2 to 6). Past the limit the call stops with two
+# ways on, never a bar chart drawn in silence; by = and facet = stop,
+# pointing to the 100% stacked bar. The layout the ruling left to the build
+# is Claude's call: the slices clockwise from 12 o'clock in the variable's
+# code order (the order jfreq() prints), darkest first; each labelled
+# outside its slice with its whole percentage, "North (26%)", and no legend;
+# labels that would collide pushed apart and joined to their slices by a
+# thin line; a donut's hole half the radius. The Console prints the title
+# and the N line, as for every chart, so the Expected blocks hold those; the
+# charts are in the Plots pane, one per call. The Console titles, the stops'
+# wording and the setting's name are Claude's calls.
+
+d20 <- tdat
+.walk_fig20 <- file.path(tempdir(), "walk_fig20")
+unlink(.walk_fig20, recursive = TRUE); dir.create(.walk_fig20)
+
+# Render 1 -- a pie of Region; a donut of Education, whose six people with a
+# declared missing value are out of the whole.
+jplot(d20, Region, type = "pie")
+jplot(d20, Education, type = "donut")
+# Expected:
+#   Pie Chart: Region
+#
+#   Analysis N: 103
+#
+#   Donut Chart: Education
+#
+#   Analysis N: 97 (6 Excluded)
+
+# Render 2 -- small slices side by side and a long label: 100 people and six
+# ways of contact, three of them 2 percent each.
+k20 <- data.frame(Contact = rep(1:6, c(58, 30, 6, 2, 2, 2)))
+k20$Contact <- haven::labelled(k20$Contact,
+  c("Email" = 1, "Telephone call to a landline or a mobile" = 2, "Post" = 3,
+    "Text message" = 4, "Home visit" = 5, "Other" = 6),
+  label = "How we contacted you")
+jplot(k20, Contact, type = "pie")
+# Expected:
+#   Pie Chart: Contact
+#
+#   Analysis N: 100
+
+# Render 3 -- the stops: two variables; by =; facet =.
+try(jplot(d20, Region, Volunteer, type = "pie"))
+try(jplot(d20, Region, by = Volunteer, type = "pie"))
+try(jplot(d20, Region, facet = Volunteer, type = "donut"))
+# Expected:
+#   Error : jplot(): a pie chart shows one variable, and this call gives Region
+#   and Volunteer.
+#   Name one variable, and run the call once for each.
+#   Error : jplot(): a pie chart shows one variable as one whole, so it
+#   takes no by =.
+#   To show a variable within the groups of another, draw a 100% stacked bar,
+#   for example:
+#     jplot(community, Education, by = Region, type = "stacked")
+#   Error : jplot(): a donut chart shows one variable as one whole, so it takes
+#   no facet =.
+#   To show a variable within the groups of another, draw a 100% stacked bar,
+#   for example:
+#     jplot(community, Education, by = Region, type = "stacked")
+
+# Render 4 -- past the limit: seven values with no labels, then the same
+# variable labelled; and a short style file whose limit is four, under
+# which Education's five categories stop.
+v20 <- data.frame(Day = rep(1:7, c(5, 4, 6, 3, 5, 4, 3)))
+try(jplot(v20, Day, type = "pie"))
+v20$Day <- haven::labelled(v20$Day,
+  c(Mon = 1, Tue = 2, Wed = 3, Thu = 4, Fri = 5, Sat = 6, Sun = 7),
+  label = "Day of the visit")
+try(jplot(v20, Day, type = "pie"))
+jstyle(save.as = file.path(.walk_fig20, "four"), plot = list(pie.max = 4))
+try(jplot(d20, Education, type = "donut",
+          style = file.path(.walk_fig20, "four.jstyle")))
+# Expected:
+#   Error : jplot(): Day has 7 different values.
+#   A pie chart shows 6 at most.
+#   Draw a bar chart instead:
+#     jplot(v20, Day, type = "bar")
+#   Or combine categories with jrecode() first, then draw the pie chart.
+#   Error : jplot(): Day has 7 categories.
+#   A pie chart shows 6 at most.
+#   Draw a bar chart instead:
+#     jplot(v20, Day, categorical = Day)
+#   Or combine categories with jrecode() first, then draw the pie chart.
+#   Style written to
+#   <tempdir>/walk_fig20/four.jstyle
+#
+#   Error : jplot(): Education has 5 categories.
+#   A donut chart shows 4 at most.
+#   Draw a bar chart instead:
+#     jplot(d20, Education, categorical = Education)
+#   Or combine categories with jrecode() first, then draw the donut chart.
+
+# Things to look at (the charts in the Plots pane):
+#   - Render 1: the pie's four slices from 12 o'clock clockwise, North,
+#     South, East, West, dark to light grey with thin white lines between;
+#     each label outside its slice, "North (26%)", in Arial, no legend, no
+#     axes; the donut's five slices in Education's order, the hole half the
+#     radius and empty, "Analysis N: 97 (6 Excluded)" in the Console (a
+#     pie has no gridlines or axis lines, so report's look draws the same
+#     two pictures);
+#   - Render 2: "Post (6%)", "Text message (2%)", "Home visit (2%)" and
+#     "Other (2%)" one above another at the upper left, none overlapping,
+#     a thin line from each to its slice; the long label on three lines
+#     beside its slice, "Telephone call to a / landline or a mobile / (30%)",
+#     none of it cut off at the picture's edge;
+#   - Render 3: each stop says what a pie shows, then the way on -- one
+#     variable a call, or the 100% stacked bar's line for by = and facet =
+#     (it runs on community);
+#   - Render 4: "Day has 7 different values." with the type = "bar" line
+#     for the plain number; "Day has 7 categories." with the categorical =
+#     line once it is labelled (type = "bar" would show a labelled
+#     variable's codes; categorical = names the bars by the value labels);
+#     under the style file "A donut chart shows 4 at most."; in all three
+#     the last line names jrecode(). Does "Or combine categories with
+#     jrecode() first, then draw the pie chart." read right?
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 21 -- The ranked bar chart of a multiple-response set (ruling R67) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Ruling R67: jplot() on a jmulti() result draws the set's ranked bar chart,
+# where build 2 stopped -- a horizontal bar for each option in the order of
+# the result's table, so the chart matches its table; "None of these" last
+# after a small gap, jstats's own row and a survey's own box alike; each
+# bar's whole percentage at its end; the value axis "Percentage of
+# respondents", to the next ten above the longest bar's printed value (the
+# S412 audit's F15); one grey; N after the figure's title and ruling R61's
+# sentence in its note. The chart names each option as the Word table does,
+# by the rest of its label. jplot() on a kept result prints nothing: the
+# Console output below is jmulti()'s. The data are Section 14's shape, made
+# here: twelve people asked about four services, 1 = used and 2 = not, the
+# twelfth declared -99 "Not asked" on every item, the seventh blank on
+# every item; NoneBox is the survey's own "None of these" box. The Word
+# file goes in a folder of the session's temporary folder.
+
+.walk_fig21 <- file.path(tempdir(), "walk_fig21")
+unlink(.walk_fig21, recursive = TRUE); dir.create(.walk_fig21)
+s21 <- data.frame(
+  LegalAid    = c(2, 2, 1, 1, 2, 2, NA, 2, 2, 2, 1, -99),
+  Counselling = c(1, 2, 1, 2, 2, 1, NA, 2, 1, 2, 1, -99),
+  Financial   = c(2, 2, 2, 2, 2, 1, NA, 2, 2, 2, 1, -99),
+  Housing     = c(2, 1, 1, 2, 2, 1, NA, 2, NA, 2, 1, -99),
+  NoneBox     = c(2, 2, 2, 2, 1, 2, NA, 1, 2, 1, 2, -99))
+.lab21 <- c(LegalAid = "Legal aid", Counselling = "Counselling",
+            Financial = "Financial advice", Housing = "Housing",
+            NoneBox = "None of these")
+for (.v21 in names(s21)) {
+  s21[[.v21]] <- haven::labelled_spss(s21[[.v21]],
+    c(Yes = 1, No = 2, "Not asked" = -99), na_values = -99,
+    label = paste0("Services used: ", .lab21[[.v21]]))
+}
+
+# Render 1 -- the set counted, then its chart drawn from the kept result, in
+# apa and in report's look.
+m21 <- jmulti(s21, LegalAid:Housing)
+p21 <- jplot(m21)
+p21r <- jplot(m21, style = "report")
+# Expected:
+#   Multiple Response
+#
+#   Analysis N: 10 (2 answered no item)
+#
+#   Services used
+#                  Freq  Percent
+#   -------------  ----  -------
+#   Counselling      5    50.00
+#   Housing          4    40.00
+#   LegalAid         3    30.00
+#   Financial        2    20.00
+#   None of these    3    30.00
+
+# Render 2 -- the survey's own "None of these" box named by none =, in the
+# data frame's order (rank = FALSE): the chart keeps the table's order, the
+# box last after the gap.
+m21b <- jmulti(s21, LegalAid:NoneBox, none = NoneBox, rank = FALSE)
+p21b <- jplot(m21b)
+# Expected:
+#   Multiple Response
+#
+#   Analysis N: 10 (2 answered no item)
+#
+#   Services used
+#                Freq  Percent
+#   -----------  ----  -------
+#   LegalAid       3    30.00
+#   Counselling    5    50.00
+#   Financial      2    20.00
+#   Housing        4    40.00
+#   NoneBox        3    30.00
+
+# Render 3 -- the set's table and its chart in one Word file: the table
+# built first, then both given together (the S412 audit's F2).
+t21 <- jtable(m21)
+f21 <- jtable(list(t21, p21), file = file.path(.walk_fig21, "Services.docx"),
+              overwrite = TRUE, open = TRUE)
+# Expected:
+#   Table 1. Services used (N = 10)
+#     1 set of 4 options, on a portrait page.
+#   The table was made in R; no Word file was asked for.
+#
+#   Table 1. Services used (N = 10)
+#     1 set of 4 options, on a portrait page.
+#   Figure 1. Services used (N = 10)
+#     a ranked bar chart, 6 by 4 inches, on a portrait page.
+#   1 table and 1 figure written to
+#   <tempdir>/walk_fig21/Services.docx
+
+# Render 4 -- the chart alone as a figure in report's look, printed; and a
+# plot the result does not have.
+print(jtable(p21r, print = FALSE))
+try(jplot(m21, which = "pie"))
+# Expected:
+#   Figure 1: Services used (N = 10)
+#   (a ranked bar chart, drawn in the Plots pane)
+#   Note: Respondents could choose more than one, so the percentages sum to
+#   more than 100.
+#
+#   Error : jplot(): "pie" is not a plot of a jmulti() result.
+#   `which` must be "core", "all", or "bar".
+
+# Things to look at:
+#   - Render 1 (the Plots pane): four bars from the top in the table's
+#     order -- Counselling, Housing, Legal aid, Financial advice -- named by
+#     their labels, then a gap and "None of these"; one dark grey; "50%",
+#     "40%", "30%", "20%" and "30%" just beyond the bars' ends; the axis
+#     along the bottom titled "Percentage of respondents", marked to 60;
+#     apa with both axis lines and no gridlines; report with light
+#     gridlines rising from the percentages and the bars' own axis line
+#     alone, at the left;
+#   - Render 2: the bars in the data frame's order -- Legal aid,
+#     Counselling, Financial advice, Housing -- and the survey's box last
+#     after the same gap, 30%;
+#   - Render 3, Services.docx in Word: Table 1 and then Figure 1, each
+#     "Services used (N = 10)"; under the chart "Note. Respondents could
+#     choose more than one, so the percentages sum to more than 100.", the
+#     table's own note; the chart's percentages the table's, as whole
+#     numbers;
+#   - Render 4: "Figure 1: Services used (N = 10)" on one line and "Note:"
+#     upright, report's forms; then '"pie" is not a plot of a jmulti()
+#     result.' (the result given beside its chart, jtable(list(m21, p21)),
+#     stops as Section 19's Render 4 shows, with the two lines of Render 3).
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 22 -- The 100% stacked bar: a set of items, groups, a crosstab (ruling R68) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Ruling R68: a 100% stacked bar by three routes, each asked for by name --
+# a set of items that share their answer categories, given as jalpha() and
+# jmulti() take them (a range, names or a mix), one bar an item; a variable
+# within the groups of another, by =, one bar a group; and a crosstab
+# result, which = "stacked". The whole of each bar is its valid answers.
+# Ruled S413 (the S412 audit's F1): the by = and crosstab routes draw one
+# bar for each group -- the by = variable, the right side of the formula --
+# with no argument for the direction, the other way round being the formula
+# swapped; the crosstab's chart follows the style's [crosstab] percent.base,
+# so under row it draws a bar for each category of the row variable. The
+# legend is above the chart in both styles, in the segments' order, the
+# variable's label its title, on two rows when it must be. Ruling R70: no
+# values in the segments unless the style turns them on (values.stacked),
+# white on the dark segments and black on the light, none under 6 percent;
+# values.decimals gives one decimal place. The Console titles, the N line
+# of an item set (the pool's, as jfreq()'s; the S412 audit's F18), the
+# settings' names, the legend's fitting and the stops' wording are Claude's
+# calls. The style files go in a folder of the session's temporary folder.
+
+d22 <- tdat
+.walk_fig22 <- file.path(tempdir(), "walk_fig22")
+unlink(.walk_fig22, recursive = TRUE); dir.create(.walk_fig22)
+
+# Render 1 -- a set of items given as a range, in apa and in report's look.
+jplot(d22, Environment1:Environment5, type = "stacked")
+jplot(d22, Environment1:Environment5, type = "stacked", style = "report")
+# Expected:
+#   100% Stacked Bar Chart: Environment1 to Environment5
+#
+#   103 Cases in the 5 Variable Pool; 84 Complete on All
+#
+#   100% Stacked Bar Chart: Environment1 to Environment5
+#
+#   103 Cases in the 5 Variable Pool; 84 Complete on All
+
+# Render 2 -- one variable within the groups of another: by =; then the
+# same two variables from a crosstab result, which draws the same chart;
+# then both of the result's plots, listed.
+jplot(d22, Education, by = Region, type = "stacked")
+ct22 <- jcrosstab(Education ~ Region, d22, print = FALSE)
+p22c <- jplot(ct22, which = "stacked")
+p22a <- jplot(ct22, which = "all")
+# Expected:
+#   100% Stacked Bar Chart: Education by Region
+#
+#   Analysis N: 97 (6 Excluded)
+#
+#   2 plots produced
+#   (use the arrow buttons in RStudio's Plots pane to navigate):
+#     1. Bar Chart
+#     2. 100% Stacked Bar Chart
+
+# Render 3 -- two short style files: one turns the values on inside the
+# segments, with one decimal place; one sets the crosstab's percent.base to
+# row, under which the result's chart draws a bar for each education level.
+jstyle(save.as = file.path(.walk_fig22, "inside"),
+       plot = list(values.stacked = "yes", values.decimals = 1))
+jplot(d22, Education, by = Region, type = "stacked",
+      style = file.path(.walk_fig22, "inside.jstyle"))
+jstyle(save.as = file.path(.walk_fig22, "rowbase"),
+       crosstab = list(percent.base = "row"))
+p22r <- jplot(ct22, which = "stacked",
+              style = file.path(.walk_fig22, "rowbase.jstyle"))
+print(jtable(p22r, print = FALSE))
+# Expected:
+#   Style written to
+#   <tempdir>/walk_fig22/inside.jstyle
+#
+#   100% Stacked Bar Chart: Education by Region
+#
+#   Analysis N: 97 (6 Excluded)
+#
+#   Style written to
+#   <tempdir>/walk_fig22/rowbase.jstyle
+#
+#   Figure 1
+#   Region of residence by Highest education level (N = 97)
+#   (a 100% stacked bar chart, drawn in the Plots pane)
+
+# Render 4 -- the stops: more than two variables with no type =, which now
+# offers the stacked bar; two variables that do not share their answer
+# categories; facet =; a variable of more than 20 values; a formula.
+try(jplot(d22, Environment1:Environment5))
+try(jplot(d22, Environment1, Region, type = "stacked"))
+try(jplot(d22, Environment1:Environment3, facet = Region, type = "stacked"))
+try(jplot(d22, Age, by = Region, type = "stacked"))
+try(jplot(Education ~ Region, d22, type = "stacked"))
+# Expected:
+#   Error : jplot(): only 1 or 2 variables can be plotted at once.
+#   To show a variable by the groups of another, add by = to the call,
+#   for example:
+#     jplot(community, Age, by = Region)
+#   To compare several items that share their answer categories, draw a 100%
+#   stacked bar, for example:
+#     jplot(community, Environment1:Environment5, type = "stacked")
+#   Or call jplot() once for each variable.
+#   Error : jplot(): Region's categories differ from Environment1's.
+#   The items of a 100% stacked bar share one set of answer categories.
+#   To show one variable within the groups of another, add by = to the call,
+#   for example:
+#     jplot(community, Education, by = Region, type = "stacked")
+#   Error : jplot(): facet = is not available for a 100% stacked bar, whose bars
+#   are the groups.
+#   Name the grouping variable with by =, for example:
+#     jplot(community, Education, by = Region, type = "stacked")
+#   Error : jplot(): Age has 41 different values.
+#   A 100% stacked bar shows 20 at most.
+#   To show every value anyway, name it in categorical =:
+#     jplot(d22, Age, by = Region, type = "stacked", categorical = Age)
+#   Error : jplot(): type = "stacked" is not a chart of a formula, which draws a
+#   scatterplot or a boxplot.
+#   For a 100% stacked bar, name the variable and its groups after the data
+#   frame, for example:
+#     jplot(community, Education, by = Region, type = "stacked")
+
+# Things to look at (the charts in the Plots pane):
+#   - Render 1: five bars across, one an item, named by its label on two or
+#     three lines, Environment1 at the top; each bar's five segments from
+#     Strongly Disagree at the left to Strongly Agree, dark to light grey,
+#     filling the bar to 100; the axis along the bottom titled "Percentage
+#     of cases"; no values in the segments; the legend ABOVE the chart, its
+#     five keys in the segments' order on one row, starting near the
+#     picture's left edge and none of it cut off at the right (a set of
+#     items has no legend title: its segments are the answer categories the
+#     items share, not one variable's); apa with both axis lines and no
+#     gridlines; report with light gridlines rising from the percentages
+#     and the bars' own axis line alone; the Console's line the pool's,
+#     "103 Cases in the 5 Variable Pool; 84 Complete on All", each bar
+#     being drawn on its own item's valid answers;
+#   - Render 2: four bars, North at the top to West, each holding
+#     Education's five categories; the bars' axis titled "Region of
+#     residence"; the legend above, titled "Highest education level", its
+#     five keys on two rows reading along the first row and then the second
+#     in the segments' order; the crosstab's chart the same picture; then
+#     "2 plots produced", the grouped bar chart and the 100% stacked bar;
+#   - Render 3: the first chart with each segment's percentage inside it to
+#     one decimal place, white on the dark greys and black on the light,
+#     and none in a segment under 6 percent (South's Graduate degree, 5.3);
+#     the second with a bar for each education level holding the four
+#     regions, the legend titled "Region of residence", and its figure
+#     titled "Region of residence by Highest education level";
+#   - Render 4: the first stop's two ways on, by = and the stacked bar's
+#     line, then "Or call jplot() once for each variable."; "Region's
+#     categories differ from Environment1's." with the by = line; facet =
+#     pointed to by =; "Age has 41 different values." with the call as
+#     typed and categorical = added; the formula's stop with the line that
+#     names the variable and its groups after the data frame.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 23 -- The new kinds in the Word file, and a chart written in another style ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# The charts of Sections 20 to 22 kept with <- and written as figures
+# (rulings R63 and R69): the pie, the donut, a 100% stacked bar of items
+# and one by groups, and the ranked bar of a multiple-response set. The
+# report names each kind; an item set whose items differ in their ns has no
+# N after its title and gives the range in its note. Then the same charts
+# written in another style, each drawn again in that style's look (ruling
+# R63): since this build the text a chart draws itself -- a pie's labels, a
+# ranked bar's percentages, a bar's count -- takes the writing style's font
+# and size (the (S415) defect: they had kept the look they were drawn in),
+# and a 100% stacked bar's legend is fitted again to that look. A chart's
+# settings that decide what is drawn -- values, values.stacked,
+# values.decimals, pie.max -- stay those of the style it was drawn in. The
+# kinds' names in the report and the notes' wording are Claude's calls. In
+# Render 1 the Expected block starts at the jtable() call: the lines above
+# it draw the charts and print what Sections 20 to 22 show.
+
+d23 <- tdat
+.walk_fig23 <- file.path(tempdir(), "walk_fig23")
+unlink(.walk_fig23, recursive = TRUE); dir.create(.walk_fig23)
+s23 <- data.frame(
+  LegalAid    = c(2, 2, 1, 1, 2, 2, NA, 2, 2, 2, 1, -99),
+  Counselling = c(1, 2, 1, 2, 2, 1, NA, 2, 1, 2, 1, -99),
+  Financial   = c(2, 2, 2, 2, 2, 1, NA, 2, 2, 2, 1, -99),
+  Housing     = c(2, 1, 1, 2, 2, 1, NA, 2, NA, 2, 1, -99))
+.lab23 <- c(LegalAid = "Legal aid", Counselling = "Counselling",
+            Financial = "Financial advice", Housing = "Housing")
+for (.v23 in names(s23)) {
+  s23[[.v23]] <- haven::labelled_spss(s23[[.v23]],
+    c(Yes = 1, No = 2, "Not asked" = -99), na_values = -99,
+    label = paste0("Services used: ", .lab23[[.v23]]))
+}
+
+# Render 1 -- five charts drawn in apa, the session's style, and written to
+# one Word file.
+p23a <- jplot(d23, Region, type = "pie")
+p23b <- jplot(d23, Education, type = "donut")
+p23c <- jplot(d23, Environment1:Environment5, type = "stacked")
+p23d <- jplot(d23, Education, by = Region, type = "stacked")
+p23e <- jplot(jmulti(s23, LegalAid:Housing, print = FALSE))
+doc23 <- jtable(list(p23a, p23b, p23c, p23d, p23e),
+                file = file.path(.walk_fig23, "Kinds_apa.docx"), overwrite = TRUE,
+                open = TRUE)
+# Expected:
+#   Figure 1. Region of residence (N = 103)
+#     a pie chart, 6 by 4 inches, on a portrait page.
+#   Figure 2. Highest education level (N = 97)
+#     a donut chart, 6 by 4 inches, on a portrait page.
+#   Figure 3. Responses by Item
+#     a 100% stacked bar chart, 6 by 4 inches, on a portrait page.
+#   Figure 4. Highest education level by Region of residence (N = 97)
+#     a 100% stacked bar chart, 6 by 4 inches, on a portrait page.
+#   Figure 5. Services used (N = 10)
+#     a ranked bar chart, 6 by 4 inches, on a portrait page.
+#   5 figures written to
+#   <tempdir>/walk_fig23/Kinds_apa.docx
+
+# Render 2 -- the same five written in report's look, by style =.
+doc23r <- jtable(list(p23a, p23b, p23c, p23d, p23e), style = "report",
+                 file = file.path(.walk_fig23, "Kinds_report.docx"),
+                 overwrite = TRUE, open = TRUE)
+# Expected:
+#   Figure 1. Region of residence (N = 103)
+#     a pie chart, 6 by 4 inches, on a portrait page.
+#   Figure 2. Highest education level (N = 97)
+#     a donut chart, 6 by 4 inches, on a portrait page.
+#   Figure 3. Responses by Item
+#     a 100% stacked bar chart, 6 by 4 inches, on a portrait page.
+#   Figure 4. Highest education level by Region of residence (N = 97)
+#     a 100% stacked bar chart, 6 by 4 inches, on a portrait page.
+#   Figure 5. Services used (N = 10)
+#     a ranked bar chart, 6 by 4 inches, on a portrait page.
+#   5 figures written to
+#   <tempdir>/walk_fig23/Kinds_report.docx
+
+# Render 3 -- a short style file of larger text, Times New Roman at 13
+# points, and three of the charts written in it.
+jstyle(save.as = file.path(.walk_fig23, "large"),
+       plot = list(font = "Times New Roman", size = 13))
+doc23l <- jtable(list(p23a, p23d, p23e),
+                 style = file.path(.walk_fig23, "large.jstyle"),
+                 file = file.path(.walk_fig23, "Kinds_large.docx"),
+                 overwrite = TRUE, open = TRUE)
+# Expected:
+#   Style written to
+#   <tempdir>/walk_fig23/large.jstyle
+#
+#   Figure 1. Region of residence (N = 103)
+#     a pie chart, 6 by 4 inches, on a portrait page.
+#   Figure 2. Highest education level by Region of residence (N = 97)
+#     a 100% stacked bar chart, 6 by 4 inches, on a portrait page.
+#   Figure 3. Services used (N = 10)
+#     a ranked bar chart, 6 by 4 inches, on a portrait page.
+#   3 figures written to
+#   <tempdir>/walk_fig23/Kinds_large.docx
+
+# Things to look at:
+#   - Render 1, the report: "a pie chart", "a donut chart", "a 100% stacked
+#     bar chart" twice and "a ranked bar chart"; Figure 3, the item set,
+#     with no N after its title; Kinds_apa.docx in Word: "Figure n" bold
+#     over its title in italics; Figure 3 titled "Responses by Item" with
+#     "Note. Item ns range from 91 to 103." under it; Figure 5 with the
+#     multiple-response sentence under it; each picture 6 inches wide and
+#     sharp, the stacked bars' legends above the bars and whole;
+#   - Render 2, Kinds_report.docx: "Figure 1: Region of residence (N =
+#     103)" bold on one line; the stacked bars and the ranked bar with
+#     report's gridlines and one axis line; "Note:" upright;
+#   - Render 3, Kinds_large.docx: every word in the pictures in Times New
+#     Roman and larger -- the pie's labels and the ranked bar's percentages
+#     as well as the axes; the stacked bar's legend fitted to the larger
+#     text, its title on shorter lines ("Highest / education / level" or
+#     near it) and its keys still on two rows, none of it cut off; the
+#     captions and notes in apa's own font, the short file setting only the
+#     charts' text.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 24 -- The data frame named in the lines jplot() and jtable() offer ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# The (S415) item: every analysis result now keeps the data frame as its
+# call named it (jlm()'s and jlogistic()'s have since S403), so a line
+# offered later from the result names that data frame where it said MyData
+# -- jplot()'s line for an item of a jalpha() result, and ruling R72's
+# jrelabel() line (Sections 13 and 19, re-pinned). MyData stays only where
+# no line could be built on the name: an expression given as the data, and,
+# for the jrelabel() line, which changes the data frame with modify = TRUE,
+# a place such as lst$d.
+
+d24 <- tdat
+
+# Render 1 -- jplot() given a jalpha() result: the line that draws an item
+# names d24; a place keeps its form; an expression is MyData.
+a24 <- jalpha(d24, Environment3:Environment5, print = FALSE)
+try(jplot(a24))
+l24 <- list(d = d24)
+a24b <- jalpha(l24$d, Environment3:Environment5, print = FALSE)
+try(jplot(a24b))
+a24c <- jalpha(d24[d24$Age > 30, ], Environment3:Environment5, print = FALSE)
+try(jplot(a24c))
+# Expected:
+#   Error : jplot(): a24 is a jalpha() result, which has no chart of its own.
+#   A chart is drawn from the variables of a data frame, or from a jlm(),
+#   jlogistic(), jt(), jaov(), jcorr(), jcrosstab() or jmulti() result.
+#   To draw an item, give jplot() the data frame and the item, for example:
+#     jplot(d24, Environment3)
+#   Error : jplot(): a24b is a jalpha() result, which has no chart of its own.
+#   A chart is drawn from the variables of a data frame, or from a jlm(),
+#   jlogistic(), jt(), jaov(), jcorr(), jcrosstab() or jmulti() result.
+#   To draw an item, give jplot() the data frame and the item, for example:
+#     jplot(l24$d, Environment3)
+#   Error : jplot(): a24c is a jalpha() result, which has no chart of its own.
+#   A chart is drawn from the variables of a data frame, or from a jlm(),
+#   jlogistic(), jt(), jaov(), jcorr(), jcrosstab() or jmulti() result.
+#   To draw an item, give jplot() the data frame and the item, for example:
+#     jplot(MyData, Environment3)
+
+# Render 2 -- ruling R72's note on a table from a place: the jrelabel()
+# line says MyData, since modify = TRUE needs a data frame given by name.
+e24 <- d24
+attr(e24$Volunteer, "label") <- NULL
+l24 <- list(d = e24)
+t24 <- jtable(jt(WellbeingScore ~ Volunteer, l24$d, print = FALSE))
+# Expected:
+#   Note: Table 1 shows Volunteer by its name, having no variable label.
+#   To show labels, add them with jrelabel(), then run the analysis again,
+#   for example:
+#     jrelabel(MyData, Volunteer, var.label = "...", modify = TRUE)
+#   Table 1. Means, Standard Deviations, and t Tests by Volunteer
+#     1 outcome by Volunteer, on a portrait page.
+#   The table was made in R; no Word file was asked for.
+
+# Things to look at:
+#   - Render 1: "jplot(d24, Environment3)" under the first stop, where
+#     v0.9.279 printed jplot(MyData, Environment3); "jplot(l24$d,
+#     Environment3)" under the second; "jplot(MyData, Environment3)" under
+#     the third; each stop's second sentence now lists jmulti() among the
+#     results jplot() draws;
+#   - Render 2: "jrelabel(MyData, Volunteer, var.label = "...", modify =
+#     TRUE)" -- the placeholder kept for a place.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

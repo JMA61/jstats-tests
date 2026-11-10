@@ -14,10 +14,11 @@
 #           regression/run_all.R, which treats a stop() as FAIL.
 # CONTRACT: one printed line per check, a final "RESULT: PASS (n/n)" line,
 #           and stop() if and only if any check failed.
-# GUARDS:   five things every battery carries, each of which caught a whole
+# GUARDS:   six things every battery carries, each of which caught a whole
 #           class where a per-item assertion did not (the S249, S285 and
 #           S291 items, built in at S337; the fifth, the S345 item, at
-#           S359). Keep them when filling in:
+#           S359; the sixth, the S415 item, at S416). Keep them when
+#           filling in:
 #           1. THE SESSION IS HANDED BACK. Setup records what it is about
 #              to force (the message width, the juse() default, the output
 #              level) and the foot restores it, ABOVE the verdict so a red
@@ -47,6 +48,17 @@
 #              replaced it; guard 2 compares names only. Fixtures and
 #              helpers stay dotted all the same, and a check's working
 #              objects go in local().
+#           6. THE GRAPHICS DEVICES COME BACK AS THEY WERE (S416). Setup
+#              opens a null device for whatever the battery draws and the
+#              foot closes it and makes the device current on entry current
+#              again. With no device open a chart opens the session's own
+#              (RStudio's Plots pane; Rplots.pdf under Rscript) and leaves
+#              it open; a bare dev.off() can close the user's (S415:
+#              models_check.R closed the Plots pane in every receive). A
+#              check that needs a device of its own opens it and closes it
+#              BY NUMBER, then sets back the device it found. run_all.R
+#              compares the devices before and after every battery. A
+#              battery that draws nothing may delete the guard.
 # =============================================================================
 
 # --- Setup -------------------------------------------------------------------
@@ -117,6 +129,17 @@ jload("E:/00 R Projects/00_jstats_test_data/datasets/community_phase2_data.rds",
 juse(tdat)
 jsubset(clear.all = TRUE); jcomplete(clear.all = TRUE); joutput(NULL)
 jdummy(clear.all = TRUE)
+
+# --- Guard 6: the graphics devices (S416) ------------------------------------
+# Every chart this battery draws goes to a null device of its own, opened
+# here and closed at the foot, where the device current on entry is made
+# current again. Drawn with no device open, a chart opens the session's own
+# -- RStudio's Plots pane, or Rplots.pdf under Rscript -- and it stays open
+# when the battery ends; run_all.R compares the devices before and after
+# each battery and names the one that left them changed (the S415 item).
+.entry_dev <- grDevices::dev.cur()
+grDevices::pdf(NULL)
+.own_dev <- grDevices::dev.cur()
 
 # --- Check harness -----------------------------------------------------------
 
@@ -302,6 +325,11 @@ options(.jst_default_data          = .entry_default_data)
 options(.jst_output_level          = .entry_output_level)
 options(.jst_output_toggles = .entry_output_toggles)
 options(.entry_stores)
+
+# Guard 6: this battery's device closed; the device current on entry made
+# current again, when it is still open.
+if (.own_dev %in% grDevices::dev.list()) grDevices::dev.off(.own_dev)
+if (.entry_dev > 1L && .entry_dev %in% grDevices::dev.list()) grDevices::dev.set(.entry_dev)
 
 # --- Verdict -----------------------------------------------------------------
 

@@ -41,6 +41,20 @@
 # PATH GUARD: a REGRESSION_DIR that does not exist is an error, not an empty
 # run -- so "no batteries found" always means the folder was read and held
 # none.
+#
+# DEVICE GUARD (S416; the S415 item). A battery that draws opens a graphics
+# device of its own and must hand the session's devices back as it found
+# them. Until S415 models_check.R closed RStudio's Plots device in every
+# receive, and the first walk to draw a chart after the batteries showed
+# none; no battery said so, and the sandbox has no Plots pane to miss. The
+# runner now notes the devices open, and the one current, before each
+# battery and compares after it. A battery that closed a device open before
+# it, left one of its own open, or left another device current is named on
+# the scoreboard with status DEVICE (when its checks all passed; a FAIL or
+# HALTED battery keeps that status and gains the line) and the run is not
+# green. The runner then closes what the battery left open and makes the
+# device current before it current again, where that device is still open,
+# so one battery's breach is not laid at the next one's door.
 # =============================================================================
 
 REGRESSION_DIR <- "E:/00 R Projects/00_jstats_test_data/regression"
@@ -61,6 +75,51 @@ if (!dir.exists(REGRESSION_DIR)) {
                             full.names = TRUE)
 .ra_batteries <- .ra_batteries[!startsWith(basename(.ra_batteries), "_")]
 
+# The device guard (see the header). `before` is dev.cur() and `open_before`
+# dev.list() as they stood ahead of a battery; the value is one line per
+# breach, none when the battery handed the devices back as it found them.
+# A device is known by its number and its name together, since a number is
+# given out again once its device is closed.
+.ra_device <- function(before, open_before) {
+  key  <- function(d) if (is.null(d)) character(0) else paste(unname(d), names(d))
+  show <- function(d) paste0(names(d), ", device ", unname(d), collapse = "; ")
+  open_now <- grDevices::dev.list()
+  said <- character(0)
+  closed <- open_before[!key(open_before) %in% key(open_now)]
+  was_current <- key(before) %in% key(closed)
+  if (was_current) {
+    said <- c(said, paste0("the graphics device guard: it closed the device ",
+                           "that was current before it (", show(before), ")"))
+  }
+  other <- closed[!key(closed) %in% key(before)]
+  if (length(other)) {
+    said <- c(said, paste0("the graphics device guard: it closed ",
+                           length(other), " device",
+                           if (length(other) > 1L) "s", " open before it (",
+                           show(other), ")"))
+  }
+  left <- open_now[!key(open_now) %in% key(open_before)]
+  if (length(left)) {
+    said <- c(said, paste0("the graphics device guard: it left ", length(left),
+                           " device", if (length(left) > 1L) "s",
+                           " of its own open (", show(left), ")"))
+    for (.d in unname(left)) grDevices::dev.off(.d)
+  }
+  still <- key(before) %in% key(grDevices::dev.list())
+  if (still && !identical(key(grDevices::dev.cur()), key(before))) {
+    # Closing what the battery left may itself have moved the current
+    # device; only a battery that left it elsewhere with nothing to close
+    # is told so.
+    if (!length(left)) {
+      said <- c(said, paste0("the graphics device guard: it left another ",
+                             "device current (", show(grDevices::dev.cur()),
+                             "; before it, ", show(before), ")"))
+    }
+    grDevices::dev.set(unname(before))
+  }
+  said
+}
+
 if (length(.ra_batteries) == 0L) {
   cat("No *_check.R batteries found in", REGRESSION_DIR, "\n")
 } else {
@@ -72,11 +131,15 @@ if (length(.ra_batteries) == 0L) {
     if (exists(".results", envir = globalenv(), inherits = FALSE)) {
       rm(".results", envir = globalenv())
     }
+    .ra_dev0  <- grDevices::dev.cur()
+    .ra_devs0 <- grDevices::dev.list()
     .ra_err <- tryCatch({ source(.ra_f); NULL },
                         error = function(e) {
                           cat("[halted] ", conditionMessage(e), "\n", sep = "")
                           conditionMessage(e)
                         })
+    .ra_dev <- .ra_device(.ra_dev0, .ra_devs0)
+    for (.ra_d in .ra_dev) cat("[device] ", .ra_d, "\n", sep = "")
     .ra_res <- if (exists(".results", envir = globalenv(),
                           inherits = FALSE)) {
       get(".results", envir = globalenv())
@@ -91,15 +154,21 @@ if (length(.ra_batteries) == 0L) {
       "FAIL"
     } else if (!is.null(.ra_err)) {
       "HALTED"
+    } else if (length(.ra_dev) > 0L) {
+      "DEVICE"
     } else {
       "PASS"
     }
+    # A device breach rides in `bad`, beside any failed check, so the
+    # scoreboard here and receive_all()'s report both print it; `device`
+    # holds it on its own.
     .ra_board[[.ra_name]] <- list(
       status = .ra_status,
       n_ok   = if (is.null(.ra_res)) NA_integer_ else sum(.ra_ok),
       n      = if (is.null(.ra_res)) NA_integer_ else length(.ra_ok),
-      bad    = .ra_bad,
-      err    = .ra_err)
+      bad    = c(.ra_bad, .ra_dev),
+      err    = .ra_err,
+      device = .ra_dev)
   }
 
   # --- Scoreboard --------------------------------------------------------------

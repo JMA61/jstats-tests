@@ -13,12 +13,23 @@
 #           for .xpt; a full-width semicolon, equals sign or comma in a map
 #           or labels string stops, with the call retyped.
 # ORIGIN:   S390 (the non-English probe: the (Session 21 -- Issue 2) item)
-# LAST VERIFIED: v0.9.263, 2026-10-22 (S390) -- 52/52 on the WORKSTATION
-#           through receive_all() ("ALL BATTERIES GREEN (11 run, 3256
+# S416 EDIT (v0.9.280, 2026-11-10): GUARD 6 ADDED (the S415 item, a rider on
+#           Capability Slate U's charts, build 3). The battery draws on a
+#           null device of its own, opened at setup and closed at the foot,
+#           where the device current on entry is made current again; it had
+#           drawn on the session's device (RStudio's Plots pane; Rplots.pdf
+#           under Rscript) and left it open, which run_all.R's device guard,
+#           new this build, names. No check added or changed.
+# LAST VERIFIED: v0.9.280, 2026-11-11 (S416) -- 52/52 on the WORKSTATION
+#           through receive_all() ("ALL BATTERIES GREEN (12 run, 3703
 #           checks)"; R CMD check 0 errors, 0 warnings, 0 notes), matching
 #           the sandbox plain, under the RStudio-handler stand-in, each again
-#           with a Windows-length temp path, once with interactive() TRUE,
-#           and entered dirty. GitHub f820cc2 (package).
+#           with a Windows-length temp path, once through a symlinked temp
+#           path, once with interactive() TRUE, once with a graphics device
+#           open, and entered dirty. GitHub dd47fed (package). Prior:
+#           v0.9.263, 2026-10-22 (S390) -- 52/52 on the WORKSTATION through
+#           receive_all() ("ALL BATTERIES GREEN (11 run, 3256 checks)"),
+#           matching the sandbox. GitHub f820cc2 (package).
 # RUN:      source()-safe from any working directory. All output is explicit
 #           cat(), so echo = TRUE is NOT required. Also runnable via
 #           regression/run_all.R, which treats a stop() as FAIL.
@@ -116,6 +127,17 @@ options(.jst_missing_notice_shown = TRUE)
 # A folder of the battery's own for the files it writes and reads.
 .nx_dir <- tempfile("nonascii_check_")
 dir.create(.nx_dir)
+
+# --- Guard 6: the graphics devices (S416) ------------------------------------
+# Every chart this battery draws goes to a null device of its own, opened
+# here and closed at the foot, where the device current on entry is made
+# current again. Drawn with no device open, a chart opens the session's own
+# -- RStudio's Plots pane, or Rplots.pdf under Rscript -- and it stays open
+# when the battery ends; run_all.R compares the devices before and after
+# each battery and names the one that left them changed (the S415 item).
+.entry_dev <- grDevices::dev.cur()
+grDevices::pdf(NULL)
+.own_dev <- grDevices::dev.cur()
 
 # --- Check harness -----------------------------------------------------------
 
@@ -779,6 +801,11 @@ options(.jst_options_missing_convention = .entry_convention,
         .jst_options_data_dir = .entry_data_dir)
 options(.entry_stores)
 unlink(.nx_dir, recursive = TRUE)
+
+# Guard 6: this battery's device closed; the device current on entry made
+# current again, when it is still open.
+if (.own_dev %in% grDevices::dev.list()) grDevices::dev.off(.own_dev)
+if (.entry_dev > 1L && .entry_dev %in% grDevices::dev.list()) grDevices::dev.set(.entry_dev)
 
 # --- Verdict -----------------------------------------------------------------
 
