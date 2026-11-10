@@ -83,6 +83,17 @@
 #           R40-R44 (Section 37).
 #           format_check.R asserts the same surface; this file shows it.
 # ORIGIN:   S326 (v0.9.202): the number-format bundle.
+# S415 EDIT (v0.9.279): SECTION 7 RE-PINNED MECHANICALLY and kept off the
+#           PENDING line: jlogistic()'s "Outcome Encoding" where "Dependent
+#           Variable Encoding" stood (Jeff, S414), the new heading walked once
+#           in models_walk.R Section 17. A capture of every section of every
+#           walk on 0.9.278 and on the build moves only Section 7 here, by that
+#           one line, twice.
+# LAST VERIFIED: v0.9.279, 2026-11-10 (S415) -- Section 7 re-pinned
+#           mechanically and not walked here, the heading walked in
+#           models_walk.R Section 17 ("walked, all okay"); PENDING none
+#           throughout; R CMD check 0 errors, 0 warnings, 0 notes; ALL
+#           BATTERIES GREEN (12 run, 3686 checks).
 # S395 EDIT (v0.9.267): FIX SLATE 30, THE SECOND BUILD -- the S393 message
 #           pass's accepts, with rulings R40-R44 and the (S393) parenthetical
 #           lean (Jeff, S393 and S395). SECTION 37 ADDED, eight renders -- 36
@@ -792,7 +803,7 @@ jlogistic(yb ~ x1 + x2, data = f_log, classification = TRUE,
 #   -----------------  --------------  -------------  -------
 #        141.170            0.013          0.018      145.170
 #
-#   Dependent Variable Encoding
+#   Outcome Encoding
 #     Modeled (1):   Yes
 #     Reference (0): No
 #
@@ -838,7 +849,7 @@ jlogistic(yb ~ x1 + x2, data = f_log, classification = TRUE,
 #     2. Cook's Distance
 #     3. Residuals vs Leverage
 #
-#   Dependent Variable Encoding
+#   Outcome Encoding
 #     Modeled (1):   1
 #     Reference (0): 0
 #

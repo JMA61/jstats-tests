@@ -51,7 +51,54 @@
 #           the riders -- the report's last line, two stops, a style file's
 #           printout, a call's title filled, open = TRUE where no program
 #           opens the file.
+#           Capability Slate U's charts, build 2 (S415): the charts' look
+#           (ruling R64; labels on the axes, the S412 audit's F4; the bars'
+#           values, R70) in apa and report; a chart in the Word file as a
+#           figure (R63, R69, R71; the S412 audit's F6 and F7) -- the report,
+#           print(), a file of a table and five figures in apa, one in report
+#           with a note and a source; the data and vector files (R65); ruling
+#           R72's note; the (S414) riders -- the role headings in outcome and
+#           predictor, a label kept whole in Word, the preview's carets -- and
+#           the stops a chart meets.
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S415 (v0.9.279; Capability Slate U's charts, build 2: rulings
+#           R63-R65, R69-R72 with the S412 audit's F4, F6, F7 and F9, and the
+#           (S414) riders). SECTIONS 17, 18 AND 19 ADDED, on the PENDING line,
+#           their Expected blocks filled by running (fill.R, under a
+#           Windows-length temporary folder; the paths written as
+#           <tempdir>). Section 17, the charts' look: five charts in apa, the
+#           same five in report by style =, a model's plots and the heatmap in
+#           greys (the heatmap's greys the lean taken at S415's opening).
+#           Section 18, a chart in the Word file: a figure's report and
+#           print(); a file of a table and five figures in apa -- a bar
+#           chart, bars by group, a model's fit and residual plots, a chart
+#           drawn in ggplot2 with its own title; one figure in report with
+#           the call's title, note and source. Section 19: a short file with
+#           data.file and vector.file on and the files it writes; R72's note
+#           on a table and a figure, and advisory at "full" where nothing is
+#           labelled; the riders -- a correlation table's labels kept whole in
+#           Word, two specific notes' carets in the preview; the stops a chart
+#           meets. RE-PINNED by running, each block compared with the one it
+#           replaced: Sections 1 and 3, the role headings "Outcome" and
+#           "Predictors" (Jeff, S414: "These should be changed."); Sections 3,
+#           11 and 12, the style printouts' [plot] section (ruling R64; its
+#           names and values Claude's calls, reviewed in the pre-CRAN review's
+#           entry 13); Section 13, R72's note on a data frame whose Group has
+#           no label. A capture of every section of every walk on 0.9.278 and
+#           on the build moved Sections 3, 11, 12 and 13 here; Sections 6, 17,
+#           19, 25, 28, 29 and 30 of models_walk.R, 7 of format_walk.R, 7 of
+#           clinic_workflows_walk.R and E5 of cps_walk.R by jlogistic()'s
+#           "Outcome Encoding" (the last two pin no block that holds it).
+# LAST VERIFIED: v0.9.279, 2026-11-10 (S415) -- Sections 1, 3, 11-13 and
+#           17-19 WALKED on the WORKSTATION by Jeff through receive_all()
+#           ("walked, all okay"); PENDING back to none; R CMD check 0 errors,
+#           0 warnings, 0 notes; ALL BATTERIES GREEN (12 run, 3686 checks).
+#           On the first pass Section 17's charts did not reach the Plots
+#           pane: models_check.R had closed RStudio's graphics device and
+#           left a null device current (that battery fixed the same
+#           session). Sandbox: harness.R verify, 19 of 19 sections under
+#           rewalk() and by prepare = TRUE; rewalk()'s scoreboard read the
+#           PENDING line; the one-go receive_all() showed all eight.
 # EDITED:   S414 (v0.9.278; Capability Slate U's charts, build 1: rulings
 #           R60-R62 and R74-R80, with the riders). SECTIONS 14, 15 AND 16
 #           ADDED, on the PENDING line, their Expected blocks filled by
@@ -434,9 +481,9 @@ jdummy(clear.all = TRUE)
 
 d1 <- jdesc(WellbeingScore, Income, Age, CommuteTime, print = FALSE)
 t1 <- jtable(d1,
-             headings = list("Dependent variable"    = WellbeingScore,
-                             "Independent variables" = c(Income, Age),
-                             "Control variable"      = CommuteTime),
+             headings = list("Outcome"          = WellbeingScore,
+                             "Predictors"       = c(Income, Age),
+                             "Control variable" = CommuteTime),
              markers  = list("Mean-centered" = c(Income, Age)),
              title    = "Descriptive Statistics for Study Variables",
              note     = "Wellbeing is scored from 0 to 100.")
@@ -452,9 +499,9 @@ print(t1)
 #   -------------------------------------------------------------------------
 #   Variable                         n       M          SD       Min     Max
 #   -------------------------------------------------------------------------
-#   Dependent variable
+#   Outcome
 #     Wellbeing score (0-100)       103      50.89      11.48      25      81
-#   Independent variables
+#   Predictors
 #     Annual income (USD)^a          97  49,855.67  17,427.22  14,000  93,000
 #     Age (years)^a                 103      40.65      11.62      18      71
 #   Control variable
@@ -704,7 +751,7 @@ cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 25L,
 #   # Then say what the example has that these settings cannot make, rather than inventing a setting for it.
 #
 #   format     = 1
-#   written.by = jstats 0.9.277
+#   written.by = jstats 0.9.279
 #   based.on   = apa
 #
 #   # The general settings: the look of every table.
@@ -952,6 +999,22 @@ jstyle("myjournal")
 #   percent.label = %              # from apa
 #   none.label    = None of these  # from apa
 #   choice.note   = yes            # from apa
+#
+#   [plot]
+#   font            = Arial   # from apa
+#   size            = 10      # from apa
+#   palette         = greys   # from apa
+#   gridlines       = none    # from apa
+#   grid.color      = D9D9D9  # from apa
+#   axis.lines      = both    # from apa
+#   legend.position = right   # from apa
+#   values          = yes     # from apa
+#   values.grouped  = no      # from apa
+#   width           = 6       # from apa
+#   height          = 4       # from apa
+#   resolution      = 300     # from apa
+#   data.file       = no      # from apa
+#   vector.file     = none    # from apa
 
 # Things to look at:
 #   - the settings myjournal sets, unmarked; every other "# from apa" --
@@ -975,9 +1038,9 @@ jstyle("myjournal")
 
 d1 <- jdesc(WellbeingScore, Income, Age, CommuteTime, print = FALSE)
 t1j <- jtable(d1, style = "myjournal",
-              headings = list("Dependent variable"    = WellbeingScore,
-                              "Independent variables" = c(Income, Age),
-                              "Control variable"      = CommuteTime),
+              headings = list("Outcome"          = WellbeingScore,
+                              "Predictors"       = c(Income, Age),
+                              "Control variable" = CommuteTime),
               markers  = list("Mean-centered" = c(Income, Age)),
               title    = "Descriptive Statistics for Study Variables",
               note     = "Wellbeing is scored from 0 to 100.")
@@ -992,9 +1055,9 @@ print(t1j)
 #   ----------------------------------------------------------------------
 #   Variable                           Mean     Std Dev.  Minimum  Maximum
 #   ----------------------------------------------------------------------
-#   Dependent variable
+#   Outcome
 #     Wellbeing score (0-100)           50.89      11.48       25       81
-#   Independent variables
+#   Predictors
 #     Annual income (USD)†          49,855.67  17,427.22   14,000   93,000
 #     Age (years)†                      40.65      11.62       18       71
 #   Control variable
@@ -2440,6 +2503,22 @@ jstyle("report")
 #   percent.label = %              # from apa
 #   none.label    = None of these  # from apa
 #   choice.note   = yes            # from apa
+#
+#   [plot]
+#   font            = Arial
+#   size            = 10
+#   palette         = greys       # from apa
+#   gridlines       = horizontal
+#   grid.color      = D9D9D9      # from apa
+#   axis.lines      = x
+#   legend.position = top
+#   values          = yes         # from apa
+#   values.grouped  = no          # from apa
+#   width           = 6           # from apa
+#   height          = 4           # from apa
+#   resolution      = 300         # from apa
+#   data.file       = no          # from apa
+#   vector.file     = none        # from apa
 
 # Render 2 -- three tables in report: descriptives, frequencies, and a
 # regression with a dummy-coded variable, whose preview is printed.
@@ -2497,7 +2576,7 @@ cat(readLines(file.path(.walk_styles11, "teal.jstyle"), encoding = "UTF-8"),
 #   # jstyle("teal") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.277
+#   written.by = jstats 0.9.279
 #   based.on   = report
 #
 #   # the typeface of every cell, caption and note
@@ -2574,7 +2653,7 @@ cat(readLines(file.path(.walk_styles11, "myagency.jstyle"), n = 25L,
 #   # Then say what the example has that these settings cannot make, rather than inventing a setting for it.
 #
 #   format     = 1
-#   written.by = jstats 0.9.277
+#   written.by = jstats 0.9.279
 #   based.on   = report
 #
 #   # The general settings: the look of every table.
@@ -2969,6 +3048,22 @@ jstyle("bar")
 #   percent.label = %              # from apa
 #   none.label    = None of these  # from apa
 #   choice.note   = yes            # from apa
+#
+#   [plot]
+#   font            = Arial       # from report
+#   size            = 10          # from report
+#   palette         = greys       # from apa
+#   gridlines       = horizontal  # from report
+#   grid.color      = D9D9D9      # from apa
+#   axis.lines      = x           # from report
+#   legend.position = top         # from report
+#   values          = yes         # from apa
+#   values.grouped  = no          # from apa
+#   width           = 6           # from apa
+#   height          = 4           # from apa
+#   resolution      = 300         # from apa
+#   data.file       = no          # from apa
+#   vector.file     = none        # from apa
 
 # Render 3 -- the three files opened in the editor, three tabs, nothing
 # printed. Each is opened, then checked: a value jstats cannot use would
@@ -3178,6 +3273,10 @@ print(t13e)
 t13f <- jtable(jt(Score ~ Group, e13, print = FALSE))
 print(t13f)
 # Expected:
+#   Note: Table 1 shows Group by its name, having no variable label.
+#   To show labels, add them with jrelabel(), then run the analysis again,
+#   for example:
+#     jrelabel(MyData, Group, var.label = "...", modify = TRUE)
 #   Table 1. Means, Standard Deviations, and t Tests by Group
 #     1 outcome by Group, on a portrait page.
 #   The table was made in R; no Word file was asked for.
@@ -3231,7 +3330,7 @@ cat(readLines(file.path(.walk_styles13, "nnote.jstyle"), encoding = "UTF-8"),
 #   # jstyle("nnote") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.277
+#   written.by = jstats 0.9.279
 #   based.on   = apa
 #
 #   # where N, the number of cases, goes: note (the general note opens on it) | title ("(N = 103)" after the title; a table with several ns, such as Ns that differ or a t test's groups, gives them in the note) | none
@@ -3904,6 +4003,374 @@ print(.jst_table_open(file.path(.walk_styles16, "Age.docx"), TRUE, ask = TRUE,
 #     "Every other setting comes from apa.";
 #   - Render 5: the note naming the file and how to open it, a blank line
 #     after it, then [1] FALSE.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 17 -- The charts' look: each style's greys, labels on the axes, the bars' values ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Capability Slate U's charts, build 2 (S415). Ruling R64: every chart
+# jplot() draws takes a publication style's look, its [plot] section --
+# both built-ins in greys, Arial 10 on white, the bars standing on the
+# axis; apa with both axis lines, no gridlines and the legend at the
+# right; report with light horizontal gridlines, the x axis line alone and
+# the legend at the top. The S412 audit's F4: a chart's axis and legend
+# titles are the variables' labels, whatever joutput()'s variable.id.
+# Ruling R70: a bar chart of one series shows each bar's count above it;
+# several series show none. The Console is unchanged -- the red title still
+# names the variables -- so the Expected blocks hold the titles and N
+# lines; the charts are in the Plots pane, one per call: step through them
+# with its arrows. The heatmap in greys is the lean you took at S415's
+# opening (the sign in the number on each tile).
+
+d17 <- tdat
+
+# Render 1 -- apa, the session's style: a bar chart, bars by group, a
+# histogram, a scatterplot with its line, a box plot.
+jplot(d17, Region)
+jplot(d17, Region, by = Volunteer)
+jplot(d17, Age)
+jplot(WellbeingScore ~ Income, d17, line = "lm")
+jplot(WellbeingScore ~ Region, d17)
+# Expected:
+#   Bar Chart: Region
+#
+#   Analysis N: 103
+#
+#   Bar Chart: Region by Volunteer
+#
+#   Analysis N: 103
+#
+#   Histogram: Age
+#
+#   Analysis N: 103
+#
+#   Scatterplot: WellbeingScore and Income
+#
+#   Analysis N: 97 (6 Excluded)
+#
+#   Boxplot: WellbeingScore and Region
+#
+#   Analysis N: 103
+
+# Render 2 -- the same five in report's look, by style =.
+jplot(d17, Region, style = "report")
+jplot(d17, Region, by = Volunteer, style = "report")
+jplot(d17, Age, style = "report")
+jplot(WellbeingScore ~ Income, d17, line = "lm", style = "report")
+jplot(WellbeingScore ~ Region, d17, style = "report")
+# Expected:
+#   Bar Chart: Region
+#
+#   Analysis N: 103
+#
+#   Bar Chart: Region by Volunteer
+#
+#   Analysis N: 103
+#
+#   Histogram: Age
+#
+#   Analysis N: 103
+#
+#   Scatterplot: WellbeingScore and Income
+#
+#   Analysis N: 97 (6 Excluded)
+#
+#   Boxplot: WellbeingScore and Region
+#
+#   Analysis N: 103
+
+# Render 3 -- a model's plots and the correlation heatmap, in greys; the
+# names printed are the model's plots in the Plots pane, the heatmap last.
+m17 <- jlm(WellbeingScore ~ Income + Age, d17, print = FALSE)
+p17 <- jplot(m17)
+h17 <- jplot(jcorr(d17, WellbeingScore, Income, Age, CommuteTime, print = FALSE))
+names(p17)
+# Expected:
+#   [1] "fit"       "residuals" "qq"        "cooks"    
+
+# Things to look at (in the Plots pane):
+#   - Render 1 (apa): greys -- one series dark grey, the two groups' bars
+#     dark and light grey; Arial; the axes titled by the labels ("Region of
+#     residence", "Age (years)", "Annual income (USD)"); no gridlines; both
+#     axis lines; the bars standing on the x axis; each bar's count above it
+#     in the first chart, none on the grouped bars or the histogram; the
+#     grouped chart's legend at the right, titled "Volunteered in past
+#     year"; the histogram's Count axis in whole numbers;
+#   - Render 2 (report): light grey horizontal gridlines, the x axis line
+#     alone, the grouped chart's legend at the top, starting at the left;
+#   - Render 3: the model's plots in greys, their reference lines black;
+#     the heatmap's tiles white to dark grey by the size of r, its sign in
+#     the number, the numbers white on the darkest tiles, the variables by
+#     their labels.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 18 -- A chart in the Word file: the figure, its frame, a chart drawn in ggplot2 ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Rulings R63, R65, R69 and R71 (S411-S413) and the S412 audit's F6 and
+# F7. A chart kept with <- goes to jtable() as a built table does, and into
+# the Word file as a figure: numbered on a sequence of its own (Figure 1
+# beside Table 1); framed by the style's caption form -- apa's "Figure 1"
+# bold with the title in italics below, report's "Figure 1: Title" bold on
+# one line -- N after the title (the cases the chart draws); the picture, a
+# PNG at 300 dots an inch, 6 by 4 inches; a note only when there is one. A
+# model's or a test's plot loses its title from the picture, the title
+# standing in the caption; a chart drawn in ggplot2 by hand keeps its own
+# look, its title moving to the caption. The report's figure lines, the
+# preview and the Word files are Claude's calls on the rulings. Each
+# Expected block starts at the jtable() call that makes the figures: the
+# lines above it, which draw the charts and build Render 2's table, print
+# what Sections 1 and 17 show, not repeated here.
+
+d18 <- tdat
+.walk_fig18 <- file.path(tempdir(), "walk_fig18")
+unlink(.walk_fig18, recursive = TRUE); dir.create(.walk_fig18)
+
+# Render 1 -- a chart made a figure: what jtable() reports, then print().
+p18 <- jplot(d18, Region)
+f18 <- jtable(p18)
+print(f18)
+# Expected:
+#   Figure 1. Region of residence (N = 103)
+#     a bar chart, 6 by 4 inches, on a portrait page.
+#   The figure was made in R; no Word file was asked for.
+#
+#   Figure 1
+#   Region of residence (N = 103)
+#   (a bar chart, drawn in the Plots pane)
+
+# Render 2 -- a Word file, apa: a table, then a bar chart, bars by group, a
+# model's fit and residual plots, and a chart drawn in ggplot2 with a title
+# of its own.
+t18 <- jtable(jdesc(d18, Age, WellbeingScore, print = FALSE))
+g18 <- jplot(d18, Region, by = Volunteer)
+m18 <- jplot(jlm(WellbeingScore ~ Income + Age, d18, print = FALSE))
+u18 <- ggplot2::ggplot(as.data.frame(d18), ggplot2::aes(x = Age, y = WellbeingScore)) +
+  ggplot2::geom_point() + ggplot2::labs(title = "Age and wellbeing, drawn in ggplot2")
+doc18 <- jtable(list(t18, p18, g18, m18$fit, m18$residuals, u18),
+                file = file.path(.walk_fig18, "Figures_apa.docx"), overwrite = TRUE,
+                open = TRUE)
+# Expected:
+#   Table 1. Descriptive Statistics (N = 103)
+#     2 variables, on a portrait page.
+#   Figure 1. Region of residence (N = 103)
+#     a bar chart, 6 by 4 inches, on a portrait page.
+#   Figure 2. Region of residence by Volunteered in past year (N = 103)
+#     a bar chart, 6 by 4 inches, on a portrait page.
+#   Figure 3. Wellbeing score (0-100) by Annual income (USD) (N = 97)
+#     a fit plot, 6 by 4 inches, on a portrait page.
+#   Figure 4. Residuals vs Fitted (N = 97)
+#     a residual plot, 6 by 4 inches, on a portrait page.
+#   Figure 5. Age and wellbeing, drawn in ggplot2
+#     a chart drawn in ggplot2, 6 by 4 inches, on a portrait page.
+#   1 table and 5 figures written to
+#   <tempdir>/walk_fig18/Figures_apa.docx
+
+# Render 3 -- the bar chart in the report style, with a title, a note and a
+# source of the call's.
+f18b <- jtable(p18, style = "report", title = "Where respondents live",
+               note = "Region as respondents reported it.",
+               source = "The 2024 community survey",
+               file = file.path(.walk_fig18, "Figure_report.docx"), overwrite = TRUE,
+               open = TRUE)
+# Expected:
+#   Figure 1. Where respondents live (N = 103)
+#     a bar chart, 6 by 4 inches, on a portrait page.
+#   Figure written to
+#   <tempdir>/walk_fig18/Figure_report.docx
+
+# Things to look at:
+#   - Render 1: the report, "Figure 1. Region of residence (N = 103)" and
+#     "a bar chart, 6 by 4 inches, on a portrait page."; print(f18): the
+#     caption's two lines, a line saying the chart is in the Plots pane, and
+#     the chart drawn there as the Word file holds it;
+#   - Render 2, Figures_apa.docx: Table 1, then Figures 1 to 5 -- "Figure n"
+#     bold over its title in italics, N upright after it ((N = 97) for the
+#     model's plots); each picture 6 inches wide and sharp; the fit plot's
+#     title the outcome by the predictor, the residual plot's "Residuals vs
+#     Fitted", each in the caption and not in the picture; Figure 5 the
+#     ggplot2 chart in its own grey-panel look, its title in the caption
+#     only; no note under any figure; no figure's caption on one page and
+#     its picture on the next;
+#   - Render 3, Figure_report.docx: "Figure 1: Where respondents live (N =
+#     103)" bold on one line, the chart with report's gridlines, then "Note:
+#     Region as respondents reported it." and "Source: The 2024 community
+#     survey." on lines of their own.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 19 -- The data and vector files, R72's note, the riders ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Ruling R65: a style file's [plot] section can write each chart's data
+# to an Excel file beside the Word file (data.file = yes: <file>_figures.xlsx,
+# a sheet per figure) and each figure as a vector file (vector.file = pdf or
+# eps), both off in the built-ins. Ruling R72 (the S412 audit's F9): where a
+# table or a figure shows a variable by its name, or a category by its code,
+# because the result holds no label, a note says so when it is made --
+# consequential where the result holds other labels, advisory at "full"
+# where it holds none -- its jrelabel() line carrying the user's codes. The
+# (S414) riders: a label kept whole in Word (the S414 walk's correlation
+# table, whose stub broke "(0-" / "100)"), and the preview's carets under
+# two specific notes in one paragraph. And the stops a chart meets. The
+# notes' and the stops' wording are Claude's calls. In Renders 1 and 2 the
+# Expected block starts at the first jtable() call: the lines above it
+# that write the style file and draw the charts print what Sections 9 and
+# 17 show, not repeated here.
+
+d19 <- tdat
+.walk_fig19 <- file.path(tempdir(), "walk_fig19")
+unlink(.walk_fig19, recursive = TRUE); dir.create(.walk_fig19)
+
+# Render 1 -- a short style file with data.file and vector.file on; two
+# figures written; the files beside the Word file; Figure 1's sheet.
+jstyle(save.as = file.path(.walk_fig19, "figfiles"),
+       plot = list(data.file = "yes", vector.file = "pdf"))
+p19a <- jplot(d19, Region)
+p19b <- jplot(d19, Age)
+f19 <- jtable(list(p19a, p19b), style = file.path(.walk_fig19, "figfiles.jstyle"),
+              file = file.path(.walk_fig19, "Figures.docx"), overwrite = TRUE)
+print(sort(basename(list.files(.walk_fig19))))
+print(as.data.frame(readxl::read_excel(file.path(.walk_fig19, "Figures_figures.xlsx"),
+                                       sheet = "Figure 1")))
+# Expected:
+#   Figure 1. Region of residence (N = 103)
+#     a bar chart, 6 by 4 inches, on a portrait page.
+#   Figure 2. Age (years) (N = 103)
+#     a histogram, 6 by 4 inches, on a portrait page.
+#   2 figures written to
+#   <tempdir>/walk_fig19/Figures.docx
+#   The data of Figures 1 and 2 written to
+#   <tempdir>/walk_fig19/Figures_figures.xlsx
+#   Figure 1 also written to
+#   <tempdir>/walk_fig19/Figures_Figure_1.pdf
+#   Figure 2 also written to
+#   <tempdir>/walk_fig19/Figures_Figure_2.pdf
+#
+#   [1] "figfiles.jstyle"      "Figures_Figure_1.pdf" "Figures_Figure_2.pdf"
+#   [4] "Figures_figures.xlsx" "Figures.docx"        
+#     Region  n  Percent
+#   1  North 27 26.21359
+#   2  South 20 19.41748
+#   3   East 31 30.09709
+#   4   West 25 24.27184
+
+# Render 2 -- ruling R72's note: Volunteer's label taken off a copy of the
+# data, so a table and a figure show its name; then a data frame with no
+# labels at all, at the standard level and at "full".
+d19b <- d19
+attr(d19b$Volunteer, "label") <- NULL
+p19c <- jplot(d19b, Region, by = Volunteer)
+t19 <- jtable(jt(WellbeingScore ~ Volunteer, d19b, print = FALSE))
+f19c <- jtable(p19c)
+u19 <- data.frame(Group = rep(1:2, 10), Score = seq(1, 20))
+t19b <- jtable(jt(Score ~ Group, u19, print = FALSE))
+joutput("full", quiet = TRUE)
+t19c <- jtable(jt(Score ~ Group, u19, print = FALSE))
+joutput(NULL, quiet = TRUE)
+# Expected:
+#   Note: Table 1 shows Volunteer by its name, having no variable label.
+#   To show labels, add them with jrelabel(), then run the analysis again,
+#   for example:
+#     jrelabel(MyData, Volunteer, var.label = "...", modify = TRUE)
+#   Table 1. Means, Standard Deviations, and t Tests by Volunteer
+#     1 outcome by Volunteer, on a portrait page.
+#   The table was made in R; no Word file was asked for.
+#
+#   Note: Figure 1 shows Volunteer by its name, having no variable label.
+#   To show labels, add them with jrelabel(), then draw the chart again,
+#   for example:
+#     jrelabel(d19b, Volunteer, var.label = "...", modify = TRUE)
+#   Figure 1. Region of residence by Volunteer (N = 103)
+#     a bar chart, 6 by 4 inches, on a portrait page.
+#   The figure was made in R; no Word file was asked for.
+#
+#   Table 1. Means, Standard Deviations, and t Tests by Group
+#     1 outcome by Group, on a portrait page.
+#   The table was made in R; no Word file was asked for.
+#
+#   Note: Table 1 shows Score and Group by their names, having no
+#   variable labels.
+#   It shows codes 1 and 2 of Group without value labels.
+#   To show labels, add them with jrelabel(), then run the analysis again,
+#   for example:
+#     jrelabel(MyData, Score, var.label = "...", modify = TRUE)
+#   Table 1. Means, Standard Deviations, and t Tests by Group
+#     1 outcome by Group, on a portrait page.
+#   The table was made in R; no Word file was asked for.
+#   Note: to write the table to a Word file, add file = to the call:
+#     jtable(jt(Score ~ Group, u19, print = FALSE), file = "Table1.docx")
+#   To see a table here, print it by the name it was kept under with <-,
+#   for example:
+#     print(t1)
+
+# Render 3 -- the riders: the correlation table with descriptives, its
+# labels on two lines in Word, each broken where ruling R55 measured it
+# ("1. Wellbeing score" / "(0-100)"); two specific notes in one paragraph
+# of the preview, each with its caret. t1 is kept for Render 4.
+t1 <- jtable(jcorr(d19, WellbeingScore, Income, Age, CommuteTime, print = FALSE),
+             file = file.path(.walk_fig19, "Correlations.docx"), overwrite = TRUE,
+             open = TRUE)
+t19e <- jtable(jdesc(d19, Age, Income, WellbeingScore, print = FALSE),
+               markers = list("Mean-centered" = Age, "In US dollars" = Income))
+print(t19e)
+# Expected:
+#   Table 1. Descriptive Statistics and Correlations for Study Variables
+#     4 variables, on a portrait page, long labels on two lines.
+#   Table written to
+#   <tempdir>/walk_fig19/Correlations.docx
+#
+#   Table 1. Descriptive Statistics (N = 103)
+#     3 variables, on a portrait page.
+#   The table was made in R; no Word file was asked for.
+#
+#   Table 1
+#   Descriptive Statistics (N = 103)
+#   ------------------------------------------------------------------
+#   Variable                  n       M          SD       Min     Max
+#   ------------------------------------------------------------------
+#   Age (years)^a            103      40.65      11.62      18      71
+#   Annual income (USD)^b     97  49,855.67  17,427.22  14,000  93,000
+#   Wellbeing score (0-100)  103      50.89      11.48      25      81
+#   ------------------------------------------------------------------
+#   ^a Mean-centered. ^b In US dollars.
+
+# Render 4 -- the stops a chart meets: a table's input on a chart, a
+# chart's setting in a call, a saved result beside a chart (t1 and tab1
+# are taken, so the lines name the table table1 rather than replace either).
+tab1 <- t1
+try(jtable(p19c, headings = list(Groups = Region)))
+try(jtable(p19c, resolution = 600))
+try(jtable(list(jt(WellbeingScore ~ Volunteer, d19, print = FALSE), p19c)))
+# Expected:
+#   Error : jtable(): headings = is for a table; a chart takes title =,
+#   note = and source =, for example:
+#     jtable(p19c, title = "Region of residence by Volunteer")
+#   Error : jtable(): resolution = is one of a style's chart settings, which a
+#   call cannot change.
+#   Set it in a style file, for example a copy of apa:
+#     jstyle("apa", save.as = "mystyle")
+#   Error : jtable(): saved results cannot be given beside built tables or
+#   charts in one call.
+#   Build each result into a table first, then give the tables and
+#   charts together:
+#     table1 <- jtable(jt(WellbeingScore ~ Volunteer, d19, print = FALSE))
+#     jtable(list(table1, p19c), file = "Report.docx")
+
+# Things to look at:
+#   - Render 1: the report naming Figures.docx, then the data file and the
+#     two pdf files beside it; the file list; Figure 1's sheet -- Region,
+#     n and Percent, a row a region;
+#   - Render 2: "Note: Table 1 shows Volunteer by its name, having no
+#     variable label." with its jrelabel() line, before the report; the
+#     figure's note saying "draw the chart again"; nothing for the frame with
+#     no labels at the standard level, then at "full" the advisory note
+#     naming Score and Group and Group's codes 1 and 2;
+#   - Render 3, Correlations.docx in Word: the labels wrapped onto two lines
+#     each broken between words, "(0-100)" whole on the second line; the
+#     preview's note line "^a Mean-centered. ^b In US dollars.";
+#   - Render 4: each stop's first line naming what was typed, then what a
+#     chart takes, or where its settings go, or the lines that make the
+#     table and write both.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

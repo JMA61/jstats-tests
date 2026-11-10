@@ -124,9 +124,27 @@
 #           file sets; a call's title filled; open = TRUE's note where no
 #           program opens the file; jmulti() in rulings R22's and R23's
 #           stops; the settings help page.
+#           (AT) Capability Slate U's charts, build 2 (S415, v0.9.279;
+#           rulings R63-R65 and R69-R72, the S412 audit's F4, F6, F7 and F9,
+#           with the (S414) riders): the [plot] section of both built-ins and
+#           its palette; the greys and each style's theme; jplot()'s chart
+#           (class jst_plot, its facts, the style it is drawn in, the bars'
+#           values, whole-number count axes); labels on the axes and the
+#           default titles, N the cases drawn; a model's, a test's and the
+#           correlation heatmap's plots; jtable() given a chart (the figure,
+#           its report and preview); the Word file's figure (SEQ Figure, the
+#           caption, the inline picture and its part, the plot device given
+#           back); a document of tables and figures numbered apart; a chart
+#           drawn in ggplot2 (ruling R71); a result's set of plots; the stops;
+#           the data and vector files (R65); the picture kept within the page;
+#           a chart drawn again in another style; the filter in a figure's
+#           note; ruling R72's note; the riders (a label kept whole in Word,
+#           the preview's carets, ruling R23's count of a range, jplot()'s
+#           stops on a result it does not draw); the settings page's [plot].
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.278, 2026-11-08 (S414) -- 315/315 on the WORKSTATION;
-#           the S414 EDIT block below holds the stamp. Prior: v0.9.277,
+# LAST VERIFIED: v0.9.279, 2026-11-10 (S415) -- 334/334 on the WORKSTATION;
+#           the S415 EDIT block below holds the stamp. Prior: v0.9.278,
+#           2026-11-08 (S414) -- 315/315 (the S414 EDIT block); v0.9.277,
 #           2026-11-07 (S410) -- 294/294 (the S410 EDIT block); v0.9.276,
 #           2026-11-06 (S409, the rebuild) -- 287/287 (the S409 REBUILD
 #           block); v0.9.275, 2026-11-05 (S407, the second rebuild) --
@@ -164,6 +182,49 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S415 EDIT (v0.9.279, 2026-11-10): Capability Slate U's charts, build 2 --
+#           the figure frame and the look (rulings R63-R65, R69-R72; the S412
+#           audit's F4, F6, F7 and F9), with the (S414) riders. SECTION AT
+#           ADDED, 19 checks (334 in all): AT01 the [plot] section's values
+#           in apa and report and the palette's; AT02 the greys and each
+#           style's theme; AT03 jplot()'s chart -- class jst_plot, its facts
+#           (a bar chart's counts and percentages), the style it is drawn
+#           in, + keeping both, the bars' values, a count axis in whole
+#           numbers; AT04 labels on the axes under any variable.id, labels
+#           = "names", the default titles, N the cases drawn; AT05 a
+#           model's, a test's and the heatmap's plots; AT06 jtable() given a
+#           chart, its report and print(); AT07 the Word file's figure and
+#           the plot device given back; AT08 tables and figures numbered
+#           apart, in the report, the file and the combining hint; AT09 a
+#           chart drawn in ggplot2; AT10 a result's set of plots, alone and
+#           in a list; AT11 the stops; AT12 the data and vector files; AT13
+#           the picture kept within the page; AT14 a chart drawn again in
+#           another style, the call's title, note and source, and a chart
+#           framed in the style it was drawn in, a theme added with + kept
+#           there; AT15 the
+#           filter in a figure's note; AT16 ruling R72's note; AT17 the
+#           riders in the Word file and the preview; AT18 ruling R23's count
+#           of a range and jplot()'s stops on a result; AT19 the settings
+#           page and a complete copy. Each AT check went red on the build
+#           before (v0.9.278) and on a one-change mutant of its code. AT03
+#           reads the layers' geoms unnamed: ggplot2 3.5 and later name a
+#           plot's layers ("geom_bar"), so the first receive, on ggplot2
+#           4.0.3, read AT03 red where the sandbox's 3.4.4 read it green.
+#           RE-PINNED, each value read from the battery run on the build:
+#           N07, U01, AA01, AQ01, AQ03 and AR06 (the [plot] section: the
+#           sections' list and nouns, report's three chart settings, its
+#           printout's nine "from apa" lines, a complete copy's head for
+#           it); L10 and AH06 (the checksums: "Wellbeing score (0-100)"
+#           written with Word's non-breaking hyphen, the parts diffed
+#           against v0.9.278's, that run the one change).
+#           WORKSTATION, through receive_all(): "R CMD check: 0 errors, 0
+#           warnings, 0 notes."; "ALL BATTERIES GREEN (12 run, 3686 checks)"
+#           at the second run, with AT03 read unnamed (the first read AT03
+#           red, 333/334, on ggplot2 4.0.3) -- matching the sandbox (plain,
+#           under the RStudio-handler stand-in, each again with a
+#           35-character temp path, interactive with no question asked, and
+#           with the temporary folder reached through a symlink; entered
+#           dirty).
 # S414 EDIT (v0.9.278, 2026-11-08): Capability Slate U's charts, build 1 --
 #           jmulti() and its table (rulings R60-R62 and the five leans
 #           okayed at S414's opening), the review's table rulings R74-R79
@@ -2126,8 +2187,12 @@ check("L09 the page: A4 portrait with one-inch margins; the styles part sets Tim
 # nothing else moved (no width, no other run). The same holds for P11, Y05
 # and AH06, where a table left with no note loses its note row and its
 # last row the keep-with-next it had for the note.
+# S415 (v0.9.279; an (S414) rider): re-pinned -- "Wellbeing score (0-100)"
+# written with Word's non-breaking hyphen, so Word breaks the label only
+# where ruling R55 measured it; diffed against the S414 build's part, that
+# run the one change (three in AH06's part, one per label).
 check("L10 document.xml and styles.xml pinned by their checksums",
-      identical(unname(tools::md5sum(file.path(.lx, "word", "document.xml"))), "52f55f4cc6657612da7e9756c7abb60a") &&
+      identical(unname(tools::md5sum(file.path(.lx, "word", "document.xml"))), "164a2a357061b3667260172291bcf50d") &&
         identical(unname(tools::md5sum(file.path(.lx, "word", "styles.xml"))), "48761045aed48494802a638a03d41c3e"))
 
 # The caption and the notes as PARAGRAPHS (the alternative placement), the
@@ -2483,7 +2548,7 @@ check("N06 a line that is not a setting; a setting given twice in a section, and
 .wsty("secunk", "[metaanalysis]", "columns = f")   # S403: [regression] is a section now; S405: [anova] too
 .n7 <- lapply(c("typo", "unkn", "unkg", "secnear", "secunk"),
               function(s) res(jtable(.nf1, style = s, print = FALSE)))
-check("N07 a setting or a section this version does not have: a near miss gets the did-you-mean; any other names both causes and the settings, or the sections, there are",
+check("N07 a setting or a section this version does not have: a near miss gets the did-you-mean; any other names both causes and the settings, or the sections, there are (since S415 an eleventh, [plot])",
       all(vapply(.n7, function(r) is.null(r$val), logical(1))) &&
         grepl("jtable(): line 2 of typo.jstyle sets colums, which is not a setting\nof [frequencies].\nDid you mean columns?", .n7[[1]]$txt, fixed = TRUE) &&
         grepl("jtable(): line 2 of unkn.jstyle sets colwidth, which is not a\nsetting jstats has.\nIt may be misspelled, or it may be from a newer version of jstats", .n7[[2]]$txt, fixed = TRUE) &&
@@ -2491,7 +2556,7 @@ check("N07 a setting or a section this version does not have: a near miss gets t
         grepl("A general setting may be set there too.", .n7[[2]]$txt, fixed = TRUE) &&
         grepl("The general settings are font, size, paper,", .n7[[3]]$txt, fixed = TRUE) &&
         grepl("jtable(): line 1 of secnear.jstyle opens [frequncies], which is not\na section of a style.\nDid you mean [frequencies]?", .n7[[4]]$txt, fixed = TRUE) &&
-        grepl("The sections are [descriptives], [frequencies], [regression], [logistic],\n[correlation], [ttest], [anova], [crosstab], [reliability],\nand [multiresponse].", .n7[[5]]$txt, fixed = TRUE))
+        grepl("The sections are [descriptives], [frequencies], [regression], [logistic],\n[correlation], [ttest], [anova], [crosstab], [reliability], [multiresponse],\nand [plot].", .n7[[5]]$txt, fixed = TRUE))
 
 .wsty("vchoice", "rules = box"); .wsty("vnum", "size = 100"); .wsty("vint", "decimals = 2.5")
 .wsty("vcol", "header.fill = notacolor"); .wsty("vcol2", "rule.color = none")
@@ -2991,11 +3056,11 @@ check("T01 a bare file name with no output folder set is written into the workin
 # =============================================================================
 cat("\n--- U. The style and the formats, build 3 ---\n")
 
-check("U01 the apa list and the spec have [regression] and [logistic] sections, their columns and labels, and the general n.position (note | title | none, in note.n's place; apa's title since ruling R59, S409) and leading.zero's third value",
+check("U01 the apa list and the spec have [regression] and [logistic] sections, their columns and labels, and the general n.position (note | title | none, in note.n's place; apa's title since ruling R59, S409) and leading.zero's third value (the sections' nouns since S415 ending on [plot], a chart's)",
       all(c("regression", "logistic") %in% names(.jst_style_apa)) &&
         identical(names(.jst_style_type_nouns), c("descriptives", "frequencies", "regression", "logistic",
                                                   "correlation", "ttest", "anova", "crosstab", "reliability",
-                                                  "multiresponse")) &&
+                                                  "multiresponse", "plot")) &&
         identical(.jst_style_apa$regression$columns, c("b", "se", "beta", "p")) &&
         identical(.jst_style_apa$logistic$columns, c("b", "se", "or", "p")) &&
         identical(.jst_style_spec$regression$columns$cols, c("b", "se", "beta", "p", "t", "ci", "beta.gelman")) &&
@@ -3681,10 +3746,10 @@ cat("\n--- AA. The general changes (build 4) ---\n")
 
 .aad <- file.path(tempdir(), "tables_check_b4"); unlink(.aad, recursive = TRUE); dir.create(.aad)
 
-check("AA01 the apa list and the spec hold the five new sections after logistic -- correlation, ttest, anova, crosstab, reliability -- each naming the same settings in the same order (since S409 31 general settings, with caption.fill, heading.fill and note.label.italic; since S414 36, with caption.text, note.sentences, note.order, source.position and source.label, and a tenth section, multiresponse); filter.note joins the general settings (28), yes | no; jtable() reads nine result classes into the nine sections (ten since S414, jmulti()'s)",
+check("AA01 the apa list and the spec hold the five new sections after logistic -- correlation, ttest, anova, crosstab, reliability -- each naming the same settings in the same order (since S409 31 general settings, with caption.fill, heading.fill and note.label.italic; since S414 36, with caption.text, note.sentences, note.order, source.position and source.label, and a tenth section, multiresponse); filter.note joins the general settings (28), yes | no; jtable() reads nine result classes into the nine sections (ten since S414, jmulti()'s); since S415 a last section, [plot], a chart's, which no result class reads",
       identical(names(.jst_style_apa), c("general", "descriptives", "frequencies", "regression",
                                          "logistic", "correlation", "ttest", "anova", "crosstab",
-                                         "reliability", "multiresponse")) &&
+                                         "reliability", "multiresponse", "plot")) &&
         identical(names(.jst_style_spec), names(.jst_style_apa)) &&
         all(vapply(names(.jst_style_apa), function(s) {
           identical(names(.jst_style_apa[[s]]), names(.jst_style_spec[[s]]))
@@ -4433,8 +4498,9 @@ check("AH05 the font steps a point at a time to 8 points (from a size between po
         identical(.ah5$narrow$note_size, 8))
 
 # Re-pinned S406: the ANOVA table on a landscape section of its own.
+# Re-pinned S415: the label's hyphen non-breaking (see L10).
 check("AH06 document.xml of the five tables pinned by its checksum",
-      identical(unname(tools::md5sum(file.path(.aad, "x5", "word", "document.xml"))), "79b886ea242ab458ef27c2278637c0ee"))
+      identical(unname(tools::md5sum(file.path(.aad, "x5", "word", "document.xml"))), "9117ad796ee14999c935947617ae7ead"))
 
 .ah7 <- res(local({
   tb <- .aft
@@ -5630,7 +5696,7 @@ cat("\n--- AQ. The report style, the new looks, open =, the heads ---\n")
   }
   out
 }))
-check("AQ01 report is a built-in style, a short style based on apa (its layers report, then apa; no file): Arial 10, the caption 10 and the note 9, the report caption form, a D9D9D9 bold header, the zero kept, an upright \"Note:\", each variable's label row bold -- and every other setting apa's, the three new looks off; no name is kept for a built-in to come. Since S414: the caption follows size from apa and the note is size - 1 (ruling R77), the note's sentences a line each in the report manuals' order with the source on a line of its own (R75, R79), the t test's and ANOVA's df in a column (R74)",
+check("AQ01 report is a built-in style, a short style based on apa (its layers report, then apa; no file): Arial 10, the caption 10 and the note 9, the report caption form, a D9D9D9 bold header, the zero kept, an upright \"Note:\", each variable's label row bold -- and every other setting apa's, the three new looks off; no name is kept for a built-in to come. Since S414: the caption follows size from apa and the note is size - 1 (ruling R77), the note's sentences a line each in the report manuals' order with the source on a line of its own (R75, R79), the t test's and ANOVA's df in a column (R74). Since S415 its charts' gridlines horizontal, the x axis line alone and the legend at the top (ruling R64)",
       identical(names(.jst_style_builtin()), c("apa", "report")) &&
         identical(.jst_style_reserved, character(0)) &&
         inherits(.aq1, "jst_style") && is.na(.aq1$path) &&
@@ -5646,7 +5712,8 @@ check("AQ01 report is a built-in style, a short style based on apa (its layers r
                                               "source.position")),
                          paste0(c("frequencies", "regression", "logistic", "crosstab"),
                                 ":variable.headings"),
-                         "ttest:df.position", "anova:df.position"))) &&
+                         "ttest:df.position", "anova:df.position",
+                         paste0("plot:", c("gridlines", "axis.lines", "legend.position"))))) &&
         is.null(.jst_style_report$general$caption.size) &&
         identical(.jst_style_report$general$note.size, "size - 1") &&
         identical(.jst_style_key(.aq1, "general", "caption.fill"), "none") &&
@@ -5693,11 +5760,11 @@ check("AQ02 three new general settings, placed beside their kin -- caption.fill 
 # as its own, every other marked as apa's.
 .aq3 <- .strip_ansi(res(jstyle("report"))$txt)
 .aq3l <- strsplit(.aq3, "\n", fixed = TRUE)[[1]]
-check("AQ03 jstyle(\"report\") prints the style as built into jstats and based on apa, its own settings unmarked and every other marked as apa's",
+check("AQ03 jstyle(\"report\") prints the style as built into jstats and based on apa, its own settings unmarked and every other marked as apa's (since S415 its [plot] section too: nine from apa, its font and size its own general ones)",
       identical(.aq3l[1:4], c("Style: report", "  built into jstats", "  based on apa", "")) &&
         all(c("font              = Arial", "size              = 10", "caption.form      = report", "caption.size      = size            # from apa", "header.fill       = D9D9D9", "header.bold       = yes", "note.label        = Note:", "note.label.italic = no", "note.size         = size - 1", "leading.zero      = yes") %in% .aq3l) &&
         all(c("paper             = a4              # from apa", "header.text       = 000000          # from apa", "rules             = apa             # from apa") %in% .aq3l) &&
-        sum(grepl("# from apa$", .aq3l)) == 146L)
+        sum(grepl("# from apa$", .aq3l)) == 155L)
 
 # The caption bar: caption.fill = header takes the header's fill and text
 # color; a color fills the bar and leaves the text; a caption set as a
@@ -6165,7 +6232,7 @@ check("AR05 N after the title in every writer: the preview's title line (N plain
   val <- function(st) lapply(keys, function(k) {
     k <- strsplit(k, " ", fixed = TRUE)[[1]]; .jst_style_key(st, k[1], k[2])
   })
-  list(l = l, b = .arblank(l), heads = which(grepl("^# (The general settings|An? [A-Za-z -]+ table, from |A crosstab, from )", l)),
+  list(l = l, b = .arblank(l), heads = which(grepl("^# (The general settings|An? [A-Za-z -]+ table, from |A crosstab, from |A chart, from )", l)),
        same = identical(val(.jst_style_resolve(file.path(.ard, "arfull.jstyle"))),
                         val(.jst_style_resolve(q))),
        apa = identical(val(.jst_style_resolve(file.path(.ard, "arfull.jstyle"))),
@@ -6770,9 +6837,469 @@ check("AS21 ?jstyle_settings lists the build's settings: caption.size and note.s
         function(x) grepl(x, .as21, fixed = TRUE), logical(1))) &&
         lengths(regmatches(.as21, gregexpr("\\item{\\code{df.position}}", .as21, fixed = TRUE))) == 2L)
 
+# =============================================================================
+# AT. The charts' build 2: the figure frame and the look (S415)
+# =============================================================================
+cat("\n--- AT. Figures in the Word file, the charts' look, R72's note, the riders ---\n")
+
+.atd <- file.path(tempdir(), "tables_check_s415"); unlink(.atd, recursive = TRUE); dir.create(.atd)
+.atdx <- function(f) {
+  if (!file.exists(f)) return(NULL)
+  x <- file.path(.atd, paste0("x_", tools::file_path_sans_ext(basename(f))))
+  unlink(x, recursive = TRUE); invisible(utils::unzip(f, exdir = x))
+  rd <- function(p) {
+    q <- file.path(x, p)
+    if (file.exists(q)) paste(readLines(q, warn = FALSE, encoding = "UTF-8"), collapse = "") else ""
+  }
+  list(dir = x, doc = rd("word/document.xml"), rels = rd("word/_rels/document.xml.rels"),
+       ct = rd("[Content_Types].xml"), files = utils::unzip(f, list = TRUE)$Name)
+}
+# A PNG's width and height in pixels, from its header.
+.atpng <- function(path) {
+  b <- as.integer(readBin(path, "raw", 24L))
+  c(w = sum(b[17:20] * 256^(3:0)), h = sum(b[21:24] * 256^(3:0)))
+}
+.atn <- function(f) { x <- f; x }   # a figure, untouched
+grDevices::pdf(NULL)               # the charts draw here, not to a file
+.atdev <- grDevices::dev.cur()
+
+# The [plot] section of both built-ins (ruling R64), the palette's values.
+.at1 <- .aqtry(list(
+  apa  = .jst_plot_look("apa"),
+  rep  = .jst_plot_look("report"),
+  pal1 = res(.jst_style_check_value("palette", .jst_style_spec$plot$palette, "Grays", "plot", "jtable"))$val,
+  pal2 = res(.jst_style_check_value("palette", .jst_style_spec$plot$palette, c("navy", "#1f3864"), "plot", "jtable"))$val,
+  bad  = res(.jst_style_check_value("palette", .jst_style_spec$plot$palette, "nocolour", "plot", "jtable"))$txt,
+  tk   = .jst_style_takes(.jst_style_spec$plot$palette)))
+check("AT01 ruling R64's [plot] section: apa and report draw in greys, Arial 10, bars' values on one series and off on several, 6 by 4 inches at 300 dots an inch, no data or vector file; apa with no gridlines, both axis lines and the legend right, report with light horizontal gridlines (D9D9D9), the x axis line alone and the legend at the top; the palette takes greys (or grays, any case) or colors in order, names made hex",
+      !is.null(.at1) &&
+        identical(.at1$apa[c("style", "font", "palette", "gridlines", "grid.color", "axis.lines",
+                             "legend.position", "values", "values.grouped", "data.file", "vector.file")],
+                  list(style = "apa", font = "Arial", palette = "greys", gridlines = "none",
+                       grid.color = "D9D9D9", axis.lines = "both", legend.position = "right",
+                       values = "yes", values.grouped = "no", data.file = "no", vector.file = "none")) &&
+        identical(unlist(.at1$apa[c("size", "width", "height", "resolution")]),
+                  c(size = 10, width = 6, height = 4, resolution = 300)) &&
+        identical(.at1$rep[c("style", "gridlines", "axis.lines", "legend.position", "palette", "font")],
+                  list(style = "report", gridlines = "horizontal", axis.lines = "x",
+                       legend.position = "top", palette = "greys", font = "Arial")) &&
+        identical(.at1$pal1, "greys") && identical(.at1$pal2, c("000080", "1F3864")) &&
+        identical(.at1$bad, "[error] jtable(): `palette` must be \"greys\", or one or more colors, each a\ncolor name such as \"navy\" or six hex digits such as \"1F3864\".") &&
+        identical(.at1$tk, "greys, or one or more colors in order, separated by commas, each a color name such as navy or six hex digits such as 1F3864"))
+
+# The greys and a palette's colors; the theme each style gives.
+.at2 <- .aqtry(local({
+  la <- .jst_plot_look("apa"); lr <- .jst_plot_look("report")
+  pal <- la; pal$palette <- c("12436D", "28A197")
+  ta <- .jst_plot_theme(la); tr <- .jst_plot_theme(lr)
+  list(c1 = .jst_plot_colours(la, 1), c2 = .jst_plot_colours(la, 2),
+       c4 = .jst_plot_colours(la, 4), c6 = .jst_plot_colours(la, 6),
+       p1 = .jst_plot_colours(pal, 1), p3 = .jst_plot_colours(pal, 3),
+       ta_grid = inherits(ta$panel.grid.major.y, "element_blank"),
+       ta_axy = inherits(ta$axis.line.y, "element_blank"),
+       ta_leg = ta$legend.position, ta_fam = ta$text$family, ta_size = ta$text$size,
+       tr_grid = tr$panel.grid.major.y$colour, tr_axy = inherits(tr$axis.line.y, "element_blank"),
+       tr_axx = inherits(tr$axis.line.x, "element_blank"),
+       tr_leg = tr$legend.position, tr_just = tr$legend.justification)
+}))
+check("AT02 the look's colors and theme (ruling R64): greys 595959 for one series, 404040 and A6A6A6 for two, from 404040 in steps to BFBFBF for four and to D9D9D9 past four; a palette's colors in order, colors between them past its length; apa's theme no gridlines and both axis lines, the legend right; report's light horizontal gridlines, the x axis line alone, the legend at the top starting at the left; the text Arial (R's sans) at 10",
+      !is.null(.at2) &&
+        identical(.at2$c1, "#595959") && identical(.at2$c2, c("#404040", "#A6A6A6")) &&
+        identical(.at2$c4, c("#404040", "#6A6A6A", "#959595", "#BFBFBF")) &&
+        identical(.at2$c6[c(1, 6)], c("#404040", "#D9D9D9")) &&
+        identical(.at2$p1, "#12436D") && identical(length(.at2$p3), 3L) &&
+        identical(toupper(.at2$p3[c(1, 3)]), c("#12436D", "#28A197")) &&
+        .at2$ta_grid && !.at2$ta_axy && identical(.at2$ta_leg, "right") &&
+        identical(.at2$ta_fam, "sans") && identical(.at2$ta_size, 10) &&
+        identical(.at2$tr_grid, "#D9D9D9") && .at2$tr_axy && !.at2$tr_axx &&
+        identical(.at2$tr_leg, "top") && identical(.at2$tr_just, "left"))
+
+# jplot()'s chart: a ggplot of class jst_plot, the frame's facts with it;
+# drawn in the session's style or the call's.
+.at3 <- .aqtry(local({
+  p  <- res(jplot(tcm, Region))$val
+  pg <- res(jplot(tcm, Region, by = Volunteer))$val
+  ph <- res(jplot(tcm, Age))$val
+  quiet <- options(.jst_options_style = "report")
+  on.exit(options(quiet), add = TRUE)
+  ps <- res(jplot(tcm, Region))$val
+  options(quiet)
+  pc <- res(jplot(tcm, Region, style = "report"))$val
+  p2 <- p + ggplot2::labs(subtitle = "added")
+  hb <- ggplot2::ggplot_build(ph)
+  list(cls = class(p)[1L], gg = inherits(p, "ggplot"), f = .jst_plot_facts(p),
+       ps = .jst_plot_facts(ps)$look$style, pc = .jst_plot_facts(pc)$look$style,
+       keep = inherits(p2, "jst_plot") && identical(.jst_plot_facts(p2)$kind, "bar"),
+       geoms = unname(vapply(p$layers, function(l) class(l$geom)[1L], "")),
+       g_geoms = unname(vapply(pg$layers, function(l) class(l$geom)[1L], "")),
+       breaks = stats::na.omit(hb$layout$panel_params[[1L]]$y$breaks))
+}))
+check("AT03 jplot()'s chart is class jst_plot ahead of ggplot2's, still a ggplot (the S412 audit's F6), carrying the frame's facts -- its kind, N, default title, data (a bar chart's counts and each one's percentage of the cases drawn) and the look it was drawn in -- which + keeps; drawn in joptions(style = )'s look, or the call's style =; a bar chart of one series shows each bar's count (ruling R70), several series none; a count axis is marked in whole numbers",
+      !is.null(.at3) && identical(.at3$cls, "jst_plot") && .at3$gg &&
+        identical(.at3$f$kind, "bar") && identical(.at3$f$n, 103L) &&
+        identical(.at3$f$title, "Region of residence") &&
+        identical(names(.at3$f$data), c("Region", "n", "Percent")) &&
+        isTRUE(all.equal(.at3$f$data$Percent, 100 * .at3$f$data$n / sum(.at3$f$data$n))) &&
+        identical(sum(.at3$f$data$n), 103L) &&
+        identical(.at3$f$look$style, "apa") &&
+        identical(.at3$ps, "report") && identical(.at3$pc, "report") && .at3$keep &&
+        identical(.at3$geoms[1:2], c("GeomBar", "GeomText")) &&
+        !"GeomText" %in% .at3$g_geoms &&
+        length(.at3$breaks) >= 3L && all(.at3$breaks == round(.at3$breaks)))
+
+# A chart's words: labels, the name where none (the S412 audit's F4), and
+# its default title (ruling R69), whatever joutput()'s variable.id.
+.at4 <- .aqtry(local({
+  old <- getOption(".jst_output_toggles")
+  on.exit(options(.jst_output_toggles = old), add = TRUE)
+  invisible(res(joutput(variable.id = "names")))
+  lab <- function(p) p$labels
+  sc <- res(jplot(WellbeingScore ~ Income, tcm, line = "lm"))$val
+  bx <- res(jplot(WellbeingScore ~ Region, tcm))$val
+  gb <- res(jplot(tcm, Region, Volunteer))$val
+  hb <- res(jplot(tcm, Age, by = Volunteer))$val
+  nm <- res(jplot(tcm, Region, labels = "names"))$val
+  list(sc = lab(sc)[c("x", "y")], sct = .jst_plot_facts(sc)$title, scn = .jst_plot_facts(sc)$n,
+       bx = .jst_plot_facts(bx)$title, gb = .jst_plot_facts(gb)$title, gbf = lab(gb)$fill,
+       hb = .jst_plot_facts(hb)$title, hbf = lab(hb)$fill, nm = lab(nm)$x)
+}))
+check("AT04 a chart's axis and legend titles are the variables' labels under any variable.id (the S412 audit's F4), labels = \"names\" giving names; its default title from labels, never its kind (ruling R69): the outcome by the predictor for a scatterplot and a box plot, a grouped bar's two variables, a variable by its group; its N the cases it draws (the S412 audit's F7: 97 where Income is missing)",
+      !is.null(.at4) &&
+        identical(unname(unlist(.at4$sc)), c("Annual income (USD)", "Wellbeing score (0-100)")) &&
+        identical(.at4$sct, "Wellbeing score (0-100) by Annual income (USD)") && identical(.at4$scn, 97L) &&
+        identical(.at4$bx, "Wellbeing score (0-100) by Region of residence") &&
+        identical(.at4$gb, "Region of residence by Volunteered in past year") &&
+        identical(.at4$gbf, "Volunteered in past year") &&
+        identical(.at4$hb, "Age (years) by Volunteered in past year") &&
+        identical(.at4$hbf, "Volunteered in past year") && identical(.at4$nm, "Region"))
+
+# A model's and a test's plots: their own titles, or the outcome by the
+# predictor or the group; the result's N; marked as jplot()'s.
+.at5 <- .aqtry(local({
+  m  <- res(jlm(WellbeingScore ~ Income + Age, tcm, print = FALSE))$val
+  pl <- res(jplot(m))$val
+  t1 <- res(jt(WellbeingScore ~ Volunteer, tcm, print = FALSE))$val
+  pt <- res(jplot(t1))$val
+  cr <- res(jcorr(tcm, WellbeingScore, Income, Age, print = FALSE))$val
+  ph <- res(jplot(cr))$val
+  list(names = names(pl), cls = vapply(pl, function(p) class(p)[1L], ""),
+       titles = vapply(pl, function(p) .jst_plot_facts(p)$title, ""),
+       n = vapply(pl, function(p) as.numeric(.jst_plot_facts(p)$n), 0),
+       fitx = pl$fit$labels$x,
+       box = .jst_plot_facts(if (.jst_is_chart(pt)) pt else pt$box)$title,
+       heat = .jst_plot_facts(ph)$title, heatsheet = names(.jst_plot_facts(ph)$data),
+       heatlab = unname(ph$scales$get_scales("x")$labels))
+}))
+check("AT05 a model's or a test's plots are jplot()'s charts too: a plot's own title is its default (\"Residuals vs Fitted\"), a fit plot's the outcome by the focal predictor and a box plot's the outcome by the group (ruling R69); the result's N; the fit plot's axis by its label; the heatmap's variables by their labels, its sheet the correlation matrix",
+      !is.null(.at5) && all(.at5$cls == "jst_plot") &&
+        identical(unname(.at5$titles[c("fit", "residuals")]),
+                  c("Wellbeing score (0-100) by Annual income (USD)", "Residuals vs Fitted")) &&
+        all(.at5$n == 97) && identical(.at5$fitx, "Annual income (USD)") &&
+        identical(.at5$box, "Wellbeing score (0-100) by Volunteered in past year") &&
+        identical(.at5$heat, "Correlation Matrix") &&
+        identical(.at5$heatsheet, c("Variable", "WellbeingScore", "Income", "Age")) &&
+        identical(.at5$heatlab, c("Wellbeing score\n(0-100)", "Annual income (USD)", "Age (years)")))
+
+# jtable() given a chart: a figure, its report, its preview.
+.at6p <- res(jplot(tcm, Region))$val
+.at6 <- res(jtable(.at6p))
+.at6f <- .at6$val
+.at6v <- res(print(.at6f))$txt
+check("AT06 jtable() given a chart makes a figure (ruling R63): its title the chart's default, N after it (R59); the report says \"Figure 1.\", what it shows, its size and its page, and that no Word file was asked for; printed, the caption as the style sets it, the chart drawn in the Plots pane",
+      inherits(.at6f, "jst_figure") && identical(.at6f$caption$title, "Region of residence (*N* = 103)") &&
+        identical(.strip_ansi(.at6$txt),
+                  paste("Figure 1. Region of residence (N = 103)",
+                        "  a bar chart, 6 by 4 inches, on a portrait page.",
+                        "The figure was made in R; no Word file was asked for.", "", sep = "\n")) &&
+        identical(.strip_ansi(.at6v),
+                  "Figure 1\nRegion of residence (N = 103)\n(a bar chart, drawn in the Plots pane)\n"))
+
+# The Word file: the figure's frame, its picture part, its numbering.
+.at7f <- file.path(.atd, "fig1.docx")
+# A second device, made current, as RStudio's Plots pane is while another
+# device is open: writing the figure puts it back.
+grDevices::pdf(NULL); .at7dev <- grDevices::dev.cur()
+grDevices::dev.set(.atdev); grDevices::dev.set(.at7dev)
+invisible(res(jtable(.at6p, file = .at7f, print = FALSE)))
+.at7cur <- grDevices::dev.cur()
+grDevices::dev.off(.at7dev); grDevices::dev.set(.atdev)
+.at7 <- .atdx(.at7f)
+.at7png <- if (!is.null(.at7)) .atpng(file.path(.at7$dir, "word", "media", "image1.png"))
+check("AT07 a figure in the Word file: its number on Word's SEQ Figure field, bold, its title italic below (apa's caption form); the picture inline, 6 by 4 inches (5486400 by 3657600 EMU), its description the title; a PNG of 1800 by 1200 pixels at 300 dots an inch in word/media, its relationship and content type, the drawing namespaces declared; a borderless table of one column, no note row when there is no note; the plot device that was current before is current again",
+      !is.null(.at7) &&
+        grepl("SEQ Figure \\* ARABIC", .at7$doc, fixed = TRUE) &&
+        grepl("<w:r><w:rPr><w:b/>(<w:sz [^>]*/><w:szCs [^>]*/>)?</w:rPr><w:t xml:space=\"preserve\">Figure </w:t></w:r>", .at7$doc) &&
+        grepl("<w:i/>(<w:sz [^>]*/><w:szCs [^>]*/>)?</w:rPr><w:t xml:space=\"preserve\">Region of residence \\(</w:t>", .at7$doc) &&
+        grepl("<wp:extent cx=\"5486400\" cy=\"3657600\"/>", .at7$doc, fixed = TRUE) &&
+        grepl("descr=\"Region of residence (N = 103)\"", .at7$doc, fixed = TRUE) &&
+        grepl("<a:blip r:embed=\"rIdImg1\"/>", .at7$doc, fixed = TRUE) &&
+        grepl("xmlns:wp=\"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing\"", .at7$doc, fixed = TRUE) &&
+        grepl("Target=\"media/image1.png\"", .at7$rels, fixed = TRUE) &&
+        grepl("<Default Extension=\"png\" ContentType=\"image/png\"/>", .at7$ct, fixed = TRUE) &&
+        "word/media/image1.png" %in% .at7$files &&
+        identical(unname(.at7png), c(1800, 1200)) &&
+        identical(lengths(regmatches(.at7$doc, gregexpr("<w:tr>", .at7$doc, fixed = TRUE))), 2L) &&
+        !grepl("w:val=\"single\"", .at7$doc, fixed = TRUE) &&
+        identical(.at7cur, .at7dev))
+
+# A document of tables and figures: each numbered on its own sequence.
+.at8 <- .aqtry(local({
+  d1 <- res(jdesc(tcm, Age, print = FALSE))$val
+  d2 <- res(jdesc(tcm, WellbeingScore, print = FALSE))$val
+  ta <- res(jtable(d1, print = FALSE))$val
+  tb <- res(jtable(d2, print = FALSE))$val
+  f  <- file.path(.atd, "doc.docx")
+  old <- options(.jst_output_level = "full"); on.exit(options(old), add = TRUE)
+  k <- length(.seen)
+  r <- res(jtable(list(ta, .at6p, tb, .at6p), file = f))
+  list(txt = strsplit(.strip_ansi(r$txt), "\n", fixed = TRUE)[[1L]], val = r$val, x = .atdx(f),
+       notes = vapply(.seen[-seq_len(k)], `[[`, "", "text"))
+}))
+check("AT08 a document of tables and charts: Table 1, Figure 1, Table 2, Figure 2 -- each kind numbered on its own (ruling R63), in the report, in the file's cached numbers and in print(); \"2 tables and 2 figures written to\"; the tables that could be one named by their table numbers, the figure between them skipped",
+      !is.null(.at8) &&
+        identical(.at8$txt[c(1, 3, 5, 7)],
+                  c("Table 1. Descriptive Statistics (N = 103)", "Figure 1. Region of residence (N = 103)",
+                    "Table 2. Descriptive Statistics (N = 103)", "Figure 2. Region of residence (N = 103)")) &&
+        grepl("^2 tables and 2 figures written to( |$)", .at8$txt[9]) &&
+        inherits(.at8$val, "jst_tables") && identical(length(.at8$val), 4L) &&
+        identical(regmatches(.at8$x$doc, gregexpr("SEQ (Table|Figure)", .at8$x$doc))[[1L]],
+                  c("SEQ Table", "SEQ Figure", "SEQ Table", "SEQ Figure")) &&
+        identical(.at8$x$files[grepl("^word/media/", .at8$x$files)],
+                  c("word/media/image1.png", "word/media/image2.png")) &&
+        any(startsWith(.at8$notes, "Note: Tables 1 and 2 are descriptives tables and could be one table")))
+
+# A chart drawn in ggplot2 by hand (ruling R71): framed, its title moved to
+# the caption, its look its own, no N, no data sheet.
+.at9 <- .aqtry(local({
+  u <- ggplot2::ggplot(as.data.frame(tcm), ggplot2::aes(x = Age, y = WellbeingScore)) +
+    ggplot2::geom_point() + ggplot2::labs(title = "Age and wellbeing", subtitle = "kept")
+  f <- res(jtable(u, print = FALSE))$val
+  pic <- .jst_figure_picture(f)
+  g <- res(jtable(u, title = "Given here", print = FALSE))$val
+  list(f = f, pic_t = pic$labels$title, pic_s = pic$labels$subtitle, same = identical(pic$theme, u$theme),
+       g = g$caption$title, orig = u$labels$title)
+}))
+check("AT09 a chart drawn in ggplot2 by hand is framed (ruling R71): its own title moves from the picture to the caption, title = overriding it; the subtitle stays; its look is its own; no N, no data sheet; the chart itself is unchanged",
+      !is.null(.at9) && inherits(.at9$f, "jst_figure") && isTRUE(.at9$f$user) &&
+        identical(.at9$f$caption$title, "Age and wellbeing") && is.null(.at9$f$n) &&
+        is.null(.at9$f$data) && is.null(.at9$pic_t) && identical(.at9$pic_s, "kept") &&
+        .at9$same && identical(.at9$g, "Given here") && identical(.at9$orig, "Age and wellbeing"))
+
+# A result's set of plots: one figure each, alone or spliced into a list.
+.at10 <- .aqtry(local({
+  m  <- res(jlm(WellbeingScore ~ Income + Age, tcm, print = FALSE))$val
+  pl <- res(jplot(m))$val
+  a <- res(jtable(pl, print = FALSE))$val
+  t1 <- res(jtable(m, print = FALSE))$val
+  b <- res(jtable(list(t1, pl), print = FALSE))$val
+  list(a = unname(vapply(a, function(x) class(x)[1L], "")), n = length(pl),
+       b = unname(vapply(b, function(x) class(x)[1L], "")),
+       pic = .jst_figure_picture(a[[2L]])$labels$title, kept = pl$residuals$labels$title)
+}))
+check("AT10 the set of plots jplot() draws of one result goes in as one figure each, given alone or inside a list beside a table; a result plot's own title leaves the Word picture at write time while the chart keeps it",
+      !is.null(.at10) && identical(.at10$a, rep("jst_figure", .at10$n)) &&
+        identical(.at10$b, c("jst_table", rep("jst_figure", .at10$n))) &&
+        is.null(.at10$pic) && identical(.at10$kept, "Residuals vs Fitted"))
+
+# The stops: what a chart takes, a chart's settings in a call, a saved
+# result beside a chart.
+.at11 <- .aqtry(local({
+  m  <- res(jlm(WellbeingScore ~ Income + Age, tcm, print = FALSE))$val
+  pl <- res(jplot(m))$val
+  p1 <- .at6p
+  tb <- res(jtable(m, print = FALSE))$val
+  list(hd = res(jtable(p1, headings = list(A = Region)))$txt,
+       col = res(jtable(p1, columns = "n"))$txt,
+       many = res(jtable(pl, title = "x"))$txt, k = length(pl),
+       set = res(jtable(p1, resolution = 600))$txt,
+       mix = res(jtable(list(m, p1)))$txt,
+       doc = res(jtable(list(tb, p1), title = "x"))$txt)
+}))
+check("AT11 the stops: headings = and a table's setting are for a table, a chart taking title =, note = and source = (with the chart's own title in the line); title = for one figure where several charts are given, the line keeping the call's title; a chart's setting given in a call is the style file's (ruling R65); a saved result beside a chart stops with the lines that make its table and write both (the S412 audit's F2); a built document's call takes no title =",
+      !is.null(.at11) &&
+        identical(.at11$hd, "[error] jtable(): headings = is for a table; a chart takes title =,\nnote = and source =, for example:\n  jtable(p1, title = \"Region of residence\")") &&
+        startsWith(.at11$col, "[error] jtable(): columns = is for a table;") &&
+        identical(.at11$many, paste0("[error] jtable(): title = is for one figure, and the call gives ", .at11$k,
+                                     " charts.\nMake each figure in a call of its own, for example:\n  f1 <- jtable(pl$fit, title = \"x\")")) &&
+        identical(.at11$set, "[error] jtable(): resolution = is one of a style's chart settings, which a\ncall cannot change.\nSet it in a style file, for example a copy of apa:\n  jstyle(\"apa\", save.as = \"mystyle\")") &&
+        grepl("^\\[error\\] jtable\\(\\): saved results cannot be given beside built tables or\ncharts in one call\\.\nBuild each result into a table first, then give the tables and\ncharts together:\n  (t1|tab1|table1) <- jtable\\(m\\)\n  jtable\\(list\\((t1|tab1|table1), p1\\), file = \"Report\\.docx\"\\)$", .at11$mix) &&
+        startsWith(.at11$doc, "[error] jtable(): headings =, markers =, title =, note =, source =, style =,\nand a style's settings belong to the call that builds a table from a result,\nor a figure from a chart;"))
+
+# The files beside the Word file (ruling R65): the data to Excel, a vector
+# file of each figure, from a style file's [plot] section.
+.wsty("atfiles", "[plot]", "data.file = yes", "vector.file = pdf", dir = .atd)
+.at12 <- .aqtry(local({
+  f <- file.path(.atd, "figs.docx")
+  u <- ggplot2::ggplot(as.data.frame(tcm), ggplot2::aes(x = Age)) + ggplot2::geom_histogram(bins = 10)
+  r <- res(jtable(list(res(jplot(tcm, Region))$val, res(jplot(tcm, Age))$val, u),
+                  style = file.path(.atd, "atfiles.jstyle"), file = f))
+  x <- file.path(.atd, "figs_figures.xlsx")
+  list(txt = .strip_ansi(r$txt), sheets = readxl::excel_sheets(x),
+       s1 = names(readxl::read_excel(x, sheet = 1)), s2 = names(readxl::read_excel(x, sheet = 2)),
+       pdfs = file.exists(file.path(.atd, paste0("figs_Figure_", 1:3, ".pdf"))),
+       head = rawToChar(readBin(file.path(.atd, "figs_Figure_1.pdf"), "raw", 4L)))
+}))
+check("AT12 a style's [plot] data.file = yes writes each of jplot()'s charts' data to <file>_figures.xlsx, a sheet per figure, none for a chart drawn by hand (ruling R71); vector.file = pdf writes each figure, the hand-drawn one too, as <file>_Figure_<n>.pdf; the report names them",
+      !is.null(.at12) && identical(.at12$sheets, c("Figure 1", "Figure 2")) &&
+        identical(.at12$s1, c("Region", "n", "Percent")) && identical(.at12$s2, "Age") &&
+        all(.at12$pdfs) && identical(.at12$head, "%PDF") &&
+        grepl("3 figures written to\\s", .at12$txt) &&
+        grepl("The data of Figures 1 and 2 written to\\s", .at12$txt) &&
+        grepl("Figure 3 also written to\\s", .at12$txt))
+
+# The picture kept within the page; landscape = yes turns it.
+.wsty("atwide", "[plot]", "width = 9", "height = 4", dir = .atd)
+.at13 <- .aqtry(local({
+  st <- .jst_style_resolve(file.path(.atd, "atwide.jstyle"))
+  f <- .jst_figure_build(.at6p, style = st)
+  L1 <- .jst_docx_layout(list(f), st)[[1L]]
+  L2 <- .jst_docx_layout(list(f), st, landscape = "yes")[[1L]]
+  r <- .strip_ansi(res(jtable(.at6p, style = file.path(.atd, "atwide.jstyle")))$txt)
+  list(s1 = round(L1$size, 3), s2 = round(L2$size, 3), land = L2$landscape, txt = r)
+}))
+check("AT13 a figure wider than the page's text is drawn smaller, its width and height scaled together, so its words keep their size (A4: 6.27 by 2.79 inches for 9 by 4); a landscape page holds it whole; the report gives the size drawn",
+      !is.null(.at13) && identical(unname(.at13$s1), c(6.268, 2.786)) &&
+        identical(unname(.at13$s2), c(9, 4)) && isTRUE(.at13$land) &&
+        grepl("a bar chart, 6.27 by 2.79 inches, on a portrait page.", .at13$txt, fixed = TRUE))
+
+# Drawn again in another style (the S412 audit's F6): the writing style's
+# theme and colors; title =, note = and source = in the frame.
+.wsty("atpal", "based.on = report", "[plot]", "palette = 12436D, 28A197", dir = .atd)
+.at14 <- .aqtry(local({
+  g <- res(jplot(tcm, Region, by = Volunteer))$val
+  f <- res(jtable(g, style = file.path(.atd, "atpal.jstyle"), title = "Where they live",
+                  note = "From the survey.", source = "The survey office", print = FALSE))$val
+  pic <- .jst_figure_picture(f)
+  b <- ggplot2::ggplot_build(pic)
+  r <- res(jplot(tcm, Region, style = "report"))$val
+  fr <- res(jtable(r, print = FALSE))$val
+  q <- res(jplot(tcm, Region))$val +
+    ggplot2::theme(text = ggplot2::element_text(family = "serif"))
+  fq  <- .jst_figure_picture(res(jtable(q, print = FALSE))$val)
+  fq2 <- .jst_figure_picture(res(jtable(q, style = "report", print = FALSE))$val)
+  list(fills = sort(unique(b$data[[1L]]$fill)), grid = pic$theme$panel.grid.major.y$colour,
+       orig = sort(unique(ggplot2::ggplot_build(g)$data[[1L]]$fill)),
+       cap = f$caption$title, lines = .jst_table_note_lines(f, f$style, plain = TRUE),
+       rstyle = fr$style$name, rgrid = .jst_figure_picture(fr)$theme$panel.grid.major.y$colour,
+       qfam = fq$theme$text$family, q2fam = fq2$theme$text$family,
+       q2grid = fq2$theme$panel.grid.major.y$colour)
+}))
+check("AT14 a chart framed in another style is drawn again in that style's look (the S412 audit's F6): its colors the style's palette, its gridlines the style's; the chart itself unchanged; the call's title, note and source in the frame, by the style's note rules (report: Note: and Source: lines); a chart drawn in report and framed with no style = is framed and drawn in report, the style it was drawn in, under apa's session; a theme added with + stays when the chart is framed in the style it was drawn in and gives way to another style's",
+      !is.null(.at14) && identical(.at14$fills, c("#12436D", "#28A197")) &&
+        identical(.at14$grid, "#D9D9D9") && identical(.at14$orig, c("#404040", "#A6A6A6")) &&
+        identical(.at14$cap, "Where they live (*N* = 103)") &&
+        identical(.at14$lines, c("Note: From the survey.", "Source: The survey office.")) &&
+        identical(.at14$rstyle, "report") && identical(.at14$rgrid, "#D9D9D9") &&
+        identical(.at14$qfam, "serif") && identical(.at14$q2fam, "sans") &&
+        identical(.at14$q2grid, "#D9D9D9"))
+
+# A figure's general note names the filter the chart was drawn under.
+.at15 <- .aqtry(local({
+  p <- res(jplot(tcm, Region, subset = Age >= 30))$val
+  f <- res(jtable(p, print = FALSE))$val
+  list(n = f$n, notes = .jst_table_note_lines(f, f$style, plain = TRUE))
+}))
+check("AT15 a figure's note names the filter its chart was drawn under, as a table's does (ruling R63: \"a filter sentence\"), its N the cases drawn",
+      !is.null(.at15) && identical(.at15$n, sum(tcm$Age >= 30, na.rm = TRUE)) &&
+        identical(.at15$notes, "Note. Only cases with Age (years) \u2265 30 are included."))
+
+# Ruling R72's note: a table or a figure that shows a name or a code.
+.at16 <- .aqtry(local({
+  d <- as.data.frame(tcm)
+  attr(d$Volunteer, "label") <- NULL
+  d$Edu <- haven::labelled(c(1, 2, 3, 4)[1 + seq_len(nrow(d)) %% 4],
+                           c("Some high school" = 1, "High school" = 2), label = "Education")
+  u <- data.frame(G = rep(1:2, 10), Y = seq(1, 20))
+  nt <- function(expr) {
+    k <- length(.seen); force(expr)
+    tx <- vapply(if (k) .seen[-seq_len(k)] else .seen, `[[`, "", "text")
+    sub("\n$", "", tx[grepl("^Note: (Table|Figure) 1 shows", tx)])
+  }
+  a  <- nt(res(jtable(res(jt(WellbeingScore ~ Volunteer, d, print = FALSE))$val, print = FALSE)))
+  b  <- nt(res(jtable(res(jfreq(d, Edu, print = FALSE))$val, print = FALSE)))
+  e  <- nt(res(jtable(res(jfreq(d, Age, print = FALSE))$val, print = FALSE)))
+  c0 <- nt(res(jtable(res(jt(Y ~ G, u, print = FALSE))$val, print = FALSE)))
+  old <- options(.jst_output_level = "full"); on.exit(options(old), add = TRUE)
+  c1 <- nt(res(jtable(res(jt(Y ~ G, u, print = FALSE))$val, print = FALSE)))
+  pf <- res(jplot(d, Edu, by = Volunteer, categorical = Edu))$val
+  fg <- nt(res(jtable(pf, print = FALSE)))
+  list(a = a, b = b, c0 = c0, c1 = c1, fg = fg, e = e)
+}))
+check("AT16 ruling R72's note, when a table or a figure is made: a variable shown by its name, codes shown without a value label (the line keeping the codes the result labels, \"...\" where a label goes) -- a frequency table's only where some of its codes are labelled, a variable's values with none being what they mean; consequential where the result holds labels, advisory at full where it holds none; a figure's asks for the chart to be drawn again (the S412 audit's F9)",
+      !is.null(.at16) &&
+        identical(.at16$a, "Note: Table 1 shows Volunteer by its name, having no variable label.\nTo show labels, add them with jrelabel(), then run the analysis again,\nfor example:\n  jrelabel(MyData, Volunteer, var.label = \"...\", modify = TRUE)") &&
+        identical(length(.at16$b), 1L) &&
+        identical(.at16$b, "Note: Table 1 shows codes 3 and 4 of Edu without value labels.\nTo show labels, add them with jrelabel(), then run the analysis again,\nfor example:\n  jrelabel(MyData, Edu,\n      labels = \"1=Some high school; 2=High school; 3=...; 4=...\",\n      modify = TRUE)") &&
+        identical(length(.at16$c0), 0L) && identical(length(.at16$c1), 1L) &&
+        identical(length(.at16$e), 0L) &&
+        startsWith(.at16$c1, "Note: Table 1 shows Y and G by their names, having no variable labels.\nIt shows codes 1 and 2 of G without value labels.") &&
+        identical(.at16$fg, "Note: Figure 1 shows Volunteer by its name, having no variable label.\nIt shows codes 3 and 4 of Edu without value labels.\nTo show labels, add them with jrelabel(), then draw the chart again,\nfor example:\n  jrelabel(d, Volunteer, var.label = \"...\", modify = TRUE)"))
+
+# The riders: a label breaks only where ruling R55 measured it; the
+# preview's marks; the stub floor's parenthetical.
+.at17 <- .aqtry(local({
+  d1 <- res(jdesc(tcm, Age, Income, WellbeingScore, print = FALSE))$val
+  t1 <- res(jtable(d1, markers = list("Mean-centered" = Age, "In US dollars" = Income)))$val
+  pv <- .strip_ansi(res(print(t1))$txt)
+  f <- file.path(.atd, "keep.docx")
+  invisible(res(jtable(d1, file = f, print = FALSE)))
+  doc <- .atdx(f)$doc
+  dd <- as.data.frame(tcm)
+  attr(dd$Income, "label") <- "Income (in thousands of US dollars per year)"
+  tb <- res(jtable(res(jdesc(dd, Income, print = FALSE))$val, print = FALSE))$val
+  list(pv = pv, doc = doc,
+       kt = .jst_docx_keep_text(paste0("Ages 18\u2013", "24 (in years)")),
+       floor = .jst_docx_stub_floor(tb, 12, 7000L),
+       want = as.integer(ceiling(max(.jst_docx_em_width("Income", NULL),
+                                     .jst_docx_em_width("(in thousands of US dollars per year)", NULL),
+                                     .jst_docx_em_width("Variable", NULL)) * 240)) + 216L)
+}))
+check("AT17 the riders: a label's hyphen is Word's non-breaking hyphen and a parenthetical's spaces no-break spaces, an en dash joined to what follows, so Word breaks a label only where ruling R55's measure did, which reads a parenthetical as one word; two specific notes in one paragraph keep their carets in the preview",
+      !is.null(.at17) &&
+        grepl("Wellbeing score (0</w:t><w:noBreakHyphen/><w:t xml:space=\"preserve\">100)</w:t>", .at17$doc, fixed = TRUE) &&
+        identical(.at17$kt, paste0("<w:t xml:space=\"preserve\">Ages 18\u2013\u2060", "24 (in\u00a0years)</w:t>")) &&
+        .at17$want > 3500L && identical(.at17$floor, .at17$want) &&
+        grepl("\n\\^a Mean-centered\\. \\^b In US dollars\\.\n", .at17$pv))
+
+# The riders: ruling R23's count of a range; jplot()'s stops on a result
+# it does not draw.
+.at18 <- .aqtry(local({
+  a1 <- res(jalpha(tcm, Environment1:Environment5, print = FALSE))$val
+  d1 <- res(jdesc(tcm, Age, print = FALSE))$val
+  list(gap_a = .jst_call_gap("jalpha", quote(jalpha(MyData, Q1:Q5))),
+       gap_c = .jst_call_gap("jcorr", quote(jcorr(MyData, c(Age, Income)))),
+       gap_1 = .jst_call_gap("jsum", quote(jsum(MyData, Q1)))$what,
+       pa = res(jplot(a1))$txt, pd = res(jplot(d1))$txt)
+}))
+check("AT18 the riders: ruling R23's check counts a range, and a c(), as two or more variables for jcorr(), jalpha(), jsum() and javg(), as for jmulti(); jplot() given a jalpha() or a jdesc() result names the result by its function, never its class, and says what a chart is drawn from",
+      !is.null(.at18) && is.null(.at18$gap_a) && is.null(.at18$gap_c) &&
+        identical(.at18$gap_1, "second variable") &&
+        startsWith(.at18$pa, "[error] jplot(): a1 is a jalpha() result, which has no chart of its own.\nA chart is drawn from the variables of a data frame, or from a jlm(),") &&
+        endsWith(.at18$pa, "To draw an item, give jplot() the data frame and the item, for example:\n  jplot(MyData, Environment1)") &&
+        startsWith(.at18$pd, "[error] jplot(): d1 is a jdesc() result, which has no chart of its own.\nCall jplot() with the data frame instead, for example:"))
+
+# The settings page and the style files carry [plot].
+.at19 <- .aqtry(local({
+  rd <- paste(.jst_style_settings_rd(), collapse = "\n")
+  invisible(res(jstyle("apa", save.as = file.path(.atd, "atcopy"))))
+  l <- readLines(file.path(.atd, "atcopy.jstyle"), encoding = "UTF-8")
+  list(rd = rd, l = l)
+}))
+check("AT19 ?jstyle_settings has the [plot] section, each setting with what it takes and its value in apa and report; a complete copy ends on [plot], under its head",
+      !is.null(.at19) &&
+        grepl("\\section{[plot]: a chart}{", .at19$rd, fixed = TRUE) &&
+        grepl("In apa: \\code{none}; in report: \\code{horizontal}.}", .at19$rd, fixed = TRUE) &&
+        grepl("\\item{\\code{palette}}", .at19$rd, fixed = TRUE) &&
+        "[plot]" %in% .at19$l &&
+        "# A chart, from jplot(): its look, and its picture in a Word file." %in% .at19$l &&
+        "palette = greys" %in% .at19$l)
+
+grDevices::dev.off(.atdev)
+rm(.atdx, .atpng, .atn, .atdev)
+
 options(.jst_options_style_dir = NULL, .jst_options_style = NULL)
 
-unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd, .ard, .asd), recursive = TRUE)
+unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd, .ard, .asd, .atd), recursive = TRUE)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # The analyses above raise notes and warnings of their own (a seems-

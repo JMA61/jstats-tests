@@ -109,6 +109,16 @@
 #           from its values (jlogistic's fit tables, jalpha, jdesc's Mean
 #           and SD, the VIF tables, jscreen's stats columns) and to jt's
 #           Cohen's d line, which had the eta-squared defect.
+# S415 EDIT (v0.9.279, 2026-11-10): K10's title names jlogistic()'s block
+#           "Outcome Encoding" (an (S414) rider; Jeff, S414); the check reads
+#           the block's last lines, not its heading, and is unchanged.
+#           LAST VERIFIED: v0.9.279, 2026-11-10 (S415) -- 332/332 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3686 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once through a
+#           symlinked temp path, once with interactive() TRUE, and entered
+#           dirty.
 # S395 EDIT (v0.9.267, 2026-10-23): W13, X01-X04, X07 AND X14 RE-PINNED. Fix
 #           Slate 30's second build: the S393 message pass's accepts (Jeff:
 #           "okay accept the rest"; "D1, D2, D3, okay with your
@@ -2277,7 +2287,7 @@ check("K09 the Welch note wraps by width: at width 50 no line of it passes 50, a
                           "to Welch's ANOVA. For the standard ANOVA table, run",
                           "jaov() without welch = TRUE.")) })
 
-check("K10 jlogistic ends on exactly one blank line, after the Dependent Variable Encoding block",
+check("K10 jlogistic ends on exactly one blank line, after the Outcome Encoding block (Dependent Variable Encoding until S415)",
       { o <- raw_out(jlogistic(yb ~ x1 + x2, data = f_log))
         n <- length(o)
         n > 3L && identical(o[(n - 2L):n],

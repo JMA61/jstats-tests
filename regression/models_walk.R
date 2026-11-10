@@ -71,6 +71,23 @@
 #           infinite value, its lines run.
 # ORIGIN:   S320 (v0.9.198). The first walk over jlm()/jlogistic(); the human
 #           half of models_check.R sections G and (since S321) H.
+# S415 EDIT (v0.9.279): CAPABILITY SLATE U'S CHARTS, BUILD 2 -- jlogistic()'s
+#           "Dependent Variable Encoding" block renamed "Outcome Encoding"
+#           (Jeff, S414: "use the language of predictor(s) and outcome";
+#           "Yes, I think we should change the jlogistic also to Outcome
+#           Encoding"). SECTIONS 17, 19, 25, 28 AND 29 RE-PINNED, the block's
+#           heading in their Expected blocks and in the Things to look at of
+#           19 and 29: Section 17 on the PENDING line, the new heading shown
+#           once; 19, 25, 28 and 29 re-pinned mechanically and kept off it.
+#           A capture of every section of every walk on 0.9.278 and on the
+#           build moves Sections 6, 17, 19, 25, 28, 29 and 30 here, each by
+#           that one line (6 and 30 pin no block that holds it). The charts'
+#           new look (ruling R64) shows in the Plots pane, not the Console.
+# LAST VERIFIED: v0.9.279, 2026-11-10 (S415) -- Section 17 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           Sections 19, 25, 28 and 29 re-pinned mechanically and not
+#           walked; PENDING back to none; R CMD check 0 errors, 0 warnings,
+#           0 notes; ALL BATTERIES GREEN (12 run, 3686 checks).
 # S395 EDIT (v0.9.267): FIX SLATE 30, THE SECOND BUILD -- the S393 message
 #           pass's accepts, with rulings R40-R44 and the (S393) parenthetical
 #           lean (Jeff, S393 and S395). SECTIONS 21, 26, 28, 29, 33, 34 AND 35
@@ -1403,7 +1420,7 @@ juse(NULL)
 #   -----------------  --------------  -------------  ------
 #         78.062            0.018          0.025      84.062
 #
-#   Dependent Variable Encoding
+#   Outcome Encoding
 #     Modeled (1):   Yes
 #     Reference (0): No
 #
@@ -1470,6 +1487,9 @@ options(.warn17); rm(.warn17)
 #     this call only:". Both name d, as the call did.
 #   - RENDER 2: the call named no data frame, so its two rerun lines name
 #     none. The jdummy() line names d, which it must.
+#   - RENDER 2 (S415): jlogistic()'s last block is headed "Outcome
+#     Encoding", where it said "Dependent Variable Encoding" until
+#     v0.9.279 (Jeff, S414); its two lines are unchanged.
 #   - RENDER 3: the formula is whole in both lines, scale(Stress, scale =
 #     FALSE) and all. The data was an expression, so the first block
 #     opens with "mydata <- d[d$SocialSupport > 5, ]" and its two lines name
@@ -1922,7 +1942,7 @@ tryCatch(jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d,
 #     2. Cook's Distance
 #     3. Residuals vs Leverage
 #
-#   Dependent Variable Encoding
+#   Outcome Encoding
 #     Modeled (1):   Yes
 #     Reference (0): No
 #
@@ -1949,7 +1969,7 @@ tryCatch(jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d,
 #     under it. A diagnostic's brief interpretation prints at the
 #     standard and full levels only, as the Levene note does.
 #   - RENDER 4: jlogistic()'s VIF table sits where it always has, above the
-#     Dependent Variable Encoding block; under it, since S375, the plot list
+#     Outcome Encoding block; under it, since S375, the plot list
 #     in jlm()'s form -- "3 diagnostic plots produced", "(use the arrow
 #     buttons ...)" under it, and Binned Residuals, Cook's Distance and
 #     Residuals vs Leverage -- with three plots in the Plots pane. Then the
@@ -2658,7 +2678,7 @@ jlogistic(Y ~ 1, data = y25)
 #   -----------------  --------------  -------------  ------
 #         78.859            0.000          0.000      80.859
 #
-#   Dependent Variable Encoding
+#   Outcome Encoding
 #     Modeled (1):   1
 #     Reference (0): 0
 
@@ -3138,7 +3158,7 @@ jlogistic(SoughtHelp ~ Stress + Condition, data = d, categorical = "Condition")
 #   -----------------  --------------  -------------  ------
 #         73.515            0.083          0.119      81.515
 #
-#   Dependent Variable Encoding
+#   Outcome Encoding
 #     Modeled (1):   Yes
 #     Reference (0): No
 #
@@ -3176,7 +3196,7 @@ jlogistic(SoughtHelp ~ Stress + Condition, data = d, categorical = "Condition")
 #   -----------------  --------------  -------------  ------
 #         76.975            0.034          0.048      86.975
 #
-#   Dependent Variable Encoding
+#   Outcome Encoding
 #     Modeled (1):   Yes
 #     Reference (0): No
 
@@ -3220,7 +3240,7 @@ jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d, std = "none")
 #   -----------------  --------------  -------------  ------
 #         77.015            0.033          0.047      85.015
 #
-#   Dependent Variable Encoding
+#   Outcome Encoding
 #     Modeled (1):   Yes
 #     Reference (0): No
 #
@@ -3255,7 +3275,7 @@ jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d, std = "none")
 #   -----------------  --------------  -------------  ------
 #         77.591            0.025          0.035      83.591
 #
-#   Dependent Variable Encoding
+#   Outcome Encoding
 #     Modeled (1):   Yes
 #     Reference (0): No
 
@@ -3301,7 +3321,7 @@ try(jlogistic(SoughtHelp ~ Stress + SocialSupport, data = d, std = "regular"))
 #   -----------------  --------------  -------------  ------
 #         77.015            0.033          0.047      85.015
 #
-#   Dependent Variable Encoding
+#   Outcome Encoding
 #     Modeled (1):   Yes
 #     Reference (0): No
 #
@@ -3458,7 +3478,7 @@ jlogistic(SoughtHelp ~ Stress * Condition, data = d,
 #   (GVIF) for the set.
 #   GVIF^(1/(2*Df)) squared is on the scale of an ordinary VIF.
 #
-#   Dependent Variable Encoding
+#   Outcome Encoding
 #     Modeled (1):   Yes
 #     Reference (0): No
 
@@ -3585,7 +3605,7 @@ joutput(NULL, quiet = TRUE)
 #
 #   Outcome: SoughtHelp
 #
-#   Dependent Variable Encoding
+#   Outcome Encoding
 #     Modeled (1):   Yes
 #     Reference (0): No
 #
@@ -3683,14 +3703,14 @@ rm(r29a, r29b, p29a, p29b, p29c)
 #     the size an interaction's columns usually have beside their own
 #     variable's: on the VIF scale (the last column squared) 5.6 and 6.2, so
 #     no line of interpretation. The table sits where jlogistic()'s VIF table
-#     always has, above the Dependent Variable Encoding block.
+#     always has, above the Outcome Encoding block.
 #   - RENDER 2: Z nearly reproduces Condition's dummy variables. Two lines
 #     of interpretation under the table, Z's in the ordinary form ("VIF =
 #     ...") and Condition's in the set's ("GVIF = ... on 3 df"). In a model
 #     of two terms their GVIFs are one number.
 #   - RENDER 3: in each model the fit block comes first, then one blank
 #     line and the Coefficients table with the Outcome line under it, as
-#     always; jlogistic()'s Dependent Variable Encoding stays last. The
+#     always; jlogistic()'s Outcome Encoding stays last. The
 #     joutput() echo reads "model.layout: FIT (override)", the jlm() under
 #     it takes the order from the setting, and the level call's panel reads
 #     "model.layout: COEFFICIENTS" again: a level call puts it back.

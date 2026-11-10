@@ -161,6 +161,18 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S415 EDIT (v0.9.279, 2026-11-10): AG15b RE-PINNED. Capability Slate U's
+#           charts, build 2, an (S414) rider: jplot()'s stop on a jdesc() or
+#           a jfreq() result names the result by its function ("a jdesc()
+#           result has no chart of its own."), where it named the class
+#           ("Plotting jst_desc result objects is not supported.").
+#           LAST VERIFIED: v0.9.279, 2026-11-10 (S415) -- 671/671 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3686 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once through a
+#           symlinked temp path, once with interactive() TRUE, and entered
+#           dirty.
 # S397 EDIT (v0.9.268, 2026-10-27): NEW SECTION AP (seven checks). Fix
 #           Slate 31, the (S395) jt(d, Age) item: the five formula functions
 #           given the data-first form -- a data frame then names, or names
@@ -6624,6 +6636,8 @@ check("AG15 the recode family's quoted-string stops: one sentence, then the exam
 # jplot()'s result stops -- each give the example on a line of its own.
 # RE-PINNED S395 (v0.9.267; Fix Slate 30, the S393 message pass): the
 # placeholder formula is "Outcome ~ Predictor" (ruling R43).
+# RE-PINNED S415 (v0.9.279; an (S414) rider): jplot()'s result stop names
+# the result by its function, "a jdesc() result", where it named the class.
 check("AG15b the parsers', the formula-order, vars = and jplot() result stops: no \"e.g.\", the example on a line of its own (pinned whole where short)",
       local({ e <- .ag_ws(ag1 = .ag1); assign("jlm", jlm, envir = e)
         ms <- list(
@@ -6654,8 +6668,8 @@ check("AG15b the parsers', the formula-order, vars = and jplot() result stops: n
           identical(ms[[9]], "jlm(): The first input must be a formula, for example:\n  jlm(Outcome ~ Predictor, MyData)") &&
           endsWith(ms[[10]], "for example:\n  vars = c(\"Age\", \"Income\")") &&
           endsWith(ms[[11]], "for example:\n  vars = c(\"Age\", \"Income\")") &&
-          grepl("is not supported.\nCall jplot() with the data frame instead, for example:\n  jplot(community, Age)", ms[[12]], fixed = TRUE) &&
-          grepl("is not supported.\nCall jplot() with the data frame instead, for example:\n  jplot(community, Region)", ms[[13]], fixed = TRUE) }))
+          grepl("^jplot\\(\\): a jdesc\\(\\) result has no chart of its own\\.\nCall jplot\\(\\) with the data frame instead, for example:\n  jplot\\(community, Age\\)", ms[[12]]) &&
+          grepl("^jplot\\(\\): a jfreq\\(\\) result has no chart of its own\\.\nCall jplot\\(\\) with the data frame instead, for example:\n  jplot\\(community, Region\\)", ms[[13]]) }))
 check("AG15c the registrations' clear-one-of-several stop: each way out on a line of its own (S374: they sat inline after \"e.g.\")",
       local({ old <- getOption(".jst_default_data"); options(.jst_default_data = NULL)
               assign(".ag74a", data.frame(a = 1:4), envir = globalenv())

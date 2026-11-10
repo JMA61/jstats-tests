@@ -83,6 +83,29 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S415 EDIT (v0.9.279, 2026-11-10): SECTION AJ ADDED, one check (567 in
+#           all). Capability Slate U's charts, build 2, an (S414) rider:
+#           jlogistic()'s "Outcome Encoding" block where "Dependent Variable
+#           Encoding" stood (Jeff, S414: "use the language of predictor(s)
+#           and outcome"); AJ01 reads the block's heading and its two lines,
+#           and went red on the build before and on the one-line mutant.
+#           THE NULL DEVICES (found on Jeff's walk after the receive: no
+#           chart in the Plots pane in tables_walk.R Section 17): every
+#           check that draws on a null device opens it with .null_dev(),
+#           which closes that device by its number and makes current again
+#           the device that was current before; 14 sites, where
+#           pdf(NULL) was closed by a bare dev.off(). AI05 (S394) called
+#           .ai_runs(), whose own device, closed, left R's lowest-numbered
+#           device current -- the Plots pane -- so AI05's dev.off() closed
+#           it and left its null device open, the run's charts drawn there.
+#           No check changed; the battery now leaves the device it found.
+#           LAST VERIFIED: v0.9.279, 2026-11-10 (S415) -- 567/567 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3686 checks)"; R CMD check 0 errors, 0 warnings, 0 notes), on the
+#           file before THE NULL DEVICES; the file with them 567/567 in the
+#           sandbox, plain and under the RStudio-handler stand-in, entered
+#           dirty, and every battery leaving a stand-in Plots device open
+#           and current. The workstation runs it at the next receive.
 # S395 EDIT (v0.9.267, 2026-10-23): O12, Q25, R05, W08, W11, X07, X08, Y18,
 #           AC01-AC03, AC05, AC07, AE05, AF01, AF04 AND AH03 RE-PINNED; THE
 #           I29 AND M18 CONTROLS FOLLOWED. Fix Slate 30's second build: the
@@ -1365,6 +1388,25 @@ check <- function(desc, expr) {
 # emits, concatenated -- so wording can be asserted without the call
 # halting the battery. Console output is swallowed. Verify any asserted
 # wording against SOURCE, not memory, when writing a check.
+# .null_dev(): open a null PDF device for a check's plots and return the
+# function that closes THAT device and makes current again the device that
+# was current before. dev.off() alone closes whichever device is current,
+# and when a device opened inside another check's is closed, R makes the
+# lowest-numbered device current -- the user's own, RStudio's Plots pane --
+# so AI05's dev.off() closed the Plots pane and left its null device
+# current, and every chart drawn after the batteries went into it (found
+# S415, on the walk of tables_walk.R Section 17 after the receive).
+.null_dev <- function() {
+  prev <- grDevices::dev.cur()
+  grDevices::pdf(NULL)
+  d <- grDevices::dev.cur()
+  function() {
+    if (d %in% grDevices::dev.list()) grDevices::dev.off(d)
+    if (prev > 1L && prev %in% grDevices::dev.list()) grDevices::dev.set(prev)
+    invisible(NULL)
+  }
+}
+
 grab <- function(expr) {
   msgs <- character(0)
   zz <- textConnection(".junk", "w", local = TRUE)
@@ -3979,7 +4021,7 @@ cat("\n--- O. Diagnostics in jlm() and jlogistic() ---\n")
 do <- d[, c("y", "yb", "x1", "x2")]
 do$x4 <- do$x1 + do$x2 / 12                  # nearly x1: a VIF far above 10
 .o_out <- function(expr) {
-  grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+  .nd <- .null_dev(); on.exit(.nd(), add = TRUE)
   res <- tryCatch(suppressMessages(suppressWarnings(utils::capture.output(expr))),
                   error = function(e) paste0("[error] ", conditionMessage(e)))
   gsub("\033\\[[0-9;]*[A-Za-z]", "", res)
@@ -3991,7 +4033,7 @@ do$x4 <- do$x1 + do$x2 / 12                  # nearly x1: a VIF far above 10
 .o_all5  <- c("Residuals vs Fitted", "Normal Q-Q", "Scale-Location",
               "Cook's Distance", "Residuals vs Leverage")
 .o_err <- function(expr) {
-  grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+  .nd <- .null_dev(); on.exit(.nd(), add = TRUE)
   grab(expr)
 }
 
@@ -4439,7 +4481,7 @@ dq$gh  <- haven::labelled(rep(1:3, length.out = .q_n),
 .q_both <- function(expr) {
   op  <- options(warn = 1L)
   tf  <- tempfile(); con <- file(tf, open = "wt"); sink(con)
-  grDevices::pdf(NULL)
+  .nd <- .null_dev()
   ok <- tryCatch({
     withCallingHandlers(force(expr),
       message = function(m) {
@@ -4451,7 +4493,7 @@ dq$gh  <- haven::labelled(rep(1:3, length.out = .q_n),
       })
     TRUE
   }, error = function(e) FALSE,
-  finally = { grDevices::dev.off(); sink(); close(con); options(op) })
+  finally = { .nd(); sink(); close(con); options(op) })
   res <- readLines(tf, warn = FALSE); unlink(tf)
   if (!ok) return("[error]")
   gsub("\033\\[[0-9;]*[A-Za-z]", "", res)
@@ -4460,8 +4502,8 @@ dq$gh  <- haven::labelled(rep(1:3, length.out = .q_n),
 .q_warns <- function(expr) {
   w <- character(0)
   zz <- textConnection(".junk", "w", local = TRUE); sink(zz, type = "output")
-  grDevices::pdf(NULL)
-  on.exit({ grDevices::dev.off(); sink(type = "output"); close(zz) }, add = TRUE)
+  .nd <- .null_dev()
+  on.exit({ .nd(); sink(type = "output"); close(zz) }, add = TRUE)
   withCallingHandlers(
     tryCatch(suppressMessages(expr), error = function(e) NULL),
     warning = function(x) { w <<- c(w, conditionMessage(x)); invokeRestart("muffleWarning") })
@@ -4772,7 +4814,7 @@ dq$xc <- round(seq(-2, 2, length.out = .q_n), 3)
 dq$yc <- round(1 + dq$xc + 2 * dq$xc^2 + rnorm(.q_n, sd = 0.3), 3)
 dq$`my var` <- dq$x2
 .q_fit <- function(m, ...) {
-  grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+  .nd <- .null_dev(); on.exit(.nd(), add = TRUE)
   p <- suppressMessages(suppressWarnings(jplot(m, which = "fit", ...)))
   b <- ggplot2::ggplot_build(p)
   list(sub = p$labels$subtitle, line = b$data[[3L]][, c("x", "y")])
@@ -4799,18 +4841,18 @@ check("Q36 a term built from the focal variable and a held one is computed at th
           grepl("line shown at I(scale(x1)^2) = 0", s, fixed = TRUE) }))
 check("Q37 the effect plots and jlogistic()'s probability plot follow a squared term the same way",
       local({ m  <- quiet(jlm(yc ~ xc + I(xc^2), data = dq))
-        grDevices::pdf(NULL)
+        .nd <- .null_dev()
         pl <- suppressMessages(suppressWarnings(jplot(m, which = "effects")))
-        grDevices::dev.off()
+        .nd()
         # One plot since S359 (one per variable): jplot() returns the plot itself.
         pl <- if (inherits(pl, "ggplot")) pl else pl$effect_xc
         ln <- ggplot2::ggplot_build(pl)$data[[2L]]
         set.seed(3471)
         dq$bc <- stats::rbinom(.q_n, 1, stats::plogis(-1 + 1.5 * dq$xc^2))
         g  <- quiet(jlogistic(bc ~ xc + I(xc^2), data = dq))
-        grDevices::pdf(NULL)
+        .nd <- .null_dev()
         pg <- suppressMessages(suppressWarnings(jplot(g, which = "probability")))
-        grDevices::dev.off()
+        .nd()
         pp <- if (inherits(pg, "ggplot")) pg else pg[[1L]]
         lg <- ggplot2::ggplot_build(pp)$data
         lg <- lg[[which(vapply(lg, nrow, integer(1)) == 120L)[1L]]]
@@ -4820,7 +4862,7 @@ check("Q37 the effect plots and jlogistic()'s probability plot follow a squared 
         ok_e && ok_g }))
 check("Q38 a box plot's groups are labeled as the Group Descriptives label them, following value.id: jaov() and jt() (the axis read 1, 2, 3, 4)",
       local({ lab <- function(r) {
-          grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+          .nd <- .null_dev(); on.exit(.nd(), add = TRUE)
           p <- suppressMessages(jplot(r))
           ggplot2::ggplot_build(p)$layout$panel_params[[1L]]$x$get_labels()
         }
@@ -5207,7 +5249,7 @@ rm(.t_has, .t_obj, .t_fix)
 .u_both <- function(expr) {
   op  <- options(warn = 1L)
   tf  <- tempfile(); con <- file(tf, open = "wt"); sink(con)
-  grDevices::pdf(NULL)
+  .nd <- .null_dev()
   ok <- tryCatch({
     withCallingHandlers(force(expr),
       message = function(m) {
@@ -5219,7 +5261,7 @@ rm(.t_has, .t_obj, .t_fix)
       })
     TRUE
   }, error = function(e) FALSE,
-  finally = { grDevices::dev.off(); sink(); close(con); options(op) })
+  finally = { .nd(); sink(); close(con); options(op) })
   res <- readLines(tf, warn = FALSE); unlink(tf)
   if (!ok) return("[error]")
   gsub("\033\\[[0-9;]*[A-Za-z]", "", res)
@@ -5227,8 +5269,8 @@ rm(.t_has, .t_obj, .t_fix)
 .u_warns <- function(expr) {
   w <- character(0)
   zz <- textConnection(".junk", "w", local = TRUE); sink(zz, type = "output")
-  grDevices::pdf(NULL)
-  on.exit({ grDevices::dev.off(); sink(type = "output"); close(zz) }, add = TRUE)
+  .nd <- .null_dev()
+  on.exit({ .nd(); sink(type = "output"); close(zz) }, add = TRUE)
   withCallingHandlers(
     tryCatch(suppressMessages(expr), error = function(e) NULL),
     warning = function(x) { w <<- c(w, conditionMessage(x)); invokeRestart("muffleWarning") })
@@ -5237,7 +5279,7 @@ rm(.t_has, .t_obj, .t_fix)
 # .u_plots(): what jplot() returns, as a named list of plots, drawn to no
 # device; .u_line(): a plot's line layer, as ggplot2 builds it.
 .u_plots <- function(expr) {
-  grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+  .nd <- .null_dev(); on.exit(.nd(), add = TRUE)
   p <- suppressMessages(suppressWarnings(utils::capture.output(v <- expr)))
   if (inherits(v, "ggplot")) list(v) else v
 }
@@ -5248,7 +5290,7 @@ rm(.t_has, .t_obj, .t_fix)
 }
 # .u_msg(): the messages a jplot() call gives, drawn to no device.
 .u_msg <- function(expr) {
-  grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+  .nd <- .null_dev(); on.exit(.nd(), add = TRUE)
   grab(expr)
 }
 set.seed(2)
@@ -6944,7 +6986,7 @@ cat("\n--- AI. Infinite values ---\n")
   if (length(at) != 1L || at == length(ln)) return(FALSE)
   ln <- trimws(ln[(at + 1L):length(ln)])
   tryCatch({
-    grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+    .nd <- .null_dev(); on.exit(.nd(), add = TRUE)
     utils::capture.output(suppressMessages(suppressWarnings(
       for (l in ln) eval(str2lang(l), env))))
     TRUE }, error = function(e) FALSE)
@@ -7001,7 +7043,7 @@ check("AI05 jplot(): a histogram and a scatterplot stop under the N line, \"whic
               e94$Fw94 <- rep(c(-Inf, 0, 1), 6)
               a <- grab(jplot(e94, Lg94)); b <- grab(jplot(Ya94 ~ Mx94, e94))
               v <- .ai_out(jplot(e94, Lg94))
-              grDevices::pdf(NULL); on.exit(grDevices::dev.off(), add = TRUE)
+              .nd <- .null_dev(); on.exit(.nd(), add = TRUE)
               c3 <- grab(print(jplot(e94, Fw94, type = "bar")))
               identical(a, paste0(.ai_head("jplot", what = "the plot\ncannot show."),
                                   "\n", .ai_set1, "  jplot(e94, Lg94R)")) &&
@@ -7043,6 +7085,16 @@ check("AI08 rider: jcrosstab() leaves a NaN case out of its table, as its Case P
                 any(grepl("^Total +8 +8 +16$", v)) && !any(grepl("^NaN", v)) &&
                 any(grepl("^-Inf ", v)) }))
 rm(.ai_frame, .ai_head, .ai_set1, .ai_out, .ai_runs, .ai_e94)
+
+cat("\n--- AJ. Outcome and predictor (S415) ---\n")
+# Jeff, S414: "use the language of predictor(s) and outcome instead of
+# dependent and independent variable" -- jlogistic()'s Console block, SPSS's
+# "Dependent Variable Encoding", is "Outcome Encoding" (an (S414) rider).
+check("AJ01 jlogistic() names its outcome's coding in an \"Outcome Encoding\" block -- the event as Modeled (1), the other category as Reference (0) -- where it said \"Dependent Variable Encoding\" until S415",
+      local({ v <- lines_of(jlogistic(Volunteer ~ Age, .jst_get_package_dataset("community")))
+              i <- match("Outcome Encoding", v)
+              !is.na(i) && identical(v[i + 1:2], c("  Modeled (1):   Yes", "  Reference (0): No")) &&
+                !any(grepl("Dependent Variable", v, fixed = TRUE)) }))
 
 # --- Verdict -----------------------------------------------------------------
 
