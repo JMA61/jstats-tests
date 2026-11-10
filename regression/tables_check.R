@@ -104,9 +104,30 @@
 #           caption, the report's line and the Word caption; a blank line
 #           after each setting in the files jstyle() writes, none between a
 #           setting's notes and the setting.
+#           (AS) Capability Slate U's charts, build 1 (S414, v0.9.278;
+#           rulings R60-R62 and R74-R79, with the riders): jmulti() -- the
+#           base of everyone who answered (a person blank or declared
+#           missing on every item out, a blank among the answers not
+#           chosen), each option's count and percentage computed here from
+#           the data, the options' order, a survey's own "None of these"
+#           box and jstats's row, the set's title and the options' names
+#           from the labels, ticked = (a "Y" box, a factor's level, TRUE,
+#           another number), the stops, the Console output pinned whole,
+#           the note on a set with no "No", the result and its accessors;
+#           the multiple-response table -- its structure, settings and
+#           note, the previews pinned whole under apa and report, the Word
+#           file, jtable()'s stops on it; the df by style (R74); the note's
+#           sentences and order by style and source = (R75, R79); the
+#           preview centering a column's numbers under a wider head (R76);
+#           caption.size and note.size following size (R77); caption.text
+#           in the Word file (R78); a style file's printout naming what the
+#           file sets; a call's title filled; open = TRUE's note where no
+#           program opens the file; jmulti() in rulings R22's and R23's
+#           stops; the settings help page.
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.277, 2026-11-07 (S410) -- 294/294 on the WORKSTATION;
-#           the S410 EDIT block below holds the stamp. Prior: v0.9.276,
+# LAST VERIFIED: v0.9.278, 2026-11-08 (S414) -- 315/315 on the WORKSTATION;
+#           the S414 EDIT block below holds the stamp. Prior: v0.9.277,
+#           2026-11-07 (S410) -- 294/294 (the S410 EDIT block); v0.9.276,
 #           2026-11-06 (S409, the rebuild) -- 287/287 (the S409 REBUILD
 #           block); v0.9.275, 2026-11-05 (S407, the second rebuild) --
 #           272/272 (the S407 SECOND REBUILD block); v0.9.274, 2026-11-04
@@ -143,6 +164,101 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S414 EDIT (v0.9.278, 2026-11-08): Capability Slate U's charts, build 1 --
+#           jmulti() and its table (rulings R60-R62 and the five leans
+#           okayed at S414's opening), the review's table rulings R74-R79
+#           (R80 is the walk's), and the riders. SECTION AS ADDED, 21
+#           checks (315 in all): AS01 jmulti()'s base (R61) and its counts,
+#           computed here from the data; AS02 the order -- ranked, a tie in
+#           the data frame's order, rank = FALSE, a survey's own box last,
+#           jstats's "None of these" row only when someone chose nothing;
+#           AS03 the set's title and the options' names from the labels (a
+#           colon, LimeSurvey's [option], Qualtrics's dashes, a parenthesis;
+#           no shared text; an item with no label); AS04 ticked = ("Y"
+#           boxes, a factor's level, TRUE, another number); AS05 the stops
+#           (an "Other" box among numbers, and among "Y" boxes; text under
+#           ticked = 1 with the line that runs; numbers under a text value;
+#           three values; one item; an item twice; none = of two; ticked =
+#           and rank = refused; no case answered; ruling R22's stop; an
+#           unused input); AS06 the Console output pinned whole, the full
+#           level's note, print = FALSE and silent, a filter; AS07 the note
+#           on a set with no "No"; AS08 the result, its stamp, its
+#           accessors, jsave() and saveRDS(); AS09 the table's structure
+#           and its settings (choice.note, none.label, stub.label, columns,
+#           a title's {set}); AS10 its previews pinned whole under apa and
+#           report, the report's line, the Word file; AS11 jtable()'s stops
+#           and markers = on a jmulti() result; AS12 R74; AS13 R75 and R79;
+#           AS14 R76; AS15 R77; AS16 R78; AS17 the printout's lines (the
+#           review's entry 9); AS18 a call's title filled (entry 12); AS19
+#           open = TRUE where no program opens the file (the (S410) item);
+#           AS20 jmulti() in rulings R22's and R23's stops; AS21 the
+#           settings help page.
+#           RE-PINNED, each value read from the battery run on the build:
+#           J12 (jmulti() among the functions a table is made from; the
+#           empty list's stop naming jtable() once, entry 5); K03, K04 and
+#           AL01 (the report's last line, "The table was made in R; no Word
+#           file was asked for.", and AL01's full-level note, entry 8); K06,
+#           AG04 and AG05 (the numbers centered under a wider head, ruling
+#           R76); N07 ([multiresponse] among the sections); R02 and AM05
+#           (source = among the inputs a built table refuses); S01 (open =
+#           TRUE's stop naming jtable() once, entry 5); U01 and AA01 (the
+#           new section and class, 36 general settings); AC04 (a call's
+#           title filling {group}, entry 12); AQ01 and AQ03 (report's new
+#           values -- df.position column, note.sentences lines, note.order
+#           report, source.position line, note.size size - 1, caption.size
+#           from apa -- and the printout's 146 settings from apa).
+#           Against v0.9.277 the battery reads 278/315: the 16 re-pinned
+#           checks and the 21 of section AS.
+#           MUTATION MAP (S414; 52 one-change mutants of descriptives.R,
+#           tables.R, broom-apa.R and checks.R, each anchor found once, run
+#           detached; by the checks that red). jmulti(): N as those who
+#           answered every item AS01, AS03, AS04, AS06-AS10; the "None of
+#           these" row counting those not in N AS01, AS02, AS04, AS06,
+#           AS08-AS10; a tie in reverse order AS02, AS03; rank = FALSE
+#           ignored AS02; the survey's own box ranked with the options AS02;
+#           the none row printed at zero AS02, AS04; the title keeping its
+#           colon AS03, AS06, AS08-AS10; LimeSurvey's "]" kept AS03; the
+#           title carrying an item's name AS03; a blank text cell counted as
+#           a value AS04, AS05; TRUE and FALSE swapped AS04 (it SURVIVED the
+#           round, the swap giving the same counts, and was run again once
+#           AS04 read the logical items' order); no stop on an "Other" box
+#           among "Y" boxes, on three values, on text under ticked = 1, on
+#           numbers under ticked = "Y", on an item named twice or on one item
+#           AS05 (six mutants); the no-"No" note given only under none =
+#           AS07; the full level's note at minimal, the N line's "answered no
+#           item" as "Excluded", no blank line under the title AS06 (three);
+#           no stamp AS08-AS11; the accessor's n_none as N AS08. The table:
+#           none.label, choice.note and percent.decimals ignored, {set}
+#           unfilled, "Options chosen" AS09 (and AS10 for {set} and the
+#           decimals); the report's "1 set of" line AS10; the split stop's
+#           wording AS11. R74 df.position ignored AS12; R75 note.sentences
+#           ignored AS10, AS13, note.order ignored AS13; R79 source.position
+#           ignored AS10, AS13, an empty source.label kept as a space AS13,
+#           the source's period not added AS10, AS13; R76 the numbers set at
+#           the column's right K06, AG04, AG05, AS14; R77 the follow form
+#           unread K01-K04 (the battery then stopping at K05), "size - 1"
+#           read as size + 1 AQ01, AQ09, AS15, the clamp's floor at 1 AS15;
+#           R78 caption.text unread AS16, the Word caption uncolored AQ04,
+#           AS16. The riders: entry 9's last line gone, a section's name
+#           before every setting AS17 (two); entry 12's {group} unfilled in a
+#           call's title AC04, AS18, its {outcome} AS18; lean 2's warning not
+#           caught, its blank line gone AS19 (two); entry 8's line reworded
+#           K03, K04, AL01; ruling R22's example of two items AS05, AS20; a
+#           range counted as one item AS20; the settings help page's sentence
+#           AS21.
+#           WORKSTATION, through receive_all(): "R CMD check: 0 errors, 0
+#           warnings, 0 notes."; "ALL BATTERIES GREEN (12 run, 3666 checks)"
+#           -- matching the sandbox (plain, under the RStudio-handler
+#           stand-in, each again with a 35-character temp path, interactive
+#           with no question asked, and with the temporary folder reached
+#           through a symlink; entered dirty plain and under the handlers,
+#           nothing added, removed or changed; a LANG=C install clean; the
+#           one-go receive_all() green). The 35-character runs first read
+#           AS08 and AS10 red: each read a line a long temporary path wraps
+#           (jsave()'s saveRDS() line broken after its comma, jtable()'s
+#           "Table written to" before the path); both now read the text
+#           with its whitespace flattened, and m29, the mutant AS10's report
+#           line reds, was run again on the new AS10 (red).
 # S410 EDIT (v0.9.277, 2026-11-06): the small build: ruling R59 and the (S409)
 #           blank-line rider. SECTION AR ADDED, 7 checks (294 in all); 55
 #           checks RE-PINNED. (AR01) apa's n.position is title and report
@@ -1750,9 +1866,9 @@ check("J11 an item with no name stops with the example; a value that is not a li
 .j12b <- res(jtable(tcm, print = FALSE))
 .j12c <- res(jtable(list(.j0, .a1), print = FALSE))
 .j12d <- res(jtable(list(), print = FALSE))
-check("J12 an object of no result class stops at the builders' default, naming every function a table is made from (S405: every class has its table; the S403 wording, the name once); a data frame is not a result; results of two kinds in one list stop -- since S406 (ruling R56) without \"yet\", with the lines that make each table and write them to one file, the call's print = kept; an empty list stops",
+check("J12 an object of no result class stops at the builders' default, naming every function a table is made from (S405: every class has its table; the S403 wording, the name once; since S414 jmulti() among them); a data frame is not a result; results of two kinds in one list stop -- since S406 (ruling R56) without \"yet\", with the lines that make each table and write them to one file, the call's print = kept; an empty list stops, naming jtable() once (S414, the review's entry 5)",
       is.null(.j12$val) &&
-        grepl("jtable(): no table is made from this kind of result yet.\nTables are made from jdesc(), jfreq(), jcorr(), jt(), jaov(), jcrosstab(),\njalpha(), jlm(), and jlogistic() results.", .j12$txt, fixed = TRUE) &&
+        grepl("jtable(): no table is made from this kind of result yet.\nTables are made from jdesc(), jfreq(), jcorr(), jt(), jaov(), jcrosstab(),\njalpha(), jlm(), jlogistic(), and jmulti() results.", .j12$txt, fixed = TRUE) &&
         is.null(.j12b$val) &&
         grepl("jtable(): a table is made from a saved result -- what an analysis", .j12b$txt, fixed = TRUE) &&
         grepl("  d1 <- jdesc(community, Age, Income)", .j12b$txt, fixed = TRUE) &&
@@ -1761,7 +1877,8 @@ check("J12 an object of no result class stops at the builders' default, naming e
                      "  ", .tn[1], " <- jtable(.j0)\n  ", .tn[2], " <- jtable(.a1)\n",
                      "  jtable(list(", .tn[1], ", ", .tn[2], "), file = \"Tables.docx\", print = FALSE)"),
               .j12c$txt, fixed = TRUE) &&
-        is.null(.j12d$val) && grepl("the list given to jtable() is empty.", .j12d$txt, fixed = TRUE))
+        is.null(.j12d$val) &&
+        grepl("jtable(): the list given is empty.\nGive a saved result, or a list of results or of built tables.", .j12d$txt, fixed = TRUE))
 
 .j13 <- res(jtable(.d1, print = FALSE))
 .j13o <- local({ old <- .j0; old$descriptives_raw <- NULL; attr(old, "jstats_version") <- "0.9.200"
@@ -1847,10 +1964,10 @@ check("K02 the numbers align on the decimal point: the M column's points sit in 
         identical(nchar(.k1l[3]), nchar(.k1l[5])) && identical(nchar(.k1l[3]), nchar(.k1l[13])))
 
 .k3 <- res(print(.j2))
-check("K03 jtable() prints its report, not the table (ruling R57, S406): the number and title, what the table holds and its page, that no file was written; print() on a table built the same way shows the same replica",
+check("K03 jtable() prints its report, not the table (ruling R57, S406): the number and title, what the table holds and its page, that the table was made in R with no Word file asked for (S414, the review's entry 8); print() on a table built the same way shows the same replica",
       identical(.k1r$txt, paste0("Table 1. Descriptive Statistics for Study Variables (N = 103)\n",
                                  "  4 variables under 3 headings, on a portrait page.\n",
-                                 "No file was written.\n")) &&
+                                 "The table was made in R; no Word file was asked for.\n")) &&
         identical(.k3$txt, .k1$txt))
 
 .k4a <- res(jtable(.j0, print = FALSE))
@@ -1864,7 +1981,7 @@ check("K04 print = FALSE prints nothing; under joutput(\"silent\") the default p
         identical(.k4b$txt, "") && inherits(.k4b$val, "jst_table") &&
         identical(.k4c$txt, paste0("Table 1. Descriptive Statistics (N = 103)\n",
                                    "  4 variables, on a portrait page.\n",
-                                   "No file was written.\n")))
+                                   "The table was made in R; no Word file was asked for.\n")))
 
 .k5 <- res(jtable(.j0, note = "Centered at the *mean*."))$val
 .k5l <- .jst_table_note_lines(.k5, .jst_style_apa, plain = TRUE)
@@ -1878,16 +1995,18 @@ check("K05 the note markup: *italic* and ^superscript^ are kept for the Word wri
         identical(.jst_table_note_lines(.j2, .jst_style_apa, plain = TRUE)[2], "^a Mean-centered."))
 
 # A column narrower than its head: the one-digit values sit right-aligned
-# under the centered head, the head's spare space on the left.
+# under the centered head, the head's spare space on the left. Since S414
+# (ruling R76) the values are centered under the head, as the Word file
+# centers a column's block, the odd space on the left.
 .k6 <- local({
   w <- data.frame(x = 1:9); attr(w$x, "label") <- "x"
   res(print(jtable(res(jdesc(w, x))$val, print = FALSE)))
 })
 .k6l <- strsplit(.k6$txt, "\n", fixed = TRUE)[[1]]
-check("K06 a number column narrower than its head: the values right-aligned under the centered head",
+check("K06 a number column narrower than its head: the values centered under the centered head, as the Word file centers them (ruling R76, S414; until S414 right-aligned)",
       identical(.k6l[4:6], c("Variable  n    M    SD   Min  Max",
                              "---------------------------------",
-                             "x         9  5.00  2.74    1    9")))
+                             "x         9  5.00  2.74   1    9")))
 
 # =============================================================================
 # L. The Word file
@@ -2372,7 +2491,7 @@ check("N07 a setting or a section this version does not have: a near miss gets t
         grepl("A general setting may be set there too.", .n7[[2]]$txt, fixed = TRUE) &&
         grepl("The general settings are font, size, paper,", .n7[[3]]$txt, fixed = TRUE) &&
         grepl("jtable(): line 1 of secnear.jstyle opens [frequncies], which is not\na section of a style.\nDid you mean [frequencies]?", .n7[[4]]$txt, fixed = TRUE) &&
-        grepl("The sections are [descriptives], [frequencies], [regression], [logistic],\n[correlation], [ttest], [anova], [crosstab], and [reliability].", .n7[[5]]$txt, fixed = TRUE))
+        grepl("The sections are [descriptives], [frequencies], [regression], [logistic],\n[correlation], [ttest], [anova], [crosstab], [reliability],\nand [multiresponse].", .n7[[5]]$txt, fixed = TRUE))
 
 .wsty("vchoice", "rules = box"); .wsty("vnum", "size = 100"); .wsty("vint", "decimals = 2.5")
 .wsty("vcol", "header.fill = notacolor"); .wsty("vcol2", "rule.color = none")
@@ -2818,7 +2937,7 @@ check("R02 the call's settings stopped: one of another table type's; a general s
         grepl("jtable(): none is not in quotes.\nmissing.rows = takes its value in quotes:\n  jtable(.nf1, missing.rows = \"none\", print = FALSE)", .r2[[6]]$txt, fixed = TRUE) &&
         grepl("jtable(): Absent is not in quotes.\nmissing.label = takes text in quotes:", .r2[[7]]$txt, fixed = TRUE) &&
         grepl("jtable(): `missing.rows` must be \"combined\", \"each\", or \"none\".", .r2[[8]]$txt, fixed = TRUE) &&
-        grepl("jtable(): headings =, markers =, title =, note =, style =, and a\nstyle's settings belong to the call that builds a table from a result; a\nbuilt table keeps its own.", .r2[[9]]$txt, fixed = TRUE))
+        grepl("jtable(): headings =, markers =, title =, note =, source =, style =,\nand a style's settings belong to the call that builds a table from a result;\na built table keeps its own.", .r2[[9]]$txt, fixed = TRUE))
 
 # =============================================================================
 # S. open = TRUE
@@ -2835,9 +2954,9 @@ cat("\n--- S. open = ---\n")
   c <- .jst_table_open(.p9f, FALSE, ask = TRUE, browse = rec)
   list(a = a, b = b, c = c, got = got)
 })
-check("S01 open = TRUE needs file =, the call given back with one; open = must be TRUE or FALSE; the file is handed to the opener only when open = TRUE and the session can show it, never in a script",
+check("S01 open = TRUE needs file =, the call given back with one (S414, the review's entry 5: jtable() named once); open = must be TRUE or FALSE; the file is handed to the opener only when open = TRUE and the session can show it, never in a script",
       is.null(.s1$val) &&
-        grepl("jtable(): open = TRUE opens the file jtable() writes, so it needs\nfile = as well, for example:\n  jtable(.nf1, open = TRUE, print = FALSE, file = \"Table1.docx\")", .s1$txt, fixed = TRUE) &&
+        grepl("jtable(): open = TRUE opens the file the call writes, so it needs\nfile = as well, for example:\n  jtable(.nf1, open = TRUE, print = FALSE, file = \"Table1.docx\")", .s1$txt, fixed = TRUE) &&
         grepl("jtable(): `open` must be TRUE or FALSE.", .s1b$txt, fixed = TRUE) &&
         isTRUE(.s2$a) && isFALSE(.s2$b) && isFALSE(.s2$c) &&
         identical(.s2$got, normalizePath(.p9f, winslash = "/")))
@@ -2875,7 +2994,8 @@ cat("\n--- U. The style and the formats, build 3 ---\n")
 check("U01 the apa list and the spec have [regression] and [logistic] sections, their columns and labels, and the general n.position (note | title | none, in note.n's place; apa's title since ruling R59, S409) and leading.zero's third value",
       all(c("regression", "logistic") %in% names(.jst_style_apa)) &&
         identical(names(.jst_style_type_nouns), c("descriptives", "frequencies", "regression", "logistic",
-                                                  "correlation", "ttest", "anova", "crosstab", "reliability")) &&
+                                                  "correlation", "ttest", "anova", "crosstab", "reliability",
+                                                  "multiresponse")) &&
         identical(.jst_style_apa$regression$columns, c("b", "se", "beta", "p")) &&
         identical(.jst_style_apa$logistic$columns, c("b", "se", "or", "p")) &&
         identical(.jst_style_spec$regression$columns$cols, c("b", "se", "beta", "p", "t", "ci", "beta.gelman")) &&
@@ -3561,23 +3681,23 @@ cat("\n--- AA. The general changes (build 4) ---\n")
 
 .aad <- file.path(tempdir(), "tables_check_b4"); unlink(.aad, recursive = TRUE); dir.create(.aad)
 
-check("AA01 the apa list and the spec hold the five new sections after logistic -- correlation, ttest, anova, crosstab, reliability -- each naming the same settings in the same order (since S409 31 general settings, with caption.fill, heading.fill and note.label.italic); filter.note joins the general settings (28), yes | no; jtable() reads nine result classes into the nine sections",
+check("AA01 the apa list and the spec hold the five new sections after logistic -- correlation, ttest, anova, crosstab, reliability -- each naming the same settings in the same order (since S409 31 general settings, with caption.fill, heading.fill and note.label.italic; since S414 36, with caption.text, note.sentences, note.order, source.position and source.label, and a tenth section, multiresponse); filter.note joins the general settings (28), yes | no; jtable() reads nine result classes into the nine sections (ten since S414, jmulti()'s)",
       identical(names(.jst_style_apa), c("general", "descriptives", "frequencies", "regression",
                                          "logistic", "correlation", "ttest", "anova", "crosstab",
-                                         "reliability")) &&
+                                         "reliability", "multiresponse")) &&
         identical(names(.jst_style_spec), names(.jst_style_apa)) &&
         all(vapply(names(.jst_style_apa), function(s) {
           identical(names(.jst_style_apa[[s]]), names(.jst_style_spec[[s]]))
         }, logical(1))) &&
-        length(.jst_style_apa$general) == 31L &&
+        length(.jst_style_apa$general) == 36L &&
         identical(.jst_style_apa$general$filter.note, "yes") &&
         identical(.jst_style_spec$general$filter.note$choices, c("yes", "no")) &&
         identical(unname(.jst_table_types),
                   c("descriptives", "frequencies", "regression", "logistic", "correlation",
-                    "ttest", "anova", "crosstab", "reliability")) &&
+                    "ttest", "anova", "crosstab", "reliability", "multiresponse")) &&
         identical(names(.jst_table_types),
                   c("jst_desc", "jst_freq", "jst_lm", "jst_logistic", "jst_corr",
-                    "jst_ttest", "jst_anova", "jst_crosstab", "jst_alpha")))
+                    "jst_ttest", "jst_anova", "jst_crosstab", "jst_alpha", "jst_multi")))
 
 check("AA02 the heads: V (Cramer's V) italic as a symbol; chi2, eta2 and alpha if item deleted upright (Greek letters); a head that carries the light markup is set by it -- *t*(101) and Item-total *r* -- the console showing it bare",
       "v" %in% .jst_tbl_italic_heads &&
@@ -3836,7 +3956,7 @@ check("AC03 rows of different df get a df column (Welch's at two decimals) and t
                      .jst_table_build_groups(.ac, s)[c("caption", "notes")] }),
        nosp = res(jtable(.ac, group.spanner = "no", title = "My {group}", print = FALSE))$val)
 }))$val
-check("AC04 a paired test said in the note, d named as dz (test.note = no leaves it out), the groups' ns in the note under apa's title (ruling R59, S409), equal ns too; n.position = title gives the groups' ns in the note as note does, and no N after the title (R59); group.spanner = no drops the grouping variable's label, the groups' spanners kept; a title given in the call is the call's",
+check("AC04 a paired test said in the note, d named as dz (test.note = no leaves it out), the groups' ns in the note under apa's title (ruling R59, S409), equal ns too; n.position = title gives the groups' ns in the note as note does, and no N after the title (R59); group.spanner = no drops the grouping variable's label, the groups' spanners kept; a title given in the call is the call's, its {group} filled as a template's (S414, the review's entry 12; until S414 printed as typed)",
       identical(.ac4$p, c("*n* = 6 (1) and 6 (2).",
                           "The *t* test is a paired-samples test; *d* is Cohen's *d*z, computed from the differences.")) &&
         identical(.ac4$pn, "*n* = 6 (1) and 6 (2).") &&
@@ -3845,7 +3965,7 @@ check("AC04 a paired test said in the note, d named as dz (test.note = no leaves
         identical(.ac4$ttl, .ac4$nte) &&
         length(.ac4$nosp$spanners) == 1L &&
         identical(vapply(.ac4$nosp$spanners[[1]], `[[`, "", "label"), c("No", "Yes")) &&
-        identical(.ac4$nosp$caption$title, "My {group}"))
+        identical(.ac4$nosp$caption$title, paste("My", .aal("Volunteer"))))
 
 .ac5 <- list(
   grp  = res(jtable(list(.ac[[1]], res(jt(Income ~ Smoker, tcm))$val), print = FALSE)),
@@ -4166,16 +4286,16 @@ cat("\n--- AG. The five previews ---\n")
   "Variable               n      %     n     %     n    %    \u03c7\u00b2   df    p    V",
   "----------------------------------------------------------------------------",
   "Current smoker                                           0.04   1  .834  .02",
-  "  No                   34    65.4   31   67.4  65  66.3",
-  "  Yes                  18    34.6   15   32.6  33  33.7",
+  "  No                  34    65.4    31   67.4  65  66.3",
+  "  Yes                 18    34.6    15   32.6  33  33.7",
   "Owns home                                                5.95   1  .015  .24",
-  "  Yes                  19    35.2   29   59.2  48  46.6",
-  "  No                   35    64.8   20   40.8  55  53.4",
+  "  Yes                 19    35.2    29   59.2  48  46.6",
+  "  No                  35    64.8    20   40.8  55  53.4",
   "Region of residence                                      2.89   3  .409  .17",
-  "  North                14    25.9   13   26.5  27  26.2",
-  "  South                13    24.1    7   14.3  20  19.4",
-  "  East                 17    31.5   14   28.6  31  30.1",
-  "  West                 10    18.5   15   30.6  25  24.3",
+  "  North               14    25.9    13   26.5  27  26.2",
+  "  South               13    24.1     7   14.3  20  19.4",
+  "  East                17    31.5    14   28.6  31  30.1",
+  "  West                10    18.5    15   30.6  25  24.3",
   "----------------------------------------------------------------------------",
   "Note. N differs by variable: 98 (Current smoker), 103",
   "(Owns home and Region of residence).")
@@ -4185,11 +4305,11 @@ cat("\n--- AG. The five previews ---\n")
   "-----------------------------------------------------------------------------------------------------",
   "Item                                                        M    SD   Item-total r  \u03b1 if item deleted",
   "-----------------------------------------------------------------------------------------------------",
-  "Climate change is a serious threat.                       3.15  1.16           .67                .80",
-  "Concern about the environment is exaggerated (reversed).  3.15  1.19           .72                .79",
-  "Government should do more for the environment.            3.10  1.27           .74                .78",
-  "I would pay more for environmentally friendly products.   3.39  1.22           .71                .79",
-  "Pollution is a major cause of public health problems.     2.74  1.45           .44                .87",
+  "Climate change is a serious threat.                       3.15  1.16       .67             .80",
+  "Concern about the environment is exaggerated (reversed).  3.15  1.19       .72             .79",
+  "Government should do more for the environment.            3.10  1.27       .74             .78",
+  "I would pay more for environmentally friendly products.   3.39  1.22       .71             .79",
+  "Pollution is a major cause of public health problems.     2.74  1.45       .44             .87",
   "-----------------------------------------------------------------------------------------------------",
   "Note. Only cases with Age (years) \u2265 30 are included. Cronbach's \u03b1 = .84.",
   "Item-total r is each item's correlation with the sum of the other items.")
@@ -4203,9 +4323,9 @@ check("AG02 the t-test table's preview, pinned whole (Table 2): the grouping var
       identical(.agl(.ag2), .ag2_pin) && endsWith(.ag2$txt, "49 (Yes).\n"))
 check("AG03 the ANOVA table's preview, pinned whole (Table 3): four regions, the df column centered, eta2 without its zero, the groups' ns varying with missing data",
       identical(.agl(.ag3), .ag3_pin) && endsWith(.ag3$txt, "West, 23 to 25.\n"))
-check("AG04 the crosstab's preview, pinned whole (Table 4): each variable's label row carrying its test, its categories indented, n and % under each group and the Total, N differing by variable",
+check("AG04 the crosstab's preview, pinned whole (Table 4): each variable's label row carrying its test, its categories indented, n and % under each group and the Total, N differing by variable; since S414 each column's block of numbers centered in its column, as the Word file centers it (ruling R76)",
       identical(.agl(.ag4), .ag4_pin) && endsWith(.ag4$txt, "Region of residence).\n"))
-check("AG05 the item table's preview, pinned whole (Table 5): N after the title (ruling R59, S409), the items by their wording, item-total r and alpha if item deleted without the zero, the filter, alpha and the definition in the note -- the alpha's \"= .84\" kept on one line by the prose wrapper (S405: a name = value pair starting with a letter of any script)",
+check("AG05 the item table's preview, pinned whole (Table 5): N after the title (ruling R59, S409), the items by their wording, item-total r and alpha if item deleted without the zero, the filter, alpha and the definition in the note -- the alpha's \"= .84\" kept on one line by the prose wrapper (S405: a name = value pair starting with a letter of any script); since S414 the two right-hand columns' blocks centered under their wide heads (ruling R76)",
       identical(.agl(.ag5), .ag5_pin) && endsWith(.ag5$txt, "the other items.\n"))
 
 # =============================================================================
@@ -4619,17 +4739,17 @@ invisible(utils::capture.output(suppressMessages(joutput("full"))))
 .al2 <- res(jtable(.akd1))
 .al2n <- .seen[-seq_len(.aln0)]
 invisible(utils::capture.output(suppressMessages(joutput(NULL))))
-check("AL01 a table with no file: the report -- its number and title, what it holds and its page, and that no file was written -- in place of the table; at joutput(\"full\") a note gives the call with file = and the lines that keep the table and print it",
+check("AL01 a table with no file: the report -- its number and title, what it holds and its page, and that the table was made in R with no Word file asked for -- in place of the table; at joutput(\"full\") a note gives the call with file = and the line that prints a table kept with <- (S414, the review's entry 8: no assignment R cannot see prescribed)",
       identical(.al1$txt, paste0("Table 1. Descriptive Statistics (N = 103)\n",
                                  "  2 variables, on a portrait page.\n",
-                                 "No file was written.\n")) &&
+                                 "The table was made in R; no Word file was asked for.\n")) &&
         .al1n == 0L && inherits(.al1$val, "jst_table") &&
         identical(.al2$txt, .al1$txt) && length(.al2n) == 1L &&
         identical(sub("\n$", "", .al2n[[1]]$text),
                   paste0("Note: to write the table to a Word file, add file = to the call:\n",
                          "  jtable(.akd1, file = \"Table1.docx\")\n",
-                         "To see the table here, keep it with <- and print it:\n",
-                         "  t1 <- jtable(.akd1)\n",
+                         "To see a table here, print it by the name it was kept under with <-,\n",
+                         "for example:\n",
                          "  print(t1)")))
 
 .al3f <- file.path(.akd, "One.docx")
@@ -4785,7 +4905,7 @@ check("AM04 landscape = in the writing call sets every page (no: one portrait se
 .am5b <- res(jtable(list(.alA, .alB), file = file.path(.akd, "No2.docx"), fit.rows = "r2"))
 check("AM05 with built tables, landscape = is checked as a style file's value is; any other setting still stops, a built table keeping its own; neither call writes",
       identical(.am5a$txt, "[error] jtable(): `landscape` must be \"auto\", \"yes\", or \"no\".") &&
-        startsWith(.am5b$txt, "[error] jtable(): headings =, markers =, title =, note =, style =, and a\n") &&
+        startsWith(.am5b$txt, "[error] jtable(): headings =, markers =, title =, note =, source =, style =,\n") &&
         !file.exists(file.path(.akd, "No1.docx")) && !file.exists(file.path(.akd, "No2.docx")))
 
 # =============================================================================
@@ -5510,7 +5630,7 @@ cat("\n--- AQ. The report style, the new looks, open =, the heads ---\n")
   }
   out
 }))
-check("AQ01 report is a built-in style, a short style based on apa (its layers report, then apa; no file): Arial 10, the caption 10 and the note 9, the report caption form, a D9D9D9 bold header, the zero kept, an upright \"Note:\", each variable's label row bold -- and every other setting apa's, the three new looks off; no name is kept for a built-in to come",
+check("AQ01 report is a built-in style, a short style based on apa (its layers report, then apa; no file): Arial 10, the caption 10 and the note 9, the report caption form, a D9D9D9 bold header, the zero kept, an upright \"Note:\", each variable's label row bold -- and every other setting apa's, the three new looks off; no name is kept for a built-in to come. Since S414: the caption follows size from apa and the note is size - 1 (ruling R77), the note's sentences a line each in the report manuals' order with the source on a line of its own (R75, R79), the t test's and ANOVA's df in a column (R74)",
       identical(names(.jst_style_builtin()), c("apa", "report")) &&
         identical(.jst_style_reserved, character(0)) &&
         inherits(.aq1, "jst_style") && is.na(.aq1$path) &&
@@ -5522,9 +5642,13 @@ check("AQ01 report is a built-in style, a short style based on apa (its layers r
           identical(.jst_style_key(.aq1, p, "variable.headings"), "bold")
         }, logical(1))) &&
         identical(sort(.aq1diff),
-                  sort(c(paste0("general:", names(.aq1own)),
+                  sort(c(paste0("general:", c(names(.aq1own), "note.sentences", "note.order",
+                                              "source.position")),
                          paste0(c("frequencies", "regression", "logistic", "crosstab"),
-                                ":variable.headings")))) &&
+                                ":variable.headings"),
+                         "ttest:df.position", "anova:df.position"))) &&
+        is.null(.jst_style_report$general$caption.size) &&
+        identical(.jst_style_report$general$note.size, "size - 1") &&
         identical(.jst_style_key(.aq1, "general", "caption.fill"), "none") &&
         identical(.jst_style_key(.aq1, "general", "heading.fill"), "none") &&
         identical(.jst_style_key(.aq1, "general", "rules"), "apa") &&
@@ -5571,9 +5695,9 @@ check("AQ02 three new general settings, placed beside their kin -- caption.fill 
 .aq3l <- strsplit(.aq3, "\n", fixed = TRUE)[[1]]
 check("AQ03 jstyle(\"report\") prints the style as built into jstats and based on apa, its own settings unmarked and every other marked as apa's",
       identical(.aq3l[1:4], c("Style: report", "  built into jstats", "  based on apa", "")) &&
-        all(c("font              = Arial", "size              = 10", "caption.form      = report", "caption.size      = 10", "header.fill       = D9D9D9", "header.bold       = yes", "note.label        = Note:", "note.label.italic = no", "note.size         = 9", "leading.zero      = yes") %in% .aq3l) &&
+        all(c("font              = Arial", "size              = 10", "caption.form      = report", "caption.size      = size            # from apa", "header.fill       = D9D9D9", "header.bold       = yes", "note.label        = Note:", "note.label.italic = no", "note.size         = size - 1", "leading.zero      = yes") %in% .aq3l) &&
         all(c("paper             = a4              # from apa", "header.text       = 000000          # from apa", "rules             = apa             # from apa") %in% .aq3l) &&
-        sum(grepl("# from apa$", .aq3l)) == 136L)
+        sum(grepl("# from apa$", .aq3l)) == 146L)
 
 # The caption bar: caption.fill = header takes the header's fill and text
 # color; a color fills the bar and leaves the text; a caption set as a
@@ -6071,9 +6195,584 @@ check("AR07 a short file: a blank line after each of its four settings but the l
         identical(.ar7$l[grep("^fit.rows = r2, n$", .ar7$l) + 1:2], c("", "[crosstab]")) &&
         identical(.ar7$vals, list("Calibri", 11, "no", c("r2", "n"))))
 
+# =============================================================================
+# AS. S414 (v0.9.278): Capability Slate U's charts, build 1 -- jmulti() and
+#     its table (rulings R60-R62), the review's table rulings R74-R79, and the
+#     riders: open = TRUE's opener, the review's entries 5, 8, 9, 10 and 12
+# =============================================================================
+cat("\n--- AS. jmulti() and its table, the table rulings R74-R79, the riders ---\n")
+
+.asd <- file.path(tempdir(), "tables_check_s414"); unlink(.asd, recursive = TRUE); dir.create(.asd)
+# "Which services have you used?": four items, 1 = chosen, 2 = not chosen,
+# -99 declared missing ("Not asked", the twelfth person); the seventh blank
+# on every item, the ninth blank on Housing alone. The data frame's order
+# is not the order of the counts.
+.asl <- function(x, opt) haven::labelled_spss(x, labels = c(Yes = 1, No = 2, "Not asked" = -99),
+                                              na_values = -99, label = paste0("Services used: ", opt))
+.asv <- data.frame(
+  LegalAid    = .asl(c(2, 2, 1, 1, 2, 2, NA, 2, 2, 2, 1, -99), "Legal aid"),
+  Counselling = .asl(c(1, 2, 1, 2, 2, 1, NA, 2, 1, 2, 1, -99), "Counselling"),
+  Financial   = .asl(c(2, 2, 2, 2, 2, 1, NA, 2, 2, 2, 1, -99), "Financial advice"),
+  Housing     = .asl(c(2, 1, 1, 2, 2, 1, NA, 2, NA, 2, 1, -99), "Housing"))
+# The expected values, from the data: the base is everyone with an answer
+# on any item (ruling R61), the declared code no answer.
+.asx <- local({
+  m <- sapply(.asv, function(x) { v <- as.numeric(unclass(x)); v[!is.na(v) & v == -99] <- NA; v })
+  base <- rowSums(!is.na(m)) > 0
+  tick <- !is.na(m) & m == 1
+  list(n = sum(base), out = sum(!base), counts = colSums(tick & base),
+       none = sum(base & rowSums(tick) == 0))
+})
+.as1 <- res(jmulti(.asv, LegalAid:Housing))
+.as1m <- .as1$val
+.asord <- names(sort(-.asx$counts[c("LegalAid", "Counselling", "Financial", "Housing")]))
+check("AS01 jmulti() counts a multiple-response set on everyone who answered (ruling R61): a person blank or declared missing on every item is out, a blank among a person's answers is not chosen; each option's count and its percentage of that base, computed here from the data; those who chose none a row of their own, last",
+      inherits(.as1m, "jst_multi") &&
+        identical(c(.as1m$n, .as1m$n_excluded, .as1m$n_none), c(.asx$n, .asx$out, .asx$none)) &&
+        identical(.asx$n, 10L) && identical(.asx$out, 2L) && identical(.asx$none, 3L) &&
+        identical(names(.as1m$rows_raw), c("item", "label", "option", "kind", "n", "percent")) &&
+        identical(.as1m$rows_raw$item, c(.asord, NA)) &&
+        identical(.as1m$rows_raw$n, as.integer(c(.asx$counts[.asord], .asx$none))) &&
+        isTRUE(all.equal(.as1m$rows_raw$percent, 100 * c(.asx$counts[.asord], .asx$none) / .asx$n,
+                         check.attributes = FALSE)) &&
+        identical(.as1m$rows_raw$kind, c("item", "item", "item", "item", "none")) &&
+        identical(.as1m$items, c("LegalAid", "Counselling", "Financial", "Housing")))
+
+# The order: ranked by count, ties in the data frame's order; rank = FALSE;
+# a survey's own "None of these" box last, named in the range or not; jstats's
+# own row only when someone answered and chose nothing at all.
+.as2 <- .aqtry(local({
+  tie <- data.frame(A = c(1, 2, 1, 2), B = c(1, 1, 2, 2), C = c(2, 1, 1, 1))   # 2, 2, 3
+  nb <- .asv; nb$NoneBox <- .asl(c(2, 2, 2, 2, 1, 2, NA, 1, 2, 2, 2, -99), "None of these")
+  list(tie = res(jmulti(tie, A, B, C, print = FALSE))$val$rows_raw$item,
+       file = res(jmulti(.asv, LegalAid:Housing, rank = FALSE, print = FALSE))$val$rows_raw$item,
+       box = res(jmulti(nb, LegalAid:Housing, none = NoneBox, print = FALSE))$val,
+       box2 = res(jmulti(nb, LegalAid:NoneBox, none = "NoneBox", print = FALSE))$val,
+       all = res(jmulti(data.frame(A = c(1, 1, 2), B = c(2, 1, 1)), A, B, print = FALSE))$val)
+}))
+check("AS02 the options ranked by count, a tie in the data frame's order; rank = FALSE keeps that order; none = puts the survey's own box last after the ranked options, whatever its count, named in the range or not; jstats's \"None of these\" row only when someone who answered chose nothing at all, after the survey's box",
+      !is.null(.as2) &&
+        identical(.as2$tie, c("C", "A", "B")) &&
+        identical(.as2$file, c("LegalAid", "Counselling", "Financial", "Housing", NA)) &&
+        identical(.as2$box$rows_raw$item, c(.asord, "NoneBox", NA)) &&
+        identical(.as2$box$rows_raw$kind, c("item", "item", "item", "item", "none_box", "none")) &&
+        identical(.as2$box$rows_raw$n[5:6], c(2L, 1L)) && identical(.as2$box$none, "NoneBox") &&
+        identical(.as2$box2$rows_raw, .as2$box$rows_raw) &&
+        identical(.as2$all$rows_raw$kind, c("item", "item")) && identical(.as2$all$n_none, 0L))
+
+# The title and the options' names: what the labels share, cut back to a
+# separator, and what each label adds (R62's lean, okayed S414).
+.as3 <- .aqtry(local({
+  lab <- function(labs) {
+    d <- data.frame(A = c(1, 2), B = c(2, 1))
+    for (i in seq_along(labs)) if (!is.na(labs[i])) attr(d[[i]], "label") <- labs[i]
+    m <- res(jmulti(d, A, B, print = FALSE))$val
+    c(m$title, m$rows_raw$option[m$rows_raw$kind == "item"])
+  }
+  list(colon = lab(c("Services used: Counselling", "Services used: Housing")),
+       lime  = lab(c("Which services have you used? [Counselling]", "Which services have you used? [Housing]")),
+       qual  = lab(c("Q1 - Which services? - Selected Choice - Counselling", "Q1 - Which services? - Selected Choice - Housing")),
+       paren = lab(c("Used (Counselling)", "Used (Housing)")),
+       none  = lab(c("Legal aid", "Legal advice")),
+       nolab = lab(c("Services used: Counselling", NA)),
+       same  = lab(c("Used", "Used")),
+       cons  = .strip_ansi(res(jmulti(.asv, LegalAid:Housing))$txt),
+       labs  = .strip_ansi(res(jmulti(.asv, LegalAid:Housing, variable.id = "labels"))$txt))
+}))
+check("AS03 the set's title is the text its items' labels share, cut back to a separator -- a colon, a LimeSurvey question's [option], a Qualtrics label's dashes, a parenthesis -- each option named by the rest of its label, the closing bracket dropped; labels that share no such text, or an item with no label, title the set \"Options Chosen\" and name each option by its label or its name; the Console shows the names, or with variable.id = \"labels\" the options",
+      !is.null(.as3) &&
+        identical(.as3$colon, c("Services used", "Counselling", "Housing")) &&
+        identical(.as3$lime, c("Which services have you used?", "Counselling", "Housing")) &&
+        identical(.as3$qual, c("Q1 - Which services? - Selected Choice", "Counselling", "Housing")) &&
+        identical(.as3$paren, c("Used", "Counselling", "Housing")) &&
+        identical(.as3$none, c(NA, "Legal aid", "Legal advice")) &&
+        identical(.as3$nolab, c(NA, "Services used: Counselling", "B")) &&
+        identical(.as3$same, c(NA, "Used", "Used")) &&
+        grepl("\nServices used\n", .as3$cons, fixed = TRUE) &&
+        grepl("\nCounselling      5    50.00\n", .as3$cons, fixed = TRUE) &&
+        grepl("\nLegalAid         3    30.00\n", .as3$cons, fixed = TRUE) &&
+        grepl("\nLegal aid           3    30.00\n", .as3$labs, fixed = TRUE) &&
+        grepl("\nFinancial advice    2    20.00\n", .as3$labs, fixed = TRUE))
+
+# ticked =: the value an item holds when its option was chosen.
+.as4 <- .aqtry(local({
+  lc <- data.frame(Q1_SQ001 = c("Y", "", "Y", " "), Q1_SQ002 = c("", "Y", "Y", ""), stringsAsFactors = FALSE)
+  rc <- data.frame(A = factor(c("Checked", "Unchecked", "Checked")),
+                   B = factor(c("Unchecked", "Unchecked", "Checked")))
+  lg <- data.frame(A = c(TRUE, FALSE, TRUE), B = c(FALSE, FALSE, TRUE))
+  list(lc = res(jmulti(lc, Q1_SQ001:Q1_SQ002, ticked = "Y", print = FALSE))$val,
+       rc = res(jmulti(rc, A, B, ticked = "Checked", print = FALSE))$val,
+       lg = res(jmulti(lg, A, B, print = FALSE))$val,
+       two = res(jmulti(.asv, LegalAid:Housing, ticked = 2, print = FALSE))$val)
+}))
+check("AS04 ticked = names the value a chosen option's item holds: text written \"Y\" or blank (LimeSurvey's CSV; a blank or spaces not chosen, and a person blank on every item out); a factor's level (REDCap's \"Checked\"); TRUE under the default 1; another number",
+      !is.null(.as4) &&
+        identical(.as4$lc$n, 3L) && identical(.as4$lc$n_excluded, 1L) &&
+        identical(.as4$lc$rows_raw$n, c(2L, 2L)) && identical(.as4$lc$ticked, "Y") &&
+        identical(.as4$rc$rows_raw$item, c("A", "B", NA)) && identical(.as4$rc$rows_raw$n, c(2L, 1L, 1L)) &&
+        identical(.as4$rc$n_none, 1L) &&
+        identical(.as4$lg$rows_raw$item, c("A", "B", NA)) &&
+        identical(.as4$lg$rows_raw$n[1:2], c(2L, 1L)) && identical(.as4$lg$n_none, 1L) &&
+        identical(.as4$two$rows_raw$n[.as4$two$rows_raw$kind == "item"],
+                  as.integer(sort(colSums(sapply(.asv, function(x) {
+                    v <- as.numeric(unclass(x)); !is.na(v) & v == 2
+                  })), decreasing = TRUE))))
+
+# The stops.
+.as5 <- .aqtry(local({
+  oth <- data.frame(Q1_SQ001 = c(1, 2, 1), Q1_SQ002 = c(2, 1, 1), Q1_other = c("", "bus", ""),
+                    stringsAsFactors = FALSE)
+  lc <- data.frame(Q1_SQ001 = c("Y", "", "Y"), Q1_SQ002 = c("", "Y", "Y"), stringsAsFactors = FALSE)
+  three <- data.frame(A = c(1, 2, 3), B = c(1, 2, 2))
+  blank <- data.frame(A = c(NA, NA), B = c(NA, NA))
+  lco <- data.frame(Q1_SQ001 = c("Y", "", "Y"), Q1_SQ002 = c("", "Y", "Y"),
+                    Q1_other = c("taxi", "bus pass", "walk"), stringsAsFactors = FALSE)
+  list(oth   = res(jmulti(oth, Q1_SQ001:Q1_other, print = FALSE)),
+       oth2  = res(jmulti(lco, Q1_SQ001:Q1_other, ticked = "Y", print = FALSE)),
+       lc    = res(jmulti(lc, Q1_SQ001:Q1_SQ002, print = FALSE)),
+       lcrun = res(jmulti(lc, Q1_SQ001:Q1_SQ002, ticked = "Y", print = FALSE)),
+       num   = res(jmulti(.asv, LegalAid, Housing, ticked = "Y", print = FALSE)),
+       three = res(jmulti(three, A, B, print = FALSE)),
+       one   = res(jmulti(.asv, LegalAid, print = FALSE)),
+       twice = res(jmulti(.asv, LegalAid, Housing, LegalAid, print = FALSE)),
+       nones = res(jmulti(.asv, LegalAid, Housing, none = c(Financial, Counselling), print = FALSE)),
+       tk2   = res(jmulti(.asv, LegalAid, Housing, ticked = c(1, 2), print = FALSE)),
+       tkw   = res(jmulti(.asv, LegalAid, Housing, ticked = Y, print = FALSE)),
+       rank  = res(jmulti(.asv, LegalAid, Housing, rank = "no", print = FALSE)),
+       blank = res(jmulti(blank, A, B, print = FALSE)),
+       r22   = res(jmulti()),
+       unused = res(jmulti(.asv, LegalAid, Housing, rnk = FALSE, print = FALSE)))
+}))
+check("AS05 the stops: a text item in a set of numbers named (LimeSurvey's \"Other\" box), and under a text ticked = a text item holding what no other item holds, its first two values shown; text items under ticked = 1 given the line with their value as ticked =, which runs; numbers under a text ticked =; an item of three values; one item; an item named twice; none = of two variables; ticked = of two values, or a bare word (the pointer); rank = not a flag; no case with an answer; nothing named (ruling R22's example); an input jmulti() does not take",
+      !is.null(.as5) &&
+        identical(.as5$oth$txt, "[error] jmulti(): Q1_other is a text variable, not a yes/no item.\nName only the set's yes/no items, and leave out a text answer such as an\n\"Other\" box.") &&
+        identical(.as5$oth2$txt, "[error] jmulti(): Q1_other holds text that no other item of the set holds\n(\"taxi\", \"bus pass\", ...), so it is not a yes/no item.\nName only the set's yes/no items, and leave out a text answer such as an\n\"Other\" box.") &&
+        identical(.as5$lc$txt, "[error] jmulti(): Q1_SQ001 and Q1_SQ002 hold text (\"Y\"), not numbers, and\nticked = is 1.\nIf \"Y\" marks a chosen option, name it with ticked =:\n  jmulti(lc, Q1_SQ001:Q1_SQ002, print = FALSE, ticked = \"Y\")") &&
+        inherits(.as5$lcrun$val, "jst_multi") &&
+        identical(.as5$num$txt, "[error] jmulti(): LegalAid and Housing hold numbers, and ticked = is \"Y\",\nwhich is text.\nGive ticked = the value a chosen option's item holds.") &&
+        identical(.as5$three$txt, "[error] jmulti(): A holds 3 different values, so it is not a yes/no item.\nName only the set's yes/no items, each chosen or not.") &&
+        identical(.as5$one$txt, "[error] jmulti(): a multiple-response set needs at least 2 items.\nOnly 1 was provided.\nProvide two or more items, for example:\n  jmulti(community, Volunteer, Smoker, OwnsHome)") &&
+        identical(.as5$twice$txt, "[error] jmulti(): LegalAid is named twice.\nName each item of the set once.") &&
+        identical(.as5$nones$txt, "[error] jmulti(): none = takes one variable, and this call gives Financial\nand Counselling.\nName one variable.") &&
+        identical(.as5$tk2$txt, "[error] jmulti(): `ticked` must be one value: the number or the text a\nchosen option's item holds, for example:\n  ticked = 1") &&
+        identical(.as5$tkw$txt, "[error] jmulti(): Y is not in quotes.\nticked = takes a value in quotes:\n  jmulti(.asv, LegalAid, Housing, ticked = \"Y\", print = FALSE)") &&
+        identical(.as5$rank$txt, "[error] jmulti(): `rank` must be TRUE or FALSE.") &&
+        identical(.as5$blank$txt, "[error] jmulti(): no case answered any item of the set, so there is\nnothing to count.\nEach case is blank or declared missing on every item.") &&
+        identical(.as5$r22$txt, "[error] jmulti(): no data frame and no variables were named.\nName a data frame and two or more of its variables, for example:\n  jmulti(community, Volunteer, Smoker, OwnsHome)") &&
+        identical(.as5$unused$txt, "[error] jmulti(): unused input: rnk") &&
+        all(vapply(.as5[setdiff(names(.as5), "lcrun")], function(r) is.null(r$val), logical(1))))
+
+# The Console: the output pinned whole; the full level's note; print = FALSE
+# and joutput("silent") print nothing; a filter in the Case Processing block.
+.as6 <- .aqtry(local({
+  std <- .strip_ansi(res(jmulti(.asv, LegalAid:Housing))$txt)
+  invisible(utils::capture.output(suppressMessages(joutput("full"))))
+  n0 <- length(.seen); full <- res(jmulti(.asv, LegalAid:Housing)); fulln <- .seen[-seq_len(n0)]
+  invisible(utils::capture.output(suppressMessages(joutput("silent"))))
+  sil <- res(jmulti(.asv, LegalAid:Housing))
+  invisible(utils::capture.output(suppressMessages(joutput(NULL))))
+  options(.jst_options_message_width = .pin_width)
+  list(std = std, fulln = fulln, sil = sil,
+       pf = res(jmulti(.asv, LegalAid:Housing, print = FALSE)),
+       sub = .strip_ansi(res(jmulti(.asv, LegalAid:Housing, subset = Housing != 2))$txt))
+}))
+check("AS06 the Console output, pinned whole: the title, the Analysis N line with those who answered no item, the set's title over the options and their counts and percentages, jstats's \"None of these\" row last; at joutput(\"full\") the note that the percentages sum to more than 100; print = FALSE and joutput(\"silent\") print nothing and give the same result; a filter shows in the Case Processing block",
+      !is.null(.as6) &&
+        identical(.as6$std, paste0("Multiple Response\n\nAnalysis N: 10 (2 answered no item)\n\nServices used\n",
+                                   "               Freq  Percent\n-------------  ----  -------\n",
+                                   "Counselling      5    50.00\nHousing          4    40.00\n",
+                                   "LegalAid         3    30.00\nFinancial        2    20.00\n",
+                                   "None of these    3    30.00\n")) &&
+        any(vapply(.as6$fulln, function(s) identical(s$text, "Note: respondents could choose more than one option, so the percentages sum\nto more than 100.\n"), logical(1))) &&
+        identical(.as6$sil$txt, "") && identical(.as6$pf$txt, "") &&
+        identical(.as6$sil$val$rows_raw, .as1m$rows_raw) && identical(.as6$pf$val$rows_raw, .as1m$rows_raw) &&
+        grepl("    subset =            8          4  Housing != 2 (3 missing)\n", .as6$sub, fixed = TRUE) &&
+        grepl("\nAnalysis N: 4\n", .as6$sub, fixed = TRUE))
+
+# A set whose items hold no "No": the note (R62's lean, okayed S414).
+.as7 <- .aqtry(local({
+  yes <- data.frame(A = c(1, NA, 1, NA), B = c(NA, 1, 1, NA))
+  n0 <- length(.seen); a <- res(jmulti(yes, A, B)); an <- .seen[-seq_len(n0)]
+  yes$C <- c(NA, NA, NA, 1)
+  n1 <- length(.seen); b <- res(jmulti(yes, A, B, none = C)); bn <- .seen[-seq_len(n1)]
+  n2 <- length(.seen); c <- res(jmulti(.asv, LegalAid:Housing)); cn <- .seen[-seq_len(n2)]
+  list(a = a, an = an, bn = bn, cn = cn)
+}))
+check("AS07 a set none of whose items holds anything but the value counted as chosen gets a note at the standard level: a person who chose nothing is blank on every item and not in N, so N counts those who chose one, and none = counts everyone who answered; none with the survey's own box named, nor where an item holds a No",
+      !is.null(.as7) && identical(.as7$a$val$n, 3L) &&
+        length(.as7$an) == 1L &&
+        identical(.as7$an[[1]]$text, paste0("Note: no item of the set holds any value but 1, the value counted as chosen,\n",
+                                           "so a person who chose nothing is blank on every item and is not in N.\n",
+                                           "N counts only those who chose at least one option.\n",
+                                           "If the survey had its own \"None of these\" box, name it with none = to count\n",
+                                           "everyone who answered.\n")) &&
+        length(.as7$bn) == 0L && length(.as7$cn) == 0L)
+
+# The result: stamped, its accessors, a save, a table from a copy read back.
+.as8 <- .aqtry(local({
+  f <- file.path(.asd, "m.rds"); saveRDS(.as1m, f)
+  list(sv = res(jsave(.as1m, file.path(.asd, "m.sav"))),
+       back = res(jtable(readRDS(f), print = FALSE))$val)
+}))
+check("AS08 the result is a jst_multi stamped with the version that made it; .jst_apa_terms() gives its rows, .jst_apa_model() its N, those who answered no item, those who chose none, the items' count, the value counted, the title and the order; jsave() given it offers saveRDS(); a copy read back makes the table",
+      !is.null(.as8) &&
+        identical(attr(.as1m, "jstats_version", exact = TRUE), as.character(utils::packageVersion("jstats"))) &&
+        identical(.jst_apa_terms(.as1m), .as1m$rows_raw) &&
+        identical(.jst_apa_model(.as1m),
+                  data.frame(n = 10L, n_excluded = 2L, n_none = 3L, n_items = 4L, ticked = "1",
+                             title = "Services used", ranked = TRUE, stringsAsFactors = FALSE)) &&
+        "jst_multi" %in% .jst_apa_classes &&
+        grepl("jsave(): '.as1m' is a jmulti() result, not a data frame.", .as8$sv$txt, fixed = TRUE) &&
+        grepl("saveRDS(.as1m, \"", gsub("\\s+", " ", .as8$sv$txt), fixed = TRUE) &&
+        inherits(.as8$back, "jst_table") && identical(.as8$back$type, "multiresponse"))
+
+# The table (R60): one row per option, n and %, N after the title, the note.
+.as9 <- .aqtry(local({
+  list(t = res(jtable(.as1m, print = FALSE))$val,
+       nonote = res(jtable(.as1m, choice.note = "no", print = FALSE))$val,
+       lab = res(jtable(.as1m, none.label = "Chose none", stub.label = "Service", title = "{set}, 2026",
+                        print = FALSE))$val,
+       cols = res(jtable(.as1m, columns = "percent", print = FALSE))$val,
+       oc = res(jtable(res(jmulti(data.frame(A = c(1, 2), B = c(2, 1)), A, B, print = FALSE))$val,
+                       print = FALSE))$val)
+}))
+check("AS09 the multiple-response table (ruling R60): the stub \"Option\", n and %, one row per option by its option text in the result's order, the \"None of these\" row last, the counts and the percentages at percent.decimals; the title the set's, N after it (R59); the note that the percentages sum to more than 100 (R61), left out with choice.note = no (R53); none.label, stub.label, columns and a title of the call's, its {set} filled; a set with no shared title is \"Options Chosen\"",
+      !is.null(.as9) &&
+        identical(.as9$t$type, "multiresponse") &&
+        identical(.as9$t$columns$key, c("stub", "n", "percent")) &&
+        identical(.as9$t$columns$label, c("Option", "n", "%")) &&
+        identical(.as9$t$columns$italic, c(FALSE, TRUE, FALSE)) &&
+        identical(vapply(.as9$t$rows, `[[`, "", "label"),
+                  c("Counselling", "Housing", "Legal aid", "Financial advice", "None of these")) &&
+        identical(vapply(.as9$t$rows, function(r) r$cells$n, ""), c("5", "4", "3", "2", "3")) &&
+        identical(vapply(.as9$t$rows, function(r) r$cells$percent, ""), c("50.0", "40.0", "30.0", "20.0", "30.0")) &&
+        identical(.as9$t$caption$title, "Services used (*N* = 10)") &&
+        identical(.as9$t$notes$general, "Respondents could choose more than one, so the percentages sum to more than 100.") &&
+        identical(.as9$nonote$notes$general, character(0)) &&
+        identical(vapply(.as9$lab$rows, `[[`, "", "label")[5], "Chose none") &&
+        identical(.as9$lab$columns$label[1], "Service") &&
+        identical(.as9$lab$caption$title, "Services used, 2026 (*N* = 10)") &&
+        identical(.as9$cols$columns$key, c("stub", "percent")) &&
+        identical(.as9$oc$caption$title, "Options Chosen (*N* = 2)"))
+
+# The writers: the preview pinned whole under apa and under report, with a
+# note and a source; the report; the Word file.
+.as10 <- .aqtry(local({
+  t1 <- res(jtable(.as1m, print = FALSE))$val
+  t2 <- res(jtable(.as1m, style = "report", note = "Asked in 2026.", source = "Services survey",
+                   print = FALSE))$val
+  f <- file.path(.asd, "mr.docx")
+  rep <- res(jtable(.as1m, file = f))$txt
+  list(p1 = res(print(t1))$txt, p2 = res(print(t2))$txt,
+       rep = sub("\\s+to\\s.*$", "", rep), d = .aqdx(f)$doc)
+}))
+check("AS10 the multiple-response table's preview, pinned whole under apa and under report (the note a line a sentence, the source last on its own line); the report's line \"1 set of 4 options\"; the Word file's caption, option rows, count and percentage cells and note row",
+      !is.null(.as10) &&
+        identical(.as10$p1, paste0("Table 1\nServices used (N = 10)\n-------------------------\n",
+                                   "Option            n    %\n-------------------------\n",
+                                   "Counselling       5  50.0\nHousing           4  40.0\n",
+                                   "Legal aid         3  30.0\nFinancial advice  2  20.0\n",
+                                   "None of these     3  30.0\n-------------------------\n",
+                                   "Note. Respondents could choose more than one, so the percentages sum to\n",
+                                   "more than 100.\n")) &&
+        identical(.as10$p2, paste0("Table 1: Services used (N = 10)\n-------------------------\n",
+                                   "Option            n    %\n-------------------------\n",
+                                   "Counselling       5  50.0\nHousing           4  40.0\n",
+                                   "Legal aid         3  30.0\nFinancial advice  2  20.0\n",
+                                   "None of these     3  30.0\n-------------------------\n",
+                                   "Note: Respondents could choose more than one, so the percentages sum to\n",
+                                   "more than 100.\nAsked in 2026.\nSource: Services survey.\n")) &&
+        identical(.as10$rep, "Table 1. Services used (N = 10)\n  1 set of 4 options, on a portrait page.\nTable written") &&
+        grepl(">Services used (</w:t>", .as10$d, fixed = TRUE) &&
+        all(vapply(c(">Counselling<", ">Financial advice<", ">None of these<", ">50.0<", ">20.0<",
+                     "Respondents could choose more than one, so the percentages sum to more than 100.<"),
+                   function(x) grepl(x, .as10$d, fixed = TRUE), logical(1))) &&
+        regexpr(">Counselling<", .as10$d, fixed = TRUE) < regexpr(">Housing<", .as10$d, fixed = TRUE) &&
+        regexpr(">Financial advice<", .as10$d, fixed = TRUE) < regexpr(">None of these<", .as10$d, fixed = TRUE))
+
+# jtable() and a jmulti() result: a table of its own (R56), markers, no
+# headings, a list with another kind.
+.as11 <- .aqtry(local({
+  m2 <- res(jmulti(.asv, LegalAid, Counselling, print = FALSE))$val
+  list(two = res(jtable(list(.as1m, m2), print = FALSE)),
+       mix = res(jtable(list(.as1m, .j0), print = FALSE)),
+       hd = res(jtable(.as1m, headings = list(A = LegalAid), print = FALSE)),
+       mk = res(jtable(.as1m, markers = list("Asked from 2025." = Financial), print = FALSE))$val)
+}))
+check("AS11 each jmulti() result is a table of its own: two in one list stop with ruling R56's lines, the reason in a multiple-response table's words; a list beside a result of another kind stops; headings = stops; markers = marks an option's row by its item's name and writes its note",
+      !is.null(.as11) &&
+        startsWith(.as11$two$txt, paste0("[error] jtable(): each jmulti() result is a table of its own.\n",
+                                         "To put more options in one table, name them in one jmulti() call.\n",
+                                         "Make each table in a call of its own, then give the tables together to write\n",
+                                         "them to one file:\n")) &&
+        grepl("results of different kinds (jmulti() and jdesc()) cannot", .as11$mix$txt, fixed = TRUE) &&
+        identical(.as11$hd$txt, "[error] jtable(): headings = puts the variables of a descriptives or\nfrequency table under role headings; a multiple-response table lists its\noptions in the order jmulti() gave them.") &&
+        identical(vapply(.as11$mk$rows, function(r) paste(r$marks, collapse = ""), ""), c("", "", "", "a", "")) &&
+        identical(vapply(.as11$mk$notes$specific, `[[`, "", "text"), "Asked from 2025."))
+
+# R74: the df by style -- apa in the head when every row shares it, report a
+# column; a setting either way.
+.as12 <- .aqtry(local({
+  tt <- res(jt(WellbeingScore ~ Volunteer, tcm))$val
+  av <- res(jaov(WellbeingScore ~ Region, tcm))$val
+  list(ta = res(jtable(tt, print = FALSE))$val, tr = res(jtable(tt, style = "report", print = FALSE))$val,
+       tac = res(jtable(tt, df.position = "column", print = FALSE))$val,
+       trh = res(jtable(tt, style = "report", df.position = "head", print = FALSE))$val,
+       aa = res(jtable(av, print = FALSE))$val, ar = res(jtable(av, style = "report", print = FALSE))$val,
+       bad = res(jtable(tt, df.position = "top", print = FALSE))$txt)
+}))
+check("AS12 ruling R74: a t test's df in the statistic's head under apa (\"t(101)\") and in a df column under report, the head plain; df.position = column or head turns either; an ANOVA's \"3, 99\" the same; a value it does not take stops with what it takes",
+      !is.null(.as12) &&
+        identical(.jst_style_apa$ttest$df.position, "head") && identical(.jst_style_apa$anova$df.position, "head") &&
+        identical(.jst_style_report$ttest$df.position, "column") && identical(.jst_style_report$anova$df.position, "column") &&
+        identical(.as12$ta$columns$label[.as12$ta$columns$key == "t"], "*t*(101)") && !"df" %in% .as12$ta$columns$key &&
+        identical(.as12$tr$columns$label[.as12$tr$columns$key %in% c("t", "df")], c("t", "df")) &&
+        identical(.as12$tr$rows[[1]]$cells$df, "101") &&
+        identical(.as12$tac$columns$key, .as12$tr$columns$key) &&
+        identical(.as12$trh$columns$key, .as12$ta$columns$key) &&
+        identical(.as12$aa$columns$label[.as12$aa$columns$key == "f"], "*F*(3, 99)") &&
+        identical(.as12$ar$rows[[1]]$cells$df, "3, 99") &&
+        identical(.as12$bad, "[error] jtable(): `df.position` must be \"head\" or \"column\"."))
+
+# R75 and R79: the note's sentences by style, the notes' order, source =.
+.as13 <- .aqtry(local({
+  al <- res(jalpha(tcm, Environment1, Environment3, Environment4, subset = Age >= 30))$val
+  cr <- res(jcorr(tcm, WellbeingScore, Age, Income))$val
+  list(alpha = .jst_apa_model(al)$alpha,
+       aa = .jst_table_note_lines(res(jtable(al, source = "Community survey", print = FALSE))$val,
+                                  .jst_style_apa, plain = TRUE),
+       ar = .jst_table_note_lines(res(jtable(al, style = "report", source = "Community survey.",
+                                             print = FALSE))$val, .jst_style_resolve("report"), plain = TRUE),
+       ca = .jst_table_note_lines(res(jtable(cr, markers = list("Asked of all." = Age), source = "Survey",
+                                             print = FALSE))$val,
+                                  .jst_style_apa, plain = TRUE),
+       cr = .jst_table_note_lines(res(jtable(cr, markers = list("Asked of all." = Age), source = "Survey", style = "report",
+                                             print = FALSE))$val, .jst_style_resolve("report"), plain = TRUE),
+       src = res(jtable(cr, source = c("a", "b"), print = FALSE))$txt,
+       src2 = res(jtable(cr, source = 5, print = FALSE))$txt)
+}))
+.as13s <- .aqtry(local({
+  st <- .wsty("asnote", "based.on = report", "source.position = note", "source.label = ", dir = .asd)
+  st2 <- .wsty("asline", "note.sentences = lines", "source.position = line", "source.label = Data:", dir = .asd)
+  st3 <- .wsty("asnolab", "source.position = line", "source.label = ", dir = .asd)
+  cr <- res(jcorr(tcm, WellbeingScore, Age, Income))$val
+  list(n = .jst_table_note_lines(res(jtable(cr, style = st, source = "Survey", print = FALSE))$val,
+                                 .jst_style_resolve(st), plain = TRUE),
+       z = .jst_table_note_lines(res(jtable(cr, style = st3, source = "Survey", print = FALSE))$val,
+                                 .jst_style_resolve(st3), plain = TRUE),
+       l = .jst_table_note_lines(res(jtable(cr, style = st2, source = "Survey", note = "One. Two.",
+                                            print = FALSE))$val, .jst_style_resolve(st2), plain = TRUE))
+}))
+check("AS13 rulings R75 and R79: under apa the general note is one paragraph, the source = text its last sentence (a full stop added), then the specific notes, then the probability line; under report each sentence of the general note a line of its own and the notes in the report manuals' order -- the probability line, the specific notes, \"Note:\", then \"Source:\" on a line of its own, last; each setting turned on its own, a source line with no label its text alone; a call's note one line as typed; source = must be one string",
+      !is.null(.as13) && !is.null(.as13s) &&
+        identical(.as13$aa, paste0("Note. Only cases with Age (years) \u2265 30 are included. Cronbach's \u03b1 = ",
+                                   sub("^0", "", sprintf("%.2f", .as13$alpha)), ". Item-total r is each item's correlation with the sum of the other items. Community survey.")) &&
+        identical(.as13$ar, c("Note: Only cases with Age (years) \u2265 30 are included.",
+                              paste0("Cronbach's \u03b1 = ", sprintf("%.2f", .as13$alpha), "."),
+                              "Item-total r is each item's correlation with the sum of the other items.",
+                              "Source: Community survey.")) &&
+        identical(.as13$ca, c("Note. Pairwise ns range from 97 to 103. Survey.", "^a Asked of all.",
+                              "*p < .05. **p < .01. ***p < .001.")) &&
+        identical(.as13$cr, c("*p < 0.05. **p < 0.01. ***p < 0.001.", "^a Asked of all.",
+                              "Note: Pairwise ns range from 97 to 103.", "Source: Survey.")) &&
+        identical(.as13s$n, c("*p < 0.05. **p < 0.01. ***p < 0.001.", "Note: Pairwise ns range from 97 to 103.",
+                              "Survey.")) &&
+        identical(.as13s$l, c("Note. Pairwise ns range from 97 to 103.", "One. Two.",
+                              "*p < .05. **p < .01. ***p < .001.", "Data: Survey.")) &&
+        identical(.as13s$z, c("Note. Pairwise ns range from 97 to 103.",
+                              "*p < .05. **p < .01. ***p < .001.", "Survey.")) &&
+        identical(.as13$src, "[error] jtable(): `source` must be a single quoted string.") &&
+        identical(.as13$src2, "[error] jtable(): `source` must be a single quoted string."))
+
+# R76: the preview centers a column's block of numbers under a wider head.
+.as14 <- .aqtry(local({
+  av <- res(jaov(WellbeingScore ~ Region, tcm, welch = TRUE))$val
+  strsplit(res(print(res(jtable(av, print = FALSE))$val))$txt, "\n", fixed = TRUE)[[1]]
+}))
+check("AS14 ruling R76: the preview centers a column's block of numbers under a head wider than it, the points aligned within the block and the odd space on the left, as the Word file centers it -- a Welch ANOVA's F under \"F(3, 50.34)\" (until S414 set hard right)",
+      !is.null(.as14) &&
+        identical(.as14[6:8], c(
+          "Variable                   M      SD     M      SD     M     SD     M      SD   F(3, 50.34)    p    \u03b7\u00b2",
+          "------------------------------------------------------------------------------------------------------",
+          "Wellbeing score (0-100)  52.96  10.15  48.15  14.74  50.94  9.94  50.80  11.92      0.56     .645  .02")))
+
+# R77: size carries the caption's and the note's size.
+.as15 <- .aqtry(local({
+  a11 <- .wsty("assize11", "size = 11", dir = .asd)
+  r12 <- .wsty("assize12", "based.on = report", "size = 12", dir = .asd)
+  own <- .wsty("asown", "size = 11", "caption.size = 14", dir = .asd)
+  sp <- .jst_style_spec$general$caption.size
+  cv <- function(v) tryCatch(.jst_style_check_value("caption.size", sp, v, "general", "jtable"),
+                             error = function(e) paste("[error]", conditionMessage(e)))
+  k <- function(st, key) .jst_style_key(.jst_style_resolve(st), "general", key)
+  f <- file.path(.asd, "size11.docx")
+  invisible(res(jtable(res(jdesc(tcm, Age))$val, style = a11, note = "A note.", file = f, print = FALSE)))
+  invisible(res(jstyle("apa", save.as = file.path(.asd, "ascopy"))))
+  cp <- readLines(file.path(.asd, "ascopy.jstyle"), encoding = "UTF-8")
+  list(apa = c(k("apa", "caption.size"), k("apa", "note.size")),
+       rep = c(k("report", "caption.size"), k("report", "note.size")),
+       a11 = c(k(a11, "caption.size"), k(a11, "note.size")),
+       r12 = c(k(r12, "caption.size"), k(r12, "note.size")),
+       own = c(k(own, "caption.size"), k(own, "note.size")),
+       forms = list(cv("size"), cv("Size - 1"), cv("size-1"), cv("SIZE + 2"), cv("size - 1.5"), cv("11")),
+       bad = c(cv("size * 2"), cv("5")),
+       clamp = c(.jst_style_size_value("size - 10", 12), .jst_style_size_value("size + 70", 12)),
+       takes = .jst_style_takes(sp),
+       copy = cp[grepl("^(caption|note)\\.size = ", cp)],
+       sz = unique(regmatches(.aqdx(f)$doc, gregexpr("(?<=<w:sz w:val=\")[0-9]+", .aqdx(f)$doc, perl = TRUE))[[1]]))
+}))
+check("AS15 ruling R77: caption.size and note.size follow size -- apa's are size, report's caption size and its note size - 1 -- so a file that sets size moves them with it (11 under apa: 11 and 11; 12 under report: 12 and 11), a file that sets one keeps its number; the value is a number from 6 to 72 or size, alone or with a number added or taken away, any case and spacing, kept to 6 to 72; a complete copy writes them as size; a table under the size-11 file is set at 11 points throughout",
+      !is.null(.as15) &&
+        identical(.jst_style_apa$general$caption.size, "size") && identical(.jst_style_apa$general$note.size, "size") &&
+        identical(.as15$apa, c(12, 12)) && identical(.as15$rep, c(10, 9)) &&
+        identical(.as15$a11, c(11, 11)) && identical(.as15$r12, c(12, 11)) &&
+        identical(.as15$own, c(14, 11)) &&
+        identical(.as15$forms, list("size", "size - 1", "size - 1", "size + 2", "size - 1.5", 11)) &&
+        identical(.as15$bad, rep("[error] jtable(): `caption.size` must be a number from 6 to 72, or size\n(size - 1 for a point smaller).", 2)) &&
+        identical(.as15$clamp, c(6, 72)) &&
+        identical(.as15$takes, "a number from 6 to 72, or size, or size and a number such as size - 1") &&
+        identical(.as15$copy, c("caption.size = size", "note.size = size")) &&
+        identical(.as15$sz, "22"))
+
+# R78: caption.text, the caption's text colour.
+.as16 <- .aqtry(local({
+  fill <- .wsty("astxt", "based.on = report", "caption.fill = 005A60", "caption.text = white", dir = .asd)
+  hdr <- .wsty("ashdr", "based.on = report", "caption.fill = header", "header.fill = 0E5A5F",
+               "header.text = FFFFFF", "caption.text = red", dir = .asd)
+  par <- .wsty("aspar", "caption.position = paragraph", "caption.text = 1F3864", dir = .asd)
+  cap <- function(st, nm) {
+    f <- file.path(.asd, paste0("cap_", nm, ".docx"))
+    invisible(res(jtable(.aqf, style = st, file = f, print = FALSE)))
+    d <- .aqdx(f)$doc
+    first <- .aqrows(d)[1]
+    x <- if (grepl("SEQ Table", first, fixed = TRUE)) first
+         else regmatches(d, regexpr("<w:p><w:pPr><w:pStyle w:val=\"Caption\"/>.*?</w:p>", d, perl = TRUE))
+    list(colors = unique(regmatches(x, gregexpr("(?<=<w:color w:val=\")[0-9A-F]{6}", x, perl = TRUE))[[1]]),
+         runs = lengths(regmatches(x, gregexpr("<w:r>", x, fixed = TRUE))),
+         colored = lengths(regmatches(x, gregexpr("<w:color w:val=", x, fixed = TRUE))))
+  }
+  list(apa = cap("apa", "apa"), rep = cap("report", "rep"), fill = cap(fill, "fill"),
+       hdr = cap(hdr, "hdr"), par = cap(par, "par"),
+       bad = tryCatch(.jst_style_check_value("caption.text", .jst_style_spec$general$caption.text, "header",
+                                             "general", "jtable"), error = function(e) conditionMessage(e)))
+}))
+check("AS16 ruling R78: caption.text sets the caption's text colour, black by default, so apa's and report's captions carry no colour; a colour of its own reaches every caption run, the table number's field included, on a caption bar of a colour of its own; caption.fill = header keeps the header's text colour; a caption set as a paragraph takes it too; a value that is not a colour stops",
+      !is.null(.as16) &&
+        identical(.jst_style_apa$general$caption.text, "000000") &&
+        identical(.as16$apa$colors, character(0)) && identical(.as16$rep$colors, character(0)) &&
+        identical(.as16$fill$colors, "FFFFFF") && .as16$fill$colored == .as16$fill$runs &&
+        identical(.as16$hdr$colors, "FFFFFF") && .as16$hdr$colored == .as16$hdr$runs &&
+        identical(.as16$par$colors, "1F3864") && .as16$par$colored == .as16$par$runs &&
+        identical(.as16$bad, "jtable(): `caption.text` must be a color name such as \"navy\" or six\nhex digits such as \"1F3864\"."))
+
+# The printout of a style file (the review's entry 9): what the file itself
+# sets, then where every other setting comes from.
+.as17 <- .aqtry(local({
+  q <- function(...) invisible(res(jstyle(...)))
+  q("apa", save.as = file.path(.asd, "pone"), size = 11)
+  q("report", save.as = file.path(.asd, "ptwo"), font = "Calibri",
+    regression = list(fit.rows = c("r2", "n"), intercept = "no"))
+  q("apa", save.as = file.path(.asd, "pfull"))
+  writeLines(c("format = 1", "based.on = apa"), file.path(.asd, "pnone.jstyle"))
+  q(file.path(.asd, "pone.jstyle"), save.as = file.path(.asd, "pthree"), note.size = "size - 2")
+  lapply(c(one = "pone", two = "ptwo", full = "pfull", none = "pnone", three = "pthree"), function(s) {
+    l <- strsplit(.strip_ansi(res(jstyle(file.path(.asd, paste0(s, ".jstyle"))))$txt), "\n", fixed = TRUE)[[1]]
+    l[3:5]
+  })
+}))
+check("AS17 the review's entry 9: jstyle(\"<file>\") says, under its base, what the file itself sets -- general settings by name, then each section's, the section named before its first -- and that every other setting comes from its base, then apa; \"every setting.\" for a complete copy, with no second line; \"no setting.\" for a file that sets none, every setting then coming from its base",
+      !is.null(.as17) &&
+        identical(.as17$one, c("  based on apa", "  Set in this file: size.", "  Every other setting comes from apa.")) &&
+        identical(.as17$two, c("  based on report, then apa", "  Set in this file: font, [regression] fit.rows, and intercept.",
+                               "  Every other setting comes from report, then apa.")) &&
+        identical(.as17$full, c("  based on apa", "  Set in this file: every setting.", "")) &&
+        identical(.as17$none, c("  based on apa", "  Set in this file: no setting.", "  Every setting comes from apa.")) &&
+        identical(.as17$three, c("  based on pone, then apa", "  Set in this file: note.size.",
+                                 "  Every other setting comes from pone, then apa.")))
+
+# A title given in the call fills the placeholders (the review's entry 12).
+.as18 <- .aqtry(local({
+  m1 <- res(jlm(WellbeingScore ~ Age, tcm))$val
+  lg <- res(jlogistic(Volunteer ~ Age, tcm))$val
+  ct <- res(jcrosstab(Smoker ~ Volunteer, tcm))$val
+  av <- res(jaov(WellbeingScore ~ Region, tcm))$val
+  vapply(list(res(jtable(m1, title = "Predicting {outcome}", print = FALSE))$val,
+              res(jtable(lg, title = "Odds of {outcome}", print = FALSE))$val,
+              res(jtable(ct, title = "Smoking by {group}", print = FALSE))$val,
+              res(jtable(av, title = "Wellbeing by {group}", print = FALSE))$val,
+              res(jtable(m1, title = "Kept {group}", print = FALSE))$val),
+         function(t) t$caption$title, "")
+}))
+check("AS18 the review's entry 12: a title given in the call fills {outcome} in a regression or logistic table and {group} in a t-test, ANOVA or crosstab table, as the style's own template does; a placeholder the table type has not is kept as typed",
+      !is.null(.as18) &&
+        identical(.as18, c(paste0("Predicting ", .aal("WellbeingScore"), " (*N* = 103)"),
+                           paste0("Odds of ", .aal("Volunteer"), " (*N* = 103)"),
+                           paste0("Smoking by ", .aal("Volunteer"), " (*N* = 98)"),
+                           paste0("Wellbeing by ", .aal("Region")),
+                           "Kept {group} (*N* = 103)")))
+
+# open = TRUE when no program opens the file (the (S410) item; the lean
+# okayed S414): a note naming the file, the call going on.
+.as19 <- .aqtry(local({
+  f <- file.path(.asd, "mr.docx")
+  run <- function(b) {
+    n0 <- length(.seen)
+    r <- res(.jst_table_open(f, TRUE, ask = TRUE, browse = b))
+    list(val = r$val, txt = r$txt, notes = vapply(.seen[-seq_len(n0)], function(s) s$text, ""),
+         out = length(utils::capture.output(suppressMessages(
+           .jst_table_open(f, TRUE, ask = TRUE, browse = b)))))
+  }
+  list(err = run(function(p) stop("no application is associated with .docx")),
+       wrn = run(function(p) warning("error in running command")),
+       ok = run(function(p) invisible(NULL)))
+}))
+.asnf <- .jst_norm_path(normalizePath(file.path(.asd, "mr.docx"), winslash = "/", mustWork = FALSE))
+check("AS19 open = TRUE where no program on the computer opens a .docx file: the opener's error or warning is caught, a note says the file was written and where, and how to open it, a blank line after it, and FALSE is returned so the call goes on; where the opener works, no note",
+      !is.null(.as19) &&
+        isFALSE(.as19$err$val) && isFALSE(.as19$wrn$val) && isTRUE(.as19$ok$val) &&
+        identical(.as19$err$notes, paste0("Note: the file was written, but no program on this computer opened it:\n  ",
+                                          .asnf, "\nOpen it from its folder, in Word, LibreOffice, or another program that reads\n.docx files.\n")) &&
+        identical(.as19$wrn$notes, .as19$err$notes) && identical(.as19$err$txt, "") &&
+        identical(c(.as19$err$out, .as19$wrn$out, .as19$ok$out), c(1L, 1L, 0L)) &&
+        length(.as19$ok$notes) == 0L)
+
+# jmulti() among the package's doors: ruling R22's example runs, and a call
+# that names one item and no data frame gets ruling R23's stop.
+.as20 <- .aqtry(local({
+  ex <- .jst_r22_example("jmulti")
+  list(ex = paste(deparse(ex$call), collapse = ""), n = ex$n,
+       run = res(eval(ex$call, list(community = tcm)))$val,
+       rng = .jst_call_gap("jmulti", quote(jmulti(MyData, Q1:Q3))),
+       one = .jst_call_gap("jmulti", quote(jmulti(MyData, Q1)))$what)
+}))
+check("AS20 jmulti()'s example in ruling R22's stop runs on community; ruling R23's check finds a call of one item short of a second, and counts a range in the offered line as two items",
+      !is.null(.as20) &&
+        identical(.as20$ex, "jmulti(community, Volunteer, Smoker, OwnsHome)") &&
+        inherits(.as20$run, "jst_multi") &&
+        identical(.as20$n, "two or more") && is.null(.as20$rng) && identical(.as20$one, "second variable"))
+
+# The settings help page: the build's new settings, report's values beside
+# apa's where they differ, and the multiple-response section.
+.as21 <- paste(.jst_style_settings_rd(), collapse = "\n")
+check("AS21 ?jstyle_settings lists the build's settings: caption.size and note.size as size, report's note size - 1 (R77); caption.text (R78); note.sentences and note.order, apa's and report's (R75, R79); source.position and source.label (R79); the t test's and ANOVA's df.position, apa head and report column (R74); and the [multiresponse] section, its title {set}",
+      all(vapply(c(
+        "\\item{\\code{caption.size}}{the caption's text size, in points, or size for the text size (size - 1 a point smaller), so it moves when size does. Takes a number from 6 to 72, or size, or size and a number such as size - 1. In apa: \\code{size}.}",
+        "\\item{\\code{caption.text}}{the color of the caption's text (under caption.fill = header, the header's text color). Takes a color name such as lightblue, or six hex digits such as ADD8E6. In apa: \\code{000000}.}",
+        "In apa: \\code{size}; in report: \\code{size - 1}.}",
+        "\\item{\\code{note.sentences}}{paragraph: the general note in one paragraph, as APA sets it | lines: each of its sentences, and each specific note, on a line of its own. Takes one of paragraph | lines. In apa: \\code{paragraph}; in report: \\code{lines}.}",
+        "\\item{\\code{note.order}}{apa: the general note, then the specific notes, then the probability note | report: the probability note, the specific notes, then the general note. Takes one of apa | report. In apa: \\code{apa}; in report: \\code{report}.}",
+        "\\item{\\code{source.position}}{where a call's source = goes: note (the general note's last sentence) | line (a line of its own, last, after source.label). Takes one of note | line. In apa: \\code{note}; in report: \\code{line}.}",
+        "\\item{\\code{source.label}}{the word the source line opens on, upright: Source: | Sources:. Takes any text, or nothing. In apa: \\code{Source:}.}",
+        "\\item{\\code{df.position}}{head: the df in the statistic's head, t(101), when every row shares them, else a df column | column: a df column. Takes one of head | column. In apa: \\code{head}; in report: \\code{column}.}",
+        "\\section{[multiresponse]: a multiple-response table}{",
+        "\\item{\\code{title}}{the title when the call gives none; \\{set\\} is the text the items' labels share, else Options Chosen. Takes any text. In apa: \\code{\\{set\\}}.}",
+        "\\item{\\code{choice.note}}{yes: the note says respondents could choose more than one, so the percentages sum to more than 100 | no. Takes one of yes | no. In apa: \\code{yes}.}"),
+        function(x) grepl(x, .as21, fixed = TRUE), logical(1))) &&
+        lengths(regmatches(.as21, gregexpr("\\item{\\code{df.position}}", .as21, fixed = TRUE))) == 2L)
+
 options(.jst_options_style_dir = NULL, .jst_options_style = NULL)
 
-unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd, .ard), recursive = TRUE)
+unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd, .ard, .asd), recursive = TRUE)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # The analyses above raise notes and warnings of their own (a seems-
