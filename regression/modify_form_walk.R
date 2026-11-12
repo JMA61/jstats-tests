@@ -54,6 +54,22 @@
 #           jtable() built: base R's saveRDS() and readRDS() offered as
 #           lines that run (Section 44).
 # ORIGIN:   S229
+# EDITED:   S419 (v0.9.281; the AI-text build, ruling R82 and ruling R81).
+#           SECTION 10 on the PENDING line: the orientation jai() prints is
+#           version 3.12 -- its tables bullet says that the general
+#           settings, at the top of a style file, set every table, how one
+#           kind of table gets its own value of one (its line copied under
+#           that table's heading; not paper, and not under [plot]), and
+#           that a style file's name ends in .jstyle, not .txt -- its
+#           heading line and notes updated; its Expected is prose,
+#           unchanged.
+# LAST VERIFIED: v0.9.281, 2026-11-12 (S419) -- Section 10 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (12 run, 3715 checks). Sandbox: harness.R
+#           verify, 44 of 44 sections in three orders and by prepare =
+#           TRUE; 167 of 168 Expected blocks found (Section 9's prose
+#           block, as before).
 # EDITED:   S416 (v0.9.280; Capability Slate U's charts, build 3). SECTION 10
 #           on the PENDING line: the orientation jai() prints is version
 #           3.11 -- jmulti() named where an analysis is chosen and among the
@@ -1604,7 +1620,7 @@ invisible(jdeclare_missing(plain_df2, Rating, codes = c(Refused = -99),
 # Expected: NEITHER form -- just the cross-session jsave tip. The change has
 # already landed on the frame, so saving is the only next rung.
 
-cat("\n--- the jai orientation body (v3.11) ---\n")
+cat("\n--- the jai orientation body (v3.12) ---\n")
 jai()
 
 # Expected, in the bullet beginning "Analysis functions print their results":
@@ -1616,11 +1632,25 @@ jai()
 #   - modify = TRUE now comes FIRST and is marked as the taught form
 #   - the assignment form is still present (an assistant has to recognize it
 #     in your code) but is now clearly secondary
-#   - the version stamp reads v3.11 (S416: jmulti() and the charts bullet,
-#     below; v3.10 at S409, the tables bullet; v3.9 at S406, the table
-#     layer; v3.8 at S357 set SKILL.md's AI-assistant paragraph to the
-#     body's width, Section 20). If it still says 3.10, the orientation
-#     bump did not land.
+#   - the version stamp reads v3.12 (S419: where a setting goes in a style
+#     file, below; v3.11 at S416, jmulti() and the charts bullet; v3.10 at
+#     S409, the tables bullet; v3.9 at S406, the table layer; v3.8 at S357
+#     set SKILL.md's AI-assistant paragraph to the body's width, Section
+#     20). If it still says 3.11, the orientation bump did not land.
+#
+# S419 (v3.12, the AI-text build; rulings R82 and R81) -- the wording is
+# Claude's. The tables bullet, after its editing rule, now says:
+#   - the general settings, at the top of the file, set every table; to
+#     give one kind of table its own value of one, copy its line under
+#     that table's heading, such as [regression], and change the value
+#     there (paper is the whole file's, and [plot] takes only a chart's
+#     own settings) -- what the style files' heads say (tables_walk.R
+#     Sections 3 and 25);
+#   - save the file with a name ending in .jstyle, not .txt, before
+#     running jstyle("myagency") to check it.
+# Things to look at: would an assistant asked for "three decimals in the
+# regression tables only" put the decimals line under [regression], and
+# hand back a file named myagency.jstyle?
 #
 # S416 (v3.11, Capability Slate U's charts, build 3; deferred from the
 # charts' build 1) -- the wording is Claude's:

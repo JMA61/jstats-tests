@@ -160,9 +160,22 @@
 #           jdesc() and jfreq(); the data frame's name kept on every result
 #           and read by the lines jtable() and jplot() offer; the
 #           orientation's version 3.11.
+#           (AV) the AI-text build (S419, v0.9.281; rulings R81 to R84 and
+#           ruling R82's six fixes): the notes of caption.form,
+#           leading.zero, p.format and n.position as a style file and the
+#           settings page give them; the marks a text takes; a style file
+#           saved as .txt named with the line that renames it, and the
+#           step after it; a setting in a part of a file, or of jstyle()'s
+#           settings, that cannot take it; a general setting one table
+#           type sets for itself, kept by a complete copy and shown by the
+#           printout; p.format = stars with no p column in every table
+#           type, each statistic and its p computed here, and the note
+#           when the call lists p; n.position = none with models whose Ns
+#           differ; the orientation's version 3.12.
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.280, 2026-11-11 (S416) -- 351/351 on the WORKSTATION;
-#           the S416 EDIT block below holds the stamp. Prior: v0.9.279,
+# LAST VERIFIED: v0.9.281, 2026-11-12 (S419) -- 363/363 on the WORKSTATION;
+#           the S419 EDIT block below holds the stamp. Prior: v0.9.280,
+#           2026-11-11 (S416) -- 351/351 (the S416 EDIT block); v0.9.279,
 #           2026-11-10 (S415) -- 334/334 (the S415 EDIT block); v0.9.278,
 #           2026-11-08 (S414) -- 315/315 (the S414 EDIT block); v0.9.277,
 #           2026-11-07 (S410) -- 294/294 (the S410 EDIT block); v0.9.276,
@@ -204,6 +217,50 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S419 EDIT (v0.9.281, 2026-11-12): the AI-text build -- what a style file
+#           says of itself (the (S418) AI-text item), a style file saved as
+#           .txt (ruling R81), a general setting in one table type's
+#           section (ruling R82, with six fixes), p.format = stars with no
+#           p column (ruling R83), n.position = none and models whose Ns
+#           differ (ruling R84). SECTION AV ADDED, 12 checks (363 in all):
+#           AV01 the four settings' notes; AV02 the marks a text takes and
+#           the settings page's "In a style file"; AV03 a style file saved
+#           as .txt, the line run; AV04 that stop's second step in its six
+#           forms; AV05 a setting in a part of a file that cannot take it;
+#           AV06 the same in jstyle()'s settings, the rewritten call run;
+#           AV07 a complete copy keeps a section's own value of a general
+#           setting; AV08 the printout shows it; AV09 stars in the
+#           logistic, t-test, ANOVA and crosstab tables; AV10 the note
+#           when the call lists p; AV11 none and Ns that differ; AV12 the
+#           orientation. RE-PINNED, each value read from the battery run
+#           on the build: N07 and AN05 (the settings line ends "..., except
+#           paper."); O03 and AQ11 (the complete copy's head, 18 lines,
+#           held once in .head419()); AN01, AN03 and AQ12 (the short
+#           file's head, two lines more); AN07 (leading.zero's note a line
+#           a choice; n.position's the one joined); AR01 (n.position's
+#           note); AR06 (the parts' heading notes found by their colon,
+#           the head now holding "The general settings come first");
+#           V07 and AE03 (under stars the table has no p column, the
+#           asterisks on b and on the chi-square; a table shown without b
+#           keeps a p column of asterisks); V09 (none keeps the sentence);
+#           AO03 and AU17 (the orientation's version, 3.12). On the build
+#           before (v0.9.280) the twelve AV checks and N07, O03, V07, V09,
+#           AE03, AN01, AN03, AN05, AN07, AO03, AQ11, AQ12, AR01 and AU17
+#           read red, and no other (337/363). Each AV check also went red
+#           on a one-change mutant of its code: 53 mutants of tables.R and
+#           utils.R, none surviving (the map in the Testing Conventions at
+#           the closeout). The first round left one standing: AV03's notes
+#           file gained a setting's line, since a .txt file is refused for
+#           one line that is no setting's (the mutant read "any line" for
+#           "every line").
+#           SANDBOX: 363/363 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, interactive with no
+#           question asked, with the temporary folder reached through a
+#           symlink, and with a graphics device open, left open and
+#           current; entered dirty.
+#           WORKSTATION, through receive_all(): "R CMD check: 0 errors, 0
+#           warnings, 0 notes."; "ALL BATTERIES GREEN (12 run, 3715 checks)"
+#           at the first run -- matching the sandbox.
 # S416 EDIT (v0.9.280, 2026-11-10): Capability Slate U's charts, build 3 --
 #           the new kinds (rulings R66-R68, with R69's titles and R70's
 #           segment values; the S412 audit's F1, F3, F5, F15 and F18), with
@@ -2644,7 +2701,7 @@ check("N07 a setting or a section this version does not have: a near miss gets t
         grepl("jtable(): line 2 of typo.jstyle sets colums, which is not a setting\nof [frequencies].\nDid you mean columns?", .n7[[1]]$txt, fixed = TRUE) &&
         grepl("jtable(): line 2 of unkn.jstyle sets colwidth, which is not a\nsetting jstats has.\nIt may be misspelled, or it may be from a newer version of jstats", .n7[[2]]$txt, fixed = TRUE) &&
         grepl("The settings of [frequencies] are title, columns, stub.label, n.label,", .n7[[2]]$txt, fixed = TRUE) &&
-        grepl("A general setting may be set there too.", .n7[[2]]$txt, fixed = TRUE) &&
+        grepl("\nA general setting may be set there too, except paper.", .n7[[2]]$txt, fixed = TRUE) &&
         grepl("The general settings are font, size, paper,", .n7[[3]]$txt, fixed = TRUE) &&
         grepl("jtable(): line 1 of secnear.jstyle opens [frequncies], which is not\na section of a style.\nDid you mean [frequencies]?", .n7[[4]]$txt, fixed = TRUE) &&
         grepl("The sections are [descriptives], [frequencies], [regression], [logistic],\n[correlation], [ttest], [anova], [crosstab], [reliability], [multiresponse],\nand [plot].", .n7[[5]]$txt, fixed = TRUE))
@@ -2724,24 +2781,40 @@ check("O02 jstyle(name) prints every setting in the style file's own form, the g
         identical(.o2a[2], "  built into jstats") && !any(grepl("# from", .o2a, fixed = TRUE)) &&
         inherits(.o2$val, "jst_style"))
 
+# S419 (v0.9.281): the complete copy's head, pinned whole here for O03 and
+# AQ11 -- 18 lines where it had 11: how the file is laid out, the line that
+# gives one kind of table its own value of a general setting and its two
+# exceptions (ruling R82), the marks a text takes, and the block for an AI
+# assistant reworded for a request in words, naming the sections and asking
+# for each value changed (the (S418) AI-text item's parts 4 to 6).
+.head419 <- function(name) {
+  c(paste0("# ", name, ".jstyle:"), "# A jstats table style.",
+    "# Every setting jstats has is below, each after a note saying what it does and what it takes.",
+    "# The general settings come first and set the look of every table and figure.",
+    "# Then each kind of table has a section of its own settings, under its heading in square brackets, and a chart's settings are under [plot].",
+    "# Change only the values after the = signs; do not invent a setting, and do not rename a setting or a section.",
+    "# To give one kind of table its own value of a general setting, copy that setting's line under the table's heading and change the value there.",
+    "# This works for every general setting but paper, which sets the page of the whole file, and under every heading but [plot], which takes only a chart's own settings.",
+    "# In a title, a single column's head (such as stub.label or b.label), note.label or source.label, *word* sets a word in italics and ^mark^ a superscript; any other label prints the marks as typed.",
+    "# A line that starts with # is a note.",
+    paste0("# jstyle(\"", name, "\") checks the file and names any value it cannot use."),
+    "#",
+    "# To an AI assistant asked to change this file, from a request in words or to match an example:",
+    "# Change only the values after the = signs, using only the values each setting's \"# takes:\" line allows.",
+    "# Where the request is about one kind of table, change that table's section: its own settings, or a general setting's line copied under its heading.",
+    "# Keep every other line as it is, and return the whole file.",
+    "# Then list each value you changed, as it was and as it is now, and each line you added.",
+    "# Then say what the request asks for that these settings cannot make, rather than inventing a setting for it.")
+}
 .o3 <- res(jstyle("apa", save.as = "copyapa"))
 .o3f <- file.path(.ns, "copyapa.jstyle")
 .o3t <- readLines(.o3f, encoding = "UTF-8", warn = FALSE)
 .o3s <- .jst_style_resolve("copyapa")
 .o3same <- all(unlist(lapply(names(.jst_style_apa), function(p) vapply(names(.jst_style_spec[[p]]), function(k)
   identical(.jst_style_key(.o3s, p, k), .jst_style_key(.jst_style_resolve("apa"), p, k)), logical(1)))))
-check("O03 jstyle(\"apa\", save.as = ) writes <name>.jstyle into the style folder: its header (since S406 saying to change values only, for a person or an AI assistant; since the S407 rebuild the file's name on a line of its own, then one sentence a line; since S409 the editing rule worded as the short file's and a block for an AI assistant asked to match an example), the format and written.by stamps and based.on = apa, then every setting of every part after a note on what it does and one on what it takes (S406); read back, every setting is apa's; the written line names the file",
+check("O03 jstyle(\"apa\", save.as = ) writes <name>.jstyle into the style folder: its header (since S406 saying to change values only, for a person or an AI assistant; since the S407 rebuild the file's name on a line of its own, then one sentence a line; since S409 the editing rule worded as the short file's and a block for an AI assistant; since S419 the 18 lines of .head419()), the format and written.by stamps and based.on = apa, then every setting of every part after a note on what it does and one on what it takes (S406); read back, every setting is apa's; the written line names the file",
       file.exists(.o3f) &&
-        identical(.o3t[1:11], c("# copyapa.jstyle:", "# A jstats table style.",
-                                "# Every setting jstats has is below, each after a note saying what it does and what it takes.",
-                                "# Change only the values after the = signs; do not invent a setting, and do not rename a setting or a section.",
-                                "# A line that starts with # is a note.",
-                                "# jstyle(\"copyapa\") checks the file and names any value it cannot use.",
-                                "#",
-                                "# To an AI assistant asked to edit this file so tables look like an example:",
-                                "# Change only the values after the = signs, using only the values each setting's \"# takes:\" line allows.",
-                                "# Keep every other line as it is, and return the whole file.",
-                                "# Then say what the example has that these settings cannot make, rather than inventing a setting for it.")) &&
+        identical(.o3t[1:18], .head419("copyapa")) && identical(.o3t[19], "") &&
         "format     = 1" %in% .o3t &&
         paste0("written.by = jstats ", .jst_jstats_version()) %in% .o3t &&
         "based.on   = apa" %in% .o3t &&
@@ -3375,19 +3448,29 @@ check("V06 a named list's names are the model heads, a list of one named too, an
         identical(.vrow(.v6, "Region of residence")$tail, " (reference = North)") &&
         identical(.v6$notes$specific, list(list(mark = "a", text = "Mean-centered"))))
 
-# Stars: on the p column when there is one, on b when there is not; p.format
-# = both; the legend.
+# Stars: on b, the table without a p column whether its columns list p or
+# not (ruling R83, S419, v0.9.281; until then a p column, when there was
+# one, held the asterisks alone -- Jeff: "We don't need a column of
+# asterisks alone."); a table shown without b keeps its p column;
+# p.format = both; the legend.
 .v7s <- local({ s <- .jst_style_apa; s$general$p.format <- "stars"; s$regression$columns <- c("b", "se")
                 .jst_table_build_models(list(.vm4), s) })
 .v7p <- local({ s <- .jst_style_apa; s$general$p.format <- "stars"
                 .jst_table_build_models(list(.vm4), s) })
+.v7n <- local({ s <- .jst_style_apa; s$general$p.format <- "stars"; s$regression$columns <- c("se", "p")
+                .jst_table_build_models(list(.vm4), s) })
 .v7b <- local({ s <- .jst_style_apa; s$general$p.format <- "both"
                 .jst_table_build_models(list(.vm4), s) })
-check("V07 p.format = stars: with no p column the stars go on b and the F row; with one the p column holds them; both writes the p-value and its stars; the legend comes with the stars, none under exact",
+check("V07 p.format = stars: the stars go on b and the F row, and the table has no p column, whether its columns list p or not (ruling R83, S419; until then a p column held the asterisks alone); a table shown without b keeps a p column of asterisks; both writes the p-value and its stars, b bare; the legend comes with the stars, none under exact",
       identical(.vrow(.v7s, "Age (years)")$cells$m1.b, paste0(sprintf("%.2f", .vc4["Age", "Estimate"]), "***")) &&
         identical(.vrow(.v7s, "Current smoker")$cells$m1.b, sprintf("%.2f", .vc4["Smoker", "Estimate"])) &&
-        identical(.vrow(.v7p, "Age (years)")$cells$m1.b, sprintf("%.2f", .vc4["Age", "Estimate"])) &&
-        identical(.vrow(.v7p, "Age (years)")$cells$m1.p, "***") &&
+        identical(.v7p$columns$key, c("stub", "m1.b", "m1.se", "m1.beta")) &&
+        identical(names(.vrow(.v7p, "Age (years)")$cells), c("m1.b", "m1.se", "m1.beta")) &&
+        identical(.vrow(.v7p, "Age (years)")$cells$m1.b, paste0(sprintf("%.2f", .vc4["Age", "Estimate"]), "***")) &&
+        identical(.v7n$columns$key, c("stub", "m1.se", "m1.p")) &&
+        identical(.vrow(.v7n, "Age (years)")$cells$m1.p, "***") &&
+        identical(.v7b$columns$key, c("stub", "m1.b", "m1.se", "m1.beta", "m1.p")) &&
+        identical(.vrow(.v7b, "Age (years)")$cells$m1.b, sprintf("%.2f", .vc4["Age", "Estimate"])) &&
         identical(.vrow(.v7b, "Current smoker")$cells$m1.p, ".056") &&
         identical(.vrow(.v7b, "Age (years)")$cells$m1.p, "<.001***") &&
         identical(.v7s$notes$probability, "**p* < .05. ***p* < .01. ****p* < .001.") &&
@@ -3429,6 +3512,9 @@ invisible(res(jcomplete(clear.all = TRUE)))
                 .jst_table_build_models(list(.vh1, .vh2, .vh3), s) })
 .v9z <- local({ s <- .jst_style_apa; s$regression$fit.rows <- "none"
                 .jst_table_build_models(list(.vh1, .vh2, .vh3), s) })
+# S419 (v0.9.281; ruling R84): under n.position = none the sentence stays.
+.v9o <- local({ s <- .jst_style_apa; s$general$n.position <- "none"
+                .jst_table_build_models(list(.vh1, .vh2, .vh3), s) })
 .v9e <- res(jtable(list(.vh1, .vh2), fit.rows = c("r2", "delta.r2"), print = FALSE))
 .v9en <- Filter(function(s) grepl("delta R2 row is left out", s$text, fixed = TRUE), .seen)
 check("V09 models with different Ns are built: the N row is added, the general note says N differs by model with each N and its models (equal Ns grouped), under n.position = title as well, the title carrying no N (ruling R59, S409), fit.rows = none adds no row; the console note names each model's N and gives the jcomplete() line on the largest model's variables, the dummy-coded variable by its own name; delta R2 asked of models on different cases is left out with a note",
@@ -3439,6 +3525,8 @@ check("V09 models with different Ns are built: the N row is added, the general n
         identical(.v9$val$notes$general, "*N* differs by model: 103 (Model 1), 97 (Model 2), 92 (Model 3).") &&
         identical(.v9t$caption$title, "Regression Coefficients Predicting Wellbeing score (0-100)") &&
         identical(.v9t$notes$general, .v9$val$notes$general) &&
+        identical(.v9o$notes$general, .v9$val$notes$general) &&
+        identical(.v9o$caption$title, .v9t$caption$title) &&
         !"*N*" %in% vapply(.v9z$rows, `[[`, "", "label") &&
         length(.v9n) >= 1L &&
         identical(sub("\n$", "", .v9n[[1]]$text),
@@ -4276,7 +4364,7 @@ check("AE02 the cells, computed here: each category's n in each group, its perce
 })
 .ae3st <- res(local({ s <- .jst_style_apa; s$general$p.format <- "stars"
                       .jst_table_build_crosstab(list(.ae[[2]]), s) }))$val
-check("AE03 percent.base = row (each category's percentages within it, its Total 100) and total (of all cases); total = no drops the Total; test.columns = none drops the test; a test with no p column carries its stars under p.format = stars; a result made with chisq = TRUE gives the test jcrosstab() reported",
+check("AE03 percent.base = row (each category's percentages within it, its Total 100) and total (of all cases); total = no drops the Total; test.columns = none drops the test; under p.format = stars the chi-square carries the stars and the table has no p column (ruling R83, S419; until then the p column held them); a result made with chisq = TRUE gives the test jcrosstab() reported",
       identical(c(.ae3$row$rows[[2]]$cells$g1.percent, .ae3$row$rows[[2]]$cells$g2.percent,
                   .ae3$row$rows[[2]]$cells$tot.percent),
                 c(.aepc(100 * .ae3$e$obs[1, ] / sum(.ae3$e$obs[1, ])), "100.0")) &&
@@ -4285,7 +4373,8 @@ check("AE03 percent.base = row (each category's percentages within it, its Total
         identical(.ae3$tot$columns$key, c("stub", "g1.n", "g1.percent", "g2.n", "g2.percent", "tot.n", "tot.percent")) &&
         identical(.ae3$tot$rows[[2]]$cells$g1.percent, .aepc(100 * .ae3$e$obs[1, 1] / .ae3$e$N)) &&
         identical(.ae3$st$rows[[1]]$cells$chisq, sprintf("%.2f", .ae3$e$x2)) &&
-        identical(.ae3st$rows[[1]]$cells$p, "*") &&
+        identical(.ae3st$rows[[1]]$cells$chisq, paste0(sprintf("%.2f", .ae3$e$x2), "*")) &&
+        identical(tail(.ae3st$columns$key, 3), c("chisq", "df", "v")) &&
         isTRUE(all.equal(unname(.ae3$chi$chi_square), .ae3$e$x2)) &&
         identical(res(jtable(.ae3$chi, print = FALSE))$val$rows[[1]]$cells,
                   res(jtable(.ae[[2]], print = FALSE))$val$rows[[1]]$cells))
@@ -5081,6 +5170,8 @@ check("AN01 settings given to jstyle(save.as =) write a short file, pinned whole
                          "# It lists only the settings that differ from apa; any setting not listed here takes apa's value.",
                          "# ?jstyle_settings lists every setting and what it takes.",
                          "# Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.",
+                         "# A general setting goes at the top, before the first heading in square brackets, and a table type's setting under its heading.",
+                         "# To give one kind of table its own value of a general setting, copy that setting's line under the table's heading and change the value there.",
                          "# jstyle(\"mine\") checks the file and names any value it cannot use.",
                          "",
                          "format     = 1",
@@ -5133,7 +5224,7 @@ check("AN02 the short file reads back: jstyle() shows its four settings as set t
                  .alsz(.alx(f)) })
 check("AN03 a style given by path is named by its path in based.on, and the copy reads through it (its own size, the first file's fit rows); a general setting given in a section's list is written under that section and changes only that table type",
       identical(.an3l[1:2], c("# mine2.jstyle:", "# A jstats table style, based on mine.")) &&
-        identical(.an3l[10], paste0("based.on   = ", .jst_norm_path(paste0(.an1f, ".jstyle")))) &&
+        identical(.an3l[12], paste0("based.on   = ", .jst_norm_path(paste0(.an1f, ".jstyle")))) &&
         identical(tail(.an3l, 3), c("# the text size, in points", "# takes: a number from 6 to 72", "size = 10")) &&
         grepl("\nsize              = 10\n", .an3p, fixed = TRUE) &&
         grepl("\nfit.rows          = r2, n", .an3p, fixed = TRUE) &&
@@ -5187,7 +5278,7 @@ check("AN05 settings without save.as = stop with the call given save.as =; a sec
         identical(.an5$list2, .an5$list1) &&
         identical(.an5$sec1, "[error] jstyle(): fit.row is not a setting of [regression].\nDid you mean fit.rows?") &&
         startsWith(.an5$sec2, "[error] jstyle(): zzz is not a setting of [regression].\nThe settings of [regression] are title, columns, columns.last,") &&
-        endsWith(.an5$sec2, "\nA general setting may be set there too.") &&
+        endsWith(.an5$sec2, "\nA general setting may be set there too, except paper.") &&
         identical(.an5$twice1, "[error] jstyle(): size = is given twice.\nGive each setting once.") &&
         identical(.an5$twice2, "[error] jstyle(): regression = names fit.rows twice.\nGive each setting once.") &&
         identical(.an5$near1, "[error] jstyle(): 'fit.row' is not valid.\nDid you mean `fit.rows`?") &&
@@ -5224,10 +5315,15 @@ check("AN07 a complete copy: every setting directly after its \"# takes:\" note,
         takes <- grep("^# takes: ", .an7)
         lz <- match("leading.zero = no", .an7)
         cf <- match("caption.form = apa", .an7)
+        np <- match("n.position = title", .an7)
+        # S419: leading.zero's note is a line per choice now, as
+        # caption.form's is; n.position's is the one held in several lines
+        # and joined.
         length(sets) == length(takes) && identical(takes, sets - 1L) &&
           !any(grepl("^#   ", .an7)) &&
-          identical(.an7[lz - 2L], paste0("# ", paste(.jst_style_spec$general$leading.zero$about,
+          identical(.an7[np - 2L], paste0("# ", paste(.jst_style_spec$general$n.position$about,
                                                       collapse = " "))) &&
+          identical(.an7[lz - 4:2], paste0("# ", .jst_style_spec$general$leading.zero$about)) &&
           identical(.an7[cf - 4:2], paste0("# ", .jst_style_spec$general$caption.form$about)) &&
           max(nchar(.an7)) > 100L
       }) &&
@@ -5235,9 +5331,9 @@ check("AN07 a complete copy: every setting directly after its \"# takes:\" note,
           # The settings help page joins the same lines: a choice set off
           # with "|", any other line run on with a space.
           rd <- paste(.jst_style_settings_rd(), collapse = "\n")
-          grepl("on the next line | journal: bold \"Table 1.\" and the title on one line | report: ",
+          grepl("in italics on the next line | journal: \"Table 1.\" in bold, the title after it on the same line, not bold | report: ",
                 rd, fixed = TRUE) &&
-            grepl("that cannot exceed 1, such as p (.23) | yes keeps it (0.23) | never drops it on every number",
+            grepl("every number below 1 (0.23) | no: no zero on a statistic that cannot exceed 1, such as p (.23), and a zero on any other number below 1",
                   rd, fixed = TRUE)
         }))
 
@@ -5261,8 +5357,8 @@ check("AO02 the ?jstyle_settings page, generated from the settings' own notes: p
 
 .ao3 <- tryCatch(paste(.jst_orientation_body(), collapse = " "), error = function(e) "")
 .ao3 <- gsub(" +", " ", .ao3)
-check("AO03 the orientation (version 3.11; 3.10 until S416, 3.9 until S409) holds the tables -- kept results to jtable(), one call one table, the document call, print(t1), the two built-in styles, the complete copy and the short call, open = TRUE, ?jstyle_settings, the editing rule the file heads give -- in lines no wider than 76 columns; a kept result saved with base R's saveRDS(); the skill's description names jtable and jstyle",
-      identical(.jst_orientation_version, "3.11") &&
+check("AO03 the orientation (version 3.12; 3.11 until S419, 3.10 until S416, 3.9 until S409) holds the tables -- kept results to jtable(), one call one table, the document call, print(t1), the two built-in styles, the complete copy and the short call, open = TRUE, ?jstyle_settings, the editing rule the file heads give -- in lines no wider than 76 columns; a kept result saved with base R's saveRDS(); the skill's description names jtable and jstyle",
+      identical(.jst_orientation_version, "3.12") &&
         grepl("- Publication tables come from `jtable()` on kept results:", .ao3, fixed = TRUE) &&
         grepl("One call makes one table;", .ao3, fixed = TRUE) &&
         grepl("`jtable(list(t1, t2), file = \"Tables.docx\")`", .ao3, fixed = TRUE) &&
@@ -6038,13 +6134,13 @@ check("AQ10 save.as refuses \"report\" and \"apa\" as names of styles built into
   })))
   list(l = l, same = same)
 }))
-check("AQ11 a complete copy's head says to change values only and holds a block for an AI assistant asked to match an example, pinned whole; based.on names report for a copy of report or of a file based on it, apa otherwise; each copy reads back with every setting as the style it copied",
-      identical(.aq11$report$l[1:11], c("# full_report.jstyle:", "# A jstats table style.", "# Every setting jstats has is below, each after a note saying what it does and what it takes.", "# Change only the values after the = signs; do not invent a setting, and do not rename a setting or a section.", "# A line that starts with # is a note.", "# jstyle(\"full_report\") checks the file and names any value it cannot use.", "#", "# To an AI assistant asked to edit this file so tables look like an example:", "# Change only the values after the = signs, using only the values each setting's \"# takes:\" line allows.", "# Keep every other line as it is, and return the whole file.", "# Then say what the example has that these settings cannot make, rather than inventing a setting for it.")) &&
-        identical(.aq11$report$l[12:16], c("", "format     = 1", paste0("written.by = jstats ", .jst_jstats_version()),
+check("AQ11 a complete copy's head says to change values only and holds a block for an AI assistant asked to change the file, from a request in words or an example (since S419; .head419()), pinned whole; based.on names report for a copy of report or of a file based on it, apa otherwise; each copy reads back with every setting as the style it copied",
+      identical(.aq11$report$l[1:18], .head419("full_report")) &&
+        identical(.aq11$report$l[19:23], c("", "format     = 1", paste0("written.by = jstats ", .jst_jstats_version()),
                                            "based.on   = report", "")) &&
-        identical(.aq11$onrep$l[15], "based.on   = report") &&
-        identical(.aq11$apa$l[15], "based.on   = apa") &&
-        identical(.aq11$onapa$l[15], "based.on   = apa") &&
+        identical(.aq11$onrep$l[22], "based.on   = report") &&
+        identical(.aq11$apa$l[22], "based.on   = apa") &&
+        identical(.aq11$onapa$l[22], "based.on   = apa") &&
         all(vapply(.aq11, function(x) isTRUE(x$same), logical(1))) &&
         all(c("caption.fill = none", "heading.fill = none", "note.label.italic = no") %in% .aq11$report$l) &&
         all(c("caption.fill = none", "heading.fill = none", "note.label.italic = yes") %in% .aq11$apa$l) &&
@@ -6057,9 +6153,9 @@ check("AQ11 a complete copy's head says to change values only and holds a block 
   invisible(res(jstyle("report", save.as = file.path(.aqd, "short_rep"), font = "Calibri")))
   readLines(file.path(.aqd, "short_rep.jstyle"), encoding = "UTF-8")
 }))
-check("AQ12 a short copy of report: its head names report as a style built into jstats and gives the editing rule worded as the complete copy's, adding a setting from ?jstyle_settings allowed; based.on = report",
-      identical(.aq12[1:6], c("# short_rep.jstyle:", "# A jstats table style, based on report, a style built into jstats.", "# It lists only the settings that differ from report; any setting not listed here takes report's value.", "# ?jstyle_settings lists every setting and what it takes.", "# Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.", "# jstyle(\"short_rep\") checks the file and names any value it cannot use.")) &&
-        identical(.aq12[7:10], c("", "format     = 1", paste0("written.by = jstats ", .jst_jstats_version()),
+check("AQ12 a short copy of report: its head names report as a style built into jstats and gives the editing rule worded as the complete copy's, adding a setting from ?jstyle_settings allowed, then (since S419) where a general setting and a table type's go and the line that gives one kind of table its own value; based.on = report",
+      identical(.aq12[1:8], c("# short_rep.jstyle:", "# A jstats table style, based on report, a style built into jstats.", "# It lists only the settings that differ from report; any setting not listed here takes report's value.", "# ?jstyle_settings lists every setting and what it takes.", "# Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.", "# A general setting goes at the top, before the first heading in square brackets, and a table type's setting under its heading.", "# To give one kind of table its own value of a general setting, copy that setting's line under the table's heading and change the value there.", "# jstyle(\"short_rep\") checks the file and names any value it cannot use.")) &&
+        identical(.aq12[9:12], c("", "format     = 1", paste0("written.by = jstats ", .jst_jstats_version()),
                                  "based.on   = report")))
 
 # jstyle(open = TRUE). The opener and the session test stand in here: a
@@ -6198,10 +6294,11 @@ check("AR01 apa's n.position is title, and report's, which inherits it (ruling R
         identical(.jst_style_about_lines(.jst_style_spec$general$n.position$about),
                   paste("where N, the number of cases, goes: note (the general note opens on it) |",
                         "title (\"(N = 103)\" after the title; a table with several ns, such as Ns",
-                        "that differ or a t test's groups, gives them in the note) | none")) &&
+                        "that differ or a t test's groups, gives them in the note) | none (no N;",
+                        "a table of models whose Ns differ still says so in its note)")) &&
         grepl("\\item{\\code{n.position}}{where N, the number of cases, goes:", paste(.jst_style_settings_rd(), collapse = "\n"),
               fixed = TRUE) &&
-        grepl("several ns, such as Ns that differ or a t test's groups, gives them in the note) | none. Takes one of note | title | none. In apa: \\code{title}.}",
+        grepl("several ns, such as Ns that differ or a t test's groups, gives them in the note) | none (no N; a table of models whose Ns differ still says so in its note). Takes one of note | title | none. In apa: \\code{title}.}",
               paste(.jst_style_settings_rd(), collapse = "\n"), fixed = TRUE))
 
 check("AR02 a table whose cases are one pool -- descriptives, frequencies, a regression, a logistic regression, a correlation, a crosstab, a reliability table -- puts \"(N = n)\" after its title under apa, and nothing in the note, where n.position = note opens the note on the same N and leaves the title alone; none writes neither",
@@ -6323,7 +6420,7 @@ check("AR05 N after the title in every writer: the preview's title line (N plain
   val <- function(st) lapply(keys, function(k) {
     k <- strsplit(k, " ", fixed = TRUE)[[1]]; .jst_style_key(st, k[1], k[2])
   })
-  list(l = l, b = .arblank(l), heads = which(grepl("^# (The general settings|An? [A-Za-z -]+ table, from |A crosstab, from |A chart, from )", l)),
+  list(l = l, b = .arblank(l), heads = which(grepl("^# (The general settings: |An? [A-Za-z -]+ table, from |A crosstab, from |A chart, from )", l)),
        same = identical(val(.jst_style_resolve(file.path(.ard, "arfull.jstyle"))),
                         val(.jst_style_resolve(q))),
        apa = identical(val(.jst_style_resolve(file.path(.ard, "arfull.jstyle"))),
@@ -8033,8 +8130,8 @@ check("AU16 every analysis result keeps the data frame as its call named it (the
        skill = .jst_skill_description(), rd = rd, l = l,
        wrote = file.exists(file.path(.aud, "Report.docx")))
 }))
-check("AU17 the orientation (version 3.11; 3.10 until S416) names jmulti() where an analysis is chosen and among the functions that take variable names, and has a bullet for the charts -- jplot() choosing the chart, the three kinds asked for by name, the stacked bar's two calls, a kept result drawn, a chart kept with <- written beside built tables, the look from the style -- in lines no wider than 76 columns, every call in it running on community; the skill's description names jmulti and jplot; ?jstyle_settings and a complete copy carry the three new settings",
-      !is.null(.au17) && identical(.au17$v, "3.11") && .au17$n >= 12L && .au17$wide <= 76L &&
+check("AU17 the orientation (version 3.12; 3.11 until S419, 3.10 until S416) names jmulti() where an analysis is chosen and among the functions that take variable names, and has a bullet for the charts -- jplot() choosing the chart, the three kinds asked for by name, the stacked bar's two calls, a kept result drawn, a chart kept with <- written beside built tables, the look from the style -- in lines no wider than 76 columns, every call in it running on community; the skill's description names jmulti and jplot; ?jstyle_settings and a complete copy carry the three new settings",
+      !is.null(.au17) && identical(.au17$v, "3.12") && .au17$n >= 12L && .au17$wide <= 76L &&
         grepl("tabulate a tick-all-that-apply question, stored as one yes/no item per option, with `jmulti()`.", .au17$all, fixed = TRUE) &&
         grepl("`jcorr()`, `jalpha()`, `jmulti()`, `jdesc()`, and `jfreq()` take variable names instead.", .au17$all, fixed = TRUE) &&
         grepl("`type = \"pie\"` or `type = \"donut\"` for one variable of up to six categories", .au17$flat, fixed = TRUE) &&
@@ -8045,12 +8142,504 @@ check("AU17 the orientation (version 3.11; 3.10 until S416) names jmulti() where
         grepl("\\item{\\code{pie.max}}{the most categories a pie or a donut chart shows; a variable with more stops, with the line that draws a bar chart. Takes a whole number from 2 to 6. In apa: \\code{6}.}", .au17$rd, fixed = TRUE) &&
         all(c("values.stacked = no", "values.decimals = 0", "pie.max = 6") %in% .au17$l))
 
+# =============================================================================
+# AV. The AI-text build (S419, v0.9.281): what a style file says of itself,
+#     a style file saved as .txt (ruling R81), a setting in a part that
+#     cannot take it and a section's own value of a general setting (ruling
+#     R82 and its fixes), p.format = stars (ruling R83), n.position = none
+#     and models whose Ns differ (ruling R84)
+# =============================================================================
+cat("\n--- AV. A style file's own text, .txt files, a setting's place, stars, Ns that differ ---\n")
+
+.avd <- file.path(tempdir(), "tables_check_s419"); unlink(.avd, recursive = TRUE); dir.create(.avd)
+.avo <- options(.jst_options_style_dir = .avd, .jst_options_style = NULL)
+.avw <- function(name, ..., ext = ".jstyle") {
+  p <- file.path(.avd, paste0(name, ext))
+  writeBin(charToRaw(enc2utf8(paste0(paste(c(...), collapse = "\n"), "\n"))), p)
+  invisible(p)
+}
+# A long call the wrapper broke after a comma, on one line again.
+.avflat <- function(x) gsub("\n {6}", " ", x)
+# The folder as a message names it: made full, then the file's name.
+.avp <- function(...) file.path(.jst_norm_path(.avd), ...)
+.avm  <- res(jlm(WellbeingScore ~ Age, tcm))$val
+.avm2 <- res(jlm(WellbeingScore ~ Age + Income, tcm))$val
+
+# The notes of four general settings, as a complete copy writes them.
+.av1 <- .aqtry(local({
+  invisible(res(jstyle("apa", save.as = "avfull")))
+  l <- readLines(file.path(.avd, "avfull.jstyle"), encoding = "UTF-8")
+  above <- function(k, n) l[match(k, l) - (n + 1L):2]
+  list(l = l, cf = above("caption.form = apa", 3L), lz = above("leading.zero = no", 3L),
+       pf = above("p.format = exact", 3L), np = above("n.position = title", 1L),
+       rd = paste(.jst_style_settings_rd(), collapse = "\n"))
+}))
+check("AV01 the notes of four general settings say what each value does, one line a choice (the (S418) AI-text item): caption.form names what is bold; leading.zero no longer reads \"never drops it\" (yes, no -- APA's rule, the zero kept on an SE -- and never, each with its numbers); p.format says where the asterisks print; n.position's none names the models whose Ns differ; ?jstyle_settings joins the same lines",
+      !is.null(.av1) &&
+        identical(.av1$cf, c("# apa: \"Table 1\" in bold, the title in italics on the next line",
+                             "# journal: \"Table 1.\" in bold, the title after it on the same line, not bold",
+                             "# report: \"Table 1:\" and the title on one line, both in bold")) &&
+        identical(.av1$lz, c("# yes: a zero before the point of every number below 1 (0.23)",
+                             "# no: no zero on a statistic that cannot exceed 1, such as p (.23), and a zero on any other number below 1, such as an SE (0.197); APA's rule",
+                             "# never: no zero before the point of any number (.23 for p, .197 for an SE)")) &&
+        identical(.av1$pf, c("# exact: the p-value in the p column, with no asterisks",
+                             "# stars: asterisks on the statistic (b, t, F or chi-square) and no p column; a table without that statistic keeps a p column of asterisks",
+                             "# both: the p-value and its asterisks in the p column")) &&
+        identical(.av1$np, "# where N, the number of cases, goes: note (the general note opens on it) | title (\"(N = 103)\" after the title; a table with several ns, such as Ns that differ or a t test's groups, gives them in the note) | none (no N; a table of models whose Ns differ still says so in its note)") &&
+        !any(grepl("never drops", .av1$l, fixed = TRUE)) && !grepl("never drops", .av1$rd, fixed = TRUE) &&
+        grepl("\\item{\\code{p.format}}{exact: the p-value in the p column, with no asterisks | stars: asterisks on the statistic (b, t, F or chi-square) and no p column; a table without that statistic keeps a p column of asterisks | both: the p-value and its asterisks in the p column. Takes one of exact | stars | both. In apa: \\code{exact}.}",
+              .av1$rd, fixed = TRUE) &&
+        grepl("\\item{\\code{leading.zero}}{yes: a zero before the point of every number below 1 (0.23) | no: no zero on", .av1$rd, fixed = TRUE) &&
+        grepl("; APA's rule | never: no zero before the point of any number (.23 for p, .197 for an SE). Takes one of yes | no | never. In apa: \\code{no}; in report: \\code{yes}.}",
+              .av1$rd, fixed = TRUE))
+
+# The marks a text takes; ?jstyle_settings' "In a style file".
+.av2 <- .aqtry(local({
+  .avw("avmk", "based.on = report", "note.label = *Remarks*^1^:", "source.label = *Origin*^2^:",
+       "[regression]", "title = *Determinants* of {outcome}^+^", "stub.label = Independent *Variables*^a^",
+       "b.label = *B*^b^", "intercept.label = *Const*^d^")
+  f <- file.path(.avd, "AvMarks.docx")
+  r <- res(jtable(.avm, style = "avmk", note = "A plain note.", source = "A survey.", file = f, print = FALSE))
+  x <- .alx(f)
+  runs <- regmatches(x, gregexpr("<w:r>.*?</w:r>", x, perl = TRUE))[[1]]
+  txt <- function(r) gsub("<[^>]+>", "", regmatches(r, regexpr("<w:t[^>]*>.*?</w:t>", r, perl = TRUE)))
+  it  <- grepl("<w:i/>", runs, fixed = TRUE); su <- grepl("w:val=\"superscript\"", runs, fixed = TRUE)
+  t   <- vapply(runs, function(r) { v <- txt(r); if (length(v)) v else "" }, "", USE.NAMES = FALSE)
+  list(ok = inherits(r$val, "jst_table"), italic = t[it], sup = t[su], all = t)
+}))
+check("AV02 the marks a text takes, as the complete copy's head and ?jstyle_settings say: in a title, a single column's head, note.label and source.label *word* is set in italics and ^mark^ as a superscript, and a row's label (intercept.label) prints the marks as typed; ?jstyle_settings' \"In a style file\" gives the line that sets one table type's own value of a general setting, with its two exceptions",
+      !is.null(.av2) && isTRUE(.av2$ok) &&
+        all(c("Determinants", "Variables", "B", "Remarks", "Origin") %in% .av2$italic) &&
+        identical(.av2$sup, c("+", "a", "b", "1", "2")) &&
+        "*Const*^d^" %in% .av2$all && !any(grepl("[*^]", setdiff(.av2$all, "*Const*^d^"))) &&
+        grepl(paste0("To give one table type its own value of a general setting, copy the setting's line under that type's ",
+                     "heading and change the value there: it then holds for that table type only. Two exceptions: ",
+                     "\\code{paper}, the page of the whole Word file, is set only at the top, and \\code{[plot]} takes only a ",
+                     "chart's own settings. In a title, a single column's head (such as \\code{stub.label} or \\code{b.label}), ",
+                     "\\code{note.label} or \\code{source.label}, \\code{*word*} sets a word in italics and \\code{^mark^} a ",
+                     "superscript; any other label prints the marks as typed."),
+              .av1$rd, fixed = TRUE) &&
+        !grepl("A general setting may also be set in a table type's section", .av1$rd, fixed = TRUE))
+
+# A style file saved as .txt (ruling R81).
+.av3 <- .aqtry(local({
+  invisible(res(jstyle("report", save.as = "avagency", font = "Calibri")))
+  file.rename(file.path(.avd, "avagency.jstyle"), file.path(.avd, "avagency.jstyle.txt"))
+  .avw("avplain", "based.on = report", "size = 9", ext = ".txt")          # reads as a style file
+  .avw("avnotes", "Notes on the fonts", "size = 9", ext = ".txt")         # does not: one line is no setting's
+  .avw("avlist", "milk = 2", "eggs = 12", ext = ".txt")                   # nor this: no setting jstats has
+  .avw("avboth", "based.on = report"); .avw("avboth", "based.on = report", ext = ".txt")
+  dir.create(file.path(.avd, "avzzfolder.jstyle.txt"))                         # a folder of the name is no style file
+  .avw("avkid", "based.on = avagency", "size = 9")
+  .avw("avkid2", "based.on = avagency.txt", "size = 9")
+  out <- list(
+    name   = res(jtable(.avm, style = "avagency", print = FALSE)),
+    typed  = res(jtable(.avm, style = "avagency.txt", print = FALSE)),
+    typed2 = res(jtable(.avm, style = "avagency.jstyle.txt", print = FALSE)),
+    jstyle = res(jstyle("avagency")),
+    jopt   = res(joptions(style = "avagency")),
+    jplot  = res(jplot(tcm, Region, style = "avagency.txt")),
+    plain  = res(jtable(.avm, style = "avplain", print = FALSE)),
+    notes  = res(jtable(.avm, style = "avnotes", print = FALSE)),
+    list   = res(jtable(.avm, style = "avlist", print = FALSE)),
+    dirx   = res(jtable(.avm, style = "avzzfolder", print = FALSE)),
+    both   = res(jtable(.avm, style = file.path(.avd, "avboth.txt"), print = FALSE)),
+    # The style folder given relative to the working directory: the line
+    # still carries both files' full paths, so it runs from any folder.
+    rel    = local({ owd <- setwd(dirname(.avd)); on.exit(setwd(owd))
+                     o <- options(.jst_options_style_dir = basename(.avd)); on.exit(options(o), add = TRUE)
+                     res(jtable(.avm, style = "avagency", print = FALSE)) }),
+    kid    = res(jtable(.avm, style = "avkid", print = FALSE)),
+    kid2   = res(jtable(.avm, style = "avkid2", print = FALSE)),
+    path   = res(jtable(.avm, style = file.path(.avd, "avagency.jstyle.txt"), print = FALSE)),
+    apa    = res(jtable(.avm, style = "apa.txt", print = FALSE)),
+    style0 = getOption(".jst_options_style"))
+  # The offered line, run: the same call then makes the table.
+  ln <- strsplit(.avflat(out$name$txt), "\n", fixed = TRUE)[[1]]
+  ln <- ln[startsWith(ln, "  file.rename(")]
+  out$ran  <- if (length(ln) == 1L) isTRUE(eval(parse(text = ln)[[1]])) else FALSE
+  out$then <- res(jtable(.avm, style = "avagency", print = FALSE))
+  out$near <- res(jtable(.avm, style = "avagency.txt", print = FALSE))
+  out$text <- c(a = .jst_style_text_like(file.path(.avd, "avplain.txt")),
+                b = .jst_style_text_like(file.path(.avd, "avnotes.txt")),
+                c = .jst_style_text_like(file.path(.avd, "no_such_file.txt")),
+                d = .jst_style_text_like(file.path(.avd, "avlist.txt")))
+  out
+}))
+check("AV03 a style file saved with .txt after its name is named, with the line that renames it (ruling R81, S419: .jstyle stays the one extension): name.jstyle.txt whatever it holds, name.txt when it reads as a style file and not a notes file or a list that names no setting, and never a folder; in jtable(), jstyle() and joptions(), which changes nothing; the line on both files' full paths under a style folder given relative; the line run, the same call makes the table",
+      !is.null(.av3) && is.null(.av3$name$val) &&
+        identical(.avflat(.av3$name$txt),
+                  paste0("[error] jtable(): no style named \"avagency\" was found.\n",
+                         "The style folder holds avagency.jstyle.txt, and jstats reads a style only\n",
+                         "from a file ending in .jstyle.\n",
+                         "To rename the file, run this line, then the call again:\n",
+                         "  file.rename(\"", .avp("avagency.jstyle.txt"), "\", \"", .avp("avagency.jstyle"), "\")")) &&
+        identical(sub("jstyle\\(\\)", "jtable()", .avflat(.av3$jstyle$txt)), .avflat(.av3$name$txt)) &&
+        identical(sub("joptions\\(\\)", "jtable()", .avflat(.av3$jopt$txt)), .avflat(.av3$name$txt)) &&
+        is.null(.av3$style0) &&
+        identical(.avflat(.av3$plain$txt),
+                  paste0("[error] jtable(): no style named \"avplain\" was found.\n",
+                         "The style folder holds avplain.txt, and jstats reads a style only from a\n",
+                         "file ending in .jstyle.\n",
+                         "To rename the file, run this line, then the call again:\n",
+                         "  file.rename(\"", .avp("avplain.txt"), "\", \"", .avp("avplain.jstyle"), "\")")) &&
+        startsWith(.av3$notes$txt, "[error] jtable(): no style named \"avnotes\" was found.\nThe styles found are \"apa\", \"report\",") &&
+        startsWith(.av3$list$txt, "[error] jtable(): no style named \"avlist\" was found.\nThe styles found are \"apa\", \"report\",") &&
+        startsWith(.av3$dirx$txt, "[error] jtable(): no style named \"avzzfolder\" was found.\nThe styles found are \"apa\", \"report\",") &&
+        identical(unname(.av3$text), c(TRUE, FALSE, FALSE, FALSE)) &&
+        identical(.avflat(.av3$rel$txt), .avflat(.av3$name$txt)) &&
+        isTRUE(.av3$ran) && inherits(.av3$then$val, "jst_table") &&
+        identical(.jst_style_key(.av3$then$val$style, "general", "font"), "Calibri"))
+
+check("AV04 the .txt stop's second step, so the remedy never leads to another stop: a name typed with its .txt gets the call with the style's name; a based.on line with it, the line to change; jplot(), which rebuilds no call, a sentence; a path, the call with the new path; a based.on line without it, the rename alone; a path whose .jstyle file exists, no line (nothing is renamed onto a file); a name typed with .txt after a style there is, or after a built-in, the did-you-mean",
+      !is.null(.av3) &&
+        identical(.avflat(.av3$typed$txt),
+                  paste0("[error] jtable(): no style named \"avagency.txt\" was found.\n",
+                         "The style folder holds avagency.jstyle.txt, and jstats reads a style only\n",
+                         "from a file ending in .jstyle.\n",
+                         "To rename the file and use it, run:\n",
+                         "  file.rename(\"", .avp("avagency.jstyle.txt"), "\", \"", .avp("avagency.jstyle"), "\")\n",
+                         "  jtable(.avm, style = \"avagency\", print = FALSE)")) &&
+        identical(sub("avagency.jstyle.txt\" was", "avagency.txt\" was", .avflat(.av3$typed2$txt), fixed = TRUE),
+                  .avflat(.av3$typed$txt)) &&
+        identical(.avflat(.av3$jplot$txt),
+                  paste0("[error] jplot(): no style named \"avagency.txt\" was found.\n",
+                         "The style folder holds avagency.jstyle.txt, and jstats reads a style only\n",
+                         "from a file ending in .jstyle.\n",
+                         "To rename the file, run:\n",
+                         "  file.rename(\"", .avp("avagency.jstyle.txt"), "\", \"", .avp("avagency.jstyle"), "\")\n",
+                         "Then name the style \"avagency\".")) &&
+        identical(.avflat(.av3$kid$txt),
+                  paste0("[error] jtable(): line 1 of avkid.jstyle sets based.on = avagency, and no\n",
+                         "style of that name was found.\n",
+                         "The style folder holds avagency.jstyle.txt, and jstats reads a style only\n",
+                         "from a file ending in .jstyle.\n",
+                         "To rename the file, run this line, then the call again:\n",
+                         "  file.rename(\"", .avp("avagency.jstyle.txt"), "\", \"", .avp("avagency.jstyle"), "\")")) &&
+        identical(.avflat(.av3$kid2$txt),
+                  paste0("[error] jtable(): line 1 of avkid2.jstyle sets based.on = avagency.txt, and\n",
+                         "no style of that name was found.\n",
+                         "The style folder holds avagency.jstyle.txt, and jstats reads a style only\n",
+                         "from a file ending in .jstyle.\n",
+                         "To rename the file, run:\n",
+                         "  file.rename(\"", .avp("avagency.jstyle.txt"), "\", \"", .avp("avagency.jstyle"), "\")\n",
+                         "Then set based.on = avagency on line 1 of avkid2.jstyle.")) &&
+        local({
+          # A path: the first two lines as typed, the rename on the full
+          # paths, and the call's style the path with its ending changed.
+          l <- strsplit(.avflat(.av3$path$txt), "\n", fixed = TRUE)[[1]]
+          cl <- tryCatch(parse(text = l[5])[[1]], error = function(e) NULL)
+          identical(l[1:3], c("[error] jtable(): style = names a file ending in .txt, not .jstyle:",
+                              paste0("  ", file.path(.avd, "avagency.jstyle.txt")),
+                              "To rename the file and use it, run:")) &&
+            identical(l[4], paste0("  file.rename(\"", .avp("avagency.jstyle.txt"), "\", \"",
+                                   .avp("avagency.jstyle"), "\")")) &&
+            length(l) == 5L && is.call(cl) && identical(cl$style, file.path(.avd, "avagency.jstyle")) &&
+            identical(cl[[1]], as.name("jtable"))
+        }) &&
+        identical(.av3$both$txt, paste0("[error] jtable(): style = names a file ending in .txt, not .jstyle:\n  ",
+                                        file.path(.avd, "avboth.txt"))) &&
+        identical(.av3$apa$txt, "[error] jtable(): no style named \"apa.txt\" was found.\nDid you mean \"apa\"?\n  jtable(.avm, style = \"apa\", print = FALSE)") &&
+        identical(.av3$near$txt, "[error] jtable(): no style named \"avagency.txt\" was found.\nDid you mean \"avagency\"?\n  jtable(.avm, style = \"avagency\", print = FALSE)"))
+
+# A setting in a part that cannot take it, in a file (ruling R82's fixes).
+.avw("avw1", "based.on = report", "[regression]", "paper = letter")
+.avw("avw2", "based.on = report", "[plot]", "palette = greys", "caption.form = apa")
+.avw("avw3", "based.on = report", "[plot]", "paper = letter")
+.avw("avw4", "based.on = report", "fit.rows = r2, n")
+.avw("avw5", "based.on = report", "palette = navy")
+.avw("avw6", "based.on = report", "[descriptives]", "fit.rows = r2")
+.avw("avw7", "based.on = report", "[plot]", "font = Georgia", "size = 9")       # [plot]'s own: read
+.avw("avw8", "based.on = report", "[plot]", "zzzzzz = 1")
+.avw("avw9", "based.on = report", "[plot]", "decimal = 2")                       # near a general setting [plot] cannot take
+.av5 <- lapply(paste0("avw", 1:9), function(s) res(jstyle(s)))
+check("AV05 a setting jstats has, in a part of a style file that cannot take it, stops saying where it goes (ruling R82's fixes, S419; until then the first three were read and did nothing, and the last three were \"not a setting jstats has\"): paper under a table type's heading and under [plot]; a general setting under [plot]; a table type's setting before the first section; one section's setting under another's heading; [plot]'s own font and size are read, and a name no part has keeps the unknown-setting stop, [plot]'s without \"A general setting may be set there too\" and with no did-you-mean for a name near a general setting",
+      identical(.av5[[1]]$txt, paste0("[error] jstyle(): line 3 of avw1.jstyle sets paper in [regression].\n",
+                                      "paper is the page size of the whole Word file, so it is set once, for every\n",
+                                      "table and figure.\n",
+                                      "Put the line at the top of the file, before the first section.")) &&
+        identical(.av5[[2]]$txt, paste0("[error] jstyle(): line 4 of avw2.jstyle sets caption.form in [plot].\n",
+                                        "caption.form is a general setting, and [plot] takes only a chart's\n",
+                                        "own settings.\n",
+                                        "Put the line at the top of the file, before the first section, to set every\n",
+                                        "table and figure.\n",
+                                        "To set one kind of table only, put it under that table's heading.")) &&
+        identical(.av5[[3]]$txt, sub("avw1.jstyle sets paper in [regression]", "avw3.jstyle sets paper in [plot]",
+                                     .av5[[1]]$txt, fixed = TRUE)) &&
+        identical(.av5[[4]]$txt, paste0("[error] jstyle(): line 2 of avw4.jstyle sets fit.rows before the\n",
+                                        "first section.\n",
+                                        "fit.rows is a setting of [regression] and [logistic].\n",
+                                        "Put the line under the heading of the table type it is for.")) &&
+        identical(.av5[[5]]$txt, paste0("[error] jstyle(): line 2 of avw5.jstyle sets palette before the\n",
+                                        "first section.\n",
+                                        "palette is a setting of [plot].\n",
+                                        "Put the line under [plot].")) &&
+        identical(.av5[[6]]$txt, paste0("[error] jstyle(): line 3 of avw6.jstyle sets fit.rows in [descriptives].\n",
+                                        "fit.rows is a setting of [regression] and [logistic], not of [descriptives].\n",
+                                        "Put the line under the heading of the table type it is for.")) &&
+        inherits(.av5[[7]]$val, "jst_style") &&
+        identical(list(.jst_style_key(.av5[[7]]$val, "plot", "font"), .jst_style_key(.av5[[7]]$val, "plot", "size"),
+                       .jst_style_key(.av5[[7]]$val, "general", "font")), list("Georgia", 9, "Arial")) &&
+        startsWith(.av5[[8]]$txt, "[error] jstyle(): line 3 of avw8.jstyle sets zzzzzz, which is not a setting\njstats has.\n") &&
+        endsWith(.av5[[8]]$txt, "data.file,\nand vector.file.") &&
+        startsWith(.av5[[9]]$txt, "[error] jstyle(): line 3 of avw9.jstyle sets decimal, which is not a setting\njstats has.\n") &&
+        !grepl("Did you mean", .av5[[9]]$txt, fixed = TRUE))
+
+# The same in jstyle()'s settings.
+.av6in <- list.files(.avd)
+.av6 <- lapply(list(
+  paper  = quote(jstyle("report", save.as = "avx", regression = list(paper = "letter"))),
+  paper2 = quote(jstyle("report", save.as = "avx", regression = list(fit.rows = "r2", paper = "letter"), font = "Calibri")),
+  plot   = quote(jstyle("report", save.as = "avx", plot = list(palette = "greys", size = 9, decimals = 3))),
+  other  = quote(jstyle("report", save.as = "avx", descriptives = list(fit.rows = "r2"))),
+  other1 = quote(jstyle("report", save.as = "avx", regression = list(palette = "navy"))),
+  held   = quote(local({ L <- list(paper = "letter"); jstyle("report", save.as = "avx", regression = L) })),
+  both   = quote(jstyle("report", save.as = "avx", paper = "a4", regression = list(paper = "letter"))),
+  plotun = quote(jstyle("report", save.as = "avx", plot = list(zzzzzz = 1))),
+  plotnr = quote(jstyle("report", save.as = "avx", plot = list(decimal = 2)))),
+  function(cl) res(eval(cl))$txt)
+.av6out <- list.files(.avd)
+# The rewritten call runs, and writes what it says.
+.av6run <- .aqtry(local({
+  ln <- strsplit(.avflat(.av6$paper2), "\n", fixed = TRUE)[[1]]
+  r  <- res(eval(parse(text = ln[startsWith(ln, "  jstyle(")])[[1]]))
+  st <- .jst_style_resolve("avx")
+  list(ok = !startsWith(r$txt, "[error]"),
+       vals = list(.jst_style_key(st, "general", "paper"), .jst_style_key(st, "general", "font"),
+                   .jst_style_key(st, "regression", "fit.rows")))
+}))
+check("AV06 the same settings given to jstyle(save.as =) in a section's list stop as the file's lines do, writing nothing: paper, and a general setting in plot's list, with the call rewritten -- the setting given by itself, the list kept when it holds more -- or the sentence alone when the list was not typed in the call, or the setting is given by itself as well; another section's setting with an example in a list of its own section; the rewritten call runs and writes what it says",
+      identical(.av6$paper, paste0("[error] jstyle(): paper is the page size of the whole Word file, so it is\n",
+                                   "set once, for every table and figure.\n",
+                                   "Give it by itself, outside the list:\n",
+                                   "  jstyle(\"report\", save.as = \"avx\", paper = \"letter\")")) &&
+        identical(.avflat(.av6$paper2),
+                  paste0("[error] jstyle(): paper is the page size of the whole Word file, so it is\n",
+                         "set once, for every table and figure.\n",
+                         "Give it by itself, outside the list:\n",
+                         "  jstyle(\"report\", save.as = \"avx\", regression = list(fit.rows = \"r2\"), font = \"Calibri\", paper = \"letter\")")) &&
+        identical(.avflat(.av6$plot),
+                  paste0("[error] jstyle(): decimals is a general setting, and [plot] takes only a\n",
+                         "chart's own settings.\n",
+                         "Give it by itself, to set every table and figure:\n",
+                         "  jstyle(\"report\", save.as = \"avx\", plot = list(palette = \"greys\", size = 9), decimals = 3)")) &&
+        identical(.av6$other, paste0("[error] jstyle(): fit.rows is a setting of [regression] and [logistic], not\n",
+                                     "of [descriptives].\n",
+                                     "Give it in a list named for its own section, for example:\n",
+                                     "  regression = list(fit.rows = \"r2\")")) &&
+        identical(.av6$other1, paste0("[error] jstyle(): palette is a setting of [plot], not of [regression].\n",
+                                      "Give it in a list named for its own section, for example:\n",
+                                      "  plot = list(palette = \"greys\")")) &&
+        identical(.av6$held, paste0("[error] jstyle(): paper is the page size of the whole Word file, so it is\n",
+                                    "set once, for every table and figure.\n",
+                                    "Give it by itself, outside the list.")) &&
+        identical(.av6$both, paste0("[error] jstyle(): paper is the page size of the whole Word file, so it is\n",
+                                    "set once, for every table and figure.\n",
+                                    "paper = is already given by itself, so take it out of the list.")) &&
+        startsWith(.av6$plotun, "[error] jstyle(): zzzzzz is not a setting of [plot].\nThe settings of [plot] are font, size, palette,") &&
+        endsWith(.av6$plotun, "data.file,\nand vector.file.") &&
+        startsWith(.av6$plotnr, "[error] jstyle(): decimal is not a setting of [plot].\nThe settings of [plot] are font, size, palette,") &&
+        identical(.av6in, .av6out) &&
+        !is.null(.av6run) && isTRUE(.av6run$ok) && identical(.av6run$vals, list("letter", "Calibri", "r2")))
+
+# A complete copy, and the printout, keep a section's own value of a general setting.
+.av7 <- .aqtry(local({
+  invisible(res(jstyle("report", save.as = "avgs", size = 11, regression = list(decimals = 3, fit.rows = c("r2", "n")))))
+  invisible(res(jstyle("avgs", save.as = "avgsfull")))
+  l <- readLines(file.path(.avd, "avgsfull.jstyle"), encoding = "UTF-8")
+  i <- match("[regression]", l); j <- match("[logistic]", l)
+  .avw("avgskid", "based.on = avgs", "decimals = 1")     # its own general value outranks the base's section line
+  .avw("avgskid2", "based.on = avgs", "font = Georgia")
+  invisible(res(jstyle("avgskid2", save.as = "avgsfull2")))
+  cell  <- function(s) .vrow(res(jtable(.avm, style = s, print = FALSE))$val, "Age (years)")$cells$m1.b
+  celld <- function(s) res(jtable(.akd1, style = s, print = FALSE))$val$rows[[1]]$cells$mean
+  pr <- function(s) strsplit(.strip_ansi(res(jstyle(s))$txt), "\n", fixed = TRUE)[[1]]
+  list(sec = l[i:(j - 1L)], n_dec = sum(l == "decimals = 3"), n_dec2 = sum(l == "decimals = 2"),
+       b = vapply(c("report", "avgs", "avgsfull", "avgskid", "avgskid2", "avgsfull2"), cell, ""),
+       m = vapply(c("report", "avgs", "avgsfull"), celld, ""),
+       p_gs = pr("avgs"), p_full = pr("avgsfull"), p_kid = pr("avgskid"), p_kid2 = pr("avgskid2"),
+       sg = .jst_style_section_general(.jst_style_resolve("avgs"), "regression"),
+       sgp = .jst_style_section_general(.jst_style_resolve("avgs"), "plot"),
+       sgk = .jst_style_section_general(.jst_style_resolve("avgskid"), "regression"))
+}))
+check("AV07 a complete copy keeps a general setting its style sets for one table type (ruling R82's fixes, S419; until then the copy dropped the line and the copy's regression tables went back to the general value): the line under the section's own settings with its notes, the general value still at the top; the copy's tables as the short file's, regression at three decimals and descriptives at two; a file based on the short one inherits the line, and its own general value outranks it (the reference, 3.2); [plot] sets none",
+      !is.null(.av7) &&
+        identical(tail(.av7$sec, 4), c("# the decimal places of a statistic, such as a mean",
+                                       "# takes: a whole number from 0 to 6", "decimals = 3", "")) &&
+        identical(.av7$sec[length(.av7$sec) - 5:4], c("group.headings = italic", "")) &&
+        identical(.av7$n_dec, 1L) && identical(.av7$n_dec2, 1L) &&
+        local({
+          # Computed here: the coefficient at two decimals, at three and at one.
+          b <- unname(stats::coef(stats::lm(WellbeingScore ~ Age, data.frame(
+            WellbeingScore = as.numeric(tcm$WellbeingScore), Age = as.numeric(tcm$Age))))["Age"])
+          f <- function(d) sprintf(paste0("%.", d, "f"), b)
+          identical(unname(.av7$b), c(f(2), f(3), f(3), f(1), f(3), f(3))) && !identical(f(2), substr(f(3), 1, 4))
+        }) &&
+        identical(unname(.av7$m), rep(sprintf("%.2f", mean(as.numeric(tcm$Age), na.rm = TRUE)), 3)) &&
+        identical(.av7$sg, list(decimals = list(value = 3, source = "avgs.jstyle"))) &&
+        identical(.av7$sgp, list()) && identical(.av7$sgk, list()))
+
+check("AV08 jstyle()'s printout shows a general setting a table type sets for itself, under the section's own settings: \"# for this table type only\", with \"from <style>\" when a base's file sets it; a complete copy's \"Set in this file: every setting.\" is followed by the settings set again for one table type; a file whose own general value outranks the base's line shows none",
+      !is.null(.av7) &&
+        identical(.av7$p_gs[4:5], c("  Set in this file: size, [regression] decimals, and fit.rows.",
+                                    "  Every other setting comes from report, then apa.")) &&
+        identical(grep("^decimals ", .av7$p_gs, value = TRUE),
+                  c("decimals          = 2               # from apa",
+                    "decimals          = 3                           # for this table type only")) &&
+        identical(.av7$p_gs[match("[logistic]", .av7$p_gs) - 2:1],
+                  c("decimals          = 3                           # for this table type only", "")) &&
+        identical(.av7$p_full[4:5], c("  Set in this file: every setting.",
+                                      "  Also set for one table type only: [regression] decimals.")) &&
+        identical(grep("^decimals ", .av7$p_full, value = TRUE),
+                  c("decimals          = 2",
+                    "decimals          = 3                           # for this table type only")) &&
+        identical(grep("^decimals ", .av7$p_kid, value = TRUE), "decimals          = 1") &&
+        identical(grep("^decimals ", .av7$p_kid2, value = TRUE),
+                  c("decimals          = 2               # from apa",
+                    "decimals          = 3                           # for this table type only, from avgs")))
+
+# P.format = stars (ruling R83).
+invisible(res(jstyle("apa", save.as = "avst", p.format = "stars")))
+invisible(res(jstyle("apa", save.as = "avbo", p.format = "both")))
+invisible(res(jstyle("apa", save.as = "avstc", p.format = "stars", regression = list(columns = c("b", "se", "p")))))
+.av8 <- .aqtry(local({
+  lg <- res(jlogistic(Volunteer ~ Age + OwnsHome, tcm))$val
+  tt <- res(jt(WellbeingScore ~ Volunteer, tcm))$val
+  av <- res(jaov(WellbeingScore ~ Education, tcm))$val
+  ct <- res(jcrosstab(Region ~ Volunteer, tcm))$val
+  tb <- function(x, s, ...) res(jtable(x, style = s, print = FALSE, ...))$val
+  n0 <- length(.seen)
+  out <- list(lg = tb(lg, "avst"), tt = tb(tt, "avst"), av = tb(av, "avst"), ct = tb(ct, "avst"),
+              lg_e = tb(lg, "apa"), tt_e = tb(tt, "apa"), tt_b = tb(tt, "avbo"), ct_b = tb(ct, "avbo"),
+              tt_no = tb(tt, "avst", columns = c("mean", "sd", "p", "d")),
+              ct_no = tb(ct, "avst", test.columns = c("p", "v")),
+              quiet = length(.seen) - n0,
+              p = list(lg = lg, tt = tt, av = av, ct = ct))
+  n1 <- length(.seen)
+  called <- list(lm = tb(.avm, "avst", columns = c("b", "se", "p")),
+                 last = tb(.avm, "avst", columns = c("b", "se"), columns.last = "p"),
+                 tt = tb(tt, "avst", columns = c("mean", "sd", "t", "p")),
+                 av = tb(av, "avst", columns = c("mean", "sd", "f", "p")),
+                 ct = tb(ct, "avst", test.columns = c("chisq", "p")),
+                 nop = tb(.avm, "avst", columns = c("b", "se", "beta")),
+                 exact = tb(.avm, "apa", columns = c("b", "se", "p")))
+  out$called <- called
+  out$notes <- vapply(.seen[-seq_len(n1)], `[[`, "", "text")
+  # A style file whose own columns list p: the file's choice, no note.
+  n2 <- length(.seen)
+  out$filep  <- tb(.avm, "avstc")
+  out$quiet2 <- length(.seen) - n2
+  out
+}))
+check("AV09 p.format = stars in the logistic, t-test, ANOVA and crosstab tables (ruling R83, S419): no p column, the asterisks on b, t, F and the chi-square -- each statistic and its p computed here -- with the legend, and nothing said when the style's own columns list p; exact has the p column and no asterisk, both the p-value and its asterisks in the p column, the statistic bare; a table shown without its statistic keeps a p column of asterisks",
+      !is.null(.av8) && identical(.av8$quiet, 0L) &&
+        local({
+          st <- function(p) strrep("*", sum(p < c(.05, .01, .001)))
+          mn <- function(x, d = 2) sub("^-", "\u2212", sprintf(paste0("%.", d, "f"), x))
+          d  <- data.frame(y = as.numeric(tcm$WellbeingScore), g = as.numeric(tcm$Volunteer),
+                           e = as.numeric(haven::zap_missing(tcm$Education)), age = as.numeric(tcm$Age),
+                           own = as.numeric(haven::zap_missing(tcm$OwnsHome)))
+          tt <- stats::t.test(d$y[d$g == 0], d$y[d$g == 1], var.equal = TRUE)
+          av <- stats::oneway.test(y ~ factor(e), d, var.equal = TRUE)
+          lg <- summary(stats::glm(g ~ age + own, stats::binomial(), d))$coefficients
+          legend <- "**p* < .05. ***p* < .01. ****p* < .001."
+          identical(.av8$lg$columns$key, c("stub", "m1.b", "m1.se", "m1.or")) &&
+            identical(.vrow(.av8$lg, "Age (years)")$cells$m1.b, paste0(mn(lg["age", 1]), st(lg["age", 4]))) &&
+            nzchar(st(lg["age", 4])) && identical(.vrow(.av8$lg, "Owns home")$cells$m1.b, mn(lg["own", 1])) &&
+            identical(.av8$lg$notes$probability, legend) &&
+            identical(.av8$tt$columns$key, c("stub", "g1.mean", "g1.sd", "g2.mean", "g2.sd", "t", "d")) &&
+            identical(.av8$tt$rows[[1]]$cells$t, paste0(mn(tt$statistic), st(tt$p.value))) && nzchar(st(tt$p.value)) &&
+            identical(.av8$tt$notes$probability, legend) &&
+            identical(tail(.av8$av$columns$key, 2), c("f", "eta2")) &&
+            identical(.av8$av$rows[[1]]$cells$f, paste0(mn(av$statistic), st(av$p.value))) && nzchar(st(av$p.value)) &&
+            identical(tail(.av8$ct$columns$key, 3), c("chisq", "df", "v")) &&
+            identical(.av8$ct$notes$probability, legend) &&
+            # exact, and both: the p column, the statistic bare.
+            identical(tail(.av8$lg_e$columns$key, 1), "m1.p") && length(.av8$lg_e$notes$probability) == 0L &&
+            identical(.av8$tt_e$rows[[1]]$cells[c("t", "p")], list(t = mn(tt$statistic), p = sub("^0", "", sprintf("%.3f", tt$p.value)))) &&
+            identical(.av8$tt_b$rows[[1]]$cells[c("t", "p")],
+                      list(t = mn(tt$statistic), p = paste0(sub("^0", "", sprintf("%.3f", tt$p.value)), st(tt$p.value)))) &&
+            identical(tail(.av8$ct_b$columns$key, 4), c("chisq", "df", "p", "v")) &&
+            # no statistic shown: the p column stays, holding the asterisks.
+            identical(.av8$tt_no$columns$key, c("stub", "g1.mean", "g1.sd", "g2.mean", "g2.sd", "p", "d")) &&
+            identical(.av8$tt_no$rows[[1]]$cells$p, st(tt$p.value)) &&
+            identical(tail(.av8$ct_no$columns$key, 2), c("p", "v"))
+        }) &&
+        local({
+          # A crosstab whose test passes a threshold: the stars on its chi-square.
+          t <- res(jtable(.ae[[2]], style = "avst", print = FALSE))$val
+          identical(t$rows[[1]]$cells$chisq,
+                    paste0(sprintf("%.2f", .aee[[2]]$x2), strrep("*", sum(.aee[[2]]$p < c(.05, .01, .001))))) &&
+            .aee[[2]]$p < .05 && !"p" %in% t$columns$key
+        }))
+
+check("AV10 when the call itself lists p under p.format = stars, the table still has no p column and a note says so, naming the input and the statistic the asterisks are on, in every table type (columns =, columns.last =, test.columns =); no note when the call lists no p, none under exact, where p is shown, and none when the style file's own columns list p",
+      !is.null(.av8) &&
+        identical(sub("\n$", "", .av8$notes),
+                  paste0("Note: ", c("columns", "columns.last", "columns", "columns", "test.columns"),
+                         " = lists p, and this table has no p column: its style sets\n",
+                         "p.format = stars, which puts the asterisks on ", c("b", "b", "t", "F", "the chi-square"), ".\n",
+                         "To show the p-values, set p.format = exact or both in the style file.")) &&
+        identical(.av8$called$lm$columns$key, c("stub", "m1.b", "m1.se")) &&
+        identical(.av8$called$last$columns$key, c("stub", "m1.b", "m1.se")) &&
+        identical(tail(.av8$called$tt$columns$key, 1), "t") && identical(tail(.av8$called$av$columns$key, 1), "f") &&
+        identical(tail(.av8$called$ct$columns$key, 1), "chisq") &&
+        identical(.av8$called$nop$columns$key, c("stub", "m1.b", "m1.se", "m1.beta")) &&
+        identical(.av8$called$exact$columns$key, c("stub", "m1.b", "m1.se", "m1.p")) &&
+        identical(.av8$filep$columns$key, c("stub", "m1.b", "m1.se")) && identical(.av8$quiet2, 0L))
+
+# N.position = none and models whose Ns differ (ruling R84).
+invisible(res(jstyle("apa", save.as = "avnn", n.position = "none")))
+invisible(res(jstyle("apa", save.as = "avnf", n.position = "none", regression = list(fit.rows = "none"))))
+.av10 <- .aqtry(local({
+  l1 <- res(jlogistic(Volunteer ~ Age, tcm))$val; l2 <- res(jlogistic(Volunteer ~ Age + Income, tcm))$val
+  n0 <- length(.seen)
+  a  <- res(jtable(list(.avm, .avm2), style = "avnn", print = FALSE))$val
+  nt <- vapply(.seen[-seq_len(n0)], `[[`, "", "text")
+  list(a = a, notes = nt,
+       f = res(jtable(list(.avm, .avm2), style = "avnf", print = FALSE))$val,
+       lg = res(jtable(list(l1, l2), style = "avnn", print = FALSE))$val,
+       one = res(jtable(.avm, style = "avnn", print = FALSE))$val,
+       ct = res(jtable(list(res(jcrosstab(Smoker ~ Volunteer, tcm))$val, res(jcrosstab(OwnsHome ~ Volunteer, tcm))$val),
+                       style = "avnn", print = FALSE))$val,
+       parts = .jst_table_n_parts("none", "*N* differs by model: 1 (Model 1), 2 (Model 2)", TRUE))
+}))
+check("AV11 n.position = none and models whose Ns differ (ruling R84, S419): the sentence that says so stays in the note -- R53's boundary -- for a regression and a logistic table, with fit.rows = none too, the title bare and the console's note (\"the table's note says so\") true; none still writes no N for one model, and for crosstabs whose Ns differ; the helper itself is unchanged (U06)",
+      !is.null(.av10) &&
+        identical(.av10$a$notes$general, "*N* differs by model: 103 (Model 1), 97 (Model 2).") &&
+        identical(.av10$a$caption$title, "Regression Coefficients Predicting Wellbeing score (0-100)") &&
+        identical(tail(vapply(.av10$a$rows, `[[`, "", "label"), 1), "*N*") &&
+        length(.av10$notes) == 1L &&
+        grepl("(Model 1: 103; Model 2: 97); the table's note says so.\n", .av10$notes, fixed = TRUE) &&
+        identical(.av10$f$notes$general, .av10$a$notes$general) &&
+        !"*N*" %in% vapply(.av10$f$rows, `[[`, "", "label") &&
+        identical(.av10$lg$notes$general, .av10$a$notes$general) &&
+        length(.av10$one$notes$general) == 0L &&
+        identical(.av10$one$caption$title, "Regression Coefficients Predicting Wellbeing score (0-100)") &&
+        length(.av10$ct$notes$general) == 0L &&
+        identical(.av10$ct$caption$title, "Frequencies and Percentages by Volunteered in past year") &&
+        identical(.av10$parts, list(note = character(0), title = "")))
+
+# The orientation, version 3.12.
+.av11 <- gsub(" +", " ", paste(.jst_orientation_body(), collapse = " "))
+check("AV12 the orientation (version 3.12) says where a general setting goes and how one kind of table gets its own value of one, with paper and [plot] set apart, and that a style file's name ends in .jstyle, not .txt",
+      identical(.jst_orientation_version, "3.12") &&
+        grepl(paste0("The general settings, at the top of the file, set every table; to give one kind of table its own ",
+                     "value of one, copy its line under that table's heading, such as `[regression]`, and change the ",
+                     "value there (`paper` is the whole file's, and `[plot]` takes only a chart's own settings). ",
+                     "Give colors by name (`lightblue`) or six hex digits (`ADD8E6`). Save the file with a name ",
+                     "ending in `.jstyle`, not `.txt`, then run `jstyle(\"myagency\")`, which names any value it ",
+                     "cannot use."), .av11, fixed = TRUE))
+
+options(.avo)
+rm(.avw, .avflat, .avp)
+
 grDevices::dev.off(.atdev)
 rm(.atdx, .atpng, .atn, .atdev, .augeoms, .aulayer, .aufill, .auarea)
 
 options(.jst_options_style_dir = NULL, .jst_options_style = NULL)
 
-unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd, .ard, .asd, .atd, .aud), recursive = TRUE)
+unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd, .ard, .asd, .atd, .aud, .avd), recursive = TRUE)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # The analyses above raise notes and warnings of their own (a seems-

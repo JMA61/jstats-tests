@@ -10,6 +10,19 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S419 EDIT (v0.9.281, 2026-11-12): N92g RE-PINNED. The AI-text build: the
+#           orientation's tables bullet says where a general setting goes
+#           and how one kind of table gets its own value of one, and that a
+#           style file's name ends in .jstyle, so its version is 3.12 where
+#           it was 3.11. No check added: 926 checks still.
+#           LAST VERIFIED: v0.9.281, 2026-11-12 (S419) -- 926/926 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3715 checks)"; R CMD check 0 errors, 0 warnings, 0 notes),
+#           matching the sandbox plain, under the RStudio-handler stand-in,
+#           each again with a Windows-length temp path, once through a
+#           symlinked temp path, once with interactive() TRUE, once with a
+#           graphics device open (left open and current), and entered
+#           dirty.
 # S416 EDIT (v0.9.280, 2026-11-10): N92g RE-PINNED. Capability Slate U's
 #           charts, build 3: the orientation names jmulti() where an
 #           analysis is chosen and gains a bullet for the charts, and the
@@ -10865,7 +10878,7 @@ check("N92f jai(\"machine\") declined: a new SKILL.md keeps the line about anoth
                 grepl("To write to a different folder", m1, fixed = TRUE) &&
                 identical(m2, "Nothing was written.\n") }))
 # --- F: SKILL.md's paragraph ---------------------------------------------------------
-check("N92g SKILL.md's AI-assistant paragraph: the standard paragraph's words without the prefix, set to the body's width (first line 60+, none over 76); the standard text keeps the prefix; version 3.11 (3.10 until S416, 3.9 until S409, 3.8 until S406)",
+check("N92g SKILL.md's AI-assistant paragraph: the standard paragraph's words without the prefix, set to the body's width (first line 60+, none over 76); the standard text keeps the prefix; version 3.12 (3.11 until S419, 3.10 until S416, 3.9 until S409, 3.8 until S406)",
       local({ std <- .jst_orientation_body(); i <- grep("^Note for AI assistants: ", std)
               j <- min(which(std == "")[which(std == "") > i]) - 1L
               mac <- .jst_orientation_text("STAMP", "machine")
@@ -10879,7 +10892,7 @@ check("N92g SKILL.md's AI-assistant paragraph: the standard paragraph's words wi
                 !any(grepl("Note for AI assistants", mac, fixed = TRUE)) &&
                 any(grepl("^Note for AI assistants: jstats is newer",
                           .jst_orientation_text("STAMP", "standard"))) &&
-                identical(.jst_orientation_version, "3.11") }))
+                identical(.jst_orientation_version, "3.12") }))
 # --- G: the .RData redirect -----------------------------------------------------------
 save(.S92, file = "y92.RData"); save(.S92, file = "z92.rda")
 check("N92h the .RData redirect in one voice: typed (pinned whole) and bare -- the bare name finds y92.RData, as typed on a case-sensitive file system",

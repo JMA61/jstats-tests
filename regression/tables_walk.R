@@ -70,7 +70,53 @@
 #           Word file, and written in another style; the data frame named in
 #           the lines jplot() and jtable() offer from a result (the (S415)
 #           item).
+#           The AI-text build (S419): what a style file says of itself --
+#           the complete copy's head and the short file's, the notes of
+#           caption.form, leading.zero, p.format and n.position; a general
+#           setting set for one kind of table, in the printout and kept by
+#           a complete copy; the stops for a setting in a part that cannot
+#           take it, in a file and in jstyle()'s settings; a style file
+#           saved as .txt (ruling R81); p.format = stars with no p column
+#           (ruling R83), the note when the call lists p; n.position = none
+#           and models whose Ns differ (ruling R84).
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S419 (v0.9.281; the AI-text build: rulings R81 to R84, the two
+#           leans and ruling R82's six fixes). SECTION 25 ADDED, on the
+#           PENDING line, its Expected blocks filled by running (fill.R,
+#           under a Windows-length temporary folder; the paths written as
+#           <tempdir>): a complete copy's head and four settings' notes; a
+#           short file's head and a general setting given for the
+#           regression tables only; that setting in the printout and in a
+#           complete copy of the short file, and a table made in the copy;
+#           the four stops for a setting in the wrong part of a file, and
+#           the three at jstyle()'s settings; a style file saved as
+#           .jstyle.txt -- the stop, the line that renames it, the call
+#           again; five tables under p.format = stars, the note when the
+#           call lists p, both, and a table shown without b; the five in
+#           one Word file; n.position = none with models whose Ns differ.
+#           Every message, the heads' and the notes' wording and the
+#           kept p column of a table shown without its statistic are
+#           Claude's calls. RE-PINNED by running, each block compared with
+#           the one it replaced, on the PENDING line: Sections 3 and 11,
+#           the complete copy's head (their excerpts read with n = 32
+#           where n = 25 stood, so they show the same settings); Sections
+#           9, 10, 11 and 13, the short file's head (two lines more), with
+#           Section 9's stop that lists a section's settings ("..., except
+#           paper.") and Section 13's n.position note; a "Since S419"
+#           line added to each section's Things to look at. No other
+#           section's output moved (every section of every walk captured
+#           on v0.9.280 and on this build, and compared).
+# LAST VERIFIED: v0.9.281, 2026-11-12 (S419) -- Sections 3, 9, 10, 11, 13 and
+#           25 WALKED on the WORKSTATION by Jeff through receive_all()
+#           ("walked, all okay"); PENDING back to none; R CMD check 0
+#           errors, 0 warnings, 0 notes; ALL BATTERIES GREEN (12 run, 3715
+#           checks). Sandbox: harness.R verify, 25 of 25 sections in three
+#           orders and by prepare = TRUE; 112 of 122 Expected blocks found
+#           as a run -- the ten others hold a style file's own lines, which
+#           start with "#" and which the finder drops from the output, so
+#           it cannot find them (seven of them, in Sections 3-13, were
+#           unfound on v0.9.280 too: 105 of 112, where the S416 stamp below
+#           says 112 of 112); rewalk()'s scoreboard read the PENDING line.
 # EDITED:   S416 (v0.9.280; Capability Slate U's charts, build 3: rulings
 #           R66-R68 with R69's titles and R70's segment values, the S412
 #           audit's F1, F3, F5, F15 and F18, and the (S415) riders).
@@ -796,7 +842,7 @@ jstyle()
 #     there).
 
 jstyle("apa", save.as = "apa_copy")
-cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 25L,
+cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 32L,
               encoding = "UTF-8"), sep = "\n")
 
 # Expected:
@@ -806,17 +852,24 @@ cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 25L,
 #   # apa_copy.jstyle:
 #   # A jstats table style.
 #   # Every setting jstats has is below, each after a note saying what it does and what it takes.
+#   # The general settings come first and set the look of every table and figure.
+#   # Then each kind of table has a section of its own settings, under its heading in square brackets, and a chart's settings are under [plot].
 #   # Change only the values after the = signs; do not invent a setting, and do not rename a setting or a section.
+#   # To give one kind of table its own value of a general setting, copy that setting's line under the table's heading and change the value there.
+#   # This works for every general setting but paper, which sets the page of the whole file, and under every heading but [plot], which takes only a chart's own settings.
+#   # In a title, a single column's head (such as stub.label or b.label), note.label or source.label, *word* sets a word in italics and ^mark^ a superscript; any other label prints the marks as typed.
 #   # A line that starts with # is a note.
 #   # jstyle("apa_copy") checks the file and names any value it cannot use.
 #   #
-#   # To an AI assistant asked to edit this file so tables look like an example:
+#   # To an AI assistant asked to change this file, from a request in words or to match an example:
 #   # Change only the values after the = signs, using only the values each setting's "# takes:" line allows.
+#   # Where the request is about one kind of table, change that table's section: its own settings, or a general setting's line copied under its heading.
 #   # Keep every other line as it is, and return the whole file.
-#   # Then say what the example has that these settings cannot make, rather than inventing a setting for it.
+#   # Then list each value you changed, as it was and as it is now, and each line you added.
+#   # Then say what the request asks for that these settings cannot make, rather than inventing a setting for it.
 #
 #   format     = 1
-#   written.by = jstats 0.9.280
+#   written.by = jstats 0.9.281
 #   based.on   = apa
 #
 #   # The general settings: the look of every table.
@@ -850,7 +903,13 @@ cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 25L,
 # walk) a blank line after each setting, none between a setting's notes
 # and the setting, and one under the general settings' heading note
 # (Claude's call, so the heading stands apart from font's notes): n = 25
-# shows what n = 23 did.
+# shows what n = 23 did. Since S419 (v0.9.281; Section 25 shows the head
+# whole, with the reasons) the head has seven more lines -- how the file
+# is laid out, the line that gives one kind of table its own value of a
+# general setting and its two exceptions, the marks a text takes -- and
+# its block is addressed to an assistant asked to change the file, from a
+# request in words or an example, names the sections and asks for each
+# value changed: n = 32 shows what n = 25 did.
 
 writeLines(c("# myjournal.jstyle -- the journal's conventions",
              "based.on = apa",
@@ -2065,10 +2124,12 @@ cat(readLines(file.path(.walk_styles9, "short.jstyle"), encoding = "UTF-8"),
 #   # It lists only the settings that differ from apa; any setting not listed here takes apa's value.
 #   # ?jstyle_settings lists every setting and what it takes.
 #   # Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.
+#   # A general setting goes at the top, before the first heading in square brackets, and a table type's setting under its heading.
+#   # To give one kind of table its own value of a general setting, copy that setting's line under the table's heading and change the value there.
 #   # jstyle("short") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.280
+#   written.by = jstats 0.9.281
 #   based.on   = apa
 #
 #   # the text size, in points
@@ -2140,7 +2201,7 @@ try(jstyle(save.as = file.path(.walk_styles9, "s3"), sise = 11))
 #   The settings of [crosstab] are title, columns, total, percent.base,
 #   test.columns, stub.label, n.label, percent.label, total.label, chisq.label,
 #   df.label, p.label, v.label, group.spanner, and variable.headings.
-#   A general setting may be set there too.
+#   A general setting may be set there too, except paper.
 #   Error : jstyle(): size = is given twice.
 #   Give each setting once.
 #   Error : jstyle(): 'sise' is not valid.
@@ -2168,6 +2229,12 @@ try(jstyle(save.as = file.path(.walk_styles9, "s3"), sise = 11))
 #   - Render 4: each stop says what to give instead -- the list form with
 #     one of the section's own settings, the setting meant, the section's
 #     settings in full, each setting once, the argument meant.
+#   - Since S419 (v0.9.281; Section 25 has the reasons): in Render 1 the
+#     head has two lines more after the editing rule -- where a general
+#     setting and a table type's setting go, and the line that gives one
+#     kind of table its own value of a general setting; in Render 4 the
+#     stop that lists a section's settings ends "A general setting may be
+#     set there too, except paper."
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -2279,10 +2346,12 @@ cat(readLines(file.path(.walk_styles10, "myreport.jstyle"), encoding = "UTF-8"),
 #   # It lists only the settings that differ from apa; any setting not listed here takes apa's value.
 #   # ?jstyle_settings lists every setting and what it takes.
 #   # Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.
+#   # A general setting goes at the top, before the first heading in square brackets, and a table type's setting under its heading.
+#   # To give one kind of table its own value of a general setting, copy that setting's line under the table's heading and change the value there.
 #   # jstyle("myreport") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.280
+#   written.by = jstats 0.9.281
 #   based.on   = apa
 #
 #   # the typeface of every cell, caption and note
@@ -2355,6 +2424,8 @@ joptions(style.dir = NULL, quiet = TRUE)
 #     first column's width, as in the console, the n and % columns beside
 #     it; and "Frequency Distributions (N = 12)" on one line -- a table
 #     narrower than its title widens to it, every column in proportion.
+#   - Since S419 (v0.9.281): myreport.jstyle's head has two lines more
+#     after the editing rule, as every short file's (Section 25).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -2647,10 +2718,12 @@ cat(readLines(file.path(.walk_styles11, "teal.jstyle"), encoding = "UTF-8"),
 #   # It lists only the settings that differ from report; any setting not listed here takes report's value.
 #   # ?jstyle_settings lists every setting and what it takes.
 #   # Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.
+#   # A general setting goes at the top, before the first heading in square brackets, and a table type's setting under its heading.
+#   # To give one kind of table its own value of a general setting, copy that setting's line under the table's heading and change the value there.
 #   # jstyle("teal") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.280
+#   written.by = jstats 0.9.281
 #   based.on   = report
 #
 #   # the typeface of every cell, caption and note
@@ -2708,7 +2781,7 @@ jtable(list(t11a, t11b, t11c, t11d),
 # Render 5 -- a complete copy of report: the head, with the block for an
 # AI assistant, and based.on = report.
 jstyle("report", save.as = "myagency")
-cat(readLines(file.path(.walk_styles11, "myagency.jstyle"), n = 25L,
+cat(readLines(file.path(.walk_styles11, "myagency.jstyle"), n = 32L,
               encoding = "UTF-8"), sep = "\n")
 # Expected:
 #   Style written to
@@ -2717,17 +2790,24 @@ cat(readLines(file.path(.walk_styles11, "myagency.jstyle"), n = 25L,
 #   # myagency.jstyle:
 #   # A jstats table style.
 #   # Every setting jstats has is below, each after a note saying what it does and what it takes.
+#   # The general settings come first and set the look of every table and figure.
+#   # Then each kind of table has a section of its own settings, under its heading in square brackets, and a chart's settings are under [plot].
 #   # Change only the values after the = signs; do not invent a setting, and do not rename a setting or a section.
+#   # To give one kind of table its own value of a general setting, copy that setting's line under the table's heading and change the value there.
+#   # This works for every general setting but paper, which sets the page of the whole file, and under every heading but [plot], which takes only a chart's own settings.
+#   # In a title, a single column's head (such as stub.label or b.label), note.label or source.label, *word* sets a word in italics and ^mark^ a superscript; any other label prints the marks as typed.
 #   # A line that starts with # is a note.
 #   # jstyle("myagency") checks the file and names any value it cannot use.
 #   #
-#   # To an AI assistant asked to edit this file so tables look like an example:
+#   # To an AI assistant asked to change this file, from a request in words or to match an example:
 #   # Change only the values after the = signs, using only the values each setting's "# takes:" line allows.
+#   # Where the request is about one kind of table, change that table's section: its own settings, or a general setting's line copied under its heading.
 #   # Keep every other line as it is, and return the whole file.
-#   # Then say what the example has that these settings cannot make, rather than inventing a setting for it.
+#   # Then list each value you changed, as it was and as it is now, and each line you added.
+#   # Then say what the request asks for that these settings cannot make, rather than inventing a setting for it.
 #
 #   format     = 1
-#   written.by = jstats 0.9.280
+#   written.by = jstats 0.9.281
 #   based.on   = report
 #
 #   # The general settings: the look of every table.
@@ -2815,7 +2895,9 @@ joptions(style.dir = NULL, quiet = TRUE)
 #     block for an AI assistant; based.on = report, since the copy is of
 #     report (a copy of apa says apa; your default on lean 2). Since S410
 #     a blank line under the general settings' heading note and after
-#     font, as in Section 3, so n = 25 shows what n = 23 did.
+#     font, as in Section 3, so n = 25 shows what n = 23 did. Since S419
+#     seven more head lines (Section 25 shows them, with the reasons):
+#     n = 32 shows what n = 25 did.
 #   - Render 6: a tab with myagency.jstyle opens and nothing prints; the
 #     two stops give the line that saves a copy and opens it -- myreport
 #     for report, myjournal for apa, the session's style (your default on
@@ -2823,6 +2905,9 @@ joptions(style.dir = NULL, quiet = TRUE)
 #   - Render 7: the stop in the words apa's stop uses; the list shows
 #     myagency and teal, and the note names report.jstyle as passed over,
 #     with the way to use it.
+#   - Since S419 (v0.9.281): teal.jstyle's head has two lines more after
+#     the editing rule, as every short file's, and Render 5's head is the
+#     complete copy's new one (Section 25 shows both, with the reasons).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -3404,13 +3489,15 @@ cat(readLines(file.path(.walk_styles13, "nnote.jstyle"), encoding = "UTF-8"),
 #   # It lists only the settings that differ from apa; any setting not listed here takes apa's value.
 #   # ?jstyle_settings lists every setting and what it takes.
 #   # Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.
+#   # A general setting goes at the top, before the first heading in square brackets, and a table type's setting under its heading.
+#   # To give one kind of table its own value of a general setting, copy that setting's line under the table's heading and change the value there.
 #   # jstyle("nnote") checks the file and names any value it cannot use.
 #
 #   format     = 1
-#   written.by = jstats 0.9.280
+#   written.by = jstats 0.9.281
 #   based.on   = apa
 #
-#   # where N, the number of cases, goes: note (the general note opens on it) | title ("(N = 103)" after the title; a table with several ns, such as Ns that differ or a t test's groups, gives them in the note) | none
+#   # where N, the number of cases, goes: note (the general note opens on it) | title ("(N = 103)" after the title; a table with several ns, such as Ns that differ or a t test's groups, gives them in the note) | none (no N; a table of models whose Ns differ still says so in its note)
 #   # takes: one of note | title | none
 #   n.position = note
 #
@@ -3496,6 +3583,10 @@ joptions(style.dir = .entry_style_dir13, quiet = TRUE)
 #     section's heading note, then a blank line (Claude's call: that note
 #     says what the section is for, not what a setting does; the general
 #     settings' heading note has one too, Sections 3 and 11).
+#   - Since S419 (v0.9.281): in Render 5 the short file's head has two
+#     lines more after the editing rule (Section 25), and n.position's
+#     note ends "| none (no N; a table of models whose Ns differ still
+#     says so in its note)" -- ruling R84, shown in Section 25's Render 10.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -5038,6 +5129,542 @@ t24 <- jtable(jt(WellbeingScore ~ Volunteer, l24$d, print = FALSE))
 #     results jplot() draws;
 #   - Render 2: "jrelabel(MyData, Volunteer, var.label = "...", modify =
 #     TRUE)" -- the placeholder kept for a place.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 25 -- The AI-text build: a style file's own text, a .txt file, a setting's place, stars, Ns that differ ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 419 (v0.9.281), from the AI style test (S418) and your four
+# rulings. WHAT A STYLE FILE SAYS OF ITSELF (the wording is Claude's): the
+# notes of four settings say what each value does -- leading.zero's had read
+# as its opposite ("never drops it"), p.format's did not say where the
+# asterisks print, caption.form's did not say what is bold; the complete
+# copy's head says how the file is laid out, gives the line that sets one
+# kind of table's own value of a general setting (your ruling: the heads,
+# the orientation and ?jstyle_settings say so), names the marks a text
+# takes, and its block for an AI assistant serves a request in words as
+# well as an example, names the sections and asks for each value changed
+# (the two leans). With that ruling, six fixes: a complete copy keeps a
+# general setting its style sets for one kind of table, and jstyle()'s
+# printout shows it; paper under a heading, and a general setting under
+# [plot], stop, where they were read and did nothing; another part's
+# setting is named as such. A STYLE FILE SAVED AS .txt (your ruling:
+# .jstyle stays the one extension) is named in the stop, with the line that
+# renames it. p.format = stars (your ruling: "We don't need a column of
+# asterisks alone.") puts the asterisks on the statistic, the table without
+# a p column. n.position = none keeps the sentence that says the models' Ns
+# differ (your ruling; R53's boundary). The style files and the Word file
+# go in a folder of the session's temporary folder, set as the style folder
+# and put back at the end; the tables are made from d25, a copy of tdat.
+# The jcomplete() Section 4 sets on tdat is cleared first, as in Section 13.
+
+suppressMessages(jcomplete(clear.all = TRUE))
+.walk_styles25 <- file.path(tempdir(), "walk_styles25")
+unlink(.walk_styles25, recursive = TRUE); dir.create(.walk_styles25)
+.entry_style_dir25 <- getOption(".jst_options_style_dir")
+joptions(style.dir = .walk_styles25, quiet = TRUE)
+d25 <- tdat
+m25 <- jlm(WellbeingScore ~ Age, d25, print = FALSE)
+
+# Render 1 -- a complete copy: its head, whole, then the notes of the four
+# settings.
+jstyle("report", save.as = "agency25")
+f25 <- readLines(file.path(.walk_styles25, "agency25.jstyle"), encoding = "UTF-8")
+cat(f25[1:18], sep = "\n")
+for (k25 in c("caption.form = report", "leading.zero = yes", "p.format = exact",
+              "n.position = title")) {
+  i25 <- match(k25, f25); j25 <- i25
+  while (startsWith(f25[j25 - 1L], "#")) j25 <- j25 - 1L
+  cat("", f25[j25:i25], sep = "\n")
+}
+# Expected:
+#   Style written to
+#   <tempdir>/walk_styles25/agency25.jstyle
+#
+#   # agency25.jstyle:
+#   # A jstats table style.
+#   # Every setting jstats has is below, each after a note saying what it does and what it takes.
+#   # The general settings come first and set the look of every table and figure.
+#   # Then each kind of table has a section of its own settings, under its heading in square brackets, and a chart's settings are under [plot].
+#   # Change only the values after the = signs; do not invent a setting, and do not rename a setting or a section.
+#   # To give one kind of table its own value of a general setting, copy that setting's line under the table's heading and change the value there.
+#   # This works for every general setting but paper, which sets the page of the whole file, and under every heading but [plot], which takes only a chart's own settings.
+#   # In a title, a single column's head (such as stub.label or b.label), note.label or source.label, *word* sets a word in italics and ^mark^ a superscript; any other label prints the marks as typed.
+#   # A line that starts with # is a note.
+#   # jstyle("agency25") checks the file and names any value it cannot use.
+#   #
+#   # To an AI assistant asked to change this file, from a request in words or to match an example:
+#   # Change only the values after the = signs, using only the values each setting's "# takes:" line allows.
+#   # Where the request is about one kind of table, change that table's section: its own settings, or a general setting's line copied under its heading.
+#   # Keep every other line as it is, and return the whole file.
+#   # Then list each value you changed, as it was and as it is now, and each line you added.
+#   # Then say what the request asks for that these settings cannot make, rather than inventing a setting for it.
+#
+#   # apa: "Table 1" in bold, the title in italics on the next line
+#   # journal: "Table 1." in bold, the title after it on the same line, not bold
+#   # report: "Table 1:" and the title on one line, both in bold
+#   # takes: one of apa | journal | report
+#   caption.form = report
+#
+#   # yes: a zero before the point of every number below 1 (0.23)
+#   # no: no zero on a statistic that cannot exceed 1, such as p (.23), and a zero on any other number below 1, such as an SE (0.197); APA's rule
+#   # never: no zero before the point of any number (.23 for p, .197 for an SE)
+#   # takes: one of yes | no | never
+#   leading.zero = yes
+#
+#   # exact: the p-value in the p column, with no asterisks
+#   # stars: asterisks on the statistic (b, t, F or chi-square) and no p column; a table without that statistic keeps a p column of asterisks
+#   # both: the p-value and its asterisks in the p column
+#   # takes: one of exact | stars | both
+#   p.format = exact
+#
+#   # where N, the number of cases, goes: note (the general note opens on it) | title ("(N = 103)" after the title; a table with several ns, such as Ns that differ or a t test's groups, gives them in the note) | none (no N; a table of models whose Ns differ still says so in its note)
+#   # takes: one of note | title | none
+#   n.position = title
+
+# Render 2 -- a short file, printed as written: its head's two new lines,
+# and a general setting (decimals) given for the regression tables only.
+jstyle("report", save.as = "short25", size = 11, regression = list(decimals = 3))
+cat(readLines(file.path(.walk_styles25, "short25.jstyle"), encoding = "UTF-8"),
+    sep = "\n")
+# Expected:
+#   Style written to
+#   <tempdir>/walk_styles25/short25.jstyle
+#
+#   # short25.jstyle:
+#   # A jstats table style, based on report, a style built into jstats.
+#   # It lists only the settings that differ from report; any setting not listed here takes report's value.
+#   # ?jstyle_settings lists every setting and what it takes.
+#   # Change only the values after the = signs, or add a setting from that list; do not invent a setting, and do not rename a setting or a section.
+#   # A general setting goes at the top, before the first heading in square brackets, and a table type's setting under its heading.
+#   # To give one kind of table its own value of a general setting, copy that setting's line under the table's heading and change the value there.
+#   # jstyle("short25") checks the file and names any value it cannot use.
+#
+#   format     = 1
+#   written.by = jstats 0.9.281
+#   based.on   = report
+#
+#   # the text size, in points
+#   # takes: a number from 6 to 72
+#   size = 11
+#
+#   [regression]
+#   # the decimal places of a statistic, such as a mean
+#   # takes: a whole number from 0 to 6
+#   decimals = 3
+
+# Render 3 -- that setting in jstyle()'s printout, and kept by a complete
+# copy of the short file: the copy's line, its printout's head, and a
+# regression table made in the copy.
+p25 <- capture.output(jstyle("short25"))
+cat(p25[1:5], grep("^decimals ", p25, value = TRUE), sep = "\n")
+jstyle("short25", save.as = "full25")
+g25 <- readLines(file.path(.walk_styles25, "full25.jstyle"), encoding = "UTF-8")
+cat(g25[(match("[logistic]", g25) - 8L):(match("[logistic]", g25) - 2L)], sep = "\n")
+q25 <- capture.output(jstyle("full25"))
+cat(q25[1:5], grep("^decimals ", q25, value = TRUE), sep = "\n")
+print(jtable(m25, style = "full25", print = FALSE))
+# Expected:
+#   Style: short25
+#     <tempdir>/walk_styles25/short25.jstyle
+#     based on report, then apa
+#     Set in this file: size and [regression] decimals.
+#     Every other setting comes from report, then apa.
+#   decimals          = 2               # from apa
+#   decimals          = 3                           # for this table type only
+#   Style written to
+#   <tempdir>/walk_styles25/full25.jstyle
+#
+#   # how a heading row is set: italic | bold | plain
+#   # takes: one of italic | bold | plain
+#   group.headings = italic
+#
+#   # the decimal places of a statistic, such as a mean
+#   # takes: a whole number from 0 to 6
+#   decimals = 3
+#   Style: full25
+#     <tempdir>/walk_styles25/full25.jstyle
+#     based on report, then apa
+#     Set in this file: every setting.
+#     Also set for one table type only: [regression] decimals.
+#   decimals          = 2
+#   decimals          = 3                           # for this table type only
+#   Table 1: Regression Coefficients Predicting Wellbeing score (0-100) (N = 103)
+#   -----------------------------------------
+#   Predictor       b      SE     β       p
+#   -----------------------------------------
+#   Constant     37.114  3.903         <0.001
+#   Age (years)   0.339  0.092  0.343  <0.001
+#   R²            0.118
+#   -----------------------------------------
+
+# Render 4 -- a setting in a part of the file that cannot take it: paper
+# under a heading; a general setting under [plot] (where a line added at
+# the end of a file lands); a table type's setting at the top; one
+# section's setting under another's heading.
+writeLines(c("based.on = report", "", "[regression]", "paper = letter"),
+           file.path(.walk_styles25, "w1.jstyle"))
+writeLines(c("based.on = report", "", "[plot]", "palette = greys", "",
+             "caption.form = apa"), file.path(.walk_styles25, "w2.jstyle"))
+writeLines(c("based.on = report", "fit.rows = r2, n"),
+           file.path(.walk_styles25, "w3.jstyle"))
+writeLines(c("based.on = report", "", "[descriptives]", "fit.rows = r2"),
+           file.path(.walk_styles25, "w4.jstyle"))
+try(jstyle("w1"))
+try(jstyle("w2"))
+try(jstyle("w3"))
+try(jstyle("w4"))
+# Expected:
+#   Error : jstyle(): line 4 of w1.jstyle sets paper in [regression].
+#   paper is the page size of the whole Word file, so it is set once, for every
+#   table and figure.
+#   Put the line at the top of the file, before the first section.
+#   Error : jstyle(): line 6 of w2.jstyle sets caption.form in [plot].
+#   caption.form is a general setting, and [plot] takes only a chart's
+#   own settings.
+#   Put the line at the top of the file, before the first section, to set every
+#   table and figure.
+#   To set one kind of table only, put it under that table's heading.
+#   Error : jstyle(): line 2 of w3.jstyle sets fit.rows before the
+#   first section.
+#   fit.rows is a setting of [regression] and [logistic].
+#   Put the line under the heading of the table type it is for.
+#   Error : jstyle(): line 4 of w4.jstyle sets fit.rows in [descriptives].
+#   fit.rows is a setting of [regression] and [logistic], not of [descriptives].
+#   Put the line under the heading of the table type it is for.
+
+# Render 5 -- the same settings given to jstyle(): the call rewritten, or an
+# example in the section's own list.
+try(jstyle("report", save.as = "x25",
+           regression = list(fit.rows = "r2", paper = "letter")))
+try(jstyle("report", save.as = "x25", plot = list(palette = "greys", decimals = 3)))
+try(jstyle("report", save.as = "x25", descriptives = list(fit.rows = "r2")))
+# Expected:
+#   Error : jstyle(): paper is the page size of the whole Word file, so it is
+#   set once, for every table and figure.
+#   Give it by itself, outside the list:
+#     jstyle("report", save.as = "x25", regression = list(fit.rows = "r2"),
+#         paper = "letter")
+#   Error : jstyle(): decimals is a general setting, and [plot] takes only a
+#   chart's own settings.
+#   Give it by itself, to set every table and figure:
+#     jstyle("report", save.as = "x25", plot = list(palette = "greys"),
+#         decimals = 3)
+#   Error : jstyle(): fit.rows is a setting of [regression] and [logistic], not
+#   of [descriptives].
+#   Give it in a list named for its own section, for example:
+#     regression = list(fit.rows = "r2")
+
+# Render 6 -- a style file saved with .txt after its name, as a text editor
+# or an AI assistant may hand it back: the stop names the file and gives
+# the line that renames it; a name typed with its .txt gets the call as
+# well. Then the renaming done (the line the stop gives, written here with
+# file.path() since the folder differs by session) and the call run again.
+invisible(file.rename(file.path(.walk_styles25, "agency25.jstyle"),
+                      file.path(.walk_styles25, "agency25.jstyle.txt")))
+try(jtable(m25, style = "agency25"))
+try(jtable(m25, style = "agency25.txt"))
+try(jstyle("agency25"))
+invisible(file.rename(file.path(.walk_styles25, "agency25.jstyle.txt"),
+                      file.path(.walk_styles25, "agency25.jstyle")))
+jtable(m25, style = "agency25")
+# Expected:
+#   Error : jtable(): no style named "agency25" was found.
+#   The style folder holds agency25.jstyle.txt, and jstats reads a style only
+#   from a file ending in .jstyle.
+#   To rename the file, run this line, then the call again:
+#     file.rename("<tempdir>/walk_styles25/agency25.jstyle.txt",
+#         "<tempdir>/walk_styles25/agency25.jstyle")
+#   Error : jtable(): no style named "agency25.txt" was found.
+#   The style folder holds agency25.jstyle.txt, and jstats reads a style only
+#   from a file ending in .jstyle.
+#   To rename the file and use it, run:
+#     file.rename("<tempdir>/walk_styles25/agency25.jstyle.txt",
+#         "<tempdir>/walk_styles25/agency25.jstyle")
+#     jtable(m25, style = "agency25")
+#   Error : jstyle(): no style named "agency25" was found.
+#   The style folder holds agency25.jstyle.txt, and jstats reads a style only
+#   from a file ending in .jstyle.
+#   To rename the file, run this line, then the call again:
+#     file.rename("<tempdir>/walk_styles25/agency25.jstyle.txt",
+#         "<tempdir>/walk_styles25/agency25.jstyle")
+#   Table 1. Regression Coefficients Predicting Wellbeing score
+#   (0-100) (N = 103)
+#     1 model, on a portrait page.
+#   The table was made in R; no Word file was asked for.
+
+# Render 7 -- p.format = stars: no p column, the asterisks on b, t, F and
+# the chi-square. Two models, a logistic model, two t tests, two ANOVAs
+# and two crosstabs, in a short file that sets stars.
+jstyle("apa", save.as = "stars25", p.format = "stars")
+s25a <- jlm(WellbeingScore ~ Income, d25, print = FALSE)
+s25b <- jlm(WellbeingScore ~ Income + Age, d25, print = FALSE)
+t25a <- jtable(list(s25a, s25b), style = "stars25", print = FALSE)
+t25b <- jtable(jlogistic(Volunteer ~ Age + OwnsHome, d25, print = FALSE),
+               style = "stars25", print = FALSE)
+t25c <- jtable(list(jt(WellbeingScore ~ Volunteer, d25, print = FALSE),
+                    jt(Age ~ Volunteer, d25, print = FALSE)),
+               style = "stars25", print = FALSE)
+t25d <- jtable(list(jaov(WellbeingScore ~ OwnsHome, d25, print = FALSE),
+                    jaov(CommuteTime ~ OwnsHome, d25, print = FALSE)),
+               style = "stars25", print = FALSE)
+t25e <- jtable(list(jcrosstab(OwnsHome ~ Volunteer, d25, print = FALSE),
+                    jcrosstab(Smoker ~ Volunteer, d25, print = FALSE)),
+               style = "stars25", print = FALSE)
+print(t25a)
+print(t25b)
+print(t25c)
+print(t25d)
+print(t25e)
+# Expected:
+#   Style written to
+#   <tempdir>/walk_styles25/stars25.jstyle
+#
+#   Table 1
+#   Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
+#   -----------------------------------------------------------------------
+#                                 Model 1                   Model 2
+#   Predictor                 b         SE     β        b         SE     β
+#   -----------------------------------------------------------------------
+#   Constant             30.35***    2.84          24.81***    3.75
+#   Annual income (USD)   0.0004***  0.00005  .62   0.0004***  0.00006  .56
+#   Age (years)                                     0.18*      0.08     .18
+#   R²                     .38                       .41
+#   -----------------------------------------------------------------------
+#   *p < .05. **p < .01. ***p < .001.
+#
+#   Table 1
+#   Logistic Regression Coefficients Predicting Volunteered in past year (N = 103)
+#   ---------------------------------
+#   Predictor         b     SE    OR
+#   ---------------------------------
+#   Constant       -0.92   1.16  0.40
+#   Age (years)     0.05*  0.02  1.05
+#   Owns home      -0.72   0.43  0.49
+#   Model χ²       12.14** (2)
+#   Nagelkerke R²    .15
+#   ---------------------------------
+#   *p < .05. **p < .01. ***p < .001.
+#
+#   Table 1
+#   Means, Standard Deviations, and t Tests by Volunteered in past year
+#   -------------------------------------------------------------------
+#                             Volunteered in past year
+#                                 No            Yes
+#   Variable                   M      SD     M      SD    t(101)    d
+#   -------------------------------------------------------------------
+#   Wellbeing score (0-100)  47.46  11.70  54.67  10.06  -3.34**  -0.66
+#   Age (years)              37.41  11.24  44.22  11.07  -3.10**  -0.61
+#   -------------------------------------------------------------------
+#   Note. n = 54 (No) and 49 (Yes).
+#   *p < .05. **p < .01. ***p < .001.
+#
+#   Table 1
+#   Means, Standard Deviations, and One-Way Analyses of Variance by Owns home
+#   ------------------------------------------------------------------------
+#                                          Owns home
+#                                      Yes           No
+#   Variable                        M      SD     M      SD   F(1, 101)   η²
+#   ------------------------------------------------------------------------
+#   Wellbeing score (0-100)       54.46  10.52  47.78  11.47    9.38**   .08
+#   Daily commute time (minutes)  32.23  13.32  29.44  12.07    1.25     .01
+#   ------------------------------------------------------------------------
+#   Note. n = 48 (Yes) and 55 (No).
+#   *p < .05. **p < .01. ***p < .001.
+#
+#   Table 1
+#   Frequencies and Percentages by Volunteered in past year
+#   ------------------------------------------------------------------
+#                   Volunteered in past year
+#                        No           Yes       Total
+#   Variable          n      %     n     %     n    %     χ²   df   V
+#   ------------------------------------------------------------------
+#   Owns home                                           5.95*   1  .24
+#     Yes            19    35.2    29   59.2  48  46.6
+#     No             35    64.8    20   40.8  55  53.4
+#   Current smoker                                      0.04    1  .02
+#     No             34    65.4    31   67.4  65  66.3
+#     Yes            18    34.6    15   32.6  33  33.7
+#   ------------------------------------------------------------------
+#   Note. N differs by variable: 103 (Owns home), 98 (Current smoker).
+#   *p < .05. **p < .01. ***p < .001.
+
+# Render 8 -- the call itself lists p under stars: the note, and the table
+# without the column; then p.format = both, which keeps the p column; then
+# a table shown without b, which keeps a p column of asterisks.
+t25f <- jtable(s25b, style = "stars25", columns = c("b", "se", "p"))
+print(t25f)
+jstyle("apa", save.as = "both25", p.format = "both")
+print(jtable(s25b, style = "both25", print = FALSE))
+print(jtable(s25b, style = "stars25", columns = c("se", "p"), print = FALSE))
+# Expected:
+#   Note: columns = lists p, and this table has no p column: its style sets
+#   p.format = stars, which puts the asterisks on b.
+#   To show the p-values, set p.format = exact or both in the style file.
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
+#     1 model, on a portrait page.
+#   The table was made in R; no Word file was asked for.
+#
+#   Table 1
+#   Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
+#   ----------------------------------------
+#   Predictor                 b         SE
+#   ----------------------------------------
+#   Constant             24.81***    3.75
+#   Annual income (USD)   0.0004***  0.00006
+#   Age (years)           0.18*      0.08
+#   R²                     .41
+#   ----------------------------------------
+#   *p < .05. **p < .01. ***p < .001.
+#
+#   Style written to
+#   <tempdir>/walk_styles25/both25.jstyle
+#
+#   Table 1
+#   Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
+#   ----------------------------------------------------
+#   Predictor               b        SE     β       p
+#   ----------------------------------------------------
+#   Constant             24.81    3.75          <.001***
+#   Annual income (USD)   0.0004  0.00006  .56  <.001***
+#   Age (years)           0.18    0.08     .18   .030*
+#   R²                     .41
+#   ----------------------------------------------------
+#   *p < .05. **p < .01. ***p < .001.
+#
+#   Table 1
+#   Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
+#   ---------------------------------
+#   Predictor               SE     p
+#   ---------------------------------
+#   Constant             3.75     ***
+#   Annual income (USD)  0.00006  ***
+#   Age (years)          0.08      *
+#   R²                    .41
+#   ---------------------------------
+#   *p < .05. **p < .01. ***p < .001.
+
+# Render 9 -- the five tables of Render 7 in one Word file, opened.
+jtable(list(t25a, t25b, t25c, t25d, t25e),
+       file = file.path(.walk_styles25, "Stars.docx"), overwrite = TRUE,
+       open = TRUE)
+# Expected:
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100) (N = 97)
+#     2 models side by side, on a portrait page.
+#   Table 2. Logistic Regression Coefficients Predicting Volunteered in past
+#   year (N = 103)
+#     1 model, on a portrait page.
+#   Table 3. Means, Standard Deviations, and t Tests by Volunteered in past year
+#     2 outcomes by Volunteer, on a portrait page.
+#   Table 4. Means, Standard Deviations, and One-Way Analyses of Variance
+#   by Owns home
+#     2 outcomes by OwnsHome, on a portrait page.
+#   Table 5. Frequencies and Percentages by Volunteered in past year
+#     2 variables by Volunteer, on a portrait page.
+#   5 tables written to
+#   <tempdir>/walk_styles25/Stars.docx
+
+# Render 10 -- n.position = none: two models whose Ns differ keep the
+# sentence in the note, and the console's note is true; one model has no N
+# anywhere.
+jstyle("apa", save.as = "none25", n.position = "none")
+t25g <- jtable(list(m25, s25b), style = "none25")
+print(t25g)
+print(jtable(m25, style = "none25", print = FALSE))
+joptions(style.dir = .entry_style_dir25, quiet = TRUE)
+# Expected:
+#   Style written to
+#   <tempdir>/walk_styles25/none25.jstyle
+#
+#   Note: the models were fit on different numbers of cases
+#   (Model 1: 103; Model 2: 97); the table's note says so.
+#   To fit every model on the same cases, run jcomplete() on the largest model's
+#   variables, then the models again:
+#     jcomplete(d25, WellbeingScore, Age, Income)
+#   Table 1. Regression Coefficients Predicting Wellbeing score (0-100)
+#     2 models side by side, on a portrait page, long labels on two lines.
+#   The table was made in R; no Word file was asked for.
+#
+#   Table 1
+#   Regression Coefficients Predicting Wellbeing score (0-100)
+#   ---------------------------------------------------------------------------
+#                                 Model 1                     Model 2
+#   Predictor               b     SE    β     p       b        SE     β     p
+#   ---------------------------------------------------------------------------
+#   Constant              37.11  3.90       <.001  24.81    3.75          <.001
+#   Age (years)            0.34  0.09  .34  <.001   0.18    0.08     .18   .030
+#   Annual income (USD)                             0.0004  0.00006  .56  <.001
+#   R²                      .12                      .41
+#   N                    103                       97
+#   ---------------------------------------------------------------------------
+#   Note. N differs by model: 103 (Model 1), 97 (Model 2).
+#
+#   Table 1
+#   Regression Coefficients Predicting Wellbeing score (0-100)
+#   ------------------------------------
+#   Predictor      b     SE    β     p
+#   ------------------------------------
+#   Constant     37.11  3.90       <.001
+#   Age (years)   0.34  0.09  .34  <.001
+#   R²             .12
+#   ------------------------------------
+
+# Things to look at:
+#   - Render 1: the head, 18 lines where it had 11 -- two lines on how the
+#     file is laid out; after the editing rule, the line that gives one
+#     kind of table its own value of a general setting, and its two
+#     exceptions (paper, [plot]); the marks a text takes -- a title, a
+#     single column's head, note.label and source.label, which is what
+#     takes them as run this session: a row's label and a head over
+#     several columns print the marks as typed, so the line is narrower
+#     than "a label", the lean's word; then the block for an AI assistant
+#     -- "from a request in words or to match an example", the line naming
+#     a table's section, and "list each value you changed, as it was and
+#     as it is now". Then the four notes, one line a choice: caption.form's
+#     says what is bold; leading.zero's yes, no and never each with its
+#     numbers, "APA's rule" after no; p.format's says where the asterisks
+#     print; n.position's none names the models whose Ns differ;
+#   - Render 2: the short file's head, two lines more after the editing
+#     rule; "decimals = 3" under [regression], under the general
+#     setting's own notes;
+#   - Render 3: in the printout, "decimals = 3" marked "# for this table
+#     type only", after the general "decimals = 2"; the complete copy
+#     keeps the line under [regression], after the section's own settings
+#     (until this build the copy dropped it); the copy's printout says
+#     "Set in this file: every setting." and "Also set for one table type
+#     only: [regression] decimals."; the table's b and SE at three
+#     decimals;
+#   - Render 4: four stops, each naming the line, why, and where the
+#     setting goes -- until this build the first two files were read and
+#     their lines did nothing, and the last two were called settings
+#     jstats does not have;
+#   - Render 5: the first two stops give the call with the setting moved
+#     out of its list (each runs); the third, an example in a list named
+#     for the setting's own section;
+#   - Render 6: "The style folder holds agency25.jstyle.txt, and jstats
+#     reads a style only from a file ending in .jstyle.", then the
+#     file.rename() line on the files' full paths; under the name typed
+#     with its .txt, the call with the style's name as well;
+#     jstyle("agency25") the same stop; then, the file renamed, the same
+#     jtable() call makes its table;
+#   - Render 7: no p column in any of the five tables, and the asterisks
+#     on the statistic: on b in both models (R-squared carries none); on
+#     Age's b and on the model chi-square in the logistic table; on both
+#     t values; on the F for wellbeing, commute time's F bare, not passing
+#     .05; on Owns home's chi-square, Current smoker's bare; the
+#     probability note under each table;
+#   - Render 8: the note "columns = lists p, and this table has no p
+#     column: ..." before the report, and the table with b and SE only;
+#     under both, the p column with the p-value and its asterisks, b bare;
+#     the last table, shown without b, keeps a p column holding the
+#     asterisks alone (Claude's call: with no statistic to carry them, the
+#     p column is the one place left for them);
+#   - Render 9 (in Word): the five tables, each asterisk after its number
+#     and the numbers still on their decimal points, no column headed p;
+#   - Render 10: "Note. N differs by model: 103 (Model 1), 97 (Model 2)."
+#     under the first table, nothing after its title, the N row kept, and
+#     the console's note above it ("the table's note says so") now true;
+#     the one-model table has no N after its title and no note.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
