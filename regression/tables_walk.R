@@ -79,7 +79,39 @@
 #           saved as .txt (ruling R81); p.format = stars with no p column
 #           (ruling R83), the note when the call lists p; n.position = none
 #           and models whose Ns differ (ruling R84).
+#           The small build (S420): the t of the t-test table's default
+#           title marked, upright inside apa's italic title and italic in
+#           report's, and the file a complete copy's block for an AI
+#           assistant names.
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S420 (v0.9.282; the small build: the (S419) t item, its lean
+#           okayed on a render, and the (S419) head item, Claude's call).
+#           RE-PINNED by running (fill.R, under a Windows-length temporary
+#           folder, the styles folder at a path of E:'s length; the paths
+#           written as before), each block compared with the one it
+#           replaced: Sections 3 and 11, the complete copy's head (one line
+#           more: the block names the file to return and the way for an
+#           assistant that cannot make a file; their excerpts read with n =
+#           33 where n = 32 stood, so they show the same settings), and
+#           with Section 12 the [ttest] title in jstyle()'s printout
+#           ("*t* Tests"); Section 25, the head read whole (f25[1:19]). Six
+#           blocks moved, the other 21 of the four sections came out
+#           identical. Section 15 on the PENDING line for its Word file,
+#           whose console output did not move: the t-test titles' t, in
+#           apa and in report. A "Since S420" line added to each of the
+#           five sections' Things to look at. No other section's output
+#           moved (every section captured on v0.9.281 and on this build,
+#           and compared).
+# LAST VERIFIED: v0.9.282, 2026-11-12 (S420) -- Sections 3, 11, 12, 15 and
+#           25 WALKED on the WORKSTATION by Jeff through receive_all()
+#           ("walked, all okay"); PENDING back to none; R CMD check 0
+#           errors, 0 warnings, 0 notes; ALL BATTERIES GREEN (12 run, 3718
+#           checks). Sandbox: harness.R verify, 25 of 25 sections in three
+#           orders and by prepare = TRUE; Expected blocks found 109 of 122
+#           by harness.R's own finder and 116 of 122 by one that keeps the
+#           lines that start with "#" -- the same six missed on v0.9.281
+#           in the same sandbox (a message and its path meet on one line
+#           there); rewalk()'s scoreboard read the PENDING line.
 # EDITED:   S419 (v0.9.281; the AI-text build: rulings R81 to R84, the two
 #           leans and ruling R82's six fixes). SECTION 25 ADDED, on the
 #           PENDING line, its Expected blocks filled by running (fill.R,
@@ -841,7 +873,7 @@ jstyle()
 #     there).
 
 jstyle("apa", save.as = "apa_copy")
-cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 32L,
+cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 33L,
               encoding = "UTF-8"), sep = "\n")
 
 # Expected:
@@ -863,7 +895,8 @@ cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 32L,
 #   # To an AI assistant asked to change this file, from a request in words or to match an example:
 #   # Change only the values after the = signs, using only the values each setting's "# takes:" line allows.
 #   # Where the request is about one kind of table, change that table's section: its own settings, or a general setting's line copied under its heading.
-#   # Keep every other line as it is, and return the whole file.
+#   # Keep every other line as it is, and return the whole file, named apa_copy.jstyle (not .txt).
+#   # Where you cannot make a file, give the whole text for the user to save as apa_copy.jstyle.
 #   # Then list each value you changed, as it was and as it is now, and each line you added.
 #   # Then say what the request asks for that these settings cannot make, rather than inventing a setting for it.
 #
@@ -908,7 +941,12 @@ cat(readLines(file.path(.walk_styles, "apa_copy.jstyle"), n = 32L,
 # general setting and its two exceptions, the marks a text takes -- and
 # its block is addressed to an assistant asked to change the file, from a
 # request in words or an example, names the sections and asks for each
-# value changed: n = 32 shows what n = 25 did.
+# value changed: n = 32 shows what n = 25 did. Since S420 (v0.9.282) the
+# block names the file to return, apa_copy.jstyle and not .txt, and what
+# to do where an assistant cannot make a file -- one line more, so n = 33
+# shows what n = 32 did -- and the [ttest] title in the printout below
+# reads "*t* Tests": the mark sets the t in italics in an upright title
+# and upright in apa's italic one (Section 15 shows both in Word).
 
 writeLines(c("# myjournal.jstyle -- the journal's conventions",
              "based.on = apa",
@@ -1053,7 +1091,7 @@ jstyle("myjournal")
 #   method.note    = yes                         # from apa
 #
 #   [ttest]
-#   title         = Means, Standard Deviations, and t Tests by {group}  # from apa
+#   title         = Means, Standard Deviations, and *t* Tests by {group}  # from apa
 #   columns       = mean, sd, t, p, d           # from apa
 #   stub.label    = Variable                    # from apa
 #   n.label       = n                           # from apa
@@ -2575,7 +2613,7 @@ jstyle("report")
 #   method.note    = yes                         # from apa
 #
 #   [ttest]
-#   title         = Means, Standard Deviations, and t Tests by {group}  # from apa
+#   title         = Means, Standard Deviations, and *t* Tests by {group}  # from apa
 #   columns       = mean, sd, t, p, d           # from apa
 #   stub.label    = Variable                    # from apa
 #   n.label       = n                           # from apa
@@ -2780,7 +2818,7 @@ jtable(list(t11a, t11b, t11c, t11d),
 # Render 5 -- a complete copy of report: the head, with the block for an
 # AI assistant, and based.on = report.
 jstyle("report", save.as = "myagency")
-cat(readLines(file.path(.walk_styles11, "myagency.jstyle"), n = 32L,
+cat(readLines(file.path(.walk_styles11, "myagency.jstyle"), n = 33L,
               encoding = "UTF-8"), sep = "\n")
 # Expected:
 #   Style written to
@@ -2801,7 +2839,8 @@ cat(readLines(file.path(.walk_styles11, "myagency.jstyle"), n = 32L,
 #   # To an AI assistant asked to change this file, from a request in words or to match an example:
 #   # Change only the values after the = signs, using only the values each setting's "# takes:" line allows.
 #   # Where the request is about one kind of table, change that table's section: its own settings, or a general setting's line copied under its heading.
-#   # Keep every other line as it is, and return the whole file.
+#   # Keep every other line as it is, and return the whole file, named myagency.jstyle (not .txt).
+#   # Where you cannot make a file, give the whole text for the user to save as myagency.jstyle.
 #   # Then list each value you changed, as it was and as it is now, and each line you added.
 #   # Then say what the request asks for that these settings cannot make, rather than inventing a setting for it.
 #
@@ -2896,7 +2935,10 @@ joptions(style.dir = NULL, quiet = TRUE)
 #     a blank line under the general settings' heading note and after
 #     font, as in Section 3, so n = 25 shows what n = 23 did. Since S419
 #     seven more head lines (Section 25 shows them, with the reasons):
-#     n = 32 shows what n = 25 did.
+#     n = 32 shows what n = 25 did. Since S420 one more, the block naming
+#     the file to return, myagency.jstyle: n = 33 shows what n = 32 did;
+#     and in Render 1's printout the [ttest] title reads "*t* Tests"
+#     (Section 15 shows the t in Word).
 #   - Render 6: a tab with myagency.jstyle opens and nothing prints; the
 #     two stops give the line that saves a copy and opens it -- myreport
 #     for report, myjournal for apa, the session's style (your default on
@@ -3137,7 +3179,7 @@ jstyle("bar")
 #   method.note    = yes                         # from apa
 #
 #   [ttest]
-#   title         = Means, Standard Deviations, and t Tests by {group}  # from apa
+#   title         = Means, Standard Deviations, and *t* Tests by {group}  # from apa
 #   columns       = mean, sd, t, p, d           # from apa
 #   stub.label    = Variable                    # from apa
 #   n.label       = n                           # from apa
@@ -3272,6 +3314,9 @@ joptions(style.dir = .entry_style_dir12, quiet = TRUE)
 #   - Render 2: "based on report, then apa" under the file's path; bar's
 #     six settings unmarked; "# from report" on report's own (font, size,
 #     caption.form and the rest it sets); "# from apa" on everything else;
+#     since S420 (v0.9.282) the [ttest] title reads "*t* Tests", the mark
+#     setting the t in italics in a report title (Section 15 shows it in
+#     Word);
 #   - Render 3 (in the editor): each file as Notepad shows it -- its name,
 #     what it follows, that the source's other rules are the author's,
 #     then the short file's lines on what it lists and how to edit it (the
@@ -4053,7 +4098,12 @@ joptions(style.dir = .entry_style_dir15, quiet = TRUE)
 #   - Render 7 (in Word): Tables 1-7 as previewed, in apa or report; Table
 #     8 on a dark teal caption bar, its caption in white, the header report's
 #     grey; Table 9 at 11 points throughout -- the caption, the cells and
-#     the note the same size.
+#     the note the same size;
+#   - Since S420 (v0.9.282), Render 7 in Word: the t of "t Tests" in Table
+#     1's title upright inside apa's italic title -- APA sets a symbol in an
+#     italic table title upright, as the N after a title is -- and in Table
+#     2's title italic inside report's bold upright one; the preview and
+#     the report above print "t Tests" unchanged.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -5169,7 +5219,7 @@ m25 <- jlm(WellbeingScore ~ Age, d25, print = FALSE)
 # settings.
 jstyle("report", save.as = "agency25")
 f25 <- readLines(file.path(.walk_styles25, "agency25.jstyle"), encoding = "UTF-8")
-cat(f25[1:18], sep = "\n")
+cat(f25[1:19], sep = "\n")
 for (k25 in c("caption.form = report", "leading.zero = yes", "p.format = exact",
               "n.position = title")) {
   i25 <- match(k25, f25); j25 <- i25
@@ -5195,7 +5245,8 @@ for (k25 in c("caption.form = report", "leading.zero = yes", "p.format = exact",
 #   # To an AI assistant asked to change this file, from a request in words or to match an example:
 #   # Change only the values after the = signs, using only the values each setting's "# takes:" line allows.
 #   # Where the request is about one kind of table, change that table's section: its own settings, or a general setting's line copied under its heading.
-#   # Keep every other line as it is, and return the whole file.
+#   # Keep every other line as it is, and return the whole file, named agency25.jstyle (not .txt).
+#   # Where you cannot make a file, give the whole text for the user to save as agency25.jstyle.
 #   # Then list each value you changed, as it was and as it is now, and each line you added.
 #   # Then say what the request asks for that these settings cannot make, rather than inventing a setting for it.
 #
@@ -5622,7 +5673,13 @@ joptions(style.dir = .entry_style_dir25, quiet = TRUE)
 #     as it is now". Then the four notes, one line a choice: caption.form's
 #     says what is bold; leading.zero's yes, no and never each with its
 #     numbers, "APA's rule" after no; p.format's says where the asterisks
-#     print; n.position's none names the models whose Ns differ;
+#     print; n.position's none names the models whose Ns differ.
+#     Since S420 (v0.9.282) the head is 19 lines: after "return the whole
+#     file", the block names the file to return -- "named agency25.jstyle
+#     (not .txt)" -- and gives the way for an assistant that cannot make a
+#     file, the whole text for you to save under that name (Claude's
+#     wording; a .txt file still meets Render 6's stop). The short file in
+#     Render 2 gains no block: an assistant is given a complete copy;
 #   - Render 2: the short file's head, two lines more after the editing
 #     rule; "decimals = 3" under [regression], under the general
 #     setting's own notes;

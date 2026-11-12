@@ -172,9 +172,15 @@
 #           type, each statistic and its p computed here, and the note
 #           when the call lists p; n.position = none with models whose Ns
 #           differ; the orientation's version 3.12.
+#           (AW) the small build (S420, v0.9.282): the t of the t-test
+#           table's default title marked -- in the structure, the preview,
+#           jtable()'s report, the Word file's runs under apa, report and
+#           a journal caption, a copy's [ttest] line -- and the file a
+#           complete copy's block for an AI assistant names.
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.281, 2026-11-12 (S419) -- 363/363 on the WORKSTATION;
-#           the S419 EDIT block below holds the stamp. Prior: v0.9.280,
+# LAST VERIFIED: v0.9.282, 2026-11-12 (S420) -- 366/366 on the WORKSTATION;
+#           the S420 EDIT block below holds the stamp. Prior: v0.9.281,
+#           2026-11-12 (S419) -- 363/363 (the S419 EDIT block); v0.9.280,
 #           2026-11-11 (S416) -- 351/351 (the S416 EDIT block); v0.9.279,
 #           2026-11-10 (S415) -- 334/334 (the S415 EDIT block); v0.9.278,
 #           2026-11-08 (S414) -- 315/315 (the S414 EDIT block); v0.9.277,
@@ -217,6 +223,37 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S420 EDIT (v0.9.282, 2026-11-12): the small build -- the t of the t-test
+#           table's default title marked, "*t* Tests" (the (S419) t item, the
+#           lean okayed on a render: upright inside apa's italic title, as
+#           APA sets a symbol there, italic in report's), and the file a
+#           complete copy's block for an AI assistant names (the (S419) head
+#           item, Claude's call). SECTION AW ADDED, 3 checks (366 in
+#           all): AW01 the title in the structure, the preview and the
+#           report; AW02 the Word file's runs under three caption forms;
+#           AW03 the block's two lines, the short file without one, the
+#           copy's [ttest] line. RE-PINNED, each value read from the battery
+#           run on the build: O03 and AQ11 (the complete copy's head, 19
+#           lines, held once in .head420(); AQ11's positions one line down);
+#           AC01 and AC04 (the caption's title holds the mark); AH01 (the
+#           title found by its tail, the t a run of its own) and AH06 (the
+#           five tables' checksum). On the build before (v0.9.281) O03,
+#           AC01, AC04, AH06, AQ11 and the three AW checks read red, and no
+#           other (358/366).
+#           Each AW check also went red on a one-change mutant of its code:
+#           11 mutants of tables.R, none surviving (the title unmarked, or
+#           "*t* tests"; the mark set italic whatever its base; the preview
+#           or the report printing the mark; the head's "(not .txt)", its
+#           fallback line, either line's name typed in, the block's order;
+#           the short file given the line).
+#           SANDBOX: 366/366 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, interactive with no
+#           question asked, with the temporary folder reached through a
+#           symlink, and with a graphics device open, left open and
+#           current; entered dirty. All twelve batteries 3718 each way.
+#           WORKSTATION, through receive_all(): "R CMD check: 0 errors, 0
+#           warnings, 0 notes."; "ALL BATTERIES GREEN (12 run, 3718 checks)"
+#           at the first run -- matching the sandbox.
 # S419 EDIT (v0.9.281, 2026-11-12): the AI-text build -- what a style file
 #           says of itself (the (S418) AI-text item), a style file saved as
 #           .txt (ruling R81), a general setting in one table type's
@@ -2787,7 +2824,10 @@ check("O02 jstyle(name) prints every setting in the style file's own form, the g
 # exceptions (ruling R82), the marks a text takes, and the block for an AI
 # assistant reworded for a request in words, naming the sections and asking
 # for each value changed (the (S418) AI-text item's parts 4 to 6).
-.head419 <- function(name) {
+# S420 (v0.9.282): 19 lines -- the block names the file to return,
+# <name>.jstyle (not .txt), and what to do where an assistant cannot make a
+# file (the (S419) head item); .head419() renamed .head420().
+.head420 <- function(name) {
   c(paste0("# ", name, ".jstyle:"), "# A jstats table style.",
     "# Every setting jstats has is below, each after a note saying what it does and what it takes.",
     "# The general settings come first and set the look of every table and figure.",
@@ -2802,7 +2842,8 @@ check("O02 jstyle(name) prints every setting in the style file's own form, the g
     "# To an AI assistant asked to change this file, from a request in words or to match an example:",
     "# Change only the values after the = signs, using only the values each setting's \"# takes:\" line allows.",
     "# Where the request is about one kind of table, change that table's section: its own settings, or a general setting's line copied under its heading.",
-    "# Keep every other line as it is, and return the whole file.",
+    paste0("# Keep every other line as it is, and return the whole file, named ", name, ".jstyle (not .txt)."),
+    paste0("# Where you cannot make a file, give the whole text for the user to save as ", name, ".jstyle."),
     "# Then list each value you changed, as it was and as it is now, and each line you added.",
     "# Then say what the request asks for that these settings cannot make, rather than inventing a setting for it.")
 }
@@ -2812,9 +2853,9 @@ check("O02 jstyle(name) prints every setting in the style file's own form, the g
 .o3s <- .jst_style_resolve("copyapa")
 .o3same <- all(unlist(lapply(names(.jst_style_apa), function(p) vapply(names(.jst_style_spec[[p]]), function(k)
   identical(.jst_style_key(.o3s, p, k), .jst_style_key(.jst_style_resolve("apa"), p, k)), logical(1)))))
-check("O03 jstyle(\"apa\", save.as = ) writes <name>.jstyle into the style folder: its header (since S406 saying to change values only, for a person or an AI assistant; since the S407 rebuild the file's name on a line of its own, then one sentence a line; since S409 the editing rule worded as the short file's and a block for an AI assistant; since S419 the 18 lines of .head419()), the format and written.by stamps and based.on = apa, then every setting of every part after a note on what it does and one on what it takes (S406); read back, every setting is apa's; the written line names the file",
+check("O03 jstyle(\"apa\", save.as = ) writes <name>.jstyle into the style folder: its header (since S406 saying to change values only, for a person or an AI assistant; since the S407 rebuild the file's name on a line of its own, then one sentence a line; since S409 the editing rule worded as the short file's and a block for an AI assistant; since S419 the 18 lines of .head419(), since S420 the 19 of .head420()), the format and written.by stamps and based.on = apa, then every setting of every part after a note on what it does and one on what it takes (S406); read back, every setting is apa's; the written line names the file",
       file.exists(.o3f) &&
-        identical(.o3t[1:18], .head419("copyapa")) && identical(.o3t[19], "") &&
+        identical(.o3t[1:19], .head420("copyapa")) && identical(.o3t[20], "") &&
         "format     = 1" %in% .o3t &&
         paste0("written.by = jstats ", .jst_jstats_version()) %in% .o3t &&
         "based.on   = apa" %in% .o3t &&
@@ -4142,7 +4183,7 @@ cat("\n--- AC. The t-test table ---\n")
 })
 .acn <- function(x) gsub("-", "\u2212", sprintf("%.2f", x), fixed = TRUE)
 .acp <- function(p) if (p < .001) "<.001" else sub("^0", "", sprintf("%.3f", p))
-check("AC01 one row per outcome by its label, under the grouping variable's label over the groups, each group's value label over its M and SD (italic); t with its df in the head (*t*(101), shared by every row), p and d; the title names the grouping variable",
+check("AC01 one row per outcome by its label, under the grouping variable's label over the groups, each group's value label over its M and SD (italic); t with its df in the head (*t*(101), shared by every row), p and d; the title names the grouping variable, its t marked (*t*, since S420)",
       inherits(.act, "jst_table") && identical(.act$type, "ttest") &&
         identical(.act$columns$key, c("stub", "g1.mean", "g1.sd", "g2.mean", "g2.sd", "t", "p", "d")) &&
         identical(.act$columns$label, c("Variable", "M", "SD", "M", "SD", "*t*(101)", "p", "d")) &&
@@ -4151,7 +4192,7 @@ check("AC01 one row per outcome by its label, under the grouping variable's labe
                   list(paste(.aal("Volunteer"), 2, 5),
                        c(paste(.aavl("Volunteer", 0), 2, 3), paste(.aavl("Volunteer", 1), 4, 5)))) &&
         identical(vapply(.act$rows, `[[`, "", "label"), unname(vapply(.acv, .aal, ""))) &&
-        identical(.act$caption$title, paste("Means, Standard Deviations, and t Tests by", .aal("Volunteer"))))
+        identical(.act$caption$title, paste("Means, Standard Deviations, and *t* Tests by", .aal("Volunteer"))))
 
 check("AC02 the cells, computed here from the data: each group's M and SD; Student's t, its p exact without the zero, and Cohen's d on the pooled SD with its zero (the first group's mean minus the second's); the groups' ns in the general note",
       all(vapply(seq_along(.acv), function(i) {
@@ -4204,7 +4245,7 @@ check("AC04 a paired test said in the note, d named as dz (test.note = no leaves
       identical(.ac4$p, c("*n* = 6 (1) and 6 (2).",
                           "The *t* test is a paired-samples test; *d* is Cohen's *d*z, computed from the differences.")) &&
         identical(.ac4$pn, "*n* = 6 (1) and 6 (2).") &&
-        identical(.ac4$ttl$caption$title, paste("Means, Standard Deviations, and t Tests by", .aal("Volunteer"))) &&
+        identical(.ac4$ttl$caption$title, paste("Means, Standard Deviations, and *t* Tests by", .aal("Volunteer"))) &&
         identical(.ac4$ttl$notes$general, "*n* = 54 (No) and 49 (Yes).") &&
         identical(.ac4$ttl, .ac4$nte) &&
         length(.ac4$nosp$spanners) == 1L &&
@@ -4603,7 +4644,7 @@ check("AH01 one file of the five tables: five tables in order, numbered 1 to 5 o
                   as.character(1:5)) &&
         local({
           pos <- .ahpos(.ah1$d, c("Descriptive Statistics and Correlations for Study Variables",
-                                  paste("Means, Standard Deviations, and t Tests by", .aal("Volunteer")),
+                                  paste(" Tests by", .aal("Volunteer")),  # the t a run of its own (S420)
                                   paste("One-Way Analyses of Variance by", .aal("Region")),
                                   paste("Frequencies and Percentages by", .aal("Volunteer")),
                                   "Item Statistics and Reliability"))
@@ -4679,8 +4720,9 @@ check("AH05 the font steps a point at a time to 8 points (from a size between po
 
 # Re-pinned S406: the ANOVA table on a landscape section of its own.
 # Re-pinned S415: the label's hyphen non-breaking (see L10).
+# Re-pinned S420: the t-test title's t a run of its own (AW02).
 check("AH06 document.xml of the five tables pinned by its checksum",
-      identical(unname(tools::md5sum(file.path(.aad, "x5", "word", "document.xml"))), "9117ad796ee14999c935947617ae7ead"))
+      identical(unname(tools::md5sum(file.path(.aad, "x5", "word", "document.xml"))), "939e7796b6d7298c1122a31281866d8a"))
 
 .ah7 <- res(local({
   tb <- .aft
@@ -6134,13 +6176,13 @@ check("AQ10 save.as refuses \"report\" and \"apa\" as names of styles built into
   })))
   list(l = l, same = same)
 }))
-check("AQ11 a complete copy's head says to change values only and holds a block for an AI assistant asked to change the file, from a request in words or an example (since S419; .head419()), pinned whole; based.on names report for a copy of report or of a file based on it, apa otherwise; each copy reads back with every setting as the style it copied",
-      identical(.aq11$report$l[1:18], .head419("full_report")) &&
-        identical(.aq11$report$l[19:23], c("", "format     = 1", paste0("written.by = jstats ", .jst_jstats_version()),
+check("AQ11 a complete copy's head says to change values only and holds a block for an AI assistant asked to change the file, from a request in words or an example (since S419; since S420 naming the file to return, .head420()), pinned whole; based.on names report for a copy of report or of a file based on it, apa otherwise; each copy reads back with every setting as the style it copied",
+      identical(.aq11$report$l[1:19], .head420("full_report")) &&
+        identical(.aq11$report$l[20:24], c("", "format     = 1", paste0("written.by = jstats ", .jst_jstats_version()),
                                            "based.on   = report", "")) &&
-        identical(.aq11$onrep$l[22], "based.on   = report") &&
-        identical(.aq11$apa$l[22], "based.on   = apa") &&
-        identical(.aq11$onapa$l[22], "based.on   = apa") &&
+        identical(.aq11$onrep$l[23], "based.on   = report") &&
+        identical(.aq11$apa$l[23], "based.on   = apa") &&
+        identical(.aq11$onapa$l[23], "based.on   = apa") &&
         all(vapply(.aq11, function(x) isTRUE(x$same), logical(1))) &&
         all(c("caption.fill = none", "heading.fill = none", "note.label.italic = no") %in% .aq11$report$l) &&
         all(c("caption.fill = none", "heading.fill = none", "note.label.italic = yes") %in% .aq11$apa$l) &&
@@ -8634,12 +8676,106 @@ check("AV12 the orientation (version 3.12) says where a general setting goes and
 options(.avo)
 rm(.avw, .avflat, .avp)
 
+# =============================================================================
+# AW. The small build (S420, v0.9.282): the t of the t-test table's default
+#     title marked (the (S419) t item), and the file a complete copy's block
+#     for an AI assistant names (the (S419) head item)
+# =============================================================================
+cat("\n--- AW. The t-test title's t, and the file an assistant returns ---\n")
+
+.awd <- file.path(tempdir(), "tables_check_s420"); unlink(.awd, recursive = TRUE); dir.create(.awd)
+.awo <- options(.jst_options_style_dir = .awd, .jst_options_style = NULL)
+# The title as the preview and the report print it, the mark taken out.
+.awtitle <- paste("Means, Standard Deviations, and t Tests by", .aal("Volunteer"))
+
+# The title in the structure, the preview and jtable()'s report.
+.aw1 <- .aqtry(local({
+  rp <- res(jtable(.ac, style = "report", print = FALSE))$val
+  list(apa_key = .jst_style_key(.jst_style_resolve("apa"), "ttest", "title"),
+       rep_key = .jst_style_key(.jst_style_resolve("report"), "ttest", "title"),
+       rp = rp, pa = res(print(.act))$txt, pr = res(print(rp))$txt,
+       ra = res(jtable(.ac, print = TRUE))$txt,
+       rr = res(jtable(.ac, style = "report", print = TRUE))$txt,
+       call = res(jtable(.ac, title = "Ages by {group}", print = FALSE))$val)
+}))
+check("AW01 the t-test table's default title marks the t, \"Means, Standard Deviations, and *t* Tests by {group}\", in apa and so in report (the (S419) t item, S420): the table's caption holds the mark; the preview and jtable()'s report print \"t Tests\", the mark taken out, under both styles; a title given in the call is the call's",
+      !is.null(.aw1) &&
+        identical(.aw1$apa_key, "Means, Standard Deviations, and *t* Tests by {group}") &&
+        identical(.aw1$rep_key, .aw1$apa_key) &&
+        identical(.act$caption$title, sub(" t ", " *t* ", .awtitle, fixed = TRUE)) &&
+        identical(.aw1$rp$caption$title, .act$caption$title) &&
+        grepl(paste0("Table 1\n", .awtitle, "\n"), .aw1$pa, fixed = TRUE) &&
+        grepl(paste0("Table 1: ", .awtitle, "\n"), .aw1$pr, fixed = TRUE) &&
+        grepl(paste0("Table 1. ", .awtitle, "\n"), .aw1$ra, fixed = TRUE) &&
+        grepl(paste0("Table 1. ", .awtitle, "\n"), .aw1$rr, fixed = TRUE) &&
+        !any(grepl("*t*", c(.aw1$pa, .aw1$pr, .aw1$ra, .aw1$rr), fixed = TRUE)) &&
+        identical(.aw1$call$caption$title, paste("Ages by", .aal("Volunteer"))))
+
+# The title's runs in the Word file, under three caption forms.
+.wsty("awjournal", "caption.form = journal", dir = .awd)
+.aw2 <- .aqtry(local({
+  runs_of <- function(style, f) {
+    invisible(res(jtable(.ac, style = style, file = f, overwrite = TRUE, print = FALSE)))
+    x <- .alx(f)
+    r <- regmatches(x, gregexpr("<w:r>.*?</w:r>", x, perl = TRUE))[[1]]
+    t <- vapply(r, function(z) {
+      v <- gsub("<[^>]+>", "", regmatches(z, regexpr("<w:t[^>]*>.*?</w:t>", z, perl = TRUE)))
+      if (length(v)) v else ""
+    }, "", USE.NAMES = FALSE)
+    i <- which(endsWith(t, "Means, Standard Deviations, and "))[1]
+    if (is.na(i)) return(NULL)
+    list(t = t[i + 0:2], it = grepl("<w:i/>", r[i + 0:2], fixed = TRUE),
+         b = grepl("<w:b/>", r[i + 0:2], fixed = TRUE))
+  }
+  list(apa = runs_of("apa", file.path(.awd, "AwApa.docx")),
+       rep = runs_of("report", file.path(.awd, "AwRep.docx")),
+       jou = runs_of("awjournal", file.path(.awd, "AwJou.docx")))
+}))
+check("AW02 in the Word file the title's t is a run of its own: upright inside apa's italic title -- APA sets a symbol in an italic table title upright, as the N after a title is -- italic in report's bold upright title, the bold kept, and italic in a journal caption's plain title",
+      !is.null(.aw2) && !any(vapply(.aw2, is.null, NA)) &&
+        all(vapply(.aw2, function(z) identical(z$t[2:3], c("t", paste(" Tests by", .aal("Volunteer")))), NA)) &&
+        identical(.aw2$apa$it, c(TRUE, FALSE, TRUE)) && identical(.aw2$apa$b, c(FALSE, FALSE, FALSE)) &&
+        identical(.aw2$rep$it, c(FALSE, TRUE, FALSE)) && identical(.aw2$rep$b, c(TRUE, TRUE, TRUE)) &&
+        identical(.aw2$jou$it, c(FALSE, TRUE, FALSE)) && identical(.aw2$jou$b, c(FALSE, FALSE, FALSE)))
+
+# The file a complete copy's block names; the short file; the [ttest] line.
+dir.create(file.path(.awd, "sub"))
+.wsty("awplain", "[ttest]", "title = Means, Standard Deviations, and t Tests by {group}", dir = .awd)
+.aw3 <- .aqtry(local({
+  invisible(res(jstyle("report", save.as = "awagency")))
+  invisible(res(jstyle("apa", save.as = file.path(.awd, "sub", "awpath"))))
+  invisible(res(jstyle("apa", save.as = "awshort", size = 11)))
+  rl <- function(f) readLines(f, encoding = "UTF-8", warn = FALSE)
+  l <- rl(file.path(.awd, "awagency.jstyle"))
+  i <- match(paste0("# Where the request is about one kind of table, change that table's section: ",
+                    "its own settings, or a general setting's line copied under its heading."), l)
+  j <- match("[ttest]", l)
+  list(block = l[i + 1:3], ttl = l[j + 1:6], path = rl(file.path(.awd, "sub", "awpath.jstyle")),
+       short = rl(file.path(.awd, "awshort.jstyle")),
+       back = res(jtable(.ac, style = "awagency", print = FALSE))$val,
+       plain = res(jtable(.ac, style = "awplain", print = FALSE))$val)
+}))
+check("AW03 a complete copy's block for an AI assistant names the file to return, <name>.jstyle (not .txt), and what to do where the assistant cannot make a file -- the copy's own name when save.as = is a path (the (S419) head item, S420); a short file has no block for an assistant; the copy's [ttest] title holds the mark and reads back as the built-in's; a file's own title is kept as written",
+      !is.null(.aw3) &&
+        identical(.aw3$block, c("# Keep every other line as it is, and return the whole file, named awagency.jstyle (not .txt).",
+                                "# Where you cannot make a file, give the whole text for the user to save as awagency.jstyle.",
+                                "# Then list each value you changed, as it was and as it is now, and each line you added.")) &&
+        all(c("# Keep every other line as it is, and return the whole file, named awpath.jstyle (not .txt).",
+              "# Where you cannot make a file, give the whole text for the user to save as awpath.jstyle.") %in% .aw3$path) &&
+        !any(grepl("assistant|return the whole file|cannot make a file", .aw3$short)) &&
+        "title = Means, Standard Deviations, and *t* Tests by {group}" %in% .aw3$ttl &&
+        identical(.aw3$back$caption$title, .act$caption$title) &&
+        identical(.aw3$plain$caption$title, .awtitle))
+
+options(.awo)
+rm(.awtitle)
+
 grDevices::dev.off(.atdev)
 rm(.atdx, .atpng, .atn, .atdev, .augeoms, .aulayer, .aufill, .auarea)
 
 options(.jst_options_style_dir = NULL, .jst_options_style = NULL)
 
-unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd, .ard, .asd, .atd, .aud, .avd), recursive = TRUE)
+unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd, .ard, .asd, .atd, .aud, .avd, .awd), recursive = TRUE)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # The analyses above raise notes and warnings of their own (a seems-
