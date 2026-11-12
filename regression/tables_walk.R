@@ -111,12 +111,11 @@
 #           ("walked, all okay"); PENDING back to none; R CMD check 0
 #           errors, 0 warnings, 0 notes; ALL BATTERIES GREEN (12 run, 3715
 #           checks). Sandbox: harness.R verify, 25 of 25 sections in three
-#           orders and by prepare = TRUE; 112 of 122 Expected blocks found
-#           as a run -- the ten others hold a style file's own lines, which
-#           start with "#" and which the finder drops from the output, so
-#           it cannot find them (seven of them, in Sections 3-13, were
-#           unfound on v0.9.280 too: 105 of 112, where the S416 stamp below
-#           says 112 of 112); rewalk()'s scoreboard read the PENDING line.
+#           orders and by prepare = TRUE; 122 of 122 Expected blocks found
+#           as a run by a finder that keeps the output lines that start
+#           with "#" (a style file's own lines); harness.R's own count,
+#           which drops them, reads 112 of 122. rewalk()'s scoreboard read
+#           the PENDING line.
 # EDITED:   S416 (v0.9.280; Capability Slate U's charts, build 3: rulings
 #           R66-R68 with R69's titles and R70's segment values, the S412
 #           audit's F1, F3, F5, F15 and F18, and the (S415) riders).
