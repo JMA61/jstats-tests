@@ -181,14 +181,24 @@
 #           result keeps the output its call printed -- or would have
 #           printed, under print = FALSE or the silent level -- and printing
 #           it shows that output again, each note in its place, the color
-#           decided before the capture; a result made before the build
-#           saying so; the attribute beside the stamp, through saveRDS(),
-#           tidy() and glance(); jscreen()'s data frame left alone; and the
-#           note under a copy of a style saved in the hidden per-user
-#           folder.
+#           decided before the capture; a result with no kept output
+#           printing as R's plain list (since S424, ruling R87; until then
+#           a line said which version made it); the attribute beside the
+#           stamp, through saveRDS(), tidy() and glance(); jscreen()'s data
+#           frame left alone; and the note under a copy of a style saved in
+#           the hidden per-user folder, its last line naming Documents/
+#           jstats styles by its full path since S424 (AX10, AX10b).
+#           Since S424 (the clean-up build) the multiple-response set's
+#           words are ruling R88's -- "a case can be counted in more than
+#           one category", the stub "Category", the axis "Percentage of
+#           cases", "Multiple-Response Set" where the labels share no text
+#           (AS03, AS06, AS09, AS10, AS21, AU05, AU06) -- and no check pins
+#           a stop for a result an earlier build made (ruling R87: J13,
+#           P07, V11 and AK08 lose theirs).
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.283, 2026-11-14 (S423) -- 377/377 on the WORKSTATION;
-#           the S423 EDIT block below holds the stamp. Prior: v0.9.282,
+# LAST VERIFIED: v0.9.284, 2026-11-14 (S424) -- 378/378 on the WORKSTATION;
+#           the S424 EDIT block below holds the stamp. Prior: v0.9.283,
+#           2026-11-14 (S423) -- 377/377 (the S423 EDIT block); v0.9.282,
 #           2026-11-12 (S420) -- 366/366 (the S420 EDIT block); v0.9.281,
 #           2026-11-12 (S419) -- 363/363 (the S419 EDIT block); v0.9.280,
 #           2026-11-11 (S416) -- 351/351 (the S416 EDIT block); v0.9.279,
@@ -233,6 +243,65 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S424 EDIT (v0.9.284, 2026-11-14): the clean-up build -- ruling R87
+#           (S423, Jeff: "There will be no one using saved results at this
+#           point. I don't think that we should overly complicate the
+#           source code with unnecessary stuff like this during this time
+#           when we don't need to worry about backward compatibility.");
+#           ruling R88 (S423, "okay with your suggested word changes"); and
+#           the path lean (S423, "yes to your suggested
+#           fixes/recommendations").
+#           R87 -- THE CHECKS ON AN OLDER RESULT'S STOPS COME OUT, with the
+#           code: J13 keeps the grouped jdesc(by =) stop and loses the two
+#           calls on a jdesc() result without its fields; P07 loses the
+#           jfreq() result with no stamp; V11 loses its two older jlm()
+#           results (eleven calls to nine, its indices moved, and a length
+#           test added); AK08's result that cannot make a table is now a
+#           grouped jdesc() result (.d1), its own stop where the
+#           earlier-version stop stood; AX07 REWRITTEN: a result with no
+#           kept output prints as R's plain list -- print.default()'s
+#           output, its attr(,"class") line, no "was made by" -- with a
+#           stamp and without.
+#           THE PATH -- AX10 RE-PINNED: the note's last line is
+#           joptions(style.dir = "<Documents>/jstats styles"), the folder
+#           computed here from R's home folder as the guides describe it,
+#           and the note holds no "~". AX10b ADDED: the helper on stand-in
+#           home folders -- Windows's Documents itself, backslashes and a
+#           trailing slash tidied, a home that is not Documents, a Mac's
+#           /Users/jeff -- a quotation mark escaped, and a long path kept
+#           whole on the note's last line, which parses.
+#           R88 -- RE-PINNED: AS06 (the full level's note), AS09 (the stub
+#           "Category", the note, "Multiple-Response Set (*N* = 2)"), AS10
+#           (both previews and the Word file's note), AS21 (?jstyle_settings'
+#           title and choice.note entries), AU05 (the axis "Percentage of
+#           cases"; the chart's data, its first column Category), AU06 (the
+#           figure's note and the report's); AS03 GAINS the Console's
+#           title and the chart's default title for a set whose labels
+#           share no text, which no check had pinned. 377 -> 378 checks.
+#           On the build before (v0.9.283) ten checks read red -- AS03 AS06
+#           AS09 AS10 AS21 AU05 AU06 AX07 AX10 AX10b -- and no other
+#           (368/378); J13, P07, V11 and AK08 read green on both builds.
+#           Each of the ten went red on a one-change mutant of its code: 17
+#           mutants of pipeline-internals.R, tables.R, descriptives.R and
+#           plot.R, none surviving -- the no-output branch printing the
+#           list unclassed, or nothing; the Documents test dropped; the
+#           Documents folder not added to a home that is not it; the
+#           backslashes or the trailing slash left; the quotation mark
+#           unescaped; the "~" line back; each of R88's words back in turn
+#           (the table's note, jmulti()'s note, the stub, the Console's
+#           title, the table's title, the axis, the chart's title, the
+#           data's column, the style file's note).
+#           SANDBOX: 378/378 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, through a symlinked
+#           temp path, interactive with no question asked, with a graphics
+#           device open (left open and current), under the stand-in of
+#           RStudio's Console color rule, and entered dirty (plain and
+#           under the handlers: no name, value, option or device changed;
+#           the dirt now includes joptions(style = "report")). All twelve
+#           batteries 3732 each way.
+#           WORKSTATION, through receive_all(): "R CMD check: 0 errors, 0
+#           warnings, 0 notes.", "ALL BATTERIES GREEN (12 run, 3732
+#           checks)", tables_check.R 378/378 at the first run.
 # S423 EDIT (v0.9.283, 2026-11-13): the printed-result build -- a result
 #           kept with <- prints its output again (the read-through's first
 #           item, ruled S423: "Let's lock your recommendation in for item
@@ -2191,18 +2260,9 @@ check("J12 an object of no result class stops at the builders' default, naming e
         grepl("jtable(): the list given is empty.\nGive a saved result, or a list of results or of built tables.", .j12d$txt, fixed = TRUE))
 
 .j13 <- res(jtable(.d1, print = FALSE))
-.j13o <- local({ old <- .j0; old$descriptives_raw <- NULL; attr(old, "jstats_version") <- "0.9.200"
-                 res(jtable(old, print = FALSE)) })
-.j13n <- local({ old <- .j0; old$descriptives_raw <- NULL; attr(old, "jstats_version") <- NULL
-                 res(jtable(old, print = FALSE)) })
-check("J13 a grouped jdesc(by =) result stops in this build; a result without the fields names the version that made it, or 'an earlier version' with no stamp",
+check("J13 a grouped jdesc(by =) result stops in this build (since S424 the stop for a result made before the fields is gone, ruling R87)",
       is.null(.j13$val) &&
-        grepl("jtable(): no table is made from a grouped jdesc() result\n(one made with by =) yet.", .j13$txt, fixed = TRUE) &&
-        is.null(.j13o$val) &&
-        grepl("this jdesc() result was made by jstats 0.9.200, before the", .j13o$txt, fixed = TRUE) &&
-        grepl("Run the analysis again, then jtable() on the new result.", .j13o$txt, fixed = TRUE) &&
-        is.null(.j13n$val) &&
-        grepl("was made by an earlier version of", .j13n$txt, fixed = TRUE))
+        grepl("jtable(): no table is made from a grouped jdesc() result\n(one made with by =) yet.", .j13$txt, fixed = TRUE))
 
 .j14 <- res(jtable(.j0, headinggs = .jh, print = FALSE))
 .j14b <- res(jtable(.j0, notes = "x", print = FALSE))
@@ -3069,18 +3129,15 @@ check("P05 several jfreq() results stack into one table; a named list's names, o
 
 .p6 <- res(jtable(list(.nf1, res(jfreq(tcm, Volunteer, subset = Age > 40))$val), print = FALSE))$val
 .p7a <- res(jtable(list(.nf1, res(jfreq(tcm, Education))$val), print = FALSE))
-.p7b <- local({ old <- .nf1; attr(old, "jstats_version") <- NULL; res(jtable(old, print = FALSE)) })
 .p7c <- res(jtable(list(.nf1, .j0), print = FALSE))
 check("P06 the N note: variables from one pool of cases open the note on N; results from different pools give no N (since S405 the filter sentence names the result a subset = filtered)",
       identical(.p6$notes$general, "Only cases with Age (years) > 40 are included for Volunteered in past year."))
-check("P07 a variable in two results stops (a table lists each once, in both table types); a jfreq() result made before the fields existed names its version; results of two kinds in one list stop, with the lines that make each table (S406, ruling R56)",
+check("P07 a variable in two results stops (a table lists each once, in both table types); results of two kinds in one list stop, with the lines that make each table (S406, ruling R56)",
       is.null(.p7a$val) &&
         grepl("jtable(): Education is in more than one of the results.\nA table lists each variable once.", .p7a$txt, fixed = TRUE) &&
         grepl("jtable(): Age is in more than one of the results.",
               res(jtable(list(res(jdesc(tcm, Age))$val, res(jdesc(tcm, Age, Income))$val),
                          print = FALSE))$txt, fixed = TRUE) &&
-        is.null(.p7b$val) &&
-        grepl("jtable(): this jfreq() result was made by an earlier version of\njstats, before the fields a table needs were stored.", .p7b$txt, fixed = TRUE) &&
         is.null(.p7c$val) &&
         grepl(paste0("jtable(): results of different kinds (jfreq() and jdesc()) cannot\nshare a table.\n", "Make each table in a call of its own, then give the tables together to write\nthem to one file:\n",
                      "  ", .tn[1], " <- jtable(.nf1)\n  ", .tn[2], " <- jtable(.j0)\n",
@@ -3666,15 +3723,13 @@ invisible(res(jcomplete(tcm, WellbeingScore, Volunteer, Age, Smoker, Region, Edu
                     quote(jtable(.vm4, markers = list(Centered = Incom), print = FALSE)),
                     quote(jtable(list(.vm1, .vg1), print = FALSE)),
                     quote(jtable(list(.vm1, res(jlm(Volunteer ~ Age, tcm))$val), print = FALSE)),
-                    quote(local({ old <- .vm1; attr(old, "jstats_version") <- NULL; jtable(old, print = FALSE) })),
-                    quote(local({ old <- .vm4; old$dummy_groups$Region$codes <- NULL; jtable(old, print = FALSE) })),
                     quote(jtable(.vm4, fit.rows = "r3", print = FALSE)),
                     quote(jtable(.vm4, fit.rows = none, print = FALSE)),
                     quote(jtable(.vm4, landscape = yes, print = FALSE)),
                     quote(jtable(.vm4, landscape = "sideways", print = FALSE)),
                     quote(jtable(.vm4, missing.rows = "none", print = FALSE))),
                function(e) res(eval(e)))
-check("V11 the stops: headings = on a model; markers = naming no predictor, the predictors listed; jlm() and jlogistic() results in one list, and two outcomes (since S406 with the lines that make each table, ruling R56); a result with no stamp, and one made before dummy_groups carried codes, each naming its version; a wrong fit.rows value, none among the choices; none typed bare, the pointer; landscape typed bare, and a wrong value; another type's setting",
+check("V11 the stops: headings = on a model; markers = naming no predictor, the predictors listed; jlm() and jlogistic() results in one list, and two outcomes (since S406 with the lines that make each table, ruling R56); a wrong fit.rows value, none among the choices; none typed bare, the pointer; landscape typed bare, and a wrong value; another type's setting",
       all(vapply(.v11, function(r) is.null(r$val), logical(1))) &&
         grepl("jtable(): headings = puts the variables of a descriptives or\nfrequency table under role headings; a regression table lists the predictors\nin the models' order.", .v11[[1]]$txt, fixed = TRUE) &&
         grepl("jtable(): markers = names Incom, which is not among the variables of\nthe result.\nThe result holds Age, Smoker, Region, Education, and CommuteTime.", .v11[[2]]$txt, fixed = TRUE) &&
@@ -3684,13 +3739,12 @@ check("V11 the stops: headings = on a model; markers = naming no predictor, the 
         grepl(paste0("jtable(): models of different outcomes\n(WellbeingScore and Volunteer) cannot share a table.\n", "Make each table in a call of its own, then give the tables together to write\nthem to one file:\n",
                      "  ", .tn[1], " <- jtable(.vm1)\n  ", .tn[2], " <- jtable(res(jlm(Volunteer ~ Age, tcm))$val)\n",
                      "  jtable(list(", .tn[1], ", ", .tn[2], "), file = \"Tables.docx\", print = FALSE)"), .v11[[4]]$txt, fixed = TRUE) &&
-        grepl("jtable(): this jlm() result was made by an earlier version of\njstats, before the fields a table needs were stored.\nRun the analysis again, then jtable() on the new result.", .v11[[5]]$txt, fixed = TRUE) &&
-        grepl(paste0("jtable(): this jlm() result was made by jstats ", .jst_jstats_version(), ", before the\nfields a table needs were stored."), .v11[[6]]$txt, fixed = TRUE) &&
-        grepl("jtable(): `fit.rows` must be columns of a regression table, each\nnamed once: \"r2\", \"adj.r2\", \"f\", \"delta.r2\", \"f.change\", or \"n\"; or \"none\".", .v11[[7]]$txt, fixed = TRUE) &&
-        grepl("jtable(): none is not in quotes.\nfit.rows = takes its value in quotes:\n  jtable(.vm4, fit.rows = \"none\", print = FALSE)", .v11[[8]]$txt, fixed = TRUE) &&
-        grepl("jtable(): yes is not in quotes.\nlandscape = takes its value in quotes:\n  jtable(.vm4, landscape = \"yes\", print = FALSE)", .v11[[9]]$txt, fixed = TRUE) &&
-        grepl("jtable(): `landscape` must be \"auto\", \"yes\", or \"no\".", .v11[[10]]$txt, fixed = TRUE) &&
-        grepl("jtable(): missing.rows = is a setting of a frequency table, and this\ntable is a regression table.", .v11[[11]]$txt, fixed = TRUE))
+        grepl("jtable(): `fit.rows` must be columns of a regression table, each\nnamed once: \"r2\", \"adj.r2\", \"f\", \"delta.r2\", \"f.change\", or \"n\"; or \"none\".", .v11[[5]]$txt, fixed = TRUE) &&
+        grepl("jtable(): none is not in quotes.\nfit.rows = takes its value in quotes:\n  jtable(.vm4, fit.rows = \"none\", print = FALSE)", .v11[[6]]$txt, fixed = TRUE) &&
+        grepl("jtable(): yes is not in quotes.\nlandscape = takes its value in quotes:\n  jtable(.vm4, landscape = \"yes\", print = FALSE)", .v11[[7]]$txt, fixed = TRUE) &&
+        grepl("jtable(): `landscape` must be \"auto\", \"yes\", or \"no\".", .v11[[8]]$txt, fixed = TRUE) &&
+        grepl("jtable(): missing.rows = is a setting of a frequency table, and this\ntable is a regression table.", .v11[[9]]$txt, fixed = TRUE) &&
+        length(.v11) == 9L)
 
 # landscape in the call: the one general setting a call may give (Jeff,
 # S402); it goes in the call's layer as a general setting.
@@ -5042,10 +5096,9 @@ check("AK07 the offered lines run as they stand: each table's line builds its ta
         regexpr("Regression Coefficients Predicting", .ak9$d, fixed = TRUE) <
           regexpr("Descriptive Statistics", .ak9$d, fixed = TRUE))
 
-.akold <- .akm1; if (!is.null(.akold)) attr(.akold, "jstats_version") <- NULL
-.ak10 <- res(jtable(list(.akd1, .akold)))
-check("AK08 before the stop gives its lines, each table is built: a result that cannot make a table stops in its own words, so no offered line would stop again",
-      startsWith(.ak10$txt, "[error] jtable(): this jlm() result was made by an earlier version of\n") &&
+.ak10 <- res(jtable(list(.d1, .akm1)))
+check("AK08 before the stop gives its lines, each table is built: a result that cannot make a table stops in its own words, so no offered line would stop again (since S424 a grouped jdesc() result is that result, ruling R87 having taken out the stop for one made by an earlier version)",
+      startsWith(.ak10$txt, "[error] jtable(): no table is made from a grouped jdesc() result\n") &&
         !grepl("cannot share a table", .ak10$txt, fixed = TRUE))
 
 .ak11 <- local({
@@ -6638,9 +6691,16 @@ check("AS02 the options ranked by count, a tie in the data frame's order; rank =
        nolab = lab(c("Services used: Counselling", NA)),
        same  = lab(c("Used", "Used")),
        cons  = .strip_ansi(res(jmulti(.asv, LegalAid:Housing))$txt),
-       labs  = .strip_ansi(res(jmulti(.asv, LegalAid:Housing, variable.id = "labels"))$txt))
+       labs  = .strip_ansi(res(jmulti(.asv, LegalAid:Housing, variable.id = "labels"))$txt),
+       # labels that share no text: the Console's title and the chart's
+       # (R88, S424: "Multiple-Response Set", where "Options Chosen" stood)
+       ncons = local({ nd <- data.frame(A = c(1, 2, 1), B = c(2, 1, 1))
+                       attr(nd$A, "label") <- "Legal aid"; attr(nd$B, "label") <- "Legal advice"
+                       nm <- res(jmulti(nd, A, B))
+                       list(txt = .strip_ansi(nm$txt),
+                            plot = .jst_plot_facts(res(jplot(nm$val))$val)$title) }))
 }))
-check("AS03 the set's title is the text its items' labels share, cut back to a separator -- a colon, a LimeSurvey question's [option], a Qualtrics label's dashes, a parenthesis -- each option named by the rest of its label, the closing bracket dropped; labels that share no such text, or an item with no label, title the set \"Options Chosen\" and name each option by its label or its name; the Console shows the names, or with variable.id = \"labels\" the options",
+check("AS03 the set's title is the text its items' labels share, cut back to a separator -- a colon, a LimeSurvey question's [option], a Qualtrics label's dashes, a parenthesis -- each option named by the rest of its label, the closing bracket dropped; labels that share no such text, or an item with no label, title the set \"Multiple-Response Set\" in the Console and the chart (R88, S424; \"Options Chosen\" until then) and name each option by its label or its name; the Console shows the names, or with variable.id = \"labels\" the options",
       !is.null(.as3) &&
         identical(.as3$colon, c("Services used", "Counselling", "Housing")) &&
         identical(.as3$lime, c("Which services have you used?", "Counselling", "Housing")) &&
@@ -6653,7 +6713,10 @@ check("AS03 the set's title is the text its items' labels share, cut back to a s
         grepl("\nCounselling      5    50.00\n", .as3$cons, fixed = TRUE) &&
         grepl("\nLegalAid         3    30.00\n", .as3$cons, fixed = TRUE) &&
         grepl("\nLegal aid           3    30.00\n", .as3$labs, fixed = TRUE) &&
-        grepl("\nFinancial advice    2    20.00\n", .as3$labs, fixed = TRUE))
+        grepl("\nFinancial advice    2    20.00\n", .as3$labs, fixed = TRUE) &&
+        grepl("\nMultiple-Response Set\n", .as3$ncons$txt, fixed = TRUE) &&
+        !grepl("Options Chosen", .as3$ncons$txt, fixed = TRUE) &&
+        identical(.as3$ncons$plot, "Multiple-Response Set"))
 
 # ticked =: the value an item holds when its option was chosen.
 .as4 <- .aqtry(local({
@@ -6744,7 +6807,7 @@ check("AS06 the Console output, pinned whole: the title, the Analysis N line wit
                                    "Counselling      5    50.00\nHousing          4    40.00\n",
                                    "LegalAid         3    30.00\nFinancial        2    20.00\n",
                                    "None of these    3    30.00\n")) &&
-        any(vapply(.as6$fulln, function(s) identical(s$text, "Note: respondents could choose more than one option, so the percentages sum\nto more than 100.\n"), logical(1))) &&
+        any(vapply(.as6$fulln, function(s) identical(s$text, "Note: a case can be counted in more than one category, so the percentages\nsum to more than 100.\n"), logical(1))) &&
         identical(.as6$sil$txt, "") && identical(.as6$pf$txt, "") &&
         identical(.as6$sil$val$rows_raw, .as1m$rows_raw) && identical(.as6$pf$val$rows_raw, .as1m$rows_raw) &&
         grepl("    subset =            8          4  Housing != 2 (3 missing)\n", .as6$sub, fixed = TRUE) &&
@@ -6797,24 +6860,24 @@ check("AS08 the result is a jst_multi stamped with the version that made it; .js
        oc = res(jtable(res(jmulti(data.frame(A = c(1, 2), B = c(2, 1)), A, B, print = FALSE))$val,
                        print = FALSE))$val)
 }))
-check("AS09 the multiple-response table (ruling R60): the stub \"Option\", n and %, one row per option by its option text in the result's order, the \"None of these\" row last, the counts and the percentages at percent.decimals; the title the set's, N after it (R59); the note that the percentages sum to more than 100 (R61), left out with choice.note = no (R53); none.label, stub.label, columns and a title of the call's, its {set} filled; a set with no shared title is \"Options Chosen\"",
+check("AS09 the multiple-response table (ruling R60): the stub \"Category\" (R88, S424), n and %, one row per option by its option text in the result's order, the \"None of these\" row last, the counts and the percentages at percent.decimals; the title the set's, N after it (R59); the note that the percentages sum to more than 100 (R61), left out with choice.note = no (R53); none.label, stub.label, columns and a title of the call's, its {set} filled; a set with no shared title is \"Multiple-Response Set\" (R88, S424)",
       !is.null(.as9) &&
         identical(.as9$t$type, "multiresponse") &&
         identical(.as9$t$columns$key, c("stub", "n", "percent")) &&
-        identical(.as9$t$columns$label, c("Option", "n", "%")) &&
+        identical(.as9$t$columns$label, c("Category", "n", "%")) &&
         identical(.as9$t$columns$italic, c(FALSE, TRUE, FALSE)) &&
         identical(vapply(.as9$t$rows, `[[`, "", "label"),
                   c("Counselling", "Housing", "Legal aid", "Financial advice", "None of these")) &&
         identical(vapply(.as9$t$rows, function(r) r$cells$n, ""), c("5", "4", "3", "2", "3")) &&
         identical(vapply(.as9$t$rows, function(r) r$cells$percent, ""), c("50.0", "40.0", "30.0", "20.0", "30.0")) &&
         identical(.as9$t$caption$title, "Services used (*N* = 10)") &&
-        identical(.as9$t$notes$general, "Respondents could choose more than one, so the percentages sum to more than 100.") &&
+        identical(.as9$t$notes$general, "A case can be counted in more than one category, so the percentages sum to more than 100.") &&
         identical(.as9$nonote$notes$general, character(0)) &&
         identical(vapply(.as9$lab$rows, `[[`, "", "label")[5], "Chose none") &&
         identical(.as9$lab$columns$label[1], "Service") &&
         identical(.as9$lab$caption$title, "Services used, 2026 (*N* = 10)") &&
         identical(.as9$cols$columns$key, c("stub", "percent")) &&
-        identical(.as9$oc$caption$title, "Options Chosen (*N* = 2)"))
+        identical(.as9$oc$caption$title, "Multiple-Response Set (*N* = 2)"))
 
 # The writers: the preview pinned whole under apa and under report, with a
 # note and a source; the report; the Word file.
@@ -6830,23 +6893,23 @@ check("AS09 the multiple-response table (ruling R60): the stub \"Option\", n and
 check("AS10 the multiple-response table's preview, pinned whole under apa and under report (the note a line a sentence, the source last on its own line); the report's line \"1 set of 4 options\"; the Word file's caption, option rows, count and percentage cells and note row",
       !is.null(.as10) &&
         identical(.as10$p1, paste0("Table 1\nServices used (N = 10)\n-------------------------\n",
-                                   "Option            n    %\n-------------------------\n",
+                                   "Category          n    %\n-------------------------\n",
                                    "Counselling       5  50.0\nHousing           4  40.0\n",
                                    "Legal aid         3  30.0\nFinancial advice  2  20.0\n",
                                    "None of these     3  30.0\n-------------------------\n",
-                                   "Note. Respondents could choose more than one, so the percentages sum to\n",
-                                   "more than 100.\n")) &&
+                                   "Note. A case can be counted in more than one category, so the percentages\n",
+                                   "sum to more than 100.\n")) &&
         identical(.as10$p2, paste0("Table 1: Services used (N = 10)\n-------------------------\n",
-                                   "Option            n    %\n-------------------------\n",
+                                   "Category          n    %\n-------------------------\n",
                                    "Counselling       5  50.0\nHousing           4  40.0\n",
                                    "Legal aid         3  30.0\nFinancial advice  2  20.0\n",
                                    "None of these     3  30.0\n-------------------------\n",
-                                   "Note: Respondents could choose more than one, so the percentages sum to\n",
-                                   "more than 100.\nAsked in 2026.\nSource: Services survey.\n")) &&
+                                   "Note: A case can be counted in more than one category, so the percentages\n",
+                                   "sum to more than 100.\nAsked in 2026.\nSource: Services survey.\n")) &&
         identical(.as10$rep, "Table 1. Services used (N = 10)\n  1 set of 4 options, on a portrait page.\nTable written") &&
         grepl(">Services used (</w:t>", .as10$d, fixed = TRUE) &&
         all(vapply(c(">Counselling<", ">Financial advice<", ">None of these<", ">50.0<", ">20.0<",
-                     "Respondents could choose more than one, so the percentages sum to more than 100.<"),
+                     "A case can be counted in more than one category, so the percentages sum to more than 100.<"),
                    function(x) grepl(x, .as10$d, fixed = TRUE), logical(1))) &&
         regexpr(">Counselling<", .as10$d, fixed = TRUE) < regexpr(">Housing<", .as10$d, fixed = TRUE) &&
         regexpr(">Financial advice<", .as10$d, fixed = TRUE) < regexpr(">None of these<", .as10$d, fixed = TRUE))
@@ -7126,8 +7189,8 @@ check("AS21 ?jstyle_settings lists the build's settings: caption.size and note.s
         "\\item{\\code{source.label}}{the word the source line opens on, upright: Source: | Sources:. Takes any text, or nothing. In apa: \\code{Source:}.}",
         "\\item{\\code{df.position}}{head: the df in the statistic's head, t(101), when every row shares them, else a df column | column: a df column. Takes one of head | column. In apa: \\code{head}; in report: \\code{column}.}",
         "\\section{[multiresponse]: a multiple-response table}{",
-        "\\item{\\code{title}}{the title when the call gives none; \\{set\\} is the text the items' labels share, else Options Chosen. Takes any text. In apa: \\code{\\{set\\}}.}",
-        "\\item{\\code{choice.note}}{yes: the note says respondents could choose more than one, so the percentages sum to more than 100 | no. Takes one of yes | no. In apa: \\code{yes}.}"),
+        "\\item{\\code{title}}{the title when the call gives none; \\{set\\} is the text the items' labels share, else Multiple-Response Set. Takes any text. In apa: \\code{\\{set\\}}.}",
+        "\\item{\\code{choice.note}}{yes: the note says a case can be counted in more than one category, so the percentages sum to more than 100 | no. Takes one of yes | no. In apa: \\code{yes}.}"),
         function(x) grepl(x, .as21, fixed = TRUE), logical(1))) &&
         lengths(regmatches(.as21, gregexpr("\\item{\\code{df.position}}", .as21, fixed = TRUE))) == 2L)
 
@@ -7782,19 +7845,19 @@ check("AU04 the pie's stops (ruling R66): more than one variable; by = and facet
        lim = xs$limits, xt = p$labels$x, fills = unique(.aufill(p)),
        ylab = unname(ggplot2::ggplot_build(p)$layout$panel_scales_y[[1L]]$labels),
        by = sort(-.aulayer(pb, "GeomRect")$y), bn = .aulayer(pb, "GeomRect")$none,
-       keep = .jst_plot_facts(keep)$data$Option, bad = res(jplot(.as1m, which = "pie"))$txt)
+       keep = .jst_plot_facts(keep)$data$Category, bad = res(jplot(.as1m, which = "pie"))$txt)
 }))
-check("AU05 jplot() on a jmulti() result draws the ranked bar chart (ruling R67), where build 2 stopped: a horizontal bar per option in the order of the result's table, \"None of these\" last after a gap half a bar's step wide, a survey's own box named by none = and jstats's row alike; each bar its percentage of everyone who answered, the whole percentage at its end; the axis \"Percentage of respondents\", to the next ten above the longest bar's printed value (the S412 audit's F15); one grey; the title the text the labels share; N everyone who answered; rank = FALSE keeps the data frame's order; nothing printed but the chart; no other plot",
+check("AU05 jplot() on a jmulti() result draws the ranked bar chart (ruling R67), where build 2 stopped: a horizontal bar per option in the order of the result's table, \"None of these\" last after a gap half a bar's step wide, a survey's own box named by none = and jstats's row alike; each bar its percentage of everyone who answered, the whole percentage at its end; the axis \"Percentage of cases\" (R88, S424), to the next ten above the longest bar's printed value (the S412 audit's F15); one grey; the title the text the labels share; N everyone who answered; rank = FALSE keeps the data frame's order; the chart's data, its first column Category since S424 (R88); nothing printed but the chart; no other plot",
       !is.null(.au5) && identical(.au5$geoms, c("GeomRect", "GeomText")) &&
         identical(.au5$txt, "") &&
         identical(.au5$f$kind, "ranked") && identical(as.integer(.au5$f$n), .asx$n) &&
         identical(.au5$f$title, "Services used") && isTRUE(.au5$f$flip) &&
-        identical(.au5$f$data$Option, c(.as1m$rows_raw$option[1:4], "None of these")) &&
-        identical(.au5$f$data$n, .as1m$rows_raw$n) && identical(.au5$ylab, .au5$f$data$Option) &&
+        identical(.au5$f$data$Category, c(.as1m$rows_raw$option[1:4], "None of these")) &&
+        identical(.au5$f$data$n, .as1m$rows_raw$n) && identical(.au5$ylab, .au5$f$data$Category) &&
         isTRUE(all.equal(.au5$rect$percent, .as1m$rows_raw$percent)) &&
         isTRUE(all.equal(-.au5$rect$y, c(1, 2, 3, 4, 5.5))) &&
         identical(.au5$tx$text, paste0(round(.as1m$rows_raw$percent), "%")) &&
-        identical(.au5$xt, "Percentage of respondents") &&
+        identical(.au5$xt, "Percentage of cases") &&
         isTRUE(all.equal(.au5$lim, c(0, 10 * (floor(max(round(.as1m$rows_raw$percent)) / 10) + 1)))) &&
         isTRUE(all.equal(.au5$f15_lim, c(0, 50))) && identical(.au5$f15_tx, c("40%", "12%")) &&
         identical(toupper(.au5$fills), "#595959") &&
@@ -7820,11 +7883,11 @@ check("AU05 jplot() on a jmulti() result draws the ranked bar chart (ruling R67)
        rpt = .strip_ansi(res(jtable(p))$txt), w = .strip_ansi(w$txt), x = .atdx(out),
        mix = res(jtable(list(.as1m, p)))$txt)
 }))
-check("AU06 the ranked bar as a figure: N after the title; the note \"Respondents could choose more than one, so the percentages sum to more than 100.\" (ruling R61's sentence, one home with the table's), left out by the style's choice.note = no; the report names a ranked bar chart; the table and the chart of one set go in one file as the S412 audit's F2 has it -- t <- jtable(m); p <- jplot(m); jtable(list(t, p), file =) -- and the result beside its chart stops with the lines that build the table first",
+check("AU06 the ranked bar as a figure: N after the title; the note \"A case can be counted in more than one category, so the percentages sum to more than 100.\" (ruling R61's sentence in R88's words, S424, one home with the table's), left out by the style's choice.note = no; the report names a ranked bar chart; the table and the chart of one set go in one file as the S412 audit's F2 has it -- t <- jtable(m); p <- jplot(m); jtable(list(t, p), file =) -- and the result beside its chart stops with the lines that build the table first",
       !is.null(.au6) && identical(.au6$cap, paste0("Services used (*N* = ", .asx$n, ")")) &&
-        identical(.au6$notes, "Note. Respondents could choose more than one, so the percentages sum to more than 100.") &&
+        identical(.au6$notes, "Note. A case can be counted in more than one category, so the percentages sum to more than 100.") &&
         identical(length(.au6$none), 0L) &&
-        identical(.au6$rep, "Note: Respondents could choose more than one, so the percentages sum to more than 100.") &&
+        identical(.au6$rep, "Note: A case can be counted in more than one category, so the percentages sum to more than 100.") &&
         grepl("  a ranked bar chart, 6 by 4 inches, on a portrait page.", .au6$rpt, fixed = TRUE) &&
         grepl("1 table and 1 figure written to\\s", .au6$w) &&
         identical(regmatches(.au6$x$doc, gregexpr("SEQ (Table|Figure)", .au6$x$doc))[[1L]],
@@ -9001,21 +9064,24 @@ check("AX06 a call that stops -- under its title, or before -- hands everything 
         identical(.strip_ansi(.ax6$o1[1]), "Independent Samples T-Test") &&
         identical(.ax6$o2, character(0)))
 
-# A result made before this build holds no output.
+# A result that holds no output -- one an earlier build saved -- prints as
+# R's plain list, with no line saying it is old (ruling R87, S424; until
+# then a line said which version made it).
 .ax7 <- .aqtry(local({
   m <- .ax1$jlm$live$val; attr(m, "jstats_output") <- NULL
   f <- .ax1$jfreq$live$val; attr(f, "jstats_output") <- NULL; attr(f, "jstats_version") <- NULL
-  list(m = .axrun(print(m)), f = .axrun(print(f)), v = attr(m, "jstats_version", exact = TRUE))
+  list(m = .axrun(print(m)), f = .axrun(print(f)),
+       pm = paste(utils::capture.output(print.default(m)), collapse = "\n"),
+       pf = paste(utils::capture.output(print.default(f)), collapse = "\n"))
 }))
-.ax7t <- function(x) trimws(gsub("\\s+", " ", x))
-check("AX07 a result made before this build keeps no output, and printing it says so: \"This jlm() result was made by jstats <version>, before a saved result kept its output.\" / \"Run the analysis again to see it.\"; a result with no stamp, \"by an earlier version of jstats\"",
+check("AX07 a result that holds no output prints as R's plain list, print.default()'s form with its attr(,\"class\") line, and no line saying which version made it -- with a stamp and without (since S424, ruling R87)",
       !is.null(.ax7) &&
-        identical(.ax7t(.ax7$m$out),
-                  paste0("This jlm() result was made by jstats ", .ax7$v,
-                         ", before a saved result kept its output. Run the analysis again to see it.")) &&
-        identical(.ax7t(.ax7$f$out),
-                  "This jfreq() result was made by an earlier version of jstats, before a saved result kept its output. Run the analysis again to see it.") &&
-        identical(.ax7$m$msg, character(0)))
+        identical(.ax7$m$out, .ax7$pm) && identical(.ax7$f$out, .ax7$pf) &&
+        grepl("attr(,\"class\")", .ax7$m$out, fixed = TRUE) &&
+        !grepl("was made by", .ax7$m$out, fixed = TRUE) &&
+        !grepl("was made by", .ax7$f$out, fixed = TRUE) &&
+        identical(.ax7$m$msg, character(0)) && identical(.ax7$f$msg, character(0)) &&
+        inherits(.ax7$m$val, "jst_lm") && inherits(.ax7$f$val, "jst_freq"))
 
 # The output travels with the result; nothing else about the result moves.
 .ax8 <- .aqtry(local({
@@ -9061,7 +9127,16 @@ check("AX09 jscreen()'s result, a data frame, keeps no output and prints as a da
                            .axrun(jstyle("apa", save.as = "axseen")) }))
 options(.ax10o)
 unlink(file.path(.nud, "axhidden.jstyle"))
-check("AX10 a copy saved in your jstats folder -- no style folder set -- is followed by a note: the folder is hidden in File Explorer and in Finder, the folder's own path to open it by (the line above gives the file's), and the line that sets a style folder of your own, the one the guides recommend (the (S420) item); a copy saved in a style folder gets none",
+# The folder the note's last line sets: Documents/jstats styles by its full
+# path (the (S423) path item, S424), worked out here from R's home folder as
+# the guides describe it -- the home itself where it is the Documents folder
+# (Windows), else its Documents folder (a Mac).
+.ax10v <- local({
+  h <- sub("/+$", "", gsub("\\", "/", path.expand("~"), fixed = TRUE))
+  file.path(if (identical(tolower(basename(h)), "documents")) h else file.path(h, "Documents"),
+            "jstats styles")
+})
+check("AX10 a copy saved in your jstats folder -- no style folder set -- is followed by a note: the folder is hidden in File Explorer and in Finder, the folder's own path to open it by (the line above gives the file's), and the line that sets a style folder of your own, the one the guides recommend, Documents/jstats styles by its full path (the (S420) item; the path since S424); a copy saved in a style folder gets none",
       !is.null(.ax10) && grepl("Style written to", .ax10$h$out, fixed = TRUE) &&
         identical(.ax10$h$msg, paste0(
           "Note: your jstats folder, where the copy was saved, is hidden in File\n",
@@ -9071,8 +9146,35 @@ check("AX10 a copy saved in your jstats folder -- no style folder set -- is foll
           "  ", .ax10$dir, "\n",
           "To keep your styles in a folder you can see, set one, then save the\n",
           "copy again:\n",
-          "  joptions(style.dir = \"~/jstats styles\")\n")) &&
+          "  joptions(style.dir = \"", .ax10v, "\")\n")) &&
+        !grepl("~", .ax10$h$msg, fixed = TRUE) &&
         grepl("Style written to", .ax10$s$out, fixed = TRUE) && identical(.ax10$s$msg, character(0)))
+
+# The folder's two shapes, through a stand-in home folder: Windows's R home
+# is the Documents folder, a Mac's holds it; backslashes become slashes, a
+# trailing one goes; and the note keeps a long path whole on its line, the
+# call running as printed, its quotation marks escaped.
+.ax10b <- .aqtry(local({
+  long <- .jst_style_visible_dir("C:/Users/jeffreyackerman/OneDrive - Griffith University/Documents")
+  list(w = .jst_style_visible_dir("C:/Users/jeff/Documents"),
+       w2 = .jst_style_visible_dir("C:\\Users\\jeff\\OneDrive\\Documents\\"),
+       h = .jst_style_visible_dir("C:/Users/jeff"),
+       m = .jst_style_visible_dir("/Users/jeff"),
+       q = .jst_style_hidden_note("/x", visible = "/Users/j\"o/Documents/jstats styles"),
+       n = .axrun(.jst_msg(.jst_style_hidden_note("/x", visible = long)))$msg,
+       long = long)
+}))
+check("AX10b the note's folder from either shape of home folder: Windows's Documents itself, C:/Users/jeff/Documents/jstats styles (backslashes and a trailing one tidied); a home that is not Documents, and a Mac's /Users/jeff, its Documents folder; a quotation mark in the path escaped; a long path kept whole on the last line, which parses",
+      !is.null(.ax10b) &&
+        identical(.ax10b$w, "C:/Users/jeff/Documents/jstats styles") &&
+        identical(.ax10b$w2, "C:/Users/jeff/OneDrive/Documents/jstats styles") &&
+        identical(.ax10b$h, "C:/Users/jeff/Documents/jstats styles") &&
+        identical(.ax10b$m, "/Users/jeff/Documents/jstats styles") &&
+        endsWith(.ax10b$q, "  joptions(style.dir = \"/Users/j\\\"o/Documents/jstats styles\")") &&
+        length(.ax10b$n) == 1L &&
+        endsWith(.ax10b$n, paste0("\n  joptions(style.dir = \"", .ax10b$long, "\")\n")) &&
+        !inherits(try(str2lang(trimws(tail(strsplit(.ax10b$n, "\n", fixed = TRUE)[[1]], 1L))),
+                      silent = TRUE), "try-error"))
 
 options(.jst_output_level = .axlv, .jst_output_toggles = .axtg, jstats.color = .axco)
 rm(.axcalls, .axuc)

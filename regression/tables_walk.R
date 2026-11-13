@@ -86,10 +86,61 @@
 #           The printed-result build (S423): a result kept with <- showing
 #           its output again when its name is typed -- after print = FALSE,
 #           after the silent level, after a printed call, a note in its
-#           place -- and a result made before the build saying so; the note
-#           under a setting given as NULL in joutput() and joptions(); the
-#           note under a copy of a style saved in your jstats folder.
+#           place -- and a result made before the build saying so (until
+#           S424); the note under a setting given as NULL in joutput() and
+#           joptions(); the note under a copy of a style saved in your
+#           jstats folder.
+#           The clean-up build (S424): a multiple-response set's words --
+#           "a case can be counted in more than one category" in the
+#           Console's note, the table's and the chart's, the table's column
+#           head "Category", the chart's axis "Percentage of cases", a set
+#           whose labels share no text titled "Multiple-Response Set"
+#           (ruling R88); and the note under a copy saved in your jstats
+#           folder naming Documents/jstats styles by its full path.
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S424 (v0.9.284; the clean-up build: ruling R87, ruled S423 --
+#           until the first CRAN release no code for an object an earlier
+#           build saved; ruling R88, Jeff's "okay with your suggested word
+#           changes"; the path lean, okayed S423, "yes to your suggested
+#           fixes/recommendations"). SECTION 27 ADDED, on the PENDING line,
+#           its Expected blocks filled by running (fill.R, under the
+#           Windows-length temporary and jstats folders of S423 and a home
+#           folder of /tmp/Users/jeff/Documents, as R's "~" is on Windows;
+#           the paths written as <tempdir>, <your jstats folder> and <your
+#           Documents folder>): a set of three charges whose labels share
+#           no text, counted at the full level; its table, reported and
+#           previewed; its chart and the table in one Word file, opened; a
+#           copy of apa saved in your jstats folder, the note under it.
+#           RE-PINNED MECHANICALLY under the rulings, by running (mark.py,
+#           then fill.R under the same folders), each block compared with
+#           the one it replaced, and kept OFF the PENDING line: Section 14
+#           (the set's title where the labels share none, the tables' stub
+#           "Category" and their note, in apa and report), Section 21 (the
+#           figure's note), Section 26 (Render 4's note; Render 7's last
+#           line, the full path, where it read "~/jstats styles"). Section
+#           26's Render 5 -- a result made before v0.9.283, its kept
+#           output taken away -- came out under R87, and Renders 6-9 are
+#           5-8. The prose of Sections 14, 21 and 26 that named the old
+#           words says the new. Section 23's console output did not move
+#           (its Word file's Figure 5 carries the new note and axis); its
+#           blocks stay as filled at S416 -- a refill put the jplot()
+#           titles its first block leaves out (a #@SKIP the first fill
+#           used). Every section of the walk captured on v0.9.283 and on
+#           this build under the same folders and compared: Sections 3, 11
+#           and 12 moved as well, a style's printout listing
+#           [multiresponse]'s stub.label as Category -- one pinned line
+#           each, re-pinned from the capture, also kept off the PENDING
+#           line; no other section moved.
+# LAST VERIFIED: v0.9.284, 2026-11-14 (S424) -- Section 27 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0
+#           notes; every battery green ("ALL BATTERIES GREEN (12 run, 3732
+#           checks)"). Sandbox: harness.R derive and verify, 27 of 27
+#           sections in three orders and by prepare = TRUE, no NEEDS line
+#           new; Expected blocks found 122 of 134 by harness.R's own finder
+#           -- Section 27's all, the twelve missed in Sections 3, 9-13 and
+#           25, a message and its path meeting on one line there, as
+#           before.
 # EDITED:   S423 (v0.9.283; the printed-result build: the read-through's
 #           first item, ruled S423 -- "Let's lock your recommendation in
 #           for item 1" -- its six leans okayed ("All defaults"); the NULL
@@ -1194,7 +1245,7 @@ jstyle("myjournal")
 #   [multiresponse]
 #   title         = {set}          # from apa
 #   columns       = n, percent     # from apa
-#   stub.label    = Option         # from apa
+#   stub.label    = Category       # from apa
 #   n.label       = n              # from apa
 #   percent.label = %              # from apa
 #   none.label    = None of these  # from apa
@@ -2716,7 +2767,7 @@ jstyle("report")
 #   [multiresponse]
 #   title         = {set}          # from apa
 #   columns       = n, percent     # from apa
-#   stub.label    = Option         # from apa
+#   stub.label    = Category       # from apa
 #   n.label       = n              # from apa
 #   percent.label = %              # from apa
 #   none.label    = None of these  # from apa
@@ -3282,7 +3333,7 @@ jstyle("bar")
 #   [multiresponse]
 #   title         = {set}          # from apa
 #   columns       = n, percent     # from apa
-#   stub.label    = Option         # from apa
+#   stub.label    = Category       # from apa
 #   n.label       = n              # from apa
 #   percent.label = %              # from apa
 #   none.label    = None of these  # from apa
@@ -3683,8 +3734,9 @@ joptions(style.dir = .entry_style_dir13, quiet = TRUE)
 # ticked = names another value; a text item in the set stops, named; the
 # options ranked by count, rank = FALSE keeping the data frame's order; the
 # set's title from the text its items' labels share, else "Options
-# Chosen"; a note when no item holds a "No". The Console output, the
-# table's layout (the stub "Option", n and %) and every message here are
+# Chosen" ("Multiple-Response Set" since S424, ruling R88); a note when no
+# item holds a "No". The Console output, the table's layout (the stub
+# "Option", n and %; "Category" since S424) and every message here are
 # Claude's calls. The data are made here: s14, twelve people asked about
 # four services, 1 = used and 2 = not, the twelfth declared -99 "Not asked"
 # on every item, the seventh blank on every item, the ninth blank on
@@ -3757,7 +3809,7 @@ jmulti(l14, Q1_SQ001:Q1_SQ003, ticked = "Y")
 #
 #   Analysis N: 4 (1 answered no item)
 #
-#   Options Chosen
+#   Multiple-Response Set
 #             Freq  Percent
 #   --------  ----  -------
 #   Q1_SQ001    3    75.00
@@ -3794,7 +3846,7 @@ print(t14a)
 #   Table 1
 #   Services used (N = 10)
 #   -------------------------
-#   Option            n    %
+#   Category          n    %
 #   -------------------------
 #   Counselling       5  50.0
 #   Housing           4  40.0
@@ -3802,8 +3854,8 @@ print(t14a)
 #   Financial advice  2  20.0
 #   None of these     3  30.0
 #   -------------------------
-#   Note. Respondents could choose more than one, so the percentages sum to
-#   more than 100.
+#   Note. A case can be counted in more than one category, so the percentages
+#   sum to more than 100.
 
 # Render 6 -- the same in report, with a note and a source of the call's.
 t14b <- jtable(m14, style = "report", note = "Asked of all respondents.",
@@ -3816,7 +3868,7 @@ print(t14b)
 #
 #   Table 1: Services used (N = 10)
 #   -------------------------
-#   Option            n    %
+#   Category          n    %
 #   -------------------------
 #   Counselling       5  50.0
 #   Housing           4  40.0
@@ -3824,8 +3876,8 @@ print(t14b)
 #   Financial advice  2  20.0
 #   None of these     3  30.0
 #   -------------------------
-#   Note: Respondents could choose more than one, so the percentages sum to
-#   more than 100.
+#   Note: A case can be counted in more than one category, so the percentages
+#   sum to more than 100.
 #   Asked of all respondents.
 #   Source: Community services survey, 2026.
 
@@ -3870,9 +3922,9 @@ tryCatch(jtable(list(m14, m14b)),
 #   - Render 4: the "Other" box named, with the text it holds, and what to
 #     leave out;
 #   - Render 5: the report's line "1 set of 4 options"; the table: the stub
-#     "Option", n and %, the options by their text, "None of these" last,
-#     "(N = 10)" after the title, the note that the percentages sum to
-#     more than 100 (R61's sentence);
+#     "Category" (R88, S424), n and %, the options by their text, "None of
+#     these" last, "(N = 10)" after the title, the note that the
+#     percentages sum to more than 100 (R61's sentence, in R88's words);
 #   - Render 6: report's form -- "Table 1:" and the title on one line,
 #     "Note:" upright, each sentence of the note on a line of its own,
 #     your note after jstats's, "Source:" last on a line of its own;
@@ -4766,7 +4818,7 @@ try(jplot(d20, Education, type = "donut",
 # the result's table, so the chart matches its table; "None of these" last
 # after a small gap, jstats's own row and a survey's own box alike; each
 # bar's whole percentage at its end; the value axis "Percentage of
-# respondents", to the next ten above the longest bar's printed value (the
+# cases" (R88, S424), to the next ten above the longest bar's printed value (the
 # S412 audit's F15); one grey; N after the figure's title and ruling R61's
 # sentence in its note. The chart names each option as the Word table does,
 # by the rest of its label. jplot() on a kept result prints nothing: the
@@ -4855,8 +4907,8 @@ try(jplot(m21, which = "pie"))
 # Expected:
 #   Figure 1: Services used (N = 10)
 #   (a ranked bar chart, drawn in the Plots pane)
-#   Note: Respondents could choose more than one, so the percentages sum to
-#   more than 100.
+#   Note: A case can be counted in more than one category, so the percentages
+#   sum to more than 100.
 #
 #   Error : jplot(): "pie" is not a plot of a jmulti() result.
 #   `which` must be "core", "all", or "bar".
@@ -4866,7 +4918,7 @@ try(jplot(m21, which = "pie"))
 #     order -- Counselling, Housing, Legal aid, Financial advice -- named by
 #     their labels, then a gap and "None of these"; one dark grey; "50%",
 #     "40%", "30%", "20%" and "30%" just beyond the bars' ends; the axis
-#     along the bottom titled "Percentage of respondents", marked to 60;
+#     along the bottom titled "Percentage of cases", marked to 60;
 #     apa with both axis lines and no gridlines; report with light
 #     gridlines rising from the percentages and the bars' own axis line
 #     alone, at the left;
@@ -4874,9 +4926,9 @@ try(jplot(m21, which = "pie"))
 #     Counselling, Financial advice, Housing -- and the survey's box last
 #     after the same gap, 30%;
 #   - Render 3, Services.docx in Word: Table 1 and then Figure 1, each
-#     "Services used (N = 10)"; under the chart "Note. Respondents could
-#     choose more than one, so the percentages sum to more than 100.", the
-#     table's own note; the chart's percentages the table's, as whole
+#     "Services used (N = 10)"; under the chart "Note. A case can be
+#     counted in more than one category, so the percentages sum to more
+#     than 100.", the table's own note; the chart's percentages the table's, as whole
 #     numbers;
 #   - Render 4: "Figure 1: Services used (N = 10)" on one line and "Note:"
 #     upright, report's forms; then '"pie" is not a plot of a jmulti()
@@ -5773,8 +5825,9 @@ joptions(style.dir = .entry_style_dir25, quiet = TRUE)
 # joutput("silent") the call prints nothing and the result keeps what it
 # would have printed. The result is otherwise as it was -- the same parts,
 # listed the same way in the Environment pane -- and jtable(), tidy() and
-# glance() read it as before. A result made before this build kept no
-# output, and says so. The six leans you okayed ("All defaults"): the
+# glance() read it as before. (A result made before this build kept no
+# output and said so in a line until Session 424, when ruling R87 took the
+# line out: such a result now prints as R's plain list.) The six leans you okayed ("All defaults"): the
 # output at the call's level; the ten analysis results, jscreen()'s data
 # frame not among them; a warning not shown again; a chart not drawn
 # again; color in the Console only; the NULL note in both functions. A
@@ -5914,15 +5967,15 @@ k26
 #
 #   Analysis N: 6
 #
-#   Options Chosen
+#   Multiple-Response Set
 #           Freq  Percent
 #   ------  ----  -------
 #   Letter    5    83.33
 #   Phone     3    50.00
 #   Email     3    50.00
 #
-#   Note: respondents could choose more than one option, so the percentages sum
-#   to more than 100.
+#   Note: a case can be counted in more than one category, so the percentages
+#   sum to more than 100.
 #
 #   Multiple Response
 #
@@ -5933,35 +5986,17 @@ k26
 #
 #   Analysis N: 6
 #
-#   Options Chosen
+#   Multiple-Response Set
 #           Freq  Percent
 #   ------  ----  -------
 #   Letter    5    83.33
 #   Phone     3    50.00
 #   Email     3    50.00
 #
-#   Note: respondents could choose more than one option, so the percentages sum
-#   to more than 100.
+#   Note: a case can be counted in more than one category, so the percentages
+#   sum to more than 100.
 
-# Render 5 -- a result made before this build: o26 is f26 with its kept
-# output taken away and the stamp of the build before, as a result saved
-# with saveRDS() before this build reads back; then with no stamp at all.
-o26 <- f26
-attr(o26, "jstats_output") <- NULL
-attr(o26, "jstats_version") <- "0.9.282"
-o26
-attr(o26, "jstats_version") <- NULL
-o26
-# Expected:
-#   This jfreq() result was made by jstats 0.9.282, before a saved result kept
-#   its output.
-#   Run the analysis again to see it.
-#
-#   This jfreq() result was made by an earlier version of jstats, before a saved
-#   result kept its output.
-#   Run the analysis again to see it.
-
-# Render 6 -- joutput() with a setting given as NULL: one setting, two, and
+# Render 5 -- joutput() with a setting given as NULL: one setting, two, and
 # one whose default at this level is no value.
 joutput(regression.ci = NULL)
 joutput(digits = NULL, diagnostics = NULL)
@@ -5992,7 +6027,7 @@ joutput(case.processing = NULL)
 #   A level call puts the settings back to that level's defaults:
 #     joutput("standard")
 
-# Render 7 -- joptions() with a setting given as NULL: one, then two.
+# Render 6 -- joptions() with a setting given as NULL: one, then two.
 joptions(style = NULL)
 joptions(corr.layout = NULL, missing.detail = NULL)
 # Expected:
@@ -6014,8 +6049,8 @@ joptions(corr.layout = NULL, missing.detail = NULL)
 #   To go back to their defaults:
 #     joptions(corr.layout = "wide", missing.detail = "per_code")
 
-# Render 8 -- a copy of apa saved with no style folder set: written to your
-# jstats folder, and the note. Before the lines under Render 9, paste the
+# Render 7 -- a copy of apa saved with no style folder set: written to your
+# jstats folder, and the note. Before the lines under Render 8, paste the
 # path into File Explorer's address bar: the folder opens, with walk26.jstyle
 # in it.
 .entry_style_dir26 <- getOption(".jst_options_style_dir")
@@ -6036,10 +6071,10 @@ jstyle("apa", save.as = "walk26")
 #     <your jstats folder>
 #   To keep your styles in a folder you can see, set one, then save the
 #   copy again:
-#     joptions(style.dir = "~/jstats styles")
+#     joptions(style.dir = "<your Documents folder>/jstats styles")
 
-# Render 9 -- the same copy saved with a style folder set: no note. Then the
-# copy in your jstats folder removed (the folder too, if Render 8 made it),
+# Render 8 -- the same copy saved with a style folder set: no note. Then the
+# copy in your jstats folder removed (the folder too, if Render 7 made it),
 # and your style folder put back.
 .walk_styles26 <- file.path(tempdir(), "walk_styles26")
 unlink(.walk_styles26, recursive = TRUE); dir.create(.walk_styles26)
@@ -6066,29 +6101,166 @@ joptions(style.dir = .entry_style_dir26, quiet = TRUE)
 #     note color; typed at the standard level, k26 gives the same, the
 #     Case Processing table and the note included, and the note in the
 #     same color: what was printed is what is kept;
-#   - Render 5: in place of the output, "This jfreq() result was made by
-#     jstats 0.9.282, before a saved result kept its output." and the line
-#     to run it again; with no stamp, "an earlier version of jstats". A
-#     result you kept in an .rds file before this build reads this way;
-#   - Render 6: each call's settings as before, then the note: the
+#   - Render 5: each call's settings as before, then the note: the
 #     setting left as it is, and the call that puts the standard level's
 #     default back -- two settings in one note; for case.processing,
 #     whose default at this level is no value, the level call instead;
-#   - Render 7: the same for joptions(), "joptions(style = "apa")" the
+#   - Render 6: the same for joptions(), "joptions(style = "apa")" the
 #     call that puts the default style back, and the two settings' call
 #     with both defaults;
-#   - Render 8: "Style written to" and the copy's path in your jstats
+#   - Render 7: "Style written to" and the copy's path in your jstats
 #     folder -- on Windows C:/Users/<you>/AppData/Roaming/R/data/R/jstats
 #     -- then the note: hidden, the folder's own path on its own line (the
 #     line above is the file's, which File Explorer would open as a file),
-#     and the joptions(style.dir =) line. Paste the folder's path into File
+#     and the joptions(style.dir =) line, naming your Documents folder's
+#     jstats styles by its full path (since S424). Paste the folder's path into File
 #     Explorer's address bar before going on: the folder opens, holding
 #     walk26.jstyle;
-#   - Render 9: "Style written to" and the temporary style folder's path,
+#   - Render 8: "Style written to" and the temporary style folder's path,
 #     and no note. After the section, your jstats folder no longer holds
 #     walk26.jstyle, and Section 3's list still shows your jstats folder
 #     "not created yet" if it was not there before.
 
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 27 -- The clean-up build: a multiple-response set's words; the folder the note names ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 424 (v0.9.284). THE WORDS OF A MULTIPLE-RESPONSE SET (ruling R88,
+# your words on the S423 walk: "okay with your suggested word changes"): a
+# set can come from records as well as from a survey -- charges per person,
+# diagnoses per patient, themes per transcript -- so its note says "a case"
+# where it said "respondents": "a case can be counted in more than one
+# category, so the percentages sum to more than 100." -- jmulti()'s note at
+# the full level, the table's note and the chart's; the table's first
+# column is headed "Category" where it was "Option"; the chart's axis reads
+# "Percentage of cases"; and a set whose items' labels share no text is
+# titled "Multiple-Response Set" where it was "Options Chosen". THE FOLDER
+# THE NOTE NAMES (the lean you okayed at S423): a copy of a style saved in
+# your jstats folder is followed by the note Section 26 shows, its last
+# line naming Documents/jstats styles by its full path, worked out on the
+# computer -- your Documents folder on Windows, where R's "~" points; the
+# Documents folder in your home folder on a Mac -- with no "~". The line is
+# not run here: run as printed, it would make that folder. THE CODE FOR
+# OBJECTS AN EARLIER BUILD SAVED (ruling R87) shows nothing here: Section
+# 26's Render 5 (a result made before v0.9.283) and jtable()'s and jplot()'s
+# stops for a result made before its fields are gone; a result that holds
+# no output prints as R's plain list. The data are made here: c27, six
+# people's charges, 1 = charged and 0 = not, the items' labels sharing no
+# text. The Word file goes in a folder of the session's temporary folder.
+
+.walk_fig27 <- file.path(tempdir(), "walk_fig27")
+unlink(.walk_fig27, recursive = TRUE); dir.create(.walk_fig27)
+c27 <- data.frame(Theft   = c(1, 0, 1, 1, 0, 1),
+                  Assault = c(0, 0, 1, 1, 0, 1),
+                  Fraud   = c(1, 1, 0, 1, 1, 0))
+attr(c27$Theft, "label")   <- "Theft"
+attr(c27$Assault, "label") <- "Assault"
+attr(c27$Fraud, "label")   <- "Fraud"
+
+# Render 1 -- the set counted at the full level: the title, and the note
+# after the table.
+joutput("full", quiet = TRUE)
+k27 <- jmulti(c27, Theft, Assault, Fraud)
+joutput(NULL, quiet = TRUE)
+# Expected:
+#   Multiple Response
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --          6
+#       Remaining N        --          6
+#   ------------------------------------
+#
+#   Analysis N: 6
+#
+#   Multiple-Response Set
+#            Freq  Percent
+#   -------  ----  -------
+#   Theft      4    66.67
+#   Fraud      4    66.67
+#   Assault    3    50.00
+#
+#   Note: a case can be counted in more than one category, so the percentages
+#   sum to more than 100.
+
+# Render 2 -- its table: the report, then the table previewed.
+t27 <- jtable(k27)
+print(t27)
+# Expected:
+#   Table 1. Multiple-Response Set (N = 6)
+#     1 set of 3 options, on a portrait page.
+#   The table was made in R; no Word file was asked for.
+#
+#   Table 1
+#   Multiple-Response Set (N = 6)
+#   -----------------
+#   Category  n    %
+#   -----------------
+#   Theft     4  66.7
+#   Fraud     4  66.7
+#   Assault   3  50.0
+#   -----------------
+#   Note. A case can be counted in more than one category, so the percentages
+#   sum to more than 100.
+
+# Render 3 -- its chart in the Plots pane, then the table and the chart in
+# one Word file, opened.
+p27 <- jplot(k27)
+f27 <- jtable(list(t27, p27), file = file.path(.walk_fig27, "Charges.docx"),
+              overwrite = TRUE, open = TRUE)
+# Expected:
+#   Table 1. Multiple-Response Set (N = 6)
+#     1 set of 3 options, on a portrait page.
+#   Figure 1. Multiple-Response Set (N = 6)
+#     a ranked bar chart, 6 by 4 inches, on a portrait page.
+#   1 table and 1 figure written to
+#   <tempdir>/walk_fig27/Charges.docx
+
+# Render 4 -- a copy of apa saved with no style folder set: the note under
+# it, its last line naming the folder by its full path. Then the copy
+# removed (your jstats folder too, if this render made it), and your style
+# folder put back.
+.entry_style_dir27 <- getOption(".jst_options_style_dir")
+.jsf27 <- tools::R_user_dir("jstats", "data")
+.made27 <- .jsf27
+if (dir.exists(.made27)) .made27 <- NULL else
+  while (!dir.exists(dirname(.made27))) .made27 <- dirname(.made27)
+joptions(style.dir = NULL, quiet = TRUE)
+jstyle("apa", save.as = "walk27")
+unlink(file.path(.jsf27, "walk27.jstyle"))
+if (!is.null(.made27)) unlink(.made27, recursive = TRUE)
+joptions(style.dir = .entry_style_dir27, quiet = TRUE)
+# Expected:
+#   Style written to
+#   <your jstats folder>/walk27.jstyle
+#
+#   Note: your jstats folder, where the copy was saved, is hidden in File
+#   Explorer on Windows and in Finder on a Mac.
+#   To open it, paste the folder's path into File Explorer's address bar, or
+#   into Finder's Go > Go to Folder:
+#     <your jstats folder>
+#   To keep your styles in a folder you can see, set one, then save the
+#   copy again:
+#     joptions(style.dir = "<your Documents folder>/jstats styles")
+
+# Things to look at:
+#   - Render 1: the set's title "Multiple-Response Set" over the three
+#     charges -- their labels share no text -- each by its label, ranked;
+#     then, in the Console's note color, "Note: a case can be counted in
+#     more than one category, so the percentages sum to more than 100.";
+#   - Render 2: the report's "Table 1. Multiple-Response Set (N = 6)"; the
+#     table's first column headed "Category", n and %, and the note in the
+#     same words, "A case can be counted in more than one category, ...";
+#   - Render 3 (the Plots pane): three bars, Theft at the top, the axis
+#     along the bottom titled "Percentage of cases"; then Charges.docx in
+#     Word: Table 1 headed "Category", and Figure 1 with the same axis and,
+#     under the chart, "Note. A case can be counted in more than one
+#     category, so the percentages sum to more than 100.";
+#   - Render 4: the note under the copy, its last line
+#     joptions(style.dir = "...") naming your Documents folder's "jstats
+#     styles" by its full path -- on Windows C:/Users/<you>/Documents/jstats
+#     styles, or OneDrive's Documents where yours is there -- with no "~".
+#     Copied into the Console and run, the line would make that folder and
+#     set it for the session (not done here).
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations

@@ -83,6 +83,24 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S424 EDIT (v0.9.284, 2026-11-14): the clean-up build -- ruling R87
+#           (S423: until the first CRAN release, no code for an object an
+#           earlier build saved). Y05 loses its last part, the stop for a
+#           jt() or jaov() result made before S375 that held no residuals
+#           (the stop is gone: jplot() reads the residuals the result
+#           holds); AA03's MyData case, pinned on a jcorr() result with its
+#           data_name taken out (one made before v0.9.250), is pinned on an
+#           expression given as the data, jcorr(.aa_d[.aa_d$x1 > -100, ],
+#           ...), the case the code still serves. No check added or
+#           removed: 567 still. On the build before (v0.9.283) the
+#           battery reads 567/567 as well: the two checks lose a part and
+#           the expression's branch was there. SANDBOX: 567/567 eight ways
+#           (plain, the handlers' stand-in, each with a 35-character temp
+#           path, a symlinked temp path, interactive, a device open, the
+#           color stand-in) and entered dirty, plain and under the
+#           handlers, nothing changed.
+#           LAST VERIFIED: v0.9.284, 2026-11-14 (S424) -- 567/567 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run, 3732 checks)"; R CMD check 0 errors, 0 warnings, 0 notes).
 # S416 EDIT (v0.9.280, 2026-11-10): GUARD 6 ADDED (the S415 item, a rider on
 #           Capability Slate U's charts, build 3). The battery draws on a
 #           null device of its own, opened at setup and closed at the foot,
@@ -333,7 +351,8 @@
 #           result of three variables asked for its scatter plot gets the
 #           stop that says why and gives the two-variable call, pinned
 #           whole, its data frame and method the result's own, MyData for a
-#           result made before v0.9.250 (AA03), its two lines run (AA04);
+#           result made before v0.9.250 (AA03; since S424 an expression
+#           given as the data), its two lines run (AA04);
 #           and a two-variable result's scatter plot draws the pairs the
 #           correlation used, with no ggplot2 warning, the result carrying
 #           data_name (AA05). 518 -> 523 checks. MUTATION MAP (with
@@ -6002,21 +6021,16 @@ check("Y04 diagnostics = TRUE draws the Q-Q plot in both: one line, \"(Diagnosti
                 identical(ot[it - 1L], "") && startsWith(ot[it - 2L], "Cohen's d: ") &&
                 identical(oa[ia - 1L], "") && startsWith(oa[ia - 2L], "Eta-squared: ") &&
                 !any(ol == q) && sum(og == q) == 1L }))
-check("Y05 jplot(which = \"qq\") draws it from a jt() or jaov() result, \"Normal Q-Q\" (a paired test's subtitled \"Differences between the pairs\"); \"core\" is still the box plot; a result made before S375 is asked to be run again",
+check("Y05 jplot(which = \"qq\") draws it from a jt() or jaov() result, \"Normal Q-Q\" (a paired test's subtitled \"Differences between the pairs\"); \"core\" is still the box plot (since S424 no stop for a result made before S375, ruling R87)",
       local({ rt <- quiet(jt(s ~ grp, data = .y_lv))
               rp <- quiet(jt(s ~ t, data = .y_pr, paired = TRUE))
               ra <- quiet(jaov(y ~ g, data = .y_d))
               pt1 <- quiet(jplot(rt, which = "qq")); pp <- quiet(jplot(rp, which = "qq"))
               pa  <- quiet(jplot(ra, which = "qq")); pb <- quiet(jplot(ra))
-              old <- ra; old$residuals <- NULL
               inherits(pt1, "ggplot") && identical(pt1$labels$title, "Normal Q-Q") &&
                 identical(pp$labels$subtitle, "Differences between the pairs") &&
                 identical(pa$labels$y, "Standardized Residuals") &&
-                identical(pb$labels$subtitle, "Diamond marks the group mean") &&
-                identical(grab(jplot(old, which = "qq")),
-                          paste0("jplot(): This jaov() result was made by an earlier version of jstats\n",
-                                 "and holds no residuals.\n",
-                                 "Run jaov() again to draw the Q-Q plot.")) }))
+                identical(pb$labels$subtitle, "Diamond marks the group mean") }))
 check("Y06 jlogistic(diagnostics = TRUE): after the VIF table, jlm()'s list of the three plots -- binned residuals, Cook's distance, residuals against leverage; one asked for is one line; the intercept-only model draws Cook's distance and names the two it cannot draw",
       local({ o  <- lines_of(jlogistic(yb ~ x1 + x2, data = .y_d, diagnostics = TRUE))
               i  <- grep("^3 diagnostic plots produced", o)
@@ -6346,10 +6360,10 @@ check("AA02 jplot() formula form: categorical = g bare draws the box plot the qu
         identical(grab(jplot(y ~ g, .aa_d, numeric = gg)),
                   paste0("jplot(): gg was not found in the .aa_d data frame.\n",
                          "Check the spelling.")))
-check("AA03 jcorr()'s scatter plot asked of a result of three variables: the stop says why and gives the two-variable call, pinned whole -- quoted or bare, the method kept, MyData for a result made before v0.9.250; the result carries data_name",
+check("AA03 jcorr()'s scatter plot asked of a result of three variables: the stop says why and gives the two-variable call, pinned whole -- quoted or bare, the method kept, MyData for an expression given as the data (since S424; until then a result made before v0.9.250, ruling R87); the result carries data_name",
       local({ r  <- quiet(jcorr(.aa_d, x1, x2, y))
               rs <- quiet(jcorr(.aa_d, x1, x2, y, method = "spearman"))
-              ro <- r; ro$data_name <- NULL
+              ro <- quiet(jcorr(.aa_d[.aa_d$x1 > -100, ], x1, x2, y))
               identical(r$data_name, ".aa_d") &&
                 identical(grab(jplot(r, which = "scatter")), .aa_sc(".aa_d")) &&
                 identical(grab(jplot(r, which = scatter)), .aa_sc(".aa_d")) &&
