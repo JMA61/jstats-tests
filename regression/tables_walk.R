@@ -83,7 +83,46 @@
 #           title marked, upright inside apa's italic title and italic in
 #           report's, and the file a complete copy's block for an AI
 #           assistant names.
+#           The printed-result build (S423): a result kept with <- showing
+#           its output again when its name is typed -- after print = FALSE,
+#           after the silent level, after a printed call, a note in its
+#           place -- and a result made before the build saying so; the note
+#           under a setting given as NULL in joutput() and joptions(); the
+#           note under a copy of a style saved in your jstats folder.
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S423 (v0.9.283; the printed-result build: the read-through's
+#           first item, ruled S423 -- "Let's lock your recommendation in
+#           for item 1" -- its six leans okayed ("All defaults"); the NULL
+#           note, Jeff's "Yes to what you'd do instead", its ride; the
+#           (S420) hidden-folder item). SECTION 26 ADDED, on the PENDING
+#           line, its Expected blocks filled by running (fill.R, under a
+#           Windows-length temporary folder and a Windows-length jstats
+#           folder, R_USER_DATA_DIR=/tmp/Users/jeff/AppData/Roaming/R/data;
+#           the paths written as <tempdir> and <your jstats folder>): a
+#           model kept under print = FALSE and typed; a frequency table
+#           printed and typed; jdesc() by groups at the silent level; a
+#           multiple-response set at the full level, its note in place,
+#           typed at standard; a result with no kept output, with the stamp
+#           of 0.9.282 and with none; three joutput() and two joptions()
+#           calls given NULL; a copy of apa saved in your jstats folder,
+#           then in a style folder. The section writes walk26.jstyle into
+#           your jstats folder for real and removes it, and the folder too
+#           when the section made it, so Section 3's "not created yet"
+#           holds in any order. Every message is Claude's wording. No other
+#           section's output moved (every section of every walk captured
+#           on v0.9.282 and on this build, and compared).
+# LAST VERIFIED: v0.9.283, 2026-11-14 (S423) -- Section 26 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walk was fine other
+#           than what already mentioned": Render 4's "respondents", for the
+#           next build -- Observations); PENDING back to none; R CMD check
+#           0 errors, 0 warnings, 0 notes; every battery green at the
+#           second run ("all okay"; 3731 checks), the first having read
+#           cps_check.R 273/274 (N62c). Sandbox: harness.R verify, 26 of
+#           26 sections in three orders and by prepare = TRUE; Expected
+#           blocks found 119 of 131 by harness.R's own finder -- Section
+#           26's all, the twelve missed in Sections 3, 9-13 and 25, a
+#           message and its path meeting on one line there, as before;
+#           receive_all() run whole in the sandbox, Section 26 shown.
 # EDITED:   S420 (v0.9.282; the small build: the (S419) t item, its lean
 #           okayed on a render, and the (S419) head item, Claude's call).
 #           RE-PINNED by running (fill.R, under a Windows-length temporary
@@ -5724,10 +5763,351 @@ joptions(style.dir = .entry_style_dir25, quiet = TRUE)
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 26 -- A kept result shows its output again; a setting given as NULL; a copy in your jstats folder ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 423 (v0.9.283). A RESULT KEPT WITH <- (your ruling on the
+# read-through's first item: "Let's lock your recommendation in for item
+# 1"): each analysis result keeps the output its call printed, and typing
+# its name, or print(), shows that output again -- the tables, and each
+# note in its place, in the Console's colors. Under print = FALSE or
+# joutput("silent") the call prints nothing and the result keeps what it
+# would have printed. The result is otherwise as it was -- the same parts,
+# listed the same way in the Environment pane -- and jtable(), tidy() and
+# glance() read it as before. A result made before this build kept no
+# output, and says so. The six leans you okayed ("All defaults"): the
+# output at the call's level; the ten analysis results, jscreen()'s data
+# frame not among them; a warning not shown again; a chart not drawn
+# again; color in the Console only; the NULL note in both functions. A
+# SETTING GIVEN AS NULL (your ruling on the fourth item: "Yes to what you'd
+# do instead"): joutput() and joptions() leave a setting given as NULL as
+# it is, as they have since Session 73, and a note now says so and gives
+# the call that puts the default back. A COPY IN YOUR JSTATS FOLDER (the
+# (S420) item): jstyle(save.as =) with no style folder set writes the copy
+# to your jstats folder, which File Explorer and Finder hide, and a note
+# now says so, how to open the folder, and the line that sets a folder you
+# can see. Every message here is Claude's wording. The copy is written to
+# your jstats folder for real and removed at the end of the section -- the
+# folder too, if the section made it -- so Section 3's list still says
+# "not created yet". The jcomplete() Section 4 sets on tdat is cleared
+# first, as in Section 13.
+
+suppressMessages(jcomplete(clear.all = TRUE))
+d26 <- tdat
+s26 <- data.frame(Phone  = c(1, 0, 1, 1, NA, 0),
+                  Email  = c(0, 0, 1, 1, 0, 1),
+                  Letter = c(1, 1, 1, 1, 1, 0))
+
+# Render 1 -- a model fit with print = FALSE prints nothing; typing its name
+# shows its output.
+m26 <- jlm(WellbeingScore ~ Age + Income, d26, print = FALSE)
+m26
+# Expected:
+#   Linear Regression
+#
+#   Case Processing    Excluded  Remaining
+#       Original             --        103
+#       Auto-listwise         6         97
+#       Analysis N           --         97
+#
+#   Missing data   From 103   %
+#       Income
+#         Missing      6     5.8
+#   --------------------------------------
+#
+#   Coefficients
+#                   b      SE     t      β      p
+#   -----------  ------  -----  -----  -----  -----
+#   (Intercept)  24.815  3.749  6.620         <.001
+#   Age           0.181  0.082  2.208  0.183   .030
+#   Income        0.000  0.000  6.813  0.564  <.001
+#
+#   Outcome: WellbeingScore
+#
+#   R-squared: 0.411    Adjusted R-squared: 0.398
+#   Residual Standard Error: 9.013
+#
+#   F-statistic: 32.729 on 2 and 94 DF, p-value: <.001
+#   Sum of Squares:
+#     Regression: 5317.416
+#     Residual:   7635.945
+#     Total:      12953.361
+
+# Render 2 -- a frequency table printed by its call, then its name typed:
+# the same output again.
+f26 <- jfreq(d26, Region)
+f26
+# Expected:
+#   Frequencies
+#
+#   103 Cases in the 1 Variable Pool
+#
+#   Region
+#
+#             Freq  Total %  Valid %  Cum. %
+#   --------  ----  -------  -------  ------
+#   1: North    27    26.21   26.21    26.21
+#   2: South    20    19.42   19.42    45.63
+#   3: East     31    30.10   30.10    75.73
+#   4: West     25    24.27   24.27   100.00
+#
+#   Total      103   100.00
+#
+#   Frequencies
+#
+#   103 Cases in the 1 Variable Pool
+#
+#   Region
+#
+#             Freq  Total %  Valid %  Cum. %
+#   --------  ----  -------  -------  ------
+#   1: North    27    26.21   26.21    26.21
+#   2: South    20    19.42   19.42    45.63
+#   3: East     31    30.10   30.10    75.73
+#   4: West     25    24.27   24.27   100.00
+#
+#   Total      103   100.00
+
+# Render 3 -- at the silent level the call prints nothing; back at the
+# standard level, the kept result shows what the call would have printed
+# (jdesc() by groups, one of the two calls whose body returns early).
+joutput("silent", quiet = TRUE)
+g26 <- jdesc(d26, Age, Income, by = Region)
+joutput(NULL, quiet = TRUE)
+g26
+# Expected:
+#   Descriptive Statistics by Region (4 levels)
+#
+#   103 Cases in the 2 Variable Pool; 97 Complete on All
+#
+#   Age
+#
+#   Region    Total  Non_missing  Min  Max   Mean     SD
+#   --------  -----  -----------  ---  ---  ------  ------
+#   1: North    27        27       26   66  39.370   8.850
+#   2: South    20        20       24   69  41.300  12.123
+#   3: East     31        31       18   71  38.935  13.503
+#   4: West     25        25       24   64  43.640  11.376
+#
+#   Income
+#
+#   Region    Total  Non_missing   Min    Max      Mean        SD
+#   --------  -----  -----------  -----  -----  ---------  ---------
+#   1: North    27        27      20000  72000  47370.370  14307.470
+#   2: South    20        17      14000  76000  47529.412  19128.244
+#   3: East     31        30      15000  93000  51966.667  18777.248
+#   4: West     25        23      17000  85000  51739.130  18191.450
+
+# Render 4 -- a note in its place: a multiple-response set at the full
+# level, its note after the table; then, back at the standard level, the
+# name typed -- the full level's output, kept as the call printed it.
+joutput("full", quiet = TRUE)
+k26 <- jmulti(s26, Phone, Email, Letter)
+joutput(NULL, quiet = TRUE)
+k26
+# Expected:
+#   Multiple Response
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --          6
+#       Remaining N        --          6
+#   ------------------------------------
+#
+#   Analysis N: 6
+#
+#   Options Chosen
+#           Freq  Percent
+#   ------  ----  -------
+#   Letter    5    83.33
+#   Phone     3    50.00
+#   Email     3    50.00
+#
+#   Note: respondents could choose more than one option, so the percentages sum
+#   to more than 100.
+#
+#   Multiple Response
+#
+#   Case Processing  Excluded  Remaining
+#       Original           --          6
+#       Remaining N        --          6
+#   ------------------------------------
+#
+#   Analysis N: 6
+#
+#   Options Chosen
+#           Freq  Percent
+#   ------  ----  -------
+#   Letter    5    83.33
+#   Phone     3    50.00
+#   Email     3    50.00
+#
+#   Note: respondents could choose more than one option, so the percentages sum
+#   to more than 100.
+
+# Render 5 -- a result made before this build: o26 is f26 with its kept
+# output taken away and the stamp of the build before, as a result saved
+# with saveRDS() before this build reads back; then with no stamp at all.
+o26 <- f26
+attr(o26, "jstats_output") <- NULL
+attr(o26, "jstats_version") <- "0.9.282"
+o26
+attr(o26, "jstats_version") <- NULL
+o26
+# Expected:
+#   This jfreq() result was made by jstats 0.9.282, before a saved result kept
+#   its output.
+#   Run the analysis again to see it.
+#
+#   This jfreq() result was made by an earlier version of jstats, before a saved
+#   result kept its output.
+#   Run the analysis again to see it.
+
+# Render 6 -- joutput() with a setting given as NULL: one setting, two, and
+# one whose default at this level is no value.
+joutput(regression.ci = NULL)
+joutput(digits = NULL, diagnostics = NULL)
+joutput(case.processing = NULL)
+# Expected:
+#   Output Settings
+#     regression.ci: OFF
+#   Run joutput() to see all settings.
+#
+#   Note: regression.ci = NULL leaves the setting as it is.
+#   To go back to its default at the standard level:
+#     joutput(regression.ci = FALSE)
+#
+#   Output Settings
+#     diagnostics: OFF
+#     digits: 3
+#   Run joutput() to see all settings.
+#
+#   Note: diagnostics = NULL and digits = NULL leave those settings as they are.
+#   To go back to their defaults at the standard level:
+#     joutput(diagnostics = FALSE, digits = 3)
+#
+#   Output Settings
+#     case.processing: AUTO
+#   Run joutput() to see all settings.
+#
+#   Note: case.processing = NULL leaves the setting as it is.
+#   A level call puts the settings back to that level's defaults:
+#     joutput("standard")
+
+# Render 7 -- joptions() with a setting given as NULL: one, then two.
+joptions(style = NULL)
+joptions(corr.layout = NULL, missing.detail = NULL)
+# Expected:
+#   Options Settings
+#   Publication style: apa
+#   Run joptions() to see all settings.
+#
+#   Note: style = NULL leaves the setting as it is.
+#   To go back to its default:
+#     joptions(style = "apa")
+#
+#   Options Settings
+#   Correlation layout: wide
+#   Missing-value detail: per_code
+#   Run joptions() to see all settings.
+#
+#   Note: corr.layout = NULL and missing.detail = NULL leave those settings
+#   as they are.
+#   To go back to their defaults:
+#     joptions(corr.layout = "wide", missing.detail = "per_code")
+
+# Render 8 -- a copy of apa saved with no style folder set: written to your
+# jstats folder, and the note. Before the lines under Render 9, paste the
+# path into File Explorer's address bar: the folder opens, with walk26.jstyle
+# in it.
+.entry_style_dir26 <- getOption(".jst_options_style_dir")
+.jsf26 <- tools::R_user_dir("jstats", "data")
+.made26 <- .jsf26
+if (dir.exists(.made26)) .made26 <- NULL else
+  while (!dir.exists(dirname(.made26))) .made26 <- dirname(.made26)
+joptions(style.dir = NULL, quiet = TRUE)
+jstyle("apa", save.as = "walk26")
+# Expected:
+#   Style written to
+#   <your jstats folder>/walk26.jstyle
+#
+#   Note: your jstats folder, where the copy was saved, is hidden in File
+#   Explorer on Windows and in Finder on a Mac.
+#   To open it, paste the folder's path into File Explorer's address bar, or
+#   into Finder's Go > Go to Folder:
+#     <your jstats folder>
+#   To keep your styles in a folder you can see, set one, then save the
+#   copy again:
+#     joptions(style.dir = "~/jstats styles")
+
+# Render 9 -- the same copy saved with a style folder set: no note. Then the
+# copy in your jstats folder removed (the folder too, if Render 8 made it),
+# and your style folder put back.
+.walk_styles26 <- file.path(tempdir(), "walk_styles26")
+unlink(.walk_styles26, recursive = TRUE); dir.create(.walk_styles26)
+joptions(style.dir = .walk_styles26, quiet = TRUE)
+jstyle("apa", save.as = "walk26")
+unlink(file.path(.jsf26, "walk26.jstyle"))
+if (!is.null(.made26)) unlink(.made26, recursive = TRUE)
+joptions(style.dir = .entry_style_dir26, quiet = TRUE)
+# Expected:
+#   Style written to
+#   <tempdir>/walk_styles26/walk26.jstyle
+
+# Things to look at:
+#   - Render 1: nothing at the jlm() call; m26 typed on its own line shows
+#     the whole regression output, as the call would have printed it -- in
+#     the Console, in its colors (the blocks here are plain). In the
+#     Environment pane m26 sits under Data as before, "List of 20";
+#   - Render 2: the frequency table twice, line for line the same: once
+#     from the call, once from f26 typed;
+#   - Render 3: nothing at the silent call; g26 typed shows jdesc()'s
+#     table by region for Age and Income, as at the standard level;
+#   - Render 4: the multiple-response set at the full level -- its Case
+#     Processing table, then the table, then the note in the Console's
+#     note color; typed at the standard level, k26 gives the same, the
+#     Case Processing table and the note included, and the note in the
+#     same color: what was printed is what is kept;
+#   - Render 5: in place of the output, "This jfreq() result was made by
+#     jstats 0.9.282, before a saved result kept its output." and the line
+#     to run it again; with no stamp, "an earlier version of jstats". A
+#     result you kept in an .rds file before this build reads this way;
+#   - Render 6: each call's settings as before, then the note: the
+#     setting left as it is, and the call that puts the standard level's
+#     default back -- two settings in one note; for case.processing,
+#     whose default at this level is no value, the level call instead;
+#   - Render 7: the same for joptions(), "joptions(style = "apa")" the
+#     call that puts the default style back, and the two settings' call
+#     with both defaults;
+#   - Render 8: "Style written to" and the copy's path in your jstats
+#     folder -- on Windows C:/Users/<you>/AppData/Roaming/R/data/R/jstats
+#     -- then the note: hidden, the folder's own path on its own line (the
+#     line above is the file's, which File Explorer would open as a file),
+#     and the joptions(style.dir =) line. Paste the folder's path into File
+#     Explorer's address bar before going on: the folder opens, holding
+#     walk26.jstyle;
+#   - Render 9: "Style written to" and the temporary style folder's path,
+#     and no note. After the section, your jstats folder no longer holds
+#     walk26.jstyle, and Section 3's list still shows your jstats folder
+#     "not created yet" if it was not there before.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # <Free-form notes from the most recent walk: anything that looked off,
 # wording worth an mv review, follow-ups. Dated entries, newest first.>
+#
+# 2026-11-14 (S423; Section 26, "walk was fine other than what already
+# mentioned"). Render 4's note, "respondents could choose more than one
+# option", fits a survey only; multiple-response data also come from
+# records -- charges per person, diagnoses per patient, themes per
+# transcript. Jeff: "okay with your suggested word changes" -- for the
+# next build: "a case can be counted in more than one category" in the
+# Console note and the table's note, the chart's axis "Percentage of
+# cases", the table's column head "Category", and "Multiple-Response
+# Set" where the items' labels share no text (rulings R61 and R67's
+# wording, S411). Also from the walk's build, for the next: Render 5's
+# line comes out (Jeff: no backward-compatibility code before CRAN), and
+# Render 8's last line prints the full path of Documents/jstats styles.
 #
 # 2026-11-06 (S409; Sections 3 and 9-12, "walked, all okay"). For the next
 # build, riders: a blank line after each setting in the files jstyle()

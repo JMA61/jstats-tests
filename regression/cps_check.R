@@ -32,8 +32,65 @@
 #           blank footnote's two routes, a factor's one, and blanks declared
 #           missing as one row of the Missing block (N58d2, N58d3); and since
 #           S382 the listwise note's one sentence (N63); and since S392
-#           the note's count with thousands separators (N64).
+#           the note's count with thousands separators (N64); and since
+#           S423 the note under a setting given as NULL in joutput() and
+#           joptions() (N56y, N56z).
 # ORIGIN:   S287 (design S284, code S286 v0.9.161, whitespace S287 v0.9.162)
+# S423 EDIT (v0.9.283, 2026-11-13): the NULL note (the read-through's fourth
+#           item: joptions(style = NULL) works as decided at S73 and S332,
+#           and Jeff's "Yes to what you'd do instead. Let's log that change
+#           as the ride on the package build."). A setting given as NULL is
+#           left as it is, as before, and the call now says so in a note
+#           with the call that puts the default back -- in joutput() at the
+#           level in force, the level call where the default is no value;
+#           in joptions() for the six settings NULL does not clear
+#           (missing.convention, missing.convention.codes, style,
+#           corr.layout, missing.detail, message.width; data.dir, output.dir
+#           and style.dir, whose default is NULL, are cleared by it and get
+#           none); quiet = TRUE
+#           silences it. TWO CHECKS ADDED (274 in all): N56y joutput() --
+#           one setting, one whose default is no value, two in one note,
+#           quiet, a level call, the full level's default; N56z joptions()
+#           -- style, two settings, missing.convention.codes, output.dir
+#           (none), quiet. RE-PINNED, each value read from the battery run
+#           on the build: N56f, N56g and N56h (a named NULL's call ends on
+#           the note's blank line), and N59g (joutput(diagnostics =
+#           NULL)'s stdout, its last two lines). On the build before
+#           (v0.9.282) N56f, N56g, N56h, N59g, N56y and N56z read red, and
+#           no other (268/274).
+#           REWRITTEN after the workstation's first receive (273/274):
+#           N62c makes its silent calls under quiet(), as its standard calls
+#           were made. A result now keeps the output its call printed, in
+#           the Console's color only where no sink is open, so in RStudio
+#           the bare silent calls kept colored text and the captured
+#           standard calls plain, and the two results differed by that
+#           alone; the sandbox, never in RStudio's Console, could not show
+#           it until a stand-in of the color rule (below) did, 273/274
+#           there too. The check still reds when silent is given minimal's
+#           defaults (with N62a, N62e and N62j).
+#           Each new check also went red on a one-change mutant of its
+#           code: 6 mutants of options.R, none surviving -- either note
+#           never raised; output.dir counted among the settings NULL
+#           leaves; the standard level's defaults read at the full level;
+#           the level-call branch never taken; the blank line after the
+#           joptions() note dropped.
+#           SANDBOX: 274/274 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, interactive with no
+#           question asked, with the temporary folder reached through a
+#           symlink, and with a graphics device open, left open and
+#           current; entered dirty -- where N56z read red at first, the
+#           session's own style printed in joptions()'s echo; the four
+#           slots the block's calls echo are now held at their defaults
+#           for it and put back. All twelve batteries 3731 each way. And
+#           274/274 under a stand-in of RStudio's Console color rule --
+#           .jst_use_color() given RStudio's GUI and a console color, so a
+#           call with no sink open colors its output as in the Console --
+#           which read N62c red before its rewrite.
+#           LAST VERIFIED: v0.9.283, 2026-11-14 (S423) -- 274/274 on the
+#           WORKSTATION through receive_all(from = "batteries"), N62c
+#           rewritten after the first run's 273/274; every battery green
+#           (Jeff: "receive block already deleted but all okay"; 3731
+#           checks); R CMD check 0 errors, 0 warnings, 0 notes.
 # S416 EDIT (v0.9.280, 2026-11-10): GUARD 6 ADDED (the S415 item, a rider on
 #           Capability Slate U's charts, build 3). The battery draws on a
 #           null device of its own, opened at setup and closed at the foot,
@@ -2303,17 +2360,21 @@ check("N56e ... and setting case.processing.filter",
       identical(plines(joutput(case.processing.filter = "list")),
                 .trio56("AUTO", "TOTALS", "LIST (override)")))
 reset()
+# RE-PINNED S423 (v0.9.283): a named NULL is followed by a note giving the
+# call that puts the default back (N56y), and the call ends on the blank line
+# after it -- the second "" below (the note itself is a message, which
+# plines() drops).
 check("N56f a named NULL echoes the setting's current value and writes nothing",
       identical(plines(joutput(regression.ci = NULL)),
-                c("Output Settings", "  regression.ci: OFF", .ptr56, "")) &&
+                c("Output Settings", "  regression.ci: OFF", .ptr56, "", "")) &&
       is.null(getOption(".jst_output_toggles")))
 check("N56g ... and pulls no partner: joutput(case.processing = NULL) is one line",
       identical(plines(joutput(case.processing = NULL)),
-                c("Output Settings", "  case.processing: AUTO", .ptr56, "")))
+                c("Output Settings", "  case.processing: AUTO", .ptr56, "", "")))
 check("N56h ... beside a setting that IS written, both are echoed",
       identical(plines(joutput(digits = NULL, regression.ci = TRUE)),
                 c("Output Settings", "  regression.ci: ON (override)", "  digits: 3",
-                  .ptr56, "")))
+                  .ptr56, "", "")))
 reset()
 check("N56i quiet = TRUE prints nothing for a setting call, a named NULL included, and still applies the setting",
       identical(plines(joutput(digits = 4, quiet = TRUE)), character(0)) &&
@@ -2387,6 +2448,83 @@ check("N56x ... and a level call clears them: the panel is the level's own",
       is.null(getOption(".jst_output_toggles")) && any(.v56x == "  digits: 3") &&
       !any(grepl("(override)", .v56x, fixed = TRUE)))
 reset()
+
+# S423 (v0.9.283): a setting given as NULL is left as it is, which reads
+# easily as a reset (Jeff, S422-S423, on joptions(style = NULL)); a note says
+# so and gives the call that puts the default back -- for joutput() the
+# default of the level in force, or the level call where that default is no
+# value. A setting whose default IS NULL (data.dir, output.dir, style.dir)
+# clears on NULL and gets none; quiet = TRUE silences it; a level call,
+# which sets every setting, gets none.
+.n56 <- function(expr) {
+  m <- character(0)
+  out <- suppressWarnings(utils::capture.output(withCallingHandlers(expr,
+           message = function(c) { m <<- c(m, conditionMessage(c))
+                                   invokeRestart("muffleMessage") })))
+  list(out = sub("[ \t]+$", "", gsub("\033\\[[0-9;]*[A-Za-z]", "", out)), msg = m)
+}
+reset()
+.y56 <- list(rc  = .n56(joutput(regression.ci = NULL)),
+             cp  = .n56(joutput(case.processing = NULL)),
+             two = .n56(joutput(digits = NULL, diagnostics = NULL)),
+             q   = .n56(joutput(regression.ci = NULL, quiet = TRUE)),
+             lv  = .n56(joutput("full", digits = NULL)),
+             fl  = .n56(joutput(regression.ci = NULL)))
+reset()
+check("N56y joutput(): a setting given as NULL is followed by a note -- left as it is, and the call that puts the level's default back (the level call where that default is no value: standard's case.processing); two settings in one note; none under quiet = TRUE, none after a level call",
+      identical(.y56$rc$msg, paste0(
+        "Note: regression.ci = NULL leaves the setting as it is.\n",
+        "To go back to its default at the standard level:\n",
+        "  joutput(regression.ci = FALSE)\n")) &&
+      identical(.y56$rc$out, c("Output Settings", "  regression.ci: OFF", .ptr56, "", "")) &&
+      identical(.y56$cp$msg, paste0(
+        "Note: case.processing = NULL leaves the setting as it is.\n",
+        "A level call puts the settings back to that level's defaults:\n",
+        "  joutput(\"standard\")\n")) &&
+      identical(.y56$two$msg, paste0(
+        "Note: diagnostics = NULL and digits = NULL leave those settings as they are.\n",
+        "To go back to their defaults at the standard level:\n",
+        "  joutput(diagnostics = FALSE, digits = 3)\n")) &&
+      identical(.y56$q$msg, character(0)) && identical(.y56$q$out, character(0)) &&
+      identical(.y56$lv$msg, character(0)) &&
+      identical(.y56$fl$msg, paste0(
+        "Note: regression.ci = NULL leaves the setting as it is.\n",
+        "To go back to its default at the full level:\n",
+        "  joutput(regression.ci = TRUE)\n")))
+# The slots these calls echo are held at their defaults for the block -- a
+# session's own style would print in the echo (found entered dirty) -- and
+# put back with output.dir after.
+.z56o <- options(".jst_options_output_dir", ".jst_options_style",
+                 ".jst_options_corr_layout", ".jst_options_missing_detail",
+                 ".jst_options_missing_convention_codes")
+options(.jst_options_style = NULL, .jst_options_corr_layout = NULL,
+        .jst_options_missing_detail = NULL,
+        .jst_options_missing_convention_codes = NULL)
+.z56 <- list(st  = .n56(joptions(style = NULL)),
+             two = .n56(joptions(corr.layout = NULL, missing.detail = NULL)),
+             cc  = .n56(joptions(missing.convention.codes = NULL)),
+             od  = .n56(joptions(output.dir = NULL)),
+             q   = .n56(joptions(style = NULL, quiet = TRUE)))
+options(.z56o)
+check("N56z joptions(): the same note, the call giving the default itself (Section 332's rule, pass a setting its default); none for a setting whose default is NULL, which NULL clears (output.dir); none under quiet = TRUE",
+      identical(.z56$st$msg, paste0(
+        "Note: style = NULL leaves the setting as it is.\n",
+        "To go back to its default:\n",
+        "  joptions(style = \"apa\")\n")) &&
+      identical(.z56$st$out, c("Options Settings", "Publication style: apa",
+                               "Run joptions() to see all settings.", "", "")) &&
+      identical(.z56$two$msg, paste0(
+        "Note: corr.layout = NULL and missing.detail = NULL leave those settings\n",
+        "as they are.\n",
+        "To go back to their defaults:\n",
+        "  joptions(corr.layout = \"wide\", missing.detail = \"per_code\")\n")) &&
+      identical(.z56$cc$msg, paste0(
+        "Note: missing.convention.codes = NULL leaves the setting as it is.\n",
+        "To go back to its default:\n",
+        "  joptions(missing.convention.codes = c(-99, -98, -97))\n")) &&
+      identical(.z56$od$msg, character(0)) &&
+      identical(.z56$q$msg, character(0)) && identical(.z56$q$out, character(0)))
+rm(.n56, .y56, .z56, .z56o)
 rm(.ptr56, .e56, .lvl56, .trio56, .v56a, .v56j, .v56k, .v56l, .v56m, .o56, .v56x)
 
 # =============================================================================
@@ -2759,8 +2897,9 @@ check("N59g a named NULL leaves it as it is and echoes it; a query shows it and 
       { quiet(joutput(diagnostics = c("levene", "vif"), quiet = TRUE))
         a <- plines(joutput(diagnostics = NULL))
         b <- plines(joutput("diagnostics"))
-        identical(a, c("Output Settings", "  diagnostics: LEVENE, VIF", .ptr59, "")) &&
-          identical(a, b) &&
+        # RE-PINNED S423: the named NULL's note (N56y) and its blank line.
+        identical(a, c("Output Settings", "  diagnostics: LEVENE, VIF", .ptr59, "", "")) &&
+          identical(a[-length(a)], b) &&
           identical(getOption(".jst_output_toggles")$diagnostics, c("levene", "vif")) })
 reset()
 check("N59h the panel has no levene line, and \"levene\" is no longer a setting to query (the level error)",
@@ -3042,9 +3181,14 @@ check("N62b under silent each of the ten analysis functions writes nothing on ei
                 identical(r$out, character(0)) && is.na(r$err) && inherits(res, k)
               }, calls, cls)
               all(ok) && identical(r0$out, character(0)) && is.na(r0$err) }))
+# REWRITTEN S423 (v0.9.283): a result keeps the output its call printed, in
+# the Console's color only where no sink was open (S423), so the silent calls
+# are made under quiet() as the standard ones are -- in RStudio's Console the
+# bare silent calls kept colored text and the captured standard calls plain,
+# and the results differed by that alone (the workstation's first receive).
 check("N62c a result made under silent is the standard call's: jt() and jdesc() compared whole",
       local({ quiet(joutput("silent", quiet = TRUE))
-              t1 <- jt(Stress ~ PriorTherapy, d62); s1 <- jdesc(d62, Stress, SocialSupport)
+              quiet(t1 <- jt(Stress ~ PriorTherapy, d62)); quiet(s1 <- jdesc(d62, Stress, SocialSupport))
               quiet(joutput("standard", quiet = TRUE))
               t0 <- quiet(t0r <- jt(Stress ~ PriorTherapy, d62)); s0 <- quiet(s0r <- jdesc(d62, Stress, SocialSupport))
               identical(t1, t0r) && identical(s1, s0r) }))

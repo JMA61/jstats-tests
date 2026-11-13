@@ -177,9 +177,19 @@
 #           jtable()'s report, the Word file's runs under apa, report and
 #           a journal caption, a copy's [ttest] line -- and the file a
 #           complete copy's block for an AI assistant names.
+#           (AX) the printed-result build (S423, v0.9.283): every analysis
+#           result keeps the output its call printed -- or would have
+#           printed, under print = FALSE or the silent level -- and printing
+#           it shows that output again, each note in its place, the color
+#           decided before the capture; a result made before the build
+#           saying so; the attribute beside the stamp, through saveRDS(),
+#           tidy() and glance(); jscreen()'s data frame left alone; and the
+#           note under a copy of a style saved in the hidden per-user
+#           folder.
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.282, 2026-11-12 (S420) -- 366/366 on the WORKSTATION;
-#           the S420 EDIT block below holds the stamp. Prior: v0.9.281,
+# LAST VERIFIED: v0.9.283, 2026-11-14 (S423) -- 377/377 on the WORKSTATION;
+#           the S423 EDIT block below holds the stamp. Prior: v0.9.282,
+#           2026-11-12 (S420) -- 366/366 (the S420 EDIT block); v0.9.281,
 #           2026-11-12 (S419) -- 363/363 (the S419 EDIT block); v0.9.280,
 #           2026-11-11 (S416) -- 351/351 (the S416 EDIT block); v0.9.279,
 #           2026-11-10 (S415) -- 334/334 (the S415 EDIT block); v0.9.278,
@@ -223,6 +233,60 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S423 EDIT (v0.9.283, 2026-11-13): the printed-result build -- a result
+#           kept with <- prints its output again (the read-through's first
+#           item, ruled S423: "Let's lock your recommendation in for item
+#           1"; its six leans okayed, "All defaults"), and the note under a
+#           copy of a style saved in your jstats folder (the (S420) item).
+#           SECTION AX ADDED, 11 checks (377 in all): AX01 every analysis
+#           result printed again gives what its call printed, byte for byte
+#           -- the ten classes, the two bodies that return early, jdesc()
+#           of a vector; AX02 the parts kept in the order written, a note
+#           between two runs of output; AX03 print = FALSE and the silent
+#           level print nothing and keep what would have printed, a quiet
+#           call at the full level its note in place, an analysis run inside
+#           jtable() printing nothing of its own; AX04 the full level's
+#           output kept, and printed after the level is back at standard;
+#           AX05 color kept and printed under jstats.color = TRUE, stripped
+#           under FALSE; AX05b the color decided before the capture opens
+#           its sink, then put back; AX06 after a stop, no sink and no
+#           capture left open, the color option as it was, the title
+#           printed above the stop; AX07 a result with no kept output, with
+#           a stamp and without; AX08 the attribute beside the stamp,
+#           through saveRDS(), tidy() and glance(), the result's own parts
+#           unchanged, a part past ASCII marked UTF-8; AX09 jscreen()'s data
+#           frame keeps nothing; AX10 the note under a copy saved in the
+#           hidden folder, with the folder's own path, and none under a
+#           style folder. Nothing RE-PINNED. On the build before (v0.9.282)
+#           the 11 AX checks read red, and no other (366/377).
+#           Each AX check also went red on a one-change mutant of its code:
+#           19 mutants of pipeline-internals.R, descriptives.R, models.R and
+#           tables.R, none surviving -- the attribute not set; the capture
+#           echoing under print = FALSE, or silent with print on; a note not
+#           recorded, or recorded ahead of the output before it; a kept note
+#           printed by cat(); the color option not held, or not put back;
+#           the color not stripped; the capture stack not popped; either
+#           early return unkept; the class test dropped; the stamp ignored;
+#           the note left unmuffled under print = FALSE; the hidden-folder
+#           test always false, or always true; the folder's path not
+#           normalized (red with the temporary folder reached through a
+#           symlink, the way Windows's mixed slashes would show); the UTF-8
+#           mark dropped, which survived the first round and gave AX08 its
+#           last condition.
+#           SANDBOX: 377/377 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, interactive with no
+#           question asked, with the temporary folder reached through a
+#           symlink, and with a graphics device open, left open and
+#           current; entered dirty -- where AX06 read red at first, its
+#           title pinned plain and the session's jstats.color = TRUE
+#           coloring it; the title is now read with the color taken out.
+#           All twelve batteries 3731 each way. 377/377 under a stand-in of
+#           RStudio's Console color rule as well (cps_check.R's S423 block).
+#           WORKSTATION, through receive_all(): "R CMD check: 0 errors, 0
+#           warnings, 0 notes."; 377/377 at the first run, when cps_check.R
+#           read 273/274 (N62c, rewritten there), and green again with every
+#           battery at the second, receive_all(from = "batteries") -- Jeff:
+#           "receive block already deleted but all okay" (3731 checks).
 # S420 EDIT (v0.9.282, 2026-11-12): the small build -- the t of the t-test
 #           table's default title marked, "*t* Tests" (the (S419) t item, the
 #           lean okayed on a render: upright inside apa's italic title, as
@@ -8770,12 +8834,255 @@ check("AW03 a complete copy's block for an AI assistant names the file to return
 options(.awo)
 rm(.awtitle)
 
+# =============================================================================
+# AX. A saved result prints its output again (S423, v0.9.283): the (S422)
+#     printed-result item, ruled S423 -- the output a call printed, or would
+#     have printed, kept on its result; and the note under a copy of a style
+#     saved in the hidden per-user folder (the (S420) item)
+# =============================================================================
+cat("\n--- AX. A saved result prints its output again ---\n")
+
+.axd  <- file.path(tempdir(), "tables_check_s423"); unlink(.axd, recursive = TRUE); dir.create(.axd)
+.axlv <- getOption(".jst_output_level"); .axtg <- getOption(".jst_output_toggles")
+.axco <- getOption("jstats.color")
+# A call run with its output and its notes kept apart: the standard output
+# as printed, each note's text in order -- read from the conditions, never
+# through a sink on the message stream, which RStudio's handlers fill with
+# escape sequences (the S328 rule). Recorded for the sweep at the foot.
+.axrun <- function(expr) {
+  val <- NULL; msg <- character(0)
+  out <- tryCatch(paste(utils::capture.output(withCallingHandlers(
+    val <- expr,
+    message = function(m) { .see("note", m); msg <<- c(msg, conditionMessage(m))
+                            invokeRestart("muffleMessage") },
+    warning = function(w) { .see("warning", w); invokeRestart("muffleWarning") })),
+    collapse = "\n"),
+    error = function(e) { .see("error", e); paste0("[error] ", conditionMessage(e)) })
+  list(val = val, out = out, msg = msg)
+}
+# A multiple-response set of three items.
+.axm <- data.frame(A = c(1, 0, 1, 1, NA, 0), B = c(0, 0, 1, 1, 0, 1),
+                   C = c(1, 1, 1, 1, 1, 0))
+# One call per analysis class; jdesc(by =) and jcorr() of two variables
+# return early from their bodies, and jdesc() of a vector through a second
+# call of its own. Each is run in the global environment, where a formula
+# typed at the Console is made, so two runs of one call make identical()
+# results (a formula carries the environment it was made in).
+.axcalls <- list(
+  jdesc     = quote(jdesc(tcm, Age, Income)),
+  jdesc_by  = quote(jdesc(tcm, Age, Income, by = Region)),
+  jdesc_vec = quote(jdesc(tcm$Age)),
+  jfreq     = quote(jfreq(tcm, Region, Smoker)),
+  jmulti    = quote(jmulti(.axm, A, B, C)),
+  jt        = quote(jt(WellbeingScore ~ Volunteer, tcm)),
+  jaov      = quote(jaov(WellbeingScore ~ Region, tcm, posthoc = TRUE)),
+  jcrosstab = quote(jcrosstab(Smoker ~ Region, tcm, chisq = TRUE)),
+  jcorr2    = quote(jcorr(tcm, Age, Income)),
+  jcorr     = quote(jcorr(tcm, Age, Income, WellbeingScore)),
+  jlm       = quote(jlm(WellbeingScore ~ Age + Income, tcm)),
+  jlogistic = quote(jlogistic(Smoker ~ Age + Income, tcm)),
+  jalpha    = quote(jalpha(tcm, Environment1:Environment5)))
+.ax1 <- .aqtry(lapply(.axcalls, function(cl) {
+  live  <- .axrun(eval(cl, globalenv()))
+  again <- .axrun(print(live$val))
+  list(class = class(live$val)[1], live = live, again = again,
+       kept = attr(live$val, "jstats_output", exact = TRUE))
+}))
+check("AX01 every analysis result, kept with <- and printed again -- typed, or given to print() -- gives what its call printed: the output and each note, in order, byte for byte (the (S422) printed-result item, ruled S423); the ten classes, jdesc(by =) and jcorr() of two variables (bodies that return early) and jdesc() of a vector among them",
+      !is.null(.ax1) &&
+        all(vapply(.ax1, function(z) !is.null(z$live$val) && !is.null(z$kept) &&
+                     nzchar(z$live$out) && !grepl("[error]", z$live$out, fixed = TRUE) &&
+                     identical(z$live$out, z$again$out) &&
+                     identical(z$live$msg, z$again$msg), NA)) &&
+        setequal(vapply(.ax1, `[[`, "", "class"), .jst_result_classes))
+
+# The parts in the order written: a note between two runs of output.
+invisible(res(joutput("full", quiet = TRUE)))
+.ax2 <- .aqtry(local({
+  live <- .axrun(jmulti(.axm, A, B, C))
+  k <- attr(live$val, "jstats_output", exact = TRUE)
+  list(live = live, k = k, again = .axrun(print(live$val)))
+}))
+options(.jst_output_level = .axlv, .jst_output_toggles = .axtg)
+check("AX02 the result keeps its parts in the order written -- output, the note, output (jmulti() at the full level) -- the output parts are the printed output and the note's part its text, and printing writes the note as a note again",
+      !is.null(.ax2) && identical(names(.ax2$k), c("out", "message", "out")) &&
+        identical(paste(.ax2$k[names(.ax2$k) == "out"], collapse = ""),
+                  paste0(.ax2$live$out, "\n")) &&
+        identical(unname(.ax2$k[2]), .ax2$live$msg) &&
+        identical(.ax2$again$msg, .ax2$live$msg) && identical(.ax2$again$out, .ax2$live$out))
+
+# print = FALSE and the silent level: nothing at the call, all of it after.
+.ax3 <- .aqtry(local({
+  quietly <- function(cl) { cl$print <- FALSE; cl }
+  q  <- .axrun(eval(quietly(.axcalls$jlm), globalenv()))
+  qm <- .axrun(eval(quietly(.axcalls$jmulti), globalenv()))
+  invisible(res(joutput("full", quiet = TRUE)))
+  qf <- .axrun(eval(quietly(.axcalls$jmulti), globalenv()))
+  invisible(res(joutput("silent", quiet = TRUE)))
+  s  <- .axrun(eval(.axcalls$jcrosstab, globalenv()))
+  options(.jst_output_level = .axlv, .jst_output_toggles = .axtg)
+  n  <- .axrun(jtable(jlm(WellbeingScore ~ Age, tcm), print = TRUE))
+  list(q = q, qp = .axrun(print(q$val)), qm = qm, qf = qf, s = s, sp = .axrun(print(s$val)),
+       n = n)
+}))
+check("AX03 under print = FALSE, and at joutput(\"silent\"), the call prints nothing -- no output, no note (a note a call at the full level raises kept in its place) -- and the result is identical() to the printing call's, its output kept: printed, it shows what the call would have printed; an analysis run inside jtable() prints nothing of its own",
+      !is.null(.ax3) &&
+        identical(.ax3$q$out, "") && identical(.ax3$q$msg, character(0)) &&
+        identical(.ax3$s$out, "") && identical(.ax3$s$msg, character(0)) &&
+        identical(.ax3$qm$out, "") &&
+        identical(.ax3$qf$out, "") && identical(.ax3$qf$msg, character(0)) &&
+        identical(names(attr(.ax3$qf$val, "jstats_output")), c("out", "message", "out")) &&
+        identical(.ax3$q$val, .ax1$jlm$live$val) &&
+        identical(.ax3$s$val, .ax1$jcrosstab$live$val) &&
+        identical(.ax3$qm$val, .ax1$jmulti$live$val) &&
+        identical(.ax3$qp$out, .ax1$jlm$live$out) &&
+        identical(.ax3$sp$out, .ax1$jcrosstab$live$out) &&
+        grepl("^Table 1\\. ", .ax3$n$out) && !grepl("Linear Regression", .ax3$n$out, fixed = TRUE))
+
+# The output is the call's: made at the full level, printed at standard.
+invisible(res(joutput("full", quiet = TRUE)))
+.ax4f <- .aqtry(.axrun(jlm(WellbeingScore ~ Age + Income, tcm)))
+options(.jst_output_level = .axlv, .jst_output_toggles = .axtg)
+.ax4p <- .aqtry(.axrun(print(.ax4f$val)))
+check("AX04 the output kept is the one the call printed, at the output level in force then: a result made at the full level prints the full level's output after joutput() has gone back to standard, not the standard output",
+      !is.null(.ax4f) && !is.null(.ax4p) && identical(.ax4p$out, .ax4f$out) &&
+        !identical(.ax4p$out, .ax1$jlm$live$out))
+
+# Color: the Console's red title and yellow notes kept with the output,
+# printed where the output takes color now. .jst_use_color() is replaced
+# for AX05b by a stand-in of the RStudio rule -- color only with no sink
+# open -- so the color is decided before the scope's own buffer.
+.ax5 <- .aqtry(local({
+  options(jstats.color = TRUE)
+  m <- .axrun(jlm(WellbeingScore ~ Age, tcm, print = FALSE))$val
+  on <- .axrun(print(m))$out
+  options(jstats.color = FALSE)
+  off <- .axrun(print(m))$out
+  options(jstats.color = .axco)
+  list(kept = attr(m, "jstats_output", exact = TRUE), on = on, off = off)
+}))
+.axuc <- get(".jst_use_color", envir = asNamespace("jstats"))
+.ax5b <- .aqtry(local({
+  utils::assignInNamespace(".jst_use_color", function(forced = getOption("jstats.color"), ...) {
+    if (isTRUE(forced)) return(TRUE)
+    if (isFALSE(forced)) return(FALSE)
+    sink.number() == 0L
+  }, "jstats")
+  on.exit(utils::assignInNamespace(".jst_use_color", .axuc, "jstats"))
+  options(jstats.color = NULL)
+  m <- suppressWarnings(suppressMessages(jlm(WellbeingScore ~ Age, tcm, print = FALSE)))
+  list(kept = attr(m, "jstats_output", exact = TRUE), after = getOption("jstats.color"))
+}))
+options(jstats.color = .axco)
+check("AX05 the color codes the Console shows are kept with the output and printed only where the output takes color now: jstats.color = TRUE keeps and prints them, FALSE prints the same output without them",
+      !is.null(.ax5) && any(grepl("\033[31m", .ax5$kept, fixed = TRUE)) &&
+        grepl("\033[31m", .ax5$on, fixed = TRUE) && !grepl("\033[", .ax5$off, fixed = TRUE) &&
+        identical(.ax5$off, gsub("\033\\[[0-9;]*m", "", .ax5$on)))
+check("AX05b the color is decided before the scope's own buffer opens, which turns color off: under the RStudio rule (color only with no sink open; a stand-in here) a call with print = FALSE keeps the color the Console would have shown, and jstats.color is put back as it was",
+      !is.null(.ax5b) && any(grepl("\033[31m", .ax5b$kept, fixed = TRUE)) &&
+        is.null(.ax5b$after) && identical(get(".jst_use_color", envir = asNamespace("jstats")), .axuc))
+
+# A call that stops under its title, and one that stops before it; the
+# output before the stop read with try() inside the capture, which keeps it.
+.ax6s <- sink.number(); .ax6c <- getOption("jstats.color")
+.ax6 <- .aqtry(local({
+  r1 <- NULL; r2 <- NULL
+  o1 <- utils::capture.output(r1 <- try(jt(WellbeingScore ~ Volunteer, tcm, subset = Age > 200),
+                                        silent = TRUE))
+  o2 <- utils::capture.output(r2 <- try(jlm(WellbeingScore ~ Agee, tcm, print = FALSE),
+                                        silent = TRUE))
+  list(o1 = o1, r1 = r1, o2 = o2, r2 = r2)
+}))
+check("AX06 a call that stops -- under its title, or before -- hands everything back: no sink left open, no output scope left open, jstats.color as it was; the title still prints above the stop",
+      !is.null(.ax6) && sink.number() == .ax6s &&
+        length(get(".jst_capture", envir = asNamespace("jstats"))$stack) == 0L &&
+        identical(getOption("jstats.color"), .ax6c) &&
+        inherits(.ax6$r1, "try-error") && inherits(.ax6$r2, "try-error") &&
+        identical(.strip_ansi(.ax6$o1[1]), "Independent Samples T-Test") &&
+        identical(.ax6$o2, character(0)))
+
+# A result made before this build holds no output.
+.ax7 <- .aqtry(local({
+  m <- .ax1$jlm$live$val; attr(m, "jstats_output") <- NULL
+  f <- .ax1$jfreq$live$val; attr(f, "jstats_output") <- NULL; attr(f, "jstats_version") <- NULL
+  list(m = .axrun(print(m)), f = .axrun(print(f)), v = attr(m, "jstats_version", exact = TRUE))
+}))
+.ax7t <- function(x) trimws(gsub("\\s+", " ", x))
+check("AX07 a result made before this build keeps no output, and printing it says so: \"This jlm() result was made by jstats <version>, before a saved result kept its output.\" / \"Run the analysis again to see it.\"; a result with no stamp, \"by an earlier version of jstats\"",
+      !is.null(.ax7) &&
+        identical(.ax7t(.ax7$m$out),
+                  paste0("This jlm() result was made by jstats ", .ax7$v,
+                         ", before a saved result kept its output. Run the analysis again to see it.")) &&
+        identical(.ax7t(.ax7$f$out),
+                  "This jfreq() result was made by an earlier version of jstats, before a saved result kept its output. Run the analysis again to see it.") &&
+        identical(.ax7$m$msg, character(0)))
+
+# The output travels with the result; nothing else about the result moves.
+.ax8 <- .aqtry(local({
+  m <- .ax1$jlm$live$val; g <- .ax1$jlogistic$live$val
+  f <- file.path(.axd, "m.rds"); saveRDS(m, f); r <- readRDS(f)
+  bare <- m; attr(bare, "jstats_output") <- NULL
+  bg <- g; attr(bg, "jstats_output") <- NULL
+  list(r = r, m = m,
+       tidy = identical(tidy.jst_lm(m), tidy.jst_lm(bare)) &&
+              identical(glance.jst_lm(m), glance.jst_lm(bare)) &&
+              identical(tidy.jst_logistic(g), tidy.jst_logistic(bg)) &&
+              identical(glance.jst_logistic(g), glance.jst_logistic(bg)),
+       attrs = names(attributes(m)), len = length(unclass(bare)),
+       # the parts holding a character past ASCII (jlm()'s beta) are marked
+       # UTF-8, so a session in another encoding reads the kept text right
+       enc = local({ k <- attr(m, "jstats_output", exact = TRUE)
+                     wide <- nchar(k, type = "bytes") > nchar(k, type = "chars")
+                     any(wide) && all(Encoding(k[wide]) == "UTF-8") }))
+}))
+check("AX08 the output is one attribute, jstats_output, beside the stamp: saved with saveRDS() and read back it prints the same; tidy() and glance() give the same with it and without it; the result's own parts unchanged (a list, as RStudio lists it); a part holding a character past ASCII is marked UTF-8",
+      !is.null(.ax8) && identical(attr(.ax8$r, "jstats_output"), attr(.ax8$m, "jstats_output")) &&
+        identical(.axrun(print(.ax8$r))$out, .ax1$jlm$live$out) &&
+        isTRUE(.ax8$tidy) && setequal(.ax8$attrs, c("names", "class", "jstats_version", "jstats_output")) &&
+        identical(length(.ax8$m), .ax8$len) && is.list(unclass(.ax8$m)) &&
+        isTRUE(.ax8$enc))
+
+.ax9 <- .aqtry(.axrun(jscreen(tcm, Age, Income))$val)
+check("AX09 jscreen()'s result, a data frame, keeps no output and prints as a data frame",
+      !is.null(.ax9) && is.data.frame(.ax9) &&
+        is.null(attr(.ax9, "jstats_output", exact = TRUE)) &&
+        !inherits(.ax9, .jst_result_classes))
+
+# The note under a copy saved in the hidden per-user folder (the (S420)
+# item): R_USER_DATA_DIR points at this battery's temporary folder (section
+# N), so the copy is written there and removed.
+.ax10o <- options(.jst_options_style_dir = NULL)
+.ax10 <- .aqtry(list(h = .axrun(jstyle("apa", save.as = "axhidden")),
+                     # the folder's path once the copy has made it, as the
+                     # note prints it (a symlinked temporary folder resolved)
+                     dir = normalizePath(tools::R_user_dir("jstats", "data"),
+                                         winslash = "/", mustWork = FALSE),
+                     s = { options(.jst_options_style_dir = .axd)
+                           .axrun(jstyle("apa", save.as = "axseen")) }))
+options(.ax10o)
+unlink(file.path(.nud, "axhidden.jstyle"))
+check("AX10 a copy saved in your jstats folder -- no style folder set -- is followed by a note: the folder is hidden in File Explorer and in Finder, the folder's own path to open it by (the line above gives the file's), and the line that sets a style folder of your own, the one the guides recommend (the (S420) item); a copy saved in a style folder gets none",
+      !is.null(.ax10) && grepl("Style written to", .ax10$h$out, fixed = TRUE) &&
+        identical(.ax10$h$msg, paste0(
+          "Note: your jstats folder, where the copy was saved, is hidden in File\n",
+          "Explorer on Windows and in Finder on a Mac.\n",
+          "To open it, paste the folder's path into File Explorer's address bar, or\n",
+          "into Finder's Go > Go to Folder:\n",
+          "  ", .ax10$dir, "\n",
+          "To keep your styles in a folder you can see, set one, then save the\n",
+          "copy again:\n",
+          "  joptions(style.dir = \"~/jstats styles\")\n")) &&
+        grepl("Style written to", .ax10$s$out, fixed = TRUE) && identical(.ax10$s$msg, character(0)))
+
+options(.jst_output_level = .axlv, .jst_output_toggles = .axtg, jstats.color = .axco)
+rm(.axcalls, .axuc)
+
 grDevices::dev.off(.atdev)
 rm(.atdx, .atpng, .atn, .atdev, .augeoms, .aulayer, .aufill, .auarea)
 
 options(.jst_options_style_dir = NULL, .jst_options_style = NULL)
 
-unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd, .ard, .asd, .atd, .aud, .avd, .awd), recursive = TRUE)
+unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd, .ard, .asd, .atd, .aud, .avd, .awd, .axd), recursive = TRUE)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # The analyses above raise notes and warnings of their own (a seems-
