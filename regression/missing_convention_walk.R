@@ -89,11 +89,33 @@
 #           its refusals and its notes; the blank cells declared; the .sav
 #           refusal of a long value; the load scan and jconvert()'s list on
 #           a text variable.
+#           PART X (S427) adds jdeclare_missing() on several variables, a
+#           refusal they share in ONE block under all their names: the
+#           S426 call on community's Environment items, the choose-first
+#           menu once; two refusals in one call, each its own block.
 # ORIGIN:   S226 (SAS-convention foundation, v0.9.123) + S227 (E17 jload
 #           messaging redesign, v0.9.124). Written S228, superseding the two
 #           disposable design-observation scripts it replaces:
 #           S226_sas_foundation_observe.R and S227_E17_flags_observe.R.
 #           Both may be deleted once this walk runs green.
+# EDITED:   S427 (v0.9.287; the (S426) convention-menu item, Claude's call --
+#           Jeff: "B. yes"). PART X and SECTION 74 ADDED, on the PENDING
+#           line, its Expected blocks filled by running (fill.R, under the
+#           Windows-length temporary, jstats and Documents folders of S424):
+#           the S426 call on the shipped community data, the three items
+#           with no declaration of their own under one heading and the
+#           choose-first menu printed once; two refusals in one call, the
+#           menu's block over A and B, then Txt's own. The wording is as it
+#           was. Every section of every walk captured on v0.9.286 and on this
+#           build from one working folder and compared: no section of this
+#           walk moved.
+# LAST VERIFIED: v0.9.287, 2026-11-14 (S427) -- Section 74 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (12 run, 3740 checks). Sandbox: harness.R
+#           derive and verify, 75 of 75 sections in three orders and by
+#           prepare = TRUE, Section 74 needing none; Expected blocks found
+#           123 of 124, Section 74's both. GitHub fb74974 (package).
 # EDITED:   S403 (v0.9.272; Capability Slate T, build 3, rider R50). SECTION
 #           1's full panel RE-PINNED: its style row reads "Publication
 #           style: apa" where it read "Style: apa" (the one file per
@@ -8608,6 +8630,88 @@ rm(.wd73, w72, w72b, w73, u73)
 #     it; the intro "with the ones it already declares"; the line naming
 #     UNKNOWN and REF with "ref", which takes REF's label; and, run, all
 #     three declared and nothing dropped.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# PART X -- jdeclare_missing() on several variables: one block for a refusal they share (S427) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# v0.9.287, the (S426) convention-menu item (Jeff, S427: "B. yes"). With no
+# convention selected, a call on several variables refused each one with no
+# declaration of its own and printed the choose-first menu under each of
+# them -- three times for the call Jeff ran at S426 on community's
+# Environment items. The assertion side is missing_convention_check.R
+# N98a-d.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 74 -- one block for a refusal several variables share ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Variables whose refusals are word for word the same share ONE block,
+# headed by all their names in the call's order, as the confirmation's
+# blocks group variables (Part L); a refusal no other variable shares keeps
+# a block of its own under its one name (Section 62's form); the blocks come
+# in the order of each one's first variable. Nothing is changed by a
+# refused call. The wording is as it was: only the grouping is new
+# (Claude's call).
+options(.jst_options_missing_convention = NULL)
+
+# Render 1 -- the S426 call, on the shipped community data: Environment1
+# and Environment3 declare SPSS-style missing values of their own, the
+# other three none, so the three share one block and the menu prints once.
+try(jdeclare_missing(cw_spss, Environment1:Environment5, codes = 9))
+# Expected:
+#   Error : jdeclare_missing(): cannot declare on 3 of 5 variables; no variable
+#   was changed:
+#     Environment2, Environment4, Environment5:
+#       no missing-value convention is selected, so these codes cannot
+#       be declared.
+#       Choose one for this session:
+#         joptions(missing.convention = "stata")
+#             Lowercase markers behave as true NAs in base R.
+#             Recommended if you also run base R or AI-generated code.
+#         joptions(missing.convention = "spss")
+#             Codes stay visible numbers; jstats treats them as missing.
+#             Base R does not.
+#         joptions(missing.convention = "sas")
+#             Like Stata, with uppercase markers (.A-.Z).
+#       To make the choice permanent, put the same line in your .Rprofile.
+
+# Render 2 -- two refusals in one call: A and B, numbers with no
+# declaration of their own, share the menu's block; Txt, a text variable
+# given a number, keeps a block of its own. The menu's block comes first,
+# since A comes first in the call.
+x74 <- data.frame(A = c(1, 2, -99, 4), Txt = c("a", "-99", "b", "c"),
+                  B = c(5, -99, 6, 7), stringsAsFactors = FALSE)
+try(jdeclare_missing(x74, c(A, Txt, B), codes = -99))
+# Expected:
+#   Error : jdeclare_missing(): cannot declare on 3 of 3 variables; no variable
+#   was changed:
+#     A, B:
+#       no missing-value convention is selected, so these codes cannot
+#       be declared.
+#       Choose one for this session:
+#         joptions(missing.convention = "stata")
+#             Lowercase markers behave as true NAs in base R.
+#             Recommended if you also run base R or AI-generated code.
+#         joptions(missing.convention = "spss")
+#             Codes stay visible numbers; jstats treats them as missing.
+#             Base R does not.
+#         joptions(missing.convention = "sas")
+#             Like Stata, with uppercase markers (.A-.Z).
+#       To make the choice permanent, put the same line in your .Rprofile.
+#     Txt:
+#       Txt is a text variable, so its codes go in quotes:
+#         jdeclare_missing(x74, Txt, codes = "-99")
+options(.jst_options_missing_convention = NULL)
+rm(x74)
+
+# Things to look at:
+#   - RENDER 1: "cannot declare on 3 of 5 variables", then one heading line,
+#     "Environment2, Environment4, Environment5:", and the menu under it
+#     once -- the three joptions() lines, each with its two lines of
+#     explanation, and "To make the choice permanent ...";
+#   - RENDER 2: "A, B:" over the menu, then "Txt:" over its own refusal,
+#     "Txt is a text variable, so its codes go in quotes:" and the line
+#     that declares "-99" on it.
 
 # --- Restore session state ---------------------------------------------------
 # Moved here from mid-file at S248, so it runs after every part rather

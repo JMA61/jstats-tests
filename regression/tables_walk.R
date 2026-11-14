@@ -104,7 +104,44 @@
 #           its two stops on a jmulti() result, a result's table's first
 #           column Category, and the style file's notes on columns and
 #           none.label.
+#           Section 29 (S427): with no style folder set, jstyle()'s list
+#           ending on the two sentences and the line that sets a style
+#           folder in Documents; with one set, the list as before; and the
+#           note under a copy saved in your jstats folder, its last
+#           sentence in the list's words.
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S427 (v0.9.287; the (S427) item, Jeff's wording, "Option 2";
+#           the note's last sentence to match, Claude's wording). SECTION
+#           29 ADDED, on the PENDING line, its Expected blocks filled by
+#           running (fill.R, under the Windows-length temporary, jstats and
+#           Documents folders of S424; the paths written as <tempdir>,
+#           <working directory>, <your jstats folder> and <your Documents
+#           folder>): the style folder cleared and jstyle()'s list, ending
+#           on "No style folder is set, so jstyle() saves copies in your
+#           jstats folder, which is hidden.", "To keep them in your
+#           Documents folder instead, run:" and the joptions(style.dir =)
+#           line; the list with a style folder set, as before; a copy of
+#           apa saved in your jstats folder and the note under it.
+#           RE-PINNED, by running (mark.py, then fill.R under the same
+#           folders), each block compared with the one it replaced, and
+#           kept OFF the PENDING line, the new sentence shown in Section
+#           29: Section 26 (Render 7's note) and Section 27 (Render 4's
+#           note) -- the note's last sentence "To keep your styles in your
+#           Documents folder instead, run this line, then save the copy
+#           again:" where it read "To keep your styles in a folder you can
+#           see, set one, then save the copy again:". Every section of
+#           every walk captured on v0.9.286 and on this build from one
+#           working folder and compared: no other section moved.
+# LAST VERIFIED: v0.9.287, 2026-11-14 (S427) -- Section 29 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0
+#           notes; every battery green ("ALL BATTERIES GREEN (12 run, 3740
+#           checks)"). Sandbox: harness.R derive and verify, 29 of 29
+#           sections in three orders and by prepare = TRUE, no NEEDS line
+#           new; Expected blocks found 133 of 143 by harness.R's own finder
+#           under the Windows-length folders -- Sections 26-29's all, the
+#           ten missed in Sections 3, 9-11, 13 and 25, as before. GitHub
+#           fb74974 (package).
 # EDITED:   S425 (v0.9.285; the survey words R88 left in jmulti(), its table
 #           and its style file, ruled S425 -- Jeff: "okay on wording
 #           changes"). SECTION 28 ADDED, on the PENDING line, its Expected
@@ -6108,8 +6145,8 @@ jstyle("apa", save.as = "walk26")
 #   To open it, paste the folder's path into File Explorer's address bar, or
 #   into Finder's Go > Go to Folder:
 #     <your jstats folder>
-#   To keep your styles in a folder you can see, set one, then save the
-#   copy again:
+#   To keep your styles in your Documents folder instead, run this line, then
+#   save the copy again:
 #     joptions(style.dir = "<your Documents folder>/jstats styles")
 
 # Render 8 -- the same copy saved with a style folder set: no note. Then the
@@ -6277,8 +6314,8 @@ joptions(style.dir = .entry_style_dir27, quiet = TRUE)
 #   To open it, paste the folder's path into File Explorer's address bar, or
 #   into Finder's Go > Go to Folder:
 #     <your jstats folder>
-#   To keep your styles in a folder you can see, set one, then save the
-#   copy again:
+#   To keep your styles in your Documents folder instead, run this line, then
+#   save the copy again:
 #     joptions(style.dir = "<your Documents folder>/jstats styles")
 
 # Things to look at:
@@ -6466,6 +6503,115 @@ cat(paste0("  ", s28[grep(.pat28, s28)]), sep = "\n")
 #   - Render 5: "Category" "Freq" "Percent";
 #   - Render 6: the two notes, "n (the cases in the category), percent (of
 #     N)" and "the row of cases in none of the categories".
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 29 -- The line that sets a style folder, at the foot of jstyle()'s list ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 427 (v0.9.287; the (S427) item, your wording: "Option 2"). With no
+# style folder set, a copy jstyle(save.as =) saves goes into your jstats
+# folder, which File Explorer and Finder hide, so jstyle()'s list now ends,
+# after the folders it looks in, on two sentences and the line that sets a
+# style folder in your Documents folder -- the line the note under such a
+# copy gives (Sections 26 and 27), here without a copy being saved. It is
+# the line the guides' Keeping your styles page sends readers to: they run
+# joptions(style.dir = NULL), then jstyle(), as Render 1 does. With a style
+# folder set the list is as it was. The note under a copy now says it in
+# the same words, its last sentence "To keep your styles in your Documents
+# folder instead, run this line, then save the copy again:" where it read
+# "in a folder you can see, set one" (Claude's wording, to match; Sections
+# 26 and 27 re-pinned). The line is not run here: run as printed, it would
+# make that folder. Your style folder is put back at the end of the
+# section, and the copy Render 3 saves is removed -- your jstats folder
+# too, if the render made it.
+
+.entry_style_dir29 <- getOption(".jst_options_style_dir")
+
+# Render 1 -- the style folder cleared, then the list: the folders jstats
+# looks in, and under them the two sentences and the line.
+joptions(style.dir = NULL)
+jstyle()
+# Expected:
+#   Options Settings
+#   Style folder: Not set
+#   Run joptions() to see all settings.
+#
+#   Styles
+#     apa     built into jstats (the default)
+#     report  built into jstats
+#
+#   jstats looks for a style file in these folders, in this order:
+#     <working directory> (the working directory)
+#     <your jstats folder> (your jstats folder, not created yet)
+#
+#   No style folder is set, so jstyle() saves copies in your jstats folder,
+#   which is hidden.
+#   To keep them in your Documents folder instead, run:
+#     joptions(style.dir = "<your Documents folder>/jstats styles")
+
+# Render 2 -- a style folder set, one in the session's temporary folder:
+# the list names it first and ends on the folders, as before.
+.walk_styles29 <- file.path(tempdir(), "walk_styles29")
+unlink(.walk_styles29, recursive = TRUE); dir.create(.walk_styles29)
+joptions(style.dir = .walk_styles29, quiet = TRUE)
+jstyle()
+# Expected:
+#   Styles
+#     apa     built into jstats (the default)
+#     report  built into jstats
+#
+#   jstats looks for a style file in these folders, in this order:
+#     <tempdir>/walk_styles29 (the style folder)
+#     <working directory> (the working directory)
+#     <your jstats folder> (your jstats folder, not created yet)
+
+# Render 3 -- a copy of apa saved with no style folder set: the note under
+# it, its last sentence in the list's words, over the same line. Then the
+# copy removed (your jstats folder too, if this render made it), and your
+# style folder put back.
+.jsf29 <- tools::R_user_dir("jstats", "data")
+.made29 <- .jsf29
+if (dir.exists(.made29)) .made29 <- NULL else
+  while (!dir.exists(dirname(.made29))) .made29 <- dirname(.made29)
+joptions(style.dir = NULL, quiet = TRUE)
+jstyle("apa", save.as = "walk29")
+unlink(file.path(.jsf29, "walk29.jstyle"))
+if (!is.null(.made29)) unlink(.made29, recursive = TRUE)
+unlink(.walk_styles29, recursive = TRUE)
+joptions(style.dir = .entry_style_dir29, quiet = TRUE)
+# Expected:
+#   Style written to
+#   <your jstats folder>/walk29.jstyle
+#
+#   Note: your jstats folder, where the copy was saved, is hidden in File
+#   Explorer on Windows and in Finder on a Mac.
+#   To open it, paste the folder's path into File Explorer's address bar, or
+#   into Finder's Go > Go to Folder:
+#     <your jstats folder>
+#   To keep your styles in your Documents folder instead, run this line, then
+#   save the copy again:
+#     joptions(style.dir = "<your Documents folder>/jstats styles")
+
+# Things to look at:
+#   - Render 1: "Style folder: Not set"; the list -- apa, built in and the
+#     default, and report -- then the two folders jstats looks in, your
+#     working directory and your jstats folder ("not created yet" unless
+#     it is there); then, after a blank line, each sentence on a line of
+#     its own: "No style folder is set, so jstyle() saves copies in your
+#     jstats folder, which is hidden." and "To keep them in your Documents
+#     folder instead, run:", and the line joptions(style.dir = "...")
+#     naming your Documents folder's "jstats styles" by its full path -- on
+#     Windows C:/Users/<you>/Documents/jstats styles, or OneDrive's
+#     Documents where yours is there -- whole on one line, with no "~". The
+#     three lines are part of the list, in the list's plain text, not in
+#     the note color;
+#   - Render 2: the temporary style folder first among the folders, and
+#     nothing after them: no sentence, no line;
+#   - Render 3: "Style written to" and the copy's path in your jstats
+#     folder, then the note in the note color, its last sentence "To keep
+#     your styles in your Documents folder instead, run this line, then
+#     save the copy again:" over the same joptions(style.dir = "...") line
+#     as Render 1's.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

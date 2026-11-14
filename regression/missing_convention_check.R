@@ -10,6 +10,38 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S427 EDIT (v0.9.287, 2026-11-14): SECTION N98 ADDED, four checks. The
+#           (S426) convention-menu item, Claude's call (Jeff, S427: "B.
+#           yes"): jdeclare_missing() on several variables puts variables
+#           whose refusals are word for word the same in ONE block, headed
+#           by all their names in the call's order, the blocks in the order
+#           of each one's first variable -- with no convention selected the
+#           choose-first menu had printed under each variable with no
+#           declaration of its own. N98a the S426 call on community's
+#           Environment items, pinned whole from the build's run, the menu
+#           once; N98b a shared block's body word for word the one a single
+#           variable gets, a refusal no other variable shares in a block of
+#           its own, the blocks' order both ways; N98c two variables named
+#           one after the other; N98d nothing changed, modify = TRUE given
+#           or not, no line over the pinned width, every offered line
+#           parsing. 926 -> 930 checks.
+#           On the build before (v0.9.286) the four read red and no other
+#           (926/930). Each changed site went red on a one-change mutant: 6
+#           mutants of recode.R (each variable's block again, the first name
+#           alone, the names joined by "and", the blocks sorted, the names
+#           reversed, the prefix kept), none surviving.
+#           SANDBOX: 930/930 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, through a symlinked
+#           temp path, interactive with no question asked, with a graphics
+#           device open (left open and current), under the stand-in of
+#           RStudio's Console color rule, and entered dirty (plain and
+#           under the handlers: no name, value, option or device changed;
+#           the dirt with workspace objects named like N98's fixture
+#           variables). All twelve batteries 3740 each way.
+#           LAST VERIFIED: v0.9.287, 2026-11-14 (S427) -- 930/930 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3740 checks)"; R CMD check 0 errors, 0 warnings, 0 notes) at the
+#           first run, matching the sandbox. GitHub fb74974 (package).
 # S419 EDIT (v0.9.281, 2026-11-12): N92g RE-PINNED. The AI-text build: the
 #           orientation's tables bullet says where a general setting goes
 #           and how one kind of table gets its own value of one, and that a
@@ -12413,6 +12445,84 @@ check("N97d the models, jdesc(), jdummy(), jconvert() and jplot(), with the outc
           .has97(grab(jt(5, .n97)), "jt(Outcome ~ Group, MyData)") }))
 options(.jst_options_message_width = .w97)
 rm(.n97, .c97, .lv97, .both97, .q97, .has97, .w97)
+
+# =============================================================================
+# N98 (S427) -- jdeclare_missing()'S REFUSAL ON SEVERAL VARIABLES: ONE BLOCK
+# FOR A REFUSAL THEY SHARE. The (S426) convention-menu item, Claude's call
+# (Jeff: "B. yes"): with no convention selected, the choose-first menu had
+# printed once under each variable with no declaration of its own -- three
+# times for the S426 call on community's Environment items. Variables whose
+# refusals are word for word the same now share ONE block, headed by all
+# their names in the call's order, as the confirmation's blocks group
+# variables (S339); a refusal no other variable shares keeps a block of its
+# own under its one name (N87ai, N96h unchanged); the blocks come in the
+# order of each one's first variable. The S426 call pinned whole, from the
+# build's run; the other bodies read from the refusal one variable gets.
+# Working objects in local(); the convention unset here and put back after.
+# =============================================================================
+.w98  <- getOption(".jst_options_message_width")
+.cv98 <- getOption(".jst_options_missing_convention")
+options(.jst_options_message_width = .pin_width,
+        .jst_options_missing_convention = NULL)
+.d98 <- data.frame(P = c(1, 2, 9, 3), Q = c(2, 9, 1, 1),
+                   S = haven::labelled_spss(c(1, -99, 9, 2), na_values = -99),
+                   R = c(9, 9, 1, 2), X = c("a", "9", "b", "c"),
+                   stringsAsFactors = FALSE)
+.menu98 <- paste0(
+  "    no missing-value convention is selected, so these codes cannot\n",
+  "    be declared.\n",
+  "    Choose one for this session:\n",
+  "      joptions(missing.convention = \"stata\")\n",
+  "          Lowercase markers behave as true NAs in base R.\n",
+  "          Recommended if you also run base R or AI-generated code.\n",
+  "      joptions(missing.convention = \"spss\")\n",
+  "          Codes stay visible numbers; jstats treats them as missing.\n",
+  "          Base R does not.\n",
+  "      joptions(missing.convention = \"sas\")\n",
+  "          Like Stata, with uppercase markers (.A-.Z).\n",
+  "    To make the choice permanent, put the same line in your .Rprofile.")
+check("N98a the S426 call -- community's five Environment items, codes = 9, no convention selected: the three with no declaration of their own share ONE block headed by their names, the choose-first menu printed once (it had printed under each of the three); pinned whole; nothing changed",
+      local({ cm <- .jst_get_package_dataset("community"); cm0 <- cm
+              a <- grab(jdeclare_missing(cm, Environment1:Environment5, codes = 9))
+              identical(a, paste0(
+                "jdeclare_missing(): cannot declare on 3 of 5 variables; no variable\n",
+                "was changed:\n",
+                "  Environment2, Environment4, Environment5:\n",
+                .menu98)) && identical(cm, cm0) }))
+check("N98b a refusal several variables share is ONE block, its names in the call's order, the body word for word the one a single variable gets; a refusal no other variable shares keeps a block of its own; the blocks in the order of each one's first variable -- the menu's first for c(P, X, Q), the text variable's first for c(X, P, Q)",
+      local({ one <- grab(jdeclare_missing(.d98, c(P, S), codes = 9))
+              body <- substring(one, regexpr("\n  P:\n", one, fixed = TRUE) + 6L)
+              xb <- paste0("    X is a text variable, so its codes go in quotes:\n",
+                           "      jdeclare_missing(.d98, X, codes = \"9\")")
+              hd <- function(k, n) paste0("jdeclare_missing(): cannot declare on ", k, " of ", n,
+                                          " variables; no variable\nwas changed:\n")
+              a  <- grab(jdeclare_missing(.d98, c(P, Q, S, R), codes = 9))
+              b  <- grab(jdeclare_missing(.d98, c(P, X, Q), codes = 9))
+              c2 <- grab(jdeclare_missing(.d98, c(X, P, Q), codes = 9))
+              identical(one, paste0(hd(1, 2), "  P:\n", .menu98)) &&
+                identical(body, .menu98) &&
+                identical(a, paste0(hd(3, 4), "  P, Q, R:\n", body)) &&
+                identical(b, paste0(hd(3, 3), "  P, Q:\n", body, "\n  X:\n", xb)) &&
+                identical(c2, paste0(hd(3, 3), "  X:\n", xb, "\n  P, Q:\n", body)) }))
+check("N98c two variables named one after the other, both refused alike: one block, \"  P, Q:\", the refusal saying 2 of 2",
+      identical(grab(jdeclare_missing(.d98, P, Q, codes = 9)), paste0(
+        "jdeclare_missing(): cannot declare on 2 of 2 variables; no variable\n",
+        "was changed:\n",
+        "  P, Q:\n",
+        .menu98)))
+check("N98d nothing changed by a grouped refusal, modify = TRUE given or not; no line over the pinned width; every offered line parses (the menu's three, the text variable's line)",
+      local({ d0 <- .d98
+              m <- c(grab(jdeclare_missing(.d98, c(P, X, Q), codes = 9, modify = TRUE)),
+                     grab(jdeclare_missing(.d98, c(P, Q, S, R), codes = 9, modify = TRUE)))
+              ls <- unlist(strsplit(m, "\n", fixed = TRUE))
+              calls <- trimws(ls[grepl("^ +(joptions|jdeclare_missing)\\(", ls)])
+              identical(.d98, d0) && max(nchar(ls)) <= .pin_width &&
+                length(calls) == 7L &&
+                all(vapply(calls, function(l) !inherits(try(str2lang(l), silent = TRUE),
+                                                        "try-error"), logical(1))) }))
+options(.jst_options_message_width = .w98,
+        .jst_options_missing_convention = .cv98)
+rm(.d98, .menu98, .w98, .cv98)
 
 options(.jst_options_missing_convention = NULL)
 # Placed ABOVE the verdict so a failing run still leaves the session clean.

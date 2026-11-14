@@ -195,9 +195,20 @@
 #           (AS03, AS06, AS09, AS10, AS21, AU05, AU06) -- and no check pins
 #           a stop for a result an earlier build made (ruling R87: J13,
 #           P07, V11 and AK08 lose theirs).
+#           (AY) the survey-word build (S425, v0.9.285; ruling R89): a
+#           multiple-response set's words in a complete copy's
+#           [multiresponse] notes and on ?jstyle_settings, every text
+#           jmulti() and its table give swept for the survey words, and a
+#           result's frames naming the category.
+#           (AZ) the line that sets a style folder (S427, v0.9.287; the
+#           (S427) item): with no style folder set, jstyle()'s list ending
+#           on two sentences and the joptions(style.dir =) line naming
+#           Documents/jstats styles by its full path; with one set, none;
+#           the list's line and the note's (AX10) from one helper.
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.285, 2026-11-14 (S425) -- 381/381 on the WORKSTATION;
-#           the S425 EDIT block below holds the stamp. Prior: v0.9.284,
+# LAST VERIFIED: v0.9.287, 2026-11-14 (S427) -- 384/384 on the WORKSTATION;
+#           the S427 EDIT block below holds the stamp. Prior: v0.9.285,
+#           2026-11-14 (S425) -- 381/381 (the S425 EDIT block); v0.9.284,
 #           2026-11-14 (S424) -- 378/378 (the S424 EDIT block); v0.9.283,
 #           2026-11-14 (S423) -- 377/377 (the S423 EDIT block); v0.9.282,
 #           2026-11-12 (S420) -- 366/366 (the S420 EDIT block); v0.9.281,
@@ -244,6 +255,44 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S427 EDIT (v0.9.287, 2026-11-14): the line that sets a style folder, in
+#           jstyle()'s list -- the (S427) item, Jeff's wording (S427,
+#           "Option 2"): with no style folder set, the list ends on "No
+#           style folder is set, so jstyle() saves copies in your jstats
+#           folder, which is hidden.", "To keep them in your Documents
+#           folder instead, run:" and the joptions(style.dir =) line naming
+#           Documents/jstats styles by its full path -- the last line of
+#           the note under a copy saved there, from one helper
+#           (.jst_style_visible_line()). AX10 RE-PINNED from the new
+#           build's run: the note's last sentence, "To keep your styles in
+#           your Documents folder instead, run this line, then save the copy
+#           again:" (Claude's wording, to match), where it read "To keep
+#           your styles in a folder you can see, set one, then save the copy
+#           again:". AZ ADDED, three checks: AZ01 the list with no style
+#           folder set, its last lines pinned at the pinned width, on
+#           standard output, no note; AZ02 with a style folder set, none of
+#           them; AZ03 the list's line and the note's from one helper, a
+#           quotation mark escaped and a long path kept whole, each parsing
+#           back to its folder. 381 -> 384 checks.
+#           On the build before (v0.9.286) three checks read red -- AX10
+#           AZ01 AZ03 -- and no other (381/384). Each changed site went red
+#           on a one-change mutant: 11 mutants of tables.R (the block taken
+#           out, its test turned round, sent as a note, its blank line
+#           dropped, each sentence's words or break changed, the line's
+#           escape, its indent, the note's sentence, the note's line written
+#           out again, the helper's folder ignored), none surviving.
+#           SANDBOX: 384/384 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, through a symlinked
+#           temp path, interactive with no question asked, with a graphics
+#           device open (left open and current), under the stand-in of
+#           RStudio's Console color rule, and entered dirty (plain and
+#           under the handlers: no name, value, option or device changed;
+#           the dirt with a style folder set). All twelve batteries 3740
+#           each way.
+#           WORKSTATION, through receive_all(): "R CMD check: 0 errors, 0
+#           warnings, 0 notes.", "ALL BATTERIES GREEN (12 run, 3740
+#           checks)", tables_check.R 384/384 at the first run. GitHub
+#           fb74974 (package).
 # S425 EDIT (v0.9.285, 2026-11-14): the multiple-response set's words --
 #           the ruling on the survey words R88 left in jmulti(), its table
 #           and its style file (S425, Jeff: "okay on wording changes"): a
@@ -9175,7 +9224,7 @@ unlink(file.path(.nud, "axhidden.jstyle"))
   file.path(if (identical(tolower(basename(h)), "documents")) h else file.path(h, "Documents"),
             "jstats styles")
 })
-check("AX10 a copy saved in your jstats folder -- no style folder set -- is followed by a note: the folder is hidden in File Explorer and in Finder, the folder's own path to open it by (the line above gives the file's), and the line that sets a style folder of your own, the one the guides recommend, Documents/jstats styles by its full path (the (S420) item; the path since S424); a copy saved in a style folder gets none",
+check("AX10 a copy saved in your jstats folder -- no style folder set -- is followed by a note: the folder is hidden in File Explorer and in Finder, the folder's own path to open it by (the line above gives the file's), and the line that sets a style folder of your own, the one the guides recommend, Documents/jstats styles by its full path (the (S420) item; the path since S424, the sentence naming Documents since S427); a copy saved in a style folder gets none",
       !is.null(.ax10) && grepl("Style written to", .ax10$h$out, fixed = TRUE) &&
         identical(.ax10$h$msg, paste0(
           "Note: your jstats folder, where the copy was saved, is hidden in File\n",
@@ -9183,8 +9232,8 @@ check("AX10 a copy saved in your jstats folder -- no style folder set -- is foll
           "To open it, paste the folder's path into File Explorer's address bar, or\n",
           "into Finder's Go > Go to Folder:\n",
           "  ", .ax10$dir, "\n",
-          "To keep your styles in a folder you can see, set one, then save the\n",
-          "copy again:\n",
+          "To keep your styles in your Documents folder instead, run this line, then\n",
+          "save the copy again:\n",
           "  joptions(style.dir = \"", .ax10v, "\")\n")) &&
         !grepl("~", .ax10$h$msg, fixed = TRUE) &&
         grepl("Style written to", .ax10$s$out, fixed = TRUE) && identical(.ax10$s$msg, character(0)))
@@ -9255,6 +9304,68 @@ check("AY03 a jmulti() result's frames name the category (S425): its table's fir
       identical(names(.as1m$table), c("Category", "Freq", "Percent")) &&
         identical(names(.as1m$rows_raw)[3], "category") &&
         identical(.jst_apa_terms(.as1m)$category, .as1m$rows_raw$category))
+
+# =============================================================================
+# AZ. The line that sets a style folder, in jstyle()'s list (S427, v0.9.287):
+#     the (S427) item, Jeff's wording ("Option 2") -- with no style folder
+#     set a copy jstyle(save.as =) saves goes into the hidden jstats folder,
+#     so the list ends on the line that sets one in Documents, the last
+#     line of the note under such a copy (AX10), from one helper
+# =============================================================================
+cat("\n--- AZ. The line that sets a style folder, in jstyle()'s list ---\n")
+
+# The list with no style folder set, and with one (the S423 folder);
+# R_USER_DATA_DIR still points at this battery's temporary folder (section
+# N). The folder the line sets is AX10's, worked out from R's home folder.
+.azo <- options(.jst_options_style_dir = NULL)
+.az1 <- .aqtry(list(unset = .axrun(jstyle()),
+                    set = { options(.jst_options_style_dir = .axd)
+                            .axrun(jstyle()) }))
+options(.azo)
+.az1l <- if (!is.null(.az1)) strsplit(.az1$unset$out, "\n", fixed = TRUE)[[1]]
+check("AZ01 with no style folder set, jstyle()'s list ends on two sentences and the line that sets a style folder in Documents by its full path -- \"No style folder is set, so jstyle() saves copies in your jstats folder, which is hidden.\" / \"To keep them in your Documents folder instead, run:\" / joptions(style.dir = ...) -- after the folders and a blank line, a blank line after it, on standard output; no note (the (S427) item, Jeff's wording)",
+      !is.null(.az1) && length(.az1l) >= 6L &&
+        identical(tail(.az1l, 5L), c(
+          "",
+          "No style folder is set, so jstyle() saves copies in your jstats folder,",
+          "which is hidden.",
+          "To keep them in your Documents folder instead, run:",
+          paste0("  joptions(style.dir = \"", .ax10v, "\")"))) &&
+        grepl("(your jstats folder", .az1l[length(.az1l) - 5L], fixed = TRUE) &&
+        endsWith(.az1$unset$out, "\")\n") &&
+        identical(.az1$unset$msg, character(0)))
+
+check("AZ02 with a style folder set, the list names it first and prints neither sentence nor the line: it ends on the folders and a blank line, as before",
+      !is.null(.az1) && grepl("(the style folder", .az1$set$out, fixed = TRUE) &&
+        !grepl("No style folder is set", .az1$set$out, fixed = TRUE) &&
+        !grepl("joptions(style.dir", .az1$set$out, fixed = TRUE) &&
+        grepl("\\(your jstats folder[^)\n]*\\)\n$", .az1$set$out) &&
+        identical(.az1$set$msg, character(0)))
+
+# One home: the list's last line and the note's are the same line, made by
+# one helper, its quotation marks escaped; a long path kept whole on its
+# line through the standard-output emitter, which runs as printed.
+.az3 <- .aqtry(local({
+  q <- "/Users/j\"o/Documents/jstats styles"
+  long <- .jst_style_visible_dir("C:/Users/jeffreyackerman/OneDrive - Griffith University/Documents")
+  list(q = q, line = .jst_style_visible_line(q),
+       unset = .jst_style_unset_text(q),
+       note = .jst_style_hidden_note("/x", visible = q),
+       long = long,
+       out = paste(utils::capture.output(.jst_msg_out(.jst_style_unset_text(long))),
+                   collapse = "\n"))
+}))
+check("AZ03 the list's last line and the note's are one line from one helper, joptions(style.dir = \"...\") two spaces in, a quotation mark in the folder escaped, the line parsing back to the folder; a long OneDrive path kept whole on its line, past the width, and the line runs as printed",
+      !is.null(.az3) &&
+        identical(.az3$line, "  joptions(style.dir = \"/Users/j\\\"o/Documents/jstats styles\")") &&
+        endsWith(.az3$unset, paste0("\n", .az3$line)) &&
+        endsWith(.az3$note, paste0("\n", .az3$line)) &&
+        identical(str2lang(trimws(.az3$line))[["style.dir"]], .az3$q) &&
+        endsWith(.az3$out, paste0("\n  joptions(style.dir = \"", .az3$long, "\")")) &&
+        nchar(paste0("  joptions(style.dir = \"", .az3$long, "\")")) > .pin_width &&
+        identical(str2lang(trimws(tail(strsplit(.az3$out, "\n", fixed = TRUE)[[1]], 1L)))[["style.dir"]],
+                  .az3$long))
+rm(.azo, .az1l)
 
 grDevices::dev.off(.atdev)
 rm(.atdx, .atpng, .atn, .atdev, .augeoms, .aulayer, .aufill, .auarea)
