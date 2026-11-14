@@ -97,7 +97,46 @@
 #           whose labels share no text titled "Multiple-Response Set"
 #           (ruling R88); and the note under a copy saved in your jstats
 #           folder naming Documents/jstats styles by its full path.
+#           Section 28 (S425): a multiple-response set's words since the
+#           ruling on the survey words R88 left -- the Analysis N line's
+#           "with no value on any item", the note for a set with no "No",
+#           jmulti()'s four stops, jtable()'s report "1 set of 3 items" and
+#           its two stops on a jmulti() result, a result's table's first
+#           column Category, and the style file's notes on columns and
+#           none.label.
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S425 (v0.9.285; the survey words R88 left in jmulti(), its table
+#           and its style file, ruled S425 -- Jeff: "okay on wording
+#           changes"). SECTION 28 ADDED, on the PENDING line, its Expected
+#           blocks filled by running (fill.R, under the Windows-length
+#           temporary, jstats and Documents folders of S424; the paths
+#           written as <tempdir>, <your jstats folder> and <your Documents
+#           folder>): a set of three charges laid at seven arrests, one
+#           arrest blank on every charge, counted; the same charges written
+#           1 or blank, with the note; five stops; the table's report and
+#           jtable()'s two stops on a jmulti() result; a result's table's
+#           column names; a complete copy's notes on columns and none.label.
+#           Every message is the ruling's wording. RE-PINNED MECHANICALLY
+#           under the ruling, by running (mark.py, then fill.R under the
+#           same folders), each block compared with the one it replaced, and
+#           kept OFF the PENDING line: Section 14 (the Analysis N lines, the
+#           ticked = "Y" stop, the note for a set with no "No", the reports'
+#           "1 set of 4 items", the two-sets stop), Section 21 (the
+#           Analysis N lines, the reports) and Section 27 (the reports). The
+#           prose of Section 14 that quoted the old lines quotes the new.
+#           Every section of every walk captured on v0.9.284 and on this
+#           build under the same folders and compared: no other section
+#           moved (Sections 3, 11 and 12 differed only by the two captures'
+#           working folders).
+# LAST VERIFIED: v0.9.285, 2026-11-14 (S425) -- Section 28 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0
+#           notes; every battery green ("ALL BATTERIES GREEN (12 run, 3725
+#           checks)"). Sandbox: harness.R derive and verify, 28 of 28
+#           sections in three orders and by prepare = TRUE, no NEEDS line
+#           new; Expected blocks found 128 of 140 by harness.R's own finder
+#           -- Section 28's all, the twelve missed in Sections 3, 9-13 and
+#           25, as before. GitHub 7199614 (package).
 # EDITED:   S424 (v0.9.284; the clean-up build: ruling R87, ruled S423 --
 #           until the first CRAN release no code for an object an earlier
 #           build saved; ruling R88, Jeff's "okay with your suggested word
@@ -105,7 +144,7 @@
 #           fixes/recommendations"). SECTION 27 ADDED, on the PENDING line,
 #           its Expected blocks filled by running (fill.R, under the
 #           Windows-length temporary and jstats folders of S423 and a home
-#           folder of /tmp/Users/jeff/Documents, as R's "~" is on Windows;
+#           folder of <your Documents folder>, as R's "~" is on Windows;
 #           the paths written as <tempdir>, <your jstats folder> and <your
 #           Documents folder>): a set of three charges whose labels share
 #           no text, counted at the full level; its table, reported and
@@ -3764,7 +3803,7 @@ jmulti(s14, LegalAid:Housing)
 # Expected:
 #   Multiple Response
 #
-#   Analysis N: 10 (2 answered no item)
+#   Analysis N: 10 (2 with no value on any item)
 #
 #   Services used
 #                  Freq  Percent
@@ -3780,7 +3819,7 @@ jmulti(s14, LegalAid:Housing, rank = FALSE, variable.id = "labels")
 # Expected:
 #   Multiple Response
 #
-#   Analysis N: 10 (2 answered no item)
+#   Analysis N: 10 (2 with no value on any item)
 #
 #   Services used
 #                     Freq  Percent
@@ -3801,13 +3840,13 @@ try(jmulti(l14, Q1_SQ001:Q1_SQ003))
 # Expected:
 #   Error : jmulti(): Q1_SQ001, Q1_SQ002, and Q1_SQ003 hold text ("Y"), not
 #   numbers, and ticked = is 1.
-#   If "Y" marks a chosen option, name it with ticked =:
+#   If "Y" is the value to count, name it with ticked =:
 #     jmulti(l14, Q1_SQ001:Q1_SQ003, ticked = "Y")
 jmulti(l14, Q1_SQ001:Q1_SQ003, ticked = "Y")
 # Expected:
 #   Multiple Response
 #
-#   Analysis N: 4 (1 answered no item)
+#   Analysis N: 4 (1 with no value on any item)
 #
 #   Multiple-Response Set
 #             Freq  Percent
@@ -3816,12 +3855,11 @@ jmulti(l14, Q1_SQ001:Q1_SQ003, ticked = "Y")
 #   Q1_SQ002    2    50.00
 #   Q1_SQ003    2    50.00
 #
-#   Note: no item of the set holds any value but "Y", the value counted as
-#   chosen, so a person who chose nothing is blank on every item and
-#   is not in N.
-#   N counts only those who chose at least one option.
-#   If the survey had its own "None of these" box, name it with none = to count
-#   everyone who answered.
+#   Note: no item of the set holds any value but "Y", the value counted, so a
+#   case in none of the categories is blank on every item and is not in N.
+#   N counts only the cases in at least one category.
+#   If the data have their own "None of these" item, name it with none =, and N
+#   counts its cases too.
 
 # Render 4 -- the "Other" box inside the range, a text answer among the
 # "Y" boxes: the stop names it.
@@ -3840,7 +3878,7 @@ t14a <- jtable(m14)
 print(t14a)
 # Expected:
 #   Table 1. Services used (N = 10)
-#     1 set of 4 options, on a portrait page.
+#     1 set of 4 items, on a portrait page.
 #   The table was made in R; no Word file was asked for.
 #
 #   Table 1
@@ -3863,7 +3901,7 @@ t14b <- jtable(m14, style = "report", note = "Asked of all respondents.",
 print(t14b)
 # Expected:
 #   Table 1. Services used (N = 10)
-#     1 set of 4 options, on a portrait page.
+#     1 set of 4 items, on a portrait page.
 #   The table was made in R; no Word file was asked for.
 #
 #   Table 1: Services used (N = 10)
@@ -3886,9 +3924,9 @@ jtable(list(t14a, t14b), file = file.path(.walk_out14, "Services.docx"),
        overwrite = TRUE, open = TRUE)
 # Expected:
 #   Table 1. Services used (N = 10)
-#     1 set of 4 options, on a portrait page.
+#     1 set of 4 items, on a portrait page.
 #   Table 2. Services used (N = 10)
-#     1 set of 4 options, on a portrait page.
+#     1 set of 4 items, on a portrait page.
 #   2 tables written to
 #   <tempdir>/walk_tables14/Services.docx
 
@@ -3901,12 +3939,13 @@ tryCatch(jtable(list(m14, m14b)),
                                  sep = "\n"))
 # Expected:
 #   jtable(): each jmulti() result is a table of its own.
-#   To put more options in one table, name them in one jmulti() call.
+#   To put more items in one table, name them in one jmulti() call.
 #   Make each table in a call of its own, then give the tables together to write
 #   them to one file:
 
 # Things to look at:
-#   - Render 1: "Analysis N: 10 (2 answered no item)" -- the seventh person,
+#   - Render 1: "Analysis N: 10 (2 with no value on any item)" (S425's
+#     words) -- the seventh person,
 #     blank on every item, and the twelfth, declared missing on every item,
 #     are out of N (R61); the ninth, blank on Housing alone, is in N and
 #     counted as not using it; the options ranked by count, "Services used"
@@ -3921,7 +3960,7 @@ tryCatch(jtable(list(m14, m14b)),
 #     says so and points to none = for a survey's own "None of these" box;
 #   - Render 4: the "Other" box named, with the text it holds, and what to
 #     leave out;
-#   - Render 5: the report's line "1 set of 4 options"; the table: the stub
+#   - Render 5: the report's line "1 set of 4 items" (S425); the table: the stub
 #     "Category" (R88, S424), n and %, the options by their text, "None of
 #     these" last, "(N = 10)" after the title, the note that the
 #     percentages sum to more than 100 (R61's sentence, in R88's words);
@@ -3930,8 +3969,8 @@ tryCatch(jtable(list(m14, m14b)),
 #     your note after jstats's, "Source:" last on a line of its own;
 #   - Render 7 (in Word): the two tables as previewed, the counts and the
 #     percentages each centered under their heads;
-#   - Render 8: the stop for two sets: why, and that more options go in one
-#     jmulti() call (Claude's wording), then the lead to the lines.
+#   - Render 8: the stop for two sets: why, and that more items go in one
+#     jmulti() call (the S425 ruling's words), then the lead to the lines.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -4853,7 +4892,7 @@ p21r <- jplot(m21, style = "report")
 # Expected:
 #   Multiple Response
 #
-#   Analysis N: 10 (2 answered no item)
+#   Analysis N: 10 (2 with no value on any item)
 #
 #   Services used
 #                  Freq  Percent
@@ -4872,7 +4911,7 @@ p21b <- jplot(m21b)
 # Expected:
 #   Multiple Response
 #
-#   Analysis N: 10 (2 answered no item)
+#   Analysis N: 10 (2 with no value on any item)
 #
 #   Services used
 #                Freq  Percent
@@ -4890,11 +4929,11 @@ f21 <- jtable(list(t21, p21), file = file.path(.walk_fig21, "Services.docx"),
               overwrite = TRUE, open = TRUE)
 # Expected:
 #   Table 1. Services used (N = 10)
-#     1 set of 4 options, on a portrait page.
+#     1 set of 4 items, on a portrait page.
 #   The table was made in R; no Word file was asked for.
 #
 #   Table 1. Services used (N = 10)
-#     1 set of 4 options, on a portrait page.
+#     1 set of 4 items, on a portrait page.
 #   Figure 1. Services used (N = 10)
 #     a ranked bar chart, 6 by 4 inches, on a portrait page.
 #   1 table and 1 figure written to
@@ -6187,7 +6226,7 @@ t27 <- jtable(k27)
 print(t27)
 # Expected:
 #   Table 1. Multiple-Response Set (N = 6)
-#     1 set of 3 options, on a portrait page.
+#     1 set of 3 items, on a portrait page.
 #   The table was made in R; no Word file was asked for.
 #
 #   Table 1
@@ -6209,7 +6248,7 @@ f27 <- jtable(list(t27, p27), file = file.path(.walk_fig27, "Charges.docx"),
               overwrite = TRUE, open = TRUE)
 # Expected:
 #   Table 1. Multiple-Response Set (N = 6)
-#     1 set of 3 options, on a portrait page.
+#     1 set of 3 items, on a portrait page.
 #   Figure 1. Multiple-Response Set (N = 6)
 #     a ranked bar chart, 6 by 4 inches, on a portrait page.
 #   1 table and 1 figure written to
@@ -6261,6 +6300,173 @@ joptions(style.dir = .entry_style_dir27, quiet = TRUE)
 #     styles, or OneDrive's Documents where yours is there -- with no "~".
 #     Copied into the Console and run, the line would make that folder and
 #     set it for the session (not done here).
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 28 -- A multiple-response set's words: cases, categories, items ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 425 (v0.9.285). THE SURVEY WORDS R88 LEFT (your ruling at S425:
+# "okay on wording changes"): a set can come from records as well as from a
+# survey, so what jmulti(), its table and its style file say is put in the
+# words R88 began -- a case is what is counted, a category is what each item
+# stands for (the table's "Category" column), an item is a variable, and the
+# value counted is what ticked = names. The Analysis N line says "with no
+# value on any item" where it said "answered no item"; the note for a set
+# with no "No" in it speaks of a case in none of the categories and of the
+# data's own "None of these" item; four stops name the value to count or a
+# category; jtable()'s report says "1 set of 3 items" where it said
+# "options", and its two stops on a jmulti() result say items and
+# categories; the style file's notes on columns and none.label speak of
+# cases; a result's table heads its first column Category. N itself is
+# unchanged (ruling R61's base: every case with a value on at least one
+# item). The data are made here: r28, seven arrests and the charges laid at
+# each, 1 = laid and 0 = not, the seventh arrest's record blank on every
+# charge; then b28, the same charges written 1 or blank. The style file
+# goes in a folder of the session's temporary folder.
+
+.walk_fig28 <- file.path(tempdir(), "walk_fig28")
+unlink(.walk_fig28, recursive = TRUE); dir.create(.walk_fig28)
+r28 <- data.frame(Theft   = c(1, 0, 1, 1, 0, 1, NA),
+                  Assault = c(0, 0, 1, 1, 0, 1, NA),
+                  Fraud   = c(1, 1, 0, 0, 0, 0, NA))
+attr(r28$Theft, "label")   <- "Charges laid: Theft"
+attr(r28$Assault, "label") <- "Charges laid: Assault"
+attr(r28$Fraud, "label")   <- "Charges laid: Fraud"
+
+# Render 1 -- the set: the Analysis N line, the arrest with no value on any
+# charge out of N; the arrest in none of the categories its own row.
+k28 <- jmulti(r28, Theft:Fraud)
+# Expected:
+#   Multiple Response
+#
+#   Analysis N: 6 (1 with no value on any item)
+#
+#   Charges laid
+#                  Freq  Percent
+#   -------------  ----  -------
+#   Theft            4    66.67
+#   Assault          3    50.00
+#   Fraud            2    33.33
+#   None of these    1    16.67
+
+# Render 2 -- the charges written 1 or blank: no item holds a "No", and the
+# note says what that means for N.
+b28 <- r28
+b28[] <- lapply(r28, function(x) { x[!is.na(x) & x == 0] <- NA; x })
+jmulti(b28, Theft:Fraud)
+# Expected:
+#   Multiple Response
+#
+#   Analysis N: 5 (2 with no value on any item)
+#
+#   Charges laid
+#            Freq  Percent
+#   -------  ----  -------
+#   Theft      4    80.00
+#   Assault    3    60.00
+#   Fraud      2    40.00
+#
+#   Note: no item of the set holds any value but 1, the value counted, so a case
+#   in none of the categories is blank on every item and is not in N.
+#   N counts only the cases in at least one category.
+#   If the data have their own "None of these" item, name it with none =, and N
+#   counts its cases too.
+
+# Render 3 -- the stops whose words changed: ticked = given two values;
+# ticked = "Y" for items that hold numbers; text items under ticked = 1;
+# an item of three values; a set no case has a value on.
+try(jmulti(r28, Theft:Fraud, ticked = c(1, 0)))
+try(jmulti(r28, Theft:Fraud, ticked = "Y"))
+y28 <- data.frame(Theft = c("Y", "", "Y"), Fraud = c("", "Y", "Y"),
+                  stringsAsFactors = FALSE)
+try(jmulti(y28, Theft, Fraud))
+t28 <- r28; t28$Fraud[1] <- 2
+try(jmulti(t28, Theft:Fraud))
+try(jmulti(r28[7, ], Theft:Fraud))
+# Expected:
+#   Error : jmulti(): `ticked` must be one value: the number or the text to
+#   count, for example:
+#     ticked = 1
+#   Error : jmulti(): Theft, Assault, and Fraud hold numbers, and ticked = is
+#   "Y", which is text.
+#   Give ticked = the number to count.
+#   Error : jmulti(): Theft and Fraud hold text ("Y"), not numbers, and
+#   ticked = is 1.
+#   If "Y" is the value to count, name it with ticked =:
+#     jmulti(y28, Theft, Fraud, ticked = "Y")
+#   Multiple Response
+#   Error : jmulti(): Fraud holds 3 different values, so it is not a
+#   yes/no item.
+#   Name only the set's yes/no items, one per category.
+#   Multiple Response
+#
+#   Analysis N: 0 (1 with no value on any item)
+#
+#   Error : jmulti(): no case has a value on any item of the set, so there is
+#   nothing to count.
+#   Each case is blank or declared missing on every item.
+
+# Render 4 -- the table's report; then the two stops jtable() gives a
+# jmulti() result: two sets in one call (its first two lines), and
+# headings =.
+m28 <- jtable(k28)
+tryCatch(jtable(list(k28, k28)),
+         error = function(e) cat(strsplit(conditionMessage(e), "\n")[[1]][1:2],
+                                 sep = "\n"))
+try(jtable(k28, headings = list(A = Theft)))
+# Expected:
+#   Table 1. Charges laid (N = 6)
+#     1 set of 3 items, on a portrait page.
+#   The table was made in R; no Word file was asked for.
+#
+#   jtable(): each jmulti() result is a table of its own.
+#   To put more items in one table, name them in one jmulti() call.
+#   Error : jtable(): headings = puts the variables of a descriptives or
+#   frequency table under role headings; a multiple-response table lists its
+#   categories in the order jmulti() gave them.
+
+# Render 5 -- a result's table, as View(k28$table) shows it: its first
+# column Category.
+names(k28$table)
+# Expected:
+#   [1] "Category" "Freq"     "Percent" 
+
+# Render 6 -- a complete copy of apa: the [multiresponse] section's notes on
+# columns and none.label, each line of the file shown two spaces in.
+jstyle("apa", save.as = file.path(.walk_fig28, "walk28"), overwrite = TRUE)
+s28 <- readLines(file.path(.walk_fig28, "walk28.jstyle"))
+.pat28 <- "^# the columns, in order: n \\(the|^# the label of the row of cases"
+cat(paste0("  ", s28[grep(.pat28, s28)]), sep = "\n")
+# Expected:
+#   Style written to
+#   <tempdir>/walk_fig28/walk28.jstyle
+#
+#     # the columns, in order: n (the cases in the category), percent (of N)
+#     # the label of the row of cases in none of the categories
+
+# Things to look at:
+#   - Render 1: "Analysis N: 6 (1 with no value on any item)" -- the
+#     seventh arrest, blank on every charge, out of N; "Charges laid" over
+#     the three charges, ranked (Theft 4, Assault 3, Fraud 2); "None of
+#     these 1", the fifth arrest, in none of the categories, last;
+#   - Render 2: the set with no "No" in it: the seventh arrest and the
+#     fifth are both blank on every charge now, so N is 5; the note: "no
+#     item of the set holds any value but 1, the value counted, so a case
+#     in none of the categories is blank on every item and is not in N.",
+#     "N counts only the cases in at least one category.", and "If the
+#     data have their own "None of these" item, name it with none =, and N
+#     counts its cases too.";
+#   - Render 3: "the number or the text to count"; "Give ticked = the
+#     number to count."; "If "Y" is the value to count, name it with
+#     ticked =:" and the line that runs; "Name only the set's yes/no items,
+#     one per category."; "no case has a value on any item of the set, so
+#     there is nothing to count.";
+#   - Render 4: the report's "1 set of 3 items"; "To put more items in one
+#     table, name them in one jmulti() call."; "a multiple-response table
+#     lists its categories in the order jmulti() gave them.";
+#   - Render 5: "Category" "Freq" "Percent";
+#   - Render 6: the two notes, "n (the cases in the category), percent (of
+#     N)" and "the row of cases in none of the categories".
+
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations

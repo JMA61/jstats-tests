@@ -13,6 +13,15 @@
 #           for .xpt; a full-width semicolon, equals sign or comma in a map
 #           or labels string stops, with the call retyped.
 # ORIGIN:   S390 (the non-English probe: the (Session 21 -- Issue 2) item)
+# S425 EDIT (v0.9.285, 2026-11-14): D03 REWRITTEN -- the A-to-Z rule for a
+#           jdummy() registration stored before S390 is gone with the
+#           rebuild of a registration stored before v0.9.176 (ruling R87;
+#           the (S424) registration item), so D03 keeps its check of
+#           .jst_dummy_canon() on letters of any script and Not_sure, and
+#           checks that the function has no A-to-Z form, where it checked
+#           that an old registration still found its values. 52 checks
+#           still. On the build before (v0.9.284) D03 reads red. SANDBOX:
+#           52/52 eight ways and entered dirty, nothing changed.
 # S416 EDIT (v0.9.280, 2026-11-10): GUARD 6 ADDED (the S415 item, a rider on
 #           Capability Slate U's charts, build 3). The battery draws on a
 #           null device of its own, opened at setup and closed at the foot,
@@ -20,7 +29,11 @@
 #           drawn on the session's device (RStudio's Plots pane; Rplots.pdf
 #           under Rscript) and left it open, which run_all.R's device guard,
 #           new this build, names. No check added or changed.
-# LAST VERIFIED: v0.9.280, 2026-11-11 (S416) -- 52/52 on the WORKSTATION
+# LAST VERIFIED: v0.9.285, 2026-11-14 (S425) -- 52/52 on the WORKSTATION
+#           through receive_all() ("ALL BATTERIES GREEN (12 run, 3725
+#           checks)"; R CMD check 0 errors, 0 warnings, 0 notes), D03 as
+#           rewritten (the S425 EDIT block). GitHub 7199614 (package).
+#           Prior: v0.9.280, 2026-11-11 (S416) -- 52/52 on the WORKSTATION
 #           through receive_all() ("ALL BATTERIES GREEN (12 run, 3703
 #           checks)"; R CMD check 0 errors, 0 warnings, 0 notes), matching
 #           the sandbox plain, under the RStudio-handler stand-in, each again
@@ -636,12 +649,8 @@ check("D02 an accented label keeps its letters (S\u{f8}r, not S_r), and ref = ma
         jdummy(clear.all = TRUE)
         grepl("Reference category: r_S\u{f8}r", m1, fixed = TRUE) &&
           grepl("Reference category: .d02_e|Reference category: e_\u{c9}tudiant", m2) }))
-check("D03 a registration stored under the A-to-Z rule (S_r, no stored values) still finds its values; a label of symbols and ASCII keeps its old name (Not_sure)",
-      identical(.jst_dummy_category_values(
-                  list(var_name = "e", var_type = "character", codes = 1:2,
-                       labels = c("e_Ouvrier", "e_tudiant")),
-                  c("\u{c9}tudiant", "Ouvrier")),
-                c("Ouvrier", "\u{c9}tudiant")) &&
+check("D03 a dummy's name keeps the letters of any script, and a label of symbols and ASCII keeps its old form (Not_sure); since S425 (ruling R87) the A-to-Z rule for a registration stored before S390 is gone",
+      identical(names(formals(.jst_dummy_canon)), "x") &&
         identical(.jst_dummy_canon(c("Not sure?", "S\u{f8}r", "\u{5317}\u{90e8} \u{5730}\u{533a}", "--")),
                   c("Not_sure", "S\u{f8}r", "\u{5317}\u{90e8}_\u{5730}\u{533a}", "")))
 check("D04 jlm(): a Chinese categorical's rows are labelled, and no note says its labels were not available",

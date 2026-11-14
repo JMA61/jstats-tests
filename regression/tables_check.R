@@ -196,8 +196,9 @@
 #           a stop for a result an earlier build made (ruling R87: J13,
 #           P07, V11 and AK08 lose theirs).
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.284, 2026-11-14 (S424) -- 378/378 on the WORKSTATION;
-#           the S424 EDIT block below holds the stamp. Prior: v0.9.283,
+# LAST VERIFIED: v0.9.285, 2026-11-14 (S425) -- 381/381 on the WORKSTATION;
+#           the S425 EDIT block below holds the stamp. Prior: v0.9.284,
+#           2026-11-14 (S424) -- 378/378 (the S424 EDIT block); v0.9.283,
 #           2026-11-14 (S423) -- 377/377 (the S423 EDIT block); v0.9.282,
 #           2026-11-12 (S420) -- 366/366 (the S420 EDIT block); v0.9.281,
 #           2026-11-12 (S419) -- 363/363 (the S419 EDIT block); v0.9.280,
@@ -243,6 +244,44 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S425 EDIT (v0.9.285, 2026-11-14): the multiple-response set's words --
+#           the ruling on the survey words R88 left in jmulti(), its table
+#           and its style file (S425, Jeff: "okay on wording changes"): a
+#           case is what is counted, a category what each item stands for,
+#           an item a variable, the value counted what ticked = names.
+#           RE-PINNED, each from the new build's run: AS05 (five stops: the
+#           ticked = "Y" line, numbers under a text ticked =, an item of
+#           three values, ticked = of two values, no case with a value),
+#           AS06 (the Analysis N line "(2 with no value on any item)"),
+#           AS07 (the note for a set with no "No"), AS10 (the report's "1
+#           set of 4 items"), AS11 (the two stops jtable() gives a jmulti()
+#           result: items, categories); AS01, AS03 and AU05 read rows_raw's
+#           column as category, where it was option; AS04 and AS08
+#           retitled in the new words. AY ADDED, three checks: AY01 the
+#           [multiresponse] notes on columns and none.label, in a complete
+#           copy and on ?jstyle_settings; AY02 every text jmulti() and its
+#           table gave above swept for answered, chose, option, person and
+#           everyone; AY03 a result's table's first column Category,
+#           rows_raw's category column. 378 -> 381 checks.
+#           On the build before (v0.9.284) eleven checks read red -- AS01
+#           AS03 AS05 AS06 AS07 AS10 AS11 AU05 AY01 AY02 AY03 -- and no
+#           other (370/381). Each changed site went red on a one-change
+#           mutant: 17 mutants of descriptives.R, tables.R and plot.R, each
+#           an old word put back or a column named option again, none
+#           surviving.
+#           SANDBOX: 381/381 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, through a symlinked
+#           temp path, interactive with no question asked, with a graphics
+#           device open (left open and current), under the stand-in of
+#           RStudio's Console color rule, and entered dirty (plain and
+#           under the handlers: no name, value, option or device changed;
+#           the dirt with joptions(style = "report") and workspace objects
+#           named like the AS fixtures' variables). All twelve batteries
+#           3725 each way.
+#           WORKSTATION, through receive_all(): "R CMD check: 0 errors, 0
+#           warnings, 0 notes.", "ALL BATTERIES GREEN (12 run, 3725
+#           checks)", tables_check.R 381/381 at the first run. GitHub
+#           7199614 (package).
 # S424 EDIT (v0.9.284, 2026-11-14): the clean-up build -- ruling R87
 #           (S423, Jeff: "There will be no one using saved results at this
 #           point. I don't think that we should overly complicate the
@@ -6640,11 +6679,11 @@ cat("\n--- AS. jmulti() and its table, the table rulings R74-R79, the riders ---
 .as1 <- res(jmulti(.asv, LegalAid:Housing))
 .as1m <- .as1$val
 .asord <- names(sort(-.asx$counts[c("LegalAid", "Counselling", "Financial", "Housing")]))
-check("AS01 jmulti() counts a multiple-response set on everyone who answered (ruling R61): a person blank or declared missing on every item is out, a blank among a person's answers is not chosen; each option's count and its percentage of that base, computed here from the data; those who chose none a row of their own, last",
+check("AS01 jmulti() counts a multiple-response set on every case with a value on at least one item (ruling R61's base; its words since S425): a case blank or declared missing on every item is out, a blank among a case's values is not in that category; each category's count and its percentage of that base, computed here from the data; the cases in none of the categories a row of their own, last",
       inherits(.as1m, "jst_multi") &&
         identical(c(.as1m$n, .as1m$n_excluded, .as1m$n_none), c(.asx$n, .asx$out, .asx$none)) &&
         identical(.asx$n, 10L) && identical(.asx$out, 2L) && identical(.asx$none, 3L) &&
-        identical(names(.as1m$rows_raw), c("item", "label", "option", "kind", "n", "percent")) &&
+        identical(names(.as1m$rows_raw), c("item", "label", "category", "kind", "n", "percent")) &&
         identical(.as1m$rows_raw$item, c(.asord, NA)) &&
         identical(.as1m$rows_raw$n, as.integer(c(.asx$counts[.asord], .asx$none))) &&
         isTRUE(all.equal(.as1m$rows_raw$percent, 100 * c(.asx$counts[.asord], .asx$none) / .asx$n,
@@ -6681,7 +6720,7 @@ check("AS02 the options ranked by count, a tie in the data frame's order; rank =
     d <- data.frame(A = c(1, 2), B = c(2, 1))
     for (i in seq_along(labs)) if (!is.na(labs[i])) attr(d[[i]], "label") <- labs[i]
     m <- res(jmulti(d, A, B, print = FALSE))$val
-    c(m$title, m$rows_raw$option[m$rows_raw$kind == "item"])
+    c(m$title, m$rows_raw$category[m$rows_raw$kind == "item"])
   }
   list(colon = lab(c("Services used: Counselling", "Services used: Housing")),
        lime  = lab(c("Which services have you used? [Counselling]", "Which services have you used? [Housing]")),
@@ -6700,7 +6739,7 @@ check("AS02 the options ranked by count, a tie in the data frame's order; rank =
                        list(txt = .strip_ansi(nm$txt),
                             plot = .jst_plot_facts(res(jplot(nm$val))$val)$title) }))
 }))
-check("AS03 the set's title is the text its items' labels share, cut back to a separator -- a colon, a LimeSurvey question's [option], a Qualtrics label's dashes, a parenthesis -- each option named by the rest of its label, the closing bracket dropped; labels that share no such text, or an item with no label, title the set \"Multiple-Response Set\" in the Console and the chart (R88, S424; \"Options Chosen\" until then) and name each option by its label or its name; the Console shows the names, or with variable.id = \"labels\" the options",
+check("AS03 the set's title is the text its items' labels share, cut back to a separator -- a colon, a LimeSurvey question's [option], a Qualtrics label's dashes, a parenthesis -- each category named by the rest of its label, the closing bracket dropped; labels that share no such text, or an item with no label, title the set \"Multiple-Response Set\" in the Console and the chart (R88, S424; \"Options Chosen\" until then) and name each category by its label or its name; the Console shows the names, or with variable.id = \"labels\" the categories",
       !is.null(.as3) &&
         identical(.as3$colon, c("Services used", "Counselling", "Housing")) &&
         identical(.as3$lime, c("Which services have you used?", "Counselling", "Housing")) &&
@@ -6729,7 +6768,7 @@ check("AS03 the set's title is the text its items' labels share, cut back to a s
        lg = res(jmulti(lg, A, B, print = FALSE))$val,
        two = res(jmulti(.asv, LegalAid:Housing, ticked = 2, print = FALSE))$val)
 }))
-check("AS04 ticked = names the value a chosen option's item holds: text written \"Y\" or blank (LimeSurvey's CSV; a blank or spaces not chosen, and a person blank on every item out); a factor's level (REDCap's \"Checked\"); TRUE under the default 1; another number",
+check("AS04 ticked = names the value counted: text written \"Y\" or blank (LimeSurvey's CSV; a blank or spaces not counted, and a case blank on every item out); a factor's level (REDCap's \"Checked\"); TRUE under the default 1; another number",
       !is.null(.as4) &&
         identical(.as4$lc$n, 3L) && identical(.as4$lc$n_excluded, 1L) &&
         identical(.as4$lc$rows_raw$n, c(2L, 2L)) && identical(.as4$lc$ticked, "Y") &&
@@ -6767,21 +6806,21 @@ check("AS04 ticked = names the value a chosen option's item holds: text written 
        r22   = res(jmulti()),
        unused = res(jmulti(.asv, LegalAid, Housing, rnk = FALSE, print = FALSE)))
 }))
-check("AS05 the stops: a text item in a set of numbers named (LimeSurvey's \"Other\" box), and under a text ticked = a text item holding what no other item holds, its first two values shown; text items under ticked = 1 given the line with their value as ticked =, which runs; numbers under a text ticked =; an item of three values; one item; an item named twice; none = of two variables; ticked = of two values, or a bare word (the pointer); rank = not a flag; no case with an answer; nothing named (ruling R22's example); an input jmulti() does not take",
+check("AS05 the stops: a text item in a set of numbers named (LimeSurvey's \"Other\" box), and under a text ticked = a text item holding what no other item holds, its first two values shown; text items under ticked = 1 given the line with their value as ticked =, which runs; numbers under a text ticked =; an item of three values; one item; an item named twice; none = of two variables; ticked = of two values, or a bare word (the pointer); rank = not a flag; no case with a value on any item; nothing named (ruling R22's example); an input jmulti() does not take",
       !is.null(.as5) &&
         identical(.as5$oth$txt, "[error] jmulti(): Q1_other is a text variable, not a yes/no item.\nName only the set's yes/no items, and leave out a text answer such as an\n\"Other\" box.") &&
         identical(.as5$oth2$txt, "[error] jmulti(): Q1_other holds text that no other item of the set holds\n(\"taxi\", \"bus pass\", ...), so it is not a yes/no item.\nName only the set's yes/no items, and leave out a text answer such as an\n\"Other\" box.") &&
-        identical(.as5$lc$txt, "[error] jmulti(): Q1_SQ001 and Q1_SQ002 hold text (\"Y\"), not numbers, and\nticked = is 1.\nIf \"Y\" marks a chosen option, name it with ticked =:\n  jmulti(lc, Q1_SQ001:Q1_SQ002, print = FALSE, ticked = \"Y\")") &&
+        identical(.as5$lc$txt, "[error] jmulti(): Q1_SQ001 and Q1_SQ002 hold text (\"Y\"), not numbers, and\nticked = is 1.\nIf \"Y\" is the value to count, name it with ticked =:\n  jmulti(lc, Q1_SQ001:Q1_SQ002, print = FALSE, ticked = \"Y\")") &&
         inherits(.as5$lcrun$val, "jst_multi") &&
-        identical(.as5$num$txt, "[error] jmulti(): LegalAid and Housing hold numbers, and ticked = is \"Y\",\nwhich is text.\nGive ticked = the value a chosen option's item holds.") &&
-        identical(.as5$three$txt, "[error] jmulti(): A holds 3 different values, so it is not a yes/no item.\nName only the set's yes/no items, each chosen or not.") &&
+        identical(.as5$num$txt, "[error] jmulti(): LegalAid and Housing hold numbers, and ticked = is \"Y\",\nwhich is text.\nGive ticked = the number to count.") &&
+        identical(.as5$three$txt, "[error] jmulti(): A holds 3 different values, so it is not a yes/no item.\nName only the set's yes/no items, one per category.") &&
         identical(.as5$one$txt, "[error] jmulti(): a multiple-response set needs at least 2 items.\nOnly 1 was provided.\nProvide two or more items, for example:\n  jmulti(community, Volunteer, Smoker, OwnsHome)") &&
         identical(.as5$twice$txt, "[error] jmulti(): LegalAid is named twice.\nName each item of the set once.") &&
         identical(.as5$nones$txt, "[error] jmulti(): none = takes one variable, and this call gives Financial\nand Counselling.\nName one variable.") &&
-        identical(.as5$tk2$txt, "[error] jmulti(): `ticked` must be one value: the number or the text a\nchosen option's item holds, for example:\n  ticked = 1") &&
+        identical(.as5$tk2$txt, "[error] jmulti(): `ticked` must be one value: the number or the text to\ncount, for example:\n  ticked = 1") &&
         identical(.as5$tkw$txt, "[error] jmulti(): Y is not in quotes.\nticked = takes a value in quotes:\n  jmulti(.asv, LegalAid, Housing, ticked = \"Y\", print = FALSE)") &&
         identical(.as5$rank$txt, "[error] jmulti(): `rank` must be TRUE or FALSE.") &&
-        identical(.as5$blank$txt, "[error] jmulti(): no case answered any item of the set, so there is\nnothing to count.\nEach case is blank or declared missing on every item.") &&
+        identical(.as5$blank$txt, "[error] jmulti(): no case has a value on any item of the set, so there is\nnothing to count.\nEach case is blank or declared missing on every item.") &&
         identical(.as5$r22$txt, "[error] jmulti(): no data frame and no variables were named.\nName a data frame and two or more of its variables, for example:\n  jmulti(community, Volunteer, Smoker, OwnsHome)") &&
         identical(.as5$unused$txt, "[error] jmulti(): unused input: rnk") &&
         all(vapply(.as5[setdiff(names(.as5), "lcrun")], function(r) is.null(r$val), logical(1))))
@@ -6800,9 +6839,9 @@ check("AS05 the stops: a text item in a set of numbers named (LimeSurvey's \"Oth
        pf = res(jmulti(.asv, LegalAid:Housing, print = FALSE)),
        sub = .strip_ansi(res(jmulti(.asv, LegalAid:Housing, subset = Housing != 2))$txt))
 }))
-check("AS06 the Console output, pinned whole: the title, the Analysis N line with those who answered no item, the set's title over the options and their counts and percentages, jstats's \"None of these\" row last; at joutput(\"full\") the note that the percentages sum to more than 100; print = FALSE and joutput(\"silent\") print nothing and give the same result; a filter shows in the Case Processing block",
+check("AS06 the Console output, pinned whole: the title, the Analysis N line with the cases that have no value on any item (S425's words), the set's title over the categories and their counts and percentages, jstats's \"None of these\" row last; at joutput(\"full\") the note that the percentages sum to more than 100; print = FALSE and joutput(\"silent\") print nothing and give the same result; a filter shows in the Case Processing block",
       !is.null(.as6) &&
-        identical(.as6$std, paste0("Multiple Response\n\nAnalysis N: 10 (2 answered no item)\n\nServices used\n",
+        identical(.as6$std, paste0("Multiple Response\n\nAnalysis N: 10 (2 with no value on any item)\n\nServices used\n",
                                    "               Freq  Percent\n-------------  ----  -------\n",
                                    "Counselling      5    50.00\nHousing          4    40.00\n",
                                    "LegalAid         3    30.00\nFinancial        2    20.00\n",
@@ -6822,14 +6861,14 @@ check("AS06 the Console output, pinned whole: the title, the Analysis N line wit
   n2 <- length(.seen); c <- res(jmulti(.asv, LegalAid:Housing)); cn <- .seen[-seq_len(n2)]
   list(a = a, an = an, bn = bn, cn = cn)
 }))
-check("AS07 a set none of whose items holds anything but the value counted as chosen gets a note at the standard level: a person who chose nothing is blank on every item and not in N, so N counts those who chose one, and none = counts everyone who answered; none with the survey's own box named, nor where an item holds a No",
+check("AS07 a set none of whose items holds anything but the value counted gets a note at the standard level (its words since S425): a case in none of the categories is blank on every item and not in N, so N counts the cases in at least one, and the data's own None item named with none = is counted too; none with that item named, nor where an item holds a No",
       !is.null(.as7) && identical(.as7$a$val$n, 3L) &&
         length(.as7$an) == 1L &&
-        identical(.as7$an[[1]]$text, paste0("Note: no item of the set holds any value but 1, the value counted as chosen,\n",
-                                           "so a person who chose nothing is blank on every item and is not in N.\n",
-                                           "N counts only those who chose at least one option.\n",
-                                           "If the survey had its own \"None of these\" box, name it with none = to count\n",
-                                           "everyone who answered.\n")) &&
+        identical(.as7$an[[1]]$text, paste0("Note: no item of the set holds any value but 1, the value counted, so a case\n",
+                                           "in none of the categories is blank on every item and is not in N.\n",
+                                           "N counts only the cases in at least one category.\n",
+                                           "If the data have their own \"None of these\" item, name it with none =, and N\n",
+                                           "counts its cases too.\n")) &&
         length(.as7$bn) == 0L && length(.as7$cn) == 0L)
 
 # The result: stamped, its accessors, a save, a table from a copy read back.
@@ -6838,7 +6877,7 @@ check("AS07 a set none of whose items holds anything but the value counted as ch
   list(sv = res(jsave(.as1m, file.path(.asd, "m.sav"))),
        back = res(jtable(readRDS(f), print = FALSE))$val)
 }))
-check("AS08 the result is a jst_multi stamped with the version that made it; .jst_apa_terms() gives its rows, .jst_apa_model() its N, those who answered no item, those who chose none, the items' count, the value counted, the title and the order; jsave() given it offers saveRDS(); a copy read back makes the table",
+check("AS08 the result is a jst_multi stamped with the version that made it; .jst_apa_terms() gives its rows, .jst_apa_model() its N, the cases with no value on any item, the cases in none of the categories, the items' count, the value counted, the title and the order; jsave() given it offers saveRDS(); a copy read back makes the table",
       !is.null(.as8) &&
         identical(attr(.as1m, "jstats_version", exact = TRUE), as.character(utils::packageVersion("jstats"))) &&
         identical(.jst_apa_terms(.as1m), .as1m$rows_raw) &&
@@ -6890,7 +6929,7 @@ check("AS09 the multiple-response table (ruling R60): the stub \"Category\" (R88
   list(p1 = res(print(t1))$txt, p2 = res(print(t2))$txt,
        rep = sub("\\s+to\\s.*$", "", rep), d = .aqdx(f)$doc)
 }))
-check("AS10 the multiple-response table's preview, pinned whole under apa and under report (the note a line a sentence, the source last on its own line); the report's line \"1 set of 4 options\"; the Word file's caption, option rows, count and percentage cells and note row",
+check("AS10 the multiple-response table's preview, pinned whole under apa and under report (the note a line a sentence, the source last on its own line); the report's line \"1 set of 4 items\" (\"options\" until S425); the Word file's caption, category rows, count and percentage cells and note row",
       !is.null(.as10) &&
         identical(.as10$p1, paste0("Table 1\nServices used (N = 10)\n-------------------------\n",
                                    "Category          n    %\n-------------------------\n",
@@ -6906,7 +6945,7 @@ check("AS10 the multiple-response table's preview, pinned whole under apa and un
                                    "None of these     3  30.0\n-------------------------\n",
                                    "Note: A case can be counted in more than one category, so the percentages\n",
                                    "sum to more than 100.\nAsked in 2026.\nSource: Services survey.\n")) &&
-        identical(.as10$rep, "Table 1. Services used (N = 10)\n  1 set of 4 options, on a portrait page.\nTable written") &&
+        identical(.as10$rep, "Table 1. Services used (N = 10)\n  1 set of 4 items, on a portrait page.\nTable written") &&
         grepl(">Services used (</w:t>", .as10$d, fixed = TRUE) &&
         all(vapply(c(">Counselling<", ">Financial advice<", ">None of these<", ">50.0<", ">20.0<",
                      "A case can be counted in more than one category, so the percentages sum to more than 100.<"),
@@ -6923,14 +6962,14 @@ check("AS10 the multiple-response table's preview, pinned whole under apa and un
        hd = res(jtable(.as1m, headings = list(A = LegalAid), print = FALSE)),
        mk = res(jtable(.as1m, markers = list("Asked from 2025." = Financial), print = FALSE))$val)
 }))
-check("AS11 each jmulti() result is a table of its own: two in one list stop with ruling R56's lines, the reason in a multiple-response table's words; a list beside a result of another kind stops; headings = stops; markers = marks an option's row by its item's name and writes its note",
+check("AS11 each jmulti() result is a table of its own: two in one list stop with ruling R56's lines, the reason in a multiple-response table's words; a list beside a result of another kind stops; headings = stops; markers = marks a category's row by its item's name and writes its note (the stops' words since S425: items, categories)",
       !is.null(.as11) &&
         startsWith(.as11$two$txt, paste0("[error] jtable(): each jmulti() result is a table of its own.\n",
-                                         "To put more options in one table, name them in one jmulti() call.\n",
+                                         "To put more items in one table, name them in one jmulti() call.\n",
                                          "Make each table in a call of its own, then give the tables together to write\n",
                                          "them to one file:\n")) &&
         grepl("results of different kinds (jmulti() and jdesc()) cannot", .as11$mix$txt, fixed = TRUE) &&
-        identical(.as11$hd$txt, "[error] jtable(): headings = puts the variables of a descriptives or\nfrequency table under role headings; a multiple-response table lists its\noptions in the order jmulti() gave them.") &&
+        identical(.as11$hd$txt, "[error] jtable(): headings = puts the variables of a descriptives or\nfrequency table under role headings; a multiple-response table lists its\ncategories in the order jmulti() gave them.") &&
         identical(vapply(.as11$mk$rows, function(r) paste(r$marks, collapse = ""), ""), c("", "", "", "a", "")) &&
         identical(vapply(.as11$mk$notes$specific, `[[`, "", "text"), "Asked from 2025."))
 
@@ -7852,7 +7891,7 @@ check("AU05 jplot() on a jmulti() result draws the ranked bar chart (ruling R67)
         identical(.au5$txt, "") &&
         identical(.au5$f$kind, "ranked") && identical(as.integer(.au5$f$n), .asx$n) &&
         identical(.au5$f$title, "Services used") && isTRUE(.au5$f$flip) &&
-        identical(.au5$f$data$Category, c(.as1m$rows_raw$option[1:4], "None of these")) &&
+        identical(.au5$f$data$Category, c(.as1m$rows_raw$category[1:4], "None of these")) &&
         identical(.au5$f$data$n, .as1m$rows_raw$n) && identical(.au5$ylab, .au5$f$data$Category) &&
         isTRUE(all.equal(.au5$rect$percent, .as1m$rows_raw$percent)) &&
         isTRUE(all.equal(-.au5$rect$y, c(1, 2, 3, 4, 5.5))) &&
@@ -9178,6 +9217,44 @@ check("AX10b the note's folder from either shape of home folder: Windows's Docum
 
 options(.jst_output_level = .axlv, .jst_output_toggles = .axtg, jstats.color = .axco)
 rm(.axcalls, .axuc)
+
+# =============================================================================
+# AY. The multiple-response set's words (S425, v0.9.285): the ruling on the
+#     survey words R88 left in jmulti(), its table and its style file -- a
+#     case is what is counted, a category what each item stands for, an
+#     item a variable, the value counted what ticked = names
+# =============================================================================
+cat("\n--- AY. The multiple-response set's words ---\n")
+
+# A complete copy's [multiresponse] section, and ?jstyle_settings' entries.
+.ay1 <- .aqtry(local({
+  f <- file.path(.asd, "ay1")
+  invisible(res(jstyle("apa", save.as = f)))
+  x <- readLines(paste0(f, ".jstyle"), encoding = "UTF-8")
+  i <- match("[multiresponse]", x)
+  j <- which(startsWith(x, "["))
+  list(sec = x[i:(min(c(j[j > i], length(x) + 1L)) - 1L)],
+       rd = paste(.jst_style_settings_rd(), collapse = "\n"))
+}))
+check("AY01 the style file's notes on the [multiresponse] settings speak of cases and categories (S425): columns, n the cases in the category and percent of N; none.label, the row of cases in none of the categories -- in a complete copy and on ?jstyle_settings",
+      !is.null(.ay1) &&
+        "# the columns, in order: n (the cases in the category), percent (of N)" %in% .ay1$sec &&
+        "# the label of the row of cases in none of the categories" %in% .ay1$sec &&
+        grepl("\\item{\\code{columns}}{the columns, in order: n (the cases in the category), percent (of N). Takes", .ay1$rd, fixed = TRUE) &&
+        grepl("\\item{\\code{none.label}}{the label of the row of cases in none of the categories. Takes", .ay1$rd, fixed = TRUE))
+
+# Every text jmulti() and its table gave above, swept for the survey words.
+.ay2 <- .aqtry(c(vapply(.as5, function(r) r$txt, ""), .as6$std,
+                 vapply(.as6$fulln, `[[`, "", "text"), vapply(.as7$an, `[[`, "", "text"),
+                 .as10$p1, .as10$p2, .as10$rep, .as11$two$txt, .as11$hd$txt, .ay1$sec))
+check("AY02 no stop, Console output, note, preview, report line or style-file note that jmulti() and its table give speaks of answering, choosing, options, a person or everyone (S425; R88's words carried through): jmulti()'s fifteen stops, its Console output and both its notes, the two previews, the report, jtable()'s two stops on a jmulti() result, the [multiresponse] section of a style file",
+      !is.null(.ay2) && length(.ay2) >= 25L &&
+        !any(grepl("answered|chose|option|person|everyone", .ay2, ignore.case = TRUE)))
+
+check("AY03 a jmulti() result's frames name the category (S425): its table's first column Category, as the publication table's stub; rows_raw's category column, which the table and the chart read through the accessor",
+      identical(names(.as1m$table), c("Category", "Freq", "Percent")) &&
+        identical(names(.as1m$rows_raw)[3], "category") &&
+        identical(.jst_apa_terms(.as1m)$category, .as1m$rows_raw$category))
 
 grDevices::dev.off(.atdev)
 rm(.atdx, .atpng, .atn, .atdev, .augeoms, .aulayer, .aufill, .auarea)

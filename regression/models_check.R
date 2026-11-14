@@ -83,6 +83,24 @@
 #           re-verified live S300. Section F, D09/D10/D12 re-pinned, the
 #           xa and h fixture columns, with_state(), and the error-safe
 #           shown(): S306 (v0.9.177), the S305 header item.
+# S425 EDIT (v0.9.285, 2026-11-14): a jdummy() registration stored before
+#           v0.9.176 -- its rebuild removed (the (S424) registration item;
+#           ruling R87, Jeff, S424: "Yes, remove this. It should not affect
+#           anyone and just complicates things."). Section A REWRITTEN, 11
+#           checks to 3: A01 and A02 a factor's and a text variable's
+#           registration labelled from its stored values whatever the
+#           column in hand holds; A03 .jst_dummy_category_values() gone and
+#           .jst_dummy_canon() without its A-to-Z form. The checks of a
+#           registration with no values (A02-A11), and D11 and D12 (the same
+#           through jlm()), removed with the code. 567 -> 557 checks. On the
+#           build before (v0.9.284) A03 reads red, and no other. Mutants:
+#           the helper put back, the ascii argument put back, a
+#           registration's codes read for its values -- each red. SANDBOX:
+#           557/557 eight ways, as tables_check.R (its S425 EDIT block), and
+#           entered dirty, plain and under the handlers, nothing changed.
+#           LAST VERIFIED: v0.9.285, 2026-11-14 (S425) -- 557/557 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3725 checks)"; R CMD check 0 errors, 0 warnings, 0 notes).
 # S424 EDIT (v0.9.284, 2026-11-14): the clean-up build -- ruling R87
 #           (S423: until the first CRAN release, no code for an object an
 #           earlier build saved). Y05 loses its last part, the stop for a
@@ -1543,53 +1561,25 @@ d$h  <- rep(c("p", "q", "r"), length.out = .nrow)
 .glm_g  <- stats::glm(yb ~ g, data = d, family = stats::binomial)
 
 # =============================================================================
-# A. .jst_dummy_category_values() -- stored, and reconstructed
+# A. A registration's stored values (S425: the rebuild of one stored before
+#    v0.9.176 removed under ruling R87; S424, Jeff: "Yes, remove this. It
+#    should not affect anyone and just complicates things.")
 # =============================================================================
-cat("\n--- A. .jst_dummy_category_values() ---\n")
+cat("\n--- A. A registration's stored values ---\n")
 
 .regf <- .jst_make_dummy_names(d$gf, "gf")
 .regf$var_name <- "gf"
-.rego <- .regf; .rego$values <- NULL      # an OLD-version registration
-
-check("A01 a stored values field is returned as-is",
-      identical(.jst_dummy_category_values(.regf, d$gf), c("a", "b", "c", "d")))
-check("A02 old factor registration: reconstructed in code order",
-      identical(.jst_dummy_category_values(.rego, d$gf), c("a", "b", "c", "d")))
-check("A03 old factor registration, a category absent from the column: its slot is NA, the LATER positions do not shift", local({
-  col <- droplevels(d$gf[d$gf != "b"])
-  identical(.jst_dummy_category_values(.rego, col), c("a", NA, "c", "d"))
-}))
-check("A04 old factor registration, an unused level in the column: ignored, not positioned", local({
-  col <- factor(d$g, levels = c("a", "z", "b", "c", "d"))
-  identical(.jst_dummy_category_values(.rego, col), c("a", "b", "c", "d"))
-}))
 .regc <- .jst_make_dummy_names(d$g, "g"); .regc$var_name <- "g"
-.regco <- .regc; .regco$values <- NULL
-check("A05 old character registration: reconstructed from the sorted values",
-      identical(.jst_dummy_category_values(.regco, d$g), c("a", "b", "c", "d")))
-check("A06 old character registration, a category absent: NA slot, no shift",
-      identical(.jst_dummy_category_values(.regco, d$g[d$g != "c"]),
-                c("a", "b", NA, "d")))
-check("A07 old character registration: a blank cell is not a candidate",
-      identical(.jst_dummy_category_values(.regco, d$gb), c("a", "b", "c", "d")))
-check("A08 old registration whose label needed the anti-stutter step still matches", local({
-  col <- c("g_one", "g_two", "g_one", "g_two")
-  r   <- .jst_make_dummy_names(col, "g"); r$var_name <- "g"; r$values <- NULL
-  identical(.jst_dummy_category_values(r, col), c("g_one", "g_two"))
-}))
-check("A09 old registration: a value whose canonical name is empty stays NA rather than mis-positioning", local({
-  col <- c("***", "b", "***", "b")
-  r   <- .jst_make_dummy_names(col, "g"); r$var_name <- "g"; r$values <- NULL
-  identical(.jst_dummy_category_values(r, col), c(NA, "b"))
-}))
-.regn <- .jst_make_dummy_names(d$nm, "nm"); .regn$var_name <- "nm"
-.regno <- .regn; .regno$values <- NULL
-check("A10 numeric registration: the codes ARE the values (old form too)",
-      identical(.jst_dummy_category_values(.regno, d$nm), .regn$codes))
-.regh <- .jst_make_dummy_names(d$hv, "hv"); .regh$var_name <- "hv"
-.regho <- .regh; .regho$values <- NULL
-check("A11 haven registration: the codes are the values (old form too)",
-      identical(.jst_dummy_category_values(.regho, d$hv), .regh$codes))
+
+check("A01 a factor registration is labelled from its stored values, whatever the column in hand holds: a category filtered out of the column shifts no label after it",
+      identical(.jst_reg_value_labels(.regf, droplevels(d$gf[d$gf != "b"])),
+                stats::setNames(.regf$codes, c("a", "b", "c", "d"))))
+check("A02 ... a character registration the same: a category absent from the column, every other category on its own code",
+      identical(.jst_reg_value_labels(.regc, d$g[d$g != "c"]),
+                stats::setNames(.regc$codes, c("a", "b", "c", "d"))))
+check("A03 the code that rebuilt the values of a registration stored before v0.9.176 is gone (S425, ruling R87): no .jst_dummy_category_values(), and .jst_dummy_canon() has no A-to-Z form for names made before S390",
+      !exists(".jst_dummy_category_values", envir = asNamespace("jstats"), inherits = FALSE) &&
+        identical(names(formals(.jst_dummy_canon)), "x"))
 
 # =============================================================================
 # B. .jst_make_dummy_names() returns values for every input type
@@ -1766,26 +1756,8 @@ check("D10 ... and the coefficients on those rows are the c-vs-b and d-vs-b diff
   near(b_of(m, "gf_c"), mean(dd$y[dd$g == "c"]) - mean(dd$y[dd$g == "b"])) &&
     near(b_of(m, "gf_d"), mean(dd$y[dd$g == "d"]) - mean(dd$y[dd$g == "b"]))
 })
-check("D11 an OLD-version registration (no values) on a character IV: fits through the reconstruction", {
-  quiet(jdummy(d, g))
-  ds <- .jst_get_dummy("d"); ds[[1]]$values <- NULL; .jst_set_dummy("d", ds)
-  m <- quiet(jlm(y ~ g, data = d))
-  quiet(jdummy(d, g, remove = TRUE))
-  near(b_of(m, "g_c"), coef(.lm_g)[["gc"]])
-})
-check("D12 an OLD-version factor registration under a filter that drops the reference: rows labeled right, header re-referenced", {
-  # RE-PINNED S306: the reconstruction pins each present value to its
-  # registered code, so the rows are c and d under a header naming b.
-  # The absent a's value cannot be reconstructed from the filtered
-  # frame, so the note shows its bare code (1) -- the same fallback the
-  # header used for it before S306.
-  quiet(jdummy(d, gf))
-  ds <- .jst_get_dummy("d"); ds[[1]]$values <- NULL; .jst_set_dummy("d", ds)
-  out <- shown(jlm(y ~ gf, data = d, subset = gf != "a"))
-  quiet(jdummy(d, gf, remove = TRUE))
-  grepl("gf (ref = 2: b)", out, fixed = TRUE) &&
-    grepl("\n\\s+3: c\\s", out) && grepl("\n\\s+4: d\\s", out)
-})
+# D11 and D12 (an OLD-version registration with no values, on a character
+# IV and under a filter) removed S425 with the code they tested (ruling R87).
 check("D13 numeric and haven IVs: unchanged (agree with lm() on factors of the codes)", {
   m1 <- quiet(jlm(y ~ nm, data = d, categorical = "nm"))
   m2 <- quiet(jlm(y ~ hv, data = d, categorical = "hv"))
