@@ -145,7 +145,13 @@
 #           PLUS (S371, section AG) ruling R23 (a line that would stop again
 #           for a missing input gets ruling R22's stop), the offered lines
 #           of the front doors that stopped when run (the S371 audit), and
-#           the recode family's map and labels stops laid out.
+#           the recode family's map and labels stops laid out -- PLUS (S426,
+#           section AQ) A RANGE OF VARIABLES, A:B, IN EVERY VARIABLE LIST
+#           (ruling R90): jcorr(), jscreen(), jcomplete(),
+#           jdeclare_missing(), jconvert(), jdummy(), jnumeric(), jcount()
+#           and jlikert() read it as the call naming each variable, and with
+#           no data frame named a range typed first gets the lines a name
+#           gets.
 # ORIGIN:   S289 (design S284 / S288; code S289 v0.9.163); sections F and
 #           G, the A rewrite, the Under40 fixture column, and the bare-name
 #           message re-assertions (A01 A02 D01-D03 F06) S290 (v0.9.164);
@@ -161,6 +167,41 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S426 EDIT (v0.9.286, 2026-11-14): SECTION AQ ADDED, eight checks. Ruling
+#           R90 (S426, Jeff: "all nine."): a range of variables, A:B, in
+#           the variable lists of jcorr(), jscreen(), jcomplete(),
+#           jdeclare_missing(), jconvert(), jdummy(), jnumeric(), jcount()
+#           and jlikert(), as jdesc() and jfreq() have taken one since S416
+#           (Y06) -- the S355 scope, which kept a range "not found", now
+#           reversed for every variable list. AQ01-AQ04 compare a range
+#           with the call naming each variable -- result, output, notes,
+#           what is stored or registered; AQ05 the same under a juse()
+#           default; AQ06 the range's own stops in all nine, and a helper
+#           and a range inside c() still stopping; AQ07 a range typed first
+#           with no data frame named, pinned whole: the data frame holding
+#           its ends and the whole call kept, each line run (v0.9.285 had
+#           MyData and the range alone, codes = dropped), MyData where no
+#           frame holds them, ruling R23's stop where the line would stop
+#           again, the declared-variables case that meets no gate, and
+#           data = given a range; AQ08 every function whose list opens a
+#           c() also writes out a range (a presence check over the
+#           namespace). 671 -> 679 checks.
+#           On v0.9.285 the eight read red and no other (671/679). Each
+#           changed site went red on a one-change mutant: 11 mutants (the
+#           seven expansion sites, the resolver's frame, its whole-call
+#           lines and its R23 check, the declared-gap helper), none
+#           surviving.
+#           SANDBOX: 679/679 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, through a symlinked
+#           temp path, interactive with no question asked, with a graphics
+#           device open (left open and current), under the stand-in of
+#           RStudio's Console color rule, and entered dirty (plain and
+#           under the handlers: no name, value, option or device changed).
+#           All twelve batteries 3733 each way.
+#           LAST VERIFIED: v0.9.286, 2026-11-14 (S426) -- 679/679 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3733 checks)"; R CMD check 0 errors, 0 warnings, 0 notes) at the
+#           first run, matching the sandbox. GitHub c3cff51 (package).
 # S416 EDIT (v0.9.280, 2026-11-10): Y06 AND AE08 RE-PINNED; GUARD 6 ADDED.
 #           Capability Slate U's charts, build 3. Y06: a range in jdesc()'s
 #           and jfreq()'s list names every variable from its first to its
@@ -5215,7 +5256,9 @@ reset()
 # family's). (b) A quoted name is accepted wherever a variable is named:
 # jrecode(), jrelabel() and jencode() strip the quotes as the other slots
 # do; a variable list, and the single-variable slots, take a c() of names,
-# bare or quoted (no ranges, no helpers). (c) A bare word where a quoted
+# bare or quoted (no ranges, no helpers; since S416 jdesc() and jfreq(), and
+# since S426 every variable list, take a range: Y06, section AQ). (c) A
+# bare word where a quoted
 # value goes gets jload()'s pointer with the call to run, at every argument
 # that takes a fixed word, and (rider B) at the free-text slots -- a name,
 # a sheet, a folder, a category. (d) On the vector path, when a data frame
@@ -7663,6 +7706,206 @@ check("AP07 the stop comes before anything is evaluated or printed: no title on 
           startsWith(x$m, paste0("jlm(): ", .ap_head)) &&
           isFALSE(get("hit97", envir = ws)) }))
 rm(.ap_frame, .ap_ws, .ap_grab, .ap_runs, .ap_head)
+
+# =============================================================================
+# AQ -- A RANGE OF VARIABLES IN EVERY VARIABLE LIST (S426, ruling R90)
+# =============================================================================
+# jcorr(), jscreen(), jcomplete(), jdeclare_missing(), jconvert(), jdummy(),
+# jnumeric(), jcount() and jlikert() take a range of variables, A:B -- every
+# variable from A to B in the data frame's order -- as jdesc() and jfreq()
+# have since S416 (Y06; tables_check.R AU15) and jalpha(), jmulti() and
+# jplot() before them (ruling R90, Jeff, S426: "all nine."). Until v0.9.286
+# each stopped "Environment1:Environment5 was not found in the d data
+# frame." / "Check the spelling.", the S355 scope (ruling R18: no ranges).
+# Each check runs the range beside the same call naming every variable and
+# compares the result, what the call printed and what it stored. A helper,
+# and a range inside c(), keep the not-found stop. With no data frame
+# named, a range typed first gets the lines a name gets -- the data frame
+# holding both its ends, the whole call kept -- where v0.9.285 offered
+# MyData and the range alone (jdeclare_missing(MyData,
+# Environment1:Environment3), codes = dropped: a line that stopped again).
+# Each call runs in a stand-in workspace holding only the check's frame
+# (.aq_ws()), as group AP's do. Pins filled by running.
+# =============================================================================
+cat("\n--- AQ. A range of variables in every variable list ---\n")
+
+.aq_ws <- function() {
+  ws <- new.env(parent = baseenv())
+  assign("q26", as.data.frame(community[, c(
+    "Income", "Education", "Age", "WellbeingScore", "Volunteer", "OwnsHome", "Smoker",
+    "Environment1", "Environment2", "Environment3", "Environment4",
+    "Environment5")]), envir = ws)
+  for (f in c("jcorr", "jscreen", "jcomplete", "jdeclare_missing", "jconvert",
+              "jdummy", "jnumeric", "jcount", "jlikert", "juse"))
+    assign(f, get(f), envir = ws)
+  ws
+}
+# .aq_run(): the call run where it was typed -- its value, its standard
+# output (color stripped), every note and warning in order, and its error.
+.aq_run <- function(cl, ws) {
+  msg <- character(0); err <- NA_character_
+  out <- utils::capture.output(val <- withCallingHandlers(
+    tryCatch(eval(str2lang(cl), ws),
+             error = function(e) { err <<- conditionMessage(e); NULL }),
+    message = function(m) {
+      msg <<- c(msg, conditionMessage(m)); invokeRestart("muffleMessage")
+    },
+    warning = function(w) {
+      msg <<- c(msg, conditionMessage(w)); invokeRestart("muffleWarning")
+    }))
+  list(val = val, out = gsub("\033\\[[0-9;]*[A-Za-z]", "", out), msg = msg,
+       err = err)
+}
+# .aq_same(): two runs that both ran, printed something, and agree in every
+# part.
+.aq_same <- function(a, b) {
+  is.na(a$err) && is.na(b$err) && identical(a$val, b$val) &&
+    identical(a$out, b$out) && identical(a$msg, b$msg) &&
+    length(c(a$out, a$msg)) > 0L
+}
+.aq_quiet <- function(cl, ws) invisible(.aq_run(cl, ws))
+# .aq_runs(): the call under "Name the data frame first:" -- its first line
+# and the lines laid out under it, four spaces further in -- run where the
+# call was typed; TRUE when it does not stop.
+.aq_runs <- function(m, ws) {
+  ln <- strsplit(m, "\n", fixed = TRUE)[[1]]
+  i  <- which(ln == "Name the data frame first:")
+  if (length(i) != 1L) return(FALSE)
+  j <- i + 1L
+  while (j < length(ln) && startsWith(ln[j + 1L], "      ")) j <- j + 1L
+  is.na(.aq_run(paste(trimws(ln[(i + 1L):j]), collapse = " "), ws)$err)
+}
+
+check("AQ01 jcorr() and jscreen() read a range as the variables from its first to its last: the result, the output and the notes are those of the call naming each, alone and beside other names (ruling R90; it was \"not found\")",
+      local({ ws <- .aq_ws()
+        .aq_same(.aq_run("jcorr(q26, Environment1:Environment3)", ws),
+                 .aq_run("jcorr(q26, Environment1, Environment2, Environment3)", ws)) &&
+          .aq_same(.aq_run("jcorr(q26, Age, Environment4:Environment5, WellbeingScore, method = \"spearman\")", ws),
+                   .aq_run("jcorr(q26, Age, Environment4, Environment5, WellbeingScore, method = \"spearman\")", ws)) &&
+          .aq_same(.aq_run("jscreen(q26, Volunteer:Environment1)", ws),
+                   .aq_run("jscreen(q26, Volunteer, OwnsHome, Smoker, Environment1)", ws)) }))
+check("AQ02 jcomplete() given a range stores the variables it names, and prints what naming each prints",
+      local({ ws <- .aq_ws()
+        st <- function() getOption(".jst_complete", default = list())[["q26"]]
+        on.exit(.aq_quiet("jcomplete(q26, NULL)", ws), add = TRUE)
+        a <- .aq_run("jcomplete(q26, Age:Volunteer)", ws); sa <- st()
+        .aq_quiet("jcomplete(q26, NULL)", ws)
+        b <- .aq_run("jcomplete(q26, Age, WellbeingScore, Volunteer)", ws); sb <- st()
+        .aq_same(a, b) && identical(sa, sb) &&
+          identical(unname(sa$vars), c("Age", "WellbeingScore", "Volunteer")) }))
+check("AQ03 jdeclare_missing() and jconvert() given a range return the data frame, and print the notes, of the call naming each variable",
+      local({ ws <- .aq_ws()
+        dm <- .aq_run("jdeclare_missing(q26, Environment1:Environment3, codes = 9, convention = \"spss\")", ws)
+        .aq_same(dm, .aq_run("jdeclare_missing(q26, Environment1, Environment2, Environment3, codes = 9, convention = \"spss\")", ws)) &&
+          identical(attr(dm$val$Environment2, "na_values"), 9) &&
+          is.null(attr(dm$val$Environment4, "na_values")) &&
+          .aq_same(.aq_run("jconvert(q26, Environment1:Environment3, to = \"stata\")", ws),
+                   .aq_run("jconvert(q26, Environment1, Environment2, Environment3, to = \"stata\")", ws)) }))
+check("AQ04 jnumeric(), jcount(), jlikert() and jdummy() given a range register the variables it names, and print what naming each prints",
+      local({ ws <- .aq_ws()
+        reg <- function() list(getOption(".jst_registry", default = list())[["q26"]],
+                               getOption(".jst_dummy", default = list())[["q26"]])
+        clr <- function() for (f in c("jnumeric", "jcount", "jlikert", "jdummy"))
+          .aq_quiet(paste0(f, "(q26, NULL)"), ws)
+        on.exit(clr(), add = TRUE)
+        pair <- function(r, n) {
+          a <- .aq_run(r, ws); ra <- reg(); clr()
+          b <- .aq_run(n, ws); rb <- reg(); clr()
+          .aq_same(a, b) && identical(ra, rb) && length(unlist(ra)) > 0L
+        }
+        pair("jnumeric(q26, Environment1:Environment3)",
+             "jnumeric(q26, Environment1, Environment2, Environment3)") &&
+          pair("jcount(q26, Environment4:Environment5)",
+               "jcount(q26, Environment4, Environment5)") &&
+          pair("jlikert(q26, Environment1:Environment5)",
+               "jlikert(q26, Environment1, Environment2, Environment3, Environment4, Environment5)") &&
+          pair("jdummy(q26, Volunteer:Smoker)",
+               "jdummy(q26, Volunteer, OwnsHome, Smoker)") }))
+check("AQ05 under a juse() default a range is the default frame's variables, in jcorr(), jscreen(), jcomplete(), jdeclare_missing(), jconvert() and jlikert()",
+      local({ ws <- .aq_ws(); old <- getOption(".jst_default_data")
+        on.exit({ .aq_quiet("jcomplete(q26, NULL)", ws)
+                  .aq_quiet("jlikert(q26, NULL)", ws)
+                  options(.jst_default_data = old) }, add = TRUE)
+        options(.jst_default_data = "q26")
+        # The default frame read: its line under the title, or -- for
+        # jdeclare_missing() and jconvert(), which print none -- its data
+        # frame returned.
+        cj <- function(r, n, clear = NULL, frame = FALSE) {
+          a <- .aq_run(r, ws); if (!is.null(clear)) .aq_quiet(clear, ws)
+          b <- .aq_run(n, ws); if (!is.null(clear)) .aq_quiet(clear, ws)
+          .aq_same(a, b) &&
+            if (frame) is.data.frame(a$val) && identical(names(a$val), names(ws$q26))
+            else any(a$out == "Using default data frame: q26")
+        }
+        cj("jcorr(Environment1:Environment3)", "jcorr(Environment1, Environment2, Environment3)") &&
+          cj("jscreen(Environment4:Environment5)", "jscreen(Environment4, Environment5)") &&
+          cj("jcomplete(Age:Volunteer)", "jcomplete(Age, WellbeingScore, Volunteer)",
+             clear = "jcomplete(q26, NULL)") &&
+          cj("jdeclare_missing(Environment1:Environment3, codes = 9, convention = \"spss\")",
+             "jdeclare_missing(Environment1, Environment2, Environment3, codes = 9, convention = \"spss\")",
+             frame = TRUE) &&
+          cj("jconvert(Environment1:Environment3, to = \"stata\")",
+             "jconvert(Environment1, Environment2, Environment3, to = \"stata\")",
+             frame = TRUE) &&
+          cj("jlikert(Environment1:Environment3)",
+             "jlikert(Environment1, Environment2, Environment3)", clear = "jlikert(q26, NULL)") }))
+check("AQ06 in each of the nine a range's own stops are jalpha()'s, under the function's name -- endpoints the wrong way round get the range reversed, an end not found the not-found sentence -- and a selection helper and a range inside c() keep the not-found stop",
+      local({ ws <- .aq_ws()
+        rest <- c(jcorr = "", jscreen = "", jcomplete = "",
+                  jdeclare_missing = ", codes = 9, convention = \"spss\"",
+                  jconvert = ", to = \"stata\"", jdummy = "", jnumeric = "",
+                  jcount = "", jlikert = "")
+        ok <- vapply(names(rest), function(fn) {
+          g <- function(v) flat(grab(eval(str2lang(paste0(fn, "(q26, ", v, rest[[fn]], ")")), ws)))
+          rv  <- g("Environment5:Environment1")
+          nf  <- g("Environment1:Environment9")
+          hp  <- g("starts_with(\"E\")")
+          inc <- g("c(Age, Environment1:Environment2)")
+          identical(rv, paste0(fn, "(): In Environment5:Environment1, 'Environment5' comes after 'Environment1' in the column order of q26. Reverse the order: Environment1:Environment5")) &&
+            identical(nf, paste0(fn, "(): Environment9 was not found in the q26 data frame. Check the spelling.")) &&
+            startsWith(hp, paste0(fn, "(): starts_with(\"E\") was not found in the q26 data frame.")) &&
+            startsWith(inc, paste0(fn, "(): c(Age, Environment1:Environment2) was not found in the q26"))
+        }, logical(1))
+        if (!all(ok)) cat("        failed for: ", paste(names(rest)[!ok], collapse = ", "), "\n")
+        all(ok) }))
+check("AQ07 with no data frame named, a range typed first gets the lines a name gets: the data frame holding both its ends and the whole call kept, each line running (pinned whole); MyData when no data frame holds them; ruling R23's stop when the line would stop again",
+      local({ ws <- .aq_ws(); old <- getOption(".jst_options_missing_convention")
+        oldd <- getOption(".jst_default_data")
+        on.exit(options(.jst_options_missing_convention = old,
+                        .jst_default_data = oldd), add = TRUE)
+        options(.jst_options_missing_convention = .jst_options_defaults$missing.convention,
+                .jst_default_data = NULL)
+        g <- function(cl) grab(eval(str2lang(cl), ws))
+        dm <- g("jdeclare_missing(Environment1:Environment3, codes = 9, convention = \"spss\")")
+        co <- g("jcorr(Environment1:Environment3, method = \"spearman\")")
+        lk <- g("jlikert(Environment4:Environment5)")
+        my <- g("jcorr(Zq1:Zq3)")
+        gp <- g("jdeclare_missing(Environment1:Environment3, codes = 9)")
+        # Income and Education both carry declarations of their own, so
+        # with no convention the call meets no gate and the line runs.
+        dg <- g("jdeclare_missing(Income:Education, codes = 9)")
+        # Given as data =, the range keeps its place and the line names the
+        # frame, as data = Age does.
+        da <- g("jcorr(data = Environment1:Environment2)")
+        identical(dm, "jdeclare_missing(): Environment1:Environment3 needs a data frame,\nand none was named or set as the default.\nName the data frame first:\n  jdeclare_missing(q26, Environment1:Environment3, codes = 9,\n      convention = \"spss\")\nOr set a default first, then run the call:\n  juse(q26)\n  jdeclare_missing(Environment1:Environment3, codes = 9,\n      convention = \"spss\")") && identical(co, "jcorr(): Environment1:Environment3 needs a data frame, and none was\nnamed or set as the default.\nName the data frame first:\n  jcorr(q26, Environment1:Environment3, method = \"spearman\")\nOr set a default first, then run the call:\n  juse(q26)\n  jcorr(Environment1:Environment3, method = \"spearman\")") && identical(lk, "jlikert(): Environment4:Environment5 needs a data frame, and none\nwas named or set as the default.\nName the data frame first:\n  jlikert(q26, Environment4:Environment5)\nOr set a default first, then run the call:\n  juse(q26)\n  jlikert(Environment4:Environment5)") &&
+          identical(my, "jcorr(): Zq1:Zq3 needs a data frame, and none was named or set as\nthe default.\nName the data frame first:\n  jcorr(MyData, Zq1:Zq3)\nOr set a default first, then run the call:\n  juse(MyData)\n  jcorr(Zq1:Zq3)") && identical(gp, "jdeclare_missing(): no data frame and no convention were named.\nName a data frame, one or more of its variables, the codes and a convention,\nfor example:\n  jdeclare_missing(community, Age, codes = -99, convention = \"spss\")") && identical(dg, "jdeclare_missing(): Income:Education needs a data frame, and none\nwas named or set as the default.\nName the data frame first:\n  jdeclare_missing(q26, Income:Education, codes = 9)\nOr set a default first, then run the call:\n  juse(q26)\n  jdeclare_missing(Income:Education, codes = 9)") &&
+          identical(da, "jcorr(): Environment1:Environment2 needs a data frame, and none was\nnamed or set as the default.\nName the data frame first:\n  jcorr(q26, Environment1:Environment2)\nOr set a default first, then run the call:\n  juse(q26)\n  jcorr(Environment1:Environment2)") &&
+          .aq_runs(dm, ws) && .aq_runs(co, ws) && .aq_runs(lk, ws) && .aq_runs(dg, ws) &&
+          { .aq_quiet("jlikert(q26, NULL)", ws); TRUE } }))
+check("AQ08 every function whose variable list opens a c() (.jst_expand_vars()) also writes out a range (.jst_expand_ranges() or .jst_resolve_varrange()), so a variable list added later cannot leave the range out (a presence check over the namespace; AQ01-AQ05 test the behavior)",
+      local({ ns <- asNamespace("jstats")
+        has_call <- function(f, what) {
+          obj <- get(f, envir = ns)
+          is.function(obj) && grepl(what, paste(deparse(obj), collapse = "\n"), fixed = TRUE)
+        }
+        fns <- setdiff(Filter(function(f) has_call(f, ".jst_expand_vars("),
+                              ls(ns, all.names = TRUE)), ".jst_expand_vars")
+        bad <- fns[!vapply(fns, function(f) has_call(f, ".jst_expand_ranges(") ||
+                                              has_call(f, ".jst_resolve_varrange("),
+                           logical(1))]
+        if (length(bad)) cat("        no range in: ", paste(bad, collapse = ", "), "\n")
+        length(fns) >= 13L && length(bad) == 0L }))
+rm(.aq_ws, .aq_run, .aq_same, .aq_quiet, .aq_runs)
 
 # =============================================================================
 # P -- THE MESSAGE SURFACE, SWEPT (S337)
