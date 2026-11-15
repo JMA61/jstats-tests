@@ -205,9 +205,18 @@
 #           on two sentences and the joptions(style.dir =) line naming
 #           Documents/jstats styles by its full path; with one set, none;
 #           the list's line and the note's (AX10) from one helper.
+#           (BA) saving a result or a table (S429, v0.9.288; Jeff's ruling,
+#           reversing Session 406's stops): jsave() keeps a saved result or
+#           a table jtable() built in R format (.rds), named for the object
+#           when the call names no file, in the data folder, behind the
+#           same question; jload() reads it back under the file's name;
+#           what jsave() refuses before anything is written; a chart
+#           refused; a file name typed bare with a dash or a slash in it;
+#           a name with a dot in it found.
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.287, 2026-11-14 (S427) -- 384/384 on the WORKSTATION;
-#           the S427 EDIT block below holds the stamp. Prior: v0.9.285,
+# LAST VERIFIED: v0.9.288, 2026-11-15 (S429) -- 396/396 on the WORKSTATION;
+#           the S429 EDIT block below holds the stamp. Prior: v0.9.287,
+#           2026-11-14 (S427) -- 384/384 (the S427 EDIT block); v0.9.285,
 #           2026-11-14 (S425) -- 381/381 (the S425 EDIT block); v0.9.284,
 #           2026-11-14 (S424) -- 378/378 (the S424 EDIT block); v0.9.283,
 #           2026-11-14 (S423) -- 377/377 (the S423 EDIT block); v0.9.282,
@@ -255,6 +264,87 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S429 EDIT (v0.9.288, 2026-11-14): saving a result or a table -- Jeff's
+#           ruling, reversing Session 406's stops ("Let's reverse the
+#           decision and incorporate the rest of your ideas"; the quotes
+#           kept, "Let's keep the quotes and the fix you've mentioned").
+#           RE-PINNED, each from the new build's run: AO03 (the orientation,
+#           version 3.13, its save line "Save data across sessions with
+#           `jsave()`, and a kept result or table the same way: `jsave(m1)`
+#           writes m1.rds, which `jload(\"m1\")` reads back.", where it gave
+#           base R's saveRDS()), AU17 and AV12 (version 3.13); AO04
+#           REWRITTEN: jsave() given a result or a built table writes it and
+#           jload() reads it back, where both stopped with the saveRDS() and
+#           readRDS() lines; AS08's jsave() of a jmulti() result in another
+#           format offers the save in R format (.rds). BA ADDED, twelve
+#           checks: BA01 a result saved with no file name, named for the
+#           object, in the working directory, the report and its load line,
+#           the file holding the result whole; BA02 a table and a set of
+#           tables, a name with no extension, the load line's name =, a
+#           result reached by its name in a list; BA03 jload() given the
+#           name, its one Loaded line with the version, the result typed
+#           showing its output again; BA04 a dot inside a name, saved and
+#           found, an ending that is no format's given .rds; BA05 the data
+#           folder; BA06 the refusals pinned whole -- another format, a
+#           .docx name, a table in another format, a result made in the
+#           call, one reached by position, a file name that is not text,
+#           the data frame's inputs, a call too long for one deparsed line
+#           -- nothing written; BA07 a chart refused, kept or drawn in the
+#           call; BA08 jload()'s refusals of use = TRUE and the data frame's
+#           inputs; BA09 a file name typed bare with a dash or a slash, in
+#           jload() and jsave(), and arithmetic left alone when every name
+#           is an object; BA10 where the session cannot ask: the existing
+#           file's stop, the replaced note; BA11 where it asks: the keep
+#           lines naming "the .bam1 result" and "the .ba11df data frame", n
+#           saving nothing, y replacing; BA12 a registration stored under
+#           the name not carried into a result's file. 384 -> 396 checks.
+#           THE DATA FOLDER FORCED UNSET at setup and handed back at the
+#           foot: M01 and Q01 read the joptions() panel with none set, and
+#           Q05's joptions(NULL) cleared the folder, so a session entered
+#           with one read 394/396 and came back without it. Found by the
+#           S429 dirty entry, the first with a data folder set.
+#           On the build before (v0.9.287) seventeen checks read red --
+#           AO03 AO04 AS08 AU17 AV12 and BA01-BA12 -- and no other
+#           (379/396); BA03 puts .bam1 back where the load did not, so the
+#           checks after it run there. Each changed site went red on a
+#           one-change mutant: 30 mutants of io.R, checks.R and utils.R (the
+#           bake guard; the Saved lines; the load line's name =; the file's
+#           name; an unknown ending's .rds; .docx among the formats; the
+#           Word line's test; the data-frame inputs; the no-name stop; the
+#           chart stop; jload()'s two refusals, its replaced note, its
+#           version, its return; the dot-name finder; the bare-name test,
+#           its spacing and its three calls; the keep line's word, both
+#           ways; the orientation's version and save line; the resolver's
+#           two guards; a place's last part; the not-text check; an
+#           expression's text in the lines), none surviving: m29, the last
+#           (deparse()'s text where the build gives .jst_term_text()'s),
+#           survived the first round, the two differing only for a call too
+#           long for one deparsed line, and BA06 gained that case; run again,
+#           red.
+#           SANDBOX: 396/396 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, through a symlinked
+#           temp path, interactive with no question asked, with a graphics
+#           device open (left open and current), under the stand-in of
+#           RStudio's Console color rule, and entered dirty (plain and
+#           under the handlers: no name, value, option or device changed;
+#           the dirt with a data folder and a style folder set, and
+#           workspace objects named m1, pm1 and survey). The first runs with
+#           the long temp path read BA10 red (395/396): the Found line wraps
+#           at a 61-character folder, as it would on the workstation; BA10
+#           compares that line by its words. All twelve batteries 3752 each
+#           way.
+#           WORKSTATION, the first receive: AS08 red (395/396). The line
+#           offered for a file in Windows' temporary folder escapes its
+#           backslashes, so it runs as printed, and AS08 compared the path
+#           raw; no sandbox way has a backslash in a path (reproduced there
+#           with a Windows path typed in). AS08 now parses the line and
+#           compares the file it names; the fixed file written through the
+#           bridge, and the batteries run again (receive_all(from =
+#           "batteries")): "R CMD check: 0 errors, 0 warnings, 0 notes." (the
+#           receive's), "ALL BATTERIES GREEN (12 run, 3752 checks)",
+#           tables_check.R 396/396; modify_form_walk.R Sections 10 and 44
+#           walked, "walked, all okay". The package not yet pushed at the
+#           stamp.
 # S427 EDIT (v0.9.287, 2026-11-14): the line that sets a style folder, in
 #           jstyle()'s list -- the (S427) item, Jeff's wording (S427,
 #           "Option 2"): with no style folder set, the list ends on "No
@@ -1509,13 +1599,18 @@ stopifnot(exists("jload", mode = "function"))
 .entry_style     <- getOption(".jst_options_style")
 .entry_style_dir <- getOption(".jst_options_style_dir")
 .entry_udd       <- Sys.getenv("R_USER_DATA_DIR", unset = NA)
+# And the data folder (S429): sections M and Q read the panel with none
+# set, and Q's joptions(NULL) clears it.
+.entry_data_dir  <- getOption(".jst_options_data_dir")
 
 .pin_width <- 76L
 options(.jst_options_message_width = .pin_width)
 # No call here names or leans on a convention: the slot is forced UNSET.
 options(.jst_options_missing_convention = NULL)
-# Nor on a style of the session's own: the apa default, no style folder.
-options(.jst_options_style = NULL, .jst_options_style_dir = NULL)
+# Nor on a style of the session's own: the apa default, no style folder;
+# nor on a data folder.
+options(.jst_options_style = NULL, .jst_options_style_dir = NULL,
+        .jst_options_data_dir = NULL)
 
 # The data. tp2 is the standing fixture; tcm the shipped community dataset.
 jload("E:/00 R Projects/00_jstats_test_data/datasets/community_phase2_data.rds",
@@ -5604,8 +5699,8 @@ check("AO02 the ?jstyle_settings page, generated from the settings' own notes: p
 
 .ao3 <- tryCatch(paste(.jst_orientation_body(), collapse = " "), error = function(e) "")
 .ao3 <- gsub(" +", " ", .ao3)
-check("AO03 the orientation (version 3.12; 3.11 until S419, 3.10 until S416, 3.9 until S409) holds the tables -- kept results to jtable(), one call one table, the document call, print(t1), the two built-in styles, the complete copy and the short call, open = TRUE, ?jstyle_settings, the editing rule the file heads give -- in lines no wider than 76 columns; a kept result saved with base R's saveRDS(); the skill's description names jtable and jstyle",
-      identical(.jst_orientation_version, "3.12") &&
+check("AO03 the orientation (version 3.13; 3.12 until S429, 3.11 until S419, 3.10 until S416, 3.9 until S409) holds the tables -- kept results to jtable(), one call one table, the document call, print(t1), the two built-in styles, the complete copy and the short call, open = TRUE, ?jstyle_settings, the editing rule the file heads give -- in lines no wider than 76 columns; a kept result saved with jsave() and read back with jload() (base R's saveRDS() until S429); the skill's description names jtable and jstyle",
+      identical(.jst_orientation_version, "3.13") &&
         grepl("- Publication tables come from `jtable()` on kept results:", .ao3, fixed = TRUE) &&
         grepl("One call makes one table;", .ao3, fixed = TRUE) &&
         grepl("`jtable(list(t1, t2), file = \"Tables.docx\")`", .ao3, fixed = TRUE) &&
@@ -5616,7 +5711,8 @@ check("AO03 the orientation (version 3.12; 3.11 until S419, 3.10 until S416, 3.9
         grepl("`jstyle(\"myagency\", open = TRUE)` opens it in the editor", .ao3, fixed = TRUE) &&
         grepl("`?jstyle_settings` lists every setting", .ao3, fixed = TRUE) &&
         grepl("edit its values, or add to a short file a setting from that list; do not invent a setting, and do not rename a setting or a section.", .ao3, fixed = TRUE) &&
-        grepl("with base R's `saveRDS()` (read it back with `readRDS()`)", .ao3, fixed = TRUE) &&
+        grepl("Save data across sessions with `jsave()`, and a kept result or table the same way: `jsave(m1)` writes m1.rds, which `jload(\"m1\")` reads back.", .ao3, fixed = TRUE) &&
+        !grepl("saveRDS", .ao3, fixed = TRUE) &&
         grepl("jtable, jstyle (publication tables in Word and .jstyle table styles)", .jst_skill_description(), fixed = TRUE) &&
         local({
           b <- .jst_orientation_body(); i <- grep("^- Publication tables", b)
@@ -5625,32 +5721,22 @@ check("AO03 the orientation (version 3.12; 3.11 until S419, 3.10 until S416, 3.9
         }))
 
 .ao4f <- file.path(.akd, "m1.rds"); .ao4t <- file.path(.akd, "t1.rds")
-saveRDS(.akm1, .ao4f); saveRDS(.alA, .ao4t)
+unlink(c(.ao4f, .ao4t))
+# Since S429 (v0.9.288, reversing Session 406's stops): jsave() keeps a
+# result or a built table and jload() reads it back; section BA holds the
+# messages. Here the build-5 fixtures make the round trip, by path.
 .ao4 <- list(
-  m = res(jsave(.akm1, "m1.rds"))$txt,
-  m0 = res(jsave(.akm1))$txt,
-  t = res(jsave(.alA, "t1.rds"))$txt,
-  d = res(jsave(.amdoc, "doc.rds"))$txt,
-  lm = res(jload(.ao4f))$txt,
-  lt = res(jload(.ao4t))$txt)
-check("AO04 jsave() given a result or a built table stops with the base R lines that keep it and read it back, in the file the call named with .rds (else the object's name; a table first offered its Word file); jload() given an .rds file holding one says so, with the line that reads it",
-      identical(.ao4$m, paste0("[error] jsave(): '.akm1' is a jlm() result, not a data frame.\n",
-                               "To keep it for a later session, save it with base R:\n",
-                               "  saveRDS(.akm1, \"m1.rds\")\n",
-                               "Then read it back with:\n",
-                               "  .akm1 <- readRDS(\"m1.rds\")")) &&
-        identical(.ao4$m0, gsub("\"m1.rds\"", "\".akm1.rds\"", .ao4$m, fixed = TRUE)) &&
-        identical(.ao4$t, paste0("[error] jsave(): '.alA' is a table jtable() built, not a data frame.\n",
-                                 "To write it to a Word file:\n",
-                                 "  jtable(.alA, file = \"t1.docx\")\n",
-                                 "To keep it for a later session, save it with base R:\n",
-                                 "  saveRDS(.alA, \"t1.rds\")\n",
-                                 "Then read it back with:\n",
-                                 "  .alA <- readRDS(\"t1.rds\")")) &&
-        startsWith(.ao4$d, "[error] jsave(): '.amdoc' is a set of tables jtable() put together, not a\ndata frame.\n") &&
-        startsWith(.ao4$lm, "[error] jload(): m1.rds holds a jlm() result, not a data frame.\njload() loads data frames; read it back with base R:\n  m1 <- readRDS(\"") &&
-        endsWith(gsub("\\s+", " ", .ao4$lm), "m1.rds\")") &&
-        startsWith(.ao4$lt, "[error] jload(): t1.rds holds a table jtable() built, not a data frame.\n"))
+  m  = res(jsave(.akm1, .ao4f)),
+  t  = res(jsave(.alA, .ao4t)),
+  lm = res(jload(.ao4f, name = ".ao4m")),
+  lt = res(jload(.ao4t, name = ".ao4tt")))
+check("AO04 jsave() given a saved result or a built table writes it to the file named, and jload() given that file reads it back under the name given -- the stops of Session 406, which offered base R's saveRDS() and readRDS() lines, reversed at S429 (section BA)",
+      all(!startsWith(vapply(.ao4, `[[`, "", "txt"), "[error]")) &&
+        file.exists(.ao4f) && file.exists(.ao4t) &&
+        inherits(get0(".ao4m", globalenv(), inherits = FALSE), "jst_lm") &&
+        inherits(get0(".ao4tt", globalenv(), inherits = FALSE), "jst_table") &&
+        identical(utils::capture.output(print(get0(".ao4m", globalenv(), inherits = FALSE))),
+                  utils::capture.output(print(.akm1))))
 
 # =============================================================================
 # AP. The release build (S407): two codes with one label; the reserved
@@ -6926,7 +7012,7 @@ check("AS07 a set none of whose items holds anything but the value counted gets 
   list(sv = res(jsave(.as1m, file.path(.asd, "m.sav"))),
        back = res(jtable(readRDS(f), print = FALSE))$val)
 }))
-check("AS08 the result is a jst_multi stamped with the version that made it; .jst_apa_terms() gives its rows, .jst_apa_model() its N, the cases with no value on any item, the cases in none of the categories, the items' count, the value counted, the title and the order; jsave() given it offers saveRDS(); a copy read back makes the table",
+check("AS08 the result is a jst_multi stamped with the version that made it; .jst_apa_terms() gives its rows, .jst_apa_model() its N, the cases with no value on any item, the cases in none of the categories, the items' count, the value counted, the title and the order; jsave() given it in another format offers the save in R format (.rds), the one that holds it (since S429; until then a stop offered saveRDS()); a copy read back makes the table",
       !is.null(.as8) &&
         identical(attr(.as1m, "jstats_version", exact = TRUE), as.character(utils::packageVersion("jstats"))) &&
         identical(.jst_apa_terms(.as1m), .as1m$rows_raw) &&
@@ -6934,8 +7020,17 @@ check("AS08 the result is a jst_multi stamped with the version that made it; .js
                   data.frame(n = 10L, n_excluded = 2L, n_none = 3L, n_items = 4L, ticked = "1",
                              title = "Services used", ranked = TRUE, stringsAsFactors = FALSE)) &&
         "jst_multi" %in% .jst_apa_classes &&
-        grepl("jsave(): '.as1m' is a jmulti() result, not a data frame.", .as8$sv$txt, fixed = TRUE) &&
-        grepl("saveRDS(.as1m, \"", gsub("\\s+", " ", .as8$sv$txt), fixed = TRUE) &&
+        grepl("jsave(): only R format (.rds) can hold a jmulti() result.", .as8$sv$txt, fixed = TRUE) &&
+        # The line offered, parsed: it runs and names the .rds file. Read as
+        # text it differs by platform -- a Windows temporary folder's
+        # backslashes are escaped so the line runs as printed (S429: the
+        # first workstation receive read AS08 red, the path compared raw).
+        local({
+          cl <- str2lang(paste(trimws(strsplit(sub("^.*To save it:\n", "", .as8$sv$txt),
+                                               "\n", fixed = TRUE)[[1L]]), collapse = " "))
+          length(cl) == 3L && identical(cl[[1L]], as.name("jsave")) &&
+            identical(cl[[2L]], as.name(".as1m")) && identical(cl[[3L]], file.path(.asd, "m.rds"))
+        }) &&
         inherits(.as8$back, "jst_table") && identical(.as8$back$type, "multiresponse"))
 
 # The table (R60): one row per option, n and %, N after the title, the note.
@@ -8387,8 +8482,8 @@ check("AU16 every analysis result keeps the data frame as its call named it (the
        skill = .jst_skill_description(), rd = rd, l = l,
        wrote = file.exists(file.path(.aud, "Report.docx")))
 }))
-check("AU17 the orientation (version 3.12; 3.11 until S419, 3.10 until S416) names jmulti() where an analysis is chosen and among the functions that take variable names, and has a bullet for the charts -- jplot() choosing the chart, the three kinds asked for by name, the stacked bar's two calls, a kept result drawn, a chart kept with <- written beside built tables, the look from the style -- in lines no wider than 76 columns, every call in it running on community; the skill's description names jmulti and jplot; ?jstyle_settings and a complete copy carry the three new settings",
-      !is.null(.au17) && identical(.au17$v, "3.12") && .au17$n >= 12L && .au17$wide <= 76L &&
+check("AU17 the orientation (version 3.13; 3.12 until S429, 3.11 until S419, 3.10 until S416) names jmulti() where an analysis is chosen and among the functions that take variable names, and has a bullet for the charts -- jplot() choosing the chart, the three kinds asked for by name, the stacked bar's two calls, a kept result drawn, a chart kept with <- written beside built tables, the look from the style -- in lines no wider than 76 columns, every call in it running on community; the skill's description names jmulti and jplot; ?jstyle_settings and a complete copy carry the three new settings",
+      !is.null(.au17) && identical(.au17$v, "3.13") && .au17$n >= 12L && .au17$wide <= 76L &&
         grepl("tabulate a tick-all-that-apply question, stored as one yes/no item per option, with `jmulti()`.", .au17$all, fixed = TRUE) &&
         grepl("`jcorr()`, `jalpha()`, `jmulti()`, `jdesc()`, and `jfreq()` take variable names instead.", .au17$all, fixed = TRUE) &&
         grepl("`type = \"pie\"` or `type = \"donut\"` for one variable of up to six categories", .au17$flat, fixed = TRUE) &&
@@ -8877,10 +8972,10 @@ check("AV11 n.position = none and models whose Ns differ (ruling R84, S419): the
         identical(.av10$ct$caption$title, "Frequencies and Percentages by Volunteered in past year") &&
         identical(.av10$parts, list(note = character(0), title = "")))
 
-# The orientation, version 3.12.
+# The orientation, version 3.13 (3.12 until S429).
 .av11 <- gsub(" +", " ", paste(.jst_orientation_body(), collapse = " "))
-check("AV12 the orientation (version 3.12) says where a general setting goes and how one kind of table gets its own value of one, with paper and [plot] set apart, and that a style file's name ends in .jstyle, not .txt",
-      identical(.jst_orientation_version, "3.12") &&
+check("AV12 the orientation (version 3.13; 3.12 until S429) says where a general setting goes and how one kind of table gets its own value of one, with paper and [plot] set apart, and that a style file's name ends in .jstyle, not .txt",
+      identical(.jst_orientation_version, "3.13") &&
         grepl(paste0("The general settings, at the top of the file, set every table; to give one kind of table its own ",
                      "value of one, copy its line under that table's heading, such as `[regression]`, and change the ",
                      "value there (`paper` is the whole file's, and `[plot]` takes only a chart's own settings). ",
@@ -9367,12 +9462,318 @@ check("AZ03 the list's last line and the note's are one line from one helper, jo
                   .az3$long))
 rm(.azo, .az1l)
 
+# =============================================================================
+# BA. Saving a result or a table (S429, v0.9.288): Jeff's ruling, reversing
+#     Session 406's stops ("Let's reverse the decision and incorporate the
+#     rest of your ideas") -- jsave() keeps a saved result or a table
+#     jtable() built in R format (.rds), its file named for the object when
+#     the call names none, in the data folder as a data frame's file goes,
+#     behind the same question; jload() reads it back under the file's
+#     name. Refused before anything is written: another format, an object
+#     with no name and no file, an input only a data frame takes, a chart.
+#     A file name typed without its quotes with a dash or a slash in it gets
+#     the quotes pointer in jload() and jsave() (Jeff: "keep the quotes and
+#     the fix you've mentioned"), and a name with a dot inside it is found.
+# =============================================================================
+cat("\n--- BA. Saving a result or a table ---\n")
+
+# A folder of the section's own, the working directory for its bare file
+# names, and no data folder set (the dirty entry may set none, but the
+# check holds the setting for its block and puts it back below).
+.bad <- file.path(tempdir(), "tables_check_ba"); unlink(.bad, recursive = TRUE)
+dir.create(.bad)
+.baw <- getwd(); setwd(.bad)
+.bao <- options(.jst_options_data_dir = NULL)
+# The color taken out, the section's folder shown as <ba>, the whitespace
+# a wrap moves flattened: the messages compared by their words, and their
+# lines where a line is the point.
+.bap  <- function(x) gsub(normalizePath(.bad, winslash = "/"), "<ba>",
+                          gsub("\033\\[[0-9;]*m", "", x), fixed = TRUE)
+.baflat <- function(x) trimws(gsub("\\s+", " ", paste(.bap(x), collapse = " ")))
+.bam1  <- res(jlm(WellbeingScore ~ Age, tcm, print = FALSE))$val
+.bat1  <- res(jtable(.bam1, print = FALSE))$val
+.badoc <- res(jtable(list(.bat1, .bat1), print = FALSE))$val
+.bam5  <- .bam1
+
+.ba1 <- .axrun(jsave(.bam1))
+check("BA01 jsave() given a saved result and no file name saves it in R format (.rds) under the object's name, in the working directory with no data folder set, and says what it saved, where, what it is, and the line that loads it back; the file holds the result as it was saved, its kept output and its stamp",
+      identical(.ba1$out, "") &&
+        identical(.baflat(.ba1$msg), paste(
+          "Saved .bam1 to <ba>/.bam1.rds (R format; a jlm() result)",
+          "To load it in a later session: jload(\".bam1\")")) &&
+        identical(tail(strsplit(.bap(paste(.ba1$msg, collapse = "")), "\n")[[1]], 3L),
+                  c("(R format; a jlm() result)", "To load it in a later session:",
+                    "  jload(\".bam1\")")) &&
+        file.exists(file.path(.bad, ".bam1.rds")) &&
+        local({ r <- readRDS(file.path(.bad, ".bam1.rds"))
+                identical(class(r), class(.bam1)) &&
+                  identical(attr(r, "jstats_output"), attr(.bam1, "jstats_output")) &&
+                  identical(attr(r, "jstats_version"), attr(.bam1, "jstats_version")) }))
+
+.baplace <- list(pm1 = .bam1)
+.ba2 <- list(t = .axrun(jsave(.bat1)), d = .axrun(jsave(.badoc, "ba_docs")),
+             p = .axrun(jsave(.baplace$pm1)))
+check("BA02 a table jtable() built and a set of tables are saved the same way, each named for what it is; a file name given without its extension gets .rds, and the line that loads it back gives name = when the file's name is not the object's; a result reached by its name in a list (.baplace$pm1) is saved under that last part",
+      identical(.baflat(.ba2$t$msg), paste(
+        "Saved .bat1 to <ba>/.bat1.rds (R format; a table jtable() built)",
+        "To load it in a later session: jload(\".bat1\")")) &&
+        identical(.baflat(.ba2$d$msg), paste(
+          "Saved .badoc to <ba>/ba_docs.rds (R format; a set of tables jtable() put together)",
+          "To load it in a later session: jload(\"ba_docs\", name = \".badoc\")")) &&
+        inherits(readRDS(file.path(.bad, ".bat1.rds")), "jst_table") &&
+        inherits(readRDS(file.path(.bad, "ba_docs.rds")), "jst_tables") &&
+        identical(.baflat(.ba2$p$msg), paste(
+          "Saved .baplace$pm1 to <ba>/pm1.rds (R format; a jlm() result)",
+          "To load it in a later session: jload(\"pm1\")")) &&
+        file.exists(file.path(.bad, "pm1.rds")))
+
+.ba3m <- .bam1; rm(.bam1)
+.ba3 <- .axrun(jload(".bam1"))
+check("BA03 jload() given the object's name finds its .rds file and puts the result back under that name, in one line saying what it is and the jstats version that made it; typed, the result shows its output again",
+      identical(.ba3$out, "") &&
+        exists(".bam1", envir = globalenv(), inherits = FALSE) &&
+        identical(.baflat(.ba3$msg), paste0(
+          "Found .bam1.rds in <ba> Loaded .bam1 (R format; a jlm() result made by jstats ",
+          .jst_jstats_version(), ")")) &&
+        identical(utils::capture.output(print(.bam1)),
+                  utils::capture.output(print(.ba3m))))
+# Put back where the load did not (a build on which BA03 reads red), so the
+# checks below still run.
+if (!exists(".bam1", envir = globalenv(), inherits = FALSE)) .bam1 <- .ba3m
+rm(.ba3m)
+
+.bam1.v2 <- .bam1
+.ba4 <- list(s = .axrun(jsave(.bam1.v2)), g = .axrun(jsave(.bam1, "ba.v3")))
+rm(.bam1.v2)
+.ba4$l <- .axrun(jload(".bam1.v2"))
+.ba4$u <- .axrun(jload("ba_none.v9"))
+check("BA04 a name with a dot inside it: jsave() names the file for the whole name (.bam1.v2.rds), and a file name whose ending is no file format's (ba.v3) gets .rds; jload() given that name finds the file, where it read the dot as an extension it does not know -- which still stops when no such file is there",
+      file.exists(file.path(.bad, ".bam1.v2.rds")) && file.exists(file.path(.bad, "ba.v3.rds")) &&
+        endsWith(.baflat(.ba4$s$msg), "To load it in a later session: jload(\".bam1.v2\")") &&
+        endsWith(.baflat(.ba4$g$msg), "To load it in a later session: jload(\"ba.v3\", name = \".bam1\")") &&
+        exists(".bam1.v2", envir = globalenv(), inherits = FALSE) &&
+        grepl("Loaded .bam1.v2 (R format; a jlm() result", .baflat(.ba4$l$msg), fixed = TRUE) &&
+        startsWith(.ba4$u$out, "[error] jload(): Unsupported file extension '.v9'."))
+
+.ba5d <- file.path(.bad, "Data5")
+options(.jst_options_data_dir = .ba5d)
+.ba5 <- list(s = .axrun(jsave(.bam5)))
+rm(.bam5)
+.ba5$l <- .axrun(jload(".bam5"))
+options(.jst_options_data_dir = NULL)
+check("BA05 with a data folder set, jsave() saves a result's file there, as it saves a data frame's (the folder made first, as for a data frame), and jload() given the name finds it there",
+      file.exists(file.path(.ba5d, ".bam5.rds")) &&
+        !file.exists(file.path(.bad, ".bam5.rds")) &&
+        grepl("Saved .bam5 to <ba>/Data5/.bam5.rds (R format; a jlm() result)",
+              .baflat(.ba5$s$msg), fixed = TRUE) &&
+        exists(".bam5", envir = globalenv(), inherits = FALSE) &&
+        grepl("Found .bam5.rds in <ba>/Data5", .baflat(.ba5$l$msg), fixed = TRUE))
+
+# The stops, pinned whole from the build's run at the pinned width; each
+# refused call writes nothing.
+.balst <- list(.bam1)
+.ba6before <- list.files(.bad, all.files = TRUE, recursive = TRUE)
+.ba6 <- lapply(list(
+  sav  = quote(jsave(.bam1, "ba6.sav")),
+  docx = quote(jsave(.bam1, "ba6.docx")),
+  tab  = quote(jsave(.bat1, "ba6.xlsx")),
+  expr = quote(jsave(jlm(WellbeingScore ~ Age, tcm, print = FALSE))),
+  pos  = quote(jsave(.balst[[1]])),
+  txt  = quote(jsave(.bam1, 6)),
+  one  = quote(jsave(.bam1, clean.names = TRUE)),
+  two  = quote(jsave(.bam1, "ba6", preserve.declarations = FALSE, clean.names = TRUE))),
+  function(cl) .axrun(eval(cl, globalenv()))$out)
+# A result made in a call too long for one deparsed line (over 500
+# characters): the line offered keeps it whole, without the indent deparse()
+# puts inside it.
+.ba6cond <- paste(sprintf("tcm$Age > %d", 1:45), collapse = " & ")
+.ba6$long <- .axrun(eval(str2lang(sprintf(
+  'jsave(jlm(WellbeingScore ~ Age, tcm[%s, ], print = FALSE), "ba6l.sav")', .ba6cond)),
+  globalenv()))$out
+check("BA06 jsave() refuses, before anything is written, a result in another format (only R format holds one; a .docx file name, or a table, first offered the jtable() line that writes Word), a result made in the call or reached by position with no file name, a file name that is not text, and an input only a data frame takes -- each with a line that runs, a call too long for one deparsed line offered without deparse()'s indent inside it",
+      identical(.ba6$sav, paste0("[error] jsave(): only R format (.rds) can hold a jlm() result.\n",
+                                 "To save it:\n  jsave(.bam1, \"ba6.rds\")")) &&
+        identical(.ba6$docx, paste0("[error] jsave(): only R format (.rds) can hold a jlm() result.\n",
+                                    "To make its table in a Word file:\n",
+                                    "  jtable(.bam1, file = \"ba6.docx\")\n",
+                                    "To save it in R format:\n  jsave(.bam1, \"ba6.rds\")")) &&
+        identical(.ba6$tab, paste0("[error] jsave(): only R format (.rds) can hold a table jtable() built.\n",
+                                   "To write it to a Word file:\n",
+                                   "  jtable(.bat1, file = \"ba6.docx\")\n",
+                                   "To save it in R format:\n  jsave(.bat1, \"ba6.rds\")")) &&
+        identical(.ba6$expr, paste0("[error] jsave(): a result made in the call has no name to give its file.\n",
+                                    "Name the file, for example:\n",
+                                    "  jsave(jlm(WellbeingScore ~ Age, tcm, print = FALSE), \"result.rds\")")) &&
+        identical(.ba6$pos, paste0("[error] jsave(): '.balst[[1]]' has no name to give its file.\n",
+                                   "Name the file, for example:\n  jsave(.balst[[1]], \"result.rds\")")) &&
+        identical(.ba6$txt, paste0("[error] jsave(): the file name goes in quotes, for example:\n",
+                                   "  jsave(.bam1, \".bam1.rds\")")) &&
+        identical(.ba6$one, paste0("[error] jsave(): clean.names = is only for a data frame.\n",
+                                   "'.bam1' is a jlm() result.\n",
+                                   "To save it, leave out clean.names =:\n  jsave(.bam1)")) &&
+        identical(.ba6$two, paste0("[error] jsave(): preserve.declarations = and clean.names = are only for a\n",
+                                   "data frame.\n'.bam1' is a jlm() result.\n",
+                                   "To save it, leave them out:\n  jsave(.bam1, \"ba6\")")) &&
+        startsWith(.ba6$long, paste0("[error] jsave(): only R format (.rds) can hold a jlm() result.\n",
+                                     "To save it:\n  jsave(jlm(WellbeingScore ~ Age,")) &&
+        !any(grepl("\\S  +\\S", strsplit(.ba6$long, "\n", fixed = TRUE)[[1L]])) &&
+        identical(str2lang(paste(trimws(strsplit(sub("^.*To save it:\n", "", .ba6$long),
+                                                 "\n", fixed = TRUE)[[1L]]), collapse = " ")),
+                  str2lang(sprintf('jsave(jlm(WellbeingScore ~ Age, tcm[%s, ], print = FALSE), "ba6l.rds")',
+                                   .ba6cond))) &&
+        identical(list.files(.bad, all.files = TRUE, recursive = TRUE), .ba6before))
+
+.bap1 <- res(jplot(tcm, Region))$val
+.ba7 <- list(n = .axrun(jsave(.bap1))$out,
+             e = .axrun(eval(quote(jsave(jplot(tcm, Region))), globalenv()))$out)
+check("BA07 jsave() given a chart refuses it, with the jtable() line that writes it to a Word file and the way to have it in a later session; a chart drawn in the call is named by the call",
+      identical(.ba7$n, paste0("[error] jsave(): '.bap1' is a chart, which jsave() does not save.\n",
+                               "To write it to a Word file:\n",
+                               "  jtable(.bap1, file = \".bap1.docx\")\n",
+                               "In a later session, run the line that drew it again.")) &&
+        identical(.ba7$e, paste0("[error] jsave(): the call made a chart, which jsave() does not save.\n",
+                                 "To write it to a Word file:\n",
+                                 "  jtable(jplot(tcm, Region), file = \"chart.docx\")\n",
+                                 "In a later session, run the line that drew it again.")) &&
+        !file.exists(file.path(.bad, ".bap1.rds")))
+
+.ba8 <- list(
+  use   = .axrun(jload(".bam1.v2", name = ".ba8x", use = TRUE)),
+  pd    = .axrun(jload(".bam1.v2", name = ".ba8x", preserve.declarations = FALSE)),
+  three = .axrun(jload(".bam1.v2", name = ".ba8x", check.missing = FALSE,
+                       preserve.declarations = TRUE, missing.notice = TRUE)))
+check("BA08 jload() given a file holding a result refuses use = TRUE -- a result cannot be the default -- and the inputs only a data frame takes, each with the call without them, and assigns nothing and sets no default",
+      identical(.ba8$use$out, paste0("[error] jload(): use = TRUE makes a data frame the default.\n",
+                                     ".bam1.v2.rds holds a jlm() result.\n",
+                                     "To load it, leave out use = TRUE:\n",
+                                     "  jload(\".bam1.v2\", name = \".ba8x\")")) &&
+        identical(.ba8$pd$out, paste0("[error] jload(): preserve.declarations = is only for a data frame.\n",
+                                      ".bam1.v2.rds holds a jlm() result.\n",
+                                      "To load it, leave out preserve.declarations =:\n",
+                                      "  jload(\".bam1.v2\", name = \".ba8x\")")) &&
+        identical(.ba8$three$out, paste0("[error] jload(): check.missing =, preserve.declarations =, and\n",
+                                         "missing.notice = are only for a data frame.\n",
+                                         ".bam1.v2.rds holds a jlm() result.\n",
+                                         "To load it, leave them out:\n",
+                                         "  jload(\".bam1.v2\", name = \".ba8x\")")) &&
+        !exists(".ba8x", envir = globalenv(), inherits = FALSE) &&
+        !identical(getOption(".jst_default_data"), ".ba8x"))
+
+# A file name typed without its quotes, holding a dash or a slash: none of
+# these names is an object here (the dirty entry's are not among them).
+.ba9a <- 7; .ba9b <- 2
+.ba9 <- lapply(list(
+  l1 = quote(jload(ba-survey)), l2 = quote(jload(Data9/ba9)),
+  l3 = quote(jload(Data9/ba9.rds, name = "w9")), l4 = quote(jload(ba-2)),
+  s1 = quote(jsave(tcm, ba-data.sav)), s2 = quote(jsave(.bam1, out9/ba9)),
+  obj = quote(jload(.ba9a - .ba9b))),
+  function(cl) .axrun(eval(cl, globalenv()))$out)
+check("BA09 a file name typed without its quotes and holding a dash or a slash -- which R reads as a subtraction or a division -- gets the quotes pointer in jload() and jsave(), the name put back together as typed and the call's other inputs kept; when every name in it is an object, R's arithmetic is left alone",
+      identical(.ba9$l1, paste0("[error] jload(): ba-survey is not in quotes.\n",
+                                "A file name goes in quotes:\n  jload(\"ba-survey\")")) &&
+        identical(.ba9$l2, paste0("[error] jload(): Data9/ba9 is not in quotes.\n",
+                                  "A file name goes in quotes:\n  jload(\"Data9/ba9\")")) &&
+        identical(.ba9$l3, paste0("[error] jload(): Data9/ba9.rds is not in quotes.\n",
+                                  "A file name goes in quotes:\n  jload(\"Data9/ba9.rds\", name = \"w9\")")) &&
+        identical(.ba9$l4, paste0("[error] jload(): ba-2 is not in quotes.\n",
+                                  "A file name goes in quotes:\n  jload(\"ba-2\")")) &&
+        identical(.ba9$s1, paste0("[error] jsave(): ba-data.sav is not in quotes.\n",
+                                  "A file name goes in quotes:\n  jsave(tcm, \"ba-data.sav\")")) &&
+        identical(.ba9$s2, paste0("[error] jsave(): out9/ba9 is not in quotes.\n",
+                                  "A file name goes in quotes:\n  jsave(.bam1, \"out9/ba9\")")) &&
+        startsWith(.ba9$obj, "[error] jload(): Provide a filename") &&
+        !grepl("not in quotes", .ba9$obj, fixed = TRUE))
+rm(.ba9a, .ba9b)
+
+# Where the session cannot ask (a script run with Rscript): copies of the
+# two functions that see such a session, their questions the package's own,
+# bound as jsave and jload inside the block (an error names the function by
+# its call), the result copied in so that jload() finds it held there.
+.bacant <- function(fn) {
+  e <- new.env(parent = environment(fn)); e$interactive <- function() FALSE
+  environment(fn) <- e
+  fn
+}
+.ba10 <- local({
+  jsave <- .bacant(jsave); jload <- .bacant(jload)
+  .bam1 <- .bam1
+  list(s = .axrun(jsave(.bam1)), l = .axrun(jload(".bam1")))
+})
+check("BA10 where the session cannot ask, jsave() stops on a result's file that exists with the data frame's two ways out, and jload() replaces a result held under the file's name, said in the note a data frame's load gives, set off by a blank line from the Loaded line",
+      identical(.bap(.ba10$s$out), paste0("[error] jsave(): this file already exists:\n",
+                                          "  <ba>/.bam1.rds\n",
+                                          .jst_txt_keep_file, .jst_txt_add_overwrite)) &&
+        length(.ba10$l$msg) == 4L &&
+        identical(.baflat(.ba10$l$msg[1L]), "Found .bam1.rds in <ba>") &&
+        identical(.bap(.ba10$l$msg[-1L]), c(
+          "'.bam1' already existed and has been replaced.\n",
+          "\n",
+          paste0("Loaded .bam1 (R format; a jlm() result made by jstats ",
+                 .jst_jstats_version(), ")\n"))))
+
+# Where the session asks, the question answered: copies whose question
+# takes the answer given (the walk's Section 41 form).
+.baask <- function(fn, answer) {
+  conf <- environment(jsave)$.jst_confirm
+  ec <- new.env(parent = environment(conf))
+  ec$readline <- function(prompt = "") answer
+  ec$cat <- function(...) invisible(NULL)
+  environment(conf) <- ec
+  e <- new.env(parent = environment(fn))
+  e$interactive <- function() TRUE
+  e$.jst_confirm <- conf
+  environment(fn) <- e
+  fn
+}
+.ba11df <- data.frame(a = 1:3); saveRDS(.ba11df, file.path(.bad, ".ba11df.rds"))
+.ba11 <- local({
+  js0 <- jsave; jl0 <- jload
+  .bam1 <- .bam1; .ba11df <- .ba11df
+  jload <- .baask(jl0, "")
+  r <- .axrun(jload(".bam1"))$out
+  d <- .axrun(jload(".ba11df"))$out
+  jsave <- .baask(js0, "n")
+  sn <- .axrun(jsave(.bam1))
+  jsave <- .baask(js0, "y")
+  sy <- .axrun(jsave(.bam1))
+  list(r = r, d = d, sn = sn, sy = sy)
+})
+check("BA11 where the session asks, the question takes an answer for a result as for a data frame: the way to keep what the name holds names it (\"the .bam1 result\", \"the .ba11df data frame\"), and jsave() answered n saves nothing and says so, answered y replaces the file",
+      identical(.ba11$r, paste0("[error] jload(): The overwrite question needs y or n.\n",
+                                "It received an empty line.\n",
+                                "To keep the .bam1 result, load the file under another name with name =.\n",
+                                .jst_txt_add_overwrite)) &&
+        identical(.ba11$d, paste0("[error] jload(): The overwrite question needs y or n.\n",
+                                  "It received an empty line.\n",
+                                  "To keep the .ba11df data frame, load the file under another name\n",
+                                  "with name =.\n",
+                                  .jst_txt_add_overwrite)) &&
+        identical(.bap(.ba11$sn$msg), "Save cancelled.\n") &&
+        grepl("Saved .bam1 to <ba>/.bam1.rds", .baflat(.ba11$sy$msg), fixed = TRUE))
+
+# A registration stored under the name a result now holds (a data frame
+# of that name registered, then the name given a result): a data frame's
+# registrations ride in its .rds file, a result's file carries none.
+.bareg <- data.frame(x = c(1, 2, 3, 2, 1))
+invisible(res(jnumeric(.bareg, x)))
+.bareg <- .bam1
+.ba12 <- .axrun(jsave(.bareg))
+check("BA12 a registration stored under the name a result holds is not carried into the result's file, and the save says nothing of registrations",
+      file.exists(file.path(.bad, ".bareg.rds")) &&
+        is.null(attr(readRDS(file.path(.bad, ".bareg.rds")), ".jst_registrations")) &&
+        !grepl("registration", .baflat(.ba12$msg), fixed = TRUE))
+invisible(res(jnumeric(.bareg, NULL)))
+
+setwd(.baw)
+options(.bao)
+rm(.bao, .baw, .bap, .baflat, .bacant, .baask, .ba6before)
+
 grDevices::dev.off(.atdev)
 rm(.atdx, .atpng, .atn, .atdev, .augeoms, .aulayer, .aufill, .auarea)
 
 options(.jst_options_style_dir = NULL, .jst_options_style = NULL)
 
-unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd, .ard, .asd, .atd, .aud, .avd, .awd, .axd), recursive = TRUE)
+unlink(c(.ns, .nu, .nwd, .qd, .pd, .tw, .vd, .aad, .akd, .apd, .aqd, .ard, .asd, .atd, .aud, .avd, .awd, .axd, .bad), recursive = TRUE)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 # The analyses above raise notes and warnings of their own (a seems-
@@ -9461,6 +9862,7 @@ options(.jst_output_level               = .entry_output_level)
 options(.jst_output_toggles             = .entry_output_toggles)
 options(.jst_options_style              = .entry_style)
 options(.jst_options_style_dir          = .entry_style_dir)
+options(.jst_options_data_dir           = .entry_data_dir)
 if (is.na(.entry_udd)) Sys.unsetenv("R_USER_DATA_DIR") else Sys.setenv(R_USER_DATA_DIR = .entry_udd)
 options(.entry_stores)
 

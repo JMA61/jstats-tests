@@ -10,6 +10,37 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S429 EDIT (v0.9.288, 2026-11-14): N92g RE-PINNED. The save build (Jeff's
+#           ruling, reversing Session 406's stops): the orientation's save
+#           line says a kept result or table is saved the way data are --
+#           "`jsave(m1)` writes m1.rds, which `jload(\"m1\")` reads back." --
+#           where it gave base R's saveRDS() and readRDS(), so its version
+#           is 3.13 where it was 3.12. No check added: 930 checks still.
+#           THE DATA FOLDER FORCED UNSET as well as recorded, and handed back
+#           at the foot: N56c put NULL back in place of the folder it found,
+#           so a session entered with a data folder set ran the rest of the
+#           file without one by accident, and came back without it. With
+#           N56c putting the entering folder back, eleven checks whose saves
+#           and loads name bare files read red (N87aw N93c N93e N93f N94u
+#           N94v N94y N95a N95f N96t N96x): the folder sent the files there.
+#           Found by the S429 dirty entry, the first with a data folder set.
+#           On the build before (v0.9.287) N92g read red and no other
+#           (929/930).
+#           SANDBOX: 930/930 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, through a symlinked
+#           temp path, interactive with no question asked, with a graphics
+#           device open (left open and current), under the stand-in of
+#           RStudio's Console color rule, and entered dirty (plain and
+#           under the handlers: no name, value, option or device changed;
+#           the dirt with a data folder and a style folder set, workspace
+#           objects named like N98's fixture variables, and m1, pm1 and
+#           survey). All twelve batteries 3752 each way.
+#           LAST VERIFIED: v0.9.288, 2026-11-15 (S429) -- 930/930 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3752 checks)"; R CMD check 0 errors, 0 warnings, 0 notes) at the
+#           first run, matching the sandbox; the batteries' second run (a
+#           tables_check.R check fixed) the same. The package not yet
+#           pushed at the stamp.
 # S427 EDIT (v0.9.287, 2026-11-14): SECTION N98 ADDED, four checks. The
 #           (S426) convention-menu item, Claude's call (Jeff, S427: "B.
 #           yes"): jdeclare_missing() on several variables puts variables
@@ -2088,6 +2119,13 @@ options(.jst_options_missing_convention = NULL)
 # with stored settings, which no earlier dirty run had held.
 options(.jst_filter = NULL, .jst_complete = NULL, .jst_dummy = NULL,
         .jst_registry = NULL)
+# The data folder too (S429): FORCED UNSET as well as recorded. The saves
+# and loads below name bare files, which a data folder sends there; N56c
+# cleared the folder in place of putting it back, so a session entered with
+# one ran the rest unset by accident and came back without it. Found by a
+# run entered dirty with a data folder set, which no earlier dirty run had.
+.entry_data_dir <- getOption(".jst_options_data_dir")
+options(.jst_options_data_dir = NULL)
 
 # Message-width state (S253). The emitter now wraps every message to the
 # message.width setting, so message output has become environment-dependent:
@@ -3986,10 +4024,13 @@ check("N56b the replaced-declaration notice wraps (S254 defect)",
 
 # A folder path with spaces must reach the console unbroken -- on its own
 # line, classified pass. Wrapped inline it splits and stops being copyable.
+# The data folder the session entered with is put back after (S429: it was
+# cleared, which the dirty entry found once it set one).
+.n56dd <- getOption(".jst_options_data_dir")
 options(.jst_options_data_dir =
           file.path(tempdir(), "Jeff Ackerman", "00 R Projects", "no_such"))
 .n56c <- jstats:::.jst_missing_data_dir_note()
-options(.jst_options_data_dir = NULL)
+options(.jst_options_data_dir = .n56dd)
 check("N56c a data-dir path with spaces survives on one line",
       grepl("00 R Projects", .n56c, fixed = TRUE) &&
         any(vapply(strsplit(.n56c, "\n", fixed = TRUE)[[1]],
@@ -10910,7 +10951,7 @@ check("N92f jai(\"machine\") declined: a new SKILL.md keeps the line about anoth
                 grepl("To write to a different folder", m1, fixed = TRUE) &&
                 identical(m2, "Nothing was written.\n") }))
 # --- F: SKILL.md's paragraph ---------------------------------------------------------
-check("N92g SKILL.md's AI-assistant paragraph: the standard paragraph's words without the prefix, set to the body's width (first line 60+, none over 76); the standard text keeps the prefix; version 3.12 (3.11 until S419, 3.10 until S416, 3.9 until S409, 3.8 until S406)",
+check("N92g SKILL.md's AI-assistant paragraph: the standard paragraph's words without the prefix, set to the body's width (first line 60+, none over 76); the standard text keeps the prefix; version 3.13 (3.12 until S429, 3.11 until S419, 3.10 until S416, 3.9 until S409, 3.8 until S406)",
       local({ std <- .jst_orientation_body(); i <- grep("^Note for AI assistants: ", std)
               j <- min(which(std == "")[which(std == "") > i]) - 1L
               mac <- .jst_orientation_text("STAMP", "machine")
@@ -10924,7 +10965,7 @@ check("N92g SKILL.md's AI-assistant paragraph: the standard paragraph's words wi
                 !any(grepl("Note for AI assistants", mac, fixed = TRUE)) &&
                 any(grepl("^Note for AI assistants: jstats is newer",
                           .jst_orientation_text("STAMP", "standard"))) &&
-                identical(.jst_orientation_version, "3.12") }))
+                identical(.jst_orientation_version, "3.13") }))
 # --- G: the .RData redirect -----------------------------------------------------------
 save(.S92, file = "y92.RData"); save(.S92, file = "z92.rda")
 check("N92h the .RData redirect in one voice: typed (pinned whole) and bare -- the bare name finds y92.RData, as typed on a case-sensitive file system",
@@ -12531,6 +12572,7 @@ options(.jst_options_missing_convention = .entry_convention)
 options(.jst_options_message_width = .entry_message_width)
 options(.jst_output_level = .entry_output_level)
 options(.jst_output_toggles = .entry_output_toggles)
+options(.jst_options_data_dir = .entry_data_dir)
 options(.entry_stores)
 
 # Guard 6: this battery's device closed; the device current on entry made

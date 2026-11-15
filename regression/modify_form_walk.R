@@ -52,8 +52,39 @@
 #           (Section 43; ruling R37).
 #           Since S406 jsave() and jload() given a saved result or a table
 #           jtable() built: base R's saveRDS() and readRDS() offered as
-#           lines that run (Section 44).
+#           lines that run (Section 44). Since S429 jsave() and jload()
+#           keep them -- a result or a table saved in R format (.rds), its
+#           file named for the object, and read back under the file's name;
+#           a chart refused; a file name typed without its quotes with a
+#           dash or a slash in it (Section 44, rewritten).
 # ORIGIN:   S229
+# EDITED:   S429 (v0.9.288; Jeff's ruling, reversing the S406 decision:
+#           "Let's reverse the decision and incorporate the rest of your
+#           ideas", the four choices okayed, "okay on your recommendations
+#           for all 3 decisions"). SECTION 44 REWRITTEN, on the PENDING
+#           line, its Expected blocks filled by running (fill.R; "#@SKIP"
+#           after the chart's line): jsave() given a result with no file
+#           name, a built table, and tables under a name of their own; the
+#           result removed and loaded back, typed to show its output; the
+#           stops -- another format, a .docx name, a result made in the
+#           call, clean.names =, a chart -- and jload()'s use = TRUE and a
+#           file name typed bare with a dash or a slash. The wording is
+#           Claude's. SECTION 10 on the PENDING line: the orientation jai()
+#           prints is version 3.13 -- its save line, "Save data across
+#           sessions with jsave(), and a kept result or table the same way:
+#           jsave(m1) writes m1.rds, which jload("m1") reads back.", where
+#           it named base R's saveRDS() and readRDS() -- its heading line
+#           and notes updated; its Expected is prose, unchanged.
+# LAST VERIFIED: v0.9.288, 2026-11-15 (S429) -- Sections 10 and 44 WALKED on
+#           the WORKSTATION by Jeff through receive_all() ("walked, all
+#           okay"); PENDING back to none; R CMD check 0 errors, 0 warnings,
+#           0 notes; ALL BATTERIES GREEN (12 run, 3752 checks), at the
+#           batteries' second run (the first read a tables_check.R check
+#           red, the check's fault, fixed). Sandbox: harness.R verify, 44 of
+#           44 sections; 169 of 170 Expected blocks found (Section 9's prose
+#           block, as before); every section of every walk captured on
+#           v0.9.287 and v0.9.288, only Sections 10 and 44 moving (the
+#           tables walk's style-file version stamp aside).
 # EDITED:   S419 (v0.9.281; the AI-text build, ruling R82 and ruling R81).
 #           SECTION 10 on the PENDING line: the orientation jai() prints is
 #           version 3.12 -- its tables bullet says that the general
@@ -1620,7 +1651,7 @@ invisible(jdeclare_missing(plain_df2, Rating, codes = c(Refused = -99),
 # Expected: NEITHER form -- just the cross-session jsave tip. The change has
 # already landed on the frame, so saving is the only next rung.
 
-cat("\n--- the jai orientation body (v3.12) ---\n")
+cat("\n--- the jai orientation body (v3.13) ---\n")
 jai()
 
 # Expected, in the bullet beginning "Analysis functions print their results":
@@ -1632,11 +1663,21 @@ jai()
 #   - modify = TRUE now comes FIRST and is marked as the taught form
 #   - the assignment form is still present (an assistant has to recognize it
 #     in your code) but is now clearly secondary
-#   - the version stamp reads v3.12 (S419: where a setting goes in a style
-#     file, below; v3.11 at S416, jmulti() and the charts bullet; v3.10 at
-#     S409, the tables bullet; v3.9 at S406, the table layer; v3.8 at S357
-#     set SKILL.md's AI-assistant paragraph to the body's width, Section
-#     20). If it still says 3.11, the orientation bump did not land.
+#   - the version stamp reads v3.13 (S429: the save line, below; v3.12 at
+#     S419, where a setting goes in a style file; v3.11 at S416, jmulti()
+#     and the charts bullet; v3.10 at S409, the tables bullet; v3.9 at
+#     S406, the table layer; v3.8 at S357 set SKILL.md's AI-assistant
+#     paragraph to the body's width, Section 20). If it still says 3.12,
+#     the orientation bump did not land.
+#
+# S429 (v3.13; Jeff's ruling reversing the S406 decision on saving a
+# result) -- the wording is Claude's. The bullet beginning "Analysis
+# functions print their results" now ends:
+#   Save data across sessions with `jsave()`, and a kept result or table
+#   the same way: `jsave(m1)` writes m1.rds, which `jload("m1")` reads back.
+# where it named base R's saveRDS() and readRDS(). Things to look at: would
+# an assistant reading it save a result with jsave(m1) and load it back
+# with jload("m1"), the name in quotes?
 #
 # S419 (v3.12, the AI-text build; rulings R82 and R81) -- the wording is
 # Claude's. The tables bullet, after its editing rule, now says:
@@ -5574,74 +5615,155 @@ rm(e43)
 #     the one-variable form the note comes before the reminder.
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-# SECTION 44 -- jsave() and jload() given a saved result or a built table (S406) ----
+# SECTION 44 -- jsave() and jload() keep a saved result or a built table (S406; S429) ----
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-# ADDED S406 (v0.9.274; Capability Slate T, build 5 -- the (Session 128)
-# item, decided at the build; Jeff: "yes to your recommendations and
-# rider"). No jstats function saves a result: base R's saveRDS() keeps any
-# R object and readRDS() reads it back, as ?jtable shows. jsave() saves
-# data frames and jload() loads them; given a saved result or a table
-# jtable() built, jsave() said only that it was not a data frame and
-# jload() that the file did not contain one. Each now says what it was
-# given and offers base R's lines, which run as printed; a built table is
-# first offered its Word file. The wording is Claude's. The assertion side
-# is tables_check.R AO04.
+# ADDED S406 (v0.9.274; Capability Slate T, build 5): jsave() and jload()
+# given a saved result or a built table stopped, offering base R's saveRDS()
+# and readRDS() lines. REWRITTEN S429 (v0.9.288; Jeff's ruling, reversing
+# that decision: "Let's reverse the decision and incorporate the rest of your
+# ideas"): jsave() keeps a result or a table in R format (.rds), the one
+# format that holds it, its file named for the object when the call names
+# none, in the data folder when one is set, behind the question a data
+# frame's file gets; jload() reads it back under the file's name. A chart is
+# refused, with the line that writes it to Word. A file name typed without
+# its quotes with a dash or a slash in it, which R reads as arithmetic, gets
+# the quotes pointer (Jeff: "keep the quotes and the fix you've mentioned").
+# The wording is Claude's. The assertion side is tables_check.R section BA.
+# The walk folder is shown as <walk folder>.
 .wd44 <- getwd(); setwd(.walkdir)
-unlink(c("m44.rds", "t44.rds"))
+unlink(c("m44.rds", "t44.rds", "wave44.rds"))
+.show44 <- function(expr) {   # the call's notes and its stop, the folder shown as <walk folder>
+  m <- character(0)
+  r <- withCallingHandlers(
+    tryCatch({ expr; NULL }, error = function(e) conditionMessage(e)),
+    message = function(c) { m <<- c(m, conditionMessage(c)); invokeRestart("muffleMessage") })
+  cat(gsub(normalizePath(.walkdir, winslash = "/"), "<walk folder>",
+           paste0(paste(m, collapse = ""), if (!is.null(r)) paste0("Error : ", r, "\n")),
+           fixed = TRUE))
+}
 d44 <- data.frame(y = c(3, 5, 4, 6, 8, 7, 9, 8), x = 1:8)
 m44 <- jlm(y ~ x, d44, print = FALSE)
 t44 <- jtable(m44, print = FALSE)
 doc44 <- jtable(list(t44, t44), print = FALSE)
 
-# Render 1 -- jsave() given a result, a built table, then tables written
-# together.
-try(jsave(m44, "m44.rds"))
-try(jsave(t44, "t44.rds"))
-try(jsave(doc44, "doc44.rds"))
+# Render 1 -- jsave() given a result with no file name, then a built table,
+# then tables written together, saved under a name of their own.
+.show44(jsave(m44))
+.show44(jsave(t44))
+.show44(jsave(doc44, "wave44"))
 # Expected:
-#   Error : jsave(): 'm44' is a jlm() result, not a data frame.
-#   To keep it for a later session, save it with base R:
-#     saveRDS(m44, "m44.rds")
-#   Then read it back with:
-#     m44 <- readRDS("m44.rds")
-#   Error : jsave(): 't44' is a table jtable() built, not a data frame.
-#   To write it to a Word file:
-#     jtable(t44, file = "t44.docx")
-#   To keep it for a later session, save it with base R:
-#     saveRDS(t44, "t44.rds")
-#   Then read it back with:
-#     t44 <- readRDS("t44.rds")
-#   Error : jsave(): 'doc44' is a set of tables jtable() put together, not a
-#   data frame.
-#   To write it to a Word file:
-#     jtable(doc44, file = "doc44.docx")
-#   To keep it for a later session, save it with base R:
-#     saveRDS(doc44, "doc44.rds")
-#   Then read it back with:
-#     doc44 <- readRDS("doc44.rds")
+#   Saved m44 to
+#   <walk folder>/m44.rds
+#   (R format; a jlm() result)
+#   To load it in a later session:
+#     jload("m44")
+#   Saved t44 to
+#   <walk folder>/t44.rds
+#   (R format; a table jtable() built)
+#   To load it in a later session:
+#     jload("t44")
+#   Saved doc44 to
+#   <walk folder>/wave44.rds
+#   (R format; a set of tables jtable() put together)
+#   To load it in a later session:
+#     jload("wave44", name = "doc44")
 
-# Render 2 -- the result saved with saveRDS(), as the stop says; jload()
-# given the file, and readRDS() reading it back.
-saveRDS(m44, "m44.rds")
-try(jload("m44.rds"))
-m44b <- readRDS("m44.rds")
-class(m44b)
+# Render 2 -- m44 removed, as ending the session removes it, and loaded
+# back from its file; typed, it shows its output again.
+rm(m44)
+.show44(jload("m44"))
+m44
 # Expected:
-#   Error : jload(): m44.rds holds a jlm() result, not a data frame.
-#   jload() loads data frames; read it back with base R:
-#     m44 <- readRDS("m44.rds")
-#   [1] "jst_lm"
-unlink(c("m44.rds", "t44.rds"))
+#   Found m44.rds in
+#   <walk folder>
+#   Loaded m44 (R format; a jlm() result made by jstats 0.9.288)
+#   Linear Regression
+#
+#   Analysis N: 8
+#
+#   Coefficients
+#                  b      SE     t      β      p
+#   -----------  -----  -----  -----  -----  ----
+#   (Intercept)  2.714  0.751  3.615         .011
+#   x            0.786  0.149  5.284  0.907  .002
+#
+#   Outcome: y
+#
+#   R-squared: 0.823    Adjusted R-squared: 0.794
+#   Residual Standard Error: 0.964
+#
+#   F-statistic: 27.923 on 1 and 6 DF, p-value: .002
+#   Sum of Squares:
+#     Regression: 25.929
+#     Residual:   5.571
+#     Total:      31.500
+
+# Render 3 -- what jsave() refuses, before anything is written: another
+# format, a .docx file name, a result made in the call with no file name,
+# an input only a data frame takes, and a chart.
+p44 <- jplot(d44, x)
+.show44(jsave(m44, "m44.sav"))
+.show44(jsave(m44, "m44.docx"))
+.show44(jsave(jlm(y ~ x, d44, print = FALSE)))
+.show44(jsave(m44, clean.names = TRUE))
+.show44(jsave(p44))
+# Expected:
+#   Error : jsave(): only R format (.rds) can hold a jlm() result.
+#   To save it:
+#     jsave(m44, "m44.rds")
+#   Error : jsave(): only R format (.rds) can hold a jlm() result.
+#   To make its table in a Word file:
+#     jtable(m44, file = "m44.docx")
+#   To save it in R format:
+#     jsave(m44, "m44.rds")
+#   Error : jsave(): a result made in the call has no name to give its file.
+#   Name the file, for example:
+#     jsave(jlm(y ~ x, d44, print = FALSE), "result.rds")
+#   Error : jsave(): clean.names = is only for a data frame.
+#   'm44' is a jlm() result.
+#   To save it, leave out clean.names =:
+#     jsave(m44)
+#   Error : jsave(): 'p44' is a chart, which jsave() does not save.
+#   To write it to a Word file:
+#     jtable(p44, file = "p44.docx")
+#   In a later session, run the line that drew it again.
+
+# Render 4 -- jload() given the file with use = TRUE; then a file name
+# typed without its quotes, with a dash, then with a slash.
+.show44(jload("m44", name = "m44b", use = TRUE))
+.show44(jload(my-survey44))
+.show44(jload(Data/wave44))
+# Expected:
+#   Found m44.rds in
+#   <walk folder>
+#   Error : jload(): use = TRUE makes a data frame the default.
+#   m44.rds holds a jlm() result.
+#   To load it, leave out use = TRUE:
+#     jload("m44", name = "m44b")
+#   Error : jload(): my-survey44 is not in quotes.
+#   A file name goes in quotes:
+#     jload("my-survey44")
+#   Error : jload(): Data/wave44 is not in quotes.
+#   A file name goes in quotes:
+#     jload("Data/wave44")
+unlink(c("m44.rds", "t44.rds", "wave44.rds"))
 setwd(.wd44)
 
 # Things to look at:
-#   - Render 1: what was given, named -- "a jlm() result", "a table
-#     jtable() built", "a set of tables jtable() put together" -- then the
-#     base R lines that keep it: saveRDS() into the file the call named,
-#     readRDS() to read it back under the same name; a table first offered
-#     its Word file.
-#   - Render 2: jload() says what the file holds and gives the readRDS()
-#     line; class() shows the result read back as it was saved.
+#   - Render 1: the file named for the object when the call names none --
+#     m44.rds, t44.rds -- and a name given without its extension saved with
+#     .rds; the Saved line in the form a data frame's takes, then what was
+#     saved, and the line that loads it back, with name = where the file's
+#     name is not the object's (doc44 in wave44.rds).
+#   - Render 2: the Loaded line says what the file held and the jstats
+#     version that made it; m44 typed shows the regression's output again.
+#   - Render 3: each stop says why and gives a line that runs -- R format
+#     only; for a .docx name, the jtable() line first; a result made in the
+#     call needs a file name; clean.names = is for a data frame; a chart
+#     goes to a Word file, and is drawn again from the line that drew it.
+#   - Render 4: use = TRUE refused for a result, with the call without it;
+#     a name with a dash or a slash typed bare, where R said "object 'my'
+#     not found", given back in quotes.
 
 # --- End marker --------------------------------------------------------------
 # A real statement, deliberately last: stepping through with Ctrl+Enter, RStudio
