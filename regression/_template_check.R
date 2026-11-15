@@ -110,6 +110,17 @@ stopifnot(exists("jload", mode = "function"))
                                               ".jst_missing_notice_shown")),
                         getOption)
 
+# The data and output folders (S429; the template since S430): a bare file
+# name a check saves or loads goes to the session's data folder (jsave(),
+# jload()) or output folder (jtable()) when one is set, so a session entered
+# with one reads such a check red. Both forced unset, and handed back at the
+# foot. (The data folder in tables_check.R and missing_convention_check.R
+# since S429; both folders in filter_check.R and import_check.R, and the
+# output folder in tables_check.R, since S430.)
+.entry_data_dir   <- getOption(".jst_options_data_dir")
+.entry_output_dir <- getOption(".jst_options_output_dir")
+options(.jst_options_data_dir = NULL, .jst_options_output_dir = NULL)
+
 # Message-width pin. MANDATORY (S253): the emitter wraps to this setting and
 # the shipped default follows the console pane, so an unpinned battery
 # asserts against whatever size the window happens to be.
@@ -210,7 +221,7 @@ check("fixture loads at its documented shape (200 x 52)",
       identical(dim(tdat), c(200L, 52L)))
 
 check("error path fires with expected wording (verified at source)",
-      grepl("Provide a filename", grab(jload(""))))
+      grepl("Provide a file name in quotes", grab(jload(""))))
 
 .r1 <- run(jfreq(tdat, Gender_01))
 check("a result taken outside check() is read through run()",
@@ -325,6 +336,8 @@ options(.jst_default_data          = .entry_default_data)
 options(.jst_output_level          = .entry_output_level)
 options(.jst_output_toggles = .entry_output_toggles)
 options(.entry_stores)
+options(.jst_options_data_dir = .entry_data_dir,
+        .jst_options_output_dir = .entry_output_dir)
 
 # Guard 6: this battery's device closed; the device current on entry made
 # current again, when it is still open.

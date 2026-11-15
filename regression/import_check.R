@@ -382,6 +382,25 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
+# S430 EDIT (v0.9.289, 2026-11-15): THE DATA AND OUTPUT FOLDERS UNSET at
+#           setup and handed back at the foot (the (S429) battery item: the
+#           other ten batteries entered with a data folder set). Y25-Y27 save
+#           by a bare name, which a session's data folder sends there, and
+#           read red in a session entered with one. No check added or
+#           re-pinned: 231 checks still, green on v0.9.288 and on the build.
+#           SANDBOX: 231/231 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, through a symlinked
+#           temp path, interactive with no question asked, with a graphics
+#           device open, under the stand-in of RStudio's Console color rule,
+#           and entered dirty (plain and under the handlers, the dirt with a
+#           data folder, an output folder and a style folder set: no name,
+#           value, option or device changed). All twelve batteries 3770
+#           each way.
+#           LAST VERIFIED: v0.9.289, 2026-11-15 (S430) -- 231/231 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3770 checks)"; R CMD check 0 errors, 0 warnings, 0 notes) at the
+#           first run, matching the sandbox. The package not yet pushed at
+#           the stamp.
 # S395 EDIT (v0.9.267, 2026-10-23): AB06 AND AB07 ADDED; T05, U04, X01 AND
 #           AB01-AB04 RE-PINNED. Fix Slate 30's second build: the S393 message
 #           pass's accepts (Jeff: "okay accept the rest"; "D1, D2, D3, okay
@@ -827,6 +846,14 @@ stopifnot(exists("jload", mode = "function"))
 .entry_color          <- getOption("jstats.color")
 .entry_notice_shown   <- getOption(".jst_missing_notice_shown")
 options(jstats.color = NULL)
+
+# The data and output folders (S430, the (S429) battery item): Y25-Y27
+# save by a bare name, which a session's data folder sends there, so a
+# session entered with one read them red. Both forced unset, and handed
+# back at the foot.
+.entry_data_dir   <- getOption(".jst_options_data_dir")
+.entry_output_dir <- getOption(".jst_options_output_dir")
+options(.jst_options_data_dir = NULL, .jst_options_output_dir = NULL)
 
 .pin_width <- 76L
 options(.jst_options_message_width = .pin_width)
@@ -3810,6 +3837,8 @@ options(.entry_stores)
 options(.jst_options_missing_convention = .entry_convention)
 options(jstats.color = .entry_color)
 options(.jst_missing_notice_shown = .entry_notice_shown)
+options(.jst_options_data_dir = .entry_data_dir,
+        .jst_options_output_dir = .entry_output_dir)
 unlink(.ix_dir, recursive = TRUE)
 
 # --- Verdict -----------------------------------------------------------------

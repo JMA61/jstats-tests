@@ -92,7 +92,7 @@ tryCatch(jload(""),
                                  sep = ""))
 
 # Expected:
-#   Caught: jload(): Provide a filename, for example:
+#   Caught: jload(): Provide a file name in quotes, for example:
 #     jload("mydata.sav")
 # (Remember: an UNwrapped error under a plain try() prints "Error : " with
 # a space -- that spacing is the wrapper, not a message defect.)

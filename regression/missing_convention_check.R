@@ -10,6 +10,26 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S430 EDIT (v0.9.289, 2026-11-15): N86f AND N86bg RE-PINNED. The (S429)
+#           jload(m1) item: jload()'s generic stop reads "Provide a file
+#           name in quotes, for example:" where it read "Provide a filename,
+#           for example:" (Jeff, S429: 'Should we specify "...provide a
+#           filename in quotes..."'). No check added: 930 checks still. On
+#           v0.9.288 N86f and N86bg read red and no other (928/930); the
+#           words' mutant red here as well (N86f N86bg).
+#           SANDBOX: 930/930 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, through a symlinked
+#           temp path, interactive with no question asked, with a graphics
+#           device open, under the stand-in of RStudio's Console color rule,
+#           and entered dirty (plain and under the handlers, the dirt with a
+#           data folder, an output folder and a style folder set: no name,
+#           value, option or device changed). All twelve batteries 3770
+#           each way.
+#           LAST VERIFIED: v0.9.289, 2026-11-15 (S430) -- 930/930 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3770 checks)"; R CMD check 0 errors, 0 warnings, 0 notes) at the
+#           first run, matching the sandbox. The package not yet pushed at
+#           the stamp.
 # S429 EDIT (v0.9.288, 2026-11-14): N92g RE-PINNED. The save build (Jeff's
 #           ruling, reversing Session 406's stops): the orientation's save
 #           line says a kept result or table is saved the way data are --
@@ -8552,8 +8572,8 @@ check("N86e ... system.file() finding no file: the call as the subject, and what
         "is \"\", an empty file name.\n",
         "system.file() gives \"\" when the file is not in the package."))) &&
         .ends86(m86e, "\nsystem.file() gives \"\" when the file is not in the package."))
-check("N86f an empty string typed as such keeps the generic stop (re-pinned S369, v0.9.241: the example on a line of its own, Rules E and L)",
-      identical(grab(jload("")), "jload(): Provide a filename, for example:\n  jload(\"mydata.sav\")"))
+check("N86f an empty string typed as such keeps the generic stop (re-pinned S369, v0.9.241: the example on a line of its own, Rules E and L; re-pinned S430, v0.9.289: \"Provide a file name in quotes\", where it said \"Provide a filename\")",
+      identical(grab(jload("")), "jload(): Provide a file name in quotes, for example:\n  jload(\"mydata.sav\")"))
 m86g <- .def86(NULL, grab(jsave("t86.rds")))
 check("N86g jsave() given a file name alone, with no default set: the file named, both routes offered -- the data frame named first, or a default set -- and nothing written (re-pinned S367, v0.9.239: it had offered the first route alone; MyData in both here, where the workspace holds many data frames; the one-frame case is import_check.R U08)",
       identical(.fl(m86g), .fl(paste0(
@@ -8683,13 +8703,13 @@ check("N86bf ... a doubled backslash in the same path becomes a slash too; DEL i
         .ends86(m1, "\n  \"C:/data/temp.csv\"") &&
           grepl("(\\t as a tab)", m1, fixed = TRUE) &&
           grepl("Type the path again with forward slashes", .fl(m2), fixed = TRUE) }))
-check("N86bg jload() given a data frame as an expression: the expression named, and the generic line (re-pinned S369: the example on a line of its own)",
+check("N86bg jload() given a data frame as an expression: the expression named, and the generic line (re-pinned S369: the example on a line of its own; re-pinned S430: \"Provide a file name in quotes\")",
       identical(.fl(grab(jload(d86[1:2, , drop = FALSE]))),
                 .fl(paste0("jload(): d86[1:2, , drop = FALSE] is a data frame, not a file name.\n",
-                           "Provide a filename, for example:\n",
+                           "Provide a file name in quotes, for example:\n",
                            "  jload(\"mydata.sav\")"))) &&
         endsWith(grab(jload(d86[1:2, , drop = FALSE])),
-                 "\nProvide a filename, for example:\n  jload(\"mydata.sav\")"))
+                 "\nProvide a file name in quotes, for example:\n  jload(\"mydata.sav\")"))
 
 # --- C: a CSV file of one column ------------------------------------------------
 v86 <- data.frame(Source = c("web", "phone", NA, "web", "mail", NA, "web", "phone"))

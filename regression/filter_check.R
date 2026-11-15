@@ -151,7 +151,14 @@
 #           jdeclare_missing(), jconvert(), jdummy(), jnumeric(), jcount()
 #           and jlikert() read it as the call naming each variable, and with
 #           no data frame named a range typed first gets the lines a name
-#           gets.
+#           gets -- PLUS (S430, section AR) A RANGE WHERE ONE VARIABLE GOES:
+#           jrelabel() takes one for its list form; a slot that takes one
+#           variable (jrecode()'s, jencode()'s, by =, facet =, none =) given
+#           a range naming several stops on what it names; vars = given one
+#           stops with the call rebuilt, the range after the data frame; a
+#           bare name after jrelabel()'s variable found nowhere gets the
+#           not-found sentence; and under a default a range whose ends are
+#           also workspace objects is the frame's variables.
 # ORIGIN:   S289 (design S284 / S288; code S289 v0.9.163); sections F and
 #           G, the A rewrite, the Under40 fixture column, and the bare-name
 #           message re-assertions (A01 A02 D01-D03 F06) S290 (v0.9.164);
@@ -167,6 +174,58 @@
 #           section O S334 (v0.9.211); sections Q and R, P03, and A07
 #           A15 C34 G03 G08 H05 H21 H25 I23 I24 I32 O19 re-pinned, O36
 #           flipped S338 (v0.9.212)
+# S430 EDIT (v0.9.289, 2026-11-15): SECTION AR ADDED, eight checks; THE DATA
+#           AND OUTPUT FOLDERS UNSET at setup and handed back at the foot.
+#           The (S429) range item, the wording Claude's call: three surfaces
+#           outside ruling R90's nine variable lists. AR01 jrelabel() given
+#           a range labels every variable from its first to its last, as the
+#           c() naming each does, and a range naming one is the one-variable
+#           form; AR02 its range without modify = TRUE stops with the call as
+#           typed and modify = TRUE added, the range's own stops first, a
+#           range inside c() keeping the not-found stop (R90); AR03 jrecode()
+#           and jencode() given a range naming several give the one-variable
+#           stop saying what it names; AR04 vars = given a range in
+#           jrelabel(), jdeclare_missing() and jconvert() stops with the call
+#           rebuilt, the range after the data frame, each line run; AR05
+#           by =, facet = and none = the same; AR06 a bare name after
+#           jrelabel()'s variable found nowhere gets the not-found sentence,
+#           where R stopped "object 'Agee' not found"; AR07 the same under a
+#           juse() default, and a range's end not found there gets the
+#           juse() line, as a name does; AR08 under a default, a range whose
+#           ends are also workspace objects is the frame's variables in
+#           jdesc(), jfreq() and jscreen() (ruling R12), where jdesc() had
+#           described R's A:B, the numbers between them -- a defect found by
+#           this build's dirty entry (tables_check.R AU15 red on v0.9.288,
+#           Environment1 and Environment2 in the workspace). 679 -> 687
+#           checks. The folders (the (S429) battery item): S21 and Y37 save
+#           and load by a bare name and read red in a session entered with a
+#           data folder set.
+#           On v0.9.288 the eight read red and no other (679/687). MUTATION
+#           MAP (S430; 15 mutants, each red): a range naming one returned
+#           where none does AR03 AR05; the call-once-for-each clause AR03
+#           AR07; the range test AR01-AR05 AR07; the named-arguments stop's
+#           range branch AR07; jdesc()'s by = given no frame AR05, jplot()'s
+#           facet = AR05, jmulti()'s none = AR05; jrelabel()'s range AR01
+#           AR02 AR04 AR07, its lost names AR06, the range kept as typed in
+#           its line AR02; vars ='s range branch AR04, its stop AR04, its
+#           "after the data frame" AR04; the recode family's default flag
+#           AR07; the resolver's range under a default AR08. First round:
+#           the default flag survived -- AR07 had no range end not found
+#           under the default -- and AR07 gained it; run again, red.
+#           SANDBOX: 687/687 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, through a symlinked
+#           temp path, interactive with no question asked, with a graphics
+#           device open (left open and current), under the stand-in of
+#           RStudio's Console color rule, and entered dirty (plain and
+#           under the handlers: no name, value, option or device changed;
+#           the dirt with a data folder, an output folder and a style folder
+#           set, and workspace objects named Environment1-Environment5, m1,
+#           pm1, survey and d). All twelve batteries 3770 each way.
+#           LAST VERIFIED: v0.9.289, 2026-11-15 (S430) -- 687/687 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3770 checks)"; R CMD check 0 errors, 0 warnings, 0 notes) at the
+#           first run, matching the sandbox. The package not yet pushed at
+#           the stamp.
 # S426 EDIT (v0.9.286, 2026-11-14): SECTION AQ ADDED, eight checks. Ruling
 #           R90 (S426, Jeff: "all nine."): a range of variables, A:B, in
 #           the variable lists of jcorr(), jscreen(), jcomplete(),
@@ -1881,6 +1940,14 @@ stopifnot(exists("jload", mode = "function"))
                                               ".jst_dummy", ".jst_registry",
                                               ".jst_missing_notice_shown")),
                         getOption)
+
+# The data and output folders (S430, the (S429) battery item): S21 and Y37
+# save and load files by a bare name, which a session's data folder sends
+# there, so a session entered with one read S21 and Y37 red. Both forced
+# unset, and handed back at the foot.
+.entry_data_dir   <- getOption(".jst_options_data_dir")
+.entry_output_dir <- getOption(".jst_options_output_dir")
+options(.jst_options_data_dir = NULL, .jst_options_output_dir = NULL)
 
 # Message-width pin. MANDATORY: the emitter wraps to this setting and since
 # S256 the shipped default follows the console pane, so an unpinned battery
@@ -7908,6 +7975,188 @@ check("AQ08 every function whose variable list opens a c() (.jst_expand_vars()) 
 rm(.aq_ws, .aq_run, .aq_same, .aq_quiet, .aq_runs)
 
 # =============================================================================
+# AR -- A RANGE WHERE ONE VARIABLE GOES, IN jrelabel() AND IN vars = (S430)
+# =============================================================================
+# The (S429) range item: three surfaces outside ruling R90's nine. (a)
+# jrelabel() takes a c() of variables (S378) and now a range, A:B, by R90's
+# route -- every variable from A to B in the data frame's order, the list
+# form when it names two or more, the one-variable form when it names one;
+# a range inside c() keeps the not-found stop, as R90 keeps it in every list.
+# (b) a slot that takes ONE variable -- jrecode()'s, jencode()'s, by = in
+# jdesc() and jplot(), facet = and none = -- given a range that names
+# several gets its one-variable stop, saying what the range names; one that
+# names one is that variable. (c) vars = in jrelabel(), jdeclare_missing()
+# and jconvert() given a range gets the stop for names typed without quotes,
+# with the call rebuilt, the range after the data frame. Until v0.9.288 (a)
+# and (b) said "Q1:Q3 was not found in the d data frame." and (c) stopped in
+# R's own words, "object 'Environment1' not found". And a defect on the same
+# front door: a bare name after jrelabel()'s variable that is found nowhere
+# was bound to var.label, and R stopped "object 'Q5' not found"; it gets the
+# not-found sentence. The wording is Claude's. Each call runs in a stand-in
+# workspace holding only the check's frame (.ar_ws(), group AQ's form). Pins
+# filled by running at the battery's width.
+# =============================================================================
+cat("\n--- AR. A range where one variable goes, in jrelabel() and in vars = ---\n")
+
+.ar_ws <- function() {
+  ws <- new.env(parent = baseenv())
+  assign("q30", as.data.frame(community[, c(
+    "Income", "Age", "WellbeingScore", "Volunteer", "OwnsHome", "Smoker",
+    "Region", "Environment1", "Environment2", "Environment3", "Environment4",
+    "RespondentID")]), envir = ws)
+  for (f in c("jrelabel", "jrecode", "jencode", "jdesc", "jfreq", "jscreen",
+              "jplot", "jmulti", "jdeclare_missing", "jconvert", "juse"))
+    assign(f, get(f), envir = ws)
+  ws
+}
+.ar_run <- function(cl, ws) {
+  msg <- character(0); err <- NA_character_
+  out <- utils::capture.output(val <- withCallingHandlers(
+    tryCatch(eval(str2lang(cl), ws),
+             error = function(e) { .see("error", e); err <<- conditionMessage(e); NULL }),
+    message = function(m) {
+      .see("note", m); msg <<- c(msg, conditionMessage(m)); invokeRestart("muffleMessage")
+    },
+    warning = function(w) {
+      .see("warning", w); msg <<- c(msg, conditionMessage(w)); invokeRestart("muffleWarning")
+    }))
+  list(val = val, out = gsub("\033\\[[0-9;]*[A-Za-z]", "", out), msg = msg,
+       err = err)
+}
+.ar_labels <- function(ws, v) attr(ws$q30[[v]], "labels", exact = TRUE)
+
+check("AR01 jrelabel() given a range after the data frame labels every variable from its first to its last, in the data frame, as the c() naming each does -- the frame, the confirmation and the notes the same; a range that names one variable is the one-variable form, which returns the variable (the (S429) range item)",
+      local({
+        a <- .ar_ws(); b <- .ar_ws()
+        ra <- .ar_run("jrelabel(q30, Environment1:Environment3, labels = \"1=Low; 5=High\", modify = TRUE)", a)
+        rb <- .ar_run("jrelabel(q30, c(Environment1, Environment2, Environment3), labels = \"1=Low; 5=High\", modify = TRUE)", b)
+        one  <- .ar_run("jrelabel(q30, Age:Age, var.label = \"Age in years\")", .ar_ws())
+        oneb <- .ar_run("jrelabel(q30, Age, var.label = \"Age in years\")", .ar_ws())
+        is.na(ra$err) && identical(a$q30, b$q30) && identical(ra$msg, rb$msg) &&
+          identical(ra$out, rb$out) &&
+          identical(as.numeric(unname(.ar_labels(a, "Environment2"))), c(1, 5)) &&
+          identical(a$q30$Environment4, .ar_ws()$q30$Environment4) &&
+          identical(ra$msg[1L], "Value labels applied to Environment1, Environment2, and Environment3 in q30.\n") &&
+          is.na(one$err) && identical(one$val, oneb$val) && identical(one$msg, oneb$msg) &&
+          identical(attr(one$val, "label"), "Age in years") }))
+
+check("AR02 jrelabel()'s range without modify = TRUE stops before anything with the call as typed, the range kept, modify = TRUE added; the range's own stops come first (its ends the wrong way round, an end not found); a range inside c() keeps the not-found stop, as ruling R90 keeps it in every list (pinned whole)",
+      local({ ws <- .ar_ws()
+        g <- function(cl) .ar_run(cl, ws)$err
+        nm <- g("jrelabel(q30, Environment1:Environment3, labels = \"1=Low\")")
+        rv <- g("jrelabel(q30, Environment3:Environment1, labels = \"1=Low\", modify = TRUE)")
+        nf <- g("jrelabel(q30, Environment1:Environment9, labels = \"1=Low\", modify = TRUE)")
+        inc <- g("jrelabel(q30, c(Age, Environment1:Environment2), labels = \"1=Low\", modify = TRUE)")
+        identical(nm, "jrelabel(): labelling several variables changes q30 itself, so it\nneeds modify = TRUE:\n  jrelabel(q30, Environment1:Environment3, labels = \"1=Low\", modify = TRUE)") &&
+          identical(rv, "jrelabel(): In Environment3:Environment1, 'Environment3' comes after\n'Environment1' in the column order of q30.\nReverse the order: Environment1:Environment3") &&
+          identical(nf, "jrelabel(): Environment9 was not found in the q30 data frame.\nCheck the spelling.") &&
+          identical(inc, "jrelabel(): c(Age, Environment1:Environment2) was not found in the\nq30 data frame.\nCheck the spelling.") &&
+          identical(ws$q30, .ar_ws()$q30) }))
+
+check("AR03 jrecode() and jencode() given a range that names several variables give their one-variable stop, saying what the range names (pinned whole); one that names one is that variable, the result as the name's; the range's own stops come first",
+      local({ ws <- .ar_ws()
+        rc <- .ar_run("jrecode(q30, Environment1:Environment3, map = \"1=0; 2=0; 3=1; 4=1; 5=1\")", ws)$err
+        ec <- .ar_run("jencode(q30, Region:Environment4)", ws)$err
+        em <- .ar_run("jencode(q30, Income:Environment4)", ws)$err
+        r1 <- .ar_run("jrecode(q30, Age:Age, map = \"33=1; else=copy\")", ws)
+        r2 <- .ar_run("jrecode(q30, Age, map = \"33=1; else=copy\")", ws)
+        e1 <- .ar_run("jencode(q30, RespondentID:RespondentID)", ws)
+        e2 <- .ar_run("jencode(q30, RespondentID)", ws)
+        rv <- .ar_run("jrecode(q30, Smoker:Volunteer, map = \"1=0\")", ws)$err
+        identical(rc, "jrecode(): only one variable goes after the data frame, and the\nrange Environment1:Environment3 names Environment1, Environment2,\nand Environment3.\nName one variable, and run the call once for each.") &&
+          identical(ec, "jencode(): only one variable goes after the data frame, and the\nrange Region:Environment4 names Region, Environment1, Environment2,\nEnvironment3, and Environment4.\nName one variable, and run the call once for each.") &&
+          identical(em, "jencode(): only one variable goes after the data frame, and the\nrange Income:Environment4 names 11 variables.\nName one variable, and run the call once for each.") &&
+          is.na(r1$err) && identical(r1$val, r2$val) && identical(r1$msg, r2$msg) &&
+          is.na(e1$err) && identical(e1$val, e2$val) &&
+          identical(rv, "jrecode(): In Smoker:Volunteer, 'Smoker' comes after 'Volunteer' in\nthe column order of q30.\nReverse the order: Volunteer:Smoker") }))
+
+check("AR04 vars = given a range in jrelabel(), jdeclare_missing() and jconvert() stops with the call rebuilt, the range after the data frame (pinned whole), where R stopped in its own words; each offered line runs; the range's own stops come first; a range of numbers keeps the stop for vars = that holds no names; under a juse() default the range goes first",
+      local({ ws <- .ar_ws(); old <- getOption(".jst_default_data")
+        on.exit(options(.jst_default_data = old), add = TRUE)
+        options(.jst_default_data = NULL)
+        g <- function(cl) .ar_run(cl, ws)$err
+        rl <- g("jrelabel(q30, vars = Environment1:Environment3, labels = \"1=Low\", modify = TRUE)")
+        dm <- g("jdeclare_missing(q30, vars = Environment1:Environment3, codes = 9, convention = \"spss\")")
+        cv <- g("jconvert(q30, Age, vars = Environment1:Environment2, to = \"stata\")")
+        rv <- g("jconvert(q30, vars = Environment2:Environment1, to = \"stata\")")
+        nf <- g("jdeclare_missing(q30, vars = Age:Agee, codes = 9, convention = \"spss\")")
+        nu <- g("jconvert(q30, vars = 1:3, to = \"stata\")")
+        line <- function(m) paste(trimws(tail(strsplit(m, "\n", fixed = TRUE)[[1]], -2L)), collapse = " ")
+        runs <- vapply(c(rl, dm, cv), function(m) is.na(.ar_run(line(m), .ar_ws())$err), logical(1))
+        options(.jst_default_data = "q30")
+        df <- g("jconvert(vars = Environment1:Environment2, to = \"stata\")")
+        identical(rl, "jrelabel(): vars = takes names in quotes.\nTo name a range of variables, put it after the data frame:\n  jrelabel(q30, Environment1:Environment3, labels = \"1=Low\", modify = TRUE)") &&
+          identical(dm, "jdeclare_missing(): vars = takes names in quotes.\nTo name a range of variables, put it after the data frame:\n  jdeclare_missing(q30, Environment1:Environment3, codes = 9,\n      convention = \"spss\")") &&
+          identical(cv, "jconvert(): vars = takes names in quotes.\nTo name a range of variables, put it after the data frame:\n  jconvert(q30, Age, Environment1:Environment2, to = \"stata\")") &&
+          all(runs) &&
+          identical(rv, "jconvert(): In Environment2:Environment1, 'Environment2' comes after\n'Environment1' in the column order of q30.\nReverse the order: Environment1:Environment2") &&
+          identical(nf, "jdeclare_missing(): Agee was not found in the q30 data frame.\nCheck the spelling.") &&
+          identical(flat(nu), flat(paste0("jconvert(): ", .jst_txt_vars_quoted))) &&
+          identical(df, "jconvert(): vars = takes names in quotes.\nTo name a range of variables, put it first:\n  jconvert(Environment1:Environment2, to = \"stata\")") }))
+
+check("AR05 by = in jdesc() and jplot(), facet = in jplot() and none = in jmulti() given a range that names several variables say so in their one-variable stop (pinned whole); a range that names one is that variable",
+      local({ ws <- .ar_ws()
+        g <- function(cl) .ar_run(cl, ws)$err
+        db <- g("jdesc(q30, Age, by = Volunteer:Smoker)")
+        pb <- g("jplot(q30, Age, by = Volunteer:Smoker)")
+        pf <- g("jplot(q30, Age, facet = Volunteer:OwnsHome)")
+        mn <- g("jmulti(q30, Volunteer:OwnsHome, none = Smoker:Region)")
+        d1 <- .ar_run("jdesc(q30, Age, by = Region:Region)", ws)
+        d2 <- .ar_run("jdesc(q30, Age, by = Region)", ws)
+        identical(db, "jdesc(): by = takes one variable, and the range Volunteer:Smoker\nnames Volunteer, OwnsHome, and Smoker.\nName one variable.") &&
+          identical(pb, sub("^jdesc", "jplot", db)) &&
+          identical(pf, "jplot(): facet = takes one variable, and the range\nVolunteer:OwnsHome names Volunteer and OwnsHome.\nName one variable.") &&
+          identical(mn, "jmulti(): none = takes one variable, and the range Smoker:Region\nnames Smoker and Region.\nName one variable.") &&
+          is.na(d1$err) && identical(d1$out, d2$out) && identical(d1$msg, d2$msg) }))
+
+check("AR06 a bare name after jrelabel()'s variable that is neither a variable of the data frame nor an object gets the not-found sentence, where R stopped \"object 'Agee' not found\"; one that is an object is still read as before",
+      local({ ws <- .ar_ws()
+        nf <- .ar_run("jrelabel(q30, Age, Agee, labels = \"1=Low\")", ws)$err
+        assign("lab30", "Age in years", envir = ws)
+        ok <- .ar_run("jrelabel(q30, Age, labels = \"1=Low\", lab30)", ws)
+        identical(nf, "jrelabel(): Agee was not found in the q30 data frame.\nCheck the spelling.") &&
+          is.na(ok$err) && identical(attr(ok$val, "label"), "Age in years") }))
+
+check("AR07 under a juse() default jrelabel() given a range alone labels the default frame's variables, and jrecode() given a range that names several stops with its one-variable stop, the map named or not; a range's end not found under the default gets the not-found sentence with the juse() line, as a name does, in jrecode() and jencode(), and without it when the frame is named",
+      local({ ws <- .ar_ws(); old <- getOption(".jst_default_data")
+        on.exit(options(.jst_default_data = old), add = TRUE)
+        options(.jst_default_data = "q30")
+        rl <- .ar_run("jrelabel(Environment1:Environment2, labels = \"1=Low\", modify = TRUE)", ws)
+        rc  <- .ar_run("jrecode(Environment1:Environment2, map = \"1=0\")", ws)$err
+        rc2 <- .ar_run("jrecode(Environment1:Environment2, \"1=0\")", ws)$err
+        nf  <- "Environment9 was not found in the q30 data frame.\nCheck the spelling."
+        hint <- "\nq30 is the juse() default -- if you meant a different data frame, name it\nin the call."
+        rc3 <- .ar_run("jrecode(Environment1:Environment9, map = \"1=0\")", ws)$err
+        en3 <- .ar_run("jencode(Environment0:Environment2, map = \"1=a\")", ws)$err
+        rc4 <- .ar_run("jrecode(q30, Environment1:Environment9, map = \"1=0\")", ws)$err
+        identical(rc3, paste0("jrecode(): ", nf, hint)) &&
+          identical(en3, paste0("jencode(): ", sub("Environment9", "Environment0", nf, fixed = TRUE), hint)) &&
+          identical(rc4, paste0("jrecode(): ", nf)) &&
+          is.na(rl$err) && identical(as.numeric(unname(.ar_labels(ws, "Environment2"))), 1) &&
+          identical(ws$q30$Environment3, .ar_ws()$q30$Environment3) &&
+          identical(rc, "jrecode(): only one variable goes after the data frame, and the\nrange Environment1:Environment2 names Environment1 and Environment2.\nName one variable, and run the call once for each.") &&
+          identical(rc2, rc) }))
+check("AR08 under a juse() default, a range whose ends are also objects in the workspace is the default frame's variables in jdesc(), jfreq() and jscreen(), as a name is (ruling R12), with the line saying which were read -- where jdesc() had described R's A:B, the numbers between the two objects; with no default the objects are read, as before",
+      local({ ws <- .ar_ws(); old <- getOption(".jst_default_data")
+        on.exit(options(.jst_default_data = old), add = TRUE)
+        assign("Environment1", 1, envir = ws); assign("Environment2", 4, envir = ws)
+        options(.jst_default_data = "q30")
+        note <- "Environment1 and Environment2 are variables in q30, not the separate objects\nwith those names."
+        ok <- vapply(c("jdesc", "jfreq", "jscreen"), function(fn) {
+          a <- .ar_run(paste0(fn, "(Environment1:Environment2)"), ws)
+          b <- .ar_run(paste0(fn, "(Environment1, Environment2)"), ws)
+          is.na(a$err) && identical(a$out, b$out) &&
+            grepl(note, paste(a$out, collapse = "\n"), fixed = TRUE)
+        }, logical(1))
+        dv <- .ar_run("jdesc(Environment1:Environment2, print = FALSE)", ws)$val
+        options(.jst_default_data = NULL)
+        nv <- .ar_run("jdesc(Environment1:Environment2, print = FALSE)", ws)$val
+        all(ok) && identical(dv$descriptives_raw$variable, c("Environment1", "Environment2")) &&
+          identical(nv$descriptives_raw$variable, "Environment1:Environment2") &&
+          identical(nv$descriptives_raw$total, 4L) }))
+rm(.ar_ws, .ar_run, .ar_labels)
+
+# =============================================================================
 # P -- THE MESSAGE SURFACE, SWEPT (S337)
 # =============================================================================
 # P01 (S337) -- NO PREMATURE BREAK, swept over every condition grab() took.
@@ -8093,6 +8342,8 @@ options(.jst_default_data = .entry_default_data)
 options(.jst_output_level = .entry_output_level)
 options(.jst_output_toggles = .entry_output_toggles)
 options(.entry_stores)
+options(.jst_options_data_dir = .entry_data_dir,
+        .jst_options_output_dir = .entry_output_dir)
 
 .n_ok <- sum(vapply(.results, `[[`, logical(1), "ok"))
 .n    <- length(.results)

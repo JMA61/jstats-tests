@@ -49,6 +49,9 @@
 #           since S359 the shape check counting cases and naming the
 #           workspace object a wrong count came from (I1), and the vector
 #           path's refusal of a condition on another variable (I2);
+#           since S430 a range where one variable goes -- jrelabel()'s list
+#           form, a slot that takes one variable, and vars = -- and a
+#           name after jrelabel()'s variable found nowhere (I3);
 #           and Part E, the named-item detector: a
 #           top-level single = in jsubset() and in a variable list, the
 #           misspelled-input case it is told apart from, and the no-subset
@@ -58,6 +61,27 @@
 #           column S290 (v0.9.164); B8 and D5 flipped, B9, B10, C4 and
 #           D9-D11 added S330 (v0.9.206); C5-C8 and D12-D14 added S331
 #           (v0.9.207); C9 added, A2 A5 D2 E3 re-pinned S338 (v0.9.212)
+# S430 EDIT (v0.9.289; the (S429) range item, its wording Claude's call):
+#           NEW SECTION I3 -- 62 sections -> 63 -- ON THE PENDING LINE, its
+#           Expected blocks filled by running (fill.R). Four renders:
+#           jrelabel() given a range, Environment1:Environment3, without and
+#           with modify = TRUE; jrecode()'s variable and jdesc()'s by =
+#           given a range that names several variables, each stopping on what
+#           the range names; vars = given a range in
+#           jdeclare_missing() and jconvert(), stopping with the call
+#           rebuilt, the range after the data frame; and a name after
+#           jrelabel()'s variable found nowhere, the not-found sentence where
+#           R stopped "object 'Agee' not found". A capture of every section
+#           of every walk on 0.9.288 and on the build: no other section of
+#           this walk moved (I2's trailing blank aside). The human half of
+#           filter_check.R section AR.
+# LAST VERIFIED: v0.9.289, 2026-11-15 (S430) -- I3 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (12 run, 3770 checks). Sandbox: harness.R
+#           verify, 63 of 63 sections in three orders and by
+#           prepare = TRUE; 102 of 102 Expected blocks; rewalk()'s
+#           scoreboard read the PENDING line.
 # S416 EDIT (v0.9.280; Capability Slate U's charts, build 3, with the
 #           (S413) range item riding). G7 AND H1 RE-PINNED by running
 #           (fill.R), each block compared with the one it replaced, and ON
@@ -3146,6 +3170,92 @@ rm(Keep01)
 #   - Render 1 and Render 2: the same three lines -- "refers to Keep01,
 #     which the single column d$Age does not contain.", "Name the data
 #     frame first:" and jdesc(d, Age, subset = Keep01 == 1).
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION I3 -- a range where one variable goes, in jrelabel() and in vars = ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 430 (v0.9.289; the (S429) range item). Ruling R90 gave nine
+# variable lists a range, A:B -- every variable from A to B in the data
+# frame's order. Three places outside them now meet one in words of their
+# own. jrelabel() takes a range for its list form, as it takes a c() of
+# names. A slot that takes ONE variable -- jrecode()'s, jencode()'s, by =,
+# facet =, none = -- given a range that names several stops saying what it
+# names (a range that names one is that variable). vars =, which takes names
+# in quotes, given a range stops with the call rebuilt, the range after the
+# data frame. Until v0.9.288 each said "Environment1:Environment3 was not
+# found in the i3 data frame.", and vars = stopped in R's own words,
+# "object 'Environment1' not found". And on jrelabel()'s front door, a name
+# after the variable that is found nowhere gets the not-found sentence,
+# where R stopped "object 'Agee' not found". A range inside c() keeps the
+# not-found stop, as R90 keeps it in every list. The wording is Claude's.
+# The assertion side is filter_check.R section AR.
+i3 <- as.data.frame(community[, c("Age", "Volunteer", "OwnsHome", "Smoker",
+                                  "Environment1", "Environment2", "Environment3")])
+
+# Render 1 -- jrelabel() given a range: without modify = TRUE, the call
+# with it added, the range as typed; with it, the three labelled.
+caught(jrelabel(i3, Environment1:Environment3, labels = "1=Never; 5=Always"))
+jrelabel(i3, Environment1:Environment3, labels = "1=Never; 5=Always", modify = TRUE)
+# Expected:
+#   Caught: jrelabel(): labelling several variables changes i3 itself, so it
+#   needs modify = TRUE:
+#     jrelabel(i3, Environment1:Environment3, labels = "1=Never; 5=Always",
+#         modify = TRUE)
+#   Value labels applied to Environment1, Environment2, and Environment3 in i3.
+#   Note: The declared missing values of Environment1 and Environment3 kept
+#   their labels:
+#     -99 ["Refused"], -98 ["Don't know"]
+
+# Render 2 -- a slot that takes one variable, given a range that names
+# several: jrecode(), then by = in jdesc().
+caught(jrecode(i3, Environment1:Environment3, map = "1=0; else=1"))
+caught(jdesc(i3, Age, by = Volunteer:Smoker))
+# Expected:
+#   Caught: jrecode(): only one variable goes after the data frame, and the
+#   range Environment1:Environment3 names Environment1, Environment2,
+#   and Environment3.
+#   Name one variable, and run the call once for each.
+#   Caught: jdesc(): by = takes one variable, and the range Volunteer:Smoker
+#   names Volunteer, OwnsHome, and Smoker.
+#   Name one variable.
+
+# Render 3 -- a range in vars =: jdeclare_missing(), then jconvert() with
+# a variable named after the data frame as well.
+caught(jdeclare_missing(i3, vars = Environment1:Environment3, codes = 9,
+                        convention = "spss"))
+caught(jconvert(i3, Age, vars = Environment1:Environment2, to = "stata"))
+# Expected:
+#   Caught: jdeclare_missing(): vars = takes names in quotes.
+#   To name a range of variables, put it after the data frame:
+#     jdeclare_missing(i3, Environment1:Environment3, codes = 9,
+#         convention = "spss")
+#   Caught: jconvert(): vars = takes names in quotes.
+#   To name a range of variables, put it after the data frame:
+#     jconvert(i3, Age, Environment1:Environment2, to = "stata")
+
+# Render 4 -- a name after jrelabel()'s variable that is found nowhere.
+caught(jrelabel(i3, Age, Agee, labels = "1=Low"))
+# Expected:
+#   Caught: jrelabel(): Agee was not found in the i3 data frame.
+#   Check the spelling.
+rm(i3)
+
+# Things to look at:
+#   - Render 1: the stop says labelling several variables changes i3
+#     itself and gives the call with modify = TRUE added, the range kept as
+#     typed; run with it, "Value labels applied to Environment1,
+#     Environment2, and Environment3 in i3." and the note on the declared
+#     missing values whose labels were kept;
+#   - Render 2: "only one variable goes after the data frame, and the range
+#     Environment1:Environment3 names Environment1, Environment2, and
+#     Environment3." / "Name one variable, and run the call once for
+#     each."; by = in the same form, "by = takes one variable";
+#   - Render 3: "vars = takes names in quotes." / "To name a range of
+#     variables, put it after the data frame:" over the call with the range
+#     there, Age kept before it in jconvert()'s;
+#   - Render 4: "Agee was not found in the i3 data frame." / "Check the
+#     spelling.", as for any variable.
+
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # Observations

@@ -57,7 +57,41 @@
 #           file named for the object, and read back under the file's name;
 #           a chart refused; a file name typed without its quotes with a
 #           dash or a slash in it (Section 44, rewritten).
+#           Since S430 jload() given a saved result by its name, without the
+#           quotes, saying what it is and giving the call with them; the
+#           generic stop's "Provide a file name in quotes, for example:";
+#           and jsave() over a file another program holds stopping before
+#           anything is written, naming the program (Section 45).
 # ORIGIN:   S229
+# EDITED:   S430 (v0.9.289; the (S429) jload(m1) item, the generic stop in
+#           Jeff's words at S429 -- 'Should we specify "...provide a filename
+#           in quotes..."' -- and the open-file item, the lean okayed: the
+#           file tried before the question; the other wording Claude's).
+#           SECTION 45 ADDED, on the PENDING line, its Expected blocks filled
+#           by running (fill.R; the walk folder shown as <walk folder>):
+#           jload(m45), m45 a jlm() result in the workspace, then jload(45)
+#           and jload(); jsave(d45, "d45.xlsx") and "d45.sav", each saved
+#           again with overwrite = TRUE while another program holds the file
+#           (stood in for by .jst_file_locked() answering yes, then put
+#           back). SECTION 13 RE-PINNED, by running (fill.R), the block
+#           compared with the one it replaced, and kept OFF the PENDING
+#           line, the sentence shown in Section 45: jload("") and jload()
+#           given a data frame as an expression give "Provide a file name in
+#           quotes, for example:" where they gave "Provide a filename, for
+#           example:"; its Things to look at say so.
+#           Every section of every walk captured on v0.9.288 and on this
+#           build from one working folder and compared: no other section of
+#           this walk moved (Sections 28, 33 and 34 differ only in the
+#           mirror's path, Section 44 in a trailing blank). The human half
+#           of tables_check.R section BB's jload() and jsave() checks.
+# LAST VERIFIED: v0.9.289, 2026-11-15 (S430) -- Section 45 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (12 run, 3770 checks). Sandbox: harness.R
+#           verify, 45 of 45 sections in three orders and by
+#           prepare = TRUE; 171 of 172 Expected blocks found (Section 9's
+#           prose block, as before); Section 13 re-pinned mechanically, not
+#           walked; rewalk()'s scoreboard read the PENDING line.
 # EDITED:   S429 (v0.9.288; Jeff's ruling, reversing the S406 decision:
 #           "Let's reverse the decision and incorporate the rest of your
 #           ideas", the four choices okayed, "okay on your recommendations
@@ -2144,10 +2178,10 @@ cat("\n--- an empty file name; a data frame given as an expression ---\n")
 try(jload(""))
 try(jload(d13[1:2, , drop = FALSE]))
 # Expected:
-#   Error : jload(): Provide a filename, for example:
+#   Error : jload(): Provide a file name in quotes, for example:
 #     jload("mydata.sav")
 #   Error : jload(): d13[1:2, , drop = FALSE] is a data frame, not a file name.
-#   Provide a filename, for example:
+#   Provide a file name in quotes, for example:
 #     jload("mydata.sav")
 
 cat("\n--- jsave() with a default set, the data omitted, a second argument unnamed ---\n")
@@ -2172,9 +2206,9 @@ rm(.wd13, .def13, .ws13, .ws13b, .ns13, .m13, d13, p13, z13)
 #     d13 data frame", never a bare name opening the sentence).
 #   - jsave("t13.rds") with a default set still saves the default, as it
 #     always did (N86h); this message is for no default only.
-#   - "jload(""): Provide a filename" -- an empty string TYPED as such --
-#     keeps the generic stop (N86f); only an expression that came out empty
-#     is named.
+#   - "jload(""): Provide a file name in quotes" -- an empty string TYPED
+#     as such -- keeps the generic stop (N86f), "Provide a filename" until
+#     S430; only an expression that came out empty is named.
 #   - THE NAME A DIGIT IS OFFERED (S366, v0.9.238; Fix Slate 13): the one
 #     the cleaner gives, an X before the digit -- X2024zz13, X2b -- where
 #     the digits had been stripped (zz13, b), which offered name = "" for
@@ -2219,7 +2253,8 @@ rm(.wd13, .def13, .ws13, .ws13b, .ns13, .m13, d13, p13, z13)
 #     call): jload("") and jload() given a data frame as an expression said
 #     "Provide a filename, e.g. jload("mydata.sav")" on one line, the
 #     sentence before it on the line above. The example now has a line of
-#     its own under "Provide a filename, for example:", as jsave()'s does
+#     its own under "Provide a filename, for example:" ("Provide a file name
+#     in quotes, for example:" since S430), as jsave()'s does
 #     (missing_convention_check.R N86f and N86bg).
 #   - THE DATA OMITTED, A SECOND ARGUMENT UNNAMED (S369): jsave("t13.rds",
 #     TRUE) with a default set said "when the data argument is omitted, all
@@ -5764,6 +5799,93 @@ setwd(.wd44)
 #   - Render 4: use = TRUE refused for a result, with the call without it;
 #     a name with a dash or a slash typed bare, where R said "object 'my'
 #     not found", given back in quotes.
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 45 -- jload() given a saved result by name; jsave() over a file another program holds (S430) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 430 (v0.9.289; the (S429) jload(m1) and open-file items). Your
+# test at S429: jload(m1), m1 a saved result still in the workspace, gave
+# the generic "Provide a filename" stop ("Should we specify "...provide a
+# filename in quotes...""). It now says what m1 is, that it is already in
+# your workspace, and gives the call with the quotes; the generic stop says
+# the file name goes in quotes. And jsave() replacing a file another program
+# holds -- a .xlsx open in Excel, a .sav in SPSS -- printed file.remove()'s
+# warning and "Could not remove existing target file:"; it now stops, before
+# the overwrite question and before anything is written, in jtable()'s
+# words, naming the program. Only Windows holds a file so, so here the hold
+# is stood in for (.jst_file_locked() answering yes for the render, then put
+# back); try the real one by hand -- the Things to look at say how. The
+# wording is Claude's. The assertion side is tables_check.R section BB.
+# The walk folder is shown as <walk folder>.
+.wd45 <- getwd(); setwd(.walkdir)
+.show45 <- function(expr) {   # the call's notes and its stop, the folder shown as <walk folder>
+  m <- character(0)
+  r <- withCallingHandlers(
+    tryCatch({ expr; NULL }, error = function(e) conditionMessage(e)),
+    message = function(c) { m <<- c(m, conditionMessage(c)); invokeRestart("muffleMessage") })
+  cat(gsub(normalizePath(.walkdir, winslash = "/"), "<walk folder>",
+           paste0(paste(m, collapse = ""), if (!is.null(r)) paste0("Error : ", r, "\n")),
+           fixed = TRUE))
+}
+d45 <- data.frame(y = c(3, 5, 4, 6, 8, 7, 9, 8), x = 1:8)
+m45 <- jlm(y ~ x, d45, print = FALSE)
+
+# Render 1 -- jload() given the result by its name, without the quotes;
+# then given a number; then given nothing.
+.show45(jload(m45))
+.show45(jload(45))
+.show45(jload())
+# Expected:
+#   Error : jload(): 'm45' is a jlm() result, already in your workspace.
+#   To load it from its file, put its name in quotes:
+#     jload("m45")
+#   Error : jload(): Provide a file name in quotes, for example:
+#     jload("mydata.sav")
+#   Error : jload(): Provide a file name in quotes, for example:
+#     jload("mydata.sav")
+
+# Render 2 -- d45 saved to Excel format, then saved again over a file
+# another program holds (stood in for), with overwrite = TRUE: the stop
+# before anything is written. Then the same to SPSS format.
+.show45(jsave(d45, "d45.xlsx"))
+.real45 <- get(".jst_file_locked", envir = asNamespace("jstats"))
+utils::assignInNamespace(".jst_file_locked", function(path) file.exists(path), ns = "jstats")
+.show45(jsave(d45, "d45.xlsx", overwrite = TRUE))
+.show45(jsave(d45, "d45.sav"))
+.show45(jsave(d45, "d45.sav", overwrite = TRUE))
+utils::assignInNamespace(".jst_file_locked", .real45, ns = "jstats")
+# Expected:
+#   Saved d45 to
+#   <walk folder>/d45.xlsx
+#   (Excel format; 8 cases, 2 variables)
+#   Error : jsave(): the file could not be written:
+#     <walk folder>/d45.xlsx
+#   If it is open in Excel, close it and run jsave() again.
+#   Saved d45 to
+#   <walk folder>/d45.sav
+#   (SPSS format; 8 cases, 2 variables)
+#   Error : jsave(): the file could not be written:
+#     <walk folder>/d45.sav
+#   If it is open in SPSS, close it and run jsave() again.
+unlink(c("d45.xlsx", "d45.sav"))
+setwd(.wd45)
+
+# Things to look at:
+#   - Render 1: "'m45' is a jlm() result, already in your workspace." /
+#     "To load it from its file, put its name in quotes:" / jload("m45");
+#     a number and nothing both get "Provide a file name in quotes, for
+#     example:" / jload("mydata.sav");
+#   - Render 2: each save first says where it went; the second of each
+#     stops with "the file could not be written:", the path, and "If it is
+#     open in Excel, close it and run jsave() again." (SPSS for the .sav),
+#     and no warning follows;
+#   - BY HAND, on Windows: save a file, open it in Excel, then save over it
+#     at the Console -- d45 <- data.frame(y = 1:3); jsave(d45, "d45.xlsx");
+#     open d45.xlsx in Excel; jsave(d45, "d45.xlsx", overwrite = TRUE) --
+#     the stop as in Render 2, and no warning; then once more without
+#     overwrite = TRUE: the same stop, and no "Overwrite? (y/n)" question
+#     before it. Close Excel and delete the file afterwards.
+
 
 # --- End marker --------------------------------------------------------------
 # A real statement, deliberately last: stepping through with Ctrl+Enter, RStudio

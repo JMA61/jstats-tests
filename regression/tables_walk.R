@@ -109,7 +109,37 @@
 #           folder in Documents; with one set, the list as before; and the
 #           note under a copy saved in your jstats folder, its last
 #           sentence in the list's words.
+#           Section 30 (S430): a Word file's name with no extension, and one
+#           whose ending is no file format's, written with .docx added; a
+#           name ending in another format's extension stopping with the call
+#           and the name ending .docx; and Report30.docx held by another
+#           program (stood in for), the stop before anything is written and
+#           no warning of R's.
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S430 (v0.9.289; the (S429) .docx item and open-file item, the
+#           lean okayed -- the file tried before the question -- and the
+#           wording Claude's call). SECTION 30 ADDED, on the PENDING line,
+#           its Expected blocks filled by running (fill.R, under the
+#           Windows-length folders of S424, the paths written as <tempdir>):
+#           jtable(t30, file = "Report30") and file = "Report30.v2", each
+#           written with .docx added; file = "Report30.pdf" stopping with
+#           the call ending "Report30.docx"; and the file held by another
+#           program, stood in for by .jst_file_locked() answering yes, then
+#           put back. No section re-pinned: the old stop for a name not
+#           ending in .docx was pinned only in tables_check.R (J14 and AI01,
+#           both re-pinned there). Every section of
+#           every walk captured on v0.9.288 and on this build from one
+#           working folder and compared: no other section of this walk moved
+#           (Section 29's trailing blank aside). The human half of
+#           tables_check.R section BB.
+# LAST VERIFIED: v0.9.289, 2026-11-15 (S430) -- Section 30 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (12 run, 3770 checks). Sandbox: harness.R
+#           verify, 30 of 30 sections in three orders and by
+#           prepare = TRUE; 136 of 146 Expected blocks found, as on v0.9.288
+#           (133 of 143, the same ten); rewalk()'s scoreboard read the
+#           PENDING line.
 # EDITED:   S427 (v0.9.287; the (S427) item, Jeff's wording, "Option 2";
 #           the note's last sentence to match, Claude's wording). SECTION
 #           29 ADDED, on the PENDING line, its Expected blocks filled by
@@ -6612,6 +6642,85 @@ joptions(style.dir = .entry_style_dir29, quiet = TRUE)
 #     your styles in your Documents folder instead, run this line, then
 #     save the copy again:" over the same joptions(style.dir = "...") line
 #     as Render 1's.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 30 -- A Word file's name without .docx; a Word file another program holds ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 430 (v0.9.289; the (S429) .docx and open-file items). Your
+# question at S429: "do we really need to specify the file extension in the
+# syntax? ... We're always writing to a .docx right?" A file name with no
+# extension now gets .docx, and so does one whose ending is no file
+# format's ("Report30.v2" writes Report30.v2.docx); a name ending in another
+# format's extension stops, with the call and the name ending .docx. The
+# guides keep .docx in the calls they teach. And replacing a Word file that
+# is open in Word asked the question, then stopped, then printed two of R's
+# warnings ("The warning is cryptic."): the file is now tried before the
+# question, and the warnings are kept back. Only Windows holds a file so,
+# so here the hold is stood in for (.jst_file_locked() answering yes for
+# the render, then put back); try the real one by hand -- the Things to
+# look at say how. The wording is Claude's. The assertion side is
+# tables_check.R section BB.
+.walk30 <- file.path(tempdir(), "walk30")
+unlink(.walk30, recursive = TRUE); dir.create(.walk30)
+.wd30 <- getwd(); setwd(.walk30)
+t30 <- jtable(jdesc(WellbeingScore, Age, print = FALSE), print = FALSE)
+
+# Render 1 -- a name with no extension, then one whose ending is no file
+# format's: each written with .docx added.
+jtable(t30, file = "Report30")
+jtable(t30, file = "Report30.v2")
+# Expected:
+#   Table 1. Descriptive Statistics (N = 103)
+#     2 variables, on a portrait page.
+#   Table written to
+#   <tempdir>/walk30/Report30.docx
+#
+#   Table 1. Descriptive Statistics (N = 103)
+#     2 variables, on a portrait page.
+#   Table written to
+#   <tempdir>/walk30/Report30.v2.docx
+
+# Render 2 -- a name ending in another format's extension.
+tryCatch(jtable(t30, file = "Report30.pdf"),
+         error = function(e) cat("Caught: ", conditionMessage(e), "\n", sep = ""))
+# Expected:
+#   Caught: jtable(): the file name ends in .pdf, and a table is written to a
+#   Word file (.docx).
+#   Name the file with .docx:
+#     jtable(t30, file = "Report30.docx")
+
+# Render 3 -- Report30.docx held by another program (stood in for), then
+# written again with overwrite = TRUE: the stop before anything is written,
+# and no warning.
+.real30 <- get(".jst_file_locked", envir = asNamespace("jstats"))
+utils::assignInNamespace(".jst_file_locked", function(path) file.exists(path), ns = "jstats")
+tryCatch(jtable(t30, file = "Report30", overwrite = TRUE),
+         error = function(e) cat("Caught: ", conditionMessage(e), "\n", sep = ""))
+utils::assignInNamespace(".jst_file_locked", .real30, ns = "jstats")
+# Expected:
+#   Caught: jtable(): the file could not be written:
+#     <tempdir>/walk30/Report30.docx
+#   If it is open in Word, close it and run jtable() again.
+setwd(.wd30)
+unlink(.walk30, recursive = TRUE)
+
+# Things to look at:
+#   - Render 1: "Table written to" with Report30.docx, then Report30.v2.docx,
+#     in the section's temporary folder;
+#   - Render 2: "the file name ends in .pdf, and a table is written to a
+#     Word file (.docx)." / "Name the file with .docx:" over the call with
+#     file = "Report30.docx";
+#   - Render 3: "the file could not be written:", the path, and "If it is
+#     open in Word, close it and run jtable() again." -- the stop you read
+#     as good at S429 -- with nothing after it;
+#   - BY HAND, on Windows: write a table, open it in Word, then write it
+#     again at the Console -- t30 <- jtable(jdesc(tdat, WellbeingScore,
+#     print = FALSE), file = "Report30"); open Report30.docx in Word;
+#     jtable(t30, file = "Report30") -- the stop as in Render 3, and no
+#     "Overwrite? (y/n)" question before it and no warning after it; then
+#     jtable(t30, file = "Report30", overwrite = TRUE): the same. Close
+#     Word and delete the file afterwards.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =

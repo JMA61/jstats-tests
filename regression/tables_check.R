@@ -213,9 +213,19 @@
 #           what jsave() refuses before anything is written; a chart
 #           refused; a file name typed bare with a dash or a slash in it;
 #           a name with a dot in it found.
+#           (BB) the S430 fix build (v0.9.289): a Word file's name with no
+#           extension, or an ending that is no format's, written with .docx
+#           added, a figure's data file following the final name; a name
+#           ending in another format's extension stopping with the call
+#           and the name ending .docx; a Word file, a style file or a saved
+#           file another program holds stopping before anything is written
+#           and before the question, naming the program, with none of R's
+#           warnings; jload() given a saved result or a table by its name,
+#           and the generic stop's "Provide a file name in quotes".
 # ORIGIN:   S399 (v0.9.269; Capability Slate T, build 0)
-# LAST VERIFIED: v0.9.288, 2026-11-15 (S429) -- 396/396 on the WORKSTATION;
-#           the S429 EDIT block below holds the stamp. Prior: v0.9.287,
+# LAST VERIFIED: v0.9.289, 2026-11-15 (S430) -- 406/406 on the WORKSTATION;
+#           the S430 EDIT block below holds the stamp. Prior: v0.9.288,
+#           2026-11-15 (S429) -- 396/396 (the S429 EDIT block); v0.9.287,
 #           2026-11-14 (S427) -- 384/384 (the S427 EDIT block); v0.9.285,
 #           2026-11-14 (S425) -- 381/381 (the S425 EDIT block); v0.9.284,
 #           2026-11-14 (S424) -- 378/378 (the S424 EDIT block); v0.9.283,
@@ -264,6 +274,82 @@
 #           package: a mean is mean() of the group's cases, a code is the
 #           value the cells hold, a label is the value label itself.
 # =============================================================================
+# S430 EDIT (v0.9.289, 2026-11-15): SECTION BB ADDED, ten checks; J14, AI01
+#           AND BA09 RE-PINNED; THE OUTPUT FOLDER UNSET at setup and handed
+#           back at the foot. The fix build's (S429) items: a Word file's
+#           name without .docx (Jeff, S429: "do we really need to specify
+#           the file extension in the syntax?"), a file another program
+#           holds (Jeff: "The warning is cryptic."; the lean okayed, the file
+#           tried before the question), and jload(m1) (Jeff: 'Should we
+#           specify "...provide a filename in quotes..."'); the other
+#           wording Claude's. BB01 no extension, or an ending that is no
+#           format's ("bb.v2", "Table 1.2026"), written with .docx added, a
+#           .DOCX ending as given; BB02 a name ending in another format's
+#           extension stopping before anything is written, the call given
+#           with the name ending .docx (pinned whole for .pdf); BB03 a
+#           figure's data file named for the final name; BB04 a held Word
+#           file under overwrite = TRUE, before the question where the
+#           session asks, and, where it cannot ask, the stop for a file that
+#           exists first, as jsave()'s; jstyle()'s copy over a held file;
+#           BB05 a file opened between the check and the write; BB06 the two
+#           helpers, .jst_move_into_place() and .jst_file_locked(); BB07
+#           jsave() over a held file, each format's program named, the same
+#           three ways; BB08 a file that refuses to be removed at jsave()'s
+#           write, where file.remove()'s warning and "Could not remove
+#           existing target file:" printed; BB09 jload() given a saved
+#           result, a table and a set of tables by name, an expression
+#           giving one, and the generic stop; BB10 the offered line run.
+#           The hold is Windows's alone, so .jst_file_locked() is stood in
+#           for by one answering TRUE for a file that exists (.bbheld()),
+#           and Jeff checks the real one by hand with the file open in Word
+#           and in Excel (tables_walk.R Section 30, modify_form_walk.R
+#           Section 45). Re-pins: J14's .txt name and AI01's .pdf name get
+#           the new stop, "the file name ends in .txt, and a table is
+#           written to a Word file (.docx)." over the call; BA09's jload()
+#           of a bare name ends on "Provide a file name in quotes". 396 ->
+#           406 checks. The output folder (S430): Q01 read red in a session
+#           entered with one set -- section M handed it back before Q read
+#           the panel -- found by this build's dirty entry, the first with
+#           an output folder set.
+#           On v0.9.288 J14, AI01 and BA09 read red and section BB stopped
+#           the battery, the build having no .jst_file_locked() to stand in
+#           for. MUTATION MAP (S430; 19 mutants of the build's sites, each
+#           red): the generic stop's words BA09 BB09; jload()'s result
+#           branch, and its bare-name branch, BB09 BB10; the program named
+#           for .csv, and for .dta, BB07; the move's suppressWarnings() on
+#           the rename and the copy BB06, on the copy alone BB06, its
+#           removal of the temporary file BB06; jsave()'s
+#           probe BB07, and the probe moved after the question BB07; its
+#           file.remove() warning BB08, its old stop BB08; the Word
+#           writer's stop BB05; the gate's probe after overwrite = TRUE
+#           BB04 BB05, and before the no-ask stop BB04; the other-format
+#           test J14 AI01 BB02; .docx added after the ending was dropped
+#           BB01; the .docx test made case-sensitive (the battery stops in
+#           section L); "pdf" left off the list BB02. First round: the
+#           no-ask order survived (BB04 gained it), and jsave()'s
+#           file.remove() warning survived -- .bbrun() counted warnings
+#           OUTSIDE .axrun(), which muffles every warning it sees, so every
+#           "no warning" in BB read 0 whatever the call raised; the counter
+#           now sits inside, shown to count two warnings, and the mutant is
+#           red. The resolver's range under a default reads red in
+#           filter_check.R AR08, not here.
+#           SANDBOX: 406/406 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, through a symlinked
+#           temp path, interactive with no question asked, with a graphics
+#           device open (left open and current), under the stand-in of
+#           RStudio's Console color rule, and entered dirty (plain and
+#           under the handlers: no name, value, option or device changed;
+#           the dirt with a data folder, an output folder and a style folder
+#           set, and workspace objects named m1, pm1, survey and d). All
+#           twelve batteries 3770 each way.
+#           LAST VERIFIED: v0.9.289, 2026-11-15 (S430) -- 406/406 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3770 checks)"; R CMD check 0 errors, 0 warnings, 0 notes) at the
+#           first run, matching the sandbox. The package not yet pushed at
+#           the stamp.
+#           Section 30 of tables_walk.R and Section 45 of
+#           modify_form_walk.R, the human half of BB, walked: "walked, all
+#           okay".
 # S429 EDIT (v0.9.288, 2026-11-14): saving a result or a table -- Jeff's
 #           ruling, reversing Session 406's stops ("Let's reverse the
 #           decision and incorporate the rest of your ideas"; the quotes
@@ -1600,17 +1686,20 @@ stopifnot(exists("jload", mode = "function"))
 .entry_style_dir <- getOption(".jst_options_style_dir")
 .entry_udd       <- Sys.getenv("R_USER_DATA_DIR", unset = NA)
 # And the data folder (S429): sections M and Q read the panel with none
-# set, and Q's joptions(NULL) clears it.
+# set, and Q's joptions(NULL) clears it. The output folder too (S430):
+# Q01 read red in a session entered with one set, which section M had
+# handed back before Q read the panel.
 .entry_data_dir  <- getOption(".jst_options_data_dir")
+.entry_output_dir <- getOption(".jst_options_output_dir")
 
 .pin_width <- 76L
 options(.jst_options_message_width = .pin_width)
 # No call here names or leans on a convention: the slot is forced UNSET.
 options(.jst_options_missing_convention = NULL)
 # Nor on a style of the session's own: the apa default, no style folder;
-# nor on a data folder.
+# nor on a data folder or an output folder.
 options(.jst_options_style = NULL, .jst_options_style_dir = NULL,
-        .jst_options_data_dir = NULL)
+        .jst_options_data_dir = NULL, .jst_options_output_dir = NULL)
 
 # The data. tp2 is the standing fixture; tcm the shipped community dataset.
 jload("E:/00 R Projects/00_jstats_test_data/datasets/community_phase2_data.rds",
@@ -2455,7 +2544,7 @@ check("J13 a grouped jdesc(by =) result stops in this build (since S424 the stop
 .j14f <- res(jtable(.j0, file = "Table1.txt", print = FALSE))
 .j14g <- res(jtable(.j0, overwrite = "yes", print = FALSE))
 .j14h <- res(jtable(.j0, title = c("a", "b"), print = FALSE))
-check("J14 the front door: an unused input, the pointer for notes =, a bare word in style = or file =, a style that is not apa, a file without .docx, a flag that is not TRUE or FALSE, a title that is not one string",
+check("J14 the front door: an unused input, the pointer for notes =, a bare word in style = or file =, a style that is not apa, a file name ending in another format's extension (since S430; a file name without .docx stopped until then), a flag that is not TRUE or FALSE, a title that is not one string",
       grepl("jtable(): unused input: headinggs", .j14$txt, fixed = TRUE) &&
         grepl("'notes' is not valid.\nDid you mean `note`?", .j14b$txt, fixed = TRUE) &&
         grepl("jtable(): apa is not in quotes.\nstyle = takes a style name in quotes:",
@@ -2465,8 +2554,8 @@ check("J14 the front door: an unused input, the pointer for notes =, a bare word
         grepl("jtable(): Table1.docx is not in quotes.\nfile = takes a file name in quotes:",
               .j14e$txt, fixed = TRUE) &&
         grepl("  jtable(.j0, file = \"Table1.docx\", print = FALSE)", .j14e$txt, fixed = TRUE) &&
-        grepl("jtable(): the file name needs the .docx extension (a Word file),\nfor example:", .j14f$txt, fixed = TRUE) &&
-        grepl("  file = \"Table1.docx\"", .j14f$txt, fixed = TRUE) &&
+        grepl("jtable(): the file name ends in .txt, and a table is written to a\nWord file (.docx).\nName the file with .docx:", .j14f$txt, fixed = TRUE) &&
+        grepl("  jtable(.j0, file = \"Table1.docx\", print = FALSE)", .j14f$txt, fixed = TRUE) &&
         grepl("`overwrite` must be TRUE or FALSE.", .j14g$txt, fixed = TRUE) &&
         grepl("`title` must be a single quoted string.", .j14h$txt, fixed = TRUE))
 
@@ -5085,10 +5174,10 @@ check("AH08 every column of numbers holds its block, the decimal stop leaving ro
 cat("\n--- AI. The stops name jtable() once ---\n")
 
 .ai <- vapply(.seen, `[[`, "", "text")
-check("AI01 no recorded stop reads \"jtable(): jtable()\" (the S403 item: the emitter's prefix and the text both naming the function); each of the seven reworded stops was reached in its new words",
+check("AI01 no recorded stop reads \"jtable(): jtable()\" (the S403 item: the emitter's prefix and the text both naming the function); each of the seven reworded stops was reached in its new words (the file name's, since S430, in the words for another format's ending)",
       length(.ai) > 0L && !any(grepl("jtable(): jtable()", .ai, fixed = TRUE)) &&
         all(vapply(c("jtable(): no table is made from this kind of result yet.",
-                     "jtable(): the file name needs the .docx extension (a Word file),",
+                     "jtable(): the file name ends in .",
                      "jtable(): built tables and saved results cannot be given",
                      "jtable(): a table is made from a saved result -- what an analysis",
                      "jtable(): results of different kinds (",
@@ -9681,7 +9770,7 @@ check("BA09 a file name typed without its quotes and holding a dash or a slash -
                                   "A file name goes in quotes:\n  jsave(tcm, \"ba-data.sav\")")) &&
         identical(.ba9$s2, paste0("[error] jsave(): out9/ba9 is not in quotes.\n",
                                   "A file name goes in quotes:\n  jsave(.bam1, \"out9/ba9\")")) &&
-        startsWith(.ba9$obj, "[error] jload(): Provide a filename") &&
+        startsWith(.ba9$obj, "[error] jload(): Provide a file name in quotes") &&
         !grepl("not in quotes", .ba9$obj, fixed = TRUE))
 rm(.ba9a, .ba9b)
 
@@ -9767,6 +9856,286 @@ invisible(res(jnumeric(.bareg, NULL)))
 setwd(.baw)
 options(.bao)
 rm(.bao, .baw, .bap, .baflat, .bacant, .baask, .ba6before)
+
+# =============================================================================
+# BB. The S430 fix build (v0.9.289): a Word file's name without .docx; a
+#     file another program holds; jload() given a saved result by its name
+#     -- the (S429) items. jtable() writes Word files only, so a name with no
+#     extension, or an ending that is no file format's, gets .docx (Jeff:
+#     "We're always writing to a .docx right?"), and another format's
+#     ending stops with the call as typed and the name ending .docx. A file
+#     another program holds -- Word a .docx, Excel a .xlsx -- was found only
+#     at the write, after the overwrite question, and R's two warnings
+#     followed the stop ("The warning is cryptic."): the file is now tried
+#     before the question (the lean, okayed) and the warnings are kept back
+#     at the write; jsave() the same, its stop naming the program. Windows
+#     alone holds a file so, so the hold is stood in for here
+#     (.jst_file_locked() replaced in the namespace for each block, and put
+#     back); Jeff checks the real one on Windows with the files open.
+#     jload(m1), m1 a saved result in the workspace, gets a stop of its own
+#     saying the name goes in quotes, and the generic stop says it too
+#     (Jeff: "Should we specify "...provide a filename in quotes...""). The
+#     wording is Claude's.
+# =============================================================================
+cat("\n--- BB. A Word file's name; a file another program holds; jload(m1) ---\n")
+
+.bbd <- file.path(tempdir(), "tables_check_bb"); unlink(.bbd, recursive = TRUE)
+dir.create(.bbd)
+.bbw <- getwd(); setwd(.bbd)
+.bbo <- options(.jst_options_data_dir = NULL, .jst_options_output_dir = NULL)
+.bbp <- function(x) gsub(normalizePath(.bbd, winslash = "/"), "<bb>",
+                         gsub("\033\\[[0-9;]*m", "", x), fixed = TRUE)
+.bbflat <- function(x) trimws(gsub("\\s+", " ", paste(.bbp(x), collapse = " ")))
+# The call run as .axrun() runs it, its warnings counted as well -- by a
+# handler INSIDE .axrun()'s, which muffles every warning it sees, so a
+# counter outside it would read 0 whatever the call raised.
+.bbrun <- function(expr) {
+  w <- 0L
+  r <- .axrun(withCallingHandlers(expr, warning = function(c) w <<- w + 1L))
+  r$warnings <- w
+  r
+}
+# The hold stood in for: .jst_file_locked() answering TRUE for a file that
+# exists, for the length of one block, then put back.
+.bbreal <- get(".jst_file_locked", envir = asNamespace("jstats"))
+.bbheld <- function(expr) {
+  utils::assignInNamespace(".jst_file_locked", function(path) file.exists(path),
+                           ns = "jstats")
+  on.exit(utils::assignInNamespace(".jst_file_locked", .bbreal, ns = "jstats"))
+  expr
+}
+# The session that asks, its question answered by a reader that records
+# whether it was asked (.baask's form).
+.bbask <- function(fn, asked_env) {
+  conf <- environment(jsave)$.jst_confirm
+  ec <- new.env(parent = environment(conf))
+  ec$readline <- function(prompt = "") { asked_env$asked <- TRUE; "y" }
+  ec$cat <- function(...) invisible(NULL)
+  environment(conf) <- ec
+  e <- new.env(parent = environment(fn))
+  e$interactive <- function() TRUE
+  e$.jst_confirm <- conf
+  environment(fn) <- e
+  fn
+}
+# The session that cannot ask (an Rscript run, a knitted page), whatever
+# session runs the battery.
+.bbnoask <- function(fn) {
+  e <- new.env(parent = environment(fn))
+  e$interactive <- function() FALSE
+  environment(fn) <- e
+  fn
+}
+.bbexists <- function(fn, f) paste0("[error] ", fn, "(): this file already exists:\n",
+                                    "  <bb>/", f, "\n",
+                                    "To keep the file, save under another file name.\n",
+                                    "To replace it, add overwrite = TRUE to the call, then run it again.")
+.bbdocx <- function(f) {   # a Word file: a zip holding the document part
+  file.exists(f) && "word/document.xml" %in% utils::unzip(f, list = TRUE)$Name
+}
+.bbt1 <- res(jtable(jdesc(tcm, Age, Income, print = FALSE), print = FALSE))$val
+
+.bb1 <- list(a = .bbrun(jtable(.bbt1, file = "bb_report")),
+             b = .bbrun(jtable(.bbt1, file = "bb.v2")),
+             c = .bbrun(jtable(.bbt1, file = "Table 1.2026")),
+             d = .bbrun(jtable(.bbt1, file = "BB_UP.DOCX")))
+check("BB01 a Word file's name may leave off .docx: with no extension (\"bb_report\"), or an ending that is no file format's (\"bb.v2\", \"Table 1.2026\"), jtable() writes the name with .docx added and the report names the file written; a name ending .docx in any letter case is written as given (the (S429) .docx item)",
+      all(vapply(.bb1, function(r) identical(r$warnings, 0L), logical(1))) &&
+        .bbdocx(file.path(.bbd, "bb_report.docx")) && .bbdocx(file.path(.bbd, "bb.v2.docx")) &&
+        .bbdocx(file.path(.bbd, "Table 1.2026.docx")) && .bbdocx(file.path(.bbd, "BB_UP.DOCX")) &&
+        !file.exists(file.path(.bbd, "bb_report")) && !file.exists(file.path(.bbd, "bb.v2")) &&
+        grepl("Table written to <bb>/bb_report.docx", .bbflat(.bb1$a$out), fixed = TRUE) &&
+        grepl("Table written to <bb>/bb.v2.docx", .bbflat(.bb1$b$out), fixed = TRUE) &&
+        grepl("Table written to <bb>/Table 1.2026.docx", .bbflat(.bb1$c$out), fixed = TRUE) &&
+        grepl("Table written to <bb>/BB_UP.DOCX", .bbflat(.bb1$d$out), fixed = TRUE))
+
+.bb2files <- list.files(.bbd, all.files = TRUE, recursive = TRUE)
+.bb2 <- lapply(c(pdf = "bb2.pdf", doc = "bb2.doc", rtf = "bb2.rtf", odt = "bb2.odt",
+                 html = "bb2.html", xlsx = "bb2.xlsx", csv = "bb2.csv", rds = "bb2.rds",
+                 txt = "bb2.txt"),
+               function(f) .bbrun(jtable(.bbt1, file = f, print = FALSE))$out)
+check("BB02 a name ending in another format's extension stops before anything is written, naming the ending and giving the call as typed with the name ending .docx (pinned whole for .pdf; the ending named for .doc, .rtf, .odt, .html, .xlsx, .csv, .rds and .txt), where every such name stopped with a fragment of a call and \"Report.v2\" was offered \"Report.docx\"",
+      identical(.bbp(.bb2$pdf), paste0(
+        "[error] jtable(): the file name ends in .pdf, and a table is written to a\n",
+        "Word file (.docx).\n",
+        "Name the file with .docx:\n",
+        "  jtable(.bbt1, file = \"bb2.docx\", print = FALSE)")) &&
+        all(vapply(names(.bb2), function(e) startsWith(.bbflat(.bb2[[e]]), paste0(
+          "[error] jtable(): the file name ends in .", e, ", and a table is written to a Word file (.docx).")) &&
+            grepl("jtable(.bbt1, file = \"bb2.docx\", print = FALSE)", .bb2[[e]], fixed = TRUE),
+          logical(1))) &&
+        identical(list.files(.bbd, all.files = TRUE, recursive = TRUE), .bb2files))
+
+# A figure's data file takes the final name: a style whose [plot] section
+# asks for it, and a chart written under a name with no extension.
+.bb3st <- file.path(.bbd, "bbfig.jstyle")
+writeLines(c("format = 1", "based.on = apa", "", "[plot]", "data.file = yes"), .bb3st)
+.bb3p <- res(jplot(tcm, Region))$val
+.bb3 <- .bbrun(jtable(.bb3p, file = "bb_fig", style = .bb3st))
+check("BB03 a figure's data file takes the Word file's final name: a chart written to \"bb_fig\" under a style asking for its data writes bb_fig.docx and bb_fig_figures.xlsx",
+      identical(.bb3$warnings, 0L) && .bbdocx(file.path(.bbd, "bb_fig.docx")) &&
+        file.exists(file.path(.bbd, "bb_fig_figures.xlsx")) &&
+        !file.exists(file.path(.bbd, "bb_fig")))
+
+# The hold, before the question and under overwrite = TRUE.
+.bb4md5 <- unname(tools::md5sum(file.path(.bbd, "bb_report.docx")))
+.bb4ask <- new.env(); .bb4ask$asked <- FALSE
+.bb4 <- .bbheld(list(
+  o = .bbrun(jtable(.bbt1, file = "bb_report", overwrite = TRUE)),
+  # The gate jtable() and jstyle() share, in a session that asks: the
+  # question stood in for, so a question asked is recorded.
+  a = local({ realc <- get(".jst_confirm", envir = asNamespace("jstats"))
+              utils::assignInNamespace(".jst_confirm", function(...) {
+                .bb4ask$asked <- TRUE; TRUE }, ns = "jstats")
+              on.exit(utils::assignInNamespace(".jst_confirm", realc, ns = "jstats"))
+              .bbrun(.jst_table_overwrite_gate(file.path(.bbd, "bb_report.docx"),
+                                               FALSE, ask = TRUE)) }),
+  # Where the session cannot ask, the stop for a file that exists comes
+  # first, as jsave()'s has since Session 367.
+  n = .bbrun(.jst_table_overwrite_gate(file.path(.bbd, "bb_report.docx"),
+                                       FALSE, ask = FALSE)),
+  s = .bbrun(jstyle("apa", save.as = .bb3st, overwrite = TRUE))))
+check("BB04 a Word file another program holds stops before anything is written -- under overwrite = TRUE, and where the session asks, before the question is asked -- with the stop jtable() gave at the write since Session 400 (pinned whole), and no warning; where the session cannot ask, the stop for a file that exists comes first, as jsave()'s does; jstyle()'s copy over a held file names another program and jstyle(); the files are as they were",
+      identical(.bbp(.bb4$o$out), paste0(
+        "[error] jtable(): the file could not be written:\n",
+        "  <bb>/bb_report.docx\n",
+        "If it is open in Word, close it and run jtable() again.")) &&
+        identical(.bb4$a$out, .bb4$o$out) && isFALSE(.bb4ask$asked) &&
+        identical(.bbp(.bb4$n$out), .bbexists("jtable", "bb_report.docx")) &&
+        identical(.bbp(.bb4$s$out), paste0(
+          "[error] jstyle(): the file could not be written:\n",
+          "  <bb>/bbfig.jstyle\n",
+          "If it is open in another program, close it and run jstyle() again.")) &&
+        all(vapply(.bb4, function(r) identical(r$warnings, 0L), logical(1))) &&
+        identical(unname(tools::md5sum(file.path(.bbd, "bb_report.docx"))), .bb4md5) &&
+        identical(readLines(.bb3st)[5L], "data.file = yes"))
+
+# At the write: a file opened in between the check and the write refuses
+# both the rename and the copy -- the move stood in for -- and the stop
+# follows with no warning of R's; the temporary file is not left behind.
+.bb5 <- local({
+  real <- get(".jst_move_into_place", envir = asNamespace("jstats"))
+  utils::assignInNamespace(".jst_move_into_place",
+                           function(tmp, dest) { unlink(tmp); FALSE }, ns = "jstats")
+  on.exit(utils::assignInNamespace(".jst_move_into_place", real, ns = "jstats"))
+  .bbrun(jtable(.bbt1, file = "bb_report", overwrite = TRUE))
+})
+check("BB05 a Word file that refuses to be replaced at the write gives the same stop, with no warning, and no temporary file is left beside it",
+      identical(.bb5$out, .bb4$o$out) && identical(.bb5$warnings, 0L) &&
+        !any(startsWith(list.files(.bbd), "jtable_")) &&
+        identical(unname(tools::md5sum(file.path(.bbd, "bb_report.docx"))), .bb4md5))
+
+# The helpers themselves: the move keeps R's warnings back and removes the
+# temporary file; the hold is never found in a file nothing holds, a file
+# that is not there, or a folder.
+.bb6 <- local({
+  w <- 0L
+  tf1 <- tempfile(tmpdir = .bbd); writeLines("a", tf1)
+  bad <- withCallingHandlers(.jst_move_into_place(tf1, file.path(.bbd, "no_such", "x.docx")),
+                             warning = function(c) { w <<- w + 1L; invokeRestart("muffleWarning") })
+  tf2 <- tempfile(tmpdir = .bbd); writeLines("b", tf2)
+  good <- .jst_move_into_place(tf2, file.path(.bbd, "bb6.txt"))
+  list(bad = bad, w = w, gone = !file.exists(tf1) && !file.exists(tf2),
+       good = good, text = readLines(file.path(.bbd, "bb6.txt")))
+})
+check("BB06 .jst_move_into_place() puts a file in place (TRUE), and where both the rename and the copy are refused gives FALSE with R's warnings kept back; the temporary file is removed either way; .jst_file_locked() is FALSE for a file nothing holds, a file that is not there and a folder",
+      isFALSE(.bb6$bad) && identical(.bb6$w, 0L) && .bb6$gone && isTRUE(.bb6$good) &&
+        identical(.bb6$text, "b") &&
+        isFALSE(.jst_file_locked(file.path(.bbd, "bb6.txt"))) &&
+        isFALSE(.jst_file_locked(file.path(.bbd, "bb_none.docx"))) &&
+        isFALSE(.jst_file_locked(.bbd)))
+
+# jsave() the same: each format's program named.
+.bbdf <- data.frame(a = c(1, 2, 3), b = c(4, 5, 6))
+.bbm1 <- res(jlm(WellbeingScore ~ Age, tcm, print = FALSE))$val
+for (.f in c("bb7.xlsx", "bb7.csv", "bb7.sav", "bb7.dta", "bb7.rds")) invisible(.bbrun(jsave(.bbdf, .f)))
+invisible(.bbrun(jsave(.bbm1)))
+.bb7md5 <- tools::md5sum(file.path(.bbd, c("bb7.xlsx", "bb7.sav", ".bbm1.rds")))
+.bb7ask <- new.env(); .bb7ask$asked <- FALSE
+.bb7 <- .bbheld(list(
+  xlsx = .bbrun(jsave(.bbdf, "bb7.xlsx", overwrite = TRUE)),
+  csv  = .bbrun(jsave(.bbdf, "bb7.csv", overwrite = TRUE)),
+  sav  = .bbrun(jsave(.bbdf, "bb7.sav", overwrite = TRUE)),
+  dta  = .bbrun(jsave(.bbdf, "bb7.dta", overwrite = TRUE)),
+  rds  = .bbrun(jsave(.bbdf, "bb7.rds", overwrite = TRUE)),
+  res  = .bbrun(jsave(.bbm1, overwrite = TRUE)),
+  ask  = local({ jsave <- .bbask(jsave, .bb7ask)
+                 .bbrun(jsave(.bbdf, "bb7.xlsx")) }),
+  nask = local({ jsave <- .bbnoask(jsave)
+                 .bbrun(jsave(.bbdf, "bb7.xlsx")) })))
+.bb7stop <- function(f, prog) paste0("[error] jsave(): the file could not be written:\n",
+                                    "  <bb>/", f, "\n",
+                                    "If it is open in ", prog, ", close it and run jsave() again.")
+check("BB07 jsave() over a file another program holds stops before anything is written, naming the program that opens the file's kind -- Excel for .xlsx and .csv, SPSS for .sav, Stata for .dta, another program for .rds and a saved result's file -- under overwrite = TRUE, and where the session asks before the question; where it cannot ask, the stop for a file that exists, as before; no warning; the files as they were",
+      identical(.bbp(.bb7$xlsx$out), .bb7stop("bb7.xlsx", "Excel")) &&
+        identical(.bbp(.bb7$csv$out), .bb7stop("bb7.csv", "Excel")) &&
+        identical(.bbp(.bb7$sav$out), .bb7stop("bb7.sav", "SPSS")) &&
+        identical(.bbp(.bb7$dta$out), .bb7stop("bb7.dta", "Stata")) &&
+        identical(.bbp(.bb7$rds$out), .bb7stop("bb7.rds", "another program")) &&
+        identical(.bbp(.bb7$res$out), .bb7stop(".bbm1.rds", "another program")) &&
+        identical(.bb7$ask$out, .bb7$xlsx$out) && isFALSE(.bb7ask$asked) &&
+        identical(.bbp(.bb7$nask$out), .bbexists("jsave", "bb7.xlsx")) &&
+        all(vapply(.bb7, function(r) identical(r$warnings, 0L), logical(1))) &&
+        identical(tools::md5sum(file.path(.bbd, c("bb7.xlsx", "bb7.sav", ".bbm1.rds"))), .bb7md5))
+
+# At the write: the file there refuses to be removed (a folder holding a
+# file, under the file's name), and jsave() says so in the same words, R's
+# warning kept back, its temporary file removed.
+dir.create(file.path(.bbd, "bb8.xlsx")); writeLines("x", file.path(.bbd, "bb8.xlsx", "inner.txt"))
+.bb8 <- .bbrun(jsave(.bbdf, "bb8.xlsx", overwrite = TRUE))
+check("BB08 a file that refuses to be removed at jsave()'s write gives the stop jtable() gives, naming Excel, where file.remove()'s warning and \"Could not remove existing target file:\" printed; no warning; no temporary file left",
+      identical(.bbp(.bb8$out), .bb7stop("bb8.xlsx", "Excel")) &&
+        identical(.bb8$warnings, 0L) &&
+        !any(startsWith(list.files(.bbd), "jsave_")) &&
+        identical(list.files(file.path(.bbd, "bb8.xlsx")), "inner.txt"))
+
+# jload() given a saved result, a table or a set of tables by name, without
+# the quotes; an expression giving one; and the generic stop.
+.bbdoc <- res(jtable(list(.bbt1, .bbt1), print = FALSE))$val
+.bblst <- list(.bbm1)
+.bb9 <- lapply(list(
+  m   = quote(jload(.bbm1)),
+  t   = quote(jload(.bbt1)),
+  doc = quote(jload(.bbdoc)),
+  ex  = quote(jload(.bblst[[1]])),
+  num = quote(jload(42)),
+  no  = quote(jload())),
+  function(cl) .bbrun(eval(cl, globalenv()))$out)
+check("BB09 jload() given a saved result or a table by its name, without the quotes, says what it is and that it is already in the workspace, and gives the call with the quotes; an expression giving one says it is not a file name; the generic stop says the file name goes in quotes (pinned whole; it said \"Provide a filename\")",
+      identical(.bb9$m, paste0("[error] jload(): '.bbm1' is a jlm() result, already in your workspace.\n",
+                               "To load it from its file, put its name in quotes:\n",
+                               "  jload(\".bbm1\")")) &&
+        identical(.bb9$t, paste0("[error] jload(): '.bbt1' is a table jtable() built, already in\n",
+                                 "your workspace.\n",
+                                 "To load it from its file, put its name in quotes:\n",
+                                 "  jload(\".bbt1\")")) &&
+        startsWith(.bbflat(.bb9$doc), "[error] jload(): '.bbdoc' is a set of tables jtable() put together, already in your workspace.") &&
+        identical(.bb9$ex, paste0("[error] jload(): .bblst[[1]] is a jlm() result, not a file name.\n",
+                                  "Provide a file name in quotes, for example:\n",
+                                  "  jload(\"mydata.sav\")")) &&
+        identical(.bb9$num, paste0("[error] jload(): Provide a file name in quotes, for example:\n",
+                                   "  jload(\"mydata.sav\")")) &&
+        identical(.bb9$no, .bb9$num))
+
+check("BB10 the offered lines run: a result saved, then removed, is read back by the line jload()'s stop gives",
+      local({
+        invisible(.bbrun(jsave(.bbm1, overwrite = TRUE)))
+        ln <- sub("^  ", "", tail(strsplit(.bb9$m, "\n", fixed = TRUE)[[1]], 1L))
+        keep <- .bbm1; rm(.bbm1, envir = globalenv())
+        r <- .bbrun(eval(str2lang(ln), globalenv()))
+        ok <- exists(".bbm1", envir = globalenv(), inherits = FALSE) &&
+          inherits(get(".bbm1", envir = globalenv()), "jst_lm")
+        if (!exists(".bbm1", envir = globalenv(), inherits = FALSE)) assign(".bbm1", keep, envir = globalenv())
+        ok && !startsWith(r$out, "[error]") }))
+
+setwd(.bbw)
+options(.bbo)
+unlink(.bbd, recursive = TRUE)
+rm(.bbd, .bbw, .bbo, .bbp, .bbflat, .bbrun, .bbreal, .bbheld, .bbask, .bbnoask,
+   .bbexists, .bbdocx,
+   .bbt1, .bb1, .bb2files, .bb2, .bb3st, .bb3p, .bb3, .bb4md5, .bb4ask, .bb4,
+   .bb5, .bb6, .bbdf, .bbm1, .bb7md5, .bb7ask, .bb7, .bb7stop, .bb8, .bbdoc,
+   .bblst, .bb9, .f)
 
 grDevices::dev.off(.atdev)
 rm(.atdx, .atpng, .atn, .atdev, .augeoms, .aulayer, .aufill, .auarea)
@@ -9863,6 +10232,7 @@ options(.jst_output_toggles             = .entry_output_toggles)
 options(.jst_options_style              = .entry_style)
 options(.jst_options_style_dir          = .entry_style_dir)
 options(.jst_options_data_dir           = .entry_data_dir)
+options(.jst_options_output_dir         = .entry_output_dir)
 if (is.na(.entry_udd)) Sys.unsetenv("R_USER_DATA_DIR") else Sys.setenv(R_USER_DATA_DIR = .entry_udd)
 options(.entry_stores)
 
