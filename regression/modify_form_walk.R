@@ -62,7 +62,48 @@
 #           generic stop's "Provide a file name in quotes, for example:";
 #           and jsave() over a file another program holds stopping before
 #           anything is written, naming the program (Section 45).
+#           Since S435 jload(use = TRUE)'s "Default data frame set to" line
+#           after the Loaded line and everything the load found, last; and
+#           "file name", two words, in jsave()'s stop for no file name, the
+#           stop for a file whose name starts with a digit and the
+#           file-not-found stop (Section 46).
 # ORIGIN:   S229
+# EDITED:   S435 (v0.9.290; the (S433) jload(use = TRUE) item and the (S430)
+#           "filename" item, both Claude's calls, riding the build that
+#           names the Documents style folder Styles). SECTION 46 ADDED, on
+#           the PENDING line, its Expected blocks filled by running (fill.R,
+#           under the Windows-length temporary folder): jload(file, use =
+#           TRUE) on a plain file, on a file with declared missing values,
+#           on a file whose code the scan reports, and on a load that
+#           clears a registration, the default's line last each time, then
+#           quiet = TRUE; and the three stops that said "filename". RE-PINNED,
+#           and kept OFF the PENDING line, each changed line shown in
+#           Section 46 (the S424 and S427 precedent): Section 17 (its
+#           second render: the default's line below the Loaded line, where
+#           it stood above it; the render's caption reworded), Section 13
+#           (three lines: jsave()'s stop for no file name, the stop for a
+#           file whose name starts with a digit, the file-not-found stop's
+#           last line) and Section 40 (the first line of its three stops);
+#           each section's notes say so. Every section of every walk
+#           captured on v0.9.289 and on this build from one working folder
+#           and compared: Sections 13, 17 and 40 moved, by those lines
+#           alone, and no other section of this walk (temporary folders and
+#           the version in Sections 10 and 44 aside). Section 46 needs no
+#           earlier section (harness.R derive: the five NEEDS lines as they
+#           were). The assertion side is import_check.R section AD, with
+#           V07, V09 and AA01 re-pinned, and missing_convention_check.R
+#           N86bc.
+# LAST VERIFIED: v0.9.290, 2026-11-17 (S435) -- Section 46 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (12 run, 3778 checks); the package pushed
+#           (jstats 87af2ef). Sandbox: harness.R verify, 46 of 46 sections in
+#           three orders and by prepare = TRUE, plain and under the
+#           RStudio-handler stand-in; 176 of 178 Expected blocks found
+#           (Section 9's prose block and Section 44's "Found m44.rds in", the
+#           same two as on v0.9.289 under these sandbox paths); Sections 13,
+#           17 and 40 re-pinned mechanically, not walked; rewalk()'s
+#           scoreboard read the PENDING line.
 # EDITED:   S430 (v0.9.289; the (S429) jload(m1) item, the generic stop in
 #           Jeff's words at S429 -- 'Should we specify "...provide a filename
 #           in quotes..."' -- and the open-file item, the lean okayed: the
@@ -2105,7 +2146,7 @@ try(evalq(jsave(), .ws13))
 #   Error : jsave(): d13.rds is not in quotes.
 #   A file name goes in quotes:
 #     jsave(d13, "d13.rds")
-#   Error : jsave(): Provide a filename with extension, for example:
+#   Error : jsave(): Provide a file name with extension, for example:
 #     jsave(d13, "mydata.sav")
 #   Supported formats:
 #     .sav       SPSS
@@ -2151,7 +2192,7 @@ cat("\n--- a name starting with a digit: the file's, then one given with name = 
 try(jload("2024zz13.csv"))
 try(jload("zz13.csv", name = "2b"))
 # Expected:
-#   Error : jload(): The filename '2024zz13.csv' starts with a number.
+#   Error : jload(): The file name '2024zz13.csv' starts with a number.
 #   R does not allow a data frame's name to start with a digit.
 #   Provide a name, for example:
 #     jload("2024zz13.csv", name = "X2024zz13")
@@ -2172,7 +2213,7 @@ try(jload("nofile13.RData"))
 # Expected:
 #   Error : jload(): File 'nofile13.RData' not found.
 #   Searched in: working directory
-#   Check that the filename and extension are correct.
+#   Check that the file name and extension are correct.
 
 cat("\n--- an empty file name; a data frame given as an expression ---\n")
 try(jload(""))
@@ -2209,6 +2250,13 @@ rm(.wd13, .def13, .ws13, .ws13b, .ns13, .m13, d13, p13, z13)
 #   - "jload(""): Provide a file name in quotes" -- an empty string TYPED
 #     as such -- keeps the generic stop (N86f), "Provide a filename" until
 #     S430; only an expression that came out empty is named.
+#   - "FILE NAME", TWO WORDS (S435, v0.9.290; the (S430) item, Claude's
+#     call): three more stops said "filename" -- jsave() with no file name
+#     ("Provide a file name with extension, for example:"), a file whose
+#     name starts with a digit ("The file name '2024zz13.csv' starts with a
+#     number.") and the last line of the file-not-found stop ("Check that
+#     the file name and extension are correct."). The three lines here are
+#     re-pinned; Section 46 shows them together (import_check.R AD06-AD08).
 #   - THE NAME A DIGIT IS OFFERED (S366, v0.9.238; Fix Slate 13): the one
 #     the cleaner gives, an X before the digit -- X2024zz13, X2b -- where
 #     the digits had been stripped (zz13, b), which offered name = "" for
@@ -2687,6 +2735,10 @@ rm(.wd16, tx16, fc16, v16, b16, c16)
 # that one way and were re-pinned mechanically. Shown: the narrative under
 # it; a registration note and the default-frame note above it; the line
 # alone; the shipped dataset's form.
+# Since S435 (v0.9.290; the (S433) item, Claude's call): under use = TRUE
+# the default frame's line prints BELOW the Loaded line, last, where it
+# printed above it; the second render is re-pinned, and Section 46 shows
+# the line in its shapes.
 .wd17 <- getwd(); setwd(.walkdir)
 reg17 <- spss_df
 suppressMessages(jnumeric(reg17, Education))
@@ -2704,15 +2756,15 @@ jload("clinic.rds", name = "r17", overwrite = TRUE, missing.notice = TRUE)
 #   To make them missing in base R as well, convert:
 #     jconvert(r17, to = "stata", modify = TRUE)
 
-cat("\n--- notes above it: a registration restored, the default set ---\n")
+cat("\n--- a note above it and one below: a registration restored, the default set ---\n")
 jload("reg17.rds", name = "s17", overwrite = TRUE, use = TRUE, missing.notice = FALSE)
 # Expected:
 #   Restored the classification registrations saved with this file
 #   (saved under 'reg17').
 #
-#   Default data frame set to: s17
-#
 #   Loaded s17 (R format; 4 cases, 2 variables)
+#
+#   Default data frame set to: s17
 
 cat("\n--- the line alone ---\n")
 jload("clinic.rds", name = "r17", overwrite = TRUE, missing.notice = FALSE)
@@ -2749,6 +2801,9 @@ rm(.wd17, reg17, r17, s17, c17)
 #   - Is the gap above the Loaded line right as well? The ruling spoke of
 #     a LEADING status line; with notes above it, this build treats it the
 #     same way on both sides.
+#   - Since S435 (v0.9.290): "Default data frame set to: s17" is BELOW the
+#     Loaded line, the last line, a blank line above it; until then it
+#     printed above the Loaded line. The registration note stays above.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -5313,7 +5368,7 @@ names(w40)[2] <- "with"
 # Render 1 -- jsave() with no file name, on a data frame holding with.
 try(jsave(w40))
 # Expected:
-#   Error : jsave(): Provide a filename with extension, for example:
+#   Error : jsave(): Provide a file name with extension, for example:
 #     jsave(w40, "mydata.sav", clean.names = TRUE)
 #   Supported formats:
 #     .sav       SPSS
@@ -5341,7 +5396,7 @@ toString(names(haven::read_sav("mydata.sav")))
 # makes mydata first, and the save on mydata carrying clean.names = TRUE.
 try(jsave(w40[1:2, ]))
 # Expected:
-#   Error : jsave(): Provide a filename with extension, for example:
+#   Error : jsave(): Provide a file name with extension, for example:
 #     mydata <- w40[1:2, ]
 #     jsave(mydata, "mydata.sav", clean.names = TRUE)
 #   Supported formats:
@@ -5356,7 +5411,7 @@ try(jsave(w40[1:2, ]))
 p40 <- data.frame(id = 1:3)
 try(jsave(p40))
 # Expected:
-#   Error : jsave(): Provide a filename with extension, for example:
+#   Error : jsave(): Provide a file name with extension, for example:
 #     jsave(p40, "mydata.sav")
 #   Supported formats:
 #     .sav       SPSS
@@ -5377,6 +5432,8 @@ rm(w40, p40, .note40, .wd40)
 #   - Render 3: "mydata <- w40[1:2, ]" first, the save on mydata with
 #     clean.names = TRUE.
 #   - Render 4: no clean.names = TRUE where every name fits the format.
+#   - Since S435 (v0.9.290): each stop's first line says "file name", two
+#     words, where it said "filename" (re-pinned; Section 46 shows it).
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -5885,6 +5942,148 @@ setwd(.wd45)
 #     the stop as in Render 2, and no warning; then once more without
 #     overwrite = TRUE: the same stop, and no "Overwrite? (y/n)" question
 #     before it. Close Excel and delete the file afterwards.
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# SECTION 46 -- jload(use = TRUE): the default's line last; "file name" in three stops (S435) ----
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+# Session 435 (v0.9.290; the (S433) and (S430) items, both Claude's calls,
+# riding the build that names the Documents style folder Styles).
+# THE DEFAULT'S LINE: jload("survey.sav", use = TRUE) printed "Default data
+# frame set to: survey" ABOVE the Loaded line -- seen while choosing the
+# trailer's lines -- where Session 227 had made the load confirmation lead.
+# The line now prints LAST: the Loaded line, then whatever the load found
+# (the narrative, the notes on the read, the scan's block), then a blank
+# line and the default's line. So the call reads as jload() followed by
+# juse(). Nothing else moved: a registration note still prints above the
+# Loaded line, the default is set as before, and quiet = TRUE still prints
+# nothing. Section 17's second render is re-pinned the same way.
+# "FILE NAME": jload()'s stops have said "file name", two words, since
+# v0.9.289; three stops still said "filename" -- jsave() with no file name,
+# a file whose name starts with a digit, and the file-not-found stop's last
+# line. Sections 13 and 40 show them among their other stops, re-pinned;
+# here they are together. The assertion side is import_check.R section AD
+# (and V07, V09 and AA01, re-pinned) and missing_convention_check.R N86bc.
+.wd46 <- getwd(); setwd(.walkdir)
+.def46 <- getOption(".jst_default_data"); options(.jst_default_data = NULL)
+joptions(missing.convention = "spss", quiet = TRUE)
+writeLines(c("a,b", "1,5", "2,6", "3,7"), "plain46.csv")
+writeLines(c("a,b", "1,5", "2,6", "-99,7", "4,8"), "codes46.csv")
+writeLines(c("x", "1", "2"), "2024s46.csv")
+reg46 <- data.frame(A = c(1, 2, 3, 4))
+saveRDS(reg46, "reg46.rds")
+suppressMessages(jnumeric(reg46, A))
+
+# Render 1 -- a plain file loaded with use = TRUE: the Loaded line, a blank
+# line, the default's line.
+jload("plain46.csv", name = "p46", use = TRUE)
+# Expected:
+#   Loaded p46 (CSV format; 3 cases, 2 variables)
+#
+#   Default data frame set to: p46
+
+# Render 2 -- a file with declared missing values: the narrative under the
+# Loaded line, as before, then the default's line.
+jload("clinic.rds", name = "c46", use = TRUE, missing.notice = TRUE)
+# Expected:
+#   Loaded c46 (R format; 4 cases, 2 variables)
+#
+#   2 variables have SPSS-style missing values:
+#     Income: -99 ["Refused"], -98 ["Don't know"]
+#     Education: -99 ["Refused"]
+#   jstats analyses treat these codes as missing. Base R functions do not.
+#   To make them missing in base R as well, convert:
+#     jconvert(c46, to = "stata", modify = TRUE)
+#
+#   Default data frame set to: c46
+
+# Render 3 -- a file holding a code the scan reports (-99, undeclared): the
+# scan's block under the Loaded line, then the default's line, last.
+jload("codes46.csv", name = "k46", use = TRUE)
+# Expected:
+#   Loaded k46 (CSV format; 4 cases, 2 variables)
+#
+#   Missing-value codes detected:
+#     a:  -99 (1)
+#
+#   These codes match the missing.convention.codes setting (-99, -98, -97) but
+#   are not formally declared, so they are not treated as missing.
+#   Declare them as missing if they are; leave as-is if real.
+#
+#   To declare one variable's codes as missing:
+#     jdeclare_missing(k46, a, codes = -99, modify = TRUE)
+#   To declare and label them in one call, replacing the placeholder names:
+#     jdeclare_missing(k46, a, codes = c("label1" = -99), modify = TRUE)
+#
+#   Default data frame set to: k46
+
+# Render 4 -- a load that clears a registration made this session: its note
+# still above the Loaded line, the default's line below.
+jload("reg46.rds", name = "reg46", overwrite = TRUE, use = TRUE, missing.notice = FALSE)
+# Expected:
+#   Cleared the classification registration you had set this session for 'reg46'
+#   (the loaded data carries none).
+#   To set it again:
+#     jnumeric(reg46, A)
+#
+#   Loaded reg46 (R format; 4 cases, 1 variable)
+#
+#   Default data frame set to: reg46
+
+# Render 5 -- quiet = TRUE prints nothing; juse() shows the default was set.
+jload("plain46.csv", name = "q46", use = TRUE, quiet = TRUE)
+juse()
+# Expected:
+#   Current default data frame: q46
+
+# Render 6 -- "file name", two words: jsave() with no file name; a file
+# whose name starts with a digit; a file that is not there.
+try(jsave(p46))
+try(jload("2024s46.csv"))
+try(jload("nofile46.csv"))
+# Expected:
+#   Error : jsave(): Provide a file name with extension, for example:
+#     jsave(p46, "mydata.sav")
+#   Supported formats:
+#     .sav       SPSS
+#     .dta       Stata
+#     .xpt       SAS interchange
+#     .xlsx      Excel
+#     .csv       Comma-separated values
+#     .rds       R
+#   Error : jload(): The file name '2024s46.csv' starts with a number.
+#   R does not allow a data frame's name to start with a digit.
+#   Provide a name, for example:
+#     jload("2024s46.csv", name = "X2024s46")
+#   Error : jload(): File 'nofile46.csv' not found.
+#   Searched in: working directory
+#   Check that the file name and extension are correct.
+options(.jst_default_data = .def46)
+options(.jst_options_missing_convention = "none")
+suppressMessages(jnumeric(reg46, NULL))
+unlink(c("plain46.csv", "codes46.csv", "2024s46.csv", "reg46.rds"))
+setwd(.wd46)
+rm(p46, c46, k46, q46, reg46, .wd46, .def46)
+
+# Things to look at:
+#   - Render 1: "Loaded p46 (CSV format; 3 cases, 2 variables)", a blank
+#     line, "Default data frame set to: p46". Until this build the default's
+#     line came first. Is the blank line between the two right, or should
+#     the two status lines sit together?
+#   - Render 2: the narrative directly under the Loaded line, as in every
+#     load, and the default's line after it, a blank line above;
+#   - Render 3: the scan's block ("Missing-value codes detected:" to its
+#     offered lines), a blank line, then the default's line -- the last
+#     thing printed, where it is easiest to see;
+#   - Render 4: the registration note first, as before; then the Loaded
+#     line; then the default's line;
+#   - Render 5: nothing from jload(); "Current default data frame: q46"
+#     from juse();
+#   - Render 6: "Provide a file name with extension, for example:", "The
+#     file name '2024s46.csv' starts with a number." and "Check that the
+#     file name and extension are correct." -- each said "filename".
+#     The help pages still say "filename" in some twenty places (?jload,
+#     ?jsave, ?joptions): not changed, since the item was the messages.
 
 
 # --- End marker --------------------------------------------------------------

@@ -382,6 +382,56 @@
 #           own. I02 -- Windows's converter reads 0x81 as Windows-1252
 #           (U+0081), so the Latin-1 branch is not reached there; the check
 #           now expects what the platform's converter does.
+# S435 EDIT (v0.9.290, 2026-11-17): SECTION AD ADDED, eight checks; V07, V09
+#           AND AA01 RE-PINNED. Two riders on the build that names the
+#           Documents style folder Styles, both Claude's calls. The (S433)
+#           item: under use = TRUE jload() printed "Default data frame set
+#           to: <name>" above the Loaded line; the line now prints last,
+#           after the Loaded line and everything the load found, a blank
+#           line above it, the setting made where it was. AD01 a plain
+#           file, pinned whole, the default set, and the call's notes equal
+#           to jload()'s then juse()'s; AD02 the narrative under the Loaded
+#           line and the default's line after it, once; AD03 the scan's
+#           block, which is standard output, read with the notes in the
+#           order written (.ad_both(): the notes still as conditions), the
+#           default's line the last line of all; AD04 a registration note
+#           still above the Loaded line (pinned whole); AD05 quiet = TRUE
+#           printing nothing and setting the default, no line without use =
+#           TRUE, the shipped dataset's form. The (S430) item: three stops
+#           say "file name" where they said "filename" -- jsave()'s stop for
+#           no file name (V07, V09 and AA01 re-pinned), jload()'s stop for a
+#           file whose name starts with a digit (AD06) and the last line of
+#           the file-not-found stop (AD07, pinned whole); AD08 reads every
+#           string in the formals and the body of every function in the
+#           namespace and finds no "filename". 231 -> 239 checks.
+#           On v0.9.289 V07, V09, AA01 and AD01-AD08 read red and no other
+#           (228/239). MUTATION MAP (S435; 13 one-change mutants of the
+#           build's sites, each red in the battery that holds its check):
+#           the default's line back above the Loaded line, not printed, and
+#           with no blank line above it AD01-AD05 (and
+#           missing_convention_check.R N86bc); the line before the scan's
+#           block AD03; straight after the Loaded line, before the narrative,
+#           AD02 AD03; use = TRUE no longer setting the default AD01 AD05;
+#           quiet = TRUE no longer muting the line AD05; the line printed
+#           without use = TRUE AD01 AD05 and thirteen older checks;
+#           "filename" back in jsave()'s stop V07 V09 AA01 AD08, in the
+#           leading-digit stop AD06 AD08, in the not-found stop AD07 AD08.
+#           The folder's two mutants are tables_check.R's.
+#           SANDBOX: 239/239 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, through a symlinked
+#           temp path, interactive with no question asked, with a graphics
+#           device open (left open and current), under the stand-in of
+#           RStudio's Console color rule, and entered dirty (plain and
+#           under the handlers: no name, value, option or device changed;
+#           the dirt with a data folder, an output folder and a style folder
+#           set, and workspace objects named a, b, x, k, h, q, n, p, s, f,
+#           two, set, ad1, ad4, ad5, strs and fns). All twelve batteries
+#           3778 each way.
+#           LAST VERIFIED: v0.9.290, 2026-11-17 (S435) -- 239/239 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3778 checks)"; R CMD check 0 errors, 0 warnings, 0 notes) at the
+#           first run, matching the sandbox. The package pushed at the stamp
+#           (jstats 87af2ef, byte-compared).
 # S430 EDIT (v0.9.289, 2026-11-15): THE DATA AND OUTPUT FOLDERS UNSET at
 #           setup and handed back at the foot (the (S429) battery item: the
 #           other ten batteries entered with a data folder set). Y25-Y27 save
@@ -2246,10 +2296,11 @@ check("V07 no file name, or one that is not a name: the example on a line of its
         m1 <- .nodefU(grab(eval(quote(jsave(d1)), e)))
         m2 <- .nodefU(grab(eval(quote(jsave(d1, 42)), e)))
         m3 <- .nodefU(grab(eval(quote(jsave(d1[1:2, , drop = FALSE])), e)))
-        identical(m1, paste0("jsave(): Provide a filename with extension, for example:\n",
+        # Re-pinned S435 (v0.9.290): "file name", two words (the (S430) item).
+        identical(m1, paste0("jsave(): Provide a file name with extension, for example:\n",
                              "  jsave(d1, \"mydata.sav\")\n", fm)) &&
           identical(m2, m1) &&
-          identical(m3, paste0("jsave(): Provide a filename with extension, for example:\n",
+          identical(m3, paste0("jsave(): Provide a file name with extension, for example:\n",
                                "  mydata <- d1[1:2, , drop = FALSE]\n",
                                "  jsave(mydata, \"mydata.sav\")\n", fm)) }))
 check("V08 jsave() given neither a data frame nor a file, no default: both routes with the example file, under headings that say the file is named too, the call's other arguments kept (the resolver would have offered jsave(d1), which stops again for want of a file)",
@@ -2280,7 +2331,7 @@ check("V09 ... both routes run as printed, each saving the data frame named; wit
           old <- getOption(".jst_default_data")
           m <- tryCatch({ options(.jst_default_data = "d1"); grab(eval(quote(jsave()), e)) },
                         finally = options(.jst_default_data = old))
-          ok1 && ok2 && startsWith(m, "jsave(): Provide a filename with extension, for example:\n  jsave(d1, \"mydata.sav\")\n") },
+          ok1 && ok2 && startsWith(m, "jsave(): Provide a file name with extension, for example:\n  jsave(d1, \"mydata.sav\")\n") },
           finally = options(.jst_options_data_dir = dd)) }))
 
 # --- W: a CSV file's text values that read as missing (v0.9.246) ------------
@@ -3465,7 +3516,7 @@ check("AA01 jsave() with no file, on a data frame holding a name SPSS refuses: t
           r <- if (file.exists(f)) haven::read_sav(f, user_na = TRUE) else NULL
           unlink(f)
           identical(m, paste0(
-            "jsave(): Provide a filename with extension, for example:\n",
+            "jsave(): Provide a file name with extension, for example:\n",
             "  jsave(d1, \"mydata.sav\", clean.names = TRUE)\n",
             "Supported formats:\n",
             "  .sav       SPSS\n", "  .dta       Stata\n", "  .xpt       SAS interchange\n",
@@ -3747,6 +3798,128 @@ check("AC03 one registration: \"registration ... To set it again:\" (pinned whol
           identical(c2, paste0(sub("\n$", "", .ac_lead("ac4", FALSE)), "\n\n",
                                "Loaded ac4 (R format; 6 cases, 2 variables)\n")) }))
 rm(.ac_q, .ac_base, .ac_lead, .ac_clear)
+
+# --- AD: the default line's place under use = TRUE; "file name" (S435) -------
+# v0.9.290 (S435), two riders on the Styles build, both Claude's calls.
+# The (S433) item: jload(file, use = TRUE) printed "Default data frame set
+# to: <name>" ABOVE the Loaded line, where Session 227 had made the load
+# confirmation lead. The line now prints LAST -- after the Loaded line, the
+# notes on what the read found, the narrative and the scan's block -- with a
+# blank line above it (ruling R6; Rule F), so the call reads as jload() then
+# juse(). The setting itself is made where it was, and quiet = TRUE mutes
+# the line without unsetting it. A registration note still prints above the
+# Loaded line. The (S430) item: three stops said "filename" where jload()'s
+# other stops have said "file name" since v0.9.289 -- jsave()'s stop for no
+# file name (V07, V09 and AA01, re-pinned), jload()'s stop for a file whose
+# name starts with a digit, and the last line of the file-not-found stop.
+# A load's notes are read as conditions (grab()); where the scan's block
+# matters, which is written to standard output, .ad_both() takes both
+# streams in the order written, the notes still as conditions, so RStudio's
+# handlers change nothing. Every load has a name of its own or overwrite =
+# TRUE, so none asks; .ad_keep() puts back the default a check sets.
+.ad_keep <- function(expr) {
+  old <- getOption(".jst_default_data")
+  on.exit(options(.jst_default_data = old), add = TRUE)
+  force(expr)
+}
+.ad_both <- function(expr) {
+  utils::capture.output(withCallingHandlers(expr, message = function(m) {
+    .see("note", m); cat(conditionMessage(m)); invokeRestart("muffleMessage")
+  }))
+}
+.ix_w("AD01.csv", c("a,b", "1,5", "2,6", "3,7"))
+.ix_w("AD03.csv", c("a,b", "1,5", "2,6", "-99,7", "4,8"))
+saveRDS(data.frame(A = haven::labelled_spss(c(1, -99, 2), na_values = -99)),
+        .ix("AD02.rds"))
+saveRDS(data.frame(A = c(1, 2, 3, 4)), .ix("AD04.rds"))
+
+check("AD01 jload(file, use = TRUE): the Loaded line leads and \"Default data frame set to\" is the last line, a blank line above it (it printed above the Loaded line); the default is set; the call reads as jload() then juse()",
+      local({ .ad_keep({
+        options(.jst_default_data = NULL)
+        m <- grab(jload(.ix("AD01.csv"), name = "ad1", use = TRUE))
+        set <- identical(getOption(".jst_default_data"), "ad1")
+        options(.jst_default_data = NULL)
+        two <- paste0(grab(jload(.ix("AD01.csv"), name = "ad1b")), "\n",
+                      grab(juse(ad1b)))
+        set && identical(m, paste0("Loaded ad1 (CSV format; 3 cases, 2 variables)\n",
+                                   "\n", "Default data frame set to: ad1\n")) &&
+          identical(gsub("ad1b", "ad1", two, fixed = TRUE), m) }) }))
+check("AD02 ... with declared missing values: the narrative directly under the Loaded line, as before, and the default's line after it, once, the last line",
+      local({ .ad_keep({
+        m <- grab(jload(.ix("AD02.rds"), name = "ad2", use = TRUE,
+                        missing.notice = TRUE))
+        startsWith(m, paste0("Loaded ad2 (R format; 3 cases, 1 variable)\n\n",
+                             "1 variable has SPSS-style missing values:\n")) &&
+          endsWith(m, "\n\nDefault data frame set to: ad2\n") &&
+          length(gregexpr("Default data frame set to", m, fixed = TRUE)[[1]]) == 1L &&
+          !grepl("Default data frame set to: ad2\n.", m) }) }))
+check("AD03 ... with the scan's block, which is written to standard output: the Loaded line first, the block, a blank line, then the default's line, the last line of all",
+      local({ .ad_keep({
+        o <- .ad_both(jload(.ix("AD03.csv"), name = "ad3", use = TRUE))
+        k <- length(o); h <- match("Missing-value codes detected:", o)
+        identical(o[1L], "Loaded ad3 (CSV format; 4 cases, 2 variables)") &&
+          !is.na(h) && h < k - 2L &&
+          identical(o[k], "Default data frame set to: ad3") &&
+          identical(o[k - 1L], "") &&
+          grepl("^  jdeclare_missing\\(ad3, a, ", o[k - 2L]) &&
+          sum(startsWith(o, "Default data frame set to")) == 1L }) }))
+check("AD04 ... with a registration note: the note stays above the Loaded line, a blank line between, and the default's line goes below it (pinned whole)",
+      local({ .ad_keep({
+        ad4 <- readRDS(.ix("AD04.rds"))
+        invisible(utils::capture.output(suppressMessages(jnumeric(ad4, A))))
+        m <- grab(jload(.ix("AD04.rds"), name = "ad4", overwrite = TRUE,
+                        use = TRUE, missing.notice = FALSE))
+        jstats:::.jst_set_registry("ad4", NULL)
+        identical(m, paste0(
+          "Cleared the classification registration you had set this session for 'ad4'\n",
+          "(the loaded data carries none).\n",
+          "To set it again:\n", "  jnumeric(ad4, A)\n", "\n",
+          "Loaded ad4 (R format; 4 cases, 1 variable)\n", "\n",
+          "Default data frame set to: ad4\n")) }) }))
+check("AD05 quiet = TRUE prints nothing and still sets the default; without use = TRUE no such line and no default; the shipped dataset's Loaded line the same way",
+      local({ .ad_keep({
+        options(.jst_default_data = NULL)
+        q  <- grab(jload(.ix("AD01.csv"), name = "ad5", use = TRUE, quiet = TRUE))
+        qs <- identical(getOption(".jst_default_data"), "ad5")
+        options(.jst_default_data = NULL)
+        n  <- grab(jload(.ix("AD01.csv"), name = "ad5b"))
+        ns <- is.null(getOption(".jst_default_data"))
+        p  <- grab(jload("community", name = "ad5c", package = TRUE, use = TRUE,
+                         missing.notice = FALSE))
+        identical(q, "") && qs && ns &&
+          identical(n, "Loaded ad5b (CSV format; 3 cases, 2 variables)\n") &&
+          identical(p, paste0("Loaded the jstats example dataset 'community'\n",
+                              "\n", "Default data frame set to: ad5c\n")) }) }))
+check("AD06 jload()'s stop for a file whose name starts with a digit says \"file name\" (it said \"filename\"); its first three lines pinned",
+      startsWith(grab(jload(.ix("2024.csv"))),
+                 paste0("jload(): The file name '2024.csv' starts with a number.\n",
+                        "R does not allow a data frame's name to start with a digit.\n",
+                        "Provide a name, for example:\n")))
+check("AD07 the file-not-found stop ends \"Check that the file name and extension are correct.\" (pinned whole, no data folder set)",
+      identical(grab(jload("nofile435.csv")),
+                paste0("jload(): File 'nofile435.csv' not found.\n",
+                       "Searched in: working directory\n",
+                       "Check that the file name and extension are correct.")))
+check("AD08 no text a function of the package holds says \"filename\": every string in the formals and the body of every function in the namespace read (three stops said it)",
+      local({
+        strs <- function(x) {
+          if (is.character(x)) return(x)
+          if (is.function(x)) return(c(strs(as.list(formals(x))), strs(body(x))))
+          if (is.call(x) || is.pairlist(x) || is.list(x) || is.expression(x)) {
+            l <- as.list(x)
+            keep <- !vapply(seq_along(l), function(i) identical(l[[i]], quote(expr = )),
+                            logical(1))
+            return(unlist(lapply(l[keep], strs), use.names = FALSE))
+          }
+          character(0)
+        }
+        ns  <- asNamespace("jstats")
+        fns <- Filter(is.function, mget(ls(ns, all.names = TRUE), envir = ns))
+        s   <- unlist(lapply(fns, strs), use.names = FALSE)
+        length(fns) > 500L && length(s) > 5000L &&
+          sum(grepl("file name", s, fixed = TRUE)) >= 10L &&
+          !any(grepl("filename", s, ignore.case = TRUE)) }))
+rm(.ad_keep, .ad_both)
 
 # --- The message surface, swept (guard 4) ------------------------------------
 

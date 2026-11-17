@@ -10,6 +10,31 @@
 # ORIGIN:   S226 (foundation shipped in v0.9.123). Promoted into regression/
 #           at S228 from the sandbox battery battery_new.R, rewritten to the
 #           _template_check.R shape per the dev/tests boundary rule.
+# S435 EDIT (v0.9.290, 2026-11-17): N86bc RE-PINNED. The (S433) item, a rider
+#           on the build that names the Documents style folder Styles
+#           (Claude's call): under use = TRUE jload() prints "Default data
+#           frame set to: <name>" after the Loaded line, last, a blank line
+#           above it, where it printed above the Loaded line. N86bc, which
+#           pinned the two lines in the old order as its note above the
+#           Loaded line, pins them in the new; a note above the Loaded line
+#           is import_check.R's (AC01, AD04). No check added: 930 checks
+#           still. On v0.9.289 N86bc read red and no other (929/930); the
+#           three mutants that move the line back, drop it or close it up
+#           read red here as well (N86bc).
+#           SANDBOX: 930/930 plain, under the RStudio-handler stand-in,
+#           each again with a 35-character temp path, through a symlinked
+#           temp path, interactive with no question asked, with a graphics
+#           device open (left open and current), under the stand-in of
+#           RStudio's Console color rule, and entered dirty (plain and
+#           under the handlers: no name, value, option or device changed;
+#           the dirt with a data folder, an output folder and a style folder
+#           set, and a workspace object named ld86). All twelve batteries
+#           3778 each way.
+#           LAST VERIFIED: v0.9.290, 2026-11-17 (S435) -- 930/930 on the
+#           WORKSTATION through receive_all() ("ALL BATTERIES GREEN (12 run,
+#           3778 checks)"; R CMD check 0 errors, 0 warnings, 0 notes) at the
+#           first run, matching the sandbox. The package pushed at the stamp
+#           (jstats 87af2ef, byte-compared).
 # S430 EDIT (v0.9.289, 2026-11-15): N86f AND N86bg RE-PINNED. The (S429)
 #           jload(m1) item: jload()'s generic stop reads "Provide a file
 #           name in quotes, for example:" where it read "Provide a filename,
@@ -8978,10 +9003,13 @@ check("N86ba ... three or fewer: the names, as before",
 check("N86bb ruling R6: a blank line between the Loaded line and the narrative under it",
       grepl("^Loaded ld86 \\(R format; 6 cases, 3 variables\\)\n\n3 variables have SPSS-style",
             m86au))
-check("N86bc ... and between notes above it and the Loaded line; the notes keep their own blank line",
+# Re-pinned S435 (v0.9.290; the (S433) item): under use = TRUE the default's
+# line prints after the Loaded line, last, where it printed above it. A note
+# above the Loaded line is import_check.R's AC01 and AD04.
+check("N86bc ... and between the Loaded line and a note under it that is not the narrative: the default's line under use = TRUE, last, a blank line above it (it printed above the Loaded line until v0.9.290)",
       local({ m <- grab(jload("ds86.rds", name = "ld86", use = TRUE, missing.notice = FALSE))
-              identical(m, paste0("Default data frame set to: ld86\n", "\n",
-                                  "Loaded ld86 (R format; 6 cases, 3 variables)\n")) }))
+              identical(m, paste0("Loaded ld86 (R format; 6 cases, 3 variables)\n", "\n",
+                                  "Default data frame set to: ld86\n")) }))
 check("N86bd ... the Loaded line alone has no blank line after it; quiet = TRUE prints nothing",
       identical(grab(jload("ds86.rds", name = "ld86", overwrite = TRUE,
                            missing.notice = FALSE)),

@@ -96,7 +96,8 @@
 #           head "Category", the chart's axis "Percentage of cases", a set
 #           whose labels share no text titled "Multiple-Response Set"
 #           (ruling R88); and the note under a copy saved in your jstats
-#           folder naming Documents/jstats styles by its full path.
+#           folder naming a folder in Documents by its full path -- Styles
+#           since S435 (v0.9.290), jstats styles until then.
 #           Section 28 (S425): a multiple-response set's words since the
 #           ruling on the survey words R88 left -- the Analysis N line's
 #           "with no value on any item", the note for a set with no "No",
@@ -116,6 +117,39 @@
 #           program (stood in for), the stop before anything is written and
 #           no warning of R's.
 # ORIGIN:   S400 (v0.9.270)
+# EDITED:   S435 (v0.9.290; the (S434) item, Jeff's call: "Do Styles."; "we
+#           should lock in the Styles with a capital S to be used everywhere
+#           for consistency"). The folder the joptions(style.dir =) line
+#           names is <Documents>/Styles, where it was <Documents>/jstats
+#           styles. SECTION 29 on the PENDING line: the one section that
+#           shows the line in both its shapes -- the foot of jstyle()'s list
+#           and the note under a copy saved in your jstats folder -- its two
+#           Expected lines re-pinned, a Session 435 paragraph in its notes
+#           and two lines in its Things to look at. RE-PINNED the same one
+#           line, and kept OFF the PENDING line (a name Jeff chose, shown
+#           in Section 29; the S424 and S427 precedent): Section 26 (Render
+#           7's note) and Section 27 (Render 4's note), their notes saying
+#           so. Every section of every walk captured on v0.9.289 and on
+#           this build from one working folder and compared: Sections 26,
+#           27 and 29 moved, by that line alone, and no other section of
+#           this walk (temporary folders and the version stamp aside); the
+#           walk as it was reads four blocks more unfound on the build, in
+#           those three sections. NOT CHANGED, the build's lean on its
+#           default (no): the folders the walk itself uses -- Section 12
+#           writes the gallery into E:/00 R Projects/jstats/styles, which
+#           is lowercase on disk, where joptions(style.dir = "Styles")
+#           would print jstats's note on the letters' case on Windows and
+#           not in the sandbox -- and the joptions(style.dir = "styles")
+#           line its notes give for that project. The human half of
+#           tables_check.R AX10, AX10b and AZ01, re-pinned.
+# LAST VERIFIED: v0.9.290, 2026-11-17 (S435) -- Section 29 WALKED on the
+#           WORKSTATION by Jeff through receive_all() ("walked, all okay");
+#           PENDING back to none; R CMD check 0 errors, 0 warnings, 0 notes;
+#           ALL BATTERIES GREEN (12 run, 3778 checks); the package pushed
+#           (jstats 87af2ef). Sandbox: harness.R verify, 30 of 30 sections in
+#           three orders and by prepare = TRUE; 134 of 146 Expected blocks
+#           found, the same twelve missed as on v0.9.289 under the same
+#           sandbox paths; rewalk()'s scoreboard read the PENDING line.
 # EDITED:   S430 (v0.9.289; the (S429) .docx item and open-file item, the
 #           lean okayed -- the file tried before the question -- and the
 #           wording Claude's call). SECTION 30 ADDED, on the PENDING line,
@@ -6177,7 +6211,7 @@ jstyle("apa", save.as = "walk26")
 #     <your jstats folder>
 #   To keep your styles in your Documents folder instead, run this line, then
 #   save the copy again:
-#     joptions(style.dir = "<your Documents folder>/jstats styles")
+#     joptions(style.dir = "<your Documents folder>/Styles")
 
 # Render 8 -- the same copy saved with a style folder set: no note. Then the
 # copy in your jstats folder removed (the folder too, if Render 7 made it),
@@ -6219,7 +6253,8 @@ joptions(style.dir = .entry_style_dir26, quiet = TRUE)
 #     -- then the note: hidden, the folder's own path on its own line (the
 #     line above is the file's, which File Explorer would open as a file),
 #     and the joptions(style.dir =) line, naming your Documents folder's
-#     jstats styles by its full path (since S424). Paste the folder's path into File
+#     Styles by its full path (the path since S424; the folder Styles since
+#     S435, jstats styles until then). Paste the folder's path into File
 #     Explorer's address bar before going on: the folder opens, holding
 #     walk26.jstyle;
 #   - Render 8: "Style written to" and the temporary style folder's path,
@@ -6243,7 +6278,8 @@ joptions(style.dir = .entry_style_dir26, quiet = TRUE)
 # titled "Multiple-Response Set" where it was "Options Chosen". THE FOLDER
 # THE NOTE NAMES (the lean you okayed at S423): a copy of a style saved in
 # your jstats folder is followed by the note Section 26 shows, its last
-# line naming Documents/jstats styles by its full path, worked out on the
+# line naming Documents/Styles by its full path (Styles since S435; it was
+# jstats styles), worked out on the
 # computer -- your Documents folder on Windows, where R's "~" points; the
 # Documents folder in your home folder on a Mac -- with no "~". The line is
 # not run here: run as printed, it would make that folder. THE CODE FOR
@@ -6346,7 +6382,7 @@ joptions(style.dir = .entry_style_dir27, quiet = TRUE)
 #     <your jstats folder>
 #   To keep your styles in your Documents folder instead, run this line, then
 #   save the copy again:
-#     joptions(style.dir = "<your Documents folder>/jstats styles")
+#     joptions(style.dir = "<your Documents folder>/Styles")
 
 # Things to look at:
 #   - Render 1: the set's title "Multiple-Response Set" over the three
@@ -6362,9 +6398,10 @@ joptions(style.dir = .entry_style_dir27, quiet = TRUE)
 #     under the chart, "Note. A case can be counted in more than one
 #     category, so the percentages sum to more than 100.";
 #   - Render 4: the note under the copy, its last line
-#     joptions(style.dir = "...") naming your Documents folder's "jstats
-#     styles" by its full path -- on Windows C:/Users/<you>/Documents/jstats
-#     styles, or OneDrive's Documents where yours is there -- with no "~".
+#     joptions(style.dir = "...") naming your Documents folder's Styles
+#     by its full path -- on Windows C:/Users/<you>/Documents/Styles, or
+#     OneDrive's Documents where yours is there -- with no "~" (Styles
+#     since S435; it was "jstats styles").
 #     Copied into the Console and run, the line would make that folder and
 #     set it for the session (not done here).
 
@@ -6554,6 +6591,15 @@ cat(paste0("  ", s28[grep(.pat28, s28)]), sep = "\n")
 # make that folder. Your style folder is put back at the end of the
 # section, and the copy Render 3 saves is removed -- your jstats folder
 # too, if the render made it.
+# Session 435 (v0.9.290; the (S434) item, your call: "Do Styles."; "we
+# should lock in the Styles with a capital S to be used everywhere for
+# consistency"): the folder the line names is Styles, with a capital S,
+# beside the folders the guides use (Data, Tables, Scripts), where it was
+# "jstats styles". Nothing else about the line or the search moved, and no
+# code reads a folder named the old way: a session whose own
+# joptions(style.dir =) line names "jstats styles" keeps that folder. The
+# two renders that print the line are re-pinned, and so are Sections 26
+# and 27, which print it under a saved copy.
 
 .entry_style_dir29 <- getOption(".jst_options_style_dir")
 
@@ -6577,7 +6623,7 @@ jstyle()
 #   No style folder is set, so jstyle() saves copies in your jstats folder,
 #   which is hidden.
 #   To keep them in your Documents folder instead, run:
-#     joptions(style.dir = "<your Documents folder>/jstats styles")
+#     joptions(style.dir = "<your Documents folder>/Styles")
 
 # Render 2 -- a style folder set, one in the session's temporary folder:
 # the list names it first and ends on the folders, as before.
@@ -6620,7 +6666,7 @@ joptions(style.dir = .entry_style_dir29, quiet = TRUE)
 #     <your jstats folder>
 #   To keep your styles in your Documents folder instead, run this line, then
 #   save the copy again:
-#     joptions(style.dir = "<your Documents folder>/jstats styles")
+#     joptions(style.dir = "<your Documents folder>/Styles")
 
 # Things to look at:
 #   - Render 1: "Style folder: Not set"; the list -- apa, built in and the
@@ -6630,9 +6676,10 @@ joptions(style.dir = .entry_style_dir29, quiet = TRUE)
 #     its own: "No style folder is set, so jstyle() saves copies in your
 #     jstats folder, which is hidden." and "To keep them in your Documents
 #     folder instead, run:", and the line joptions(style.dir = "...")
-#     naming your Documents folder's "jstats styles" by its full path -- on
-#     Windows C:/Users/<you>/Documents/jstats styles, or OneDrive's
-#     Documents where yours is there -- whole on one line, with no "~". The
+#     naming your Documents folder's Styles by its full path -- on Windows
+#     C:/Users/<you>/Documents/Styles, or OneDrive's Documents where yours
+#     is there -- whole on one line, with no "~" (since S435: Styles, with
+#     a capital S, where it read "jstats styles"). The
 #     three lines are part of the list, in the list's plain text, not in
 #     the note color;
 #   - Render 2: the temporary style folder first among the folders, and
@@ -6641,7 +6688,13 @@ joptions(style.dir = .entry_style_dir29, quiet = TRUE)
 #     folder, then the note in the note color, its last sentence "To keep
 #     your styles in your Documents folder instead, run this line, then
 #     save the copy again:" over the same joptions(style.dir = "...") line
-#     as Render 1's.
+#     as Render 1's;
+#   - Since S435: is Styles the name you want in both renders? On a
+#     computer that already holds Documents/styles in other letters' case,
+#     Windows and a Mac take the line as naming that folder, and jstats
+#     says so ("style.dir was set to 'Styles', but a folder named 'styles'
+#     already exists ..."): read in the source, not run -- the line is not
+#     run here, and the sandbox's file system tells the two apart.
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
